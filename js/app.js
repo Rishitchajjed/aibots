@@ -1,10 +1,20 @@
 /**
  * AI Bots Creative Studio - Core Shared Script
- * Handles Themes, Command Palette (Ctrl+K), Toast Notifications, File Dropzones, and Logo Physics.
+ * Handles Themes, Audio Synthesizer, Confetti Celebrations, Command Palette, File Dropzones, and Logo Physics.
  */
 
 // Tools Registry for Search and Navigation
 const AI_BOTS_TOOLS = [
+  {
+    id: 'cricketscore',
+    title: 'Cricket Score Counter',
+    description: 'Live match scoring board with batsmen/bowler stats, extras, overs, and scorecard export.',
+    icon: 'fa-baseball-bat-ball',
+    url: 'cricketscore.html',
+    category: 'utility',
+    badge: 'Pro Scorer',
+    color: '#10b981'
+  },
   {
     id: 'backremover',
     title: 'Background Remover',
@@ -130,10 +140,12 @@ const AI_BOTS_TOOLS = [
 // Initialize on DOM Ready
 document.addEventListener('DOMContentLoaded', () => {
   initTheme();
+  initAudioSystem();
   initCommandPalette();
   initDropzones();
   initInteractiveLogo();
   initGlobalHotkeys();
+  initConfetti();
 });
 
 /* ==========================================================================
@@ -151,6 +163,7 @@ function initTheme() {
       const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
       const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
       applyTheme(newTheme);
+      playSound('click');
       showToast(`Switched to ${newTheme === 'dark' ? 'Dark' : 'Light'} Mode`, 'info');
     });
   });
@@ -171,7 +184,201 @@ function applyTheme(theme) {
 }
 
 /* ==========================================================================
-   2. Toast Notification System
+   2. Web Audio Synthesizer & Sound Effects
+   ========================================================================== */
+let audioCtx = null;
+let isMuted = localStorage.getItem('aibots_sound_muted') === 'true';
+
+function initAudioSystem() {
+  const soundToggles = document.querySelectorAll('.sound-toggle-btn');
+  updateSoundToggleIcons();
+
+  soundToggles.forEach(btn => {
+    btn.addEventListener('click', () => {
+      isMuted = !isMuted;
+      localStorage.setItem('aibots_sound_muted', isMuted);
+      updateSoundToggleIcons();
+      if (!isMuted) playSound('click');
+      showToast(isMuted ? 'Sound effects muted' : 'Sound effects enabled 🔔', 'info');
+    });
+  });
+}
+
+function updateSoundToggleIcons() {
+  const soundIcons = document.querySelectorAll('.sound-toggle-btn i');
+  soundIcons.forEach(icon => {
+    icon.className = isMuted ? 'fas fa-volume-xmark' : 'fas fa-volume-high';
+  });
+}
+
+function playSound(type = 'click') {
+  if (isMuted) return;
+  try {
+    if (!audioCtx) {
+      audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    }
+    if (audioCtx.state === 'suspended') {
+      audioCtx.resume();
+    }
+
+    const now = audioCtx.currentTime;
+
+    if (type === 'click') {
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(800, now);
+      osc.frequency.exponentialRampToValueAtTime(400, now + 0.04);
+      gain.gain.setValueAtTime(0.12, now);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.04);
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+      osc.start(now);
+      osc.stop(now + 0.04);
+    } else if (type === 'four') {
+      // Upbeat boundary fanfare chord
+      [523.25, 659.25, 783.99, 1046.50].forEach((freq, i) => {
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(freq, now + i * 0.06);
+        gain.gain.setValueAtTime(0.15, now + i * 0.06);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + i * 0.06 + 0.25);
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start(now + i * 0.06);
+        osc.stop(now + i * 0.06 + 0.25);
+      });
+    } else if (type === 'six') {
+      // Big power celebration chord
+      [440, 554.37, 659.25, 880, 1108.73].forEach((freq, i) => {
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(freq, now + i * 0.05);
+        gain.gain.setValueAtTime(0.18, now + i * 0.05);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + i * 0.05 + 0.4);
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start(now + i * 0.05);
+        osc.stop(now + i * 0.05 + 0.4);
+      });
+    } else if (type === 'wicket') {
+      // Dramatic drop / gong
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.type = 'sawtooth';
+      osc.frequency.setValueAtTime(320, now);
+      osc.frequency.exponentialRampToValueAtTime(60, now + 0.5);
+      gain.gain.setValueAtTime(0.2, now);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.5);
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+      osc.start(now);
+      osc.stop(now + 0.5);
+    } else if (type === 'success') {
+      [587.33, 880].forEach((freq, i) => {
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(freq, now + i * 0.1);
+        gain.gain.setValueAtTime(0.15, now + i * 0.1);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + i * 0.1 + 0.2);
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start(now + i * 0.1);
+        osc.stop(now + i * 0.1 + 0.2);
+      });
+    }
+  } catch (err) {
+    console.debug('Audio error:', err);
+  }
+}
+
+/* ==========================================================================
+   3. Confetti Celebration Engine
+   ========================================================================== */
+let confettiCanvas = null;
+let confettiCtx = null;
+let confettiParticles = [];
+let confettiAnimId = null;
+
+function initConfetti() {
+  confettiCanvas = document.createElement('canvas');
+  confettiCanvas.id = 'confetti-canvas';
+  document.body.appendChild(confettiCanvas);
+  confettiCtx = confettiCanvas.getContext('2d');
+
+  window.addEventListener('resize', () => {
+    if (confettiCanvas) {
+      confettiCanvas.width = window.innerWidth;
+      confettiCanvas.height = window.innerHeight;
+    }
+  });
+  confettiCanvas.width = window.innerWidth;
+  confettiCanvas.height = window.innerHeight;
+}
+
+function launchConfetti(count = 80) {
+  if (!confettiCtx) return;
+  confettiCanvas.width = window.innerWidth;
+  confettiCanvas.height = window.innerHeight;
+
+  const colors = ['#4f46e5', '#ec4899', '#f59e0b', '#10b981', '#06b6d4', '#8b5cf6'];
+  for (let i = 0; i < count; i++) {
+    confettiParticles.push({
+      x: window.innerWidth / 2 + (Math.random() - 0.5) * 200,
+      y: window.innerHeight * 0.4 + (Math.random() - 0.5) * 100,
+      vx: (Math.random() - 0.5) * 14,
+      vy: Math.random() * -12 - 4,
+      size: Math.random() * 8 + 4,
+      color: colors[Math.floor(Math.random() * colors.length)],
+      rotation: Math.random() * 360,
+      rSpeed: (Math.random() - 0.5) * 10,
+      opacity: 1
+    });
+  }
+
+  if (!confettiAnimId) {
+    animateConfetti();
+  }
+}
+
+function animateConfetti() {
+  confettiCtx.clearRect(0, 0, confettiCanvas.width, confettiCanvas.height);
+
+  for (let i = confettiParticles.length - 1; i >= 0; i--) {
+    const p = confettiParticles[i];
+    p.x += p.vx;
+    p.y += p.vy;
+    p.vy += 0.35; // gravity
+    p.rotation += p.rSpeed;
+    p.opacity -= 0.008;
+
+    if (p.opacity <= 0 || p.y > confettiCanvas.height) {
+      confettiParticles.splice(i, 1);
+      continue;
+    }
+
+    confettiCtx.save();
+    confettiCtx.translate(p.x, p.y);
+    confettiCtx.rotate((p.rotation * Math.PI) / 180);
+    confettiCtx.fillStyle = p.color;
+    confettiCtx.globalAlpha = p.opacity;
+    confettiCtx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size);
+    confettiCtx.restore();
+  }
+
+  if (confettiParticles.length > 0) {
+    confettiAnimId = requestAnimationFrame(animateConfetti);
+  } else {
+    confettiAnimId = null;
+    confettiCtx.clearRect(0, 0, confettiCanvas.width, confettiCanvas.height);
+  }
+}
+
+/* ==========================================================================
+   4. Toast Notification System
    ========================================================================== */
 function showToast(message, type = 'info', duration = 3000) {
   let container = document.getElementById('toast-container');
@@ -206,7 +413,7 @@ function showToast(message, type = 'info', duration = 3000) {
 }
 
 /* ==========================================================================
-   3. Command Palette (Ctrl + K / Quick Search)
+   5. Command Palette (Ctrl + K / Quick Search)
    ========================================================================== */
 function initCommandPalette() {
   const triggerBtn = document.getElementById('search-trigger-btn');
@@ -218,6 +425,7 @@ function initCommandPalette() {
 
   function openPalette() {
     modalBackdrop.classList.add('active');
+    playSound('click');
     if (searchInput) {
       searchInput.value = '';
       searchInput.focus();
@@ -295,7 +503,7 @@ function initCommandPalette() {
 }
 
 /* ==========================================================================
-   4. Universal Dropzones & Clipboard Paste
+   6. Universal Dropzones & Clipboard Paste
    ========================================================================== */
 function initDropzones() {
   const dropzones = document.querySelectorAll('.dropzone-container');
@@ -318,11 +526,11 @@ function initDropzones() {
       if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
         input.files = e.dataTransfer.files;
         input.dispatchEvent(new Event('change', { bubbles: true }));
+        playSound('pop');
       }
     });
   });
 
-  // Global Clipboard Paste Support (Ctrl + V images into active upload input)
   window.addEventListener('paste', (e) => {
     const activeFileInput = document.querySelector('input[type="file"]');
     if (!activeFileInput) return;
@@ -335,6 +543,7 @@ function initDropzones() {
         dataTransfer.items.add(file);
         activeFileInput.files = dataTransfer.files;
         activeFileInput.dispatchEvent(new Event('change', { bubbles: true }));
+        playSound('pop');
         showToast('Pasted image from clipboard!', 'success');
         break;
       }
@@ -343,7 +552,7 @@ function initDropzones() {
 }
 
 /* ==========================================================================
-   5. Interactive Bouncing / Throw Logo (Original Physics Feature)
+   7. Interactive Bouncing / Throw Logo (Original Physics Feature)
    ========================================================================== */
 function initInteractiveLogo() {
   const logoWrapper = document.querySelector('.hero-interactive-logo');
@@ -378,11 +587,10 @@ function initInteractiveLogo() {
     const velocityX = offsetX / elapsed;
     const velocityY = offsetY / elapsed;
 
-    // Throw animation with bounce
+    playSound('pop');
     logoWrapper.style.transition = 'transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
     logoWrapper.style.transform = `translate(${offsetX + velocityX * 0.1}px, ${offsetY + velocityY * 0.1}px) rotate(${offsetX * 0.2}deg)`;
 
-    // Return to initial position
     setTimeout(() => {
       logoWrapper.style.transition = 'transform 0.8s cubic-bezier(0.34, 1.56, 0.64, 1)';
       logoWrapper.style.transform = 'translate(0, 0) scale(1) rotate(0deg)';
@@ -399,15 +607,49 @@ function initInteractiveLogo() {
 }
 
 /* ==========================================================================
-   6. Global Keyboard Shortcuts
+   8. Global Keyboard Shortcuts & Cheatsheet
    ========================================================================== */
 function initGlobalHotkeys() {
   document.addEventListener('keydown', (e) => {
-    // Press '/' to focus search if not in an input
-    if (e.key === '/' && !['INPUT', 'TEXTAREA', 'SELECT'].includes(document.activeElement.tagName)) {
+    // Open Shortcuts Cheatsheet with '?' (Shift + /)
+    if (e.key === '?' && !['INPUT', 'TEXTAREA', 'SELECT'].includes(document.activeElement.tagName)) {
+      e.preventDefault();
+      toggleShortcutsModal();
+    }
+    // Press '/' to search
+    else if (e.key === '/' && !['INPUT', 'TEXTAREA', 'SELECT'].includes(document.activeElement.tagName)) {
       e.preventDefault();
       const searchBtn = document.getElementById('search-trigger-btn');
       if (searchBtn) searchBtn.click();
     }
   });
+}
+
+function toggleShortcutsModal() {
+  let modal = document.getElementById('shortcuts-modal');
+  if (!modal) {
+    modal = document.createElement('div');
+    modal.id = 'shortcuts-modal';
+    modal.className = 'modal-backdrop';
+    modal.innerHTML = `
+      <div class="modal-card">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+          <h3 style="margin: 0; font-size: 1.2rem; display: flex; align-items: center; gap: 8px;">
+            <i class="fas fa-keyboard" style="color: var(--primary);"></i> Keyboard Shortcuts
+          </h3>
+          <button onclick="document.getElementById('shortcuts-modal').classList.remove('active')" class="btn btn-secondary btn-sm"><i class="fas fa-xmark"></i></button>
+        </div>
+        <div class="shortcut-row"><span>Quick Tool Search</span><span class="kbd-shortcut">Ctrl + K</span></div>
+        <div class="shortcut-row"><span>Focus Search Bar</span><span class="kbd-shortcut">/</span></div>
+        <div class="shortcut-row"><span>Paste Image to Upload</span><span class="kbd-shortcut">Ctrl + V</span></div>
+        <div class="shortcut-row"><span>Shortcuts Cheatsheet</span><span class="kbd-shortcut">?</span></div>
+        <div class="shortcut-row"><span>Close Modals</span><span class="kbd-shortcut">ESC</span></div>
+      </div>
+    `;
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal) modal.classList.remove('active');
+    });
+    document.body.appendChild(modal);
+  }
+  modal.classList.toggle('active');
 }

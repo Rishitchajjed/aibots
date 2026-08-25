@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-2L87FMQS3W"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-2L87FMQS3W');
+  </script>
+
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" href="https://i.ibb.co/G2NFYHG/logo.png" type="image/png">
+  <title>Image Combiner & Merger - AI Bots</title>
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="css/theme.css">
+  <style>
+    .thumbs-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+      gap: 14px;
+      margin: 20px 0;
+    }
+    .thumb-card {
+      position: relative;
+      aspect-ratio: 1;
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      border: 1px solid var(--border-color);
+      box-shadow: var(--shadow-sm);
+      background: var(--bg-tertiary);
+    }
+    .thumb-card img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .result-pages-container {
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+      margin: 32px 0;
+      align-items: center;
+    }
+    .result-page-card {
+      max-width: 580px;
+      width: 100%;
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      padding: 16px;
+      text-align: center;
+    }
+    .result-page-card img {
+      max-width: 100%;
+      height: auto;
+      border-radius: var(--radius-sm);
+      box-shadow: var(--shadow-md);
+    }
+  </style>
+</head>
+<body>
+  <div class="bg-mesh"></div>
+
+  <!-- Navbar -->
+  <header class="navbar">
+    <div class="app-container" style="width: 100%;">
+      <div class="nav-wrapper">
+        <a href="index.html" class="brand-link">
+          <img src="https://i.ibb.co/G2NFYHG/logo.png" alt="AI Bots Logo" class="brand-logo-img">
+          <span>AI Bots</span>
+          <span class="brand-badge">Image Combiner</span>
+        </a>
+
+        <div class="nav-actions">
+          <a href="index.html" class="btn btn-secondary btn-sm"><i class="fas fa-house"></i> Hub</a>
+          <button class="icon-btn theme-toggle-btn" title="Toggle Dark/Light Mode"><i class="fas fa-moon"></i></button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="app-container tool-page-wrapper">
+    <div class="tool-header">
+      <span class="tool-header-badge"><i class="fas fa-layer-group"></i> Multi-Layout</span>
+      <h1 class="tool-title">Image Combiner & Merger</h1>
+      <p class="tool-desc">Select multiple photos and arrange them into structured single or multi-page A4/A3/Custom grid layouts.</p>
+    </div>
+
+    <div class="tool-card-container">
+      
+      <!-- Multi-File Dropzone -->
+      <div class="dropzone-container" id="dropzone">
+        <input type="file" id="imageFile" class="dropzone-input" accept="image/*" multiple onchange="showPreview()">
+        <div class="dropzone-icon"><i class="fas fa-images"></i></div>
+        <div class="dropzone-title">Click to Select Multiple Images or Drag & Drop</div>
+        <div class="dropzone-subtitle">Select 2 or more photos to merge</div>
+      </div>
+
+      <!-- Preview Thumbs -->
+      <div id="imagePreview" class="thumbs-grid"></div>
+
+      <!-- Settings Form -->
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 20px;">
+        <div class="form-group">
+          <label class="form-label" for="pageSize"><i class="fas fa-file"></i> Page Canvas Format</label>
+          <select id="pageSize" class="form-control" onchange="updateCustomSizeInputs()">
+            <option value="a4" selected>A4 (595 × 842 pt)</option>
+            <option value="a3">A3 (842 × 1191 pt)</option>
+            <option value="a2">A2 (1191 × 1684 pt)</option>
+            <option value="custom">Custom Dimensions</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="numPages"><i class="fas fa-copy"></i> Max Pages Limit</label>
+          <input type="number" id="numPages" class="form-control" min="1" value="1">
+        </div>
+      </div>
+
+      <div id="customSizeInputs" style="display: none; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 20px;">
+        <div class="form-group">
+          <label class="form-label" for="widthInput">Custom Width (px):</label>
+          <input type="number" id="widthInput" class="form-control" placeholder="800" min="100">
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="heightInput">Custom Height (px):</label>
+          <input type="number" id="heightInput" class="form-control" placeholder="1000" min="100">
+        </div>
+      </div>
+
+      <!-- Action Buttons -->
+      <div style="display: flex; gap: 12px; justify-content: center; margin-top: 24px; flex-wrap: wrap;">
+        <button type="button" class="btn btn-primary btn-lg" onclick="combineImages()">
+          <i class="fas fa-layer-group"></i> Combine & Generate Pages
+        </button>
+        <button id="downloadButton" type="button" class="btn btn-success btn-lg" style="display: none;" onclick="downloadImages()">
+          <i class="fas fa-download"></i> Download Combined Images
+        </button>
+      </div>
+
+      <!-- Result Pages -->
+      <div id="result" class="result-pages-container"></div>
+
+    </div>
+  </main>
+
+  <footer class="app-footer">
+    <div class="app-container">
+      <p class="footer-text">&copy; 2026 AI Bots. All rights reserved.</p>
+      <p class="footer-credits">Website designed by <strong>Rishit Chajjed</strong>.</p>
+    </div>
+  </footer>
+
+  <script src="js/app.js"></script>
+  <script>
+    let imageElements = [];
+    let combinedImageURLs = [];
+
+    function showPreview() {
+      const files = document.getElementById('imageFile').files;
+      const previewDiv = document.getElementById('imagePreview');
+      previewDiv.innerHTML = '';
+      imageElements = [];
+
+      if (!files || files.length === 0) return;
+
+      for (let i = 0; i < files.length; i++) {
+        const file = files[i];
+        const reader = new FileReader();
+
+        reader.onload = function (e) {
+          const card = document.createElement('div');
+          card.className = 'thumb-card';
+          
+          const img = document.createElement('img');
+          img.src = e.target.result;
+          card.appendChild(img);
+          previewDiv.appendChild(card);
+
+          imageElements.push(img);
+        };
+        reader.readAsDataURL(file);
+      }
+      showToast(`${files.length} images selected`, 'info');
+    }
+
+    function updateCustomSizeInputs() {
+      const pageSizeDropdown = document.getElementById('pageSize');
+      const customSizeInputs = document.getElementById('customSizeInputs');
+      customSizeInputs.style.display = (pageSizeDropdown.value === 'custom') ? 'grid' : 'none';
+    }
+
+    function combineImages() {
+      if (imageElements.length === 0) {
+        showToast('Please select images first!', 'error');
+        return;
+      }
+
+      const pageSizeDropdown = document.getElementById('pageSize');
+      const widthInput = document.getElementById('widthInput');
+      const heightInput = document.getElementById('heightInput');
+      const numPagesInput = document.getElementById('numPages');
+
+      const selectedOption = pageSizeDropdown.value;
+      let pageWidth, pageHeight;
+
+      if (selectedOption === 'custom') {
+        pageWidth = parseFloat(widthInput.value) || 800;
+        pageHeight = parseFloat(heightInput.value) || 1000;
+      } else {
+        const pageSizes = {
+          'a4': { width: 595, height: 842 },
+          'a3': { width: 842, height: 1191 },
+          'a2': { width: 1191, height: 1684 }
+        };
+        const pageSize = pageSizes[selectedOption];
+        pageWidth = pageSize.width;
+        pageHeight = pageSize.height;
+      }
+
+      const maxImagesPerPage = 4;
+      const maxImageWidth = pageWidth / 2;
+      const maxImageHeight = pageHeight / 2;
+      const totalPages = Math.ceil(imageElements.length / maxImagesPerPage);
+      const requestedPages = Math.min(parseInt(numPagesInput.value) || 1, totalPages);
+
+      combinedImageURLs = [];
+      let imageIndex = 0;
+
+      for (let page = 0; page < requestedPages; page++) {
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
+        canvas.width = pageWidth;
+        canvas.height = pageHeight;
+
+        // Background
+        ctx.fillStyle = '#ffffff';
+        ctx.fillRect(0, 0, pageWidth, pageHeight);
+
+        const pageImages = imageElements.slice(page * maxImagesPerPage, (page + 1) * maxImagesPerPage);
+        const numCols = pageImages.length === 1 ? 1 : 2;
+        const numRows = Math.ceil(pageImages.length / numCols);
+
+        for (let i = 0; i < pageImages.length; i++) {
+          const img = pageImages[i];
+          const col = i % 2;
+          const row = Math.floor(i / 2);
+
+          const cellW = pageWidth / numCols;
+          const cellH = pageHeight / (numRows || 1);
+
+          const naturalW = img.naturalWidth || img.width || 100;
+          const naturalH = img.naturalHeight || img.height || 100;
+
+          const ratio = Math.min(cellW / naturalW, cellH / naturalH) * 0.95;
+          const drawW = naturalW * ratio;
+          const drawH = naturalH * ratio;
+
+          const posX = (col * cellW) + (cellW - drawW) / 2;
+          const posY = (row * cellH) + (cellH - drawH) / 2;
+
+          ctx.drawImage(img, posX, posY, drawW, drawH);
+        }
+
+        combinedImageURLs.push(canvas.toDataURL('image/png'));
+      }
+
+      updateCombinedImages();
+      showToast('Images combined into layout!', 'success');
+    }
+
+    function updateCombinedImages() {
+      const resultDiv = document.getElementById('result');
+      resultDiv.innerHTML = '';
+
+      combinedImageURLs.forEach((url, idx) => {
+        const card = document.createElement('div');
+        card.className = 'result-page-card';
+        card.innerHTML = `
+          <div style="font-weight: 600; margin-bottom: 8px; color: var(--text-secondary);">Page ${idx + 1}</div>
+          <img src="${url}" alt="Combined Page ${idx + 1}">
+        `;
+        resultDiv.appendChild(card);
+      });
+
+      const downloadButton = document.getElementById('downloadButton');
+      downloadButton.style.display = 'inline-flex';
+      downloadButton.scrollIntoView({ behavior: 'smooth' });
+    }
+
+    function downloadImages() {
+      if (combinedImageURLs.length === 0) return;
+
+      combinedImageURLs.forEach((url, i) => {
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `combined_images_page${i + 1}.png`;
+        a.click();
+      });
+      showToast('Downloading all generated pages...', 'success');
+    }
+  </script>
+</body>
+</html>

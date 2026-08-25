@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-2L87FMQS3W"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-2L87FMQS3W');
+  </script>
+
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" href="https://i.ibb.co/G2NFYHG/logo.png" type="image/png">
+  <meta name="description" content="AI Bots - Free all-in-one creative platform to edit images, remove backgrounds, generate PDFs, resize photos, make business cards, create logos, and more.">
+  <meta name="keywords" content="remove background, make image link, crop image, business card generator, resize image, logo maker, pdf generator, pdf viewer, image combiner, calculator, chatbot">
+  <link rel="canonical" href="https://www.aibots.tiiny.site/">
+  <title>AI Bots - All-In-One Free Creative Platform</title>
+
+  <!-- Google Fonts & Font Awesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="css/theme.css">
+  <style>
+    /* Studio Modal & Embed Workspace */
+    .studio-workspace-section {
+      display: none;
+      margin-bottom: 60px;
+      animation: fadeIn 0.3s ease;
+    }
+    .studio-workspace-section.active {
+      display: block;
+    }
+    .studio-frame-container {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-xl);
+      overflow: hidden;
+      box-shadow: var(--shadow-xl);
+    }
+    .studio-frame-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 20px;
+      background: var(--bg-tertiary);
+      border-bottom: 1px solid var(--border-color);
+    }
+    .studio-frame {
+      width: 100%;
+      height: 850px;
+      border: none;
+      display: block;
+      background: var(--bg-primary);
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body>
+  <div class="bg-mesh"></div>
+
+  <!-- Command Palette Modal (Ctrl + K) -->
+  <div class="command-palette-backdrop" id="command-palette-backdrop">
+    <div class="command-palette-modal">
+      <div class="command-palette-search">
+        <i class="fas fa-magnifying-glass" style="color: var(--text-muted);"></i>
+        <input type="text" class="command-palette-input" id="command-palette-input" placeholder="Search any creative tool (e.g. background, logo, pdf, resize)...">
+        <span class="kbd-shortcut">ESC</span>
+      </div>
+      <div class="command-palette-results" id="command-palette-results">
+        <!-- Injected dynamically via app.js -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Navbar -->
+  <header class="navbar">
+    <div class="app-container" style="width: 100%;">
+      <div class="nav-wrapper">
+        <a href="index.html" class="brand-link">
+          <img src="https://i.ibb.co/G2NFYHG/logo.png" alt="AI Bots Logo" class="brand-logo-img">
+          <span>AI Bots</span>
+          <span class="brand-badge">Creative Suite</span>
+        </a>
+
+        <div class="nav-actions">
+          <button class="search-trigger-btn" id="search-trigger-btn" title="Quick Search">
+            <i class="fas fa-magnifying-glass search-icon"></i>
+            <span>Search Tools</span>
+            <span class="kbd-shortcut">Ctrl K</span>
+          </button>
+
+          <button class="icon-btn theme-toggle-btn" title="Toggle Dark/Light Mode">
+            <i class="fas fa-moon"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="app-container">
+    
+    <!-- Hero Section -->
+    <section class="hero-section">
+      <div class="hero-logo-wrapper">
+        <img src="https://i.ibb.co/G2NFYHG/logo.png" alt="AI Bots Logo" class="hero-interactive-logo" id="interactive-logo" title="Drag & throw me!">
+        <div class="hero-logo-hint"><i class="fas fa-hand-pointer"></i> Drag & throw the logo!</div>
+      </div>
+
+      <div class="hero-badge">
+        <i class="fas fa-sparkles" style="color: #f59e0b;"></i>
+        <span>100% Free Creative & Productivity Suite</span>
+      </div>
+
+      <h1 class="hero-title">
+        Welcome to <span class="gradient-text">AI Bots</span>!
+      </h1>
+
+      <p class="hero-subtitle">
+        Your ultimate all-in-one studio to remove backgrounds, create logos, crop & resize images, combine photos, generate PDFs, and automate your workflows for free.
+      </p>
+
+      <div class="hero-buttons">
+        <a href="#tools-section" class="btn btn-primary btn-lg">
+          <i class="fas fa-wand-magic-sparkles"></i> Explore All Tools
+        </a>
+        <a href="chatbot.html" class="btn btn-secondary btn-lg">
+          <i class="fas fa-robot"></i> Need Help? Chatbot
+        </a>
+      </div>
+    </section>
+
+    <!-- Studio Workspace (Inline Tool View) -->
+    <section class="studio-workspace-section" id="studio-workspace">
+      <div class="studio-frame-container">
+        <div class="studio-frame-bar">
+          <div style="display: flex; align-items: center; gap: 10px;">
+            <i class="fas fa-laptop-code" style="color: var(--primary);"></i>
+            <strong id="studio-tool-name">Creative Tool</strong>
+          </div>
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <a id="studio-external-link" href="#" target="_blank" class="btn btn-secondary btn-sm" title="Open in new tab">
+              <i class="fas fa-arrow-up-right-from-square"></i> Open Full Page
+            </a>
+            <button onclick="closeStudioWorkspace()" class="btn btn-danger btn-sm" title="Close Workspace">
+              <i class="fas fa-xmark"></i> Close
+            </button>
+          </div>
+        </div>
+        <iframe id="studio-iframe" class="studio-frame" src=""></iframe>
+      </div>
+    </section>
+
+    <!-- Category Filter Bar -->
+    <section id="tools-section" style="scroll-margin-top: 100px;">
+      <div class="filter-nav">
+        <button class="filter-btn active" data-filter="all"><i class="fas fa-grid-2"></i> All Tools (12)</button>
+        <button class="filter-btn" data-filter="image"><i class="fas fa-image"></i> Image Tools</button>
+        <button class="filter-btn" data-filter="pdf"><i class="fas fa-file-pdf"></i> PDF & Docs</button>
+        <button class="filter-btn" data-filter="creative"><i class="fas fa-palette"></i> Creative & Design</button>
+        <button class="filter-btn" data-filter="utility"><i class="fas fa-sliders"></i> Utilities</button>
+        <button class="filter-btn" data-filter="ai"><i class="fas fa-robot"></i> AI & Assistant</button>
+      </div>
+
+      <!-- Tools Grid -->
+      <div class="tools-grid" id="tools-grid">
+        
+        <!-- Tool 1: Background Remover -->
+        <a href="backremover.html" class="tool-card" data-category="image" data-tool="backremover" style="--card-accent: linear-gradient(135deg, #ec4899, #f43f5e);">
+          <div class="tool-card-icon" style="background: rgba(236, 72, 153, 0.15); color: #ec4899;">
+            <i class="fas fa-wand-magic-sparkles"></i>
+          </div>
+          <h3 class="tool-card-title">Remove Background</h3>
+          <p class="tool-card-desc">Instantly cut out backgrounds from any photo with clean transparent results.</p>
+          <div class="tool-card-footer">
+            <span>Launch Tool</span>
+            <i class="fas fa-arrow-right"></i>
+          </div>
+        </a>
+
+        <!-- Tool 2: Image Link -->
+        <a href="imagelink.html" class="tool-card" data-category="utility" data-tool="imagelink" style="--card-accent: linear-gradient(135deg, #6366f1, #3b82f6);">
+          <div class="tool-card-icon" style="background: rgba(99, 102, 241, 0.15); color: #6366f1;">
+            <i class="fas fa-link"></i>
+          </div>
+          <h3 class="tool-card-title">Image Link Maker</h3>
+          <p class="tool-card-desc">Upload photos and generate instant shareable direct URLs and QR codes.</p>
+          <div class="tool-card-footer">
+            <span>Launch Tool</span>
+            <i class="fas fa-arrow-right"></i>
+          </div>
+        </a>
+
+        <!-- Tool 3: Calculator -->
+        <a href="calculator.html" class="tool-card" data-category="utility" data-tool="calculator" style="--card-accent: linear-gradient(135deg, #3b82f6, #0284c7);">
+          <div class="tool-card-icon" style="background: rgba(59, 130, 246, 0.15); color: #3b82f6;">
+            <i class="fas fa-calculator"></i>
+          </div>
+          <h3 class="tool-card-title">Calculator</h3>
+          <p class="tool-card-desc">Perform standard and scientific operations, square roots, and exponent calculations.</p>
+          <div class="tool-card-footer">
+            <span>Launch Tool</span>
+            <i class="fas fa-arrow-right"></i>
+          </div>
+        </a>
+
+        <!-- Tool 4: Resize Image -->
+        <a href="resizeimage.html" class="tool-card" data-category="image" data-tool="resizeimage" style="--card-accent: linear-gradient(135deg, #0284c7, #06b6d4);">
+          <div class="tool-card-icon" style="background: rgba(2, 132, 199, 0.15); color: #0284c7;">
+            <i class="fas fa-expand"></i>
+          </div>
+          <h3 class="tool-card-title">Resize Image</h3>
+          <p class="tool-card-desc">Resize images to exact dimensions or standard paper sizes (A0-A10, Letter, B, C).</p>
+          <div class="tool-card-footer">
+            <span>Launch Tool</span>
+            <i class="fas fa-arrow-right"></i>
+          </div>
+        </a>
+
+        <!-- Tool 5: Logo Maker -->
+        <a href="logomaker.html" class="tool-card" data-category="creative" data-tool="logomaker" style="--card-accent: linear-gradient(135deg, #f97316, #ea580c);">
+          <div class="tool-card-icon" style="background: rgba(249, 115, 22, 0.15); color: #f97316;">
+            <i class="fas fa-shapes"></i>
+          </div>
+          <h3 class="tool-card-title">Logo Maker</h3>
+          <p class="tool-card-desc">Design custom vector logos with live shape, color, typography, and size controls.</p>
+          <div class="tool-card-footer">
+            <span>Launch Tool</span>
+            <i class="fas fa-arrow-right"></i>
+          </div>
+        </a>
+
+        <!-- Tool 6: PDF Generator -->
+        <a href="pdfmaker.html" class="tool-card" data-category="pdf" data-tool="pdfmaker" style="--card-accent: linear-gradient(135deg, #ef4444, #dc2626);">
+          <div class="tool-card-icon" style="background: rgba(239, 68, 68, 0.15); color: #ef4444;">
+            <i class="fas fa-file-pdf"></i>
+          </div>
+          <h3 class="tool-card-title">PDF Generator</h3>
+          <p class="tool-card-desc">Convert collections of photos into clean, professionally formatted PDF documents.</p>
+          <div class="tool-card-footer">
+            <span>Launch Tool</span>
+            <i class="fas fa-arrow-right"></i>
+          </div>
+        </a>
+
+        <!-- Tool 7: Business Card -->
+        <a href="buisnesscard.html" class="tool-card" data-category="creative" data-tool="buisnesscard" style="--card-accent: linear-gradient(135deg, #8b5cf6, #7c3aed);">
+          <div class="tool-card-icon" style="background: rgba(139, 92, 246, 0.15); color: #8b5cf6;">
+            <i class="fas fa-id-card"></i>
+          </div>
+          <h3 class="tool-card-title">Business Card Maker</h3>
+          <p class="tool-card-desc">Create high-resolution personalized business cards with custom logo and details.</p>
+          <div class="tool-card-footer">
+            <span>Launch Tool</span>
+            <i class="fas fa-arrow-right"></i>
+          </div>
+        </a>
+
+        <!-- Tool 8: Image Generator -->
+        <a href="photogenerator.html" class="tool-card" data-category="ai" data-tool="photogenerator" style="--card-accent: linear-gradient(135deg, #a855f7, #9333ea);">
+          <div class="tool-card-icon" style="background: rgba(168, 85, 247, 0.15); color: #a855f7;">
+            <i class="fas fa-image"></i>
+          </div>
+          <h3 class="tool-card-title">Image Generator</h3>
+          <p class="tool-card-desc">Search and discover millions of high-definition stock photos and inspiration.</p>
+          <div class="tool-card-footer">
+            <span>Launch Tool</span>
+            <i class="fas fa-arrow-right"></i>
+          </div>
+        </a>
+
+        <!-- Tool 9: Crop Photo -->
+        <a href="cropphoto.html" class="tool-card" data-category="image" data-tool="cropphoto" style="--card-accent: linear-gradient(135deg, #f59e0b, #d97706);">
+          <div class="tool-card-icon" style="background: rgba(245, 158, 11, 0.15); color: #f59e0b;">
+            <i class="fas fa-crop"></i>
+          </div>
+          <h3 class="tool-card-title">Crop Photo</h3>
+          <p class="tool-card-desc">Crop your photos interactively with draggable box handles and pixel-perfect accuracy.</p>
+          <div class="tool-card-footer">
+            <span>Launch Tool</span>
+            <i class="fas fa-arrow-right"></i>
+          </div>
+        </a>
+
+        <!-- Tool 10: Merge Images -->
+        <a href="imagecombiner.html" class="tool-card" data-category="image" data-tool="imagecombiner" style="--card-accent: linear-gradient(135deg, #06b6d4, #0891b2);">
+          <div class="tool-card-icon" style="background: rgba(6, 182, 212, 0.15); color: #06b6d4;">
+            <i class="fas fa-layer-group"></i>
+          </div>
+          <h3 class="tool-card-title">Merge Images</h3>
+          <p class="tool-card-desc">Combine multiple pictures into structured page grids (A4, A3, A2, or Custom).</p>
+          <div class="tool-card-footer">
+            <span>Launch Tool</span>
+            <i class="fas fa-arrow-right"></i>
+          </div>
+        </a>
+
+        <!-- Tool 11: View PDF -->
+        <a href="pdfviewer.html" class="tool-card" data-category="pdf" data-tool="pdfviewer" style="--card-accent: linear-gradient(135deg, #14b8a6, #0d9488);">
+          <div class="tool-card-icon" style="background: rgba(20, 184, 166, 0.15); color: #14b8a6;">
+            <i class="fas fa-book-open"></i>
+          </div>
+          <h3 class="tool-card-title">View PDF</h3>
+          <p class="tool-card-desc">Interactive PDF document reader with page thumbnails, navigation, and fullscreen.</p>
+          <div class="tool-card-footer">
+            <span>Launch Tool</span>
+            <i class="fas fa-arrow-right"></i>
+          </div>
+        </a>
+
+        <!-- Tool 12: Need Help / Chatbot -->
+        <a href="chatbot.html" class="tool-card" data-category="ai" data-tool="chatbot" style="--card-accent: linear-gradient(135deg, #10b981, #059669);">
+          <div class="tool-card-icon" style="background: rgba(16, 185, 129, 0.15); color: #10b981;">
+            <i class="fas fa-robot"></i>
+          </div>
+          <h3 class="tool-card-title">Need Help? Chatbot</h3>
+          <p class="tool-card-desc">Get instant assistance, discover tool capabilities, or chat with our smart bot.</p>
+          <div class="tool-card-footer">
+            <span>Launch Tool</span>
+            <i class="fas fa-arrow-right"></i>
+          </div>
+        </a>
+
+      </div>
+    </section>
+
+    <!-- Original Article Section: Explore Creativity for Free -->
+    <section class="tool-card-container" style="margin-bottom: 50px;">
+      <h2 class="section-title" style="text-align: left; margin-bottom: 16px;">
+        <i class="fas fa-palette" style="color: var(--primary);"></i> Explore Creativity for Free!
+      </h2>
+      <p style="color: var(--text-secondary); line-height: 1.8; margin-bottom: 16px;">
+        Are you looking to unleash your creative potential without breaking the bank? Look no further! <strong>AI Bots</strong> offers you a platform to express yourself and explore various creative avenues completely free of cost.
+      </p>
+      <p style="color: var(--text-secondary); line-height: 1.8; margin-bottom: 16px;">
+        With our intuitive interface and wide range of features, you can remove backgrounds from images, create image links, use our handy calculator, resize images, convert pictures to PDF format, merge photos, and much more — all without spending a dime. We believe that creativity should be accessible to everyone, regardless of their budget.
+      </p>
+      <p style="color: var(--text-secondary); line-height: 1.8;">
+        Whether you're an aspiring artist, a passionate designer, or simply someone who wants to try out new creative tools, AI Bots has got you covered. Start exploring your creativity today!
+      </p>
+    </section>
+
+    <!-- Canva Design Showcase Embed -->
+    <section style="margin-bottom: 60px;">
+      <div style="position: relative; width: 100%; height: 0; padding-top: 56.25%; box-shadow: var(--shadow-xl); border-radius: var(--radius-xl); overflow: hidden; border: 1px solid var(--border-color);">
+        <iframe loading="lazy" style="position: absolute; width: 100%; height: 100%; top: 0; left: 0; border: none;"
+          src="https://www.canva.com/design/DAF-hkNIJq0/RCG-t2isep1Z5oxEh00urA/watch?embed" allowfullscreen="allowfullscreen" allow="fullscreen">
+        </iframe>
+      </div>
+    </section>
+
+    <!-- Value Propositions -->
+    <section class="features-section">
+      <h2 class="section-title">Why Choose AI Bots?</h2>
+      <p class="section-subtitle">A powerhouse of browser-based creative tools designed for speed, simplicity, and flexibility.</p>
+      
+      <div class="features-grid">
+        <div class="feature-box">
+          <div class="feature-box-icon"><i class="fas fa-paint-brush"></i></div>
+          <div class="feature-box-content">
+            <h3>Express Yourself</h3>
+            <p>Create stunning designs and express your ideas with our intuitive, browser-powered creative tools.</p>
+          </div>
+        </div>
+
+        <div class="feature-box">
+          <div class="feature-box-icon"><i class="fas fa-bolt"></i></div>
+          <div class="feature-box-content">
+            <h3>Easy to Use</h3>
+            <p>Clean interface and instantaneous processing allow you to navigate and complete tasks effortlessly.</p>
+          </div>
+        </div>
+
+        <div class="feature-box">
+          <div class="feature-box-icon"><i class="fas fa-hand-holding-dollar"></i></div>
+          <div class="feature-box-content">
+            <h3>100% Free of Cost</h3>
+            <p>Enjoy all creative features, downloads, and generators without any subscription fees or sign-ups.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="app-footer">
+    <div class="app-container">
+      <img src="https://i.ibb.co/G2NFYHG/logo.png" alt="AI Bots Logo" class="footer-logo">
+      <p class="footer-text">&copy; 2026 AI Bots. All rights reserved.</p>
+      <p class="footer-credits">Website designed & crafted by <strong>Rishit Chajjed</strong>.</p>
+    </div>
+  </footer>
+
+  <script src="js/app.js"></script>
+  <script>
+    // Category Filtering Logic
+    const filterButtons = document.querySelectorAll('.filter-btn');
+    const toolCards = document.querySelectorAll('.tool-card');
+
+    filterButtons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        filterButtons.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+
+        const filter = btn.getAttribute('data-filter');
+        toolCards.forEach(card => {
+          if (filter === 'all' || card.getAttribute('data-category') === filter) {
+            card.style.display = 'flex';
+          } else {
+            card.style.display = 'none';
+          }
+        });
+      });
+    });
+
+    // Optional In-Place Studio Workspace Loader
+    function openInStudio(url, title) {
+      const workspace = document.getElementById('studio-workspace');
+      const iframe = document.getElementById('studio-iframe');
+      const toolName = document.getElementById('studio-tool-name');
+      const externalLink = document.getElementById('studio-external-link');
+
+      iframe.src = url;
+      toolName.textContent = title;
+      externalLink.href = url;
+      workspace.classList.add('active');
+      workspace.scrollIntoView({ behavior: 'smooth' });
+    }
+
+    function closeStudioWorkspace() {
+      const workspace = document.getElementById('studio-workspace');
+      const iframe = document.getElementById('studio-iframe');
+      workspace.classList.remove('active');
+      iframe.src = '';
+    }
+  </script>
+</body>
+</html>

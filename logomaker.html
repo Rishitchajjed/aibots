@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-2L87FMQS3W"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-2L87FMQS3W');
+  </script>
+
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" href="https://i.ibb.co/G2NFYHG/logo.png" type="image/png">
+  <title>Logo Maker - AI Bots</title>
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="css/theme.css">
+  <style>
+    .studio-layout {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 32px;
+      align-items: start;
+    }
+    @media (max-width: 900px) {
+      .studio-layout { grid-template-columns: 1fr; }
+    }
+
+    .canvas-preview-wrapper {
+      position: sticky;
+      top: 90px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-xl);
+      padding: 24px;
+      box-shadow: var(--shadow-lg);
+    }
+
+    #canvas {
+      max-width: 100%;
+      height: auto;
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--border-color);
+      box-shadow: var(--shadow-md);
+      background-color: #ffffff;
+      margin-bottom: 20px;
+    }
+
+    .range-val {
+      font-family: var(--font-mono);
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      margin-left: 8px;
+    }
+  </style>
+</head>
+<body>
+  <div class="bg-mesh"></div>
+
+  <!-- Navbar -->
+  <header class="navbar">
+    <div class="app-container" style="width: 100%;">
+      <div class="nav-wrapper">
+        <a href="index.html" class="brand-link">
+          <img src="https://i.ibb.co/G2NFYHG/logo.png" alt="AI Bots Logo" class="brand-logo-img">
+          <span>AI Bots</span>
+          <span class="brand-badge">Logo Maker</span>
+        </a>
+
+        <div class="nav-actions">
+          <a href="index.html" class="btn btn-secondary btn-sm"><i class="fas fa-house"></i> Hub</a>
+          <button class="icon-btn theme-toggle-btn" title="Toggle Dark/Light Mode"><i class="fas fa-moon"></i></button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="app-container tool-page-wrapper">
+    <div class="tool-header">
+      <span class="tool-header-badge"><i class="fas fa-shapes"></i> Vector Graphics</span>
+      <h1 class="tool-title">Vector Logo Maker</h1>
+      <p class="tool-desc">Design custom geometric & typographic logos with live shape, color, font, and sizing controls.</p>
+    </div>
+
+    <div class="studio-layout">
+      
+      <!-- Left: Logo Controls -->
+      <div class="tool-card-container" style="margin: 0; max-width: 100%;">
+        
+        <h3 style="font-size: 1.1rem; margin-bottom: 16px; color: var(--primary);">
+          <i class="fas fa-font"></i> Typography Settings
+        </h3>
+
+        <div class="form-group">
+          <label class="form-label" for="textInput">Logo Text</label>
+          <input type="text" id="textInput" class="form-control" placeholder="Enter brand name..." value="AIBOTS" oninput="setText()">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="textStyleSelect">Font Style</label>
+          <select id="textStyleSelect" class="form-control" onchange="setTextStyle()">
+            <option value="Plus Jakarta Sans, sans-serif" selected>Modern Sans-Serif</option>
+            <option value="Didot, serif">Didot (Elegant)</option>
+            <option value="Magneto, cursive">Magneto (Retro Script)</option>
+            <option value="monospace">JetBrains Monospace</option>
+            <option value="fantasy">Fantasy (Impact)</option>
+            <option value="cursive">Cursive</option>
+            <option value="serif">Classic Serif</option>
+            <option value="sans-serif">Standard Sans-Serif</option>
+            <option value="Roquen">Roquen / Igoe</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="textColorPicker">Text Color</label>
+          <div class="color-picker-wrapper">
+            <input type="color" id="textColorPicker" class="color-input" value="#ffffff" onchange="setTextColor()">
+            <span id="textColorHex" style="font-family: var(--font-mono); font-size: 0.9rem; color: var(--text-muted);">#ffffff</span>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="textSizeSlider">
+            Text Size <span class="range-val" id="textSizeVal">64 px</span>
+          </label>
+          <input type="range" id="textSizeSlider" class="range-slider" min="10" max="500" value="64" step="2" oninput="setTextSize()">
+        </div>
+
+        <hr style="border: none; border-top: 1px solid var(--border-color); margin: 24px 0;">
+
+        <h3 style="font-size: 1.1rem; margin-bottom: 16px; color: var(--primary);">
+          <i class="fas fa-shapes"></i> Shape & Background
+        </h3>
+
+        <div class="form-group">
+          <label class="form-label" for="shapeSelect">Background Shape</label>
+          <select id="shapeSelect" class="form-control" onchange="setShape()">
+            <option value="rectangle" selected>Rectangle / Banner</option>
+            <option value="circle">Circle Badge</option>
+            <option value="triangle">Triangle</option>
+            <option value="star">5-Point Star</option>
+            <option value="heart">Heart Shape</option>
+            <option value="custom">Custom Canvas</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="shapeColorPicker">Shape Color</label>
+          <div class="color-picker-wrapper">
+            <input type="color" id="shapeColorPicker" class="color-input" value="#4f46e5" onchange="setShapeColor()">
+            <span id="shapeColorHex" style="font-family: var(--font-mono); font-size: 0.9rem; color: var(--text-muted);">#4f46e5</span>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="shapeSizeSlider">
+            Shape Size <span class="range-val" id="shapeSizeVal">260 px</span>
+          </label>
+          <input type="range" id="shapeSizeSlider" class="range-slider" min="10" max="500" value="260" step="5" oninput="setShapeSize()">
+        </div>
+
+      </div>
+
+      <!-- Right: Live Canvas Preview & Download -->
+      <div class="canvas-preview-wrapper">
+        <label class="form-label" style="align-self: flex-start; margin-bottom: 12px;">
+          <i class="fas fa-eye"></i> Live Logo Preview
+        </label>
+
+        <canvas id="canvas" width="600" height="380"></canvas>
+
+        <button onclick="downloadLogo()" class="btn btn-success btn-lg" style="width: 100%;">
+          <i class="fas fa-download"></i> Download Logo (PNG)
+        </button>
+
+        <a href="#" id="downloadLink" download="logo.png" style="display: none;"></a>
+        <div id="preview" style="display: none;"><img id="previewImage" src="" alt="Preview"></div>
+      </div>
+
+    </div>
+  </main>
+
+  <footer class="app-footer">
+    <div class="app-container">
+      <p class="footer-text">&copy; 2026 AI Bots. All rights reserved.</p>
+      <p class="footer-credits">Website designed by <strong>Rishit Chajjed</strong>.</p>
+    </div>
+  </footer>
+
+  <script src="js/app.js"></script>
+  <script>
+    const canvas = document.getElementById('canvas');
+    const ctx = canvas.getContext('2d');
+
+    let currentText = 'AIBOTS';
+    let currentTextStyle = 'Plus Jakarta Sans, sans-serif';
+    let currentTextColor = '#ffffff';
+    let currentTextSize = 64;
+
+    let currentShape = 'rectangle';
+    let currentShapeColor = '#4f46e5';
+    let currentShapeSize = 260;
+
+    function setText() {
+      currentText = document.getElementById('textInput').value;
+      drawLogo();
+    }
+
+    function setTextStyle() {
+      currentTextStyle = document.getElementById('textStyleSelect').value;
+      drawLogo();
+    }
+
+    function setTextColor() {
+      currentTextColor = document.getElementById('textColorPicker').value;
+      document.getElementById('textColorHex').textContent = currentTextColor;
+      drawLogo();
+    }
+
+    function setTextSize() {
+      currentTextSize = document.getElementById('textSizeSlider').value;
+      document.getElementById('textSizeVal').textContent = currentTextSize + ' px';
+      drawLogo();
+    }
+
+    function setShape() {
+      currentShape = document.getElementById('shapeSelect').value;
+      drawLogo();
+    }
+
+    function setShapeColor() {
+      currentShapeColor = document.getElementById('shapeColorPicker').value;
+      document.getElementById('shapeColorHex').textContent = currentShapeColor;
+      drawLogo();
+    }
+
+    function setShapeSize() {
+      currentShapeSize = document.getElementById('shapeSizeSlider').value;
+      document.getElementById('shapeSizeVal').textContent = currentShapeSize + ' px';
+      drawLogo();
+    }
+
+    function drawLogo() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      // Draw Background Shape
+      ctx.fillStyle = currentShapeColor;
+
+      if (currentShape === 'rectangle') {
+        const radius = 24;
+        const x = (canvas.width - currentShapeSize * 1.6) / 2;
+        const y = (canvas.height - currentShapeSize) / 2;
+        const w = currentShapeSize * 1.6;
+        const h = currentShapeSize;
+        
+        ctx.beginPath();
+        ctx.roundRect ? ctx.roundRect(x, y, w, h, radius) : ctx.rect(x, y, w, h);
+        ctx.fill();
+      } else if (currentShape === 'circle') {
+        ctx.beginPath();
+        ctx.arc(canvas.width / 2, canvas.height / 2, currentShapeSize * 0.5, 0, 2 * Math.PI);
+        ctx.fill();
+      } else if (currentShape === 'triangle') {
+        ctx.beginPath();
+        ctx.moveTo(canvas.width / 2, (canvas.height - currentShapeSize) / 2);
+        ctx.lineTo((canvas.width - currentShapeSize) / 2, (canvas.height + currentShapeSize) / 2);
+        ctx.lineTo((canvas.width + currentShapeSize) / 2, (canvas.height + currentShapeSize) / 2);
+        ctx.closePath();
+        ctx.fill();
+      } else if (currentShape === 'star') {
+        const points = 5;
+        const outerRadius = currentShapeSize * 0.55;
+        const innerRadius = outerRadius * 0.45;
+        const angle = Math.PI / points;
+
+        ctx.beginPath();
+        for (let i = 0; i < 2 * points; i++) {
+          const radius = i % 2 === 0 ? outerRadius : innerRadius;
+          const x = canvas.width / 2 + radius * Math.sin(i * angle);
+          const y = canvas.height / 2 - radius * Math.cos(i * angle);
+          if (i === 0) ctx.moveTo(x, y);
+          else ctx.lineTo(x, y);
+        }
+        ctx.closePath();
+        ctx.fill();
+      } else if (currentShape === 'heart') {
+        const x = canvas.width / 2;
+        const y = canvas.height / 2 - 20;
+        const size = currentShapeSize * 0.6;
+
+        ctx.beginPath();
+        ctx.moveTo(x, y);
+        ctx.bezierCurveTo(x + size / 2, y - size / 2, x + size, y + size / 3, x, y + size);
+        ctx.bezierCurveTo(x - size, y + size / 3, x - size / 2, y - size / 2, x, y);
+        ctx.closePath();
+        ctx.fill();
+      } else if (currentShape === 'custom') {
+        // Subtle outline border
+        ctx.lineWidth = 4;
+        ctx.strokeStyle = currentShapeColor;
+        ctx.strokeRect(20, 20, canvas.width - 40, canvas.height - 40);
+      }
+
+      // Draw Text
+      ctx.fillStyle = currentTextColor;
+      ctx.font = `bold ${currentTextSize}px ${currentTextStyle}`;
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(currentText, canvas.width / 2, canvas.height / 2);
+
+      // Update preview
+      const previewImg = document.getElementById('previewImage');
+      if (previewImg) previewImg.src = canvas.toDataURL();
+    }
+
+    function downloadLogo() {
+      const downloadLink = document.getElementById('downloadLink');
+      downloadLink.href = canvas.toDataURL('image/png');
+      downloadLink.download = (currentText ? currentText.toLowerCase().replace(/\s+/g, '_') : 'logo') + '.png';
+      downloadLink.click();
+      showToast('Logo downloaded as PNG!', 'success');
+    }
+
+    // Initial render
+    drawLogo();
+  </script>
+</body>
+</html>

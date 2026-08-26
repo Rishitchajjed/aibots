@@ -134,6 +134,146 @@ const AI_BOTS_TOOLS = [
     category: 'image',
     badge: 'Exact Presets',
     color: '#0284c7'
+  },
+  {
+    id: 'currency',
+    title: 'Currency Converter',
+    description: 'Live exchange rates between 150+ currencies with graphs & swap.',
+    icon: 'fa-coins',
+    url: 'currency.html',
+    category: 'finance',
+    badge: 'Live Rates',
+    color: '#f59e0b'
+  },
+  {
+    id: 'emojis',
+    title: 'Emoji Picker',
+    description: 'Browse, search, and copy emojis by category with fullscreen preview & PNG download.',
+    icon: 'fa-face-smile',
+    url: 'emojis.html',
+    category: 'creative',
+    badge: 'Fun',
+    color: '#fbbf24'
+  },
+  {
+    id: 'endchanger',
+    title: 'File Extension Changer',
+    description: 'Rename and change file extensions in bulk quickly and securely.',
+    icon: 'fa-file-pen',
+    url: 'endchanger.html',
+    category: 'utility',
+    badge: 'Batch',
+    color: '#64748b'
+  },
+  {
+    id: 'game',
+    title: 'Open World Game',
+    description: 'Browser-based interactive open world exploration and adventure game.',
+    icon: 'fa-gamepad',
+    url: 'game.html',
+    category: 'sports',
+    badge: 'Game',
+    color: '#7c3aed'
+  },
+  {
+    id: 'invoice',
+    title: 'Invoice Generator',
+    description: 'Create professional invoices with itemized billing, taxes & printable PDF.',
+    icon: 'fa-file-invoice-dollar',
+    url: 'invoice.html',
+    category: 'finance',
+    badge: 'PDF Ready',
+    color: '#0ea5e9'
+  },
+  {
+    id: 'password',
+    title: 'Password Generator',
+    description: 'Strong random password generator with rules & strength meter.',
+    icon: 'fa-lock',
+    url: 'password.html',
+    category: 'utility',
+    badge: 'Security',
+    color: '#10b981'
+  },
+  {
+    id: 'print',
+    title: 'Print Studio',
+    description: 'Format, layout, and print web content or documents with custom margins.',
+    icon: 'fa-print',
+    url: 'print.html',
+    category: 'pdf',
+    badge: 'Print',
+    color: '#374151'
+  },
+  {
+    id: 'qrcode',
+    title: 'QR Code Generator',
+    description: 'Turn any text, URL, email, or Wi-Fi into a high-res downloadable QR code.',
+    icon: 'fa-qrcode',
+    url: 'qrcode.html',
+    category: 'creative',
+    badge: 'Vector QR',
+    color: '#6366f1'
+  },
+  {
+    id: 'timer',
+    title: 'Advanced Stopwatch & Timer',
+    description: 'Precision stopwatch, countdown timer, and Pomodoro session manager.',
+    icon: 'fa-stopwatch',
+    url: 'timer.html',
+    category: 'utility',
+    badge: 'Precise',
+    color: '#06b6d4'
+  },
+  {
+    id: 'typingpractice',
+    title: 'Typing Shooter Game',
+    description: 'Improve your typing speed and accuracy by shooting words in space!',
+    icon: 'fa-keyboard',
+    url: 'typingpractice.html',
+    category: 'sports',
+    badge: 'Game',
+    color: '#ec4899'
+  },
+  {
+    id: 'unitconverter',
+    title: 'Unit Converter',
+    description: 'Convert length, weight, temperature, area, speed, and digital data units.',
+    icon: 'fa-ruler-combined',
+    url: 'unitconverter.html',
+    category: 'utility',
+    badge: 'Converter',
+    color: '#8b5cf6'
+  },
+  {
+    id: 'videoplayer',
+    title: 'Video Player',
+    description: 'Play local video files with fullscreen controls and subtitle support.',
+    icon: 'fa-circle-play',
+    url: 'videoplayer.html',
+    category: 'ai',
+    badge: 'Player',
+    color: '#1d4ed8'
+  },
+  {
+    id: 'weather',
+    title: 'Live Weather',
+    description: 'Real-time weather forecasts, temperature, and atmospheric data for any city.',
+    icon: 'fa-cloud-sun',
+    url: 'weather.html',
+    category: 'utility',
+    badge: 'Live',
+    color: '#38bdf8'
+  },
+  {
+    id: 'wordcounter',
+    title: 'Word Counter',
+    description: 'Live words, characters, sentences, reading time, and keyword density counter.',
+    icon: 'fa-file-lines',
+    url: 'wordcounter.html',
+    category: 'utility',
+    badge: 'Editor',
+    color: '#14b8a6'
   }
 ];
 

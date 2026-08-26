@@ -1,92 +1,1084 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AI Bots — Free Browser Tools</title>
-<meta name="description" content="A free collection of browser tools: calculator, currency converter, background remover, PDF maker, weather, QR codes, password generator and more — no signup required.">
-<meta name="keywords" content="free online tools, calculator, currency converter, background remover, pdf maker, qr code generator, password generator, unit converter">
-<meta name="google-site-verification" content="-Yb6Nx74gbZ3wRN5uP-Y8KKwDWlt1DPpxs4nA3PkE6M">
-<link rel="canonical" href="https://www.aibots.co.in/">
-<link rel="icon" href="https://i.ibb.co/XjHbck3/logo.png" type="image/png">
-<link rel="stylesheet" href="css/theme.css">
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-2L87FMQS3W"></script>
-<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-2L87FMQS3W');</script>
-</head>
-<body class="ab-body" data-ab-page>
-<div class="ab-topbar">
-  <a href="index.html" class="ab-brand"><span class="ab-mark">AI</span> AI Bots</a>
-  <div class="ab-topbar-spacer"></div>
-  <button class="ab-icon-btn" id="abThemeToggle" title="Toggle dark mode" aria-label="Toggle dark mode">🌙</button>
-  <a href="https://github.com/Rishitchajjed/aibots" class="ab-home-link" target="_blank" rel="noopener">GitHub ↗</a>
-</div>
+  <!-- Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-2L87FMQS3W"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-2L87FMQS3W');
+  </script>
 
-<main class="ab-main">
-  <div class="ab-hero">
-    <h1>Free tools that just <span class="accent">work.</span></h1>
-    <p>No signup, no paywall. Every tool runs right in your browser — pick one below.</p>
-    <div class="ab-search-wrap">
-      <span class="ab-search-icon">🔍</span>
-      <input type="text" id="searchInput" placeholder="Search tools… e.g. “pdf”, “image”, “password”">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="google-site-verification" content="-Yb6Nx74gbZ3wRN5uP-Y8KKwDWlt1DPpxs4nA3PkE6M">
+  <link rel="icon" href="https://i.ibb.co/G2NFYHG/logo.png" type="image/png">
+  <meta name="description" content="AI Bots is a free all-in-one creative platform to edit images, count cricket scores, remove backgrounds, generate PDFs, resize photos, make business cards, create logos, and more.">
+  <meta name="keywords" content="AI Bots, ai bots, creative tools, cricket score counter, remove background, make image link, crop image, business card generator, resize image, logo maker, pdf generator, pdf viewer, image combiner, calculator, chatbot, Rishit Chajjed">
+  <meta name="author" content="Rishit Chajjed">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://aibots-one.vercel.app/">
+
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="AI Bots">
+  <meta property="og:url" content="https://aibots-one.vercel.app/">
+  <meta property="og:title" content="AI Bots - Free All-In-One Creative Platform & Tools Suite">
+  <meta property="og:description" content="Explore AI Bots - free all-in-one platform for background removal, cricket scoring, logo design, image cropping, PDF tools, business cards, and more.">
+  <meta property="og:image" content="https://i.ibb.co/G2NFYHG/logo.png">
+
+  <!-- Twitter -->
+  <meta property="twitter:card" content="summary_large_image">
+  <meta property="twitter:url" content="https://aibots-one.vercel.app/">
+  <meta property="twitter:title" content="AI Bots - Free All-In-One Creative Platform & Tools Suite">
+  <meta property="twitter:description" content="Explore AI Bots - free all-in-one platform for background removal, cricket scoring, logo design, image cropping, PDF tools, business cards, and more.">
+  <meta property="twitter:image" content="https://i.ibb.co/G2NFYHG/logo.png">
+
+  <title>AI Bots - Free All-In-One Creative Studio & Productivity Platform</title>
+
+  <!-- Schema.org JSON-LD Structured Data for Google Search -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "AI Bots",
+    "alternateName": ["AI Bots Creative Suite", "AI Bots Free Tools"],
+    "url": "https://aibots-one.vercel.app/",
+    "description": "Free all-in-one creative platform to edit images, count cricket scores, remove backgrounds, generate PDFs, resize photos, make business cards, create logos, and more.",
+    "applicationCategory": "DesignApplication",
+    "operatingSystem": "All",
+    "author": {
+      "@type": "Person",
+      "name": "Rishit Chajjed"
+    },
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "USD"
+    }
+  }
+  </script>
+
+  <!-- Google Fonts & Font Awesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="css/theme.css">
+  <style>
+    /* Hero Typography Typing Animation */
+    .typing-cursor {
+      display: inline-block;
+      width: 3px;
+      height: 1.1em;
+      background: var(--primary);
+      vertical-align: middle;
+      margin-left: 4px;
+      animation: blink 0.9s infinite;
+    }
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0; }
+    }
+
+    /* Live Metrics Bar */
+    .metrics-bar {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+      margin: 40px 0 60px;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-xl);
+      padding: 24px 20px;
+      box-shadow: var(--shadow-md);
+    }
+    @media (max-width: 768px) {
+      .metrics-bar { grid-template-columns: repeat(2, 1fr); gap: 20px; }
+    }
+    @media (max-width: 480px) {
+      .metrics-bar { grid-template-columns: 1fr; }
+    }
+    .metric-item {
+      text-align: center;
+      position: relative;
+    }
+    .metric-item:not(:last-child)::after {
+      content: '';
+      position: absolute;
+      right: 0;
+      top: 15%;
+      height: 70%;
+      width: 1px;
+      background: var(--border-color);
+    }
+    @media (max-width: 768px) {
+      .metric-item:not(:last-child)::after { display: none; }
+    }
+    .metric-val {
+      font-family: var(--font-mono);
+      font-size: 2rem;
+      font-weight: 800;
+      color: var(--primary);
+      line-height: 1.1;
+      margin-bottom: 4px;
+    }
+    .metric-label {
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+      font-weight: 600;
+    }
+
+    /* Hero Quick Dropzone Dock */
+    .hero-quick-dock {
+      max-width: 600px;
+      margin: 0 auto 36px;
+      background: var(--bg-secondary);
+      border: 2px dashed var(--border-color);
+      border-radius: var(--radius-xl);
+      padding: 24px;
+      box-shadow: var(--shadow-md);
+      transition: var(--transition);
+      cursor: pointer;
+      position: relative;
+    }
+    .hero-quick-dock:hover {
+      border-color: var(--primary);
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-lg);
+      background: var(--primary-light);
+    }
+    .dock-actions {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin-top: 14px;
+      flex-wrap: wrap;
+    }
+    .dock-pill {
+      font-size: 0.8rem;
+      font-weight: 600;
+      padding: 4px 12px;
+      border-radius: var(--radius-full);
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border-color);
+      color: var(--text-primary);
+      text-decoration: none;
+      transition: var(--transition);
+    }
+    .dock-pill:hover {
+      background: var(--primary);
+      color: #ffffff;
+      border-color: var(--primary);
+    }
+
+    /* Tool Card Badges */
+    .tool-badge-pill {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      font-size: 0.7rem;
+      font-weight: 800;
+      padding: 3px 8px;
+      border-radius: var(--radius-full);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    .badge-hot { background: rgba(239, 68, 68, 0.15); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.3); }
+    .badge-new { background: rgba(16, 185, 129, 0.15); color: #10b981; border: 1px solid rgba(16, 185, 129, 0.3); }
+    .badge-ai { background: rgba(139, 92, 246, 0.15); color: #8b5cf6; border: 1px solid rgba(139, 92, 246, 0.3); }
+    .badge-pro { background: rgba(245, 158, 11, 0.15); color: #f59e0b; border: 1px solid rgba(245, 158, 11, 0.3); }
+
+    /* Studio Modal & Embed Workspace */
+    .studio-workspace-section {
+      display: none;
+      margin-bottom: 60px;
+      animation: fadeIn 0.3s ease;
+    }
+    .studio-workspace-section.active {
+      display: block;
+    }
+    .studio-frame-container {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-xl);
+      overflow: hidden;
+      box-shadow: var(--shadow-xl);
+    }
+    .studio-frame-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 20px;
+      background: var(--bg-tertiary);
+      border-bottom: 1px solid var(--border-color);
+    }
+    .studio-frame {
+      width: 100%;
+      height: 850px;
+      border: none;
+      display: block;
+      background: var(--bg-primary);
+    }
+
+    /* Interactive FAQ Accordion */
+    .faq-section {
+      margin: 60px 0;
+    }
+    .faq-accordion {
+      max-width: 800px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .faq-item {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      transition: var(--transition);
+    }
+    .faq-item.active {
+      border-color: var(--primary);
+      box-shadow: var(--shadow-md);
+    }
+    .faq-question {
+      padding: 18px 24px;
+      font-weight: 700;
+      font-size: 1rem;
+      color: var(--text-primary);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      user-select: none;
+    }
+    .faq-question i {
+      transition: transform 0.3s ease;
+      color: var(--primary);
+    }
+    .faq-item.active .faq-question i {
+      transform: rotate(180deg);
+    }
+    .faq-answer {
+      max-height: 0;
+      overflow: hidden;
+      padding: 0 24px;
+      color: var(--text-secondary);
+      font-size: 0.95rem;
+      line-height: 1.6;
+      transition: max-height 0.3s ease, padding 0.3s ease;
+    }
+    .faq-item.active .faq-answer {
+      max-height: 200px;
+      padding: 0 24px 20px;
+    }
+
+    /* Modern Footer Multi-column */
+    .footer-grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr 1fr;
+      gap: 32px;
+      text-align: left;
+      margin-bottom: 40px;
+    }
+    @media (max-width: 768px) {
+      .footer-grid { grid-template-columns: 1fr 1fr; }
+    }
+    @media (max-width: 480px) {
+      .footer-grid { grid-template-columns: 1fr; }
+    }
+    .footer-col h4 {
+      font-size: 0.95rem;
+      font-weight: 700;
+      margin-bottom: 14px;
+      color: var(--text-primary);
+    }
+    .footer-col ul {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .footer-col a {
+      color: var(--text-secondary);
+      text-decoration: none;
+      font-size: 0.85rem;
+      transition: color 0.2s;
+    }
+    .footer-col a:hover {
+      color: var(--primary);
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body>
+  <div class="bg-mesh"></div>
+
+  <!-- Command Palette Modal (Ctrl + K) -->
+  <div class="command-palette-backdrop" id="command-palette-backdrop">
+    <div class="command-palette-modal">
+      <div class="command-palette-search">
+        <i class="fas fa-magnifying-glass" style="color: var(--text-muted);"></i>
+        <input type="text" class="command-palette-input" id="command-palette-input" placeholder="Search any creative tool (e.g. background, cricket, logo, pdf, resize)...">
+        <span class="kbd-shortcut">ESC</span>
+      </div>
+      <div class="command-palette-results" id="command-palette-results">
+        <!-- Injected dynamically via app.js -->
+      </div>
     </div>
   </div>
 
-  <div class="ab-filters" id="catFilters"></div>
-  <div class="ab-grid" id="toolGrid"></div>
-  <div class="ab-empty ab-hidden" id="emptyState">No tools match your search.</div>
-</main>
+  <!-- Navbar -->
+  <header class="navbar">
+    <div class="app-container" style="width: 100%;">
+      <div class="nav-wrapper">
+        <a href="index.html" class="brand-link">
+          <img src="https://i.ibb.co/G2NFYHG/logo.png" alt="AI Bots Logo" class="brand-logo-img">
+          <span>AI Bots</span>
+          <span class="brand-badge">Studio Hub v2.0</span>
+        </a>
 
-<script src="js/common.js"></script>
-<script>
-abInitTheme();
+        <div class="nav-actions">
+          <button class="icon-btn sound-toggle-btn" title="Toggle Sound FX"><i class="fas fa-volume-high"></i></button>
+          <button onclick="toggleShortcutsModal()" class="icon-btn" title="Keyboard Shortcuts (?)"><i class="fas fa-keyboard"></i></button>
+          
+          <button class="search-trigger-btn" id="search-trigger-btn" title="Quick Search (Ctrl + K)">
+            <i class="fas fa-magnifying-glass search-icon"></i>
+            <span>Search Tools</span>
+            <span class="kbd-shortcut">Ctrl K</span>
+          </button>
 
-const grid = document.getElementById('toolGrid');
-const searchInput = document.getElementById('searchInput');
-const catFilters = document.getElementById('catFilters');
-const emptyState = document.getElementById('emptyState');
+          <button class="icon-btn theme-toggle-btn" title="Toggle Dark/Light Mode">
+            <i class="fas fa-moon"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+  </header>
 
-const categories = ['All', ...new Set(AB_TOOLS.map(t=>t.cat))];
-let activeCat = 'All';
+  <!-- Main Content -->
+  <main class="app-container">
+    
+    <!-- Hero Section -->
+    <section class="hero-section">
+      <div class="hero-logo-wrapper">
+        <img src="https://i.ibb.co/G2NFYHG/logo.png" alt="AI Bots Logo" class="hero-interactive-logo" id="interactive-logo" title="Drag & throw me!">
+        <div class="hero-logo-hint"><i class="fas fa-hand-pointer"></i> Drag & throw the logo with physics!</div>
+      </div>
 
-categories.forEach(cat=>{
-  const chip = document.createElement('button');
-  chip.className = 'ab-chip' + (cat==='All' ? ' active' : '');
-  chip.textContent = cat;
-  chip.addEventListener('click', ()=>{
-    document.querySelectorAll('#catFilters .ab-chip').forEach(c=>c.classList.remove('active'));
-    chip.classList.add('active');
-    activeCat = cat;
-    render();
-  });
-  catFilters.appendChild(chip);
-});
+      <div class="hero-badge">
+        <i class="fas fa-sparkles" style="color: #f59e0b;"></i>
+        <span>13+ Free Creative & Productivity Tools &bull; 100% Private In-Browser</span>
+      </div>
 
-function render(){
-  const q = searchInput.value.trim().toLowerCase();
-  const filtered = AB_TOOLS.filter(t=>{
-    const matchesCat = activeCat === 'All' || t.cat === activeCat;
-    const matchesQ = !q || t.name.toLowerCase().includes(q) || t.desc.toLowerCase().includes(q) || t.cat.toLowerCase().includes(q);
-    return matchesCat && matchesQ;
-  });
+      <h1 class="hero-title">
+        The All-In-One Platform to <br>
+        <span class="gradient-text" id="dynamicTypingText">Remove Backgrounds</span><span class="typing-cursor"></span>
+      </h1>
 
-  grid.innerHTML = filtered.map(t => `
-    <a href="${t.file}" class="ab-tool-card${t.isNew ? ' is-new' : ''}">
-      <div class="icon">${t.icon}</div>
-      <h3>${t.name}${t.isNew ? '<span class="new-tag">New</span>' : ''}</h3>
-      <p>${t.desc}</p>
-    </a>
-  `).join('');
+      <p class="hero-subtitle">
+        Your ultimate web-based creative powerhouse. Edit photos, count live cricket scores, generate vector logos, convert PDFs, and automate your workflows with zero subscriptions or sign-ups.
+      </p>
 
-  emptyState.classList.toggle('ab-hidden', filtered.length > 0);
-}
+      <div class="hero-buttons">
+        <a href="#tools-section" class="btn btn-primary btn-lg">
+          <i class="fas fa-wand-magic-sparkles"></i> Explore All Tools
+        </a>
+        <a href="cricketscore.html" class="btn btn-gradient btn-lg">
+          <i class="fas fa-baseball-bat-ball"></i> Live Cricket Scorer
+        </a>
+        <a href="chatbot.html" class="btn btn-secondary btn-lg">
+          <i class="fas fa-robot"></i> Need Help? Chatbot
+        </a>
+      </div>
 
-searchInput.addEventListener('input', render);
-render();
-</script>
+      <!-- Quick Action Dropzone Dock in Hero -->
+      <div class="hero-quick-dock" id="heroDock" onclick="document.getElementById('dockFileInput').click()">
+        <input type="file" id="dockFileInput" style="display: none;" accept="image/*" onchange="handleHeroDockUpload(event)">
+        <div style="font-weight: 700; font-size: 1rem; color: var(--text-primary);">
+          <i class="fas fa-cloud-arrow-up" style="color: var(--primary); margin-right: 6px;"></i> Drag & Drop Any Photo Here
+        </div>
+        <div style="font-size: 0.8rem; color: var(--text-muted); margin-top: 4px;">
+          Instant quick-actions:
+        </div>
+        <div class="dock-actions" onclick="event.stopPropagation()">
+          <a href="backremover.html" class="dock-pill"><i class="fas fa-wand-magic-sparkles"></i> Cutout BG</a>
+          <a href="cropphoto.html" class="dock-pill"><i class="fas fa-crop"></i> Crop Photo</a>
+          <a href="resizeimage.html" class="dock-pill"><i class="fas fa-expand"></i> Resize</a>
+          <a href="pdfmaker.html" class="dock-pill"><i class="fas fa-file-pdf"></i> Make PDF</a>
+          <a href="imagelink.html" class="dock-pill"><i class="fas fa-link"></i> Get Link</a>
+        </div>
+      </div>
+    </section>
 
-<footer class="ab-footer">
-  <div>© <span id="yr"></span> AI Bots — free browser tools, no signup.</div>
-  <script>document.getElementById('yr').textContent = new Date().getFullYear();</script>
-</footer>
+    <!-- Live Metrics Bar -->
+    <section class="metrics-bar">
+      <div class="metric-item">
+        <div class="metric-val">27+</div>
+        <div class="metric-label">Free Creative Tools</div>
+      </div>
+      <div class="metric-item">
+        <div class="metric-val">100%</div>
+        <div class="metric-label">Free Forever & No Ads</div>
+      </div>
+      <div class="metric-item">
+        <div class="metric-val">0 KB</div>
+        <div class="metric-label">Server Storage (Private)</div>
+      </div>
+      <div class="metric-item">
+        <div class="metric-val">⚡ Fast</div>
+        <div class="metric-label">Client-Side Speed</div>
+      </div>
+    </section>
+
+    <!-- Studio Workspace (Inline Tool View) -->
+    <section class="studio-workspace-section" id="studio-workspace">
+      <div class="studio-frame-container">
+        <div class="studio-frame-bar">
+          <div style="display: flex; align-items: center; gap: 10px;">
+            <i class="fas fa-laptop-code" style="color: var(--primary);"></i>
+            <strong id="studio-tool-name">Creative Studio Workspace</strong>
+          </div>
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <a id="studio-external-link" href="#" target="_blank" class="btn btn-secondary btn-sm" title="Open in new tab">
+              <i class="fas fa-arrow-up-right-from-square"></i> Open Full Page
+            </a>
+            <button onclick="closeStudioWorkspace()" class="btn btn-danger btn-sm" title="Close Workspace">
+              <i class="fas fa-xmark"></i> Close
+            </button>
+          </div>
+        </div>
+        <iframe id="studio-iframe" class="studio-frame" src=""></iframe>
+      </div>
+    </section>
+
+    <!-- Tools Discovery & Filtering Section -->
+    <section id="tools-section" style="scroll-margin-top: 100px;">
+      
+      <!-- Live Search Bar -->
+      <div style="max-width: 600px; margin: 0 auto 24px; position: relative;">
+        <i class="fas fa-magnifying-glass" style="position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: var(--text-muted);"></i>
+        <input type="text" id="liveSearchInput" class="form-control" placeholder="Search tool by name or feature (e.g. cricket, password, qrcode, pdf)..." style="padding-left: 44px; border-radius: var(--radius-full);" oninput="filterToolsLive()">
+      </div>
+
+      <!-- Category Filter Pills -->
+      <div class="filter-nav">
+        <button class="filter-btn active" data-filter="all"><i class="fas fa-grid-2"></i> All Tools (27)</button>
+        <button class="filter-btn" data-filter="image"><i class="fas fa-image"></i> Image (5)</button>
+        <button class="filter-btn" data-filter="sports"><i class="fas fa-baseball-bat-ball"></i> Sports & Games (3)</button>
+        <button class="filter-btn" data-filter="pdf"><i class="fas fa-file-pdf"></i> PDF & Print (3)</button>
+        <button class="filter-btn" data-filter="creative"><i class="fas fa-palette"></i> Creative (4)</button>
+        <button class="filter-btn" data-filter="utility"><i class="fas fa-sliders"></i> Utilities (9)</button>
+        <button class="filter-btn" data-filter="finance"><i class="fas fa-coins"></i> Finance (2)</button>
+        <button class="filter-btn" data-filter="ai"><i class="fas fa-robot"></i> AI & Media (4)</button>
+      </div>
+
+      <!-- Tools Grid (27 Complete Tools) -->
+      <div class="tools-grid" id="tools-grid">
+        
+        <!-- Tool 1: Cricket Score Counter -->
+        <a href="cricketscore.html" class="tool-card" data-category="sports utility" data-tool="cricketscore" style="--card-accent: linear-gradient(135deg, #10b981, #059669);">
+          <span class="tool-badge-pill badge-new">PRO</span>
+          <div class="tool-card-icon" style="background: rgba(16, 185, 129, 0.15); color: #10b981;">
+            <i class="fas fa-baseball-bat-ball"></i>
+          </div>
+          <h3 class="tool-card-title">Cricket Score Counter</h3>
+          <p class="tool-card-desc">Pro match scoring board with live striker/bowler tracking, extras, overs timeline, and PNG scorecard export.</p>
+          <div class="tool-card-footer"><span>Launch Tool</span><i class="fas fa-arrow-right"></i></div>
+        </a>
+
+        <!-- Tool 2: Background Remover -->
+        <a href="backremover.html" class="tool-card" data-category="image" data-tool="backremover" style="--card-accent: linear-gradient(135deg, #ec4899, #f43f5e);">
+          <span class="tool-badge-pill badge-hot">HOT</span>
+          <div class="tool-card-icon" style="background: rgba(236, 72, 153, 0.15); color: #ec4899;">
+            <i class="fas fa-wand-magic-sparkles"></i>
+          </div>
+          <h3 class="tool-card-title">Remove Background</h3>
+          <p class="tool-card-desc">Instantly cut out backgrounds from any photo with clean transparent cutouts & side-by-side preview.</p>
+          <div class="tool-card-footer"><span>Launch Tool</span><i class="fas fa-arrow-right"></i></div>
+        </a>
+
+        <!-- Tool 3: Business Card Maker -->
+        <a href="buisnesscard.html" class="tool-card" data-category="creative" data-tool="buisnesscard" style="--card-accent: linear-gradient(135deg, #8b5cf6, #7c3aed);">
+          <span class="tool-badge-pill badge-pro">PRO</span>
+          <div class="tool-card-icon" style="background: rgba(139, 92, 246, 0.15); color: #8b5cf6;">
+            <i class="fas fa-id-card"></i>
+          </div>
+          <h3 class="tool-card-title">Business Card Maker</h3>
+          <p class="tool-card-desc">Create high-resolution personalized business cards with custom branding, logo upload, and PNG export.</p>
+          <div class="tool-card-footer"><span>Launch Tool</span><i class="fas fa-arrow-right"></i></div>
+        </a>
+
+        <!-- Tool 4: Calculator -->
+        <a href="calculator.html" class="tool-card" data-category="utility" data-tool="calculator" style="--card-accent: linear-gradient(135deg, #3b82f6, #0284c7);">
+          <span class="tool-badge-pill badge-pro">MATH.JS</span>
+          <div class="tool-card-icon" style="background: rgba(59, 130, 246, 0.15); color: #3b82f6;">
+            <i class="fas fa-calculator"></i>
+          </div>
+          <h3 class="tool-card-title">Enhanced Calculator</h3>
+          <p class="tool-card-desc">Standard & scientific expression evaluator with square root, exponentiation, and full keyboard support.</p>
+          <div class="tool-card-footer"><span>Launch Tool</span><i class="fas fa-arrow-right"></i></div>
+        </a>
+
+        <!-- Tool 5: AI Chatbot Assistant -->
+        <a href="chatbot.html" class="tool-card" data-category="ai" data-tool="chatbot" style="--card-accent: linear-gradient(135deg, #10b981, #059669);">
+          <span class="tool-badge-pill badge-ai">AI BOT</span>
+          <div class="tool-card-icon" style="background: rgba(16, 185, 129, 0.15); color: #10b981;">
+            <i class="fas fa-robot"></i>
+          </div>
+          <h3 class="tool-card-title">AI Chatbot Assistant</h3>
+          <p class="tool-card-desc">Ask questions, get tool guidance, or chat with our fast interactive virtual assistant anytime.</p>
+          <div class="tool-card-footer"><span>Launch Tool</span><i class="fas fa-arrow-right"></i></div>
+        </a>
+
+        <!-- Tool 6: Crop Photo -->
+        <a href="cropphoto.html" class="tool-card" data-category="image" data-tool="cropphoto" style="--card-accent: linear-gradient(135deg, #f59e0b, #d97706);">
+          <span class="tool-badge-pill badge-hot">POPULAR</span>
+          <div class="tool-card-icon" style="background: rgba(245, 158, 11, 0.15); color: #f59e0b;">
+            <i class="fas fa-crop"></i>
+          </div>
+          <h3 class="tool-card-title">Crop Photo</h3>
+          <p class="tool-card-desc">Interactive bounding box crop handles with aspect presets (Freeform, 1:1, 4:3, 16:9, 9:16) and HD download.</p>
+          <div class="tool-card-footer"><span>Launch Tool</span><i class="fas fa-arrow-right"></i></div>
+        </a>
+
+        <!-- Tool 7: Merge Images -->
+        <a href="imagecombiner.html" class="tool-card" data-category="image" data-tool="imagecombiner" style="--card-accent: linear-gradient(135deg, #06b6d4, #0891b2);">
+          <div class="tool-card-icon" style="background: rgba(6, 182, 212, 0.15); color: #06b6d4;">
+            <i class="fas fa-layer-group"></i>
+          </div>
+          <h3 class="tool-card-title">Merge Images</h3>
+          <p class="tool-card-desc">Combine multiple pictures into structured A4/A3/A2/Custom page grids with multi-page preview.</p>
+          <div class="tool-card-footer"><span>Launch Tool</span><i class="fas fa-arrow-right"></i></div>
+        </a>
+
+        <!-- Tool 8: Image Link Maker -->
+        <a href="imagelink.html" class="tool-card" data-category="utility" data-tool="imagelink" style="--card-accent: linear-gradient(135deg, #6366f1, #3b82f6);">
+          <span class="tool-badge-pill badge-pro">CLOUD</span>
+          <div class="tool-card-icon" style="background: rgba(99, 102, 241, 0.15); color: #6366f1;">
+            <i class="fas fa-link"></i>
+          </div>
+          <h3 class="tool-card-title">Image Link Maker</h3>
+          <p class="tool-card-desc">Upload photos and generate instant shareable direct URLs, short links, and scan-ready QR codes.</p>
+          <div class="tool-card-footer"><span>Launch Tool</span><i class="fas fa-arrow-right"></i></div>
+        </a>
+
+        <!-- Tool 9: Logo Maker -->
+        <a href="logomaker.html" class="tool-card" data-category="creative" data-tool="logomaker" style="--card-accent: linear-gradient(135deg, #f97316, #ea580c);">
+          <span class="tool-badge-pill badge-hot">CREATIVE</span>
+          <div class="tool-card-icon" style="background: rgba(249, 115, 22, 0.15); color: #f97316;">
+            <i class="fas fa-shapes"></i>
+          </div>
+          <h3 class="tool-card-title">Vector Logo Maker</h3>
+          <p class="tool-card-desc">Design custom geometric & typographic logos with shapes (Star, Heart, Circle) and font controls.</p>
+          <div class="tool-card-footer"><span>Launch Tool</span><i class="fas fa-arrow-right"></i></div>
+        </a>
+
+        <!-- Tool 10: PDF Generator -->
+        <a href="pdfmaker.html" class="tool-card" data-category="pdf" data-tool="pdfmaker" style="--card-accent: linear-gradient(135deg, #ef4444, #dc2626);">
+          <span class="tool-badge-pill badge-pro">PDF EXPORT</span>
+          <div class="tool-card-icon" style="background: rgba(239, 68, 68, 0.15); color: #ef4444;">
+            <i class="fas fa-file-pdf"></i>
+          </div>
+          <h3 class="tool-card-title">Image to PDF Generator</h3>
+          <p class="tool-card-desc">Convert photo collections into professionally formatted A4 PDF documents with a custom cover page.</p>
+          <div class="tool-card-footer"><span>Launch Tool</span><i class="fas fa-arrow-right"></i></div>
+        </a>
+
+        <!-- Tool 11: View PDF -->
+        <a href="pdfviewer.html" class="tool-card" data-category="pdf" data-tool="pdfviewer" style="--card-accent: linear-gradient(135deg, #14b8a6, #0d9488);">
+          <span class="tool-badge-pill badge-pro">PDF.JS</span>
+          <div class="tool-card-icon" style="background: rgba(20, 184, 166, 0.15); color: #14b8a6;">
+            <i class="fas fa-book-open"></i>
+          </div>
+          <h3 class="tool-card-title">PDF Reader & Viewer</h3>
+          <p class="tool-card-desc">High-definition PDF reader with page thumbnails, fast navigation, fullscreen reader, and swipe gestures.</p>
+          <div class="tool-card-footer"><span>Launch Tool</span><i class="fas fa-arrow-right"></i></div>
+        </a>
+
+        <!-- Tool 12: Photo Generator -->
+        <a href="photogenerator.html" class="tool-card" data-category="ai" data-tool="photogenerator" style="--card-accent: linear-gradient(135deg, #a855f7, #9333ea);">
+          <span class="tool-badge-pill badge-ai">UNSPLASH</span>
+          <div class="tool-card-icon" style="background: rgba(168, 85, 247, 0.15); color: #a855f7;">
+            <i class="fas fa-image"></i>
+          </div>
+          <h3 class="tool-card-title">Photo Generator</h3>
+          <p class="tool-card-desc">Search and discover millions of HD stock photos, inspiration, and free wallpaper downloads via Unsplash.</p>
+          <div class="tool-card-footer"><span>Launch Tool</span><i class="fas fa-arrow-right"></i></div>
+        </a>
+
+        <!-- Tool 13: Resize Image -->
+        <a href="resizeimage.html" class="tool-card" data-category="image" data-tool="resizeimage" style="--card-accent: linear-gradient(135deg, #0284c7, #06b6d4);">
+          <span class="tool-badge-pill badge-pro">33 PRESETS</span>
+          <div class="tool-card-icon" style="background: rgba(2, 132, 199, 0.15); color: #0284c7;">
+            <i class="fas fa-expand"></i>
+          </div>
+          <h3 class="tool-card-title">Image Resizer</h3>
+          <p class="tool-card-desc">Scale photos to exact dimensions or 33 standard paper sizes (A0-A10, B0-B10, C-Envelopes, Letter).</p>
+          <div class="tool-card-footer"><span>Launch Tool</span><i class="fas fa-arrow-right"></i></div>
+        </a>
+
+        <!-- Tool 14: Currency Converter -->
+        <a href="currency.html" class="tool-card" data-category="finance utility" data-tool="currency" style="--card-accent: linear-gradient(135deg, #f59e0b, #92400e);">
+          <span class="tool-badge-pill badge-new">LIVE RATES</span>
+          <div class="tool-card-icon" style="background: rgba(245, 158, 11, 0.15); color: #f59e0b;">
+            <i class="fas fa-coins"></i>
+          </div>
+          <h3 class="tool-card-title">Currency Converter</h3>
+          <p class="tool-card-desc">Convert between 15+ world currencies with live exchange rates, graph visualization, and instant swap.</p>
+          <div class="tool-card-footer"><span>Launch Tool</span><i class="fas fa-arrow-right"></i></div>
+        </a>
+
+        <!-- Tool 15: Emoji Picker -->
+        <a href="emojis.html" class="tool-card" data-category="creative utility" data-tool="emojis" style="--card-accent: linear-gradient(135deg, #fbbf24, #f97316);">
+          <span class="tool-badge-pill badge-hot">FUN</span>
+          <div class="tool-card-icon" style="background: rgba(251, 191, 36, 0.15); color: #fbbf24;">
+            <i class="fas fa-face-smile"></i>
+          </div>
+          <h3 class="tool-card-title">Emoji Picker</h3>
+          <p class="tool-card-desc">Browse, search, and copy emojis by category with full-screen preview and PNG download capability.</p>
+          <div class="tool-card-footer"><span>Launch Tool</span><i class="fas fa-arrow-right"></i></div>
+        </a>
+
+        <!-- Tool 16: File Extension Changer -->
+        <a href="endchanger.html" class="tool-card" data-category="utility" data-tool="endchanger" style="--card-accent: linear-gradient(135deg, #64748b, #334155);">
+          <span class="tool-badge-pill badge-pro">BATCH</span>
+          <div class="tool-card-icon" style="background: rgba(100, 116, 139, 0.15); color: #64748b;">
+            <i class="fas fa-file-pen"></i>
+          </div>
+          <h3 class="tool-card-title">File Extension Changer</h3>
+          <p class="tool-card-desc">Rename and change file extensions in bulk quickly without complex software or technical knowledge.</p>
+          <div class="tool-card-footer"><span>Launch Tool</span><i class="fas fa-arrow-right"></i></div>
+        </a>
+
+        <!-- Tool 17: Open World Game -->
+        <a href="game.html" class="tool-card" data-category="sports" data-tool="game" style="--card-accent: linear-gradient(135deg, #7c3aed, #4c1d95);">
+          <span class="tool-badge-pill badge-new">GAME</span>
+          <div class="tool-card-icon" style="background: rgba(124, 58, 237, 0.15); color: #7c3aed;">
+            <i class="fas fa-gamepad"></i>
+          </div>
+          <h3 class="tool-card-title">Open World Game</h3>
+          <p class="tool-card-desc">Play a fun browser-based open world exploration and adventure game right inside your browser.</p>
+          <div class="tool-card-footer"><span>Launch Tool</span><i class="fas fa-arrow-right"></i></div>
+        </a>
+
+        <!-- Tool 18: Invoice Generator -->
+        <a href="invoice.html" class="tool-card" data-category="finance creative" data-tool="invoice" style="--card-accent: linear-gradient(135deg, #0ea5e9, #0284c7);">
+          <span class="tool-badge-pill badge-pro">PDF READY</span>
+          <div class="tool-card-icon" style="background: rgba(14, 165, 233, 0.15); color: #0ea5e9;">
+            <i class="fas fa-file-invoice-dollar"></i>
+          </div>
+          <h3 class="tool-card-title">Invoice Generator</h3>
+          <p class="tool-card-desc">Create professional invoices with itemized billing, taxes, logo upload, and printable/PDF export.</p>
+          <div class="tool-card-footer"><span>Launch Tool</span><i class="fas fa-arrow-right"></i></div>
+        </a>
+
+        <!-- Tool 19: Print Website -->
+        <a href="print.html" class="tool-card" data-category="pdf utility" data-tool="print" style="--card-accent: linear-gradient(135deg, #374151, #111827);">
+          <span class="tool-badge-pill badge-pro">PRINT</span>
+          <div class="tool-card-icon" style="background: rgba(55, 65, 81, 0.15); color: #374151;">
+            <i class="fas fa-print"></i>
+          </div>
+          <h3 class="tool-card-title">Print Studio</h3>
+          <p class="tool-card-desc">Format, layout, and print any web content or uploaded documents with custom page & margin settings.</p>
+          <div class="tool-card-footer"><span>Launch Tool</span><i class="fas fa-arrow-right"></i></div>
+        </a>
+
+        <!-- Tool 20: Stopwatch & Timer -->
+        <a href="timer.html" class="tool-card" data-category="utility sports" data-tool="timer" style="--card-accent: linear-gradient(135deg, #06b6d4, #0891b2);">
+          <span class="tool-badge-pill badge-hot">⏱ PRECISE</span>
+          <div class="tool-card-icon" style="background: rgba(6, 182, 212, 0.15); color: #06b6d4;">
+            <i class="fas fa-stopwatch"></i>
+          </div>
+          <h3 class="tool-card-title">Advanced Stopwatch</h3>
+          <p class="tool-card-desc">Precision stopwatch & countdown timer with lap recording, split times, and alarm functionality.</p>
+          <div class="tool-card-footer"><span>Launch Tool</span><i class="fas fa-arrow-right"></i></div>
+        </a>
+
+        <!-- Tool 21: Typing Practice / Typing Shooter Game -->
+        <a href="typingpractice.html" class="tool-card" data-category="sports" data-tool="typingpractice" style="--card-accent: linear-gradient(135deg, #ec4899, #db2777);">
+          <span class="tool-badge-pill badge-new">GAME</span>
+          <div class="tool-card-icon" style="background: rgba(236, 72, 153, 0.15); color: #ec4899;">
+            <i class="fas fa-keyboard"></i>
+          </div>
+          <h3 class="tool-card-title">Typing Shooter Game</h3>
+          <p class="tool-card-desc">Improve your typing speed with an addictive shooting game — type words to destroy incoming enemies!</p>
+          <div class="tool-card-footer"><span>Launch Tool</span><i class="fas fa-arrow-right"></i></div>
+        </a>
+
+        <!-- Tool 22: Video Player -->
+        <a href="videoplayer.html" class="tool-card" data-category="ai" data-tool="videoplayer" style="--card-accent: linear-gradient(135deg, #1d4ed8, #312e81);">
+          <span class="tool-badge-pill badge-pro">PLAYER</span>
+          <div class="tool-card-icon" style="background: rgba(29, 78, 216, 0.15); color: #1d4ed8;">
+            <i class="fas fa-circle-play"></i>
+          </div>
+          <h3 class="tool-card-title">Video Player</h3>
+          <p class="tool-card-desc">Play local or URL videos right in the browser with fullscreen, playback controls, and subtitle support.</p>
+          <div class="tool-card-footer"><span>Launch Tool</span><i class="fas fa-arrow-right"></i></div>
+        </a>
+
+        <!-- Tool 23: Weather -->
+        <a href="weather.html" class="tool-card" data-category="utility" data-tool="weather" style="--card-accent: linear-gradient(135deg, #38bdf8, #0ea5e9);">
+          <span class="tool-badge-pill badge-new">LIVE</span>
+          <div class="tool-card-icon" style="background: rgba(56, 189, 248, 0.15); color: #38bdf8;">
+            <i class="fas fa-cloud-sun"></i>
+          </div>
+          <h3 class="tool-card-title">Live Weather</h3>
+          <p class="tool-card-desc">Check real-time weather conditions, temperature, humidity, and forecasts for any city worldwide.</p>
+          <div class="tool-card-footer"><span>Launch Tool</span><i class="fas fa-arrow-right"></i></div>
+        </a>
+
+        <!-- Tool 24: Password Generator -->
+        <a href="password.html" class="tool-card" data-category="utility" data-tool="password" style="--card-accent: linear-gradient(135deg, #10b981, #059669);">
+          <span class="tool-badge-pill badge-new">SECURITY</span>
+          <div class="tool-card-icon" style="background: rgba(16, 185, 129, 0.15); color: #10b981;">
+            <i class="fas fa-lock"></i>
+          </div>
+          <h3 class="tool-card-title">Password Generator</h3>
+          <p class="tool-card-desc">Generate ultra-secure random passwords with custom rules, length controls, and live strength meter.</p>
+          <div class="tool-card-footer"><span>Launch Tool</span><i class="fas fa-arrow-right"></i></div>
+        </a>
+
+        <!-- Tool 25: QR Code Generator -->
+        <a href="qrcode.html" class="tool-card" data-category="creative utility" data-tool="qrcode" style="--card-accent: linear-gradient(135deg, #6366f1, #4f46e5);">
+          <span class="tool-badge-pill badge-hot">QR STUDIO</span>
+          <div class="tool-card-icon" style="background: rgba(99, 102, 241, 0.15); color: #6366f1;">
+            <i class="fas fa-qrcode"></i>
+          </div>
+          <h3 class="tool-card-title">QR Code Generator</h3>
+          <p class="tool-card-desc">Convert any URL, text, email, or Wi-Fi login into clean, scan-ready QR codes with instant PNG download.</p>
+          <div class="tool-card-footer"><span>Launch Tool</span><i class="fas fa-arrow-right"></i></div>
+        </a>
+
+        <!-- Tool 26: Unit Converter -->
+        <a href="unitconverter.html" class="tool-card" data-category="utility" data-tool="unitconverter" style="--card-accent: linear-gradient(135deg, #8b5cf6, #6d28d9);">
+          <span class="tool-badge-pill badge-pro">CONVERTER</span>
+          <div class="tool-card-icon" style="background: rgba(139, 92, 246, 0.15); color: #8b5cf6;">
+            <i class="fas fa-ruler-combined"></i>
+          </div>
+          <h3 class="tool-card-title">Unit Converter</h3>
+          <p class="tool-card-desc">Fast unit conversions for length, mass/weight, temperature, area, speed, and digital storage data.</p>
+          <div class="tool-card-footer"><span>Launch Tool</span><i class="fas fa-arrow-right"></i></div>
+        </a>
+
+        <!-- Tool 27: Word Counter -->
+        <a href="wordcounter.html" class="tool-card" data-category="utility creative" data-tool="wordcounter" style="--card-accent: linear-gradient(135deg, #14b8a6, #0d9488);">
+          <span class="tool-badge-pill badge-new">WRITER</span>
+          <div class="tool-card-icon" style="background: rgba(20, 184, 166, 0.15); color: #14b8a6;">
+            <i class="fas fa-file-lines"></i>
+          </div>
+          <h3 class="tool-card-title">Word Counter</h3>
+          <p class="tool-card-desc">Live analysis of words, characters, sentences, estimated reading time, and top keyword density frequency.</p>
+          <div class="tool-card-footer"><span>Launch Tool</span><i class="fas fa-arrow-right"></i></div>
+        </a>
+
+      </div>
+    </section>
+
+    <!-- Original Story Section: Explore Creativity for Free -->
+    <section class="tool-card-container" style="margin: 60px auto 40px;">
+      <h2 class="section-title" style="text-align: left; margin-bottom: 16px;">
+        <i class="fas fa-palette" style="color: var(--primary);"></i> Explore Creativity for Free!
+      </h2>
+      <p style="color: var(--text-secondary); line-height: 1.8; margin-bottom: 16px;">
+        Are you looking to unleash your creative potential without breaking the bank? Look no further! <strong>AI Bots</strong> offers you a platform to express yourself and explore various creative avenues completely free of cost.
+      </p>
+      <p style="color: var(--text-secondary); line-height: 1.8; margin-bottom: 16px;">
+        With our intuitive interface and wide range of 13+ tools, you can remove backgrounds from images, count live cricket scores, create image links, use our handy calculator, resize images, convert pictures to PDF format, merge photos, and much more — all without spending a dime. We believe that creativity should be accessible to everyone, regardless of their budget.
+      </p>
+      <p style="color: var(--text-secondary); line-height: 1.8;">
+        Whether you're an aspiring artist, a passionate designer, a sports enthusiast, or simply someone who wants to try out new creative tools, AI Bots has got you covered. Start exploring your creativity today!
+      </p>
+    </section>
+
+    <!-- Canva Design Showcase Embed -->
+    <section style="margin-bottom: 60px;">
+      <div style="position: relative; width: 100%; height: 0; padding-top: 56.25%; box-shadow: var(--shadow-xl); border-radius: var(--radius-xl); overflow: hidden; border: 1px solid var(--border-color);">
+        <iframe loading="lazy" style="position: absolute; width: 100%; height: 100%; top: 0; left: 0; border: none;"
+          src="https://www.canva.com/design/DAF-hkNIJq0/RCG-t2isep1Z5oxEh00urA/watch?embed" allowfullscreen="allowfullscreen" allow="fullscreen">
+        </iframe>
+      </div>
+    </section>
+
+    <!-- Value Propositions Section -->
+    <section class="features-section">
+      <h2 class="section-title">Why Creators Love AI Bots</h2>
+      <p class="section-subtitle">Designed for high performance, strict privacy, and zero paywalls.</p>
+      
+      <div class="features-grid">
+        <div class="feature-box">
+          <div class="feature-box-icon"><i class="fas fa-shield-halved"></i></div>
+          <div class="feature-box-content">
+            <h3>100% Private In-Browser</h3>
+            <p>Your photos, calculations, and cricket scores are processed right in your browser. No files are uploaded to our servers.</p>
+          </div>
+        </div>
+
+        <div class="feature-box">
+          <div class="feature-box-icon"><i class="fas fa-bolt-lightning"></i></div>
+          <div class="feature-box-content">
+            <h3>Instant Client-Side Speed</h3>
+            <p>No waiting in queues or uploading large files. Everything processes in milliseconds with HTML5 Canvas & Web APIs.</p>
+          </div>
+        </div>
+
+        <div class="feature-box">
+          <div class="feature-box-icon"><i class="fas fa-gift"></i></div>
+          <div class="feature-box-content">
+            <h3>Zero Subscriptions & Watermarks</h3>
+            <p>Enjoy all creative tools, cricket scoring, and downloads with clean high-resolution exports completely free.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Interactive FAQ Section -->
+    <section class="faq-section">
+      <h2 class="section-title">Frequently Asked Questions</h2>
+      <p class="section-subtitle">Everything you need to know about the AI Bots platform.</p>
+
+      <div class="faq-accordion">
+        <div class="faq-item" onclick="toggleFaq(this)">
+          <div class="faq-question">
+            <span>Is AI Bots completely free to use?</span>
+            <i class="fas fa-chevron-down"></i>
+          </div>
+          <div class="faq-answer">
+            Yes! All 13+ tools on AI Bots are 100% free with no hidden fees, subscriptions, or required account sign-ups.
+          </div>
+        </div>
+
+        <div class="faq-item" onclick="toggleFaq(this)">
+          <div class="faq-question">
+            <span>How does the Cricket Score Counter work?</span>
+            <i class="fas fa-chevron-down"></i>
+          </div>
+          <div class="faq-answer">
+            Our Cricket Scorer is a comprehensive match tracker. It tracks live striker & non-striker stats, overs, bowling figures, extras (wides/no-balls), target chase calculations, celebration sounds, and allows exporting scorecards as PNG images.
+          </div>
+        </div>
+
+        <div class="faq-item" onclick="toggleFaq(this)">
+          <div class="faq-question">
+            <span>Are my images and files stored on any server?</span>
+            <i class="fas fa-chevron-down"></i>
+          </div>
+          <div class="faq-answer">
+            No. Your files are processed locally inside your web browser using HTML5 Canvas and JavaScript. Nothing is stored on our servers, ensuring total privacy.
+          </div>
+        </div>
+
+        <div class="faq-item" onclick="toggleFaq(this)">
+          <div class="faq-question">
+            <span>Can I use AI Bots on mobile phones?</span>
+            <i class="fas fa-chevron-down"></i>
+          </div>
+          <div class="faq-answer">
+            Yes! AI Bots is fully responsive and optimized for touch interactions on smartphones, tablets, and desktop computers.
+          </div>
+        </div>
+
+        <div class="faq-item" onclick="toggleFaq(this)">
+          <div class="faq-question">
+            <span>Who designed and built AI Bots?</span>
+            <i class="fas fa-chevron-down"></i>
+          </div>
+          <div class="faq-answer">
+            AI Bots was created and designed by <strong>Rishit Chajjed</strong> to provide accessible, high-quality creative tools for everyone.
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Modern Multi-Column Footer -->
+  <footer class="app-footer">
+    <div class="app-container">
+      <div class="footer-grid">
+        <div class="footer-col">
+          <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 12px;">
+            <img src="https://i.ibb.co/G2NFYHG/logo.png" alt="AI Bots Logo" style="height: 36px;">
+            <strong style="font-size: 1.1rem;">AI Bots Creative Suite</strong>
+          </div>
+          <p style="font-size: 0.85rem; color: var(--text-secondary); line-height: 1.6;">
+            A fast, private, all-in-one suite of creative & productivity tools designed to make designing, converting, and scoring effortless.
+          </p>
+        </div>
+
+        <div class="footer-col">
+          <h4>Image Tools</h4>
+          <ul>
+            <li><a href="backremover.html">Background Remover</a></li>
+            <li><a href="cropphoto.html">Crop Photo</a></li>
+            <li><a href="resizeimage.html">Resize Image</a></li>
+            <li><a href="imagecombiner.html">Merge Images</a></li>
+            <li><a href="imagelink.html">Image Linker</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-col">
+          <h4>Design & PDF</h4>
+          <ul>
+            <li><a href="buisnesscard.html">Business Card Maker</a></li>
+            <li><a href="logomaker.html">Vector Logo Maker</a></li>
+            <li><a href="qrcode.html">QR Code Generator</a></li>
+            <li><a href="pdfmaker.html">Image to PDF</a></li>
+            <li><a href="pdfviewer.html">PDF Reader</a></li>
+            <li><a href="print.html">Print Studio</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-col">
+          <h4>Utilities & Games</h4>
+          <ul>
+            <li><a href="cricketscore.html">Cricket Scorer</a></li>
+            <li><a href="calculator.html">Calculator</a></li>
+            <li><a href="password.html">Password Generator</a></li>
+            <li><a href="unitconverter.html">Unit Converter</a></li>
+            <li><a href="wordcounter.html">Word Counter</a></li>
+            <li><a href="currency.html">Currency Converter</a></li>
+            <li><a href="timer.html">Stopwatch & Timer</a></li>
+            <li><a href="typingpractice.html">Typing Shooter</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <div style="padding-top: 24px; border-top: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;">
+        <p class="footer-text" style="margin: 0;">&copy; 2026 AI Bots. All rights reserved.</p>
+        <p class="footer-credits" style="margin: 0;">Website designed & engineered by <strong>Rishit Chajjed</strong>.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="js/app.js"></script>
+  <script>
+    // 1. Dynamic Typing Text Animation in Hero
+    const phrases = [
+      "Remove Backgrounds",
+      "Count Cricket Scores",
+      "Design Vector Logos",
+      "Convert Images to PDF",
+      "Resize to 33+ Formats",
+      "Generate Instant Image Links",
+      "Crop Photos Pixel-Perfect"
+    ];
+    let phraseIndex = 0;
+    let charIndex = 0;
+    let isDeleting = false;
+    const typingElement = document.getElementById("dynamicTypingText");
+
+    function typeEffect() {
+      const currentPhrase = phrases[phraseIndex];
+      if (isDeleting) {
+        typingElement.textContent = currentPhrase.substring(0, charIndex - 1);
+        charIndex--;
+      } else {
+        typingElement.textContent = currentPhrase.substring(0, charIndex + 1);
+        charIndex++;
+      }
+
+      let speed = isDeleting ? 40 : 80;
+
+      if (!isDeleting && charIndex === currentPhrase.length) {
+        speed = 2200; // Pause at end of phrase
+        isDeleting = true;
+      } else if (isDeleting && charIndex === 0) {
+        isDeleting = false;
+        phraseIndex = (phraseIndex + 1) % phrases.length;
+        speed = 400;
+      }
+
+      setTimeout(typeEffect, speed);
+    }
+    typeEffect();
+
+    // 2. Category Filtering Logic
+    const filterButtons = document.querySelectorAll('.filter-btn');
+    const toolCards = document.querySelectorAll('.tool-card');
+
+    filterButtons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        filterButtons.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        playSound('click');
+
+        const filter = btn.getAttribute('data-filter');
+        toolCards.forEach(card => {
+          const cardCategories = card.getAttribute('data-category').split(' ');
+          if (filter === 'all' || cardCategories.includes(filter)) {
+            card.style.display = 'flex';
+          } else {
+            card.style.display = 'none';
+          }
+        });
+      });
+    });
+
+    // 3. Live Search Input Filter
+    function filterToolsLive() {
+      const query = document.getElementById('liveSearchInput').value.toLowerCase().trim();
+      let visibleCount = 0;
+
+      toolCards.forEach(card => {
+        const title = card.querySelector('.tool-card-title').textContent.toLowerCase();
+        const desc = card.querySelector('.tool-card-desc').textContent.toLowerCase();
+        const category = card.getAttribute('data-category').toLowerCase();
+
+        if (title.includes(query) || desc.includes(query) || category.includes(query)) {
+          card.style.display = 'flex';
+          visibleCount++;
+        } else {
+          card.style.display = 'none';
+        }
+      });
+    }
+
+    // 4. Hero Quick Dropzone Upload Handler
+    function handleHeroDockUpload(event) {
+      const file = event.target.files[0];
+      if (file) {
+        showToast('Image received! Opening in Background Remover...', 'success');
+        setTimeout(() => {
+          window.location.href = 'backremover.html';
+        }, 600);
+      }
+    }
+
+    // 5. Interactive In-Place Studio Workspace Loader
+    function openInStudio(url, title) {
+      const workspace = document.getElementById('studio-workspace');
+      const iframe = document.getElementById('studio-iframe');
+      const toolName = document.getElementById('studio-tool-name');
+      const externalLink = document.getElementById('studio-external-link');
+
+      iframe.src = url;
+      toolName.textContent = title;
+      externalLink.href = url;
+      workspace.classList.add('active');
+      workspace.scrollIntoView({ behavior: 'smooth' });
+    }
+
+    function closeStudioWorkspace() {
+      const workspace = document.getElementById('studio-workspace');
+      const iframe = document.getElementById('studio-iframe');
+      workspace.classList.remove('active');
+      iframe.src = '';
+    }
+
+    // 6. FAQ Accordion Toggle
+    function toggleFaq(item) {
+      const isActive = item.classList.contains('active');
+      document.querySelectorAll('.faq-item').forEach(f => f.classList.remove('active'));
+      if (!isActive) {
+        item.classList.add('active');
+        playSound('click');
+      }
+    }
+  </script>
 </body>
 </html>

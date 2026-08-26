@@ -1,263 +1,304 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta name="keywords" content="qr code generator, free qr code maker, create qr code online, wifi qr code generator, custom color qr code, download qr code png, ai bots qr code, ai bots, aibots, ai bots co in, aibots.co.in, Rishit Chajjed">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="google-site-verification" content="ndzq-U-NLijgza_QqgQdcc2U3oMRoud_BT2ZZiwFREM">
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>QR Code Generator — AI Bots</title>
-<meta name="description" content="Turn any link, text, email, or Wi-Fi detail into a downloadable high-resolution QR code.">
-<link rel="icon" href="https://i.ibb.co/XjHbck3/logo.png" type="image/png">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-<link rel="stylesheet" href="css/theme.css">
-<!-- Robust QRious library for 100% valid, scan-ready QR codes -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/qrious/4.0.2/qrious.min.js"></script>
-<style>
-  .qr-layout-grid {
-    display: grid;
-    grid-template-columns: 1fr 340px;
-    gap: 24px;
-    align-items: start;
-  }
-  @media (max-width: 840px) {
+  <meta name="google-site-verification" content="-Yb6Nx74gbZ3wRN5uP-Y8KKwDWlt1DPpxs4nA3PkE6M">
+  <meta name="robots" content="index, follow">
+  <title>QR Code Generator — AI Bots</title>
+  <meta name="description" content="Encode any link, text, email, or Wi-Fi network into a clean, scan-ready QR code you can download as PNG. Free & client-side.">
+  <meta name="keywords" content="qr code generator, free qr code maker, create qr code online, wifi qr code generator, download qr code png, ai bots qr code">
+  <link rel="icon" href="https://i.ibb.co/G2NFYHG/logo.png" type="image/png">
+  <link rel="canonical" href="https://www.aibots.co.in/qrcode.html">
+  <!-- Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-2L87FMQS3W"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-2L87FMQS3W');
+  </script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="css/theme.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrious/4.0.2/qrious.min.js"></script>
+  <style>
     .qr-layout-grid {
-      grid-template-columns: 1fr;
+      display: grid;
+      grid-template-columns: 1fr 340px;
+      gap: 24px;
+      align-items: start;
     }
-  }
-  .qr-preview-box {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 18px;
-    position: sticky;
-    top: 90px;
-    text-align: center;
-  }
-  .qr-canvas-holder {
-    background: #ffffff !important;
-    padding: 16px;
-    border-radius: var(--radius-lg);
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
-    border: 1px solid rgba(0, 0, 0, 0.08);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-    overflow: hidden;
-  }
-  .qr-canvas-holder:hover {
-    transform: scale(1.02);
-    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.16);
-  }
-  #qrCanvas {
-    display: block;
-    max-width: 100%;
-    height: auto;
-    border-radius: 4px;
-  }
-  .swatch-row {
-    display: flex;
-    gap: 10px;
-    flex-wrap: wrap;
-    margin-top: 4px;
-  }
-  .swatch {
-    width: 36px;
-    height: 36px;
-    border-radius: var(--radius-sm);
-    border: 2px solid transparent;
-    cursor: pointer;
-    padding: 0;
-    transition: transform 0.2s ease, border-color 0.2s ease;
-    box-shadow: var(--shadow-sm);
-  }
-  .swatch:hover {
-    transform: scale(1.15);
-  }
-  .swatch.active {
-    border-color: var(--primary);
-    transform: scale(1.1);
-    box-shadow: 0 0 0 3px var(--primary-glow);
-  }
-</style>
+    @media (max-width: 840px) {
+      .qr-layout-grid { grid-template-columns: 1fr; }
+    }
+    .qr-preview-box {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+      position: sticky;
+      top: 90px;
+      text-align: center;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      padding: 24px;
+    }
+    .qr-canvas-holder {
+      background: #ffffff !important;
+      padding: 16px;
+      border-radius: 12px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+      border: 1px solid rgba(0, 0, 0, 0.08);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    #qrCanvas {
+      display: block;
+      max-width: 100%;
+      height: auto;
+    }
+    .swatch-row {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-top: 4px;
+    }
+    .swatch {
+      width: 28px;
+      height: 28px;
+      border-radius: 6px;
+      border: 2px solid transparent;
+      cursor: pointer;
+      padding: 0;
+      transition: all 0.15s;
+    }
+    .swatch.active {
+      border-color: var(--primary);
+      transform: scale(1.15);
+    }
+    .qr-type-tabs {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      margin-bottom: 16px;
+    }
+    .qr-tab {
+      background: var(--bg-primary);
+      border: 1px solid var(--border-color);
+      color: var(--text-secondary);
+      padding: 6px 12px;
+      border-radius: 8px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .qr-tab.active {
+      background: color-mix(in srgb, var(--primary) 12%, transparent);
+      border-color: var(--primary);
+      color: var(--primary);
+    }
+  </style>
 </head>
 <body>
-<div class="ab-shell">
-  <div class="ab-page-head">
-    <h1><i class="fas fa-qrcode" style="color: var(--primary); margin-right: 8px;"></i> QR Code Generator</h1>
-    <p>Encode any link, text, email, or Wi-Fi network into a clean, scan-ready QR code you can download as PNG.</p>
-  </div>
+  <div class="bg-mesh"></div>
 
-  <div class="qr-layout-grid">
-    <div class="ab-card">
-      <label class="ab-label" style="margin-bottom: 10px;">Select Payload Type</label>
-      <div class="ab-filters" style="margin: 0 0 20px;">
-        <button class="ab-chip active" data-type="text"><i class="fas fa-link"></i> Text / URL</button>
-        <button class="ab-chip" data-type="email"><i class="fas fa-envelope"></i> Email</button>
-        <button class="ab-chip" data-type="wifi"><i class="fas fa-wifi"></i> Wi-Fi</button>
-      </div>
+  <!-- Navbar -->
+  <header class="navbar">
+    <div class="app-container" style="width: 100%;">
+      <div class="nav-wrapper">
+        <a href="index.html" class="brand-link">
+          <img src="https://i.ibb.co/G2NFYHG/logo.png" alt="AI Bots Logo" class="brand-logo-img">
+          <span>AI Bots</span>
+          <span class="brand-badge">QR Code</span>
+        </a>
 
-      <div id="fieldsText">
-        <label class="ab-label" for="qrText">Text or Website URL</label>
-        <textarea id="qrText" class="ab-input" rows="3" placeholder="https://example.com">https://aibots-one.vercel.app</textarea>
-      </div>
-
-      <div id="fieldsEmail" class="ab-hidden">
-        <div class="ab-col">
-          <label class="ab-label" for="qrEmail">Recipient Email Address</label>
-          <input type="email" id="qrEmail" class="ab-input" placeholder="name@example.com">
-        </div>
-        <div class="ab-col ab-mt-16">
-          <label class="ab-label" for="qrEmailSub">Subject (Optional)</label>
-          <input type="text" id="qrEmailSub" class="ab-input" placeholder="Inquiry about AI Bots">
-        </div>
-      </div>
-
-      <div id="fieldsWifi" class="ab-hidden">
-        <div class="ab-col">
-          <label class="ab-label" for="qrSsid">Network Name (SSID)</label>
-          <input type="text" id="qrSsid" class="ab-input" placeholder="Home-WiFi">
-        </div>
-        <div class="ab-col ab-mt-16">
-          <label class="ab-label" for="qrWifiPass">Password</label>
-          <input type="text" id="qrWifiPass" class="ab-input" placeholder="WiFi Password">
-        </div>
-        <div class="ab-col ab-mt-16">
-          <label class="ab-label" for="qrWifiSec">Security Type</label>
-          <select id="qrWifiSec" class="ab-select">
-            <option value="WPA" selected>WPA / WPA2</option>
-            <option value="WEP">WEP</option>
-            <option value="nopass">None (Open Network)</option>
-          </select>
-        </div>
-      </div>
-
-      <div class="ab-col ab-mt-24">
-        <div style="display: flex; justify-content: space-between; align-items: center;">
-          <label class="ab-label" for="qrSize">QR Size</label>
-          <span id="qrSizeVal" style="font-family: var(--font-mono); font-size: 13px; color: var(--primary); font-weight: 700;">260 px</span>
-        </div>
-        <input type="range" id="qrSize" class="range-slider" min="160" max="400" value="260" step="10" oninput="document.getElementById('qrSizeVal').textContent = this.value + ' px'">
-      </div>
-
-      <div class="ab-col ab-mt-16">
-        <label class="ab-label">Foreground Color Theme</label>
-        <div class="swatch-row" id="colorRow">
-          <button class="swatch active" style="background:#0f172a;" data-color="#0f172a" title="Midnight Slate"></button>
-          <button class="swatch" style="background:#4f46e5;" data-color="#4f46e5" title="Indigo Brand"></button>
-          <button class="swatch" style="background:#0284c7;" data-color="#0284c7" title="Ocean Blue"></button>
-          <button class="swatch" style="background:#10b981;" data-color="#10b981" title="Emerald Green"></button>
-          <button class="swatch" style="background:#ea580c;" data-color="#ea580c" title="Sunset Orange"></button>
-          <button class="swatch" style="background:#ec4899;" data-color="#ec4899" title="Berry Pink"></button>
+        <div class="nav-actions">
+          <a href="index.html" class="btn btn-secondary btn-sm"><i class="fas fa-house"></i> Hub</a>
+          <button class="icon-btn theme-toggle-btn" title="Toggle Dark/Light Mode"><i class="fas fa-moon"></i></button>
         </div>
       </div>
     </div>
+  </header>
 
-    <div class="ab-card qr-preview-box">
-      <div style="font-size: 14px; font-weight: 700; color: var(--text-primary);">Live QR Preview</div>
-      <div class="qr-canvas-holder">
-        <canvas id="qrCanvas"></canvas>
-      </div>
-      <button class="ab-btn block" id="downloadQr" style="margin-top: 6px;">
-        <i class="fas fa-download"></i> Download PNG
-      </button>
+  <main class="app-container tool-page-wrapper">
+    <div class="tool-header">
+      <span class="tool-header-badge"><i class="fas fa-qrcode"></i> Generator</span>
+      <h1 class="tool-title">QR Code Generator</h1>
+      <p class="tool-desc">Encode any link, text, email, or Wi-Fi network into a clean, scan-ready QR code you can download as PNG.</p>
     </div>
-  </div>
-</div>
 
-<script src="js/common.js"></script>
-<script>
-abInitChrome('qrcode');
+    <div class="qr-layout-grid">
+      <!-- Left Config Form -->
+      <div class="tool-card-container">
+        <!-- Type Tabs -->
+        <div class="qr-type-tabs">
+          <button class="qr-tab active" onclick="setQrType('text', this)"><i class="fas fa-link"></i> URL / Text</button>
+          <button class="qr-tab" onclick="setQrType('wifi', this)"><i class="fas fa-wifi"></i> Wi-Fi Network</button>
+          <button class="qr-tab" onclick="setQrType('email', this)"><i class="fas fa-envelope"></i> Email</button>
+          <button class="qr-tab" onclick="setQrType('phone', this)"><i class="fas fa-phone"></i> Phone / SMS</button>
+        </div>
 
-let currentType = 'text';
-let fgColor = '#0f172a';
-let qrInstance = null;
-const canvas = document.getElementById('qrCanvas');
+        <!-- URL / Text Input -->
+        <div id="pane-text">
+          <label class="form-label">CONTENT / WEBSITE URL</label>
+          <input type="text" id="qrText" class="form-control" placeholder="https://www.aibots.co.in" value="https://www.aibots.co.in">
+        </div>
 
-document.querySelectorAll('[data-type]').forEach(btn => {
-  btn.addEventListener('click', () => {
-    document.querySelectorAll('[data-type]').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-    currentType = btn.dataset.type;
-    ['Text', 'Email', 'Wifi'].forEach(t => {
-      document.getElementById('fields' + t).classList.toggle('ab-hidden', t.toLowerCase() !== currentType);
+        <!-- Wi-Fi Pane -->
+        <div id="pane-wifi" style="display:none;">
+          <div style="margin-bottom: 12px;">
+            <label class="form-label">NETWORK NAME (SSID)</label>
+            <input type="text" id="wifiSsid" class="form-control" placeholder="Home_WiFi">
+          </div>
+          <div style="margin-bottom: 12px;">
+            <label class="form-label">PASSWORD</label>
+            <input type="text" id="wifiPass" class="form-control" placeholder="SecretPassword">
+          </div>
+          <div>
+            <label class="form-label">ENCRYPTION TYPE</label>
+            <select id="wifiEnc" class="form-control">
+              <option value="WPA">WPA/WPA2</option>
+              <option value="WEP">WEP</option>
+              <option value="nopass">None (Open)</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Email Pane -->
+        <div id="pane-email" style="display:none;">
+          <div style="margin-bottom: 12px;">
+            <label class="form-label">RECIPIENT EMAIL</label>
+            <input type="email" id="emailTo" class="form-control" placeholder="hello@aibots.co.in">
+          </div>
+          <div>
+            <label class="form-label">SUBJECT</label>
+            <input type="text" id="emailSub" class="form-control" placeholder="Hello from QR!">
+          </div>
+        </div>
+
+        <!-- Phone Pane -->
+        <div id="pane-phone" style="display:none;">
+          <label class="form-label">PHONE NUMBER</label>
+          <input type="tel" id="phoneNum" class="form-control" placeholder="+91 98765 43210">
+        </div>
+
+        <!-- Design Customization -->
+        <div style="margin-top: 20px; border-top: 1px solid var(--border-color); padding-top: 16px;">
+          <label class="form-label">QR CODE FOREGROUND COLOR</label>
+          <div class="swatch-row">
+            <button class="swatch active" style="background:#0f172a;" data-c="#0f172a" onclick="setQrColor('#0f172a', this)"></button>
+            <button class="swatch" style="background:#4f46e5;" data-c="#4f46e5" onclick="setQrColor('#4f46e5', this)"></button>
+            <button class="swatch" style="background:#0284c7;" data-c="#0284c7" onclick="setQrColor('#0284c7', this)"></button>
+            <button class="swatch" style="background:#059669;" data-c="#059669" onclick="setQrColor('#059669', this)"></button>
+            <button class="swatch" style="background:#dc2626;" data-c="#dc2626" onclick="setQrColor('#dc2626', this)"></button>
+            <button class="swatch" style="background:#7c3aed;" data-c="#7c3aed" onclick="setQrColor('#7c3aed', this)"></button>
+          </div>
+        </div>
+
+        <div style="margin-top: 16px;">
+          <div style="display: flex; justify-content: space-between; font-size: 0.78rem; font-weight: 700; color: var(--text-secondary); margin-bottom: 6px;">
+            <span>SIZE (PIXELS)</span>
+            <span id="qrSizeVal" style="color: var(--primary);">260px</span>
+          </div>
+          <input type="range" id="qrSize" min="160" max="440" step="20" value="260" class="slider" style="width:100%;" oninput="document.getElementById('qrSizeVal').textContent = this.value + 'px'; updateQr();">
+        </div>
+      </div>
+
+      <!-- Right Preview -->
+      <div class="qr-preview-box">
+        <div class="qr-canvas-holder">
+          <canvas id="qrCanvas"></canvas>
+        </div>
+        <button class="btn btn-primary" style="width: 100%;" onclick="downloadQr()"><i class="fas fa-download"></i> Download PNG</button>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    let currentType = 'text';
+    let qrFg = '#0f172a';
+    let qrObj = null;
+
+    function initQr() {
+      const canvas = document.getElementById('qrCanvas');
+      qrObj = new QRious({
+        element: canvas,
+        value: 'https://www.aibots.co.in',
+        size: 260,
+        level: 'H',
+        foreground: qrFg,
+        background: '#ffffff'
+      });
+      updateQr();
+    }
+
+    function setQrType(type, btn) {
+      currentType = type;
+      document.querySelectorAll('.qr-tab').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+
+      ['text', 'wifi', 'email', 'phone'].forEach(t => {
+        document.getElementById(`pane-${t}`).style.display = t === type ? 'block' : 'none';
+      });
+      updateQr();
+    }
+
+    function setQrColor(col, btn) {
+      qrFg = col;
+      document.querySelectorAll('.swatch').forEach(s => s.classList.remove('active'));
+      btn.classList.add('active');
+      updateQr();
+    }
+
+    function getPayload() {
+      if (currentType === 'text') return document.getElementById('qrText').value || 'https://www.aibots.co.in';
+      if (currentType === 'wifi') {
+        const ssid = document.getElementById('wifiSsid').value || 'WiFi';
+        const pass = document.getElementById('wifiPass').value || '';
+        const enc = document.getElementById('wifiEnc').value;
+        return `WIFI:T:${enc};S:${ssid};P:${pass};;`;
+      }
+      if (currentType === 'email') {
+        const to = document.getElementById('emailTo').value;
+        const sub = encodeURIComponent(document.getElementById('emailSub').value);
+        return `mailto:${to}?subject=${sub}`;
+      }
+      if (currentType === 'phone') {
+        const ph = document.getElementById('phoneNum').value;
+        return `tel:${ph}`;
+      }
+      return 'https://www.aibots.co.in';
+    }
+
+    function updateQr() {
+      if (!qrObj) return;
+      const size = parseInt(document.getElementById('qrSize').value) || 260;
+      qrObj.set({
+        value: getPayload(),
+        size: size,
+        foreground: qrFg
+      });
+    }
+
+    document.querySelectorAll('input, select').forEach(el => {
+      el.addEventListener('input', updateQr);
     });
-    render();
-  });
-});
 
-document.querySelectorAll('.swatch').forEach(sw => {
-  sw.addEventListener('click', () => {
-    document.querySelectorAll('.swatch').forEach(s => s.classList.remove('active'));
-    sw.classList.add('active');
-    fgColor = sw.dataset.color;
-    render();
-  });
-});
+    function downloadQr() {
+      const canvas = document.getElementById('qrCanvas');
+      const a = document.createElement('a');
+      a.href = canvas.toDataURL('image/png');
+      a.download = 'aibots_qrcode.png';
+      a.click();
+    }
 
-function buildPayload() {
-  if (currentType === 'text') {
-    return document.getElementById('qrText').value.trim() || 'https://aibots-one.vercel.app';
-  }
-  if (currentType === 'email') {
-    const to = document.getElementById('qrEmail').value.trim();
-    const sub = document.getElementById('qrEmailSub').value.trim();
-    if (!to) return 'mailto:info@aibots.com';
-    return `mailto:${to}${sub ? '?subject=' + encodeURIComponent(sub) : ''}`;
-  }
-  if (currentType === 'wifi') {
-    const ssid = document.getElementById('qrSsid').value.trim() || 'MyWiFi';
-    const pass = document.getElementById('qrWifiPass').value || '';
-    const sec = document.getElementById('qrWifiSec').value;
-    return `WIFI:T:${sec};S:${ssid};P:${pass};;`;
-  }
-  return 'https://aibots-one.vercel.app';
-}
-
-function render() {
-  const size = parseInt(document.getElementById('qrSize').value) || 260;
-  const payload = buildPayload();
-
-  if (!qrInstance) {
-    qrInstance = new QRious({
-      element: canvas,
-      value: payload,
-      size: size,
-      background: '#ffffff',
-      foreground: fgColor,
-      level: 'H',
-      padding: 0
-    });
-  } else {
-    qrInstance.set({
-      value: payload,
-      size: size,
-      foreground: fgColor,
-      background: '#ffffff',
-      level: 'H'
-    });
-  }
-}
-
-document.querySelectorAll('input, textarea, select').forEach(el => {
-  el.addEventListener('input', () => {
-    clearTimeout(window._qrT);
-    window._qrT = setTimeout(render, 100);
-  });
-});
-
-document.getElementById('downloadQr').addEventListener('click', () => {
-  if (!canvas) return;
-  const link = document.createElement('a');
-  link.download = `AI_Bots_QR_${Date.now()}.png`;
-  link.href = canvas.toDataURL('image/png');
-  link.click();
-  abToast('QR Code downloaded! 🚀');
-});
-
-// Initial render
-render();
-</script>
+    window.addEventListener('DOMContentLoaded', initQr);
+  </script>
+  <script src="js/app.js"></script>
 </body>
 </html>

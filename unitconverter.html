@@ -1,145 +1,195 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta name="keywords" content="unit converter, online unit converter, length converter, weight converter, temperature converter, speed converter, data converter, ai bots unit converter, ai bots, aibots, ai bots co in, aibots.co.in, Rishit Chajjed">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="google-site-verification" content="ndzq-U-NLijgza_QqgQdcc2U3oMRoud_BT2ZZiwFREM">
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Unit Converter — AI Bots</title>
-<meta name="description" content="Convert length, weight, temperature, area, speed and data units instantly.">
-<link rel="icon" href="https://i.ibb.co/XjHbck3/logo.png" type="image/png">
-<link rel="stylesheet" href="css/theme.css">
-<style>
-  .uc-card{ max-width:620px; margin:0 auto; }
-  .amt-row{ display:grid; grid-template-columns:1fr auto 1fr; gap:10px; align-items:end; }
-  .swap-btn{ width:44px; height:44px; border-radius:50%; border:1.5px solid var(--border); background:var(--surface); cursor:pointer; font-size:18px; color:var(--accent); }
-  .swap-btn:hover{ border-color:var(--accent); }
-  .result-box{ margin-top:22px; padding:20px; border-radius:var(--radius); background:var(--accent-soft); text-align:center; }
-  .result-box .big{ font-family:var(--font-mono); font-size:clamp(22px,5vw,30px); font-weight:700; color:var(--accent-dark); word-break:break-all; }
-</style>
+  <meta name="google-site-verification" content="-Yb6Nx74gbZ3wRN5uP-Y8KKwDWlt1DPpxs4nA3PkE6M">
+  <meta name="robots" content="index, follow">
+  <title>Universal Unit Converter — AI Bots</title>
+  <meta name="description" content="Convert length, weight, temperature, area, speed, and data units instantly with live conversion calculations.">
+  <meta name="keywords" content="unit converter, online unit converter, length converter, weight converter, temperature converter, ai bots unit converter">
+  <link rel="icon" href="https://i.ibb.co/G2NFYHG/logo.png" type="image/png">
+  <link rel="canonical" href="https://www.aibots.co.in/unitconverter.html">
+  <!-- Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-2L87FMQS3W"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-2L87FMQS3W');
+  </script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="css/theme.css">
+  <style>
+    .uc-card { max-width: 680px; margin: 0 auto; }
+    .amt-row { display: grid; grid-template-columns: 1fr auto 1fr; gap: 10px; align-items: end; margin-top: 16px; }
+    .swap-btn {
+      width: 44px; height: 44px; border-radius: 50%;
+      border: 1px solid var(--border-color); background: var(--bg-primary);
+      cursor: pointer; font-size: 1.1rem; color: var(--primary);
+      display: flex; align-items: center; justify-content: center;
+      transition: transform 0.2s;
+    }
+    .swap-btn:hover { transform: rotate(180deg); }
+    .result-box {
+      margin-top: 24px; padding: 22px; border-radius: var(--radius-lg);
+      background: var(--bg-primary); border: 1px solid var(--border-color); text-align: center;
+    }
+    .result-box .big {
+      font-family: monospace; font-size: 1.5rem; font-weight: 800;
+      color: var(--primary); word-break: break-all;
+    }
+    .cat-chips { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 20px; }
+    .cat-chip {
+      background: var(--bg-primary); border: 1px solid var(--border-color);
+      border-radius: 8px; padding: 6px 12px; font-size: 0.82rem; font-weight: 600;
+      color: var(--text-secondary); cursor: pointer; transition: all 0.15s;
+    }
+    .cat-chip.active {
+      background: color-mix(in srgb, var(--primary) 12%, transparent);
+      border-color: var(--primary); color: var(--primary);
+    }
+  </style>
 </head>
 <body>
-<div class="ab-shell">
-  <div class="ab-page-head">
-    <h1>📐 Unit Converter</h1>
-    <p>Length, weight, temperature, area, speed and data — pick a category and convert instantly.</p>
-  </div>
+  <div class="bg-mesh"></div>
 
-  <div class="ab-card uc-card">
-    <div class="ab-filters" style="margin:0 0 18px;" id="catRow"></div>
+  <!-- Navbar -->
+  <header class="navbar">
+    <div class="app-container" style="width: 100%;">
+      <div class="nav-wrapper">
+        <a href="index.html" class="brand-link">
+          <img src="https://i.ibb.co/G2NFYHG/logo.png" alt="AI Bots Logo" class="brand-logo-img">
+          <span>AI Bots</span>
+          <span class="brand-badge">Unit Converter</span>
+        </a>
 
-    <div class="ab-col">
-      <label class="ab-label" for="ucAmount">Amount</label>
-      <input type="number" id="ucAmount" class="ab-input ab-mono" value="1">
-    </div>
-
-    <div class="amt-row ab-mt-16">
-      <div class="ab-col">
-        <label class="ab-label" for="ucFrom">From</label>
-        <select id="ucFrom" class="ab-select"></select>
-      </div>
-      <button class="swap-btn" id="ucSwap">⇄</button>
-      <div class="ab-col">
-        <label class="ab-label" for="ucTo">To</label>
-        <select id="ucTo" class="ab-select"></select>
+        <div class="nav-actions">
+          <a href="index.html" class="btn btn-secondary btn-sm"><i class="fas fa-house"></i> Hub</a>
+          <button class="icon-btn theme-toggle-btn" title="Toggle Dark/Light Mode"><i class="fas fa-moon"></i></button>
+        </div>
       </div>
     </div>
+  </header>
 
-    <div class="result-box">
-      <div class="big" id="ucResult">—</div>
+  <main class="app-container tool-page-wrapper">
+    <div class="tool-header">
+      <span class="tool-header-badge"><i class="fas fa-ruler-combined"></i> Calculation Tool</span>
+      <h1 class="tool-title">Unit Converter</h1>
+      <p class="tool-desc">Length, weight, temperature, area, speed and data — pick a category and convert instantly.</p>
     </div>
-  </div>
-</div>
 
-<script src="js/common.js"></script>
-<script>
-abInitChrome('unitconverter');
+    <div class="tool-card-container uc-card">
+      <div class="cat-chips" id="catRow"></div>
 
-// Each category: unit -> multiplier to base unit (except temperature, handled specially)
-const CATEGORIES = {
-  Length: { base:'m', units: { m:1, km:1000, cm:0.01, mm:0.001, mi:1609.344, yd:0.9144, ft:0.3048, in:0.0254, nmi:1852 } },
-  Weight: { base:'kg', units: { kg:1, g:0.001, mg:0.000001, lb:0.45359237, oz:0.028349523, ton:1000, st:6.35029 } },
-  Temperature: { special:true },
-  Area: { base:'m2', units: { m2:1, km2:1000000, cm2:0.0001, ha:10000, mi2:2589988.11, acre:4046.8564, ft2:0.09290304 } },
-  Speed: { base:'mps', units: { mps:1, kmh:0.277778, mph:0.44704, knot:0.514444, fts:0.3048 } },
-  Data: { base:'B', units: { bit:0.125, B:1, KB:1024, MB:1048576, GB:1073741824, TB:1099511627776 } },
-};
-const LABELS = {
-  m:'Meters', km:'Kilometers', cm:'Centimeters', mm:'Millimeters', mi:'Miles', yd:'Yards', ft:'Feet', in:'Inches', nmi:'Nautical miles',
-  kg:'Kilograms', g:'Grams', mg:'Milligrams', lb:'Pounds', oz:'Ounces', ton:'Metric tons', st:'Stone',
-  m2:'Sq. meters', km2:'Sq. kilometers', cm2:'Sq. centimeters', ha:'Hectares', mi2:'Sq. miles', acre:'Acres', ft2:'Sq. feet',
-  mps:'Meters/sec', kmh:'Km/h', mph:'Miles/h', knot:'Knots', fts:'Feet/sec',
-  bit:'Bits', B:'Bytes', KB:'Kilobytes', MB:'Megabytes', GB:'Gigabytes', TB:'Terabytes',
-  C:'Celsius', F:'Fahrenheit', K:'Kelvin'
-};
+      <div>
+        <label class="form-label">AMOUNT TO CONVERT</label>
+        <input type="number" id="ucAmount" class="form-control" value="1">
+      </div>
 
-const catRow = document.getElementById('catRow');
-const fromSel = document.getElementById('ucFrom');
-const toSel = document.getElementById('ucTo');
-const amountInput = document.getElementById('ucAmount');
-const resultEl = document.getElementById('ucResult');
-let currentCat = 'Length';
+      <div class="amt-row">
+        <div>
+          <label class="form-label">FROM</label>
+          <select id="ucFrom" class="form-control"></select>
+        </div>
+        <button class="swap-btn" id="ucSwap" title="Swap Units"><i class="fas fa-right-left"></i></button>
+        <div>
+          <label class="form-label">TO</label>
+          <select id="ucTo" class="form-control"></select>
+        </div>
+      </div>
 
-Object.keys(CATEGORIES).forEach(cat=>{
-  const chip = document.createElement('button');
-  chip.className = 'ab-chip' + (cat === currentCat ? ' active' : '');
-  chip.textContent = cat;
-  chip.dataset.cat = cat;
-  chip.addEventListener('click', ()=>{
-    document.querySelectorAll('#catRow .ab-chip').forEach(c=>c.classList.remove('active'));
-    chip.classList.add('active');
-    currentCat = cat;
+      <div class="result-box">
+        <div class="big" id="ucResult">—</div>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    const CATEGORIES = {
+      Length: { base:'m', units: { m:1, km:1000, cm:0.01, mm:0.001, mi:1609.344, yd:0.9144, ft:0.3048, in:0.0254, nmi:1852 } },
+      Weight: { base:'kg', units: { kg:1, g:0.001, mg:0.000001, lb:0.45359237, oz:0.028349523, ton:1000, st:6.35029 } },
+      Temperature: { special:true },
+      Area: { base:'m2', units: { m2:1, km2:1000000, cm2:0.0001, ha:10000, mi2:2589988.11, acre:4046.8564, ft2:0.09290304 } },
+      Speed: { base:'mps', units: { mps:1, kmh:0.277778, mph:0.44704, knot:0.514444, fts:0.3048 } },
+      Data: { base:'B', units: { bit:0.125, B:1, KB:1024, MB:1048576, GB:1073741824, TB:1099511627776 } },
+    };
+    const LABELS = {
+      m:'Meters (m)', km:'Kilometers (km)', cm:'Centimeters (cm)', mm:'Millimeters (mm)', mi:'Miles (mi)', yd:'Yards (yd)', ft:'Feet (ft)', in:'Inches (in)', nmi:'Nautical miles',
+      kg:'Kilograms (kg)', g:'Grams (g)', mg:'Milligrams (mg)', lb:'Pounds (lb)', oz:'Ounces (oz)', ton:'Metric tons (t)', st:'Stone',
+      m2:'Sq. meters (m²)', km2:'Sq. kilometers (km²)', cm2:'Sq. centimeters', ha:'Hectares (ha)', mi2:'Sq. miles', acre:'Acres', ft2:'Sq. feet (ft²)',
+      mps:'Meters/sec (m/s)', kmh:'Km/h', mph:'Miles/h (mph)', knot:'Knots', fts:'Feet/sec',
+      bit:'Bits (b)', B:'Bytes (B)', KB:'Kilobytes (KB)', MB:'Megabytes (MB)', GB:'Gigabytes (GB)', TB:'Terabytes (TB)',
+      C:'Celsius (°C)', F:'Fahrenheit (°F)', K:'Kelvin (K)'
+    };
+
+    const catRow = document.getElementById('catRow');
+    const fromSel = document.getElementById('ucFrom');
+    const toSel = document.getElementById('ucTo');
+    const amountInput = document.getElementById('ucAmount');
+    const resultEl = document.getElementById('ucResult');
+    let currentCat = 'Length';
+
+    Object.keys(CATEGORIES).forEach(cat => {
+      const chip = document.createElement('button');
+      chip.className = 'cat-chip' + (cat === currentCat ? ' active' : '');
+      chip.textContent = cat;
+      chip.addEventListener('click', () => {
+        document.querySelectorAll('#catRow .cat-chip').forEach(c => c.classList.remove('active'));
+        chip.classList.add('active');
+        currentCat = cat;
+        buildUnitOptions();
+        convert();
+      });
+      catRow.appendChild(chip);
+    });
+
+    function buildUnitOptions() {
+      fromSel.innerHTML = ''; toSel.innerHTML = '';
+      const keys = currentCat === 'Temperature' ? ['C','F','K'] : Object.keys(CATEGORIES[currentCat].units);
+      keys.forEach((u, i) => {
+        const o1 = document.createElement('option'); o1.value = u; o1.textContent = LABELS[u] || u;
+        const o2 = o1.cloneNode(true);
+        if (i === 0) o1.selected = true;
+        if (i === 1) o2.selected = true;
+        fromSel.appendChild(o1); toSel.appendChild(o2);
+      });
+    }
     buildUnitOptions();
+
+    function convertTemp(val, from, to) {
+      let celsius;
+      if (from === 'C') celsius = val;
+      else if (from === 'F') celsius = (val - 32) * 5 / 9;
+      else celsius = val - 273.15;
+      if (to === 'C') return celsius;
+      if (to === 'F') return celsius * 9 / 5 + 32;
+      return celsius + 273.15;
+    }
+
+    function convert() {
+      const amount = parseFloat(amountInput.value);
+      if (isNaN(amount)) { resultEl.textContent = '—'; return; }
+      const from = fromSel.value, to = toSel.value;
+      let result;
+      if (currentCat === 'Temperature') {
+        result = convertTemp(amount, from, to);
+      } else {
+        const units = CATEGORIES[currentCat].units;
+        result = (amount * units[from]) / units[to];
+      }
+      const rounded = Math.abs(result) < 0.0001 ? result.toExponential(3) : (Math.round(result * 1e6) / 1e6);
+      resultEl.textContent = `${amount} ${LABELS[from]||from} = ${rounded} ${LABELS[to]||to}`;
+    }
+
+    document.getElementById('ucSwap').addEventListener('click', () => {
+      const f = fromSel.value; fromSel.value = toSel.value; toSel.value = f;
+      convert();
+    });
+    [amountInput, fromSel, toSel].forEach(el => el.addEventListener('input', convert));
     convert();
-  });
-  catRow.appendChild(chip);
-});
-
-function buildUnitOptions(){
-  fromSel.innerHTML = ''; toSel.innerHTML = '';
-  const keys = currentCat === 'Temperature' ? ['C','F','K'] : Object.keys(CATEGORIES[currentCat].units);
-  keys.forEach((u,i)=>{
-    const o1 = document.createElement('option'); o1.value = u; o1.textContent = LABELS[u] || u;
-    const o2 = o1.cloneNode(true);
-    if (i===0) o1.selected = true;
-    if (i===1) o2.selected = true;
-    fromSel.appendChild(o1); toSel.appendChild(o2);
-  });
-}
-buildUnitOptions();
-
-function convertTemp(val, from, to){
-  let celsius;
-  if (from==='C') celsius = val;
-  else if (from==='F') celsius = (val-32)*5/9;
-  else celsius = val-273.15;
-  if (to==='C') return celsius;
-  if (to==='F') return celsius*9/5+32;
-  return celsius+273.15;
-}
-
-function convert(){
-  const amount = parseFloat(amountInput.value);
-  if (isNaN(amount)){ resultEl.textContent = '—'; return; }
-  const from = fromSel.value, to = toSel.value;
-  let result;
-  if (currentCat === 'Temperature'){
-    result = convertTemp(amount, from, to);
-  } else {
-    const units = CATEGORIES[currentCat].units;
-    result = (amount * units[from]) / units[to];
-  }
-  const rounded = Math.abs(result) < 0.0001 ? result.toExponential(3) : (Math.round(result*1e6)/1e6);
-  resultEl.textContent = `${amount} ${LABELS[from]||from} = ${rounded} ${LABELS[to]||to}`;
-}
-
-document.getElementById('ucSwap').addEventListener('click', ()=>{
-  const f = fromSel.value; fromSel.value = toSel.value; toSel.value = f;
-  convert();
-});
-[amountInput, fromSel, toSel].forEach(el=> el.addEventListener('input', convert));
-
-convert();
-</script>
+  </script>
+  <script src="js/app.js"></script>
 </body>
 </html>

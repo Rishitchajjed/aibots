@@ -24,625 +24,564 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <style>
-    .ps-wrap { max-width: 1100px; margin: 0 auto; padding: 32px 16px 80px; }
-
-    /* ── Page Header ── */
-    .ps-header { text-align: center; margin-bottom: 36px; }
-    .ps-header h1 { font-size: 2.2rem; font-weight: 800; margin: 0 0 8px;
-      background: linear-gradient(135deg, var(--primary) 0%, #a78bfa 100%);
-      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
-    .ps-header p { color: var(--text-secondary); font-size: 1rem; margin: 0; }
-
-    /* ── Drop Zone ── */
+    /* Drop Zone */
     .dropzone {
-      border: 2.5px dashed var(--primary); border-radius: 20px; padding: 52px 24px;
-      text-align: center; cursor: pointer; position: relative;
-      background: var(--bg-secondary); transition: background .2s, border-color .2s;
+      border: 2px dashed var(--primary);
+      border-radius: var(--radius-lg);
+      padding: 44px 20px;
+      text-align: center;
+      cursor: pointer;
+      position: relative;
+      background: var(--bg-secondary);
+      transition: all 0.2s;
     }
     .dropzone:hover, .dropzone.drag-over {
       background: color-mix(in srgb, var(--primary) 8%, var(--bg-secondary));
+      border-color: var(--primary-hover);
     }
-    .dropzone i { font-size: 3rem; color: var(--primary); margin-bottom: 12px; display: block; }
-    .dropzone h3 { margin: 0 0 6px; font-size: 1.2rem; }
-    .dropzone p { color: var(--text-secondary); margin: 0 0 16px; font-size: .9rem; }
+    .dropzone i { font-size: 2.8rem; color: var(--primary); margin-bottom: 12px; display: block; }
+    .dropzone h3 { margin: 0 0 6px; font-size: 1.15rem; color: var(--text-primary); }
+    .dropzone p { color: var(--text-secondary); margin: 0 0 14px; font-size: 0.85rem; }
     .dropzone input[type=file] { position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%; }
-    .dz-badge { display: inline-block; padding: 4px 14px; border-radius: 999px;
-      background: color-mix(in srgb, var(--primary) 15%, transparent); color: var(--primary);
-      font-size: .8rem; font-weight: 600; }
-
-    /* ── Two-column layout ── */
-    .ps-body { display: grid; grid-template-columns: 300px 1fr; gap: 24px; margin-top: 28px; }
-    @media(max-width:780px){ .ps-body { grid-template-columns: 1fr; } }
-
-    /* ── Settings Panel ── */
-    .ps-panel {
-      background: var(--bg-secondary); border: 1px solid var(--border-color);
-      border-radius: 18px; padding: 22px 18px;
-      display: flex; flex-direction: column; gap: 16px;
-      align-self: start; position: sticky; top: 80px;
+    .dz-badge {
+      display: inline-flex; align-items: center; gap: 6px; padding: 4px 12px;
+      border-radius: 999px; background: color-mix(in srgb, var(--primary) 12%, transparent);
+      color: var(--primary); font-size: 0.78rem; font-weight: 600;
     }
-    .ps-panel h3 { font-size: 1rem; font-weight: 700; margin: 0; color: var(--text-primary);
-      display: flex; align-items: center; gap: 8px; }
-    .ps-panel h3 i { color: var(--primary); }
-    .section-label { font-size: .72rem; font-weight: 700; text-transform: uppercase;
-      letter-spacing: .07em; color: var(--text-secondary); padding-bottom: 2px;
-      border-bottom: 1px solid var(--border-color); }
 
-    .form-group { display: flex; flex-direction: column; gap: 5px; }
-    .form-group label { font-size: .78rem; font-weight: 600; color: var(--text-secondary);
-      text-transform: uppercase; letter-spacing: .04em; }
+    /* Layout */
+    .ps-body { display: grid; grid-template-columns: 310px 1fr; gap: 24px; margin-top: 24px; }
+    @media(max-width:840px){ .ps-body { grid-template-columns: 1fr; } }
+
+    /* Panel */
+    .ps-panel {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      align-self: start;
+    }
+    .ps-panel h3 {
+      font-size: 1rem; font-weight: 700; margin: 0;
+      color: var(--text-primary); display: flex; align-items: center; gap: 8px;
+    }
+    .section-label {
+      font-size: 0.72rem; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 0.06em; color: var(--text-secondary); padding-bottom: 2px;
+      border-bottom: 1px solid var(--border-color);
+    }
+    .form-group { display: flex; flex-direction: column; gap: 4px; }
+    .form-group label {
+      font-size: 0.76rem; font-weight: 600; color: var(--text-secondary);
+      text-transform: uppercase; letter-spacing: 0.04em;
+    }
     .form-group input, .form-group select {
-      background: var(--bg-primary); border: 1.5px solid var(--border-color);
-      border-radius: 10px; color: var(--text-primary); padding: 8px 12px;
-      font-size: .9rem; outline: none; transition: border-color .2s;
-      width: 100%; box-sizing: border-box;
+      background: var(--bg-primary);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      color: var(--text-primary);
+      padding: 8px 12px;
+      font-size: 0.88rem;
+      outline: none;
+      transition: border-color 0.2s;
+      width: 100%;
+      box-sizing: border-box;
     }
     .form-group input:focus, .form-group select:focus {
       border-color: var(--primary);
-      box-shadow: 0 0 0 3px color-mix(in srgb, var(--primary) 15%, transparent);
     }
 
-    /* Toggle */
-    .toggle-row { display: flex; align-items: center; justify-content: space-between; }
-    .toggle-row span { font-size: .88rem; color: var(--text-primary); }
-    .toggle { position: relative; width: 44px; height: 24px; flex-shrink: 0; }
+    /* Switch */
+    .toggle-row { display: flex; align-items: center; justify-content: space-between; font-size: 0.85rem; color: var(--text-primary); }
+    .toggle { position: relative; width: 40px; height: 22px; flex-shrink: 0; }
     .toggle input { opacity: 0; width: 0; height: 0; }
-    .slider-t { position: absolute; inset: 0; background: var(--border-color);
-      border-radius: 999px; cursor: pointer; transition: .3s; }
-    .slider-t:before { content: ''; position: absolute; width: 18px; height: 18px;
-      left: 3px; bottom: 3px; background: #fff; border-radius: 50%; transition: .3s; }
+    .slider-t {
+      position: absolute; inset: 0; background: var(--border-color);
+      border-radius: 999px; cursor: pointer; transition: 0.2s;
+    }
+    .slider-t:before {
+      content: ''; position: absolute; width: 16px; height: 16px;
+      left: 3px; bottom: 3px; background: #fff; border-radius: 50%; transition: 0.2s;
+    }
     input:checked + .slider-t { background: var(--primary); }
-    input:checked + .slider-t:before { transform: translateX(20px); }
+    input:checked + .slider-t:before { transform: translateX(18px); }
 
-    /* Watermark swatches */
+    /* Swatches */
     .swatch-row { display: flex; gap: 8px; flex-wrap: wrap; }
-    .swatch { width: 24px; height: 24px; border-radius: 6px; border: 2.5px solid transparent;
-      cursor: pointer; transition: border-color .2s; }
+    .swatch {
+      width: 22px; height: 22px; border-radius: 6px;
+      border: 2px solid transparent; cursor: pointer; transition: 0.15s;
+    }
     .swatch.active { border-color: var(--primary); transform: scale(1.15); }
 
     /* File chip */
-    .file-chip { display: flex; align-items: center; gap: 10px;
+    .file-chip {
+      display: flex; align-items: center; gap: 10px;
       background: color-mix(in srgb, var(--primary) 10%, var(--bg-secondary));
-      border-radius: 12px; padding: 10px 14px; }
-    .file-chip i { color: var(--primary); font-size: 1.3rem; }
-    .file-chip .fc-name { font-weight: 700; font-size: .88rem; white-space: nowrap;
-      overflow: hidden; text-overflow: ellipsis; max-width: 180px; }
-    .file-chip .fc-info { font-size: .75rem; color: var(--text-secondary); }
+      border-radius: 10px; padding: 8px 12px;
+    }
+    .file-chip i { color: var(--primary); font-size: 1.2rem; }
+    .file-chip .fc-name {
+      font-weight: 700; font-size: 0.85rem; white-space: nowrap;
+      overflow: hidden; text-overflow: ellipsis; max-width: 170px;
+    }
+    .file-chip .fc-info { font-size: 0.72rem; color: var(--text-secondary); }
 
-    /* Action Buttons */
-    .ps-actions { display: flex; flex-direction: column; gap: 9px; }
+    /* Buttons */
+    .ps-actions { display: flex; flex-direction: column; gap: 8px; }
     .btn-ps {
       display: flex; align-items: center; justify-content: center; gap: 8px;
-      padding: 11px; border: none; border-radius: 12px;
-      font-size: .92rem; font-weight: 700; cursor: pointer;
-      transition: transform .15s, box-shadow .15s;
+      padding: 10px; border: none; border-radius: 10px;
+      font-size: 0.88rem; font-weight: 700; cursor: pointer;
+      transition: all 0.15s;
     }
-    .btn-ps:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0,0,0,.18); }
-    .btn-ps:active { transform: scale(.97); }
-    .btn-primary-ps { background: linear-gradient(135deg, var(--primary), #a78bfa); color: #fff; }
-    .btn-outline-ps { background: transparent; border: 2px solid var(--primary); color: var(--primary); }
-    .btn-success-ps { background: transparent; border: 2px solid #22c55e; color: #22c55e; }
-    .btn-danger-ps { background: transparent; border: 2px solid #ef4444; color: #ef4444; }
+    .btn-ps:hover { transform: translateY(-1px); }
+    .btn-primary-ps { background: var(--primary); color: #fff; }
+    .btn-outline-ps { background: transparent; border: 1.5px solid var(--primary); color: var(--primary); }
+    .btn-danger-ps { background: transparent; border: 1.5px solid #ef4444; color: #ef4444; }
 
-    /* Progress bar */
-    .progress-bar { height: 4px; background: var(--border-color); border-radius: 999px;
-      overflow: hidden; display: none; }
-    .progress-bar.visible { display: block; }
-    .progress-fill { height: 100%;
-      background: linear-gradient(90deg, var(--primary), #a78bfa);
-      width: 0; transition: width .2s; border-radius: 999px; }
-
-    /* ── Preview Area ── */
-    .ps-preview { background: var(--bg-secondary); border: 1px solid var(--border-color);
-      border-radius: 18px; overflow: hidden; display: flex; flex-direction: column; }
+    /* Preview */
+    .ps-preview {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
     .preview-toolbar {
       display: flex; align-items: center; justify-content: space-between;
-      padding: 12px 16px; border-bottom: 1px solid var(--border-color);
-      gap: 8px; flex-wrap: wrap; flex-shrink: 0;
+      padding: 10px 16px; border-bottom: 1px solid var(--border-color);
+      gap: 8px; flex-wrap: wrap;
     }
-    .preview-toolbar .pt-left { display: flex; align-items: center; gap: 10px; }
-    .preview-toolbar span { font-weight: 700; font-size: .92rem; }
-    .page-info { font-size: .8rem; color: var(--text-secondary);
-      background: var(--bg-primary); padding: 3px 10px; border-radius: 999px; }
-    .toolbar-right { display: flex; gap: 6px; }
+    .preview-toolbar span { font-weight: 700; font-size: 0.9rem; }
     .tb-btn {
-      background: var(--bg-primary); border: 1.5px solid var(--border-color);
-      border-radius: 8px; color: var(--text-primary); padding: 5px 11px;
-      font-size: .8rem; cursor: pointer; display: flex; align-items: center;
-      gap: 5px; transition: border-color .2s, background .2s; white-space: nowrap;
+      background: var(--bg-primary); border: 1px solid var(--border-color);
+      border-radius: 6px; color: var(--text-primary); padding: 4px 10px;
+      font-size: 0.78rem; cursor: pointer;
     }
-    .tb-btn:hover { border-color: var(--primary);
-      background: color-mix(in srgb, var(--primary) 8%, var(--bg-primary)); }
-
     .preview-scroll {
-      overflow-y: auto; max-height: 640px; padding: 24px;
-      display: flex; flex-direction: column; align-items: center; gap: 20px;
-      flex: 1;
+      overflow-y: auto; max-height: 600px; padding: 20px;
+      display: flex; flex-direction: column; align-items: center; gap: 18px;
     }
-    .page-wrapper { position: relative; box-shadow: 0 4px 24px rgba(0,0,0,.25);
-      border-radius: 4px; overflow: hidden; display: inline-block; }
+    .page-wrapper {
+      position: relative; box-shadow: var(--shadow-md);
+      border-radius: 4px; overflow: hidden; display: inline-block;
+    }
     .page-wrapper canvas { display: block; max-width: 100%; }
     .page-badge {
-      position: absolute; bottom: 8px; right: 10px;
-      background: rgba(0,0,0,.55); color: #fff; font-size: .7rem;
+      position: absolute; bottom: 6px; right: 8px;
+      background: rgba(0,0,0,0.65); color: #fff; font-size: 0.68rem;
       padding: 2px 8px; border-radius: 999px;
     }
     .watermark-overlay {
       position: absolute; inset: 0; display: flex; align-items: center;
       justify-content: center; pointer-events: none; font-size: 2.5rem;
-      font-weight: 900; letter-spacing: .1em; transform: rotate(-30deg);
-      opacity: .18; text-transform: uppercase; white-space: nowrap;
+      font-weight: 900; letter-spacing: 0.1em; transform: rotate(-30deg);
+      opacity: 0.18; text-transform: uppercase; white-space: nowrap;
     }
-
-    /* Empty state */
-    .empty-state { padding: 80px 24px; text-align: center; color: var(--text-secondary); }
-    .empty-state i { font-size: 4rem; margin-bottom: 16px; opacity: .3; }
-    .empty-state h3 { font-size: 1.1rem; margin: 0 0 6px; }
-    .empty-state p { margin: 0; font-size: .88rem; }
-
-    /* Toast */
-    .ps-toast {
-      position: fixed; bottom: 28px; left: 50%;
-      transform: translateX(-50%) translateY(16px);
-      background: #18181b; color: #fff; padding: 12px 22px;
-      border-radius: 14px; font-size: .9rem; font-weight: 500;
-      box-shadow: 0 8px 30px rgba(0,0,0,.3); z-index: 9999;
-      display: flex; align-items: center; gap: 10px;
-      opacity: 0; pointer-events: none; white-space: nowrap;
-      transition: opacity .25s, transform .25s;
-    }
-    .ps-toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
   </style>
 </head>
 <body>
+  <div class="bg-mesh"></div>
 
-<div class="ps-wrap">
+  <!-- Navbar -->
+  <header class="navbar">
+    <div class="app-container" style="width: 100%;">
+      <div class="nav-wrapper">
+        <a href="index.html" class="brand-link">
+          <img src="https://i.ibb.co/G2NFYHG/logo.png" alt="AI Bots Logo" class="brand-logo-img">
+          <span>AI Bots</span>
+          <span class="brand-badge">Print Studio</span>
+        </a>
 
-  <div class="ps-header">
-    <h1><i class="fas fa-print" style="font-size:1.8rem; -webkit-text-fill-color: var(--primary);"></i> Print Studio</h1>
-    <p>Upload a PDF or image — preview, configure, watermark, and print or download with full control.</p>
-  </div>
-
-  <!-- Drop Zone -->
-  <div class="dropzone" id="dropzone">
-    <input type="file" id="fileInput" accept=".pdf,.jpg,.jpeg,.png,.gif,.webp,.bmp,.tiff">
-    <i class="fas fa-cloud-upload-alt"></i>
-    <h3>Drop your PDF or Image here</h3>
-    <p>Supports PDF, JPG, PNG, WebP, GIF, BMP, TIFF</p>
-    <span class="dz-badge"><i class="fas fa-lock" style="margin-right:4px;"></i>Processed entirely in your browser — never uploaded</span>
-  </div>
-
-  <!-- Main Body (shown once file loaded) -->
-  <div class="ps-body" id="psBody" style="display:none;">
-
-    <!-- ── Left Settings Panel ── -->
-    <div class="ps-panel">
-      <h3><i class="fas fa-sliders-h"></i> Print Settings</h3>
-
-      <!-- File chip -->
-      <div class="file-chip">
-        <i class="fas fa-file-pdf" id="fileIcon"></i>
-        <div>
-          <div class="fc-name" id="fcName">document.pdf</div>
-          <div class="fc-info" id="fcInfo">Loading…</div>
+        <div class="nav-actions">
+          <a href="index.html" class="btn btn-secondary btn-sm"><i class="fas fa-house"></i> Hub</a>
+          <button class="icon-btn theme-toggle-btn" title="Toggle Dark/Light Mode"><i class="fas fa-moon"></i></button>
         </div>
       </div>
+    </div>
+  </header>
 
-      <div class="section-label">Paper</div>
-      <div class="form-group">
-        <label>Paper Size</label>
-        <select id="paperSize">
-          <option value="a4">A4 (210 × 297 mm)</option>
-          <option value="letter">Letter (216 × 279 mm)</option>
-          <option value="legal">Legal (216 × 356 mm)</option>
-          <option value="a3">A3 (297 × 420 mm)</option>
-          <option value="a5">A5 (148 × 210 mm)</option>
-        </select>
-      </div>
-      <div class="form-group">
-        <label>Orientation</label>
-        <select id="orientation">
-          <option value="portrait">Portrait</option>
-          <option value="landscape">Landscape</option>
-        </select>
-      </div>
+  <main class="app-container tool-page-wrapper">
+    <div class="tool-header">
+      <span class="tool-header-badge"><i class="fas fa-print"></i> Document & Photo Print</span>
+      <h1 class="tool-title">Print Studio</h1>
+      <p class="tool-desc">Upload a PDF or image — preview pages, customize paper size, add watermarks, and print or export cleanly.</p>
+    </div>
 
-      <div class="section-label">Pages</div>
-      <div class="form-group">
-        <label>Page Range <small style="font-weight:400;text-transform:none;">(e.g. 1-3, 5)</small></label>
-        <input type="text" id="pageRange" placeholder="All pages (leave blank)">
-      </div>
-      <div class="form-group">
-        <label>Page Set</label>
-        <select id="oddEven">
-          <option value="all">All Pages</option>
-          <option value="odd">Odd Pages Only</option>
-          <option value="even">Even Pages Only</option>
-        </select>
-      </div>
-      <div class="form-group">
-        <label>Copies</label>
-        <input type="number" id="copies" min="1" max="20" value="1">
-      </div>
+    <!-- Dropzone -->
+    <div class="dropzone" id="dropzone" onclick="document.getElementById('fileInput').click()">
+      <input type="file" id="fileInput" accept=".pdf,.jpg,.jpeg,.png,.gif,.webp,.bmp" onchange="handleFile(event)">
+      <i class="fas fa-cloud-arrow-up"></i>
+      <h3>Drop your PDF or Image here</h3>
+      <p>Supports PDF, JPG, PNG, WebP, GIF, BMP</p>
+      <span class="dz-badge"><i class="fas fa-lock"></i> 100% Client-Side & Private</span>
+    </div>
 
-      <div class="section-label">Effects</div>
-      <div class="toggle-row">
-        <span>Grayscale / B&W</span>
-        <label class="toggle"><input type="checkbox" id="grayscale"><span class="slider-t"></span></label>
-      </div>
-      <div class="toggle-row" style="margin-top:8px;">
-        <span>Fit to Page</span>
-        <label class="toggle"><input type="checkbox" id="fitPage" checked><span class="slider-t"></span></label>
-      </div>
-      <div class="form-group">
-        <label>Rotation</label>
-        <select id="rotation">
-          <option value="0">0° (Original)</option>
-          <option value="90">90° Clockwise</option>
-          <option value="180">180° Flip</option>
-          <option value="270">270° Clockwise</option>
-        </select>
-      </div>
+    <!-- Workspace -->
+    <div class="ps-body" id="psBody" style="display: none;">
+      <!-- Left Panel -->
+      <div class="ps-panel">
+        <h3><i class="fas fa-sliders"></i> Print Settings</h3>
 
-      <div class="section-label">Watermark</div>
-      <div class="toggle-row">
-        <span>Enable Watermark</span>
-        <label class="toggle"><input type="checkbox" id="wmEnabled"><span class="slider-t"></span></label>
-      </div>
-      <div id="wmOptions" style="display:none; flex-direction:column; gap:10px;">
-        <div class="form-group">
-          <label>Watermark Text</label>
-          <input type="text" id="wmText" placeholder="e.g. CONFIDENTIAL" value="DRAFT">
-        </div>
-        <div class="form-group">
-          <label>Colour</label>
-          <div class="swatch-row">
-            <div class="swatch active" style="background:#ef4444;" data-color="#ef4444" onclick="setWmColor(this)"></div>
-            <div class="swatch" style="background:#3b82f6;" data-color="#3b82f6" onclick="setWmColor(this)"></div>
-            <div class="swatch" style="background:#22c55e;" data-color="#22c55e" onclick="setWmColor(this)"></div>
-            <div class="swatch" style="background:#f59e0b;" data-color="#f59e0b" onclick="setWmColor(this)"></div>
-            <div class="swatch" style="background:#6366f1;" data-color="#6366f1" onclick="setWmColor(this)"></div>
-            <div class="swatch" style="background:#111827;" data-color="#111827" onclick="setWmColor(this)"></div>
+        <div class="file-chip">
+          <i class="fas fa-file-pdf" id="fileIcon"></i>
+          <div>
+            <div class="fc-name" id="fcName">document.pdf</div>
+            <div class="fc-info" id="fcInfo">0 KB</div>
           </div>
         </div>
+
+        <div class="section-label">Paper & Layout</div>
         <div class="form-group">
-          <label>Opacity</label>
-          <input type="range" id="wmOpacity" min="5" max="50" value="18" style="width:100%;">
+          <label>Paper Size</label>
+          <select id="paperSize">
+            <option value="a4">A4 (210 × 297 mm)</option>
+            <option value="letter">Letter (216 × 279 mm)</option>
+            <option value="legal">Legal (216 × 356 mm)</option>
+            <option value="a3">A3 (297 × 420 mm)</option>
+            <option value="a5">A5 (148 × 210 mm)</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Orientation</label>
+          <select id="orientation">
+            <option value="portrait">Portrait</option>
+            <option value="landscape">Landscape</option>
+          </select>
+        </div>
+
+        <div class="section-label">Pages</div>
+        <div class="form-group">
+          <label>Page Range <small style="text-transform:none;">(e.g. 1-3, 5)</small></label>
+          <input type="text" id="pageRange" placeholder="All pages">
+        </div>
+        <div class="form-group">
+          <label>Page Set</label>
+          <select id="oddEven">
+            <option value="all">All Pages</option>
+            <option value="odd">Odd Pages Only</option>
+            <option value="even">Even Pages Only</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Copies</label>
+          <input type="number" id="copies" min="1" max="20" value="1">
+        </div>
+
+        <div class="section-label">Effects</div>
+        <div class="toggle-row">
+          <span>Grayscale / B&W</span>
+          <label class="toggle"><input type="checkbox" id="grayscale"><span class="slider-t"></span></label>
+        </div>
+        <div class="form-group" style="margin-top:4px;">
+          <label>Rotation</label>
+          <select id="rotation">
+            <option value="0">0° (Original)</option>
+            <option value="90">90° Clockwise</option>
+            <option value="180">180° Flip</option>
+            <option value="270">270° Clockwise</option>
+          </select>
+        </div>
+
+        <div class="section-label">Watermark</div>
+        <div class="toggle-row">
+          <span>Add Watermark</span>
+          <label class="toggle"><input type="checkbox" id="wmEnabled"><span class="slider-t"></span></label>
+        </div>
+        <div id="wmOptions" style="display:none; flex-direction:column; gap:8px;">
+          <div class="form-group">
+            <label>Text</label>
+            <input type="text" id="wmText" value="DRAFT">
+          </div>
+          <div class="form-group">
+            <label>Color</label>
+            <div class="swatch-row">
+              <div class="swatch active" style="background:#ef4444;" data-color="#ef4444" onclick="setWmColor(this)"></div>
+              <div class="swatch" style="background:#3b82f6;" data-color="#3b82f6" onclick="setWmColor(this)"></div>
+              <div class="swatch" style="background:#22c55e;" data-color="#22c55e" onclick="setWmColor(this)"></div>
+              <div class="swatch" style="background:#f59e0b;" data-color="#f59e0b" onclick="setWmColor(this)"></div>
+              <div class="swatch" style="background:#8b5cf6;" data-color="#8b5cf6" onclick="setWmColor(this)"></div>
+              <div class="swatch" style="background:#0f172a;" data-color="#0f172a" onclick="setWmColor(this)"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Buttons -->
+        <div class="ps-actions" style="margin-top: 6px;">
+          <button class="btn-ps btn-primary-ps" onclick="refreshPreview()"><i class="fas fa-rotate"></i> Update Preview</button>
+          <button class="btn-ps btn-outline-ps" onclick="doDownloadPDF()"><i class="fas fa-download"></i> Download PDF</button>
+          <button class="btn-ps btn-outline-ps" onclick="window.print()"><i class="fas fa-print"></i> Print</button>
+          <button class="btn-ps btn-danger-ps" onclick="clearFile()"><i class="fas fa-trash"></i> Clear File</button>
         </div>
       </div>
 
-      <!-- Progress bar -->
-      <div class="progress-bar" id="progressBar">
-        <div class="progress-fill" id="progressFill"></div>
-      </div>
-
-      <!-- Action Buttons -->
-      <div class="ps-actions">
-        <button class="btn-ps btn-primary-ps" onclick="refreshPreview()">
-          <i class="fas fa-sync-alt"></i> Update Preview
-        </button>
-        <button class="btn-ps btn-outline-ps" onclick="doPrint()">
-          <i class="fas fa-print"></i> Print
-        </button>
-        <button class="btn-ps btn-success-ps" onclick="doDownloadPDF()">
-          <i class="fas fa-file-download"></i> Download PDF
-        </button>
-        <button class="btn-ps btn-danger-ps" onclick="clearFile()">
-          <i class="fas fa-trash-alt"></i> Clear File
-        </button>
+      <!-- Right Preview -->
+      <div class="ps-preview">
+        <div class="preview-toolbar">
+          <span><i class="fas fa-eye" style="color:var(--primary); margin-right:6px;"></i>Preview</span>
+          <div>
+            <button class="tb-btn" onclick="zoomOut()"><i class="fas fa-minus"></i></button>
+            <button class="tb-btn" id="zoomLabel" onclick="resetZoom()">100%</button>
+            <button class="tb-btn" onclick="zoomIn()"><i class="fas fa-plus"></i></button>
+          </div>
+        </div>
+        <div class="preview-scroll" id="previewArea">
+          <!-- Canvases injected dynamically -->
+        </div>
       </div>
     </div>
+  </main>
 
-    <!-- ── Right Preview Panel ── -->
-    <div class="ps-preview">
-      <div class="preview-toolbar">
-        <div class="pt-left">
-          <span><i class="fas fa-eye" style="color:var(--primary);margin-right:6px;"></i>Live Preview</span>
-          <span class="page-info" id="pageCountInfo">0 pages</span>
-        </div>
-        <div class="toolbar-right">
-          <button class="tb-btn" onclick="zoomOut()"><i class="fas fa-search-minus"></i></button>
-          <button class="tb-btn" id="zoomLabel" onclick="resetZoom()">100%</button>
-          <button class="tb-btn" onclick="zoomIn()"><i class="fas fa-search-plus"></i></button>
-          <button class="tb-btn" onclick="toggleFullscreen()"><i class="fas fa-expand"></i> Full</button>
-        </div>
-      </div>
-      <div class="preview-scroll" id="previewArea">
-        <div class="empty-state">
-          <i class="fas fa-file-image"></i>
-          <h3>No file loaded yet</h3>
-          <p>Upload a PDF or image above to preview it here.</p>
-        </div>
-      </div>
-    </div>
+  <script>
+    pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
 
-  </div><!-- /ps-body -->
-</div><!-- /ps-wrap -->
+    let currentFile = null;
+    let currentPDF = null;
+    let wmColor = '#ef4444';
+    let zoomLevel = 1.0;
 
-<!-- Toast -->
-<div class="ps-toast" id="psToast">
-  <i class="fas fa-circle-check" style="color:#22c55e;"></i>
-  <span id="toastMsg">Done</span>
-</div>
+    document.getElementById('wmEnabled').addEventListener('change', e => {
+      document.getElementById('wmOptions').style.display = e.target.checked ? 'flex' : 'none';
+    });
 
-<script>
-  pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
-
-  let currentFile = null;
-  let currentPDF = null;
-  let wmColor = '#ef4444';
-  let zoomLevel = 1.0;
-
-  // ── Drag & Drop ──
-  const dz = document.getElementById('dropzone');
-  dz.addEventListener('dragover', e => { e.preventDefault(); dz.classList.add('drag-over'); });
-  dz.addEventListener('dragleave', () => dz.classList.remove('drag-over'));
-  dz.addEventListener('drop', e => {
-    e.preventDefault(); dz.classList.remove('drag-over');
-    if (e.dataTransfer.files.length) handleFile(e.dataTransfer.files[0]);
-  });
-  document.getElementById('fileInput').addEventListener('change', e => {
-    if (e.target.files.length) handleFile(e.target.files[0]);
-  });
-
-  // Watermark toggle
-  document.getElementById('wmEnabled').addEventListener('change', e => {
-    document.getElementById('wmOptions').style.display = e.target.checked ? 'flex' : 'none';
-  });
-
-  // ── Handle File ──
-  function handleFile(file) {
-    currentFile = file;
-    const ext = file.name.split('.').pop().toLowerCase();
-    const isPDF = file.type === 'application/pdf' || ext === 'pdf';
-    document.getElementById('fileIcon').className = isPDF ? 'fas fa-file-pdf' : 'fas fa-file-image';
-    document.getElementById('fcName').textContent = file.name;
-    document.getElementById('fcInfo').textContent = `${(file.size/1024).toFixed(1)} KB · ${isPDF ? 'PDF Document' : 'Image File'}`;
-    document.getElementById('psBody').style.display = 'grid';
-    dz.style.display = 'none';
-    refreshPreview();
-  }
-
-  // ── Refresh Preview ──
-  async function refreshPreview() {
-    const area = document.getElementById('previewArea');
-    area.innerHTML = '';
-    showProgress(true); setProgress(0);
-    try {
-      if (!currentFile) return;
-      const dataUrl = await readFile(currentFile);
-      if (currentFile.type === 'application/pdf' || currentFile.name.toLowerCase().endsWith('.pdf')) {
-        await renderPDFPreview(dataUrl, area);
-      } else {
-        renderImagePreview(dataUrl, area);
-      }
-    } catch(err) {
-      area.innerHTML = `<div class="empty-state">
-        <i class="fas fa-exclamation-circle" style="color:#ef4444;opacity:1;"></i>
-        <h3>Error rendering file</h3><p>${err.message}</p></div>`;
+    function handleFile(e) {
+      const file = e.target.files[0];
+      if (!file) return;
+      currentFile = file;
+      const isPDF = file.type === 'application/pdf' || file.name.toLowerCase().endsWith('.pdf');
+      document.getElementById('fileIcon').className = isPDF ? 'fas fa-file-pdf' : 'fas fa-file-image';
+      document.getElementById('fcName').textContent = file.name;
+      document.getElementById('fcInfo').textContent = `${(file.size/1024).toFixed(1)} KB`;
+      document.getElementById('psBody').style.display = 'grid';
+      document.getElementById('dropzone').style.display = 'none';
+      refreshPreview();
     }
-    showProgress(false);
-  }
 
-  async function renderPDFPreview(dataUrl, area) {
-    const pdf = await pdfjsLib.getDocument(dataUrl).promise;
-    currentPDF = pdf;
-    const total = pdf.numPages;
-    const pages = getPageList(total);
-    const copies = Math.max(1, parseInt(document.getElementById('copies').value) || 1);
-    const grayscale = document.getElementById('grayscale').checked;
-    const rotation = parseInt(document.getElementById('rotation').value);
-    const wmOn = document.getElementById('wmEnabled').checked;
-    const wmText = document.getElementById('wmText').value || 'DRAFT';
-    const wmOpacity = (parseInt(document.getElementById('wmOpacity').value) || 18) / 100;
-    let allPages = [];
-    for (let c = 0; c < copies; c++) allPages = allPages.concat(pages);
-    document.getElementById('pageCountInfo').textContent = `${allPages.length} page${allPages.length!==1?'s':''}`;
-
-    for (let i = 0; i < allPages.length; i++) {
-      const page = await pdf.getPage(allPages[i]);
-      const rotTotal = (page.rotate + rotation) % 360;
-      const viewport = page.getViewport({ scale: zoomLevel * 1.4, rotation: rotTotal });
-      const canvas = document.createElement('canvas');
-      canvas.width = viewport.width; canvas.height = viewport.height;
-      const ctx = canvas.getContext('2d');
-      await page.render({ canvasContext: ctx, viewport }).promise;
-      if (grayscale) {
-        const id = ctx.getImageData(0,0,canvas.width,canvas.height);
-        for (let j=0; j<id.data.length; j+=4) {
-          const avg = (id.data[j]+id.data[j+1]+id.data[j+2])/3;
-          id.data[j]=id.data[j+1]=id.data[j+2]=avg;
+    async function refreshPreview() {
+      const area = document.getElementById('previewArea');
+      area.innerHTML = '<div style="color:var(--text-secondary); padding:40px;"><i class="fas fa-spinner fa-spin"></i> Rendering preview...</div>';
+      try {
+        if (!currentFile) return;
+        const dataUrl = await readFile(currentFile);
+        if (currentFile.type === 'application/pdf' || currentFile.name.toLowerCase().endsWith('.pdf')) {
+          await renderPDFPreview(dataUrl, area);
+        } else {
+          renderImagePreview(dataUrl, area);
         }
-        ctx.putImageData(id,0,0);
+      } catch(err) {
+        area.innerHTML = `<div style="color:#ef4444; padding:20px;">Error: ${err.message}</div>`;
       }
-      const wrapper = document.createElement('div');
-      wrapper.className = 'page-wrapper';
-      wrapper.appendChild(canvas);
-      if (wmOn) {
-        const wm = document.createElement('div');
-        wm.className = 'watermark-overlay';
-        wm.textContent = wmText; wm.style.color = wmColor; wm.style.opacity = wmOpacity;
-        wrapper.appendChild(wm);
-      }
-      const badge = document.createElement('div'); badge.className = 'page-badge';
-      badge.textContent = copies > 1
-        ? `Page ${allPages[i]} · Copy ${Math.floor(i/pages.length)+1}`
-        : `Page ${allPages[i]} of ${total}`;
-      wrapper.appendChild(badge);
-      area.appendChild(wrapper);
-      setProgress(Math.round(((i+1)/allPages.length)*100));
     }
-  }
 
-  function renderImagePreview(dataUrl, area) {
-    const rotation = parseInt(document.getElementById('rotation').value);
-    const grayscale = document.getElementById('grayscale').checked;
-    const wmOn = document.getElementById('wmEnabled').checked;
-    const wmText = document.getElementById('wmText').value || 'DRAFT';
-    const wmOpacity = (parseInt(document.getElementById('wmOpacity').value) || 18) / 100;
-    const copies = Math.max(1, parseInt(document.getElementById('copies').value) || 1);
-    document.getElementById('pageCountInfo').textContent = `${copies} cop${copies!==1?'ies':'y'}`;
+    async function renderPDFPreview(dataUrl, area) {
+      area.innerHTML = '';
+      const pdf = await pdfjsLib.getDocument(dataUrl).promise;
+      currentPDF = pdf;
+      const total = pdf.numPages;
+      const pages = getPageList(total);
+      const copies = Math.max(1, parseInt(document.getElementById('copies').value) || 1);
+      const grayscale = document.getElementById('grayscale').checked;
+      const rotation = parseInt(document.getElementById('rotation').value);
+      const wmOn = document.getElementById('wmEnabled').checked;
+      const wmText = document.getElementById('wmText').value || 'DRAFT';
 
-    for (let c = 0; c < copies; c++) {
-      const wrapper = document.createElement('div'); wrapper.className = 'page-wrapper';
-      const img = document.createElement('img');
-      img.src = dataUrl;
-      img.style.maxWidth = (480 * zoomLevel) + 'px';
-      img.style.transform = `rotate(${rotation}deg)`;
-      img.style.display = 'block';
-      if (grayscale) img.style.filter = 'grayscale(100%)';
-      wrapper.appendChild(img);
-      if (wmOn) {
-        const wm = document.createElement('div'); wm.className = 'watermark-overlay';
-        wm.textContent = wmText; wm.style.color = wmColor; wm.style.opacity = wmOpacity;
-        wrapper.appendChild(wm);
-      }
-      if (copies > 1) {
-        const badge = document.createElement('div'); badge.className = 'page-badge';
-        badge.textContent = `Copy ${c+1} of ${copies}`;
-        wrapper.appendChild(badge);
-      }
-      area.appendChild(wrapper);
-    }
-    setProgress(100);
-  }
-
-  // ── Download PDF ──
-  async function doDownloadPDF() {
-    if (!currentFile) { toast('Please upload a file first.'); return; }
-    toast('Generating PDF…');
-    const { jsPDF } = window.jspdf;
-    const paperSize = document.getElementById('paperSize').value;
-    const orientation = document.getElementById('orientation').value;
-    const grayscale = document.getElementById('grayscale').checked;
-    const rotation = parseInt(document.getElementById('rotation').value);
-    const wmOn = document.getElementById('wmEnabled').checked;
-    const wmText = document.getElementById('wmText').value || 'DRAFT';
-    const copies = Math.max(1, parseInt(document.getElementById('copies').value)||1);
-    const doc = new jsPDF({ orientation, unit: 'mm', format: paperSize });
-    const pW = doc.internal.pageSize.getWidth();
-    const pH = doc.internal.pageSize.getHeight();
-    const dataUrl = await readFile(currentFile);
-    let first = true;
-
-    if (currentPDF) {
-      const pages = getPageList(currentPDF.numPages);
       let allPages = [];
-      for (let c=0; c<copies; c++) allPages=allPages.concat(pages);
-      for (const pageNum of allPages) {
-        const page = await currentPDF.getPage(pageNum);
+      for (let c = 0; c < copies; c++) allPages = allPages.concat(pages);
+
+      for (let i = 0; i < allPages.length; i++) {
+        const page = await pdf.getPage(allPages[i]);
         const rotTotal = (page.rotate + rotation) % 360;
-        const viewport = page.getViewport({ scale: 2, rotation: rotTotal });
+        const viewport = page.getViewport({ scale: zoomLevel * 1.3, rotation: rotTotal });
         const canvas = document.createElement('canvas');
         canvas.width = viewport.width; canvas.height = viewport.height;
         const ctx = canvas.getContext('2d');
         await page.render({ canvasContext: ctx, viewport }).promise;
+
         if (grayscale) {
           const id = ctx.getImageData(0,0,canvas.width,canvas.height);
-          for (let i=0;i<id.data.length;i+=4){const avg=(id.data[i]+id.data[i+1]+id.data[i+2])/3;id.data[i]=id.data[i+1]=id.data[i+2]=avg;}
+          for (let j=0; j<id.data.length; j+=4) {
+            const avg = (id.data[j]+id.data[j+1]+id.data[j+2])/3;
+            id.data[j]=id.data[j+1]=id.data[j+2]=avg;
+          }
           ctx.putImageData(id,0,0);
         }
-        if (!first) doc.addPage(); first=false;
-        doc.addImage(canvas.toDataURL('image/jpeg',.92),'JPEG',0,0,pW,pH);
+
+        const wrapper = document.createElement('div');
+        wrapper.className = 'page-wrapper';
+        wrapper.appendChild(canvas);
+
         if (wmOn) {
-          doc.setTextColor(wmColor); doc.setFontSize(44); doc.setFont(undefined,'bold');
-          doc.text(wmText, pW/2, pH/2, { angle:330, align:'center' });
+          const wm = document.createElement('div');
+          wm.className = 'watermark-overlay';
+          wm.textContent = wmText; wm.style.color = wmColor;
+          wrapper.appendChild(wm);
         }
-      }
-    } else {
-      for (let c=0; c<copies; c++) {
-        if (!first) doc.addPage(); first=false;
-        const img=new Image(); img.src=dataUrl;
-        await new Promise(r=>img.onload=r);
-        const canvas=document.createElement('canvas');
-        canvas.width=img.naturalWidth; canvas.height=img.naturalHeight;
-        const ctx=canvas.getContext('2d');
-        ctx.save(); ctx.translate(canvas.width/2,canvas.height/2);
-        ctx.rotate(rotation*Math.PI/180);
-        ctx.drawImage(img,-img.naturalWidth/2,-img.naturalHeight/2);
-        ctx.restore();
-        if (grayscale) {
-          const id=ctx.getImageData(0,0,canvas.width,canvas.height);
-          for (let i=0;i<id.data.length;i+=4){const avg=(id.data[i]+id.data[i+1]+id.data[i+2])/3;id.data[i]=id.data[i+1]=id.data[i+2]=avg;}
-          ctx.putImageData(id,0,0);
-        }
-        doc.addImage(canvas.toDataURL('image/jpeg',.92),'JPEG',0,0,pW,pH);
-        if (wmOn) {
-          doc.setTextColor(wmColor); doc.setFontSize(44); doc.setFont(undefined,'bold');
-          doc.text(wmText, pW/2, pH/2, { angle:330, align:'center' });
-        }
+
+        const badge = document.createElement('div');
+        badge.className = 'page-badge';
+        badge.textContent = `Page ${allPages[i]} of ${total}`;
+        wrapper.appendChild(badge);
+
+        area.appendChild(wrapper);
       }
     }
-    doc.save((currentFile.name.replace(/\.[^/.]+$/,'')||'document')+'_print.pdf');
-    toast('PDF downloaded successfully!');
-  }
 
-  // ── Print ──
-  async function doPrint() {
-    if (!currentFile) { toast('Please upload a file first.'); return; }
-    toast('Preparing print…');
-    await doDownloadPDF();
-  }
+    function renderImagePreview(dataUrl, area) {
+      area.innerHTML = '';
+      const rotation = parseInt(document.getElementById('rotation').value);
+      const grayscale = document.getElementById('grayscale').checked;
+      const wmOn = document.getElementById('wmEnabled').checked;
+      const wmText = document.getElementById('wmText').value || 'DRAFT';
+      const copies = Math.max(1, parseInt(document.getElementById('copies').value) || 1);
 
-  // ── Helpers ──
-  function getPageList(total) {
-    const rangeStr = document.getElementById('pageRange').value.trim();
-    const oddEven = document.getElementById('oddEven').value;
-    let pages = [];
-    if (rangeStr === '') {
-      for (let i=1;i<=total;i++) pages.push(i);
-    } else {
-      rangeStr.split(',').forEach(part => {
-        const p = part.trim().split('-');
-        if (p.length===1){const n=parseInt(p[0]);if(!isNaN(n)&&n>=1&&n<=total)pages.push(n);}
-        else if(p.length===2){const s=parseInt(p[0]),e=parseInt(p[1]);if(!isNaN(s)&&!isNaN(e)&&s>=1&&e<=total&&s<=e)for(let i=s;i<=e;i++)pages.push(i);}
+      for (let c = 0; c < copies; c++) {
+        const wrapper = document.createElement('div');
+        wrapper.className = 'page-wrapper';
+        const img = document.createElement('img');
+        img.src = dataUrl;
+        img.style.maxWidth = (460 * zoomLevel) + 'px';
+        img.style.transform = `rotate(${rotation}deg)`;
+        img.style.display = 'block';
+        if (grayscale) img.style.filter = 'grayscale(100%)';
+        wrapper.appendChild(img);
+
+        if (wmOn) {
+          const wm = document.createElement('div');
+          wm.className = 'watermark-overlay';
+          wm.textContent = wmText; wm.style.color = wmColor;
+          wrapper.appendChild(wm);
+        }
+
+        area.appendChild(wrapper);
+      }
+    }
+
+    async function doDownloadPDF() {
+      if (!currentFile) return;
+      const { jsPDF } = window.jspdf;
+      const paperSize = document.getElementById('paperSize').value;
+      const orientation = document.getElementById('orientation').value;
+      const grayscale = document.getElementById('grayscale').checked;
+      const rotation = parseInt(document.getElementById('rotation').value);
+      const wmOn = document.getElementById('wmEnabled').checked;
+      const wmText = document.getElementById('wmText').value || 'DRAFT';
+      const copies = Math.max(1, parseInt(document.getElementById('copies').value)||1);
+
+      const doc = new jsPDF({ orientation, unit: 'mm', format: paperSize });
+      const pW = doc.internal.pageSize.getWidth();
+      const pH = doc.internal.pageSize.getHeight();
+      const dataUrl = await readFile(currentFile);
+      let first = true;
+
+      if (currentPDF) {
+        const pages = getPageList(currentPDF.numPages);
+        let allPages = [];
+        for (let c=0; c<copies; c++) allPages = allPages.concat(pages);
+        for (const pageNum of allPages) {
+          const page = await currentPDF.getPage(pageNum);
+          const rotTotal = (page.rotate + rotation) % 360;
+          const viewport = page.getViewport({ scale: 2, rotation: rotTotal });
+          const canvas = document.createElement('canvas');
+          canvas.width = viewport.width; canvas.height = viewport.height;
+          const ctx = canvas.getContext('2d');
+          await page.render({ canvasContext: ctx, viewport }).promise;
+          if (grayscale) {
+            const id = ctx.getImageData(0,0,canvas.width,canvas.height);
+            for (let i=0; i<id.data.length; i+=4){
+              const avg=(id.data[i]+id.data[i+1]+id.data[i+2])/3;
+              id.data[i]=id.data[i+1]=id.data[i+2]=avg;
+            }
+            ctx.putImageData(id,0,0);
+          }
+          if (!first) doc.addPage(); first = false;
+          doc.addImage(canvas.toDataURL('image/jpeg', 0.92), 'JPEG', 0, 0, pW, pH);
+          if (wmOn) {
+            doc.setTextColor(wmColor); doc.setFontSize(44); doc.setFont(undefined, 'bold');
+            doc.text(wmText, pW/2, pH/2, { angle: 330, align: 'center' });
+          }
+        }
+      } else {
+        for (let c=0; c<copies; c++) {
+          if (!first) doc.addPage(); first = false;
+          const img = new Image(); img.src = dataUrl;
+          await new Promise(r => img.onload = r);
+          const canvas = document.createElement('canvas');
+          canvas.width = img.naturalWidth; canvas.height = img.naturalHeight;
+          const ctx = canvas.getContext('2d');
+          ctx.save(); ctx.translate(canvas.width/2, canvas.height/2);
+          ctx.rotate(rotation * Math.PI / 180);
+          ctx.drawImage(img, -img.naturalWidth/2, -img.naturalHeight/2);
+          ctx.restore();
+          if (grayscale) {
+            const id = ctx.getImageData(0,0,canvas.width,canvas.height);
+            for (let i=0; i<id.data.length; i+=4){
+              const avg=(id.data[i]+id.data[i+1]+id.data[i+2])/3;
+              id.data[i]=id.data[i+1]=id.data[i+2]=avg;
+            }
+            ctx.putImageData(id,0,0);
+          }
+          doc.addImage(canvas.toDataURL('image/jpeg', 0.92), 'JPEG', 0, 0, pW, pH);
+          if (wmOn) {
+            doc.setTextColor(wmColor); doc.setFontSize(44); doc.setFont(undefined, 'bold');
+            doc.text(wmText, pW/2, pH/2, { angle: 330, align: 'center' });
+          }
+        }
+      }
+      doc.save((currentFile.name.replace(/\.[^/.]+$/, '')||'print_document') + '.pdf');
+    }
+
+    function getPageList(total) {
+      const rangeStr = document.getElementById('pageRange').value.trim();
+      const oddEven = document.getElementById('oddEven').value;
+      let pages = [];
+      if (rangeStr === '') {
+        for (let i=1; i<=total; i++) pages.push(i);
+      } else {
+        rangeStr.split(',').forEach(part => {
+          const p = part.trim().split('-');
+          if (p.length===1){const n=parseInt(p[0]); if(!isNaN(n)&&n>=1&&n<=total) pages.push(n);}
+          else if(p.length===2){
+            const s=parseInt(p[0]), e=parseInt(p[1]);
+            if(!isNaN(s)&&!isNaN(e)&&s>=1&&e<=total&&s<=e) for(let i=s; i<=e; i++) pages.push(i);
+          }
+        });
+      }
+      if (oddEven==='odd') pages = pages.filter(n => n%2 !== 0);
+      if (oddEven==='even') pages = pages.filter(n => n%2 === 0);
+      return [...new Set(pages)].sort((a,b) => a-b);
+    }
+
+    function readFile(file) {
+      return new Promise((res, rej) => {
+        const r = new FileReader(); r.onload = e => res(e.target.result); r.onerror = rej; r.readAsDataURL(file);
       });
     }
-    if (oddEven==='odd') pages=pages.filter(n=>n%2!==0);
-    if (oddEven==='even') pages=pages.filter(n=>n%2===0);
-    return [...new Set(pages)].sort((a,b)=>a-b);
-  }
 
-  function readFile(file) {
-    return new Promise((res,rej)=>{const r=new FileReader();r.onload=e=>res(e.target.result);r.onerror=rej;r.readAsDataURL(file);});
-  }
+    function clearFile() {
+      currentFile = null; currentPDF = null;
+      document.getElementById('psBody').style.display = 'none';
+      document.getElementById('fileInput').value = '';
+      document.getElementById('dropzone').style.display = 'block';
+    }
 
-  function clearFile() {
-    currentFile=null; currentPDF=null;
-    document.getElementById('psBody').style.display='none';
-    document.getElementById('fileInput').value='';
-    dz.style.display='block';
-  }
+    function setWmColor(el) {
+      document.querySelectorAll('.swatch').forEach(s => s.classList.remove('active'));
+      el.classList.add('active'); wmColor = el.dataset.color;
+    }
 
-  function setWmColor(el) {
-    document.querySelectorAll('.swatch').forEach(s=>s.classList.remove('active'));
-    el.classList.add('active'); wmColor=el.dataset.color;
-  }
-
-  function setProgress(pct){document.getElementById('progressFill').style.width=pct+'%';}
-  function showProgress(v){document.getElementById('progressBar').classList.toggle('visible',v);}
-
-  function toast(msg){
-    const t=document.getElementById('psToast');
-    document.getElementById('toastMsg').textContent=msg;
-    t.classList.add('show');
-    clearTimeout(t._t);
-    t._t=setTimeout(()=>t.classList.remove('show'),2800);
-  }
-
-  function zoomIn(){zoomLevel=Math.min(3,zoomLevel+0.25);updateZoom();}
-  function zoomOut(){zoomLevel=Math.max(0.25,zoomLevel-0.25);updateZoom();}
-  function resetZoom(){zoomLevel=1;updateZoom();}
-  function updateZoom(){document.getElementById('zoomLabel').textContent=Math.round(zoomLevel*100)+'%';refreshPreview();}
-
-  function toggleFullscreen(){
-    const el=document.querySelector('.ps-preview');
-    if(!document.fullscreenElement)el.requestFullscreen();
-    else document.exitFullscreen();
-  }
-</script>
-
-<script src="js/common.js"></script>
-<script>abInitChrome('print');</script>
+    function zoomIn(){ zoomLevel = Math.min(2.5, zoomLevel + 0.2); updateZoom(); }
+    function zoomOut(){ zoomLevel = Math.max(0.4, zoomLevel - 0.2); updateZoom(); }
+    function resetZoom(){ zoomLevel = 1.0; updateZoom(); }
+    function updateZoom(){
+      document.getElementById('zoomLabel').textContent = Math.round(zoomLevel * 100) + '%';
+      refreshPreview();
+    }
+  </script>
+  <script src="js/app.js"></script>
 </body>
 </html>

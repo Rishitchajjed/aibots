@@ -1,109 +1,149 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta name="keywords" content="word counter, character counter, word count online, reading time calculator, keyword density tool, paragraph counter, ai bots word counter, ai bots, aibots, ai bots co in, aibots.co.in, Rishit Chajjed">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="google-site-verification" content="ndzq-U-NLijgza_QqgQdcc2U3oMRoud_BT2ZZiwFREM">
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Word Counter — AI Bots</title>
-<meta name="description" content="Count words, characters, sentences and reading time as you type, with keyword density.">
-<link rel="icon" href="https://i.ibb.co/XjHbck3/logo.png" type="image/png">
-<link rel="stylesheet" href="css/theme.css">
-<style>
-  .wc-wrap{ display:grid; grid-template-columns:1fr 260px; gap:18px; align-items:start; }
-  @media(max-width:760px){ .wc-wrap{ grid-template-columns:1fr; } }
-  #wcInput{ min-height:340px; font-size:15.5px; line-height:1.6; resize:vertical; }
-  .stat-grid{ display:grid; grid-template-columns:1fr 1fr; gap:10px; }
-  .stat{ background:var(--surface-2); border-radius:var(--radius-sm); padding:12px; text-align:center; }
-  .stat .v{ font-family:var(--font-mono); font-size:22px; font-weight:700; }
-  .stat .l{ font-size:11px; color:var(--muted); text-transform:uppercase; letter-spacing:.03em; }
-  .kw-row{ display:flex; justify-content:space-between; font-size:13px; padding:6px 0; border-bottom:1px solid var(--border); }
-  .kw-row:last-child{ border-bottom:none; }
-</style>
+  <meta name="google-site-verification" content="-Yb6Nx74gbZ3wRN5uP-Y8KKwDWlt1DPpxs4nA3PkE6M">
+  <meta name="robots" content="index, follow">
+  <title>Smart Word Counter — AI Bots</title>
+  <meta name="description" content="Count words, characters, sentences, paragraphs, and reading time in real-time with top keyword density analytics.">
+  <meta name="keywords" content="word counter, character counter, word count online, reading time calculator, keyword density tool, ai bots word counter">
+  <link rel="icon" href="https://i.ibb.co/G2NFYHG/logo.png" type="image/png">
+  <link rel="canonical" href="https://www.aibots.co.in/wordcounter.html">
+  <!-- Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-2L87FMQS3W"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-2L87FMQS3W');
+  </script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="css/theme.css">
+  <style>
+    .wc-wrap { display: grid; grid-template-columns: 1fr 280px; gap: 24px; align-items: start; }
+    @media (max-width: 820px) { .wc-wrap { grid-template-columns: 1fr; } }
+    #wcInput {
+      width: 100%; min-height: 320px; font-size: 1rem; line-height: 1.6;
+      resize: vertical; border-radius: var(--radius-md); box-sizing: border-box;
+      background: var(--bg-primary); border: 1px solid var(--border-color);
+      color: var(--text-primary); padding: 14px; outline: none;
+    }
+    #wcInput:focus { border-color: var(--primary); }
+    .stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .stat {
+      background: var(--bg-primary); border: 1px solid var(--border-color);
+      border-radius: var(--radius-md); padding: 12px; text-align: center;
+    }
+    .stat .v { font-family: monospace; font-size: 1.4rem; font-weight: 800; color: var(--primary); }
+    .stat .l { font-size: 0.72rem; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.04em; margin-top: 2px; }
+    .kw-row { display: flex; justify-content: space-between; font-size: 0.85rem; padding: 6px 0; border-bottom: 1px solid var(--border-color); }
+    .kw-row:last-child { border-bottom: none; }
+    .btn-bar { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 12px; }
+  </style>
 </head>
 <body>
-<div class="ab-shell">
-  <div class="ab-page-head">
-    <h1>📝 Word Counter</h1>
-    <p>Paste or type text to see live word, character and reading-time stats, plus top keywords.</p>
-  </div>
+  <div class="bg-mesh"></div>
 
-  <div class="wc-wrap">
-    <div class="ab-card">
-      <textarea id="wcInput" class="ab-input" placeholder="Start typing or paste your text here…"></textarea>
-      <div class="ab-row ab-mt-16">
-        <button class="ab-btn secondary sm" id="clearBtn">Clear</button>
-        <button class="ab-btn secondary sm" id="copyBtn">Copy text</button>
-        <button class="ab-btn secondary sm" id="upperBtn">UPPERCASE</button>
-        <button class="ab-btn secondary sm" id="lowerBtn">lowercase</button>
-        <button class="ab-btn secondary sm" id="titleBtn">Title Case</button>
+  <!-- Navbar -->
+  <header class="navbar">
+    <div class="app-container" style="width: 100%;">
+      <div class="nav-wrapper">
+        <a href="index.html" class="brand-link">
+          <img src="https://i.ibb.co/G2NFYHG/logo.png" alt="AI Bots Logo" class="brand-logo-img">
+          <span>AI Bots</span>
+          <span class="brand-badge">Word Counter</span>
+        </a>
+
+        <div class="nav-actions">
+          <a href="index.html" class="btn btn-secondary btn-sm"><i class="fas fa-house"></i> Hub</a>
+          <button class="icon-btn theme-toggle-btn" title="Toggle Dark/Light Mode"><i class="fas fa-moon"></i></button>
+        </div>
       </div>
     </div>
+  </header>
 
-    <div class="ab-card">
-      <div class="stat-grid">
-        <div class="stat"><div class="v" id="stWords">0</div><div class="l">Words</div></div>
-        <div class="stat"><div class="v" id="stChars">0</div><div class="l">Characters</div></div>
-        <div class="stat"><div class="v" id="stCharsNs">0</div><div class="l">No spaces</div></div>
-        <div class="stat"><div class="v" id="stSentences">0</div><div class="l">Sentences</div></div>
-        <div class="stat"><div class="v" id="stParas">0</div><div class="l">Paragraphs</div></div>
-        <div class="stat"><div class="v" id="stTime">0m</div><div class="l">Read time</div></div>
-      </div>
-      <h3 style="font-size:14px; margin:18px 0 6px;">Top keywords</h3>
-      <div id="kwList" style="color:var(--muted); font-size:13px;">Nothing yet.</div>
+  <main class="app-container tool-page-wrapper">
+    <div class="tool-header">
+      <span class="tool-header-badge"><i class="fas fa-spell-check"></i> Writing & SEO Tool</span>
+      <h1 class="tool-title">Word Counter</h1>
+      <p class="tool-desc">Paste or type text to see live word, character and reading-time stats, plus top keywords.</p>
     </div>
-  </div>
-</div>
 
-<script src="js/common.js"></script>
-<script>
-abInitChrome('wordcounter');
+    <div class="wc-wrap">
+      <div class="tool-card-container">
+        <textarea id="wcInput" placeholder="Start typing or paste your text here…"></textarea>
+        <div class="btn-bar">
+          <button class="btn btn-secondary btn-sm" id="clearBtn"><i class="fas fa-trash"></i> Clear</button>
+          <button class="btn btn-secondary btn-sm" id="copyBtn"><i class="fas fa-copy"></i> Copy Text</button>
+          <button class="btn btn-secondary btn-sm" id="upperBtn">UPPERCASE</button>
+          <button class="btn btn-secondary btn-sm" id="lowerBtn">lowercase</button>
+          <button class="btn btn-secondary btn-sm" id="titleBtn">Title Case</button>
+        </div>
+      </div>
 
-const input = document.getElementById('wcInput');
-const STOPWORDS = new Set(['the','a','an','and','or','but','is','are','was','were','to','of','in','on','for','with','as','at','by','it','this','that','be','have','has','had','i','you','he','she','they','we','my','your','their','our','not','so','if','from']);
+      <div class="tool-card-container">
+        <div class="stat-grid">
+          <div class="stat"><div class="v" id="stWords">0</div><div class="l">Words</div></div>
+          <div class="stat"><div class="v" id="stChars">0</div><div class="l">Characters</div></div>
+          <div class="stat"><div class="v" id="stCharsNs">0</div><div class="l">No spaces</div></div>
+          <div class="stat"><div class="v" id="stSentences">0</div><div class="l">Sentences</div></div>
+          <div class="stat"><div class="v" id="stParas">0</div><div class="l">Paragraphs</div></div>
+          <div class="stat"><div class="v" id="stTime">0m</div><div class="l">Read time</div></div>
+        </div>
+        <h3 style="font-size: 0.9rem; font-weight: 700; margin: 18px 0 8px; color: var(--text-primary);">Top Keywords</h3>
+        <div id="kwList" style="color: var(--text-secondary); font-size: 0.82rem;">Nothing yet.</div>
+      </div>
+    </div>
+  </main>
 
-function analyze(){
-  const text = input.value;
-  const words = (text.match(/[A-Za-z0-9''-]+/g) || []);
-  const chars = text.length;
-  const charsNs = text.replace(/\s/g,'').length;
-  const sentences = (text.match(/[.!?]+(\s|$)/g) || []).length || (text.trim() ? 1 : 0);
-  const paras = text.split(/\n{2,}|\n/).filter(p=>p.trim()).length;
-  const readMins = Math.max(1, Math.round(words.length / 200));
+  <script>
+    const input = document.getElementById('wcInput');
+    const STOPWORDS = new Set(['the','a','an','and','or','but','is','are','was','were','to','of','in','on','for','with','as','at','by','it','this','that','be','have','has','had','i','you','he','she','they','we','my','your','their','our','not','so','if','from']);
 
-  document.getElementById('stWords').textContent = words.length;
-  document.getElementById('stChars').textContent = chars;
-  document.getElementById('stCharsNs').textContent = charsNs;
-  document.getElementById('stSentences').textContent = sentences;
-  document.getElementById('stParas').textContent = paras;
-  document.getElementById('stTime').textContent = text.trim() ? readMins + 'm' : '0m';
+    function analyze() {
+      const text = input.value;
+      const words = (text.match(/[A-Za-z0-9''-]+/g) || []);
+      const chars = text.length;
+      const charsNs = text.replace(/\s/g,'').length;
+      const sentences = (text.match(/[.!?]+(\s|$)/g) || []).length || (text.trim() ? 1 : 0);
+      const paras = text.split(/\n{2,}|\n/).filter(p => p.trim()).length;
+      const readMins = Math.max(1, Math.round(words.length / 200));
 
-  const freq = {};
-  words.forEach(w=>{
-    const lw = w.toLowerCase();
-    if (lw.length < 3 || STOPWORDS.has(lw)) return;
-    freq[lw] = (freq[lw]||0) + 1;
-  });
-  const top = Object.entries(freq).sort((a,b)=>b[1]-a[1]).slice(0,8);
-  const kwList = document.getElementById('kwList');
-  if (!top.length){ kwList.textContent = 'Nothing yet.'; return; }
-  kwList.innerHTML = top.map(([w,c])=>`<div class="kw-row"><span>${w}</span><span class="ab-mono">${c}</span></div>`).join('');
-}
+      document.getElementById('stWords').textContent = words.length;
+      document.getElementById('stChars').textContent = chars;
+      document.getElementById('stCharsNs').textContent = charsNs;
+      document.getElementById('stSentences').textContent = sentences;
+      document.getElementById('stParas').textContent = paras;
+      document.getElementById('stTime').textContent = text.trim() ? readMins + 'm' : '0m';
 
-input.addEventListener('input', analyze);
+      const freq = {};
+      words.forEach(w => {
+        const lw = w.toLowerCase();
+        if (lw.length < 3 || STOPWORDS.has(lw)) return;
+        freq[lw] = (freq[lw] || 0) + 1;
+      });
+      const top = Object.entries(freq).sort((a,b) => b[1] - a[1]).slice(0, 6);
+      const kwList = document.getElementById('kwList');
+      if (!top.length) { kwList.textContent = 'Nothing yet.'; return; }
+      kwList.innerHTML = top.map(([w, c]) => `<div class="kw-row"><span>${w}</span><span style="font-family:monospace; font-weight:700; color:var(--primary);">${c}</span></div>`).join('');
+    }
 
-document.getElementById('clearBtn').addEventListener('click', ()=>{ input.value=''; analyze(); });
-document.getElementById('copyBtn').addEventListener('click', ()=>{
-  navigator.clipboard.writeText(input.value).then(()=> abToast('Copied to clipboard'));
-});
-document.getElementById('upperBtn').addEventListener('click', ()=>{ input.value = input.value.toUpperCase(); analyze(); });
-document.getElementById('lowerBtn').addEventListener('click', ()=>{ input.value = input.value.toLowerCase(); analyze(); });
-document.getElementById('titleBtn').addEventListener('click', ()=>{
-  input.value = input.value.replace(/\w\S*/g, t => t.charAt(0).toUpperCase() + t.substr(1).toLowerCase());
-  analyze();
-});
+    input.addEventListener('input', analyze);
+    document.getElementById('clearBtn').addEventListener('click', () => { input.value = ''; analyze(); });
+    document.getElementById('copyBtn').addEventListener('click', () => {
+      navigator.clipboard.writeText(input.value).then(() => alert('Copied to clipboard!'));
+    });
+    document.getElementById('upperBtn').addEventListener('click', () => { input.value = input.value.toUpperCase(); analyze(); });
+    document.getElementById('lowerBtn').addEventListener('click', () => { input.value = input.value.toLowerCase(); analyze(); });
+    document.getElementById('titleBtn').addEventListener('click', () => {
+      input.value = input.value.replace(/\w\S*/g, t => t.charAt(0).toUpperCase() + t.substr(1).toLowerCase());
+      analyze();
+    });
 
-analyze();
-</script>
+    analyze();
+  </script>
+  <script src="js/app.js"></script>
 </body>
 </html>

@@ -23,37 +23,20 @@
   <link rel="stylesheet" href="css/theme.css">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <style>
-    .pm-container {
-      max-width: 1040px;
-      margin: 30px auto 80px;
-      padding: 0 16px;
-    }
-    .pm-header {
-      text-align: center;
-      margin-bottom: 32px;
-    }
-    .pm-title {
-      font-size: 2.2rem;
-      font-weight: 800;
-      margin: 0 0 8px;
-      background: linear-gradient(135deg, #ec4899, #8b5cf6, #3b82f6);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
     .pm-dropzone {
-      border: 2.5px dashed var(--primary, #ec4899);
-      border-radius: 18px;
+      border: 2px dashed var(--primary);
+      border-radius: var(--radius-lg);
       padding: 44px 20px;
       text-align: center;
-      background: var(--bg-secondary, #1e293b);
+      background: var(--bg-secondary);
       cursor: pointer;
       position: relative;
       transition: all 0.2s;
     }
     .pm-dropzone:hover {
-      background: color-mix(in srgb, var(--primary, #ec4899) 10%, var(--bg-secondary));
+      background: color-mix(in srgb, var(--primary) 8%, var(--bg-secondary));
     }
-    .pm-dropzone i { font-size: 3.2rem; color: #ec4899; margin-bottom: 10px; display: block; }
+    .pm-dropzone i { font-size: 2.8rem; color: var(--primary); margin-bottom: 10px; display: block; }
     .pm-dropzone input[type="file"] {
       position: absolute;
       inset: 0;
@@ -63,53 +46,51 @@
       height: 100%;
     }
 
-    /* Grid Layout */
     .pm-workspace {
       display: grid;
-      grid-template-columns: 300px 1fr;
+      grid-template-columns: 290px 1fr;
       gap: 24px;
-      margin-top: 28px;
+      margin-top: 24px;
     }
     @media (max-width: 820px) {
       .pm-workspace { grid-template-columns: 1fr; }
     }
 
     .pm-panel {
-      background: var(--bg-secondary, #1e293b);
-      border: 1px solid var(--border-color, rgba(255,255,255,0.1));
-      border-radius: 16px;
-      padding: 22px;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      padding: 20px;
       display: flex;
       flex-direction: column;
-      gap: 16px;
+      gap: 14px;
       align-self: start;
     }
     .pm-panel h3 {
-      font-size: 1.05rem;
+      font-size: 1rem;
       font-weight: 700;
       margin: 0;
       display: flex;
       align-items: center;
       gap: 8px;
-      color: #f472b6;
+      color: var(--text-primary);
     }
 
-    /* Thumbnails Area */
     .pm-thumbs-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-      gap: 16px;
-      background: var(--bg-secondary, #1e293b);
-      border: 1px solid var(--border-color, rgba(255,255,255,0.1));
-      border-radius: 16px;
-      padding: 20px;
+      grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+      gap: 14px;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      padding: 18px;
       min-height: 280px;
       align-content: start;
     }
     .pm-thumb-card {
-      background: var(--bg-primary, #0f172a);
+      background: var(--bg-primary);
       border: 1px solid var(--border-color);
-      border-radius: 12px;
+      border-radius: 10px;
       overflow: hidden;
       display: flex;
       flex-direction: column;
@@ -134,7 +115,7 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 6px 8px;
+      padding: 4px 6px;
       background: var(--bg-primary);
       border-top: 1px solid var(--border-color);
     }
@@ -143,18 +124,18 @@
       border: none;
       color: var(--text-secondary);
       cursor: pointer;
-      font-size: 0.85rem;
-      padding: 4px;
+      font-size: 0.8rem;
+      padding: 3px;
       border-radius: 4px;
     }
-    .thumb-btn:hover { color: #f472b6; background: rgba(244, 114, 182, 0.1); }
+    .thumb-btn:hover { color: var(--primary); background: color-mix(in srgb, var(--primary) 10%, transparent); }
     .thumb-page-num {
       position: absolute;
-      top: 6px;
-      left: 6px;
+      top: 5px;
+      left: 5px;
       background: rgba(0,0,0,0.7);
       color: white;
-      font-size: 0.7rem;
+      font-size: 0.68rem;
       font-weight: 700;
       padding: 2px 6px;
       border-radius: 999px;
@@ -162,13 +143,31 @@
   </style>
 </head>
 <body>
+  <div class="bg-mesh"></div>
 
-  <div class="pm-container">
-    <div class="pm-header">
-      <h1 class="pm-title"><i class="fas fa-file-pdf"></i> Image to PDF Converter</h1>
-      <p style="margin: 0; color: var(--text-secondary); font-size: 0.95rem;">
-        Combine photos, documents, and screenshots into a single organized PDF file.
-      </p>
+  <!-- Navbar -->
+  <header class="navbar">
+    <div class="app-container" style="width: 100%;">
+      <div class="nav-wrapper">
+        <a href="index.html" class="brand-link">
+          <img src="https://i.ibb.co/G2NFYHG/logo.png" alt="AI Bots Logo" class="brand-logo-img">
+          <span>AI Bots</span>
+          <span class="brand-badge">PDF Maker</span>
+        </a>
+
+        <div class="nav-actions">
+          <a href="index.html" class="btn btn-secondary btn-sm"><i class="fas fa-house"></i> Hub</a>
+          <button class="icon-btn theme-toggle-btn" title="Toggle Dark/Light Mode"><i class="fas fa-moon"></i></button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="app-container tool-page-wrapper">
+    <div class="tool-header">
+      <span class="tool-header-badge"><i class="fas fa-file-pdf"></i> Document Converter</span>
+      <h1 class="tool-title">Image to PDF Converter</h1>
+      <p class="tool-desc">Combine photos, documents, and screenshots into a single organized PDF file.</p>
     </div>
 
     <!-- Dropzone -->
@@ -176,7 +175,7 @@
       <input type="file" id="fileInput" accept="image/*" multiple onchange="handleFiles(event)">
       <i class="fas fa-images"></i>
       <h3 style="margin: 0 0 6px;">Click or Drop Images Here</h3>
-      <p style="margin: 0; color: var(--text-secondary); font-size: 0.85rem;">Upload multiple JPG, PNG, WebP photos (drag to reorder)</p>
+      <p style="margin: 0; color: var(--text-secondary); font-size: 0.85rem;">Upload multiple JPG, PNG, WebP photos</p>
     </div>
 
     <!-- Workspace -->
@@ -186,8 +185,8 @@
         <h3><i class="fas fa-gear"></i> PDF Settings</h3>
 
         <div>
-          <label style="font-size: 0.78rem; font-weight: 700; color: var(--text-secondary); display: block; margin-bottom: 4px;">PAGE SIZE</label>
-          <select id="pageSize" class="ab-select">
+          <label class="form-label" style="font-size: 0.72rem; margin-bottom: 4px;">PAGE SIZE</label>
+          <select id="pageSize" class="form-control">
             <option value="a4">A4 (Standard)</option>
             <option value="letter">Letter</option>
             <option value="legal">Legal</option>
@@ -195,8 +194,8 @@
         </div>
 
         <div>
-          <label style="font-size: 0.78rem; font-weight: 700; color: var(--text-secondary); display: block; margin-bottom: 4px;">ORIENTATION</label>
-          <select id="pageOrientation" class="ab-select">
+          <label class="form-label" style="font-size: 0.72rem; margin-bottom: 4px;">ORIENTATION</label>
+          <select id="pageOrientation" class="form-control">
             <option value="portrait">Portrait</option>
             <option value="landscape">Landscape</option>
             <option value="auto">Auto (Match Image)</option>
@@ -204,8 +203,8 @@
         </div>
 
         <div>
-          <label style="font-size: 0.78rem; font-weight: 700; color: var(--text-secondary); display: block; margin-bottom: 4px;">MARGINS</label>
-          <select id="pageMargin" class="ab-select">
+          <label class="form-label" style="font-size: 0.72rem; margin-bottom: 4px;">MARGINS</label>
+          <select id="pageMargin" class="form-control">
             <option value="0">No Margins (Edge-to-Edge)</option>
             <option value="5">Small (5 mm)</option>
             <option value="12" selected>Normal (12 mm)</option>
@@ -213,20 +212,20 @@
         </div>
 
         <div style="display: flex; align-items: center; justify-content: space-between;">
-          <span style="font-size: 0.88rem; font-weight: 600;">Add Page Numbers</span>
+          <span style="font-size: 0.85rem; font-weight: 600;">Add Page Numbers</span>
           <label class="switch"><input type="checkbox" id="addPageNumbers" checked><span class="slider"></span></label>
         </div>
 
         <div>
-          <label style="font-size: 0.78rem; font-weight: 700; color: var(--text-secondary); display: block; margin-bottom: 4px;">PDF FILE NAME</label>
-          <input type="text" id="pdfFileName" class="ab-input" value="my_images_document">
+          <label class="form-label" style="font-size: 0.72rem; margin-bottom: 4px;">PDF FILE NAME</label>
+          <input type="text" id="pdfFileName" class="form-control" value="my_images_document">
         </div>
 
-        <button class="ab-btn" style="background: linear-gradient(135deg, #ec4899, #8b5cf6); color: white; width: 100%; padding: 12px; font-weight: 700; font-size: 0.95rem; margin-top: 8px;" onclick="generatePDF()">
+        <button class="btn btn-primary" style="width: 100%; padding: 10px; font-weight: 700; margin-top: 6px;" onclick="generatePDF()">
           <i class="fas fa-file-arrow-down"></i> Download PDF
         </button>
 
-        <button class="ab-btn" style="background: transparent; border: 1px solid var(--border-color); color: var(--text-secondary); width: 100%;" onclick="document.getElementById('fileInput').click()">
+        <button class="btn btn-secondary btn-sm" style="width: 100%;" onclick="document.getElementById('fileInput').click()">
           <i class="fas fa-plus"></i> Add More Images
         </button>
       </div>
@@ -236,7 +235,7 @@
         <!-- Thumbnails injected dynamically -->
       </div>
     </div>
-  </div>
+  </main>
 
   <script>
     let imagesList = [];
@@ -337,7 +336,6 @@
         const item = imagesList[i];
         if (i > 0) doc.addPage();
 
-        // Handle rotation onto canvas
         const img = new Image();
         img.src = item.src;
         await new Promise(r => img.onload = r);
@@ -386,8 +384,6 @@
       doc.save(filename);
     }
   </script>
-
-  <script src="js/common.js"></script>
-  <script>abInitChrome('pdfmaker');</script>
+  <script src="js/app.js"></script>
 </body>
 </html>

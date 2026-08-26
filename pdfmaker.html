@@ -1,191 +1,268 @@
 ﻿<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta name="keywords" content="image to pdf, convert image to pdf, pdf maker online free, photo to pdf converter, batch jpg to pdf, free pdf generator, ai bots, aibots, ai bots co in, aibots.co.in, Rishit Chajjed">
-  <meta name="google-site-verification" content="ndzq-U-NLijgza_QqgQdcc2U3oMRoud_BT2ZZiwFREM">
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>PDF Maker — AI Bots</title>
-<meta name="description" content="Turn one or more images into a downloadable PDF, right in your browser.">
-<link rel="icon" href="https://i.ibb.co/G2NFYHG/logo.png" type="image/png">
-<link rel="stylesheet" href="css/theme.css">
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-2L87FMQS3W"></script>
-<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-2L87FMQS3W');</script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-<style>
-  .pm-drop{ border:2px dashed var(--border); border-radius:var(--radius); padding:30px 20px; text-align:center; cursor:pointer; }
-  .pm-drop:hover, .pm-drop.drag{ border-color:var(--accent); background:var(--accent-soft); }
-  .pm-grid{ display:grid; grid-template-columns:repeat(auto-fill,minmax(130px,1fr)); gap:12px; margin-top:16px; }
-  .pm-thumb{ position:relative; border-radius:10px; overflow:hidden; border:1px solid var(--border); background:var(--surface-2); cursor:grab; }
-  .pm-thumb img{ width:100%; height:110px; object-fit:cover; display:block; }
-  .pm-thumb .rm{
-    position:absolute; top:5px; right:5px; width:24px; height:24px; border-radius:50%; background:rgba(0,0,0,.6);
-    color:#fff; border:none; cursor:pointer; font-size:13px; line-height:1;
-  }
-  .pm-thumb .idx{ position:absolute; bottom:5px; left:6px; font-size:11px; background:rgba(0,0,0,.55); color:#fff; padding:1px 6px; border-radius:6px; }
-  .pm-thumb.dragging{ opacity:.4; }
-  .opt-row{ display:grid; grid-template-columns:1fr 1fr; gap:12px; }
-  @media(max-width:520px){ .opt-row{ grid-template-columns:1fr; } }
-</style>
+<meta name="google-site-verification" content="ndzq-U-NLijgza_QqgQdcc2U3oMRoud_BT2ZZiwFREM">
+  <meta name="google-site-verification" content="-Yb6Nx74gbZ3wRN5uP-Y8KKwDWlt1DPpxs4nA3PkE6M">
+  <meta name="robots" content="index, follow">
+  <!-- Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-2L87FMQS3W"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-2L87FMQS3W');
+  </script>
+
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="google-site-verification" content="-Yb6Nx74gbZ3wRN5uP-Y8KKwDWlt1DPpxs4nA3PkE6M">
+  <link rel="icon" href="https://i.ibb.co/G2NFYHG/logo.png" type="image/png">
+  <title>Image to PDF Generator - AI Bots</title>
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="css/theme.css">
+  <style>
+    .pdf-preview-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+      gap: 16px;
+      margin: 20px 0;
+    }
+    .pdf-thumb-card {
+      position: relative;
+      aspect-ratio: 1;
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      border: 1px solid var(--border-color);
+      box-shadow: var(--shadow-sm);
+      background: var(--bg-tertiary);
+    }
+    .pdf-thumb-card img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    /* PDF Rendering Styles */
+    .pdf-export-container {
+      background: #ffffff;
+      color: #1e293b;
+      font-family: Arial, sans-serif;
+    }
+    .pdf-page {
+      width: 595pt;
+      min-height: 842pt;
+      padding: 40pt;
+      margin: 0 auto;
+      box-sizing: border-box;
+      position: relative;
+      background: #ffffff;
+      page-break-after: always;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+    .pdf-cover-page {
+      text-align: center;
+      border: 8pt solid #4f46e5;
+      justify-content: center;
+    }
+    .pdf-page-footer {
+      position: absolute;
+      bottom: 20pt;
+      right: 40pt;
+      font-size: 10pt;
+      color: #64748b;
+    }
+  </style>
 </head>
 <body>
-<div class="ab-shell">
-  <div class="ab-page-head">
-    <h1>📄 PDF Maker</h1>
-    <p>Add images, drag to reorder, then export a clean PDF — one page per image.</p>
-  </div>
+  <div class="bg-mesh"></div>
 
-  <div class="ab-card">
-    <div class="pm-drop" id="dropZone">
-      <div style="font-size:30px;">📤</div>
-      <strong>Click or drag images here</strong>
-      <p style="color:var(--ink-soft); font-size:13px; margin:4px 0 0;">You can add several images and reorder them below</p>
-      <input type="file" id="fileInput" accept="image/*" multiple class="ab-hidden">
-    </div>
+  <!-- Navbar -->
+  <header class="navbar">
+    <div class="app-container" style="width: 100%;">
+      <div class="nav-wrapper">
+        <a href="index.html" class="brand-link">
+          <img src="https://i.ibb.co/G2NFYHG/logo.png" alt="AI Bots Logo" class="brand-logo-img">
+          <span>AI Bots</span>
+          <span class="brand-badge">PDF Maker</span>
+        </a>
 
-    <div class="pm-grid" id="pmGrid"></div>
-
-    <div class="opt-row ab-mt-24">
-      <div class="ab-col">
-        <label class="ab-label" for="pdfTitle">Document title (optional)</label>
-        <input type="text" id="pdfTitle" class="ab-input" placeholder="e.g. Travel Photos">
-      </div>
-      <div class="ab-col">
-        <label class="ab-label" for="pageSize">Page size</label>
-        <select id="pageSize" class="ab-select">
-          <option value="a4">A4</option>
-          <option value="letter">US Letter</option>
-          <option value="fit">Fit to image</option>
-        </select>
+        <div class="nav-actions">
+          <a href="index.html" class="btn btn-secondary btn-sm"><i class="fas fa-house"></i> Hub</a>
+          <button class="icon-btn theme-toggle-btn" title="Toggle Dark/Light Mode"><i class="fas fa-moon"></i></button>
+        </div>
       </div>
     </div>
+  </header>
 
-    <div class="ab-row ab-mt-24" style="justify-content:center;">
-      <button class="ab-btn" id="makeBtn" disabled>⬇ Download PDF</button>
-      <button class="ab-btn secondary" id="clearBtn" disabled>Clear all</button>
+  <main class="app-container tool-page-wrapper">
+    <div class="tool-header">
+      <span class="tool-header-badge"><i class="fas fa-file-pdf"></i> Document Converter</span>
+      <h1 class="tool-title">Image to PDF Generator</h1>
+      <p class="tool-desc">Combine and convert your image files into clean, customized, high-quality A4 PDF documents.</p>
     </div>
-    <div class="ab-empty ab-hidden" id="pmStatus"></div>
-  </div>
-</div>
 
-<script src="js/common.js"></script>
-<script>
-abInitChrome('pdfmaker');
+    <div class="tool-card-container">
+      
+      <!-- Multi-Image Dropzone -->
+      <div class="dropzone-container" id="dropzone">
+        <input type="file" id="imageInput" class="dropzone-input" accept="image/*" multiple onchange="previewImages(event)">
+        <div class="dropzone-icon"><i class="fas fa-file-image"></i></div>
+        <div class="dropzone-title">Click to Select Images or Drag & Drop Here</div>
+        <div class="dropzone-subtitle">Select multiple photos to generate a multi-page PDF</div>
+      </div>
 
-let images = []; // {id, dataUrl}
-const grid = document.getElementById('pmGrid');
-const dropZone = document.getElementById('dropZone');
-const fileInput = document.getElementById('fileInput');
-const makeBtn = document.getElementById('makeBtn');
-const clearBtn = document.getElementById('clearBtn');
-const statusEl = document.getElementById('pmStatus');
+      <!-- Preview Thumbnail Grid -->
+      <div class="pdf-preview-grid" id="imagePreview"></div>
 
-dropZone.addEventListener('click', ()=>fileInput.click());
-dropZone.addEventListener('dragover', e=>{ e.preventDefault(); dropZone.classList.add('drag'); });
-dropZone.addEventListener('dragleave', ()=>dropZone.classList.remove('drag'));
-dropZone.addEventListener('drop', e=>{
-  e.preventDefault(); dropZone.classList.remove('drag');
-  addFiles(e.dataTransfer.files);
-});
-fileInput.addEventListener('change', ()=> addFiles(fileInput.files));
+      <!-- PDF Meta Information -->
+      <div class="form-group">
+        <label class="form-label" for="pdfTitle"><i class="fas fa-heading"></i> PDF Document Title (Optional)</label>
+        <input type="text" id="pdfTitle" class="form-control" placeholder="e.g. My Portfolio or Receipts Collection">
+      </div>
 
-function addFiles(fileList){
-  Array.from(fileList).forEach(file=>{
-    if (!file.type.startsWith('image/')) return;
-    const reader = new FileReader();
-    reader.onload = e=>{
-      images.push({ id: Math.random().toString(36).slice(2), dataUrl: e.target.result });
-      renderGrid();
-    };
-    reader.readAsDataURL(file);
-  });
-}
+      <div class="form-group">
+        <label class="form-label" for="pdfDescription"><i class="fas fa-align-left"></i> PDF Description / Cover Subtitle (Optional)</label>
+        <textarea id="pdfDescription" class="form-control" placeholder="Enter optional notes, author name, or document summary..." rows="2"></textarea>
+      </div>
 
-function renderGrid(){
-  grid.innerHTML = '';
-  images.forEach((img, i)=>{
-    const div = document.createElement('div');
-    div.className = 'pm-thumb';
-    div.draggable = true;
-    div.dataset.id = img.id;
-    div.innerHTML = `<img src="${img.dataUrl}"><span class="idx">${i+1}</span><button class="rm" data-id="${img.id}">✕</button>`;
-    grid.appendChild(div);
-  });
-  makeBtn.disabled = images.length === 0;
-  clearBtn.disabled = images.length === 0;
+      <!-- Action Buttons -->
+      <div style="display: flex; gap: 12px; justify-content: center; margin-top: 24px; flex-wrap: wrap;">
+        <button class="btn btn-primary btn-lg" onclick="convertToPdf()">
+          <i class="fas fa-file-arrow-down"></i> Generate & Download PDF
+        </button>
+        <button class="btn btn-secondary btn-lg" onclick="clearPreview()">
+          <i class="fas fa-rotate-left"></i> Clear Selection
+        </button>
+      </div>
 
-  grid.querySelectorAll('.rm').forEach(btn=>{
-    btn.addEventListener('click', ()=>{
-      images = images.filter(im => im.id !== btn.dataset.id);
-      renderGrid();
-    });
-  });
+      <div id="feedback" style="text-align: center; margin-top: 16px; font-weight: 500; color: var(--text-secondary);"></div>
 
-  let dragEl = null;
-  grid.querySelectorAll('.pm-thumb').forEach(el=>{
-    el.addEventListener('dragstart', ()=>{ dragEl = el; el.classList.add('dragging'); });
-    el.addEventListener('dragend', ()=>{ el.classList.remove('dragging'); reorderFromDOM(); });
-    el.addEventListener('dragover', e=>{
-      e.preventDefault();
-      if (!dragEl || dragEl === el) return;
-      const rect = el.getBoundingClientRect();
-      const after = (e.clientX - rect.left) > rect.width/2;
-      el.parentNode.insertBefore(dragEl, after ? el.nextSibling : el);
-    });
-  });
-}
+    </div>
+  </main>
 
-function reorderFromDOM(){
-  const ids = Array.from(grid.children).map(el=>el.dataset.id);
-  images = ids.map(id => images.find(im=>im.id===id));
-  renderGrid();
-}
+  <footer class="app-footer">
+    <div class="app-container">
+      <p class="footer-text">&copy; 2026 AI Bots. All rights reserved.</p>
+      <p class="footer-credits">Website designed by <strong>Rishit Chajjed</strong>.</p>
+    </div>
+  </footer>
 
-clearBtn.addEventListener('click', ()=>{ images = []; renderGrid(); });
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.2/html2pdf.bundle.min.js"></script>
+  <script src="js/app.js"></script>
+  <script>
+    let uploadedImages = [];
 
-makeBtn.addEventListener('click', async ()=>{
-  if (!images.length) return;
-  makeBtn.disabled = true;
-  statusEl.classList.remove('ab-hidden');
-  statusEl.textContent = 'Building your PDF…';
+    function previewImages(event) {
+      const files = event.target.files;
+      const imagePreview = document.getElementById("imagePreview");
+      imagePreview.innerHTML = "";
+      uploadedImages = [];
 
-  const container = document.createElement('div');
-  images.forEach(img=>{
-    const page = document.createElement('div');
-    page.style.pageBreakAfter = 'always';
-    page.style.width = '100%';
-    page.style.display = 'flex';
-    page.style.alignItems = 'center';
-    page.style.justifyContent = 'center';
-    page.style.minHeight = '95vh';
-    const im = document.createElement('img');
-    im.src = img.dataUrl;
-    im.style.maxWidth = '100%';
-    im.style.maxHeight = '100%';
-    page.appendChild(im);
-    container.appendChild(page);
-  });
+      if (!files || files.length === 0) return;
 
-  const sizeVal = document.getElementById('pageSize').value;
-  const format = sizeVal === 'fit' ? undefined : sizeVal;
-  const title = document.getElementById('pdfTitle').value.trim() || 'document';
+      for (let i = 0; i < files.length; i++) {
+        const file = files[i];
+        const reader = new FileReader();
 
-  const opt = {
-    margin: 10,
-    filename: `${title}.pdf`,
-    image: { type: 'jpeg', quality: 0.95 },
-    html2canvas: { scale: 2, useCORS: true },
-    jsPDF: { unit: 'mm', format: format || 'a4', orientation: 'portrait' }
-  };
+        reader.onload = function(evt) {
+          const card = document.createElement("div");
+          card.className = "pdf-thumb-card";
 
-  try{
-    await html2pdf().set(opt).from(container).save();
-    statusEl.textContent = '✅ PDF downloaded.';
-  }catch(e){
-    statusEl.textContent = 'Something went wrong generating the PDF. Please try again.';
-  }
-  makeBtn.disabled = false;
-});
-</script>
+          const img = document.createElement("img");
+          img.src = evt.target.result;
+          card.appendChild(img);
+
+          imagePreview.appendChild(card);
+          uploadedImages.push(evt.target.result);
+        };
+
+        reader.readAsDataURL(file);
+      }
+      showToast(`${files.length} images queued for PDF`, 'info');
+    }
+
+    function convertToPdf() {
+      const pdfTitle = document.getElementById("pdfTitle").value.trim();
+      const pdfDescription = document.getElementById("pdfDescription").value.trim();
+      const feedback = document.getElementById("feedback");
+
+      if (uploadedImages.length === 0) {
+        showToast("Please select images before generating the PDF", "error");
+        feedback.textContent = "Please select images before generating the PDF.";
+        return;
+      }
+
+      showToast("Compiling PDF document...", "info");
+      feedback.textContent = "Generating PDF, please wait a moment...";
+
+      const container = document.createElement("div");
+      container.className = "pdf-export-container";
+
+      const totalPages = uploadedImages.length + (pdfTitle || pdfDescription ? 1 : 0);
+      let currentPageNum = 1;
+
+      // 1. Cover Page (if title/description specified)
+      if (pdfTitle || pdfDescription) {
+        const coverPage = document.createElement("div");
+        coverPage.className = "pdf-page pdf-cover-page";
+        coverPage.innerHTML = `
+          <div style="margin-bottom: 30pt;">
+            <img src="https://i.ibb.co/G2NFYHG/logo.png" style="height: 60pt; margin-bottom: 20pt;" alt="Logo">
+            <h1 style="font-size: 28pt; color: #1e293b; margin: 0 0 14pt;">${pdfTitle || "Image to PDF Collection"}</h1>
+            <p style="font-size: 14pt; color: #64748b; margin: 0;">${pdfDescription || "Generated with AI Bots PDF Studio"}</p>
+          </div>
+          <div class="pdf-page-footer">Page 1 of ${totalPages}</div>
+        `;
+        container.appendChild(coverPage);
+        currentPageNum++;
+      }
+
+      // 2. Individual Image Pages
+      uploadedImages.forEach((imgSrc) => {
+        const page = document.createElement("div");
+        page.className = "pdf-page";
+        page.innerHTML = `
+          <div style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; overflow: hidden;">
+            <img src="${imgSrc}" style="max-width: 500pt; max-height: 720pt; object-fit: contain; border-radius: 4pt;">
+          </div>
+          <div class="pdf-page-footer">Page ${currentPageNum} of ${totalPages}</div>
+        `;
+        container.appendChild(page);
+        currentPageNum++;
+      });
+
+      const filename = pdfTitle ? pdfTitle.replace(/\s+/g, "_") + ".pdf" : "aibots_document.pdf";
+      const options = {
+        margin: 0,
+        filename: filename,
+        image: { type: 'jpeg', quality: 0.98 },
+        html2canvas: { scale: 2, useCORS: true },
+        jsPDF: { unit: 'pt', format: 'a4', orientation: 'portrait' }
+      };
+
+      html2pdf().set(options).from(container).save().then(() => {
+        feedback.textContent = "PDF generated and downloaded successfully!";
+        showToast("PDF generated & downloaded!", "success");
+      }).catch(err => {
+        console.error("PDF generation error:", err);
+        feedback.textContent = "Error generating PDF. Please try again.";
+        showToast("Error creating PDF", "error");
+      });
+    }
+
+    function clearPreview() {
+      document.getElementById("imagePreview").innerHTML = "";
+      document.getElementById("imageInput").value = "";
+      document.getElementById("pdfTitle").value = "";
+      document.getElementById("pdfDescription").value = "";
+      document.getElementById("feedback").textContent = "";
+      uploadedImages = [];
+      showToast("Selection cleared", "info");
+    }
+  </script>
 </body>
 </html>

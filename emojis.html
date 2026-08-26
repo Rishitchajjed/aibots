@@ -1,10 +1,11 @@
 ﻿<!DOCTYPE html>
-
 <html lang="en">
 <head>
-  <meta name="google-site-verification" content="ndzq-U-NLijgza_QqgQdcc2U3oMRoud_BT2ZZiwFREM">
-<!-- Google tag (gtag.js) -->
-<script async="" src="https://www.googletagmanager.com/gtag/js?id=G-2L87FMQS3W"></script>
+<meta name="google-site-verification" content="ndzq-U-NLijgza_QqgQdcc2U3oMRoud_BT2ZZiwFREM">
+  <meta name="google-site-verification" content="-Yb6Nx74gbZ3wRN5uP-Y8KKwDWlt1DPpxs4nA3PkE6M">
+  <meta name="robots" content="index, follow">
+      <!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-2L87FMQS3W"></script>
 <script>
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
@@ -12,13 +13,12 @@
 
   gtag('config', 'G-2L87FMQS3W');
 </script>
-<link href="css/theme.css" rel="stylesheet"/><link href="https://i.ibb.co/XjHbck3/logo.png" rel="icon" type="image/png"/>
-<meta charset="utf-8"/>
+<link rel="icon" href="https://i.ibb.co/XjHbck3/logo.png" type="image/png" />
+  <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>Online Emoji Picker</title>
-<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet"/>
-<style>
+  <title>Online Emoji Picker</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+  <style>
     /* Fonts */
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap');
 
@@ -372,56 +372,57 @@ body {
   </style>
 </head>
 <body>
-<div class="header">
-<img alt="Your Logo" class="logo" src="https://i.ibb.co/XjHbck3/logo.png"/>
-<h1>Online Emoji Picker</h1>
-</div>
-<div class="container">
-<input class="search-input" id="search" placeholder="Search for emojis..." type="text"/>
-<div class="emoji-slider">
-<div class="emoji-slide-track">
-<div class="emoji-slide">
-<div class="emoji-categories">
-<div class="emoji-category active" onclick="filterByCategory('all')">All</div>
-<div class="emoji-category" onclick="filterByCategory('smileys')">Smileys</div>
-<div class="emoji-category" onclick="filterByCategory('animals')">Animals</div>
-</div></div>
-<div class="emoji-slide">
-<div class="emoji-categories">
-<div class="emoji-category" onclick="filterByCategory('activities')">Activities</div>
-<div class="emoji-category" onclick="filterByCategory('food')">Food</div>
-<div class="emoji-category" onclick="filterByCategory('clothes')">Clothes</div>
-</div>
-</div>
-<div class="emoji-slide">
-<div class="emoji-categories">
-<div class="emoji-category" onclick="filterByCategory('travel')">Travel</div>
-<div class="emoji-category" onclick="filterByCategory('vehicle')">Vehicle</div>
-<div class="emoji-category" onclick="filterByCategory('nature')">Nature</div>
-</div>
-</div>
-<div class="emoji-slide">
-<div class="emoji-categories">
-<div class="emoji-category" onclick="filterByCategory('flag')">Flags</div>
-<div class="emoji-category" onclick="filterByCategory('people')">People</div>
-<div class="emoji-category" onclick="filterByCategory('symbols')">Symbols</div>
-</div>
-</div>
-<div class="emoji-slide">
-<div class="emoji-categories">
-<div class="emoji-category" onclick="filterByCategory('social media')">Social Media</div>
-<div class="emoji-category" onclick="filterByCategory('accessories')">Accessories</div>
-</div>
-</div>
-</div>
-<div class="emoji-prev" onclick="prevSlide()">‹</div>
-<div class="emoji-next" onclick="nextSlide()">›</div>
-</div>
-<ul class="emoji-list" id="emojiList">
-<!-- Emoji icons will be dynamically inserted here -->
-</ul>
-</div>
-<script>
+  <div class="header">
+    <img src="https://i.ibb.co/XjHbck3/logo.png" alt="Your Logo" class="logo">
+    <h1>Online Emoji Picker</h1>
+  </div>
+  <div class="container">
+    <input type="text" id="search" class="search-input" placeholder="Search for emojis...">
+    <div class="emoji-slider">
+      <div class="emoji-slide-track">
+        <div class="emoji-slide">
+          <div class="emoji-categories">
+            <div class="emoji-category active" onclick="filterByCategory('all')">All</div>
+            <div class="emoji-category" onclick="filterByCategory('smileys')">Smileys</div>
+            <div class="emoji-category" onclick="filterByCategory('animals')">Animals</div>
+            </div></div>
+            <div class="emoji-slide">
+          <div class="emoji-categories">
+            <div class="emoji-category" onclick="filterByCategory('activities')">Activities</div>
+            <div class="emoji-category" onclick="filterByCategory('food')">Food</div>
+             <div class="emoji-category" onclick="filterByCategory('clothes')">Clothes</div>
+          </div>
+        </div>
+        <div class="emoji-slide">
+          <div class="emoji-categories">
+            <div class="emoji-category" onclick="filterByCategory('travel')">Travel</div>
+            <div class="emoji-category" onclick="filterByCategory('vehicle')">Vehicle</div>
+            <div class="emoji-category" onclick="filterByCategory('nature')">Nature</div>
+            </div>
+            </div>
+              <div class="emoji-slide">
+          <div class="emoji-categories">
+            <div class="emoji-category" onclick="filterByCategory('flag')">Flags</div>
+            <div class="emoji-category" onclick="filterByCategory('people')">People</div>
+             <div class="emoji-category" onclick="filterByCategory('symbols')">Symbols</div>
+          </div>
+        </div>
+            <div class="emoji-slide">
+          <div class="emoji-categories">
+            <div class="emoji-category" onclick="filterByCategory('social media')">Social Media</div>
+            <div class="emoji-category" onclick="filterByCategory('accessories')">Accessories</div>
+          </div>
+        </div>
+      </div>
+      <div class="emoji-prev" onclick="prevSlide()">&lsaquo;</div>
+      <div class="emoji-next" onclick="nextSlide()">&rsaquo;</div>
+    </div>
+    <ul class="emoji-list" id="emojiList">
+      <!-- Emoji icons will be dynamically inserted here -->
+    </ul>
+  </div>
+
+  <script>
     // Emoji data
     const emojis = [
       { name: "grinning", icon: "😀", category: "smileys" },
@@ -908,5 +909,5 @@ document.getElementById("search").addEventListener("input", function() {
       filterEmojis(this.value);
     });
   </script>
-<script src="js/common.js"></script><script>abInitChrome('emojis');</script></body>
+</body>
 </html>

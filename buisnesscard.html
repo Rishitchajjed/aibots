@@ -1,239 +1,382 @@
 ﻿<!DOCTYPE html>
-
 <html lang="en">
 <head>
-  <meta name="google-site-verification" content="ndzq-U-NLijgza_QqgQdcc2U3oMRoud_BT2ZZiwFREM">
-<meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>Business Card Generator</title>
-<link href="css/theme.css" rel="stylesheet"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet"/>
-<style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f9f9f9;
-            margin: 0;
-            padding: 0;
-        }
+<meta name="google-site-verification" content="ndzq-U-NLijgza_QqgQdcc2U3oMRoud_BT2ZZiwFREM">
+  <meta name="google-site-verification" content="-Yb6Nx74gbZ3wRN5uP-Y8KKwDWlt1DPpxs4nA3PkE6M">
+  <meta name="robots" content="index, follow">
+  <!-- Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-2L87FMQS3W"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-2L87FMQS3W');
+  </script>
 
-        .container {
-            max-width: 800px;
-            margin: 50px auto;
-            padding: 20px;
-            background: #fff;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="google-site-verification" content="-Yb6Nx74gbZ3wRN5uP-Y8KKwDWlt1DPpxs4nA3PkE6M">
+  <link rel="icon" href="https://i.ibb.co/G2NFYHG/logo.png" type="image/png">
+  <title>Business Card Generator - AI Bots</title>
 
-        h1 {
-            text-align: center;
-        }
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="css/theme.css">
+  <style>
+    .builder-layout {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 32px;
+      align-items: start;
+    }
+    @media (max-width: 900px) {
+      .builder-layout { grid-template-columns: 1fr; }
+    }
 
-        .input-container {
-            margin-bottom: 20px;
-        }
+    /* Business Card Canvas Mockup */
+    #card-wrapper {
+      position: sticky;
+      top: 90px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
 
-        .input-container label {
-            display: block;
-            margin-bottom: 5px;
-        }
+    #card {
+      width: 100%;
+      max-width: 420px;
+      aspect-ratio: 1.75 / 1;
+      padding: 28px 32px;
+      background-color: #ffffff;
+      border-radius: 16px;
+      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.15);
+      border: 1px solid var(--border-color);
+      color: #1e293b;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transition: background-color 0.3s ease;
+    }
 
-        .input-container input[type="text"],
-        .input-container input[type="file"],
-        .input-container input[type="color"] {
-            width: calc(100% - 20px);
-            padding: 10px;
-            font-size: 16px;
-            border-radius: 4px;
-            border: none;
-            background-color: #f9f9f9;
-            margin-bottom: 10px;
-        }
+    #card-header {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
 
-        .optional-input {
-            margin-top: 10px;
-        }
+    #card img {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid var(--primary);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      flex-shrink: 0;
+    }
 
-        .optional-input input[type="checkbox"] {
-            margin-right: 5px;
-        }
+    #card h2 {
+      margin: 0;
+      font-size: 1.3rem;
+      font-weight: 800;
+      color: inherit;
+      line-height: 1.2;
+    }
 
-        .card {
-            background-color: #ffffff;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            border-radius: 8px;
-            padding: 20px;
-            margin-bottom: 20px;
-        }
+    #card .business-title {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: #64748b;
+      margin-top: 2px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
 
-        .card-inner {
-            text-align: center;
-        }
+    #card .divider-line {
+      height: 1px;
+      background: currentColor;
+      opacity: 0.15;
+      margin: 12px 0;
+    }
 
-        .card img {
-            display: block;
-            margin: 0 auto 20px;
-            border-radius: 50%;
-            max-width: 200px;
-            border: 3px solid white;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
-        }
+    #card .contact-info {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      font-size: 0.85rem;
+    }
 
-        .business-card-content {
-            margin-top: 20px;
-            font-size: 16px;
-        }
+    #card .contact-info p {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin: 0;
+      opacity: 0.9;
+    }
 
-        .line {
-            height: 0.5px;
-            background-color: black;
-            margin: 10px 0;
-        }
+    #card .contact-info .icon {
+      font-size: 0.9rem;
+      width: 18px;
+      text-align: center;
+    }
 
-        .contact-info {
-            text-align: left;
-        }
+    #card .website {
+      font-size: 0.85rem;
+      font-weight: 600;
+      margin: 0;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
 
-        .buttons {
-            text-align: center;
-        }
+    .social-icons-preview {
+      display: flex;
+      gap: 10px;
+      margin-top: 16px;
+    }
 
-        .buttons button {
-            padding: 10px 20px;
-            font-size: 18px;
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            margin-right: 10px;
-        }
-
-        .buttons button:disabled {
-            background-color: #ccc;
-            cursor: not-allowed;
-        }
-    </style>
+    .social-icons-preview a {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border-color);
+      color: var(--text-primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-decoration: none;
+      font-size: 0.85rem;
+    }
+  </style>
 </head>
 <body>
-<div class="container">
-<h1>Business Card Generator</h1>
-<div class="input-container">
-<label for="title">Title:</label>
-<input id="title" placeholder="Enter your business title" required="" type="text"/>
-<label for="logo">Logo:</label>
-<input id="logo" required="" type="file"/>
-<label for="name">Name:</label>
-<input id="name" placeholder="Enter your name" required="" type="text"/>
-<label for="location">Location:</label>
-<input id="location" placeholder="Enter your location" required="" type="text"/>
-<label for="email">Email:</label>
-<input id="email" placeholder="Enter your email address" required="" type="text"/>
-<label for="phone">Phone:</label>
-<input id="phone" placeholder="Enter your phone number" required="" type="text"/>
-<div class="optional-input">
-<input id="websiteToggle" type="checkbox"/>
-<label for="websiteToggle">Include Website</label>
-<div id="websiteSection" style="display: none;">
-<label for="website">Website:</label>
-<input id="website" placeholder="Enter your website URL" type="text"/>
-</div>
-</div>
-<label for="background">Background Color:</label>
-<input id="background" type="color" value="#ffffff"/>
-<label for="logoSize">Logo Size:</label>
-<input id="logoSize" min="50" placeholder="Enter logo size (px)" type="number"/>
-</div>
-<div class="card" id="card">
-<div class="card-inner">
-<img alt="Logo" id="card-logo" src="https://i.ibb.co/G2NFYHG/logo.png"/>
-<h2 id="card-name">John Doe</h2>
-<div class="business-card-content">
-<p id="card-title">Business Title</p>
-<hr class="line"/>
-<div class="contact-info">
-<p><span class="icon">📧</span><span id="card-location">Location: City, Country</span></p>
-<p><span class="icon">✉</span><span id="card-email">Email: john.doe@example.com</span></p>
-<p><span class="icon">📞</span><span id="card-phone">Phone: +1 234 567 890</span></p>
-<p><span class="icon">🔗</span><span id="card-website">Website: example.com</span></p>
-</div>
-</div>
-</div>
-</div>
-<div class="buttons">
-<button id="generate">Generate Business Card</button>
-<button id="clear">Clear</button>
-<button disabled="" id="download">Download Business Card</button>
-</div>
-</div>
-<script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
-<script>
-        document.getElementById("generate").addEventListener("click", function() {
-            var title = document.getElementById("title").value;
-            var name = document.getElementById("name").value;
-            var location = document.getElementById("location").value;
-            var email = document.getElementById("email").value;
-            var phone = document.getElementById("phone").value;
-            var website = document.getElementById("website").value;
-            var logo = document.getElementById("logo").files[0];
-            var selectedBackground = document.getElementById("background").value;
-            var logoSize = document.getElementById("logoSize").value;
+  <div class="bg-mesh"></div>
 
-            var reader = new FileReader();
-            reader.onloadend = function() {
-                document.getElementById("card-logo").src = reader.result;
-                document.getElementById("card-logo").style.width = logoSize + "px";
-                document.getElementById("card-logo").style.height = "auto";
-                document.getElementById("card-name").textContent = name;
-                document.getElementById("card-title").textContent = title;
-                document.getElementById("card-location").textContent = "Location: " + location;
-                document.getElementById("card-email").textContent = "Email: " + email;
-                document.getElementById("card-phone").textContent = "Phone: " + phone;
-                document.getElementById("card-website").textContent = website ? "Website: " + website : "";
-                document.getElementById("card").style.backgroundColor = selectedBackground;
-                document.getElementById("download").disabled = false;
-            }
+  <!-- Navbar -->
+  <header class="navbar">
+    <div class="app-container" style="width: 100%;">
+      <div class="nav-wrapper">
+        <a href="index.html" class="brand-link">
+          <img src="https://i.ibb.co/G2NFYHG/logo.png" alt="AI Bots Logo" class="brand-logo-img">
+          <span>AI Bots</span>
+          <span class="brand-badge">Card Maker</span>
+        </a>
 
-            if (logo) {
-                reader.readAsDataURL(logo);
-            }
-        });
+        <div class="nav-actions">
+          <a href="index.html" class="btn btn-secondary btn-sm"><i class="fas fa-house"></i> Hub</a>
+          <button class="icon-btn theme-toggle-btn" title="Toggle Dark/Light Mode"><i class="fas fa-moon"></i></button>
+        </div>
+      </div>
+    </div>
+  </header>
 
-        document.getElementById("websiteToggle").addEventListener("change", function() {
-            var websiteSection = document.getElementById("websiteSection");
-            websiteSection.style.display = this.checked ? "block" : "none";
-        });
+  <main class="app-container tool-page-wrapper">
+    <div class="tool-header">
+      <span class="tool-header-badge"><i class="fas fa-id-card"></i> Brand Identity</span>
+      <h1 class="tool-title">Business Card Generator</h1>
+      <p class="tool-desc">Fill in your information to generate a modern business card and download in high resolution.</p>
+    </div>
 
-        document.getElementById("clear").addEventListener("click", function() {
-            document.getElementById("title").value = "";
-            document.getElementById("name").value = "";
-            document.getElementById("location").value = "";
-            document.getElementById("email").value = "";
-            document.getElementById("phone").value = "";
-            document.getElementById("website").value = "";
-            document.getElementById("logo").value = "";
-            document.getElementById("background").value = "#ffffff";
-            document.getElementById("logoSize").value = "";
-            document.getElementById("card-logo").src = "https://i.ibb.co/G2NFYHG/logo.png";
-            document.getElementById("card-logo").style.width = "200px";
-            document.getElementById("card-logo").style.height = "auto";
-            document.getElementById("card-name").textContent = "John Doe";
-            document.getElementById("card-title").textContent = "Business Title";
-            document.getElementById("card-location").textContent = "Location: City, Country";
-            document.getElementById("card-email").textContent = "Email: john.doe@example.com";
-            document.getElementById("card-phone").textContent = "Phone: +1 234 567 890";
-            document.getElementById("card-website").textContent = "Website: example.com";
-            document.getElementById("card").style.backgroundColor = "#ffffff";
-            document.getElementById("download").disabled = true;
-        });
+    <div class="builder-layout">
+      
+      <!-- Left: Form Controls -->
+      <div class="tool-card-container" style="margin: 0; max-width: 100%;">
+        <div class="form-group">
+          <label class="form-label" for="name"><i class="fas fa-user"></i> Full Name</label>
+          <input type="text" id="name" class="form-control" placeholder="e.g. John Doe" value="John Doe">
+        </div>
 
-        document.getElementById("download").addEventListener("click", function() {
-            html2canvas(document.getElementById("card")).then(function(canvas) {
-                var link = document.createElement("a");
-                link.href = canvas.toDataURL();
-                link.download = "business_card.png";
-                link.click();
-            });
-        });
-    </script>
-<script src="js/common.js"></script><script>abInitChrome('buisnesscard');</script></body>
+        <div class="form-group">
+          <label class="form-label" for="title"><i class="fas fa-briefcase"></i> Business Title / Role</label>
+          <input type="text" id="title" class="form-control" placeholder="e.g. Creative Director & Founder" value="Business Title">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="logo"><i class="fas fa-image"></i> Brand Logo / Profile Photo</label>
+          <input type="file" id="logo" class="form-control" accept="image/*">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="location"><i class="fas fa-location-dot"></i> Location</label>
+          <input type="text" id="location" class="form-control" placeholder="e.g. New York, USA" value="City, Country">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="email"><i class="fas fa-envelope"></i> Email Address</label>
+          <input type="text" id="email" class="form-control" placeholder="e.g. john@example.com" value="john.doe@example.com">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="phone"><i class="fas fa-phone"></i> Phone Number</label>
+          <input type="text" id="phone" class="form-control" placeholder="e.g. +1 234 567 890" value="+1 234 567 890">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="website"><i class="fas fa-globe"></i> Website URL</label>
+          <input type="text" id="website" class="form-control" placeholder="e.g. www.example.com" value="example.com">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="background"><i class="fas fa-palette"></i> Card Background Color</label>
+          <div class="color-picker-wrapper">
+            <input type="color" id="background" class="color-input" value="#ffffff">
+            <span id="colorHex" style="font-family: var(--font-mono); font-size: 0.9rem; color: var(--text-muted);">#ffffff</span>
+          </div>
+        </div>
+
+        <div style="display: flex; gap: 12px; margin-top: 24px;">
+          <button id="generate" class="btn btn-primary" style="flex: 1;">
+            <i class="fas fa-wand-magic-sparkles"></i> Generate Card
+          </button>
+          <button id="clear" class="btn btn-secondary">
+            <i class="fas fa-rotate-left"></i> Reset
+          </button>
+        </div>
+      </div>
+
+      <!-- Right: Live Card Preview & Download -->
+      <div id="card-wrapper">
+        <label class="form-label" style="align-self: flex-start; margin-bottom: 12px;">
+          <i class="fas fa-eye"></i> Live Card Preview
+        </label>
+
+        <div id="card">
+          <div>
+            <div id="card-header">
+              <img id="cardLogoImg" src="https://i.ibb.co/G2NFYHG/logo.png" alt="Logo">
+              <div>
+                <h2 id="cardName">John Doe</h2>
+                <div class="business-title" id="cardTitle">Business Title</div>
+              </div>
+            </div>
+
+            <div class="divider-line"></div>
+
+            <div class="contact-info" id="cardContactInfo">
+              <p><span class="icon"><i class="fas fa-location-dot"></i></span> <span id="cardLocation">City, Country</span></p>
+              <p><span class="icon"><i class="fas fa-envelope"></i></span> <span id="cardEmail">john.doe@example.com</span></p>
+              <p><span class="icon"><i class="fas fa-phone"></i></span> <span id="cardPhone">+1 234 567 890</span></p>
+            </div>
+          </div>
+
+          <div>
+            <div class="divider-line"></div>
+            <p class="website"><span class="icon"><i class="fas fa-globe"></i></span> <span id="cardWebsite">example.com</span></p>
+          </div>
+        </div>
+
+        <div class="social-icons-preview">
+          <a href="#" title="Social Link 1"><i class="fas fa-link"></i></a>
+          <a href="#" title="Social Link 2"><i class="fas fa-share-nodes"></i></a>
+          <a href="#" title="Social Link 3"><i class="fas fa-comment-dots"></i></a>
+        </div>
+
+        <button id="download" class="btn btn-success btn-lg" style="width: 100%; max-width: 420px; margin-top: 20px;">
+          <i class="fas fa-download"></i> Download Business Card (PNG)
+        </button>
+      </div>
+
+    </div>
+  </main>
+
+  <footer class="app-footer">
+    <div class="app-container">
+      <p class="footer-text">&copy; 2026 AI Bots. All rights reserved.</p>
+      <p class="footer-credits">Website designed by <strong>Rishit Chajjed</strong>.</p>
+    </div>
+  </footer>
+
+  <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+  <script src="js/app.js"></script>
+  <script>
+    const nameInput = document.getElementById("name");
+    const titleInput = document.getElementById("title");
+    const locationInput = document.getElementById("location");
+    const emailInput = document.getElementById("email");
+    const phoneInput = document.getElementById("phone");
+    const websiteInput = document.getElementById("website");
+    const logoInput = document.getElementById("logo");
+    const bgInput = document.getElementById("background");
+    const colorHex = document.getElementById("colorHex");
+
+    const card = document.getElementById("card");
+    const cardName = document.getElementById("cardName");
+    const cardTitle = document.getElementById("cardTitle");
+    const cardLocation = document.getElementById("cardLocation");
+    const cardEmail = document.getElementById("cardEmail");
+    const cardPhone = document.getElementById("cardPhone");
+    const cardWebsite = document.getElementById("cardWebsite");
+    const cardLogoImg = document.getElementById("cardLogoImg");
+
+    let logoDataUrl = "https://i.ibb.co/G2NFYHG/logo.png";
+
+    function updateLivePreview() {
+      cardName.textContent = nameInput.value || "John Doe";
+      cardTitle.textContent = titleInput.value || "Business Title";
+      cardLocation.textContent = locationInput.value || "City, Country";
+      cardEmail.textContent = emailInput.value || "john.doe@example.com";
+      cardPhone.textContent = phoneInput.value || "+1 234 567 890";
+      cardWebsite.textContent = websiteInput.value || "example.com";
+      card.style.backgroundColor = bgInput.value;
+      colorHex.textContent = bgInput.value;
+      
+      // Auto adjust text color contrast
+      const hex = bgInput.value.replace('#', '');
+      const r = parseInt(hex.substr(0, 2), 16);
+      const g = parseInt(hex.substr(2, 2), 16);
+      const b = parseInt(hex.substr(4, 2), 16);
+      const yiq = ((r * 299) + (g * 587) + (b * 114)) / 1000;
+      card.style.color = (yiq >= 128) ? '#1e293b' : '#ffffff';
+    }
+
+    [nameInput, titleInput, locationInput, emailInput, phoneInput, websiteInput, bgInput].forEach(el => {
+      el.addEventListener('input', updateLivePreview);
+    });
+
+    logoInput.addEventListener('change', function(e) {
+      const file = e.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function(evt) {
+          logoDataUrl = evt.target.result;
+          cardLogoImg.src = logoDataUrl;
+          showToast('Logo updated on card!', 'success');
+        };
+        reader.readAsDataURL(file);
+      }
+    });
+
+    document.getElementById("generate").addEventListener("click", function() {
+      updateLivePreview();
+      showToast('Business Card updated!', 'success');
+    });
+
+    document.getElementById("clear").addEventListener("click", function() {
+      nameInput.value = "";
+      titleInput.value = "";
+      locationInput.value = "";
+      emailInput.value = "";
+      phoneInput.value = "";
+      websiteInput.value = "";
+      logoInput.value = "";
+      bgInput.value = "#ffffff";
+      logoDataUrl = "https://i.ibb.co/G2NFYHG/logo.png";
+      cardLogoImg.src = logoDataUrl;
+      updateLivePreview();
+      showToast('Form cleared', 'info');
+    });
+
+    document.getElementById("download").addEventListener("click", function() {
+      showToast('Generating high-res card image...', 'info');
+      html2canvas(card, { scale: 3, useCORS: true }).then(function(canvas) {
+        const link = document.createElement("a");
+        link.href = canvas.toDataURL("image/png");
+        link.download = (nameInput.value ? nameInput.value.replace(/\s+/g, '_') : 'business') + "_card.png";
+        link.click();
+        showToast('Card downloaded successfully!', 'success');
+      });
+    });
+  </script>
+</body>
 </html>

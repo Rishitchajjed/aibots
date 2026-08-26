@@ -1,5 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://www.aibots.co.in/sitemap.xml
 Sitemap: https://aibots-one.vercel.app/sitemap.xml

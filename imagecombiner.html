@@ -1,319 +1,312 @@
 ﻿<!DOCTYPE html>
-
-<html>
+<html lang="en">
 <head>
-  <meta name="google-site-verification" content="ndzq-U-NLijgza_QqgQdcc2U3oMRoud_BT2ZZiwFREM">
-<title>Image Combiner</title>
-<meta charset="utf-8"/>
+<meta name="google-site-verification" content="ndzq-U-NLijgza_QqgQdcc2U3oMRoud_BT2ZZiwFREM">
+  <meta name="google-site-verification" content="-Yb6Nx74gbZ3wRN5uP-Y8KKwDWlt1DPpxs4nA3PkE6M">
+  <meta name="robots" content="index, follow">
+  <!-- Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-2L87FMQS3W"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-2L87FMQS3W');
+  </script>
+
+  <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<link href="css/theme.css" rel="stylesheet"/><link href="https://i.ibb.co/G2NFYHG/logo.png" rel="icon" type="image/png"/>
-<style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f7f7f7;
-            margin: 0;
-            padding: 0;
-        }
+  <meta name="google-site-verification" content="-Yb6Nx74gbZ3wRN5uP-Y8KKwDWlt1DPpxs4nA3PkE6M">
+  <link rel="icon" href="https://i.ibb.co/G2NFYHG/logo.png" type="image/png">
+  <title>Image Combiner & Merger - AI Bots</title>
 
-        header {
-            background-color: #333;
-            color: #fff;
-            padding: 10px;
-            text-align: center;
-        }
-
-        h1 {
-            margin: 0;
-            font-size: 28px;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-        }
-
-        p {
-            margin: 0;
-            font-size: 16px;
-            line-height: 1.5;
-        }
-
-        main {
-            padding: 20px;
-            text-align: center;
-        }
-
-        form {
-            margin-bottom: 30px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            flex-wrap: wrap;
-        }
-
-        label {
-            margin-right: 10px;
-            font-size: 18px;
-            color: #333;
-        }
-
-        input[type="file"] {
-            display: none;
-        }
-
-        #customFileUpload {
-            padding: 10px 20px;
-            background-color: #333;
-            color: #fff;
-            cursor: pointer;
-            border: none;
-            border-radius: 5px;
-            transition: background-color 0.3s;
-        }
-
-        #customFileUpload:hover {
-            background-color: #555;
-        }
-
-        button {
-            padding: 10px 20px;
-            background-color: #333;
-            color: #fff;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: background-color 0.3s;
-            margin: 10px;
-        }
-
-        button:hover {
-            background-color: #555;
-        }
-
-        #imagePreview {
-            display: flex;
-            justify-content: center;
-            flex-wrap: wrap;
-        }
-
-        .preview-image {
-            max-width: 150px;
-            max-height: 150px;
-            margin: 10px;
-            box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
-            border-radius: 5px;
-        }
-
-        #result {
-            margin: 30px auto;
-            max-width: 100%;
-            overflow: hidden;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
-        }
-
-        .combined-image {
-            display: block;
-            max-width: 100%;
-            max-height: 100%;
-            margin: 0 auto;
-            border-radius: 5px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
-            cursor: move;
-        }
-
-        #downloadButton {
-            display: none;
-            padding: 10px 20px;
-            background-color: #333;
-            color: #fff;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: background-color 0.3s;
-        }
-
-        #downloadButton:hover {
-            background-color: #555;
-        }
-
-        #logo {
-            height: 85px;
-            width: 135px;
-            margin-bottom: 20px;
-        }
-    </style>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="css/theme.css">
+  <style>
+    .thumbs-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+      gap: 14px;
+      margin: 20px 0;
+    }
+    .thumb-card {
+      position: relative;
+      aspect-ratio: 1;
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      border: 1px solid var(--border-color);
+      box-shadow: var(--shadow-sm);
+      background: var(--bg-tertiary);
+    }
+    .thumb-card img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .result-pages-container {
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+      margin: 32px 0;
+      align-items: center;
+    }
+    .result-page-card {
+      max-width: 580px;
+      width: 100%;
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      padding: 16px;
+      text-align: center;
+    }
+    .result-page-card img {
+      max-width: 100%;
+      height: auto;
+      border-radius: var(--radius-sm);
+      box-shadow: var(--shadow-md);
+    }
+  </style>
 </head>
 <body>
-<header>
-<img alt="Logo" id="logo" src="https://i.ibb.co/G2NFYHG/logo.png"/>
-<h1>Image Combiner</h1>
-</header>
-<main>
-<p>Welcome to the Image Combiner tool. Select multiple images, and they will be combined into a single image fitting within the chosen page size without maintaining aspect ratios.</p>
-<form enctype="multipart/form-data" id="imageForm">
-<label for="imageFile" id="customFileUpload">Select Images</label>
-<input id="imageFile" multiple="" type="file"/>
-<br/><br/>
-<label for="pageSize">Page Size:</label>
-<select id="pageSize" onchange="updateCustomSizeInputs()">
-<option selected="" value="a4">A4</option>
-<option value="a3">A3</option>
-<option value="a2">A2</option>
-<option value="custom">Custom</option>
-</select>
-<div id="customSizeInputs" style="display: none;">
-<label for="widthInput">Width:</label>
-<input id="widthInput" min="1" type="number"/>
-<label for="heightInput">Height:</label>
-<input id="heightInput" min="1" type="number"/>
-</div>
-<br/><br/>
-<label for="numPages">Number of Pages:</label>
-<input id="numPages" min="1" type="number" value="1"/>
-<br/><br/>
-<button onclick="showPreview()" type="button">Show Preview</button>
-<button onclick="combineImages()" type="button">Combine</button>
-</form>
-<div id="imagePreview">
-<!-- Preview images will be shown here -->
-</div>
-<div id="result">
-<!-- Combined images will be shown here -->
-</div>
-<button id="downloadButton" onclick="downloadImages()">Download Combined Images</button>
-</main>
-<script>
-        var imageElements = [];
-        var combinedImageURLs = [];
+  <div class="bg-mesh"></div>
 
-        function showPreview() {
-            var files = document.getElementById('imageFile').files;
-            var previewDiv = document.getElementById('imagePreview');
-            previewDiv.innerHTML = '';
-            imageElements = [];
+  <!-- Navbar -->
+  <header class="navbar">
+    <div class="app-container" style="width: 100%;">
+      <div class="nav-wrapper">
+        <a href="index.html" class="brand-link">
+          <img src="https://i.ibb.co/G2NFYHG/logo.png" alt="AI Bots Logo" class="brand-logo-img">
+          <span>AI Bots</span>
+          <span class="brand-badge">Image Combiner</span>
+        </a>
 
-            for (var i = 0; i < files.length; i++) {
-                var file = files[i];
-                var reader = new FileReader();
+        <div class="nav-actions">
+          <a href="index.html" class="btn btn-secondary btn-sm"><i class="fas fa-house"></i> Hub</a>
+          <button class="icon-btn theme-toggle-btn" title="Toggle Dark/Light Mode"><i class="fas fa-moon"></i></button>
+        </div>
+      </div>
+    </div>
+  </header>
 
-                reader.onload = function (e) {
-                    var img = document.createElement('img');
-                    img.src = e.target.result;
-                    img.className = 'preview-image';
-                    previewDiv.appendChild(img);
-                    imageElements.push(img);
-                };
+  <main class="app-container tool-page-wrapper">
+    <div class="tool-header">
+      <span class="tool-header-badge"><i class="fas fa-layer-group"></i> Multi-Layout</span>
+      <h1 class="tool-title">Image Combiner & Merger</h1>
+      <p class="tool-desc">Select multiple photos and arrange them into structured single or multi-page A4/A3/Custom grid layouts.</p>
+    </div>
 
-                reader.readAsDataURL(file);
-            }
+    <div class="tool-card-container">
+      
+      <!-- Multi-File Dropzone -->
+      <div class="dropzone-container" id="dropzone">
+        <input type="file" id="imageFile" class="dropzone-input" accept="image/*" multiple onchange="showPreview()">
+        <div class="dropzone-icon"><i class="fas fa-images"></i></div>
+        <div class="dropzone-title">Click to Select Multiple Images or Drag & Drop</div>
+        <div class="dropzone-subtitle">Select 2 or more photos to merge</div>
+      </div>
+
+      <!-- Preview Thumbs -->
+      <div id="imagePreview" class="thumbs-grid"></div>
+
+      <!-- Settings Form -->
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 20px;">
+        <div class="form-group">
+          <label class="form-label" for="pageSize"><i class="fas fa-file"></i> Page Canvas Format</label>
+          <select id="pageSize" class="form-control" onchange="updateCustomSizeInputs()">
+            <option value="a4" selected>A4 (595 × 842 pt)</option>
+            <option value="a3">A3 (842 × 1191 pt)</option>
+            <option value="a2">A2 (1191 × 1684 pt)</option>
+            <option value="custom">Custom Dimensions</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="numPages"><i class="fas fa-copy"></i> Max Pages Limit</label>
+          <input type="number" id="numPages" class="form-control" min="1" value="1">
+        </div>
+      </div>
+
+      <div id="customSizeInputs" style="display: none; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 20px;">
+        <div class="form-group">
+          <label class="form-label" for="widthInput">Custom Width (px):</label>
+          <input type="number" id="widthInput" class="form-control" placeholder="800" min="100">
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="heightInput">Custom Height (px):</label>
+          <input type="number" id="heightInput" class="form-control" placeholder="1000" min="100">
+        </div>
+      </div>
+
+      <!-- Action Buttons -->
+      <div style="display: flex; gap: 12px; justify-content: center; margin-top: 24px; flex-wrap: wrap;">
+        <button type="button" class="btn btn-primary btn-lg" onclick="combineImages()">
+          <i class="fas fa-layer-group"></i> Combine & Generate Pages
+        </button>
+        <button id="downloadButton" type="button" class="btn btn-success btn-lg" style="display: none;" onclick="downloadImages()">
+          <i class="fas fa-download"></i> Download Combined Images
+        </button>
+      </div>
+
+      <!-- Result Pages -->
+      <div id="result" class="result-pages-container"></div>
+
+    </div>
+  </main>
+
+  <footer class="app-footer">
+    <div class="app-container">
+      <p class="footer-text">&copy; 2026 AI Bots. All rights reserved.</p>
+      <p class="footer-credits">Website designed by <strong>Rishit Chajjed</strong>.</p>
+    </div>
+  </footer>
+
+  <script src="js/app.js"></script>
+  <script>
+    let imageElements = [];
+    let combinedImageURLs = [];
+
+    function showPreview() {
+      const files = document.getElementById('imageFile').files;
+      const previewDiv = document.getElementById('imagePreview');
+      previewDiv.innerHTML = '';
+      imageElements = [];
+
+      if (!files || files.length === 0) return;
+
+      for (let i = 0; i < files.length; i++) {
+        const file = files[i];
+        const reader = new FileReader();
+
+        reader.onload = function (e) {
+          const card = document.createElement('div');
+          card.className = 'thumb-card';
+          
+          const img = document.createElement('img');
+          img.src = e.target.result;
+          card.appendChild(img);
+          previewDiv.appendChild(card);
+
+          imageElements.push(img);
+        };
+        reader.readAsDataURL(file);
+      }
+      showToast(`${files.length} images selected`, 'info');
+    }
+
+    function updateCustomSizeInputs() {
+      const pageSizeDropdown = document.getElementById('pageSize');
+      const customSizeInputs = document.getElementById('customSizeInputs');
+      customSizeInputs.style.display = (pageSizeDropdown.value === 'custom') ? 'grid' : 'none';
+    }
+
+    function combineImages() {
+      if (imageElements.length === 0) {
+        showToast('Please select images first!', 'error');
+        return;
+      }
+
+      const pageSizeDropdown = document.getElementById('pageSize');
+      const widthInput = document.getElementById('widthInput');
+      const heightInput = document.getElementById('heightInput');
+      const numPagesInput = document.getElementById('numPages');
+
+      const selectedOption = pageSizeDropdown.value;
+      let pageWidth, pageHeight;
+
+      if (selectedOption === 'custom') {
+        pageWidth = parseFloat(widthInput.value) || 800;
+        pageHeight = parseFloat(heightInput.value) || 1000;
+      } else {
+        const pageSizes = {
+          'a4': { width: 595, height: 842 },
+          'a3': { width: 842, height: 1191 },
+          'a2': { width: 1191, height: 1684 }
+        };
+        const pageSize = pageSizes[selectedOption];
+        pageWidth = pageSize.width;
+        pageHeight = pageSize.height;
+      }
+
+      const maxImagesPerPage = 4;
+      const maxImageWidth = pageWidth / 2;
+      const maxImageHeight = pageHeight / 2;
+      const totalPages = Math.ceil(imageElements.length / maxImagesPerPage);
+      const requestedPages = Math.min(parseInt(numPagesInput.value) || 1, totalPages);
+
+      combinedImageURLs = [];
+      let imageIndex = 0;
+
+      for (let page = 0; page < requestedPages; page++) {
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
+        canvas.width = pageWidth;
+        canvas.height = pageHeight;
+
+        // Background
+        ctx.fillStyle = '#ffffff';
+        ctx.fillRect(0, 0, pageWidth, pageHeight);
+
+        const pageImages = imageElements.slice(page * maxImagesPerPage, (page + 1) * maxImagesPerPage);
+        const numCols = pageImages.length === 1 ? 1 : 2;
+        const numRows = Math.ceil(pageImages.length / numCols);
+
+        for (let i = 0; i < pageImages.length; i++) {
+          const img = pageImages[i];
+          const col = i % 2;
+          const row = Math.floor(i / 2);
+
+          const cellW = pageWidth / numCols;
+          const cellH = pageHeight / (numRows || 1);
+
+          const naturalW = img.naturalWidth || img.width || 100;
+          const naturalH = img.naturalHeight || img.height || 100;
+
+          const ratio = Math.min(cellW / naturalW, cellH / naturalH) * 0.95;
+          const drawW = naturalW * ratio;
+          const drawH = naturalH * ratio;
+
+          const posX = (col * cellW) + (cellW - drawW) / 2;
+          const posY = (row * cellH) + (cellH - drawH) / 2;
+
+          ctx.drawImage(img, posX, posY, drawW, drawH);
         }
 
-        function updateCustomSizeInputs() {
-            var pageSizeDropdown = document.getElementById('pageSize');
-            var customSizeInputs = document.getElementById('customSizeInputs');
+        combinedImageURLs.push(canvas.toDataURL('image/png'));
+      }
 
-            if (pageSizeDropdown.value === 'custom') {
-                customSizeInputs.style.display = 'block';
-            } else {
-                customSizeInputs.style.display = 'none';
-            }
-        }
+      updateCombinedImages();
+      showToast('Images combined into layout!', 'success');
+    }
 
-        function combineImages() {
-            var pageSizeDropdown = document.getElementById('pageSize');
-            var widthInput = document.getElementById('widthInput');
-            var heightInput = document.getElementById('heightInput');
-            var numPagesInput = document.getElementById('numPages');
+    function updateCombinedImages() {
+      const resultDiv = document.getElementById('result');
+      resultDiv.innerHTML = '';
 
-            var selectedOption = pageSizeDropdown.value;
-            var pageWidth, pageHeight;
+      combinedImageURLs.forEach((url, idx) => {
+        const card = document.createElement('div');
+        card.className = 'result-page-card';
+        card.innerHTML = `
+          <div style="font-weight: 600; margin-bottom: 8px; color: var(--text-secondary);">Page ${idx + 1}</div>
+          <img src="${url}" alt="Combined Page ${idx + 1}">
+        `;
+        resultDiv.appendChild(card);
+      });
 
-            if (selectedOption === 'custom') {
-                pageWidth = parseFloat(widthInput.value);
-                pageHeight = parseFloat(heightInput.value);
-            } else {
-                var pageSizes = {
-                    'a4': { width: 595, height: 842 },
-                    'a3': { width: 842, height: 1191 },
-                    'a2': { width: 1191, height: 1684 }
-                };
+      const downloadButton = document.getElementById('downloadButton');
+      downloadButton.style.display = 'inline-flex';
+      downloadButton.scrollIntoView({ behavior: 'smooth' });
+    }
 
-                var pageSize = pageSizes[selectedOption];
-                pageWidth = pageSize.width;
-                pageHeight = pageSize.height;
-            }
+    function downloadImages() {
+      if (combinedImageURLs.length === 0) return;
 
-            var numImages = imageElements.length;
-            var numColumns = Math.ceil(Math.sqrt(numImages));
-            var numRows = Math.ceil(numImages / numColumns);
-            var maxImageWidth = pageWidth / numColumns;
-            var maxImageHeight = pageHeight / numRows;
-            var numPages = Math.ceil(numImages / (numColumns * numRows));
-            var imageIndex = 0;
-
-            combinedImageURLs = [];
-
-            for (var page = 0; page < numPagesInput.value && page < numPages; page++) {
-                var canvas = document.createElement('canvas');
-                var ctx = canvas.getContext('2d');
-                canvas.width = pageWidth;
-                canvas.height = pageHeight;
-
-                for (var row = 0; row < numRows; row++) {
-                    for (var col = 0; col < numColumns; col++) {
-                        var index = page * numColumns * numRows + row * numColumns + col;
-
-                        if (index >= imageElements.length) {
-                            break;
-                        }
-
-                        var image = imageElements[index];
-                        var imageWidth = image.offsetWidth;
-                        var imageHeight = image.offsetHeight;
-
-                        var resizeRatio = Math.min(maxImageWidth / imageWidth, maxImageHeight / imageHeight);
-                        var resizedWidth = imageWidth * resizeRatio;
-                        var resizedHeight = imageHeight * resizeRatio;
-
-                        var x = col * maxImageWidth + (maxImageWidth - resizedWidth) / 2;
-                        var y = row * maxImageHeight + (maxImageHeight - resizedHeight) / 2;
-
-                        ctx.drawImage(image, x, y, resizedWidth, resizedHeight);
-                    }
-                }
-
-                combinedImageURLs.push(canvas.toDataURL('image/png'));
-            }
-
-            updateCombinedImages();
-        }
-
-        function updateCombinedImages() {
-            var resultDiv = document.getElementById('result');
-            resultDiv.innerHTML = '';
-
-            for (var i = 0; i < combinedImageURLs.length; i++) {
-                var img = document.createElement('img');
-                img.src = combinedImageURLs[i];
-                img.className = 'combined-image';
-                resultDiv.appendChild(img);
-            }
-
-            var downloadButton = document.getElementById('downloadButton');
-            downloadButton.style.display = 'inline-block';
-        }
-
-        function downloadImages() {
-            if (combinedImageURLs.length === 0) {
-                console.error('Combined image URLs are not available.');
-                return;
-            }
-
-            for (var i = 0; i < combinedImageURLs.length; i++) {
-                var a = document.createElement('a');
-                a.href = combinedImageURLs[i];
-                a.download = 'combined_images_page' + (i + 1) + '.png';
-                a.click();
-            }
-        }
-    </script>
-<script src="js/common.js"></script><script>abInitChrome('imagecombiner');</script></body>
+      combinedImageURLs.forEach((url, i) => {
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `combined_images_page${i + 1}.png`;
+        a.click();
+      });
+      showToast('Downloading all generated pages...', 'success');
+    }
+  </script>
+</body>
 </html>

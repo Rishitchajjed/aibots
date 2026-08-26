@@ -1,567 +1,439 @@
 ﻿<!DOCTYPE html>
-
-<html>
+<html lang="en">
 <head>
-  <meta name="google-site-verification" content="ndzq-U-NLijgza_QqgQdcc2U3oMRoud_BT2ZZiwFREM">
-<!-- Google tag (gtag.js) -->
-<script async="" src="https://www.googletagmanager.com/gtag/js?id=G-2L87FMQS3W"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
+<meta name="google-site-verification" content="ndzq-U-NLijgza_QqgQdcc2U3oMRoud_BT2ZZiwFREM">
+  <meta name="google-site-verification" content="-Yb6Nx74gbZ3wRN5uP-Y8KKwDWlt1DPpxs4nA3PkE6M">
+  <meta name="robots" content="index, follow">
+  <!-- Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-2L87FMQS3W"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-2L87FMQS3W');
+  </script>
 
-  gtag('config', 'G-2L87FMQS3W');
-</script>
-<title>Image Cropper</title>
-<meta charset="utf-8"/>
+  <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<link href="css/theme.css" rel="stylesheet"/><style>
-body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background-color: #f2f2f2;
-    margin: 0;
-    padding: 20px;
-}
+  <meta name="google-site-verification" content="-Yb6Nx74gbZ3wRN5uP-Y8KKwDWlt1DPpxs4nA3PkE6M">
+  <link rel="icon" href="https://i.ibb.co/G2NFYHG/logo.png" type="image/png">
+  <title>Image Cropper - AI Bots</title>
 
-h1 {
-    color: #333;
-    text-align: center;
-}
-
-.logo {
-    text-align: center;
-    margin-bottom: 20px;
-}
-
-.logo img {
-    max-width: 200px;
-}
-
-.file-upload-container {
-    text-align: center;
-    margin-bottom: 20px;
-}
-
-.file-upload-label {
-    display: inline-block;
-    background-color: #4CAF50;
-    color: white;
-    padding: 12px 24px;
-    font-size: 16px;
-    font-weight: bold;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-}
-
-.file-upload-label:hover {
-    background-color: #45a049;
-}
-
-.file-upload-label::before {
-    content: 'Select Image';
-}
-
-.file-upload-label input[type="file"] {
-    display: none;
-}
-
-#image-container {
-    position: relative;
-    width: 80%;
-    max-width: 600px;
-    margin: 0 auto;
-    overflow: hidden;
-    border: 2px solid transparent;
-    background: linear-gradient(to bottom right, #fff, #f2f2f2);
-    border-radius: 10px;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-    transition: border-color 0.3s ease, transform 0.3s ease;
-}
-
-#image-container:hover {
-    border-color: #4CAF50;
-    transform: translateY(-5px);
-}
-
-#image-preview {
-    display: block;
-    width: 100%;
-    height: auto;
-    pointer-events: none;
-    border-radius: 10px;
-    transition: opacity 0.3s ease;
-}
-
-#image-preview:hover {
-    opacity: 0.9;
-}
-
-/* Cropper */
-#cropper {
-    position: absolute;
-    border: 2px dashed #4CAF50;
-    box-sizing: border-box;
-    cursor: move;
-    pointer-events: auto;
-    top: 10%;
-    left: 10%;
-    width: 80%;
-    height: 80%;
-    user-drag: none;
-    background-color: rgba(255, 255, 255, 0.8);
-    transition: border-color 0.3s ease, opacity 0.3s ease;
-    border-radius: 20px;
-    z-index: 1;
-    overflow: hidden; /* Hide overflow for smoother appearance */
-}
-
-#cropper:hover {
-    opacity: 0.95;
-}
-
-/* Resize handles */
-.resize-handle {
-    position: absolute;
-    width: 20px;
-    height: 20px;
-    background: #4CAF50;
-    pointer-events: auto;
-    opacity: 0.8;
-    border-radius: 50%;
-    cursor: pointer;
-    transition: background-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
-    z-index: 2;
-}
-
-.resize-handle:hover {
-    background-color: #45a049;
-    transform: scale(1.2);
-    box-shadow: 0 0 10px rgba(0,0,0,0.4);
-}
-
-/* Gradient overlay for handles */
-.top-left::before, .bottom-right::before {
-    content: "";
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(135deg, rgba(255,255,255,0.6) 0%, rgba(255,255,255,0) 100%);
-    border-radius: 50%;
-    pointer-events: none;
-}
-
-.top-left:hover::before, .bottom-right:hover::before {
-    background: linear-gradient(135deg, rgba(255,255,255,0.8) 0%, rgba(255,255,255,0) 100%);
-}
-
-/* Decorative overlay */
-#cropper::after {
-    content: "";
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 70%);
-    pointer-events: none;
-    animation: pulse 3s infinite;
-}
-
-@keyframes pulse {
-    0% {
-        transform: scale(1);
-    }
-    50% {
-        transform: scale(1.1);
-    }
-    100% {
-        transform: scale(1);
-    }
-}
-
-
-#crop-button,
-#download-button {
-    background-color: #4CAF50;
-    border: none;
-    color: white;
-    padding: 12px 24px;
-    font-size: 16px;
-    font-weight: bold;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: background-color 0.3s ease, transform 0.2s ease;
-    display: block;
-    margin: 0 auto;
-    margin-top: 20px;
-}
-
-#crop-button:hover,
-#download-button:hover {
-    background-color: #45a049;
-    transform: translateY(-3px) scale(1.05);
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-}
-
-#download-button {
-    background-color: #008CBA;
-}
-
-#download-button:hover {
-    background-color: #45a049;
-    transform: translateY(-3px) scale(1.05);
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-}
-
-#cropped-image-container {
-    margin-top: 20px;
-    text-align: center;
-    transition: opacity 0.3s ease;
-}
-
-#cropped-image-container img {
-    max-width: 100%;
-    max-height: 300px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    border-radius: 4px;
-    transition: transform 0.3s ease;
-}
-
-#cropped-image-container img:hover {
-    transform: scale(1.05);
-}
-
-#cropper-dimensions {
-    margin-top: 10px;
-    text-align: center;
-    font-size: 14px;
-}
-
-.center-align {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-/* Add responsive adjustments */
-@media (max-width: 768px) {
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="css/theme.css">
+  <style>
     #image-container {
-        width: 90%;
+      position: relative;
+      max-width: 650px;
+      margin: 0 auto;
+      overflow: hidden;
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--border-color);
+      background: var(--bg-tertiary);
+      display: none;
     }
-}
 
-/* Animation for buttons */
-@keyframes buttonHover {
-    0% { transform: translateY(0); }
-    50% { transform: translateY(-3px); }
-    100% { transform: translateY(0); }
-}
+    #image-preview {
+      display: block;
+      width: 100%;
+      height: auto;
+      pointer-events: none;
+      user-select: none;
+    }
 
-#crop-button:hover,
-#download-button:hover {
-    animation: buttonHover 0.4s ease;
-}
+    #cropper {
+      position: absolute;
+      border: 2px dashed #ffffff;
+      box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.55);
+      box-sizing: border-box;
+      cursor: move;
+      pointer-events: auto;
+      top: 10%;
+      left: 10%;
+      width: 80%;
+      height: 80%;
+    }
 
-/* Animation for cropped image */
-@keyframes imageHover {
-    0% { transform: scale(1); }
-    50% { transform: scale(1.05); }
-    100% { transform: scale(1); }
-}
+    .resize-handle {
+      position: absolute;
+      width: 16px;
+      height: 16px;
+      background: var(--primary);
+      border: 2px solid #ffffff;
+      border-radius: 50%;
+      pointer-events: auto;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.4);
+    }
+    .top-left { top: -8px; left: -8px; cursor: nwse-resize; }
+    .top-right { top: -8px; right: -8px; cursor: nesw-resize; }
+    .bottom-left { bottom: -8px; left: -8px; cursor: nesw-resize; }
+    .bottom-right { bottom: -8px; right: -8px; cursor: nwse-resize; }
 
-#cropped-image-container img:hover {
-    animation: imageHover 0.4s ease;
-}
+    .aspect-pills {
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+      margin: 16px 0;
+      flex-wrap: wrap;
+    }
 
-    </style>
+    .aspect-pill {
+      padding: 6px 14px;
+      border-radius: var(--radius-full);
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border-color);
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .aspect-pill.active, .aspect-pill:hover {
+      background: var(--primary);
+      color: #ffffff;
+      border-color: var(--primary);
+    }
+
+    .dim-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 12px;
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-full);
+      font-family: var(--font-mono);
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+      margin: 12px 0;
+    }
+  </style>
 </head>
 <body>
-<h1>Image Cropper</h1>
-<div class="logo">
-<img alt="AI Bots Logo" src="https://i.ibb.co/G2NFYHG/logo.png"/>
-</div>
-<div class="file-upload-container">
-<label class="file-upload-label" for="image-input">Select Image</label>
-<input accept="image/*" id="image-input" type="file"/>
-</div>
-<div id="image-container">
-<img alt="Preview" id="image-preview" src=""/>
-<div id="cropper">
-<div class="resize-handle top-left"></div>
-<div class="resize-handle bottom-right"></div>
-</div>
-</div>
-<button id="crop-button">Crop</button>
-<div id="cropped-image-container"></div>
-<div class="center-align">
-<button id="download-button">Download Cropped Image</button>
-</div>
-<script>
-                const imageInput = document.getElementById('image-input');
-        const imagePreview = document.getElementById('image-preview');
-        const cropper = document.getElementById('cropper');
-        const cropButton = document.getElementById('crop-button');
-        const downloadButton = document.getElementById('download-button');
-        const croppedImageContainer = document.getElementById('cropped-image-container');
-        const cropperDimensions = document.getElementById('cropper-dimensions');
-        const resizeHandles = document.querySelectorAll('.resize-handle');
+  <div class="bg-mesh"></div>
 
-        let isDragging = false;
-        let activeHandle = null; // Variable to track the active handle
-        let startX, startY, startWidth, startHeight, originalLeft, originalTop;
+  <!-- Navbar -->
+  <header class="navbar">
+    <div class="app-container" style="width: 100%;">
+      <div class="nav-wrapper">
+        <a href="index.html" class="brand-link">
+          <img src="https://i.ibb.co/G2NFYHG/logo.png" alt="AI Bots Logo" class="brand-logo-img">
+          <span>AI Bots</span>
+          <span class="brand-badge">Cropper</span>
+        </a>
 
-        // Image input change event
-        imageInput.addEventListener('change', function(e) {
-            const file = e.target.files[0];
-            const reader = new FileReader();
+        <div class="nav-actions">
+          <a href="index.html" class="btn btn-secondary btn-sm"><i class="fas fa-house"></i> Hub</a>
+          <button class="icon-btn theme-toggle-btn" title="Toggle Dark/Light Mode"><i class="fas fa-moon"></i></button>
+        </div>
+      </div>
+    </div>
+  </header>
 
-            reader.onload = function(e) {
-                imagePreview.src = e.target.result;
-                imagePreview.onload = function() {
-                    imagePreview.style.pointerEvents = 'none';
-                    resetCropper();
-                };
-            };
+  <main class="app-container tool-page-wrapper">
+    <div class="tool-header">
+      <span class="tool-header-badge"><i class="fas fa-crop"></i> Precision Tool</span>
+      <h1 class="tool-title">Interactive Image Cropper</h1>
+      <p class="tool-desc">Upload, drag the crop box to frame your subject, and export in custom or preset aspect ratios.</p>
+    </div>
 
-            reader.readAsDataURL(file);
-        });
+    <div class="tool-card-container">
+      
+      <!-- Upload Dropzone -->
+      <div class="dropzone-container" id="dropzone">
+        <input type="file" id="image-input" class="dropzone-input" accept="image/*">
+        <div class="dropzone-icon"><i class="fas fa-crop-simple"></i></div>
+        <div class="dropzone-title">Click to Select Image or Drag & Drop Here</div>
+        <div class="dropzone-subtitle">Supports JPG, PNG, WEBP (or paste with Ctrl+V)</div>
+      </div>
 
-        // Cropper drag event
-        cropper.addEventListener('mousedown', function(e) {
-            e.preventDefault();
-            isDragging = true;
-            startX = e.clientX;
-            startY = e.clientY;
-            originalLeft = cropper.offsetLeft;
-            originalTop = cropper.offsetTop;
-            startWidth = cropper.offsetWidth;
-            startHeight = cropper.offsetHeight;
-            document.body.style.cursor = 'move';
-        });
+      <!-- Aspect Ratio Controls -->
+      <div class="aspect-pills" id="aspectControls" style="display: none;">
+        <button class="aspect-pill active" onclick="setAspect(0, this)">Freeform</button>
+        <button class="aspect-pill" onclick="setAspect(1, this)">1:1 Square</button>
+        <button class="aspect-pill" onclick="setAspect(4/3, this)">4:3</button>
+        <button class="aspect-pill" onclick="setAspect(16/9, this)">16:9 Wide</button>
+        <button class="aspect-pill" onclick="setAspect(9/16, this)">9:16 Story</button>
+      </div>
 
-        document.addEventListener('mousemove', function(e) {
-            if (isDragging && activeHandle === null) { // Only move cropper if no active handle
-                const diffX = e.clientX - startX;
-                const diffY = e.clientY - startY;
+      <!-- Interactive Cropper Area -->
+      <div id="image-container">
+        <img id="image-preview" src="" alt="Preview">
+        <div id="cropper">
+          <div class="resize-handle top-left"></div>
+          <div class="resize-handle top-right"></div>
+          <div class="resize-handle bottom-left"></div>
+          <div class="resize-handle bottom-right"></div>
+        </div>
+      </div>
 
-                cropper.style.left = originalLeft + diffX + 'px';
-                cropper.style.top = originalTop + diffY + 'px';
+      <div style="text-align: center;">
+        <div class="dim-pill" id="cropper-dimensions" style="display: none;">
+          <i class="fas fa-ruler-combined"></i> <span>0 x 0 px</span>
+        </div>
+      </div>
 
-                constrainCropper();
-                updateCropperDimensions();
-            }
-        });
+      <!-- Action Buttons -->
+      <div style="display: flex; gap: 12px; justify-content: center; margin-top: 20px; flex-wrap: wrap;">
+        <button id="crop-button" class="btn btn-primary btn-lg" style="display: none;">
+          <i class="fas fa-crop"></i> Crop Selected Area
+        </button>
+      </div>
 
-        document.addEventListener('mouseup', function() {
-            if (isDragging && activeHandle === null) {
-                isDragging = false;
-                document.body.style.cursor = 'auto';
-            }
-        });
+      <!-- Cropped Result Box -->
+      <div id="cropped-image-container" style="margin-top: 28px; text-align: center;"></div>
+      
+      <div style="display: flex; justify-content: center; margin-top: 16px;">
+        <button id="download-button" class="btn btn-success btn-lg" style="display: none;">
+          <i class="fas fa-download"></i> Download Cropped Image (PNG)
+        </button>
+      </div>
 
-        // Cropper touch event
-        cropper.addEventListener('touchstart', function(e) {
-            e.preventDefault();
-            isDragging = true;
-            startX = e.touches[0].clientX;
-            startY = e.touches[0].clientY;
-            originalLeft = cropper.offsetLeft;
-            originalTop = cropper.offsetTop;
-            startWidth = cropper.offsetWidth;
-            startHeight = cropper.offsetHeight;
-            document.body.style.cursor = 'move';
-        });
+    </div>
+  </main>
 
-        document.addEventListener('touchmove', function(e) {
-            if (isDragging && activeHandle === null) { // Only move cropper if no active handle
-                const diffX = e.touches[0].clientX - startX;
-                const diffY = e.touches[0].clientY - startY;
+  <footer class="app-footer">
+    <div class="app-container">
+      <p class="footer-text">&copy; 2026 AI Bots. All rights reserved.</p>
+      <p class="footer-credits">Website designed by <strong>Rishit Chajjed</strong>.</p>
+    </div>
+  </footer>
 
-                cropper.style.left = originalLeft + diffX + 'px';
-                cropper.style.top = originalTop + diffY + 'px';
+  <script src="js/app.js"></script>
+  <script>
+    const imageInput = document.getElementById('image-input');
+    const imagePreview = document.getElementById('image-preview');
+    const imageContainer = document.getElementById('image-container');
+    const cropper = document.getElementById('cropper');
+    const cropButton = document.getElementById('crop-button');
+    const downloadButton = document.getElementById('download-button');
+    const croppedImageContainer = document.getElementById('cropped-image-container');
+    const cropperDimensions = document.getElementById('cropper-dimensions');
+    const aspectControls = document.getElementById('aspectControls');
+    const resizeHandles = document.querySelectorAll('.resize-handle');
 
-                constrainCropper();
-                updateCropperDimensions();
-            }
-        });
+    let isDragging = false;
+    let activeHandle = null;
+    let startX, startY, startWidth, startHeight, originalLeft, originalTop;
+    let targetAspectRatio = 0; // 0 = freeform
 
-        document.addEventListener('touchend', function() {
-            if (isDragging && activeHandle === null) {
-                isDragging = false;
-                document.body.style.cursor = 'auto';
-            }
-        });
+    imageInput.addEventListener('change', function(e) {
+      const file = e.target.files[0];
+      if (!file) return;
 
-        // Resize handle drag event
-        resizeHandles.forEach(handle => {
-            handle.addEventListener('mousedown', function(e) {
-                e.preventDefault();
-                isDragging = true;
-                activeHandle = handle; // Set the active handle
-                startX = e.clientX;
-                startY = e.clientY;
-                originalLeft = cropper.offsetLeft;
-                originalTop = cropper.offsetTop;
-                startWidth = cropper.offsetWidth;
-                startHeight = cropper.offsetHeight;
-                document.body.style.cursor = 'nwse-resize';
+      const reader = new FileReader();
+      reader.onload = function(evt) {
+        imagePreview.src = evt.target.result;
+        imagePreview.onload = function() {
+          imageContainer.style.display = 'block';
+          aspectControls.style.display = 'flex';
+          cropperDimensions.style.display = 'inline-flex';
+          cropButton.style.display = 'inline-flex';
+          resetCropper();
+          showToast('Image loaded! Adjust the crop box as desired.', 'success');
+        };
+      };
+      reader.readAsDataURL(file);
+    });
 
-                // Prevent text selection during resizing
-                document.documentElement.style.userSelect = 'none';
-            });
+    function setAspect(ratio, btn) {
+      targetAspectRatio = ratio;
+      document.querySelectorAll('.aspect-pill').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      resetCropper();
+    }
 
-            document.addEventListener('mousemove', function(e) {
-                if (isDragging && activeHandle === handle) { // Only resize if this handle is active
-                    const diffX = e.clientX - startX;
-                    const diffY = e.clientY - startY;
-                    const newWidth = startWidth + diffX;
-                    const newHeight = startHeight + diffY;
-                    if (newWidth > 0 && newHeight > 0) {
-                        cropper.style.width = newWidth + 'px';
-                        cropper.style.height = newHeight + 'px';
-                        updateCropperDimensions();
-                    }
-                }
-            });
+    // Dragging cropper box
+    cropper.addEventListener('mousedown', function(e) {
+      if (e.target.classList.contains('resize-handle')) return;
+      e.preventDefault();
+      isDragging = true;
+      startX = e.clientX;
+      startY = e.clientY;
+      originalLeft = cropper.offsetLeft;
+      originalTop = cropper.offsetTop;
+    });
 
-            document.addEventListener('mouseup', function() {
-                if (isDragging && activeHandle === handle) {
-                    isDragging = false;
-                    activeHandle = null; // Reset active handle on mouseup
-                    document.body.style.cursor = 'auto';
-                    document.documentElement.style.userSelect = 'auto'; // Restore text selection after resizing
-                }
-            });
+    document.addEventListener('mousemove', function(e) {
+      if (isDragging && activeHandle === null) {
+        const diffX = e.clientX - startX;
+        const diffY = e.clientY - startY;
+        cropper.style.left = (originalLeft + diffX) + 'px';
+        cropper.style.top = (originalTop + diffY) + 'px';
+        constrainCropper();
+        updateCropperDimensions();
+      }
+    });
 
-            handle.addEventListener('touchstart', function(e) {
-                e.preventDefault();
-                isDragging = true;
-                activeHandle = handle; // Set the active handle
-                startX = e.touches[0].clientX;
-                startY = e.touches[0].clientY;
-                originalLeft = cropper.offsetLeft;
-                originalTop = cropper.offsetTop;
-                startWidth = cropper.offsetWidth;
-                startHeight = cropper.offsetHeight;
-                document.body.style.cursor = 'nwse-resize';
-            });
+    document.addEventListener('mouseup', function() {
+      if (isDragging && activeHandle === null) {
+        isDragging = false;
+      }
+    });
 
-            document.addEventListener('touchmove', function(e) {
-                if (isDragging && activeHandle === handle) { // Only resize if this handle is active
-                    const diffX = e.touches[0].clientX - startX;
-                    const diffY = e.touches[0].clientY - startY;
-                    const newWidth = startWidth + diffX;
-                    const newHeight = startHeight + diffY;
-                    if (newWidth > 0 && newHeight > 0) {
-                        cropper.style.width = newWidth + 'px';
-                        cropper.style.height = newHeight + 'px';
-                        updateCropperDimensions();
-                    }
-                }
-            });
+    // Touch events for mobile
+    cropper.addEventListener('touchstart', function(e) {
+      if (e.target.classList.contains('resize-handle')) return;
+      isDragging = true;
+      startX = e.touches[0].clientX;
+      startY = e.touches[0].clientY;
+      originalLeft = cropper.offsetLeft;
+      originalTop = cropper.offsetTop;
+    }, { passive: true });
 
-            document.addEventListener('touchend', function() {
-                if (isDragging && activeHandle === handle) {
-                    isDragging = false;
-                    activeHandle = null; // Reset active handle on touchend
-                    document.body.style.cursor = 'auto';
-                }
-            });
-        });
+    document.addEventListener('touchmove', function(e) {
+      if (isDragging && activeHandle === null) {
+        const diffX = e.touches[0].clientX - startX;
+        const diffY = e.touches[0].clientY - startY;
+        cropper.style.left = (originalLeft + diffX) + 'px';
+        cropper.style.top = (originalTop + diffY) + 'px';
+        constrainCropper();
+        updateCropperDimensions();
+      }
+    }, { passive: true });
 
-        // Crop button click event
-        cropButton.addEventListener('click', function() {
-            cropAndShowImage();
-        });
+    document.addEventListener('touchend', function() {
+      if (isDragging && activeHandle === null) isDragging = false;
+    });
 
-        // Download button click event
-        downloadButton.addEventListener('click', function() {
-            const canvas = document.createElement('canvas');
-            const context = canvas.getContext('2d');
-            const scale = imagePreview.naturalWidth / imagePreview.offsetWidth;
-            const offsetX = cropper.offsetLeft * scale;
-            const offsetY = cropper.offsetTop * scale;
-            const width = cropper.offsetWidth * scale;
-            const height = cropper.offsetHeight * scale;
+    // Resize Handles
+    resizeHandles.forEach(handle => {
+      handle.addEventListener('mousedown', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        isDragging = true;
+        activeHandle = handle;
+        startX = e.clientX;
+        startY = e.clientY;
+        startWidth = cropper.offsetWidth;
+        startHeight = cropper.offsetHeight;
+        originalLeft = cropper.offsetLeft;
+        originalTop = cropper.offsetTop;
+      });
 
-            canvas.width = width;
-            canvas.height = height;
+      handle.addEventListener('touchstart', function(e) {
+        e.stopPropagation();
+        isDragging = true;
+        activeHandle = handle;
+        startX = e.touches[0].clientX;
+        startY = e.touches[0].clientY;
+        startWidth = cropper.offsetWidth;
+        startHeight = cropper.offsetHeight;
+        originalLeft = cropper.offsetLeft;
+        originalTop = cropper.offsetTop;
+      }, { passive: true });
+    });
 
-            context.drawImage(imagePreview, offsetX, offsetY, width, height, 0, 0, width, height);
+    document.addEventListener('mousemove', function(e) {
+      if (isDragging && activeHandle) {
+        const diffX = e.clientX - startX;
+        const diffY = e.clientY - startY;
 
-            const dataURL = canvas.toDataURL('image/png');
-
-            // Create a temporary link element to trigger the download
-            const link = document.createElement('a');
-            link.href = dataURL;
-            link.download = 'cropped_image.png';
-            link.click();
-        });
-
-        // Function to reset the cropper to its original state
-        function resetCropper() {
-            const imageWidth = imagePreview.offsetWidth;
-            const imageHeight = imagePreview.offsetHeight;
-            const cropperSize = Math.min(imageWidth, imageHeight) * 0.8;
-
-            cropper.style.width = cropperSize + 'px';
-            cropper.style.height = cropperSize + 'px';
-            cropper.style.left = (imageWidth - cropperSize) / 2 + 'px';
-            cropper.style.top = (imageHeight - cropperSize) / 2 + 'px';
-            updateCropperDimensions();
+        if (activeHandle.classList.contains('bottom-right')) {
+          let newW = startWidth + diffX;
+          let newH = targetAspectRatio > 0 ? newW / targetAspectRatio : startHeight + diffY;
+          if (newW > 30 && newH > 30) {
+            cropper.style.width = newW + 'px';
+            cropper.style.height = newH + 'px';
+          }
+        } else if (activeHandle.classList.contains('top-left')) {
+          let newW = startWidth - diffX;
+          let newH = targetAspectRatio > 0 ? newW / targetAspectRatio : startHeight - diffY;
+          if (newW > 30 && newH > 30) {
+            cropper.style.width = newW + 'px';
+            cropper.style.height = newH + 'px';
+            cropper.style.left = (originalLeft + diffX) + 'px';
+            cropper.style.top = (originalTop + diffY) + 'px';
+          }
         }
+        constrainCropper();
+        updateCropperDimensions();
+      }
+    });
 
-        // Function to constrain the cropper within the image boundaries
-        function constrainCropper() {
-            const containerRect = imagePreview.getBoundingClientRect();
-            const cropperRect = cropper.getBoundingClientRect();
+    document.addEventListener('mouseup', function() {
+      if (isDragging && activeHandle) {
+        isDragging = false;
+        activeHandle = null;
+      }
+    });
 
-            if (cropperRect.left < containerRect.left) {
-                cropper.style.left = 0;
-            }
+    function resetCropper() {
+      const imgW = imagePreview.offsetWidth;
+      const imgH = imagePreview.offsetHeight;
+      let sizeW = imgW * 0.75;
+      let sizeH = targetAspectRatio > 0 ? sizeW / targetAspectRatio : imgH * 0.75;
 
-            if (cropperRect.top < containerRect.top) {
-                cropper.style.top = 0;
-            }
+      if (sizeH > imgH) {
+        sizeH = imgH * 0.75;
+        sizeW = targetAspectRatio > 0 ? sizeH * targetAspectRatio : sizeW;
+      }
 
-            if (cropperRect.right > containerRect.right) {
-                cropper.style.left = containerRect.width - cropper.offsetWidth + 'px';
-            }
+      cropper.style.width = sizeW + 'px';
+      cropper.style.height = sizeH + 'px';
+      cropper.style.left = ((imgW - sizeW) / 2) + 'px';
+      cropper.style.top = ((imgH - sizeH) / 2) + 'px';
+      updateCropperDimensions();
+    }
 
-            if (cropperRect.bottom > containerRect.bottom) {
-                cropper.style.top = containerRect.height - cropper.offsetHeight + 'px';
-            }
-        }
+    function constrainCropper() {
+      const imgW = imagePreview.offsetWidth;
+      const imgH = imagePreview.offsetHeight;
 
-        // Function to update the cropper dimensions displayed below the cropper
-        function updateCropperDimensions() {
-            const width = cropper.offsetWidth;
-            const height = cropper.offsetHeight;
-            const dimensionsText = `${width} x ${height}px`;
-            cropperDimensions.textContent = dimensionsText;
-        }
+      if (cropper.offsetLeft < 0) cropper.style.left = '0px';
+      if (cropper.offsetTop < 0) cropper.style.top = '0px';
+      if (cropper.offsetLeft + cropper.offsetWidth > imgW) {
+        cropper.style.left = (imgW - cropper.offsetWidth) + 'px';
+      }
+      if (cropper.offsetTop + cropper.offsetHeight > imgH) {
+        cropper.style.top = (imgH - cropper.offsetHeight) + 'px';
+      }
+    }
 
-        // Function to crop the image and show the result
-        function cropAndShowImage() {
-            const canvas = document.createElement('canvas');
-            const context = canvas.getContext('2d');
-            const scale = imagePreview.naturalWidth / imagePreview.offsetWidth;
-            const offsetX = cropper.offsetLeft * scale;
-            const offsetY = cropper.offsetTop * scale;
-            const width = cropper.offsetWidth * scale;
-            const height = cropper.offsetHeight * scale;
+    function updateCropperDimensions() {
+      const scale = imagePreview.naturalWidth / imagePreview.offsetWidth;
+      const realW = Math.round(cropper.offsetWidth * scale);
+      const realH = Math.round(cropper.offsetHeight * scale);
+      cropperDimensions.querySelector('span').textContent = `${realW} × ${realH} px`;
+    }
 
-            canvas.width = width;
-            canvas.height = height;
+    cropButton.addEventListener('click', function() {
+      const canvas = document.createElement('canvas');
+      const ctx = canvas.getContext('2d');
+      const scale = imagePreview.naturalWidth / imagePreview.offsetWidth;
 
-            context.drawImage(imagePreview, offsetX, offsetY, width, height, 0, 0, width, height);
+      const offsetX = cropper.offsetLeft * scale;
+      const offsetY = cropper.offsetTop * scale;
+      const width = cropper.offsetWidth * scale;
+      const height = cropper.offsetHeight * scale;
 
-            const croppedImage = document.createElement('img');
-            croppedImage.src = canvas.toDataURL('image/png');
+      canvas.width = width;
+      canvas.height = height;
+      ctx.drawImage(imagePreview, offsetX, offsetY, width, height, 0, 0, width, height);
 
-            croppedImageContainer.innerHTML = '';
-            croppedImageContainer.appendChild(croppedImage);
-        }
-    </script>
-<script src="js/common.js"></script><script>abInitChrome('cropphoto');</script></body>
+      const croppedImg = document.createElement('img');
+      croppedImg.src = canvas.toDataURL('image/png');
+      croppedImg.style.maxWidth = '100%';
+      croppedImg.style.maxHeight = '350px';
+      croppedImg.style.borderRadius = 'var(--radius-lg)';
+      croppedImg.style.boxShadow = 'var(--shadow-lg)';
+
+      croppedImageContainer.innerHTML = '';
+      croppedImageContainer.appendChild(croppedImg);
+
+      downloadButton.style.display = 'inline-flex';
+      downloadButton.onclick = function() {
+        const link = document.createElement('a');
+        link.href = croppedImg.src;
+        link.download = 'cropped_image.png';
+        link.click();
+        showToast('Cropped image downloaded!', 'success');
+      };
+
+      showToast('Image cropped successfully!', 'success');
+      downloadButton.scrollIntoView({ behavior: 'smooth' });
+    });
+  </script>
+</body>
 </html>

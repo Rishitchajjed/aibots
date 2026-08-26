@@ -1,12 +1,11 @@
 ﻿<!DOCTYPE html>
-
 <html>
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="google-site-verification" content="ndzq-U-NLijgza_QqgQdcc2U3oMRoud_BT2ZZiwFREM"><meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>Open World Game</title>
-<link href="css/theme.css" rel="stylesheet"/><style>
+<meta name="google-site-verification" content="ndzq-U-NLijgza_QqgQdcc2U3oMRoud_BT2ZZiwFREM">
+  <meta name="google-site-verification" content="-Yb6Nx74gbZ3wRN5uP-Y8KKwDWlt1DPpxs4nA3PkE6M">
+  <meta name="robots" content="index, follow">
+    <title>Open World Game</title>
+    <style>
 /* Fonts */
 @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
 
@@ -287,21 +286,23 @@ body {
     </style>
 </head>
 <body>
-<div id="gameWorld">
-<div id="ground"></div>
-<div id="player"></div>
-<div id="healthBar">
-<div id="health"></div>
-</div>
-<div id="scoreBar">Score: <span id="score">0</span></div>
-<div id="gameOver">Game Over!<br/><button id="replayBtn">Replay</button></div>
-</div>
-<!-- Add an audio element to load the sound effect -->
-<audio id="soundEffect" preload="auto">
-<source src="https://www.fesliyanstudios.com/play-mp3/7136" type="audio/mpeg"/>
+    <div id="gameWorld">
+        <div id="ground"></div>
+        <div id="player"></div>
+        <div id="healthBar">
+            <div id="health"></div>
+        </div>
+        <div id="scoreBar">Score: <span id="score">0</span></div>
+        <div id="gameOver">Game Over!<br><button id="replayBtn">Replay</button></div>
+    </div>
+
+    <!-- Add an audio element to load the sound effect -->
+    <audio id="soundEffect" preload="auto">
+        <source src="https://www.fesliyanstudios.com/play-mp3/7136" type="audio/mpeg">
         Your browser does not support the audio element.
     </audio>
-<script>
+
+    <script>
         const player = document.getElementById('player');
         const gameWorld = document.getElementById('gameWorld');
         const healthBar = document.getElementById('health');
@@ -509,5 +510,5 @@ body {
             });
         }, { once: true });
     </script>
-<script src="js/common.js"></script><script>abInitChrome('game');</script></body>
+</body>
 </html>

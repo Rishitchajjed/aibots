@@ -8,7 +8,8 @@
 <link rel="icon" href="https://i.ibb.co/XjHbck3/logo.png" type="image/png">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <link rel="stylesheet" href="css/theme.css">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<!-- Robust QRious library for 100% valid, scan-ready QR codes -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrious/4.0.2/qrious.min.js"></script>
 <style>
   .qr-layout-grid {
     display: grid;
@@ -33,11 +34,11 @@
   }
   .qr-canvas-holder {
     background: #ffffff !important;
-    padding: 20px;
+    padding: 16px;
     border-radius: var(--radius-lg);
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
     border: 1px solid rgba(0, 0, 0, 0.08);
-    display: inline-flex;
+    display: flex;
     align-items: center;
     justify-content: center;
     transition: transform 0.2s ease, box-shadow 0.2s ease;
@@ -47,11 +48,11 @@
     transform: scale(1.02);
     box-shadow: 0 12px 32px rgba(0, 0, 0, 0.16);
   }
-  .qr-canvas-holder canvas,
-  .qr-canvas-holder img {
-    display: block !important;
-    max-width: 100% !important;
-    height: auto !important;
+  #qrCanvas {
+    display: block;
+    max-width: 100%;
+    height: auto;
+    border-radius: 4px;
   }
   .swatch-row {
     display: flex;
@@ -133,9 +134,9 @@
       <div class="ab-col ab-mt-24">
         <div style="display: flex; justify-content: space-between; align-items: center;">
           <label class="ab-label" for="qrSize">QR Size</label>
-          <span id="qrSizeVal" style="font-family: var(--font-mono); font-size: 13px; color: var(--primary); font-weight: 700;">240 px</span>
+          <span id="qrSizeVal" style="font-family: var(--font-mono); font-size: 13px; color: var(--primary); font-weight: 700;">260 px</span>
         </div>
-        <input type="range" id="qrSize" class="range-slider" min="160" max="400" value="240" step="10" oninput="document.getElementById('qrSizeVal').textContent = this.value + ' px'">
+        <input type="range" id="qrSize" class="range-slider" min="160" max="400" value="260" step="10" oninput="document.getElementById('qrSizeVal').textContent = this.value + ' px'">
       </div>
 
       <div class="ab-col ab-mt-16">
@@ -153,7 +154,9 @@
 
     <div class="ab-card qr-preview-box">
       <div style="font-size: 14px; font-weight: 700; color: var(--text-primary);">Live QR Preview</div>
-      <div id="qrCanvas" class="qr-canvas-holder"></div>
+      <div class="qr-canvas-holder">
+        <canvas id="qrCanvas"></canvas>
+      </div>
       <button class="ab-btn block" id="downloadQr" style="margin-top: 6px;">
         <i class="fas fa-download"></i> Download PNG
       </button>
@@ -167,8 +170,8 @@ abInitChrome('qrcode');
 
 let currentType = 'text';
 let fgColor = '#0f172a';
-let qr = null;
-const qrCanvas = document.getElementById('qrCanvas');
+let qrInstance = null;
+const canvas = document.getElementById('qrCanvas');
 
 document.querySelectorAll('[data-type]').forEach(btn => {
   btn.addEventListener('click', () => {
@@ -192,15 +195,18 @@ document.querySelectorAll('.swatch').forEach(sw => {
 });
 
 function buildPayload() {
-  if (currentType === 'text') return document.getElementById('qrText').value || 'https://aibots-one.vercel.app';
+  if (currentType === 'text') {
+    return document.getElementById('qrText').value.trim() || 'https://aibots-one.vercel.app';
+  }
   if (currentType === 'email') {
-    const to = document.getElementById('qrEmail').value;
-    const sub = document.getElementById('qrEmailSub').value;
+    const to = document.getElementById('qrEmail').value.trim();
+    const sub = document.getElementById('qrEmailSub').value.trim();
+    if (!to) return 'mailto:info@aibots.com';
     return `mailto:${to}${sub ? '?subject=' + encodeURIComponent(sub) : ''}`;
   }
   if (currentType === 'wifi') {
-    const ssid = document.getElementById('qrSsid').value;
-    const pass = document.getElementById('qrWifiPass').value;
+    const ssid = document.getElementById('qrSsid').value.trim() || 'MyWiFi';
+    const pass = document.getElementById('qrWifiPass').value || '';
     const sec = document.getElementById('qrWifiSec').value;
     return `WIFI:T:${sec};S:${ssid};P:${pass};;`;
   }
@@ -208,40 +214,47 @@ function buildPayload() {
 }
 
 function render() {
-  const size = parseInt(document.getElementById('qrSize').value) || 240;
-  qrCanvas.innerHTML = '';
-  
-  qr = new QRCode(qrCanvas, {
-    text: buildPayload(),
-    width: size,
-    height: size,
-    colorDark: fgColor,
-    colorLight: '#ffffff',
-    correctLevel: QRCode.CorrectLevel.M
-  });
+  const size = parseInt(document.getElementById('qrSize').value) || 260;
+  const payload = buildPayload();
+
+  if (!qrInstance) {
+    qrInstance = new QRious({
+      element: canvas,
+      value: payload,
+      size: size,
+      background: '#ffffff',
+      foreground: fgColor,
+      level: 'H',
+      padding: 0
+    });
+  } else {
+    qrInstance.set({
+      value: payload,
+      size: size,
+      foreground: fgColor,
+      background: '#ffffff',
+      level: 'H'
+    });
+  }
 }
 
 document.querySelectorAll('input, textarea, select').forEach(el => {
   el.addEventListener('input', () => {
     clearTimeout(window._qrT);
-    window._qrT = setTimeout(render, 150);
+    window._qrT = setTimeout(render, 100);
   });
 });
 
 document.getElementById('downloadQr').addEventListener('click', () => {
-  const img = qrCanvas.querySelector('img') || qrCanvas.querySelector('canvas');
-  if (!img) return;
+  if (!canvas) return;
   const link = document.createElement('a');
   link.download = `AI_Bots_QR_${Date.now()}.png`;
-  if (img.tagName === 'CANVAS') {
-    link.href = img.toDataURL('image/png');
-  } else {
-    link.href = img.src;
-  }
+  link.href = canvas.toDataURL('image/png');
   link.click();
   abToast('QR Code downloaded! 🚀');
 });
 
+// Initial render
 render();
 </script>
 </body>

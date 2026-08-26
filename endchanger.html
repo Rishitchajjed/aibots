@@ -1,451 +1,175 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-<meta name="google-site-verification" content="ndzq-U-NLijgza_QqgQdcc2U3oMRoud_BT2ZZiwFREM">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="google-site-verification" content="ndzq-U-NLijgza_QqgQdcc2U3oMRoud_BT2ZZiwFREM">
   <meta name="google-site-verification" content="-Yb6Nx74gbZ3wRN5uP-Y8KKwDWlt1DPpxs4nA3PkE6M">
   <meta name="robots" content="index, follow">
-      <!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-2L87FMQS3W"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'G-2L87FMQS3W');
-</script>
-<link rel="icon" href="https://i.ibb.co/XjHbck3/logo.png" type="image/png" />
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>File Extension Changer</title>
-    <style>
-/* Apply default styles to the entire document */
-body {
-    font-family: Arial, sans-serif; /* Set default font */
-    margin: 0; /* Remove default margin */
-    padding: 0; /* Remove default padding */
-    background-color: #f2f2f2; /* Set background color */
-    background-image: linear-gradient(to bottom, #ffffff, #f2f2f2); /* Apply gradient background */
-    animation: fadeIn 0.5s ease-in-out; /* Apply fade-in animation */
-}
-
-/* Define the fade-in animation */
-@keyframes fadeIn {
-    from {
-        opacity: 0; /* Start with opacity 0 */
+  <title>File Extension Changer — AI Bots</title>
+  <meta name="description" content="Change and convert file extensions online safely and easily. Supports document, image, audio, and code files. 100% free and in-browser.">
+  <meta name="keywords" content="file extension changer, rename file extension online, change jpg to png, change docx to pdf, ai bots file tool">
+  <link rel="icon" href="https://i.ibb.co/G2NFYHG/logo.png" type="image/png">
+  <link rel="canonical" href="https://www.aibots.co.in/endchanger.html">
+  <!-- Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-2L87FMQS3W"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-2L87FMQS3W');
+  </script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="css/theme.css">
+  <style>
+    .ext-dropzone {
+      border: 2px dashed var(--primary);
+      border-radius: var(--radius-lg);
+      padding: 44px 20px;
+      text-align: center;
+      background: var(--bg-secondary);
+      cursor: pointer;
+      position: relative;
+      transition: all 0.2s;
     }
-    to {
-        opacity: 1; /* End with opacity 1 */
+    .ext-dropzone:hover { background: color-mix(in srgb, var(--primary) 8%, var(--bg-secondary)); }
+    .ext-dropzone i { font-size: 2.8rem; color: var(--primary); margin-bottom: 10px; display: block; }
+    .ext-dropzone input[type="file"] {
+      position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%;
     }
-}
-
-/* Styling for the main container */
-#container {
-    max-width: 800px; /* Set maximum width */
-    margin: 20px auto; /* Center the container horizontally */
-    padding: 20px; /* Add padding */
-    background-color: #fff; /* Set background color */
-    border-radius: 10px; /* Add rounded corners */
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Add box shadow */
-    animation: slideIn 0.5s ease-in-out, pulse 2s infinite alternate; /* Apply slide-in animation and pulsating effect */
-}
-
-/* Define the slide-in animation */
-@keyframes slideIn {
-    from {
-        transform: translateY(-20px); /* Start 20px above its final position */
-        opacity: 0; /* Start with opacity 0 */
+    .ext-card { max-width: 680px; margin: 0 auto; }
+    .preset-chips { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 8px; }
+    .preset-chip {
+      background: var(--bg-primary); border: 1px solid var(--border-color);
+      border-radius: 6px; padding: 4px 10px; font-size: 0.78rem; font-weight: 700;
+      color: var(--text-secondary); cursor: pointer; transition: all 0.15s; font-family: monospace;
     }
-    to {
-        transform: translateY(0); /* Move to its final position */
-        opacity: 1; /* End with opacity 1 */
+    .preset-chip:hover { border-color: var(--primary); color: var(--primary); }
+    .file-info-chip {
+      display: flex; align-items: center; justify-content: space-between;
+      background: var(--bg-primary); border: 1px solid var(--border-color);
+      border-radius: var(--radius-md); padding: 12px 16px; margin: 16px 0;
     }
-}
-
-/* Add pulsating effect animation */
-@keyframes pulse {
-    0% {
-        transform: scale(1);
-    }
-    100% {
-        transform: scale(1.05);
-    }
-}
-
-/* Styling for heading */
-h1 {
-    text-align: center; /* Center align text */
-    color: #333; /* Set text color */
-    margin-bottom: 20px; /* Add space below */
-    animation: fadeIn 0.5s ease-in-out; /* Apply fade-in animation */
-}
-
-/* Styling for form inputs and select */
-input[type="file"],
-input[type="text"],
-select {
-    width: calc(100% - 20px); /* Set width to 100% minus 20px for padding */
-    padding: 10px; /* Add padding */
-    margin: 5px 0; /* Add margin */
-    border: 1px solid #ccc; /* Add border */
-    border-radius: 5px; /* Add rounded corners */
-    font-size: 16px; /* Set font size */
-    animation: slideIn 0.5s ease-in-out, colorChange 3s infinite alternate; /* Apply slide-in animation and color change effect */
-}
-
-/* Add color change effect animation */
-@keyframes colorChange {
-    0% {
-        border-color: #ccc;
-    }
-    50% {
-        border-color: #4caf50;
-    }
-    100% {
-        border-color: #ccc;
-    }
-}
-
-/* Additional styling for input[type="file"] */
-#customExtension {
-    margin-left: 10px; /* Add margin to the left */
-}
-
-/* Styling for labels */
-label {
-    display: block; /* Display as block element */
-    margin-bottom: 5px; /* Add space below */
-    font-size: 16px; /* Set font size */
-    animation: fadeIn 0.5s ease-in-out; /* Apply fade-in animation */
-}
-
-/* Styling for preview section */
-.preview {
-    margin-top: 20px; /* Add space above */
-    padding: 15px; /* Add padding */
-    border: 1px solid #ccc; /* Add border */
-    background-color: #f9f9f9; /* Set background color */
-    border-radius: 10px; /* Add rounded corners */
-    animation: slideIn 0.5s ease-in-out, fadeInOut 5s infinite alternate; /* Apply slide-in animation and fade-in/out effect */
-}
-
-/* Define the fade-in/out effect animation */
-@keyframes fadeInOut {
-    0% {
-        opacity: 1;
-    }
-    50% {
-        opacity: 0.5;
-    }
-    100% {
-        opacity: 1;
-    }
-}
-
-/* Styling for preview section heading */
-.preview h2 {
-    margin-top: 0; /* Remove default margin */
-    color: #333; /* Set text color */
-    font-size: 20px; /* Set font size */
-    animation: fadeIn 0.5s ease-in-out; /* Apply fade-in animation */
-}
-
-/* Styling for each item in the preview section */
-.preview-item {
-    margin-bottom: 15px; /* Add space below */
-    padding-bottom: 10px; /* Add padding below */
-    border-bottom: 1px solid #ccc; /* Add border below */
-    animation: slideIn 0.5s ease-in-out; /* Apply slide-in animation */
-}
-
-/* Styling for labels within preview items */
-.preview-item label {
-    font-weight: bold; /* Set font weight to bold */
-}
-
-/* Styling for logo images */
-.logo {
-    max-width: 50px; /* Set maximum width */
-    max-height: 50px; /* Set maximum height */
-    margin-top: 5px; /* Add margin on top */
-    animation: rotate 2s linear infinite, slideIn 0.5s ease-in-out, spin 4s infinite linear; /* Apply rotation, slide-in animation, and spinning effect */
-}
-
-/* Define the rotation animation */
-@keyframes rotate {
-    0% {
-        transform: rotate(0); /* Start with no rotation */
-    }
-    100% {
-        transform: rotate(360deg); /* End with full rotation (360 degrees) */
-    }
-}
-
-/* Define the spinning effect animation */
-@keyframes spin {
-    0% {
-        transform: scale(1) rotate(0);
-    }
-    100% {
-        transform: scale(1) rotate(360deg);
-    }
-}
-
-/* Styling for buttons */
-button {
-    display: block; /* Display as block element */
-    width: 100%; /* Set width to 100% */
-    padding: 15px; /* Add padding */
-    background-color: #4caf50; /* Set background color */
-    color: #fff; /* Set text color */
-    border: none; /* Remove border */
-    border-radius: 5px; /* Add rounded corners */
-    cursor: pointer; /* Change cursor to pointer on hover */
-    margin-top: 20px; /* Add space above */
-    font-size: 18px; /* Set font size */
-    transition: background-color 0.3s; /* Smooth transition for background color */
-    animation: slideIn 0.5s ease-in-out, shake 0.5s infinite alternate; /* Apply slide-in animation and shaking effect */
-}
-
-/* Define the shaking effect animation */
-@keyframes shake {
-    0% {transform: translateX(0);
-    }
-    50% {
-        transform: translateX(-5px);
-    }
-    100% {
-        transform: translateX(0);
-    }
-}
-
-/* Hover effect for buttons */
-button:hover {
-    background-color: #45a049; /* Change background color on hover */
-    animation: bounce 0.5s ease-in-out; /* Apply bounce animation */
-}
-
-/* Define the bounce animation */
-@keyframes bounce {
-    0%, 100% {
-        transform: translateY(0); /* Start and end with no vertical movement */
-    }
-    50% {
-        transform: translateY(-10px); /* Move up by 10px at the midpoint */
-    }
-}
-
-/* Styling for the progress bar */
-#progressBar {
-    width: 100%; /* Set width to 100% */
-    height: 20px; /* Set height */
-    background-color: #f0f0f0; /* Set background color */
-    border: 1px solid #ccc; /* Add border */
-    margin-top: 20px; /* Add space above */
-    display: none; /* Initially hidden */
-    border-radius: 5px; /* Add rounded corners */
-    overflow: hidden; /* Hide overflowing content */
-    animation: slideIn 0.5s ease-in-out, grow 2s infinite alternate; /* Apply slide-in animation and growing effect */
-}
-
-/* Define the growing effect animation */
-@keyframes grow {
-    0% {
-        transform: scaleX(1);
-    }
-    100% {
-        transform: scaleX(1.5);
-    }
-}
-
-/* Additional styling for the progress bar fill */
-#progressBar .progress {
-    height: 100%; /* Set height to fill container */
-    background-color: #4caf50; /* Set background color */
-    width: 0; /* Initially no progress */
-    border-radius: 5px; /* Add rounded corners */
-    transition: width 0.3s ease-in-out; /* Smooth transition for width changes */
-}
-
-       
-
-    </style>
+  </style>
 </head>
 <body>
-    <h1>File Extension Changer</h1>
-    <input type="file" id="fileInput" multiple>
-    <input type="text" id="extensionSearch" placeholder="Search for extension...">
-    <select id="extensionSelect" size="10" multiple>
-        <option value="mp3">MP3</option>
-        <option value="html">HTML</option>
-        <option value="mp4">MP4</option>
-        <option value="txt">TXT</option>
-        <option value="png">PNG</option>
-        <option value="pdf">PDF</option>
-        <option value="mov">MOV</option>
-        <option value="ppt">PPT</option>
-        <option value="jpeg">JPEG</option>
-        <option value="doc">DOC</option>
-        <option value="xls">XLS</option>
-        <option value="docx">DOCX</option>
-        <option value="xlsx">XLSX</option>
-        <option value="svg">SVG</option>
-        <option value="gif">GIF</option>
-        <option value="zip">ZIP</option>
-        <!-- Add more options as needed -->
-    </select>
-    <label><input type="checkbox" id="customExtCheckbox"> Custom Extension</label><br>
-    <input type="text" id="customExtension" placeholder="Enter custom extension..." disabled><br>
-    <div class="preview">
-        <h2>Preview</h2>
-        <div id="previewList">
-            <img src="https://i.ibb.co/G2NFYHG/logo.png" alt="logo" class="logo"><br>
+  <div class="bg-mesh"></div>
 
+  <!-- Navbar -->
+  <header class="navbar">
+    <div class="app-container" style="width: 100%;">
+      <div class="nav-wrapper">
+        <a href="index.html" class="brand-link">
+          <img src="https://i.ibb.co/G2NFYHG/logo.png" alt="AI Bots Logo" class="brand-logo-img">
+          <span>AI Bots</span>
+          <span class="brand-badge">File Extension</span>
+        </a>
+
+        <div class="nav-actions">
+          <a href="index.html" class="btn btn-secondary btn-sm"><i class="fas fa-house"></i> Hub</a>
+          <button class="icon-btn theme-toggle-btn" title="Toggle Dark/Light Mode"><i class="fas fa-moon"></i></button>
         </div>
+      </div>
     </div>
-    <button onclick="changeFileExtension()">Change Extension</button>
-    <button onclick="clearSelection()" id="clearButton">Clear Selection</button>
-    <div id="progressBar">
-        <div class="progress"></div>
+  </header>
+
+  <main class="app-container tool-page-wrapper">
+    <div class="tool-header">
+      <span class="tool-header-badge"><i class="fas fa-file-signature"></i> File Utility</span>
+      <h1 class="tool-title">File Extension Changer</h1>
+      <p class="tool-desc">Quickly rename and export files with a new file extension directly in your browser.</p>
     </div>
 
-    <script>
-        function generatePreview() {
-            const fileInput = document.getElementById('fileInput');
-            const extensionSelect = document.getElementById('extensionSelect');
-            const customExtCheckbox = document.getElementById('customExtCheckbox');
-            const customExtensionInput = document.getElementById('customExtension');
+    <div class="tool-card-container ext-card">
+      <div class="ext-dropzone" id="dropzone" onclick="document.getElementById('fileInput').click()">
+        <input type="file" id="fileInput" onchange="handleFile(event)">
+        <i class="fas fa-file-import"></i>
+        <h3 style="margin:0 0 6px;">Choose or Drop a File</h3>
+        <p style="margin:0; color:var(--text-secondary); font-size:0.85rem;">Any file type supported</p>
+      </div>
 
-            const selectedFiles = fileInput.files;
-            const selectedExtensions = Array.from(extensionSelect.selectedOptions).map(option => option.value);
+      <div id="fileArea" style="display:none; margin-top:20px;">
+        <div class="file-info-chip">
+          <div>
+            <strong id="origFileName" style="display:block; font-size:0.95rem;">document.txt</strong>
+            <span id="origFileSize" style="font-size:0.8rem; color:var(--text-secondary);">0 KB</span>
+          </div>
+          <span class="badge" style="background:var(--primary); color:white; padding:4px 8px; border-radius:6px; font-family:monospace;" id="currExtBadge">TXT</span>
+        </div>
 
-            if (customExtCheckbox.checked && customExtensionInput.value.trim() !== '') {
-                selectedExtensions.push(customExtensionInput.value.trim());
-            }
+        <div style="margin-top: 16px;">
+          <label class="form-label">NEW FILE NAME & EXTENSION</label>
+          <div style="display: flex; gap: 8px;">
+            <input type="text" id="baseNameInput" class="form-control" style="flex: 1;" placeholder="File Name">
+            <span style="display: flex; align-items: center; font-weight: 800; font-size: 1.2rem;">.</span>
+            <input type="text" id="newExtInput" class="form-control" style="width: 90px; font-family: monospace; font-weight: 700; text-transform: lowercase;" placeholder="ext">
+          </div>
+        </div>
 
-            const previewList = document.getElementById('previewList');
-            previewList.innerHTML = '';
+        <div style="margin-top: 16px;">
+          <label class="form-label" style="font-size: 0.72rem;">QUICK EXTENSION PRESETS</label>
+          <div class="preset-chips">
+            <button class="preset-chip" onclick="setExt('pdf')">.pdf</button>
+            <button class="preset-chip" onclick="setExt('png')">.png</button>
+            <button class="preset-chip" onclick="setExt('jpg')">.jpg</button>
+            <button class="preset-chip" onclick="setExt('webp')">.webp</button>
+            <button class="preset-chip" onclick="setExt('txt')">.txt</button>
+            <button class="preset-chip" onclick="setExt('csv')">.csv</button>
+            <button class="preset-chip" onclick="setExt('json')">.json</button>
+            <button class="preset-chip" onclick="setExt('html')">.html</button>
+            <button class="preset-chip" onclick="setExt('mp3')">.mp3</button>
+            <button class="preset-chip" onclick="setExt('mp4')">.mp4</button>
+          </div>
+        </div>
 
-            for (const file of selectedFiles) {
-                for (const newExtension of selectedExtensions) {
-                    const oldFileName = file.name;
-                    const oldExtension = oldFileName.split('.').pop();
-                    const newFileName = oldFileName.replace(new RegExp(oldExtension + '$'), newExtension);
+        <button class="btn btn-primary" style="width: 100%; margin-top: 24px; padding: 12px; font-weight: 700;" onclick="downloadNewFile()">
+          <i class="fas fa-download"></i> Download with New Extension
+        </button>
+      </div>
+    </div>
+  </main>
 
-                    const previewItem = document.createElement('div');
-                    previewItem.classList.add('preview-item');
-                    previewItem.innerHTML = `
-                        <label>Original:</label> ${oldFileName}<br>
-                        <label>New:</label> ${newFileName}<br>
-                        <label>Size:</label> ${formatBytes(file.size)}<br>
-                        <img src="https://i.ibb.co/G2NFYHG/logo.png" alt="logo" class="logo"><br>
-                        <hr>
-                    `;
-                    previewList.appendChild(previewItem);
-                }
-            }
-        }
+  <script>
+    let selectedFile = null;
 
-        function changeFileExtension() {
-            const fileInput = document.getElementById('fileInput');
-            const extensionSelect = document.getElementById('extensionSelect');
-            const customExtCheckbox = document.getElementById('customExtCheckbox');
-            const customExtensionInput = document.getElementById('customExtension');
+    function handleFile(e) {
+      const file = e.target.files[0];
+      if (!file) return;
+      selectedFile = file;
 
-            if (fileInput.files.length === 0) {
-                alert('Please select a file.');
-                return;
-            }
+      const lastDot = file.name.lastIndexOf('.');
+      const baseName = lastDot > 0 ? file.name.substring(0, lastDot) : file.name;
+      const ext = lastDot > 0 ? file.name.substring(lastDot + 1) : '';
 
-            const selectedFiles = fileInput.files;
-            const selectedExtensions = Array.from(extensionSelect.selectedOptions).map(option => option.value);
+      document.getElementById('origFileName').textContent = file.name;
+      document.getElementById('origFileSize').textContent = `${(file.size / 1024).toFixed(1)} KB`;
+      document.getElementById('currExtBadge').textContent = ext.toUpperCase() || 'FILE';
 
-            if (customExtCheckbox.checked && customExtensionInput.value.trim() !== '') {
-                selectedExtensions.push(customExtensionInput.value.trim());
-            }
+      document.getElementById('baseNameInput').value = baseName;
+      document.getElementById('newExtInput').value = ext.toLowerCase() || 'txt';
 
-            if (selectedExtensions.length === 0) {
-                alert('Please select at least one extension.');
-                return;
-            }
+      document.getElementById('fileArea').style.display = 'block';
+    }
 
-            const totalFiles = selectedFiles.length * selectedExtensions.length;
-            let filesProcessed = 0;
+    function setExt(ext) {
+      document.getElementById('newExtInput').value = ext;
+    }
 
-            const progressBar = document.getElementById('progressBar');
-            progressBar.style.display = 'block';
-            const progressBarWidth = progressBar.offsetWidth;
+    function downloadNewFile() {
+      if (!selectedFile) return;
+      const baseName = document.getElementById('baseNameInput').value.trim() || 'file';
+      const ext = document.getElementById('newExtInput').value.trim().replace(/^\./, '');
+      const finalName = ext ? `${baseName}.${ext}` : baseName;
 
-            const progressElement = progressBar.querySelector('.progress');
-
-            for (const file of selectedFiles) {
-                for (const newExtension of selectedExtensions) {
-                    const oldFileName = file.name;
-                    const oldExtension = oldFileName.split('.').pop();
-                    const newFileName = oldFileName.replace(new RegExp(oldExtension + '$'), newExtension);
-
-                    const blob = file.slice(0, file.size, file.type);
-                    const newFile = new File([blob], newFileName, {type: file.type});
-
-                    const a = document.createElement('a');
-                    a.href = URL.createObjectURL(newFile);
-                    a.download = newFileName;
-                    a.style.display = 'none';
-                    document.body.appendChild(a);
-
-                    a.click();
-                    URL.revokeObjectURL(a.href);
-                    a.remove();
-
-                    filesProcessed++;
-                    const progressPercentage = Math.min((filesProcessed / totalFiles) * 100, 100);
-                    progressElement.style.width = progressPercentage + '%';
-                }
-            }
-
-            progressBar.style.display = 'none';
-        }
-
-        function clearSelection() {
-            document.getElementById('fileInput').value = '';
-            const options = document.getElementById('extensionSelect').options;
-            for (let i = 0; i < options.length; i++) {
-                options[i].selected = false;
-            }
-            document.getElementById('previewList').innerHTML = '';
-        }
-
-        function formatBytes(bytes, decimals = 2) {
-            if (bytes === 0) return '0 Bytes';
-            const k = 1024;
-            const dm = decimals < 0 ? 0 : decimals;
-            const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
-            const i = Math.floor(Math.log(bytes) / Math.log(k));
-            return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
-        }
-
-        document.getElementById('extensionSearch').addEventListener('input', function() {
-            const searchValue = this.value.toLowerCase();
-            const options = document.getElementById('extensionSelect').options;
-
-            for (let i = 0; i < options.length; i++) {
-                const option = options[i];
-                const optionValue = option.value.toLowerCase();
-                if (optionValue.includes(searchValue)) {
-                    option.style.display = '';
-                } else {
-                    option.style.display = 'none';
-                }
-            }
-        });
-
-        document.getElementById('fileInput').addEventListener('change', generatePreview);
-        document.getElementById('extensionSelect').addEventListener('change', generatePreview);
-
-        document.getElementById('customExtCheckbox').addEventListener('change', function() {
-            const customExtensionInput = document.getElementById('customExtension');
-            customExtensionInput.disabled = !this.checked;
-            generatePreview();
-        });
-    </script>
+      const blob = new Blob([selectedFile], { type: selectedFile.type });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = finalName;
+      a.click();
+      URL.revokeObjectURL(url);
+    }
+  </script>
+  <script src="js/app.js"></script>
 </body>
 </html>

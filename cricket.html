@@ -1,927 +1,249 @@
-﻿<!DOCTYPE html>
-
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta name="google-site-verification" content="ndzq-U-NLijgza_QqgQdcc2U3oMRoud_BT2ZZiwFREM">
-<meta charset="utf-8"/>
+  <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>Cricket Score Counter</title>
-<!-- Google tag (gtag.js) -->
-<script async="" src="https://www.googletagmanager.com/gtag/js?id=G-2L87FMQS3W"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
+  <meta name="google-site-verification" content="ndzq-U-NLijgza_QqgQdcc2U3oMRoud_BT2ZZiwFREM">
+  <meta name="google-site-verification" content="-Yb6Nx74gbZ3wRN5uP-Y8KKwDWlt1DPpxs4nA3PkE6M">
+  <meta name="robots" content="index, follow">
+  <title>Live Cricket Score Counter & Match Tracker — AI Bots</title>
+  <meta name="description" content="Track live cricket matches ball-by-ball, score runs, extras, wickets, overs timeline, and export match scorecards online.">
+  <meta name="keywords" content="cricket score counter, live cricket scorer, cricket match scoreboard, ball by ball cricket score, ai bots cricket">
+  <link rel="icon" href="https://i.ibb.co/G2NFYHG/logo.png" type="image/png">
+  <link rel="canonical" href="https://www.aibots.co.in/cricket.html">
+  <!-- Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-2L87FMQS3W"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-2L87FMQS3W');
+  </script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="css/theme.css">
+  <style>
+    .cric-card { max-width: 800px; margin: 0 auto; }
+    .teams-header {
+      display: flex; justify-content: space-between; align-items: center;
+      background: var(--bg-primary); border: 1px solid var(--border-color);
+      border-radius: var(--radius-md); padding: 14px 20px; margin-bottom: 20px;
+    }
+    .score-hero {
+      background: linear-gradient(135deg, rgba(16, 185, 129, 0.12), rgba(56, 189, 248, 0.12));
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      padding: 30px;
+      text-align: center;
+      margin-bottom: 24px;
+    }
+    .score-big {
+      font-size: clamp(3rem, 10vw, 4.5rem);
+      font-weight: 900;
+      font-family: monospace;
+      color: #10b981;
+    }
+    .overs-sub { font-size: 1.25rem; font-weight: 700; color: var(--text-secondary); margin-top: 4px; }
+    .crr-badge {
+      display: inline-block; background: var(--bg-secondary);
+      border: 1px solid var(--border-color); padding: 4px 14px;
+      border-radius: 999px; font-size: 0.82rem; font-weight: 700; color: var(--text-secondary); margin-top: 10px;
+    }
 
-  gtag('config', 'G-2L87FMQS3W');
-</script>
-<link href="css/theme.css" rel="stylesheet"/><link href="https://i.ibb.co/XjHbck3/logo.png" rel="icon" type="image/png"/>
+    .keypad-grid {
+      display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px;
+      margin-bottom: 20px;
+    }
+    .cric-btn {
+      padding: 16px 8px; font-size: 1.15rem; font-weight: 800; border-radius: var(--radius-md);
+      border: 1px solid var(--border-color); background: var(--bg-primary);
+      color: var(--text-primary); cursor: pointer; transition: all 0.15s;
+    }
+    .cric-btn:hover { border-color: var(--primary); transform: translateY(-2px); }
+    .cric-btn-boundary { background: rgba(59, 130, 246, 0.15); border-color: #3b82f6; color: #60a5fa; }
+    .cric-btn-six { background: rgba(168, 85, 247, 0.15); border-color: #a855f7; color: #c084fc; }
+    .cric-btn-wkt { background: rgba(239, 68, 68, 0.15); border-color: #ef4444; color: #f87171; }
+
+    .this-over-box {
+      background: var(--bg-primary); border: 1px solid var(--border-color);
+      border-radius: var(--radius-md); padding: 14px 18px; margin-bottom: 20px;
+    }
+    .over-balls { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px; }
+    .ball-pill {
+      width: 34px; height: 34px; border-radius: 50%; display: flex;
+      align-items: center; justify-content: center; font-weight: 800; font-size: 0.85rem;
+      background: var(--bg-secondary); border: 1px solid var(--border-color); color: var(--text-primary);
+    }
+    .ball-4 { background: #3b82f6; color: white; border-color: #3b82f6; }
+    .ball-6 { background: #8b5cf6; color: white; border-color: #8b5cf6; }
+    .ball-w { background: #ef4444; color: white; border-color: #ef4444; }
+  </style>
 </head>
 <body>
-<style media="all" type="text/css">
-/* General Styles */
-body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    text-align: center;
-    background: linear-gradient(135deg, #2c3e50, #bdc3c7);
-    color: #fff;
-    padding: 20px;
-    overflow-x: hidden; /* Prevent horizontal scroll */
-}
+  <div class="bg-mesh"></div>
 
-.container {
-    margin: 0 auto;
-    max-width: 800px;
-    padding: 20px;
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 15px;
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
-    animation: fadeIn 1s ease-in-out;
-}
+  <!-- Navbar -->
+  <header class="navbar">
+    <div class="app-container" style="width: 100%;">
+      <div class="nav-wrapper">
+        <a href="index.html" class="brand-link">
+          <img src="https://i.ibb.co/G2NFYHG/logo.png" alt="AI Bots Logo" class="brand-logo-img">
+          <span>AI Bots</span>
+          <span class="brand-badge">Cricket Scorer</span>
+        </a>
 
-h1 {
-    color: #f39c12;
-    font-size: 3em;
-    margin-bottom: 20px;
-    text-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
-}
+        <div class="nav-actions">
+          <a href="index.html" class="btn btn-secondary btn-sm"><i class="fas fa-house"></i> Hub</a>
+          <button class="icon-btn theme-toggle-btn" title="Toggle Dark/Light Mode"><i class="fas fa-moon"></i></button>
+        </div>
+      </div>
+    </div>
+  </header>
 
-/* Logo Styles */
-.logo {
-    position: relative;
-    display: inline-block;
-}
+  <main class="app-container tool-page-wrapper">
+    <div class="tool-header">
+      <span class="tool-header-badge"><i class="fas fa-baseball-bat-ball"></i> Sports Scorer</span>
+      <h1 class="tool-title">Live Cricket Match Scorer</h1>
+      <p class="tool-desc">Ball-by-ball score tracking, run rate calculations, extras, and overs timeline.</p>
+    </div>
 
-.logo img {
-    width: 120px;
-    height: 120px;
-    border-radius: 50%;
-    border: 5px solid #fff;
-    box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
-    transition: transform 0.5s ease, border-color 0.5s ease, box-shadow 0.5s ease, filter 0.5s ease;
-    animation: initial-scale 0.8s ease-out forwards, glow 2s infinite alternate;
-    position: relative;
-    z-index: 1;
-}
+    <div class="tool-card-container cric-card">
+      <div class="teams-header">
+        <input type="text" id="battingTeam" class="form-control" value="Team India" style="font-weight: 800; width: 160px; text-align: center;">
+        <span style="font-weight: 800; color: var(--text-muted);">VS</span>
+        <input type="text" id="bowlingTeam" class="form-control" value="Opponent" style="font-weight: 800; width: 160px; text-align: center;">
+      </div>
 
-.logo img:hover {
-    transform: rotate(360deg) scale(1.3); /* Enhanced scale for more impact */
-    border-color: #ff8c00; /* Orange color to match a sporty theme */
-    box-shadow: 0 0 25px rgba(255, 140, 0, 0.8); /* Enhanced shadow effect with sporty color */
-    filter: brightness(1.2); /* Added brightness for extra pop */
-}
+      <div class="score-hero">
+        <div class="score-big" id="scoreDisplay">0 / 0</div>
+        <div class="overs-sub">Overs: <span id="oversDisplay">0.0</span> <span style="font-size:0.85em; font-weight:400; color:var(--text-muted);">(Max 20)</span></div>
+        <div class="crr-badge">Current Run Rate (CRR): <span id="crrDisplay">0.00</span></div>
+      </div>
 
-/* Initial Scale Animation */
-@keyframes initial-scale {
-    from {
-        transform: scale(0.8);
-        opacity: 0;
-    }
-    to {
-        transform: scale(1);
-        opacity: 1;
-    }
-}
+      <!-- Over Timeline -->
+      <div class="this-over-box">
+        <div style="font-size: 0.78rem; font-weight: 700; text-transform: uppercase; color: var(--text-secondary);">This Over:</div>
+        <div class="over-balls" id="thisOverBalls">
+          <span style="color: var(--text-muted); font-size: 0.85rem;">No balls bowled yet in this over</span>
+        </div>
+      </div>
 
-/* Glow Animation */
-@keyframes glow {
-    from {
-        box-shadow: 0 0 15px rgba(255, 255, 255, 0.5);
-    }
-    to {
-        box-shadow: 0 0 25px rgba(255, 140, 0, 1); /* Orange glow to reflect the cricket theme */
-    }
-}
+      <!-- Scorer Keypad -->
+      <div class="keypad-grid">
+        <button class="cric-btn" onclick="addScore(0)">0 (Dot)</button>
+        <button class="cric-btn" onclick="addScore(1)">1</button>
+        <button class="cric-btn" onclick="addScore(2)">2</button>
+        <button class="cric-btn" onclick="addScore(3)">3</button>
 
-/* Pulsating Background Animation */
-.logo::before {
-    content: '';
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 140px;
-    height: 140px;
-    background: radial-gradient(circle, rgba(255, 140, 0, 0.6), transparent);
-    border-radius: 50%;
-    transform: translate(-50%, -50%) scale(1);
-    z-index: 0;
-    animation: pulse 2s infinite alternate;
-}
+        <button class="cric-btn cric-btn-boundary" onclick="addScore(4)">4 (Four)</button>
+        <button class="cric-btn cric-btn-six" onclick="addScore(6)">6 (Six)</button>
+        <button class="cric-btn cric-btn-wkt" onclick="addWicket()">W (Wicket)</button>
+        <button class="cric-btn" onclick="addExtra('wide')">WD (Wide)</button>
 
-/* Pulse Animation */
-@keyframes pulse {
-    from {
-        transform: translate(-50%, -50%) scale(1);
-        opacity: 0.7;
-    }
-    to {
-        transform: translate(-50%, -50%) scale(1.2);
-        opacity: 1;
-    }
-}
+        <button class="cric-btn" onclick="addExtra('nb')">NB (No Ball)</button>
+        <button class="cric-btn" onclick="addExtra('bye')">Bye</button>
+        <button class="cric-btn" onclick="addExtra('legbye')">Leg Bye</button>
+        <button class="cric-btn" onclick="undoBall()" style="color: #f59e0b;"><i class="fas fa-undo"></i> Undo</button>
+      </div>
 
-/* Additional Outer Glow Animation */
-.logo::after {
-    content: '';
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 160px;
-    height: 160px;
-    background: radial-gradient(circle, rgba(255, 140, 0, 0.4), transparent);
-    border-radius: 50%;
-    transform: translate(-50%, -50%) scale(1);
-    z-index: -1;
-    animation: outer-glow 3s infinite alternate;
-}
+      <div style="display: flex; gap: 10px; margin-top: 10px;">
+        <button class="btn btn-secondary btn-sm" style="flex:1;" onclick="resetMatch()"><i class="fas fa-rotate-right"></i> Reset Match</button>
+      </div>
+    </div>
+  </main>
 
-/* Outer Glow Animation */
-@keyframes outer-glow {
-    from {
-        transform: translate(-50%, -50%) scale(1);
-        opacity: 0.5;
-    }
-    to {
-        transform: translate(-50%, -50%) scale(1.3);
-        opacity: 0.8;
-    }
-}
+  <script>
+    let runs = 0;
+    let wickets = 0;
+    let legalBalls = 0;
+    let thisOver = [];
+    let history = [];
 
-/* Styles for the Total Score container */
-.total-score {
-    position: sticky;
-    top: 10px; /* Adjusted top position for better alignment */
-    width: calc(100% - 20px); /* Adjusted width to fit smaller screens */
-    max-width: 300px; /* Set maximum width for better fit */
-    background-color: rgba(52, 73, 94, 0.9); /* Adjusted background color and opacity */
-    padding: 15px;
-    z-index: 999; /* Ensure it appears above other content */
-    transition: all 0.3s ease; /* Add smooth transition effect */
-    border-bottom: 3px solid #f39c12; /* Add a bottom border */
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Refined box shadow for depth */
-    border-radius: 10px; /* Adjusted border radius for rounded corners */
-    margin: 0 auto 20px; /* Center the container horizontally and add bottom margin */
-    opacity: 0; /* Initially hide the container */
-    animation: fadeInScale 0.5s forwards; /* Add combined fade-in and scale animation */
-}
-
-/* Keyframes for combined fade-in and scale animation */
-@keyframes fadeInScale {
-    from {
-        opacity: 0;
-        transform: translateY(-20px) scale(0.9); /* Move container up slightly and scale down */
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0) scale(1); /* Bring container to its original position and scale to normal */
-    }
-}
-
-/* Styles for text within the Total Score container */
-.total-score p {
-    color: #fff; /* Set text color to white */
-    margin-bottom: 10px; /* Adjusted margin at the bottom for better spacing */
-    font-size: 18px; /* Adjusted font size for better readability */
-    line-height: 1.0; /* Adjusted line height for better readability */
-}
-
-/* Styles for the score value within the Total Score container */
-.total-score span {
-    color: #f39c12; /* Set score value color */
-    font-weight: bold; /* Make the score value bold */
-    font-size: 24px; /* Adjusted font size for better emphasis */
-    text-shadow: 0 0 3px rgba(243, 156, 18, 0.8); /* Adjusted text shadow for emphasis */
-}
-
-/* Animation on hover */
-.total-score:hover p {
-    transform: translateY(-2px); /* Slightly move text upward on hover */
-}
-
-
-/* Responsive styles */
-@media screen and (max-width: 768px) {
-    .total-score {
-        padding: 15px;
-    }
-    .total-score p {
-        font-size: 18px;
-    }
-    .total-score span {
-        font-size: 24px;
-    }
-}
-
-/* Players Section */
-.players input[type="text"] {
-    padding: 10px;
-    font-size: 16px;
-    width: calc(50% - 20px);
-    margin: 10px;
-    border: none;
-    border-radius: 4px;
-    background: rgba(255, 255, 255, 0.8);
-    color: #34495e;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    transition: background 0.3s ease, box-shadow 0.3s ease;
-}
-
-.players input[type="text"]:focus {
-    background: #fff;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-}
-
-/* Buttons */
-button {
-    padding: 10px 20px;
-    font-size: 18px;
-    margin: 10px;
-    cursor: pointer;
-    background-color: #f39c12;
-    color: #fff;
-    border: none;
-    border-radius: 4px;
-    transition: background-color 0.3s ease, transform 0.2s ease;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    animation: slide-up 0.5s ease-out forwards;
-}
-
-button:hover {
-    background-color: #e67e22;
-    transform: translateY(-2px);
-}
-
-button.undo {
-    background-color: #e74c3c;
-}
-
-button.undo:hover {
-    background-color: #c0392b;
-}
-
-button.reset {
-    background-color: #3498db;
-}
-
-button.reset:hover {
-    background-color: #2980b9;
-}
-
-/* Score Section */
-.score {
-    font-size: 18px; /* Reduced font size for better readability */
-    margin-bottom: 20px;
-    padding: 15px; /* Maintain padding */
-    border-radius: 10px; /* Maintain border radius */
-    background-color: rgba(255, 255, 255, 0.3); /* Adjusted background color and opacity */
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    animation: slide-up 0.5s ease-out forwards;
-    transition: transform 0.3s ease, box-shadow 0.3s ease; /* Added transition for smoother effect */
-}
-
-/* Animation on hover */
-.score:hover {
-    transform: translateY(-3px); /* Lift the section slightly on hover */
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2); /* Adjusted box shadow on hover for depth */
-}
-
-.score p {
-    margin: 8px 0; /* Maintain paragraph margin */
-    position: relative;
-    line-height: 1.4; /* Improved line height for better readability */
-}
-
-.score p.wicket span {
-    color: #e74c3c; /* Set color for wicket */
-    font-weight: bold; /* Make wicket text bold */
-}
-
-.score p.boundary span {
-    color: #2ecc71; /* Set color for boundary */
-    font-weight: bold; /* Make boundary text bold */
-}
-
-/* Animation for score updates */
-.score p span.score-update {
-    position: absolute;
-    top: 50%;
-    left: 100%;
-    transform: translateY(-50%);
-    opacity: 0;
-    transition: opacity 0.3s ease;
-}
-
-.score p:hover span.score-update {
-    opacity: 1;
-}
-
-/* Score highlight animation */
-@keyframes scoreHighlight {
-    0% {
-        background-color: rgba(255, 255, 255, 0.3);
-    }
-    50% {
-        background-color: rgba(255, 255, 255, 0.5);
-    }
-    100% {
-        background-color: rgba(255, 255, 255, 0.3);
-    }
-}
-
-.score p.highlighted {
-    animation: scoreHighlight 1.5s infinite;
-}
-
-/* Runs Buttons Section */
-.runs-buttons {
-    margin-bottom: 40px;
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 20px; /* Increased gap between buttons for better readability */
-    animation: slide-up 0.5s ease-out forwards;
-}
-
-/* Individual button style */
-.runs-buttons button {
-    padding: 12px 24px;
-    font-size: 16px;
-    cursor: pointer;
-    background-color: #4CAF50;
-    color: #fff;
-    border: none;
-    border-radius: 8px;
-    transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
-    box-shadow: 0 6px 10px rgba(0, 0, 0, 0.2);
-}
-
-/* Hover effect on buttons */
-.runs-buttons button:hover {
-    background-color: #45a049;
-    transform: translateY(-3px); /* Slightly lift on hover */
-    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.3); /* Enhance shadow on hover */
-}
-
-.runs-buttons div {
-    margin: 10px; /* Maintain margin */
-    padding: 15px; /* Reduced padding for more compact buttons */
-    border-radius: 10px; /* Adjusted border radius for rounded corners */
-    background-color: rgba(255, 255, 255, 0.3); /* Adjusted background color and opacity */
-    box-shadow: 0 6px 8px rgba(0, 0, 0, 0.2); /* Adjusted box shadow for depth */
-    transition: transform 0.3s ease; /* Added transition for smoother hover effect */
-}
-
-.runs-buttons div:hover {
-    transform: translateY(-5px); /* Added slight lift effect on hover */
-}
-
-.runs-buttons label {
-    font-weight: bold;
-    margin-bottom: 10px; /* Adjusted bottom margin for label */
-    color: #fff;
-}
-
-.runs-buttons button {
-    margin: 5px; /* Reduced margin */
-    padding: 10px 20px; /* Adjusted padding for smaller button size */
-    font-size: 16px; /* Reduced font size for better fit */
-    cursor: pointer;
-    background-color: #4CAF50; /* Button color */
-    color: #fff;
-    border: none;
-    border-radius: 8px; /* Adjusted border radius for slightly rounded corners */
-    transition: background-color 0.3s ease, transform 0.2s ease;
-    box-shadow: 0 6px 10px rgba(0, 0, 0, 0.2);
-    flex: 1 1 calc(33.33% - 20px); /* Ensure more than 2 buttons per row */
-    min-width: 150px; /* Ensure minimum button width */
-}
-
-.runs-buttons button:hover {
-    background-color: #45a049; /* Darker shade on hover for contrast */
-    transform: translateY(-5px); /* Increased hover lift effect */
-}
-
-/* Media Queries for Smaller Devices */
-@media (max-width: 600px) {
-    .runs-buttons button {
-        flex: 1 1 calc(33.33% - 20px); /* 3 buttons per row on small devices */
-    }
-}
-
-@media (max-width: 400px) {
-    .runs-buttons button {
-        flex: 1 1 calc(50% - 20px); /* 2 buttons per row on very small devices */
-    }
-}
-
-
-/* Media Queries for Smaller Screens */
-@media (max-width: 768px) {
-    .runs-buttons {
-        gap: 8px; /* Further reduced gap between buttons */
+    function addScore(r) {
+      history.push({ runs, wickets, legalBalls, thisOver: [...thisOver] });
+      runs += r;
+      legalBalls++;
+      thisOver.push({ type: r === 4 ? '4' : (r === 6 ? '6' : r.toString()), text: r });
+      checkOverCompletion();
+      updateUI();
     }
 
-    .runs-buttons div {
-        padding: 10px; /* Further reduced padding */
+    function addWicket() {
+      if (wickets >= 10) { alert("All Out!"); return; }
+      history.push({ runs, wickets, legalBalls, thisOver: [...thisOver] });
+      wickets++;
+      legalBalls++;
+      thisOver.push({ type: 'w', text: 'W' });
+      checkOverCompletion();
+      updateUI();
     }
 
-    .runs-buttons button {
-        padding: 8px 15px; /* Further reduced padding for smaller button size */
-        font-size: 14px; /* Further reduced font size */
-    }
-}
-
-/* Animation Keyframes */
-@keyframes slide-up {
-    from {
-        transform: translateY(20px);
-        opacity: 0;
-    }
-    to {
-        transform: translateY(0);
-        opacity: 1;
-    }
-}
-
-/* New Animations and Hover Effects */
-.logo img:hover {
-    transform: rotate(360deg) scale(1.2);
-    border-color: #f39c12;
-}
-
-button.undo:hover {
-    background-color: #c0392b;
-    transform: scale(1.05);
-}
-
-button.reset:hover {
-    background-color: #2980b9;
-    transform: scale(1.05);
-}
-
-.score:hover {
-transform: scale(1.05);
-transition: transform 0.3s ease;
-}
-
-.score p:hover {
-color: #f39c12;
-transition: color 0.3s ease;
-}
-
-.runs-buttons button:hover {
-background-color: #2980b9;
-transform: translateY(-2px) scale(1.05);
-}
-
-
-/* Animations */
-@keyframes slide-up {
-0% {
-opacity: 0;
-transform: translateY(20px);
-}
-100% {
-opacity: 1;
-transform: translateY(0);
-}
-}
-
-@keyframes fadeIn {
-0% {
-opacity: 0;
-transform: scale(0.9);
-}
-100% {
-opacity: 1;
-transform: scale(1);
-}
-}
-
-/* Mobile Responsive Styles */
-@media only screen and (max-width: 600px) {
-.container {
-padding: 10px;
-}
-h1 {
-font-size: 2.5em;
-}
-.logo img {
-width: 80px;
-height: 80px;
-}
-.players input[type="text"] {
-width: calc(100% - 20px);
-}
-.runs-buttons div {
-width: calc(50% - 20px);
-}
-
-}
-}
-table {
-    width: 90%;
-    border-collapse: collapse;
-    margin-top: 20px;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    font-size: 16px;
-    text-align: center;
-}
-
-th, td {
-    padding: 1em;
-    border: 1px solid #ddd;
-    color: #333;
-}
-
-th {
-    background-color: #f2f2f2;
-    font-weight: bold;
-    color: #444;
-}
-
-tbody tr:nth-child(even) {
-    background-color: #f9f9f9;
-}
-
-tbody tr:nth-child(odd) {
-    background-color: #ffffff;
-}
-
-tbody tr:hover {
-    background-color: #e6e6e6;
-}
-
-tbody td {
-    font-size: 16px;
-    font-weight: 400;
-}
-
-tbody td:first-child {
-    font-weight: bold;
-}
-
-@media screen and (max-width: 600px) {
-    th, td {
-        padding: 0.5em;
+    function addExtra(type) {
+      history.push({ runs, wickets, legalBalls, thisOver: [...thisOver] });
+      runs += 1;
+      if (type === 'wide') {
+        thisOver.push({ type: 'extra', text: 'WD' });
+      } else if (type === 'nb') {
+        thisOver.push({ type: 'extra', text: 'NB' });
+      } else {
+        legalBalls++;
+        thisOver.push({ type: 'extra', text: 'B' });
+        checkOverCompletion();
+      }
+      updateUI();
     }
 
-    .container {
-        width: 100%; /* Make sure container spans full width */
-        padding: 0 10px; /* Add some padding to the container */
+    function checkOverCompletion() {
+      if (legalBalls % 6 === 0 && legalBalls > 0) {
+        setTimeout(() => {
+          thisOver = [];
+          updateUI();
+        }, 1200);
+      }
     }
 
-    .partnership-score {
-        padding: 10px; /* Adjust padding for smaller screens */
+    function undoBall() {
+      if (history.length === 0) return;
+      const last = history.pop();
+      runs = last.runs;
+      wickets = last.wickets;
+      legalBalls = last.legalBalls;
+      thisOver = last.thisOver;
+      updateUI();
     }
 
-    /* Adjust table width to fit within screen */
-    #scoreTable {
-        width: 90%; /* Make table span full width */
-        overflow-x: auto; /* Add horizontal scroll for overflow */
-    }
-}
-
-    .partnership-score {
-            padding: 12px;
-            background-color: #4CAF50; /* Green background color */
-            border-top: 2px solid #388E3C; /* Darker green border top */
-            border-bottom: 2px solid #388E3C; /* Darker green border bottom */
-            border-radius: 6px;
-            color: #fff; /* White text color */
-        }
-
-        .partnership-score p {
-            margin: 0;
-            font-size: 16px;
-        }
-
-        .partnership-score span {
-            font-weight: bold;
-            font-size: 18px;
-        }
-</style>
-<div class="container">
-<div class="logo">
-<img alt="Cricket Score Counter Logo" src="https://i.ibb.co/XjHbck3/logo.png"/>
-</div>
-<h1>Cricket Score Counter</h1>
-<div class="total-score">
-<p>Total Score: <span id="totalScore">0</span> (<span id="totalBalls">0</span>)</p>
-<p>Overs: <span id="overs"></span></p>
-<p>Wickets: <span id="wickets">0</span></p>
-<p>Run Rate: <span id="runRate">0.00</span></p>
-</div>
-<div class="players">
-<label for="player1Name">Player 1 Name:</label>
-<input id="player1Name" oninput="updateNames()" type="text"/><br/>
-<label for="player2Name">Player 2 Name:</label>
-<input id="player2Name" oninput="updateNames()" type="text"/>
-</div>
-<button onclick="wide()">Wide</button> <!-- Single Wide Button -->
-<div class="runs-buttons">
-<div>
-<label for="player1"><span class="player1NameDisplay">Player 1</span></label>
-<button onclick="incrementScore('player1', 1)">1 Run</button>
-<button onclick="incrementScore('player1', 2)">2 Runs</button>
-<button onclick="incrementScore('player1', 3)">3 Runs</button>
-<button onclick="incrementScore('player1', 4)">4 Runs</button>
-<button onclick="incrementScore('player1', 6)">6 Runs</button>
-<button onclick="dotBall('player1')">Dot Ball</button>
-<button onclick="out('player1')">Out</button>
-</div>
-<div>
-<label for="player2"><span class="player2NameDisplay">Player 2</span></label>
-<button onclick="incrementScore('player2', 1)">1 Run</button>
-<button onclick="incrementScore('player2', 2)">2 Runs</button>
-<button onclick="incrementScore('player2', 3)">3 Runs</button>
-<button onclick="incrementScore('player2', 4)">4 Runs</button>
-<button onclick="incrementScore('player2', 6)">6 Runs</button>
-<button onclick="dotBall('player2')">Dot Ball</button>
-<button onclick="out('player2')">Out</button>
-</div>
-</div>
-<div class="score">
-<p> (<span class="player1NameDisplay">Player 1</span>): <span id="player1Score">0</span></p>
-<p>Balls Faced: <span id="player1Balls">0</span></p> <!-- Display balls faced by Player 1 -->
-<p><span class="player1NameDisplay">Player 1</span> Runs Summary: <span id="player1RunsSummary">-</span></p>
-</div>
-<div class="partnership-score">
-<p align="center">Partnership Score: <span id="partnershipScore">0</span></p>
-</div><br/>
-<div class="score">
-<p>(<span class="player2NameDisplay">Player 2</span>): <span id="player2Score">0</span></p>
-<p>Balls Faced: <span id="player2Balls">0</span></p> <!-- Display balls faced by Player 2 -->
-<p><span class="player2NameDisplay">Player 2</span> Runs Summary: <span id="player2RunsSummary">-</span></p>
-</div>
-<h2>Match Summary</h2>
-<table align="center" id="scoreTable">
-<thead>
-<tr>
-<th>Over</th>
-<th>Runs</th>
-<th>Wickets</th>
-<th>Wides</th>
-<th>Dots</th>
-</tr>
-</thead>
-<tbody>
-</tbody>
-</table>
-<button onclick="resetScore()">Reset</button>
-</div>
-<script>
-var player1NameInput = document.getElementById('player1Name');
-var player2NameInput = document.getElementById('player2Name');
-var player1Score = document.getElementById('player1Score');
-var player2Score = document.getElementById('player2Score');
-var totalScoreDisplay = document.getElementById('totalScore');
-var player1RunsSummary = document.getElementById('player1RunsSummary');
-var player2RunsSummary = document.getElementById('player2RunsSummary');
-var player1BallsDisplay = document.getElementById('player1Balls');
-var player2BallsDisplay = document.getElementById('player2Balls');
-var totalBallsDisplay = document.getElementById('totalBalls');
-var oversDisplay = document.getElementById('overs');
-var wicketsDisplay = document.getElementById('wickets');
-var partnershipScoreDisplay = document.getElementById('partnershipScore');
-var runRateDisplay = document.getElementById('runRate'); // Add a variable for run rate display
-
-var player1Runs = [];
-var player2Runs = [];
-var player1Balls = 0;
-var player2Balls = 0;
-var totalScore = 0;
-var totalBalls = 0;
-var overs = 0;
-var wickets = 0;
-var partnershipScore = 0;
-
-let currentOver = 1;
-let ballsInOver = 0;
-let overSummary = {
-    runs: 0,
-    wickets: 0,
-    wides: 0,
-    dots: 0
-};
-
-let currentOverBalls = [];
-
-function updateTable() {
-    const tableBody = document.getElementById('scoreTable').querySelector('tbody');
-    tableBody.innerHTML += ` <tr>
-            <td>${currentOver}</td>
-            <td>${overSummary.runs}</td>
-            <td>${overSummary.wickets}</td>
-            <td>${overSummary.wides}</td>
-            <td>${overSummary.dots}</td>
-        </tr>
-    `;
-    currentOver++;
-    ballsInOver = 0;
-    overSummary = {
-        runs: 0,
-        wickets: 0,
-        wides: 0,
-        dots: 0
-    };
-}
-
-function incrementScore(player, runs) {
-    var scoreSpan = (player === 'player1') ? player1Score : player2Score;
-    var runsArray = (player === 'player1') ? player1Runs : player2Runs;
-    var ballsDisplay = (player === 'player1') ? player1BallsDisplay : player2BallsDisplay;
-    var balls = (player === 'player1') ? ++player1Balls : ++player2Balls;
-
-    scoreSpan.textContent = parseInt(scoreSpan.textContent) + runs;
-    runsArray.push(runs);
-    updateRunsSummary(player, runsArray);
-    ballsDisplay.textContent = balls;
-    updateTotalScore(runs);
-    updateTotalBalls(1);
-    overSummary.runs += runs;
-    partnershipScore += runs;
-    partnershipScoreDisplay.textContent = partnershipScore;
-    ballsInOver++;
-    if (ballsInOver >= 6) {
-        updateTable();
-    }
-    updateOvers(runs);
-}
-
-function dotBall(player) {
-    var runsSummary = (player === 'player1') ? player1RunsSummary : player2RunsSummary;
-    runsSummary.textContent += ',0';
-
-    if (player === 'player1') {
-        player1Balls++;
-        player1BallsDisplay.textContent = player1Balls;
-    } else if (player === 'player2') {
-        player2Balls++;
-        player2BallsDisplay.textContent = player2Balls;
+    function resetMatch() {
+      if (confirm("Reset current match scoreboard?")) {
+        runs = 0; wickets = 0; legalBalls = 0; thisOver = []; history = [];
+        updateUI();
+      }
     }
 
-    overSummary.dots++;
-    ballsInOver++;
-    partnershipScoreDisplay.textContent = partnershipScore;
-    if (ballsInOver >= 6) {
-        updateTable();
+    function updateUI() {
+      document.getElementById('scoreDisplay').textContent = `${runs} / ${wickets}`;
+      const overs = Math.floor(legalBalls / 6);
+      const balls = legalBalls % 6;
+      document.getElementById('oversDisplay').textContent = `${overs}.${balls}`;
+
+      const totalOvers = (legalBalls / 6) || 0.001;
+      const crr = (runs / totalOvers).toFixed(2);
+      document.getElementById('crrDisplay').textContent = crr;
+
+      const overDiv = document.getElementById('thisOverBalls');
+      if (thisOver.length === 0) {
+        overDiv.innerHTML = '<span style="color:var(--text-muted); font-size:0.85rem;">No balls in current over</span>';
+      } else {
+        overDiv.innerHTML = thisOver.map(b => {
+          let cls = 'ball-pill';
+          if (b.type === '4') cls += ' ball-4';
+          if (b.type === '6') cls += ' ball-6';
+          if (b.type === 'w') cls += ' ball-w';
+          return `<div class="${cls}">${b.text}</div>`;
+        }).join('');
+      }
     }
 
-    updateTotalBalls(1);
-    updateOvers('0');
-}
-
-function out(player) {
-    console.log('Out button clicked for:', player);
-
-    var scoreSpan = (player === 'player1') ? player1Score : player2Score;
-    var runsArray = (player === 'player1') ? player1Runs : player2Runs;
-    var ballsDisplay = (player === 'player1') ? player1BallsDisplay : player2BallsDisplay;
-
-    scoreSpan.textContent = '0';
-    runsArray.length = 0;
-    updateRunsSummary(player, []);
-
-    if (player === 'player1') {
-        player1Balls = 0;
-        player1BallsDisplay.textContent = '0';
-    } else if (player === 'player2') {
-        player2Balls = 0;
-        player2BallsDisplay.textContent = '0';
-    }
-
-    overSummary.wickets++;
-    ballsInOver++;
-    partnershipScore = 0;
-    partnershipScoreDisplay.textContent = partnershipScore;
-    if (ballsInOver >= 6) {
-        updateTable();
-    }
-
-    wickets++;
-    wicketsDisplay.textContent = wickets;
-
-    updateTotalBalls(1);
-    updateOvers('W');
-}
-
-function wide() {
-    var currentScore = parseInt(totalScoreDisplay.textContent);
-    totalScoreDisplay.textContent = currentScore + 1;
-    overSummary.wides++;
-    updateTotalScore(1);
-    updateOvers('WD');
-    partnershipScore++;
-    partnershipScoreDisplay.textContent = partnershipScore;
-}
-
-function resetScore() {
-    player1Score.textContent = '0';
-    player2Score.textContent = '0';
-    player1Runs = [];
-    player2Runs = [];
-    player1Balls = 0;
-    player2Balls = 0;
-    player1BallsDisplay.textContent = '0';
-    player2BallsDisplay.textContent = '0';
-    player1RunsSummary.textContent = '-';
-    player2RunsSummary.textContent = '-';
-    totalScore = 0;
-    totalBalls = 0;
-    overs = 0;
-    wickets = 0;
-    partnershipScore = 0;
-    partnershipScoreDisplay.textContent = partnershipScore;
-    totalScoreDisplay.textContent = totalScore;
-    totalBallsDisplay.textContent = totalBalls;
-    oversDisplay.textContent = '0.0 ()';
-    wicketsDisplay.textContent = wickets;
-    runRateDisplay.textContent = '0.00';
-
-    currentOver = 1;
-    ballsInOver = 0;
-    currentOverBalls = [];
-    overSummary = {
-        runs: 0,
-        wickets: 0,
-        wides: 0,
-        dots: 0
-    };
-
-    // Reset the match summary table
-    const tableBody = document.getElementById('scoreTable').querySelector('tbody');
-    tableBody.innerHTML = '';
-}
-
-
-function updateTotalScore(runs) {
-    totalScore += runs;
-    totalScoreDisplay.textContent = totalScore;
-    updateRunRate(); // Update the run rate whenever the total score changes
-}
-
-function updateTotalBalls(count) {
-    totalBalls += count;
-    totalBallsDisplay.textContent = totalBalls;
-    updateRunRate(); // Update the run rate whenever the total balls change
-}
-
-function updateRunsSummary(player, runsArray) {
-    var runsSummary = (player === 'player1') ? player1RunsSummary : player2RunsSummary;
-    runsSummary.textContent = runsArray.join(' ,');
-}
-
-function updateOvers(ballType) {
-    var overs = Math.floor(totalBalls / 6);
-    var balls = totalBalls % 6;
-
-    if (balls === 0 && totalBalls !== 0) {
-        currentOverBalls = [];
-    }
-
-    currentOverBalls.push(ballType);
-
-    var overText = `${overs}.${balls}`;
-    var ballDetails = `(${currentOverBalls.join(' ,')})`;
-
-    oversDisplay.textContent = `${overText} ${ballDetails}`;
-}
-
-// Initialize the overs display
-updateOvers('');
-
-function updateRunRate() {
-    var oversBowled = totalBalls / 6;
-    var runRate = (oversBowled > 0) ? (totalScore / oversBowled).toFixed(2) : '0.00';
-    runRateDisplay.textContent = runRate;
-}
-
-window.addEventListener('scroll', function() {
-    var totalScoreContainer = document.querySelector('.total-score');
-    var stickyClass = 'sticky';
-    var scrollPosition = window.scrollY;
-
-    if (scrollPosition > totalScoreContainer.offsetTop) {
-        totalScoreContainer.classList.add(stickyClass);
-    } else {
-        totalScoreContainer.classList.remove(stickyClass);
-    }
-});
-
-function updateNames() {
-    var player1Name = document.getElementById('player1Name').value;
-    var player2Name = document.getElementById('player2Name').value;
-
-    document.querySelectorAll('.player1NameDisplay').forEach(function(span) {
-        span.textContent = player1Name;
-    });
-
-    document.querySelectorAll('.player2NameDisplay').forEach(function(span) {
-        span.textContent = player2Name;
-    });
-}
-</script>
-<script src="js/app.js"></script></body>
+    updateUI();
+  </script>
+  <script src="js/app.js"></script>
+</body>
 </html>

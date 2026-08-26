@@ -1,373 +1,335 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-<meta name="google-site-verification" content="ndzq-U-NLijgza_QqgQdcc2U3oMRoud_BT2ZZiwFREM">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="google-site-verification" content="ndzq-U-NLijgza_QqgQdcc2U3oMRoud_BT2ZZiwFREM">
   <meta name="google-site-verification" content="-Yb6Nx74gbZ3wRN5uP-Y8KKwDWlt1DPpxs4nA3PkE6M">
   <meta name="robots" content="index, follow">
-    <!-- Google tag (gtag.js) -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-2L87FMQS3W"></script>
-    <script>
-        window.dataLayer = window.dataLayer || [];
-        function gtag(){dataLayer.push(arguments);}
-        gtag('js', new Date());
-        gtag('config', 'G-2L87FMQS3W');
-    </script>
-    <link rel="icon" href="https://i.ibb.co/XjHbck3/logo.png" type="image/png" />
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Typing Shooter Game</title>
-    <style>
-/* Body styles */
-body {
-    margin: 0;
-    padding: 0;
-    overflow: hidden;
-    font-family: 'Roboto', sans-serif;
-    background-color: #282c34;
-    color: #fff;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    flex-direction: column;
-}
-
-/* Title styles */
-h1 {
-    font-size: 3rem;
-    margin-bottom: 20px;
-    text-transform: uppercase;
-    letter-spacing: 2px;
-}
-
-/* Start button container styles */
-#startButtonContainer {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-}
-
-/* Start button styles */
-#startButton {
-    font-size: 2rem;
-    padding: 20px 40px;
-    background-color: #ff6d6d;
-    color: #fff;
-    border: none;
-    border-radius: 40px;
-    cursor: pointer;
-    text-transform: uppercase;
-    letter-spacing: 2px;
-    transition: background-color 0.3s ease-in-out;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-}
-
-#startButton:hover {
-    background-color: #ff5656;
-}
-
-/* Game container styles */
-#gameContainer {
-    display: none; /* Initially hide the game container */
-    position: relative;
-    width: 90%;
-    max-width: 90%; /* Adjusted for smaller screens */
-    height: 70vh;
-    border: 5px solid #fff;
-    background-color: rgba(255, 255, 255, 0.1);
-    border-radius: 30px;
-    overflow: hidden;
-    box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
-}
-
-/* Word styles */
-.word {
-    position: absolute;
-    font-size: 2.5rem;
-    color: #ff6d6d;
-    transition: color 0.2s ease-in-out;
-    white-space: nowrap;
-    font-weight: bold;
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
-}
-
-.highlight {
-    color: #00ff00;
-}
-
-/* Input container styles */
-#inputContainer {
-    margin-top: 20px;
-    text-align: center;
-}
-
-#wordInput {
-    font-size: 1.8rem;
-    padding: 15px 30px;
-    border: none;
-    border-radius: 30px;
-    background-color: rgba(255, 255, 255, 0.3);
-    color: #fff;
-    width: 80%;
-    max-width: 80%; /* Adjusted for smaller screens */
-    text-align: center;
-    outline: none;
-    font-family: 'Roboto', sans-serif;
-}
-
-/* Info container styles */
-#infoContainer {
-    display: flex;
-    justify-content: space-between;
-    width: 80%;
-    max-width: 80%; /* Adjusted for smaller screens */
-    margin-top: 40px;
-}
-
-/* Stopwatch and scoreboard styles */
-#stopwatch,
-#scoreboard {
-    font-size: 1.5rem;
-}
-
-/* Medal styles */
-.medal {
-    margin-top: 40px;
-    font-size: 2rem;
-    font-weight: bold;
-    text-transform: uppercase;
-}
-
-.gold {
-    color: gold;
-}
-
-.silver {
-    color: silver;
-}
-
-.bronze {
-    color: #cd7f32; /* Bronze color */
-}
-
-/* Game over message styles */
-.gameOverMessage {
-    margin-top: 40px;
-    font-size: 3rem;
-    font-weight: bold;
-    text-transform: uppercase;
-    color: #ff6d6d;
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
-}
-
-/* Background animation styles */
-@keyframes backgroundAnimation {
-    0% {
-        background-position: 0 0;
+  <title>Typing Speed Test & Shooter Game — AI Bots</title>
+  <meta name="description" content="Test and train your typing speed (WPM), accuracy, and reflexes with paragraph tests and an interactive word shooter arcade game.">
+  <meta name="keywords" content="typing speed test, wpm test online, typing practice, typing game, improve typing speed, ai bots typing">
+  <link rel="icon" href="https://i.ibb.co/G2NFYHG/logo.png" type="image/png">
+  <link rel="canonical" href="https://www.aibots.co.in/typingpractice.html">
+  <!-- Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-2L87FMQS3W"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-2L87FMQS3W');
+  </script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="css/theme.css">
+  <style>
+    .type-container { max-width: 840px; margin: 0 auto; }
+    .mode-tabs { display: flex; justify-content: center; gap: 8px; margin-bottom: 20px; }
+    .mode-tab {
+      background: var(--bg-secondary); border: 1px solid var(--border-color);
+      border-radius: 999px; padding: 8px 20px; font-size: 0.88rem; font-weight: 700;
+      color: var(--text-secondary); cursor: pointer; transition: all 0.15s;
     }
-    100% {
-        background-position: 100% 0;
+    .mode-tab.active {
+      background: color-mix(in srgb, var(--primary) 12%, transparent);
+      border-color: var(--primary); color: var(--primary);
     }
-}
+    .stats-bar {
+      display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px;
+      margin-bottom: 20px;
+    }
+    .stat-card {
+      background: var(--bg-secondary); border: 1px solid var(--border-color);
+      border-radius: var(--radius-md); padding: 14px; text-align: center;
+    }
+    .stat-num { font-size: 1.8rem; font-weight: 800; font-family: monospace; color: var(--primary); }
+    .stat-label { font-size: 0.72rem; font-weight: 700; color: var(--text-secondary); text-transform: uppercase; }
 
-body {
-    background: linear-gradient(-45deg, #ff6d6d, #50c9c3, #f8b852, #3c96f3);
-    background-size: 400% 400%;
-    animation: backgroundAnimation 15s infinite alternate;
-}
+    .prompt-box {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      padding: 24px;
+      font-size: 1.25rem;
+      line-height: 1.7;
+      font-family: var(--font-sans);
+      margin-bottom: 20px;
+      min-height: 120px;
+      user-select: none;
+      letter-spacing: 0.02em;
+    }
+    .char-correct { color: #10b981; }
+    .char-wrong { color: #ef4444; background: rgba(239, 68, 68, 0.2); border-radius: 2px; }
+    .char-current { background: var(--primary); color: white; border-radius: 2px; }
 
-    </style>
+    .type-input {
+      width: 100%; padding: 14px 18px; font-size: 1.15rem;
+      border-radius: var(--radius-md); border: 2px solid var(--border-color);
+      background: var(--bg-secondary); color: var(--text-primary); outline: none;
+      box-sizing: border-box; transition: border-color 0.2s;
+    }
+    .type-input:focus { border-color: var(--primary); }
+
+    /* Shooter Canvas */
+    .shooter-wrapper {
+      position: relative; width: 100%; aspect-ratio: 16/9; max-height: 500px;
+      background: #090d16; border-radius: var(--radius-lg); overflow: hidden;
+      border: 2px solid var(--border-color); margin-bottom: 16px;
+    }
+    #shooterCanvas { width: 100%; height: 100%; display: block; }
+  </style>
 </head>
 <body>
-    <h1>Typing Shooter Game</h1>
-   <div id="startButtonContainer">
-        <button id="startButton">Start Game</button>
-    </div>
-    <div id="gameContainer"></div>
-    <div id="inputContainer">
-        <input type="text" id="wordInput" placeholder="Type here..." autofocus>
-    </div>
-    <div id="infoContainer">
-        <div id="stopwatch">Time: 00:00</div>
-        <div id="scoreboard">Score: 0</div>
-    </div>
-<script>
-    const gameContainer = document.getElementById('gameContainer');
-    const wordInput = document.getElementById('wordInput');
-    const stopwatch = document.getElementById('stopwatch');
-    const scoreboard = document.getElementById('scoreboard');
-    const startButton = document.getElementById('startButton');
+  <div class="bg-mesh"></div>
 
-    const words = ['apple', 'banana', 'cherry', 'orange', 'grape', 'pineapple', 'strawberry', 'blueberry', 'kiwi', 'mango', 'peach', 'watermelon', 'pear', 'apricot', 'plum', 'lemon', 'lime', 'pomegranate', 'coconut', 'raspberry', 'avocado', 'blackberry', 'cantaloupe', 'fig', 'guava', 'honeydew', 'nectarine', 'papaya', 'persimmon', 'quince', 'tangerine', 'jackfruit'];
-    let activeWords = [];
-    let score = 0;
-    let timeElapsed = 0;
-    let stopwatchInterval;
-    let endGame = false;
+  <!-- Navbar -->
+  <header class="navbar">
+    <div class="app-container" style="width: 100%;">
+      <div class="nav-wrapper">
+        <a href="index.html" class="brand-link">
+          <img src="https://i.ibb.co/G2NFYHG/logo.png" alt="AI Bots Logo" class="brand-logo-img">
+          <span>AI Bots</span>
+          <span class="brand-badge">Typing Speed</span>
+        </a>
 
-    function getRandomWord() {
-        return words[Math.floor(Math.random() * words.length)];
+        <div class="nav-actions">
+          <a href="index.html" class="btn btn-secondary btn-sm"><i class="fas fa-house"></i> Hub</a>
+          <button class="icon-btn theme-toggle-btn" title="Toggle Dark/Light Mode"><i class="fas fa-moon"></i></button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="app-container tool-page-wrapper">
+    <div class="tool-header">
+      <span class="tool-header-badge"><i class="fas fa-keyboard"></i> Speed & Reflexes</span>
+      <h1 class="tool-title">Typing Speed Test</h1>
+      <p class="tool-desc">Test your typing speed (WPM) and accuracy with real-time feedback and arcade mode.</p>
+    </div>
+
+    <div class="type-container">
+      <div class="mode-tabs">
+        <button class="mode-tab active" id="tabTest" onclick="switchMode('test')"><i class="fas fa-file-lines"></i> Paragraph Test</button>
+        <button class="mode-tab" id="tabGame" onclick="switchMode('game')"><i class="fas fa-gamepad"></i> Space Word Shooter</button>
+      </div>
+
+      <!-- Live Stats -->
+      <div class="stats-bar">
+        <div class="stat-card"><div class="stat-num" id="wpmVal">0</div><div class="stat-label">WPM (Speed)</div></div>
+        <div class="stat-card"><div class="stat-num" id="accVal">100%</div><div class="stat-label">Accuracy</div></div>
+        <div class="stat-card"><div class="stat-num" id="errVal">0</div><div class="stat-label">Errors</div></div>
+        <div class="stat-card"><div class="stat-num" id="timeVal">60s</div><div class="stat-label">Time Left</div></div>
+      </div>
+
+      <!-- Test Mode -->
+      <div id="testArea">
+        <div class="prompt-box" id="promptDisplay">Loading test prompt...</div>
+        <input type="text" id="typeInput" class="type-input" placeholder="Start typing here to begin the speed test..." autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
+        <div style="margin-top: 16px; display: flex; justify-content: space-between;">
+          <button class="btn btn-secondary btn-sm" onclick="initTest()"><i class="fas fa-rotate"></i> New Prompt</button>
+          <span style="font-size:0.85rem; color:var(--text-secondary); display:flex; align-items:center;">Best Score: <strong id="bestWpm" style="margin-left:4px; color:var(--primary);">0 WPM</strong></span>
+        </div>
+      </div>
+
+      <!-- Game Mode -->
+      <div id="gameArea" style="display: none;">
+        <div class="shooter-wrapper">
+          <canvas id="shooterCanvas" width="800" height="450"></canvas>
+        </div>
+        <input type="text" id="gameInput" class="type-input" placeholder="Type falling words and press Enter to shoot!" autocomplete="off">
+        <div style="margin-top: 12px; display: flex; justify-content: space-between;">
+          <button class="btn btn-primary btn-sm" id="gameStartBtn" onclick="toggleGame()"><i class="fas fa-play"></i> Start Game</button>
+          <span style="font-size:0.85rem; color:var(--text-secondary); display:flex; align-items:center;">Arcade Score: <strong id="gameScoreVal" style="margin-left:4px; color:var(--primary);">0</strong></span>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    const PROMPTS = [
+      "Artificial intelligence and creative tools empower people around the world to build beautiful web apps and designs faster than ever before.",
+      "The quick brown fox jumps over the lazy dog while the autumn wind rustles the golden leaves across the quiet mountain trail.",
+      "Writing clean and maintainable code is an essential craft that bridges human creativity with computational problem solving.",
+      "Innovation distinguishes between a leader and a follower. Great software is built with curiosity, persistence, and attention to detail.",
+      "Success in typing requires rhythmic muscle memory, proper finger placement, and consistent daily practice to build speed."
+    ];
+
+    let currentPrompt = '';
+    let testStarted = false;
+    let testTimeLeft = 60;
+    let timer = null;
+    let totalCharsTyped = 0;
+    let errorCount = 0;
+    let bestScore = parseInt(localStorage.getItem('aibots_best_wpm') || '0');
+    document.getElementById('bestWpm').textContent = `${bestScore} WPM`;
+
+    function initTest() {
+      clearInterval(timer);
+      testStarted = false;
+      testTimeLeft = 60;
+      totalCharsTyped = 0;
+      errorCount = 0;
+
+      document.getElementById('wpmVal').textContent = '0';
+      document.getElementById('accVal').textContent = '100%';
+      document.getElementById('errVal').textContent = '0';
+      document.getElementById('timeVal').textContent = '60s';
+
+      currentPrompt = PROMPTS[Math.floor(Math.random() * PROMPTS.length)];
+      renderPromptText(0);
+
+      const input = document.getElementById('typeInput');
+      input.value = '';
+      input.disabled = false;
+      input.focus();
     }
-document.addEventListener("DOMContentLoaded", function () {
-    const startButton = document.getElementById("startButton");
-    const startButtonContainer = document.getElementById("startButtonContainer");
-    const gameContainer = document.getElementById("gameContainer");
 
-    startButton.addEventListener("click", function () {
-        startButtonContainer.style.display = "none"; // Hide the start button container
-        gameContainer.style.display = "block"; // Show the game container
+    function renderPromptText(currIndex) {
+      const display = document.getElementById('promptDisplay');
+      display.innerHTML = currentPrompt.split('').map((char, i) => {
+        let cls = '';
+        if (i < currIndex) cls = 'char-correct';
+        else if (i === currIndex) cls = 'char-current';
+        return `<span class="${cls}">${char}</span>`;
+      }).join('');
+    }
+
+    document.getElementById('typeInput').addEventListener('input', (e) => {
+      if (!testStarted) {
+        testStarted = true;
+        timer = setInterval(testTick, 1000);
+      }
+
+      const val = e.target.value;
+      let mistakes = 0;
+
+      const spans = document.getElementById('promptDisplay').querySelectorAll('span');
+      spans.forEach((span, i) => {
+        if (i < val.length) {
+          if (val[i] === currentPrompt[i]) {
+            span.className = 'char-correct';
+          } else {
+            span.className = 'char-wrong';
+            mistakes++;
+          }
+        } else if (i === val.length) {
+          span.className = 'char-current';
+        } else {
+          span.className = '';
+        }
+      });
+
+      errorCount = mistakes;
+      totalCharsTyped = val.length;
+
+      const elapsedMins = (60 - testTimeLeft) / 60 || 0.01;
+      const words = (val.length / 5);
+      const wpm = Math.max(0, Math.round((words - mistakes) / elapsedMins));
+      const accuracy = totalCharsTyped > 0 ? Math.max(0, Math.round(((totalCharsTyped - mistakes) / totalCharsTyped) * 100)) : 100;
+
+      document.getElementById('wpmVal').textContent = wpm;
+      document.getElementById('accVal').textContent = `${accuracy}%`;
+      document.getElementById('errVal').textContent = mistakes;
+
+      if (val === currentPrompt) {
+        clearInterval(timer);
+        if (wpm > bestScore) {
+          bestScore = wpm;
+          localStorage.setItem('aibots_best_wpm', bestScore);
+          document.getElementById('bestWpm').textContent = `${bestScore} WPM`;
+        }
+        alert(`🎉 Test Complete! Speed: ${wpm} WPM | Accuracy: ${accuracy}%`);
+      }
     });
-});
 
-    function createWordElement(word) {
-        const wordElement = document.createElement('div');
-        wordElement.className = 'word';
-        wordElement.innerText = word;
-        wordElement.style.top = `${Math.random() * 80}%`;
-        wordElement.style.left = '100%';
-        gameContainer.appendChild(wordElement);
-        return wordElement;
+    function testTick() {
+      testTimeLeft--;
+      document.getElementById('timeVal').textContent = `${testTimeLeft}s`;
+      if (testTimeLeft <= 0) {
+        clearInterval(timer);
+        document.getElementById('typeInput').disabled = true;
+        alert(`⏰ Time's up! Your final typing speed: ${document.getElementById('wpmVal').textContent} WPM`);
+      }
     }
 
-    function moveWords() {
-        activeWords.forEach(wordObj => {
-            if (!endGame) {
-                wordObj.element.style.left = `${wordObj.position}%`;
-                wordObj.position -= 0.5;
-                if (wordObj.position < 0) {
-                    endGame = true;
-                    stopGame();
-                }
-            }
-        });
+    function switchMode(m) {
+      document.getElementById('tabTest').classList.toggle('active', m === 'test');
+      document.getElementById('tabGame').classList.toggle('active', m === 'game');
+      document.getElementById('testArea').style.display = m === 'test' ? 'block' : 'none';
+      document.getElementById('gameArea').style.display = m === 'game' ? 'block' : 'none';
+      if (m === 'test') initTest();
+    }
+
+    // ── Space Shooter Game ──
+    const gCanvas = document.getElementById('shooterCanvas');
+    const gCtx = gCanvas.getContext('2d');
+    const WORD_BANK = ['robot','cyber','planet','galaxy','speed','matrix','future','laser','spark','vector','shield','orbit','quantum','pixel','code'];
+    let gameActive = false;
+    let gameScore = 0;
+    let fallingWords = [];
+    let gameInterval = null;
+
+    function toggleGame() {
+      if (gameActive) {
+        gameActive = false;
+        clearInterval(gameInterval);
+        document.getElementById('gameStartBtn').innerHTML = '<i class="fas fa-play"></i> Start Game';
+      } else {
+        gameActive = true;
+        gameScore = 0;
+        fallingWords = [];
+        document.getElementById('gameScoreVal').textContent = '0';
+        document.getElementById('gameStartBtn').innerHTML = '<i class="fas fa-stop"></i> End Game';
+        document.getElementById('gameInput').focus();
+        gameInterval = setInterval(spawnWord, 2200);
+        requestAnimationFrame(gameLoop);
+      }
     }
 
     function spawnWord() {
-        if (!endGame) {
-            const word = getRandomWord();
-            const wordElement = createWordElement(word);
-            const wordObj = { word, element: wordElement, position: 100 };
-            activeWords.push(wordObj);
+      const w = WORD_BANK[Math.floor(Math.random() * WORD_BANK.length)];
+      fallingWords.push({
+        text: w,
+        x: 50 + Math.random() * (gCanvas.width - 150),
+        y: 20,
+        speed: 1 + Math.random() * 0.8
+      });
+    }
+
+    document.getElementById('gameInput').addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        const val = e.target.value.toLowerCase().trim();
+        e.target.value = '';
+        const idx = fallingWords.findIndex(w => w.text.toLowerCase() === val);
+        if (idx !== -1) {
+          fallingWords.splice(idx, 1);
+          gameScore += 10;
+          document.getElementById('gameScoreVal').textContent = gameScore;
         }
-    }
-
-    function checkInput() {
-        if (!endGame) {
-            const typedWord = wordInput.value.trim();
-            activeWords.forEach(wordObj => {
-                if (wordObj.word === typedWord) {
-                    gameContainer.removeChild(wordObj.element);
-                    activeWords.splice(activeWords.indexOf(wordObj), 1);
-                    wordInput.value = '';
-                    score++;
-                    scoreboard.innerText = `Score: ${score}`;
-                    wordObj.element.style.color = '#ff6d6d';
-                    setTimeout(() => {
-                        gameContainer.removeChild(wordObj.element);
-                    }, 200);
-                    // Trigger word blast effect
-                    wordBlast(wordObj.element);
-                } else {
-                    // Highlight the current letter being typed
-                    highlightCurrentLetter(wordObj.element, typedWord);
-                }
-            });
-        }
-    }
-
-    function highlightCurrentLetter(wordElement, typedWord) {
-        const word = wordElement.innerText;
-        for (let i = 0; i < typedWord.length; i++) {
-            if (typedWord[i] === word[i]) {
-                wordElement.innerHTML = `<span class="highlight">${typedWord.slice(0, i + 1)}</span>${word.slice(i + 1)}`;
-            } else {
-                break;
-            }
-        }
-    }
-
-    function wordBlast(wordElement) {
-        const wordRect = wordElement.getBoundingClientRect();
-        const blastElement = document.createElement('div');
-        blastElement.className = 'blast';
-        blastElement.style.top = wordRect.top + 'px';
-        blastElement.style.left = wordRect.left + 'px';
-        blastElement.innerText = '💥';
-        document.body.appendChild(blastElement); // Append blast element to the body
-        setTimeout(() => {
-            document.body.removeChild(blastElement); // Remove blast element from the body
-        }, 1000);
-    }
-
-    function startStopwatch() {
-        stopwatchInterval = setInterval(() => {
-            if (!endGame) {
-                timeElapsed++;
-                const minutes = Math.floor(timeElapsed / 60);
-                const seconds = timeElapsed % 60;
-                stopwatch.innerText = `Time: ${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
-            }
-        }, 1000);
-    }
-
-    function stopStopwatch() {
-        clearInterval(stopwatchInterval);
-    }
-
-    function stopGame() {
-        endGame = true;
-        stopStopwatch();
-        wordInput.disabled = true;
-        wordInput.placeholder = 'Game Over';
-        wordInput.value = '';
-        calculateMedals();
-        startButton.style.display = 'block'; // Show the start button when the game ends
-    }
-
-   function calculateMedals() {
-    let medal = '';
-    if (score >= 70) {
-        medal = 'Diamond';
-    } else if (score >= 50) {
-        medal = 'Gold';
-    } else if (score >= 30) {
-        medal = 'Silver';
-    } else if (score >= 15){
-        medal = 'Bronze';
-    } else {
-        medal = "better luck next time"
-    }
-    alert(`Congratulations! You earned a ${medal} medal with a score of ${score}!`);
-}
-
-
-    startButton.addEventListener('click', () => {
-        startButton.style.display = 'none'; // Hide the start button when the game starts
-        endGame = false;
-        score = 0;
-        timeElapsed = 0;
-        scoreboard.innerText = `Score: ${score}`;
-        stopwatch.innerText = `Time: 00:00`;
-        wordInput.disabled = false; // Enable the input field when the game starts
-        wordInput.placeholder = 'Type here...';
-        wordInput.focus();
-        activeWords.forEach(wordObj => {
-            gameContainer.removeChild(wordObj.element);
-        });
-        activeWords.length = 0;
-        startStopwatch();
-        setInterval(spawnWord, 2300); // Spawn a new word every 2.3 seconds
-        setInterval(moveWords, 100);  // Move words every 100ms
-        wordInput.addEventListener('input', checkInput);
+      }
     });
-</script>
 
+    function gameLoop() {
+      if (!gameActive) return;
+      gCtx.fillStyle = '#090d16';
+      gCtx.fillRect(0, 0, gCanvas.width, gCanvas.height);
+
+      gCtx.fillStyle = '#38bdf8';
+      gCtx.font = 'bold 18px monospace';
+
+      for (let i = fallingWords.length - 1; i >= 0; i--) {
+        const fw = fallingWords[i];
+        fw.y += fw.speed;
+        gCtx.fillText(fw.text, fw.x, fw.y);
+
+        if (fw.y > gCanvas.height - 20) {
+          fallingWords.splice(i, 1);
+        }
+      }
+      requestAnimationFrame(gameLoop);
+    }
+
+    initTest();
+  </script>
+  <script src="js/app.js"></script>
 </body>
 </html>
-

@@ -1,520 +1,175 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-<meta name="google-site-verification" content="ndzq-U-NLijgza_QqgQdcc2U3oMRoud_BT2ZZiwFREM">
-  <meta name="google-site-verification" content="-Yb6Nx74gbZ3wRN5uP-Y8KKwDWlt1DPpxs4nA3PkE6M">
-  <meta name="robots" content="index, follow">
-      <!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-2L87FMQS3W"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'G-2L87FMQS3W');
-</script>
-<link rel="icon" href="https://i.ibb.co/XjHbck3/logo.png" type="image/png" />
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Video Player</title>
+  <meta name="google-site-verification" content="ndzq-U-NLijgza_QqgQdcc2U3oMRoud_BT2ZZiwFREM">
+  <meta name="google-site-verification" content="-Yb6Nx74gbZ3wRN5uP-Y8KKwDWlt1DPpxs4nA3PkE6M">
+  <meta name="robots" content="index, follow">
+  <title>HD Video Player & Frame Grabber — AI Bots</title>
+  <meta name="description" content="Play any local video in your browser with speed controls, Picture-in-Picture, loop, and instant screenshot frame capture. 100% private.">
+  <meta name="keywords" content="video player online, play mp4 in browser, capture video frame, picture in picture video player, ai bots video">
+  <link rel="icon" href="https://i.ibb.co/G2NFYHG/logo.png" type="image/png">
+  <link rel="canonical" href="https://www.aibots.co.in/videoplayer.html">
+  <!-- Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-2L87FMQS3W"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-2L87FMQS3W');
+  </script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="css/theme.css">
   <style>
-body {
-      font-family: Arial, sans-serif;
-      margin: 0;
-      padding: 0;
-      background-color: #222;
-      color: #fff;
-    }
-
-    .container {
-      max-width: 800px;
-      margin: 20px auto;
-      background-color: #333;
-      padding: 20px;
-      border-radius: 20px;
-      box-shadow: 0 0 20px rgba(0, 0, 0, 0.4);
-      animation: fadeIn 0.5s ease-out;
-    }
-
- /* Video */
-video {
-    width: 100%;
-    border-radius: 20px;
-    display: block;
-    opacity: 0;
-    animation: fadeInVideo 0.5s ease forwards;
-    transition: opacity 0.3s ease; /* Smooth transition for opacity */
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Add subtle shadow for depth */
-}
-
-/* Controls */
-.controls {
-    margin-top: 20px;
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
-    align-items: center;
-}
-
-/* Control buttons */
-.controls button {
-    background-color: #3498db;
-    color: #fff;
-    border: none;
-    border-radius: 10px;
-    padding: 10px 20px;
-    margin: 5px;
-    cursor: pointer;
-    font-size: 16px;
-    transition: background-color 0.3s ease, transform 0.2s ease;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-}
-
-.controls button:hover {
-    background-color: #2980b9;
-    transform: translateY(-3px); /* Add subtle lift effect on hover */
-}
-
-/* Animation for fading in video */
-@keyframes fadeInVideo {
-    from {
-        opacity: 0;
-    }
-    to {
-        opacity: 1;
-    }
-}
-
-    .controls input[type="text"],
-    .controls input[type="file"],
-    .controls button {
-      margin-bottom: 10px;
-      padding: 15px 25px;
-      background-color: #4CAF50;
-      color: white;
-      border: none;
-      border-radius: 25px;
+    .vp-card { max-width: 920px; margin: 0 auto; }
+    .vp-dropzone {
+      border: 2px dashed var(--primary);
+      border-radius: var(--radius-lg);
+      padding: 44px 20px;
+      text-align: center;
+      background: var(--bg-secondary);
       cursor: pointer;
-      transition: background-color 0.3s, transform 0.3s, box-shadow 0.3s;
-      animation: buttonFadeIn 0.5s ease forwards;
-    }
-
-    .controls input[type="text"],
-    .controls input[type="file"] {
-      flex: 1 0 45%;
-    }
-
-    .controls button {
-      flex: 0 0 30%;
-    }
-
-    .controls input[type="text"]:focus,
-    .controls input[type="file"]:focus {
-      background-color: #45a049;
-    }
-
-    .controls button:hover {
-      background-color: #45a049;
-      transform: scale(1.05) rotate(3deg);
-      box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
-    }
-
-    .fullscreen {
-      cursor: pointer;
-      font-size: 18px;
-      padding: 15px 25px;
-      border-radius: 25px;
-      background-color: #4CAF50;
-      color: white;
-      transition: background-color 0.3s, transform 0.3s, box-shadow 0.3s;
-    }
-
-    .fullscreen:hover {
-      background-color: #45a049;
-      transform: scale(1.05) rotate(3deg);
-      box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
-    }
-
-    .logo {
-      max-width: 150px;
-      height: auto;
-      margin-bottom: 20px;
-      animation: bounceIn 1s ease;
-    }
-
-    .slider {
-      -webkit-appearance: none;
-      appearance: none;
-      width: 100%;
-      height: 15px;
-      background: #555;
-      outline: none;
-      border-radius: 20px;
-      transition: background 0.3s, transform 0.3s;
-    }
-
-    .slider::-webkit-slider-thumb {
-      -webkit-appearance: none;
-      appearance: none;
-      width: 25px;
-      height: 25px;
-      background: #4CAF50;
-      border-radius: 50%;
-      cursor: pointer;
-      transition: background 0.3s, transform 0.3s;
-    }
-
-    .progress-bar {
-      width: 100%;
-      height: 10px;
-      background-color: #666;
-      border-radius: 20px;
       position: relative;
+      transition: all 0.2s;
+    }
+    .vp-dropzone:hover { background: color-mix(in srgb, var(--primary) 8%, var(--bg-secondary)); }
+    .vp-dropzone i { font-size: 2.8rem; color: var(--primary); margin-bottom: 10px; display: block; }
+    .vp-dropzone input[type="file"] { position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%; }
+
+    .vp-player-box {
+      background: #020617;
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
       overflow: hidden;
+      box-shadow: var(--shadow-lg);
       margin-top: 20px;
     }
-
-    .progress {
-      height: 100%;
-      background-color: #4CAF50;
-      border-radius: 20px;
-      position: absolute;
-      top: 0;
-      left: 0;
-      transition: width 0.3s;
+    video {
+      width: 100%;
+      max-height: 520px;
+      display: block;
+      background: #000;
     }
-
-    .time {
-      font-size: 16px;
-      color: white;
-      margin-top: 10px;
+    .vp-controls-bar {
+      background: var(--bg-secondary);
+      border-top: 1px solid var(--border-color);
+      padding: 12px 18px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
     }
-
-    .quality-select {
-      padding: 15px;
-      border-radius: 25px;
-      border: none;
-      background-color: #444;
-      color: white;
-      transition: background-color 0.3s, transform 0.3s;
-    }
-
-    .quality-select:hover {
-      background-color: #555;
-      transform: scale(1.05) rotate(-2deg);
-    }
-
-    .playback-rate {
-      font-size: 16px;
-      margin-left: 20px;
-      color: white;
-      transition: background-color 0.3s, transform 0.3s;
-    }
-
-    .playback-rate:hover {
-      background-color: #555;
-      transform: scale(1.05) rotate(2deg);
-    }
-
-    @media screen and (max-width: 600px) {
-      .container {
-        width: 90%;
-      }
-
-      .controls input[type="text"],
-      .controls input[type="file"],
-      .controls button {
-        flex: 1 0 100%;
-      }
-
-      .controls button {
-        margin-top: 10px;
-      }
-    }
-
-    /* Animation */
-    @keyframes fadeIn {
-      from {
-        opacity: 0;
-        transform: translateY(-20px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-
-    @keyframes fadeInVideo {
-      from {
-        opacity: 0;
-        transform: scale(0.9);
-      }
-      to {
-        opacity: 1;
-        transform: scale(1);
-      }
-    }
-
-    @keyframes buttonFadeIn {
-      from {
-        opacity: 0;
-        transform: translateY(-20px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-
-    @keyframes bounceIn {
-      0% {
-        transform: scale(0.1);
-        opacity: 0;
-      }
-      60% {
-        transform: scale(1.2);
-        opacity: 1;
-      }
-      100% {
-        transform: scale(1);
-        opacity: 1;
-      }
-    }    
-     /* Loading Spinner */
-    #loadingSpinner {
-      display: none;
-      position: fixed;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      z-index: 9999;
-    }
-
-    #loadingSpinner div {
-      border: 4px solid rgba(255, 255, 255, 0.3);
-      border-radius: 50%;
-      border-top: 4px solid #fff;
-      width: 40px;
-      height: 40px;
-      animation: spin 1s linear infinite;
-    }
-
-    @keyframes spin {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
-    }
+    .vp-btn-group { display: flex; gap: 8px; align-items: center; }
   </style>
 </head>
 <body>
-  <div class="container">
-    <img class="logo" src="https://i.ibb.co/G2NFYHG/logo.png" alt="Logo">
-    <h1 style="color: white;">Super Video Player</h1>
-    <div id="videoContainer"></div>
-    <div class="controls">
-      <input type="text" id="videoUrl" placeholder="Enter video URL">
-      <button onclick="loadVideo()">Load Video</button>
-      <label for="videoFile">Upload Video:</label>
-      <input type="file" id="videoFile" accept="video/mp4">
-      <button onclick="loadLocalVideo()">Load Local Video</button>
-      <button onclick="togglePlayPause()">Play/Pause</button>
-      <button onclick="toggleMute()">Mute/Unmute</button>
-      <button onclick="skipBackward()">-10s</button>
-      <button onclick="restart()">Restart</button>
-      <button onclick="skipForward()">+10s</button>
-      <button onclick="toggleFullScreen()" class="fullscreen">Full Screen</button>
-    </div>
-    <div class="controls">
-      <input type="range" class="slider" id="volumeSlider" min="0" max="1" step="0.01" value="1" oninput="changeVolume()">
-      <select class="quality-select" id="qualitySelect" onchange="changeQuality()">
-        <option value="auto">Auto</option>
-        <option value="low">Low</option>
-        <option value="medium">Medium</option>
-        <option value="high">High</option>
-      </select>
-      <div class="time" id="currentTime">00:00</div>
-      <div class="progress-bar">
-        <div class="progress" id="progress"></div>
-      </div>
-      <div class="time" id="totalDuration">00:00</div>
-      <span class="playback-rate" id="playbackRate">1x</span>
-      <select class="quality-select" id="speedSelect" onchange="changeSpeed()">
-        <option value="0.5">0.5x</option>
-        <option value="1" selected>1x</option>
-        <option value="1.5">1.5x</option>
-        <option value="2">2x</option>
-      </select>
-    </div>
-  </div>
+  <div class="bg-mesh"></div>
 
-  <div id="loadingSpinner">
-    <div></div>
-  </div>
+  <!-- Navbar -->
+  <header class="navbar">
+    <div class="app-container" style="width: 100%;">
+      <div class="nav-wrapper">
+        <a href="index.html" class="brand-link">
+          <img src="https://i.ibb.co/G2NFYHG/logo.png" alt="AI Bots Logo" class="brand-logo-img">
+          <span>AI Bots</span>
+          <span class="brand-badge">Video Player</span>
+        </a>
+
+        <div class="nav-actions">
+          <a href="index.html" class="btn btn-secondary btn-sm"><i class="fas fa-house"></i> Hub</a>
+          <button class="icon-btn theme-toggle-btn" title="Toggle Dark/Light Mode"><i class="fas fa-moon"></i></button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="app-container tool-page-wrapper">
+    <div class="tool-header">
+      <span class="tool-header-badge"><i class="fas fa-play"></i> Media Tool</span>
+      <h1 class="tool-title">HD Video Player</h1>
+      <p class="tool-desc">Play local video files directly in your browser with speed adjustment, PiP, and frame capture.</p>
+    </div>
+
+    <div class="vp-card">
+      <div class="vp-dropzone" id="dropzone" onclick="document.getElementById('fileInput').click()">
+        <input type="file" id="fileInput" accept="video/*" onchange="handleVideo(event)">
+        <i class="fas fa-film"></i>
+        <h3 style="margin:0 0 6px;">Choose or Drop a Video</h3>
+        <p style="margin:0; color:var(--text-secondary); font-size:0.85rem;">Supports MP4, WebM, MOV, MKV, OGG</p>
+      </div>
+
+      <div class="vp-player-box" id="playerWrap" style="display: none;">
+        <video id="videoEl" controls playsinline></video>
+
+        <div class="vp-controls-bar">
+          <div class="vp-btn-group">
+            <span style="font-size: 0.85rem; color: var(--text-secondary);"><i class="fas fa-gauge-high"></i> Speed:</span>
+            <select id="speedSel" class="form-control" style="width: 90px; padding: 4px 8px; font-size: 0.8rem;" onchange="setSpeed(this.value)">
+              <option value="0.5">0.5x</option>
+              <option value="0.75">0.75x</option>
+              <option value="1" selected>1.0x (Normal)</option>
+              <option value="1.25">1.25x</option>
+              <option value="1.5">1.5x</option>
+              <option value="2">2.0x</option>
+            </select>
+          </div>
+
+          <div class="vp-btn-group">
+            <button class="btn btn-secondary btn-sm" onclick="togglePiP()"><i class="fas fa-up-right-from-square"></i> Mini Player (PiP)</button>
+            <button class="btn btn-primary btn-sm" onclick="captureFrame()"><i class="fas fa-camera"></i> Capture Frame</button>
+            <button class="btn btn-secondary btn-sm" onclick="document.getElementById('fileInput').click()"><i class="fas fa-folder-open"></i> Open Another</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
 
   <script>
-    var videoContainer = document.getElementById('videoContainer');
-    var videoUrlInput = document.getElementById('videoUrl');
-    var videoFileInput = document.getElementById('videoFile');
-    var videoPlayer;
-    var volumeSlider = document.getElementById('volumeSlider');
-    var currentTime = document.getElementById('currentTime');
-    var totalDuration = document.getElementById('totalDuration');
-    var progress = document.getElementById('progress');
-    var qualitySelect = document.getElementById('qualitySelect');
-    var speedSelect = document.getElementById('speedSelect');
-    var playbackRate = document.getElementById('playbackRate');
-    var loadingSpinner = document.getElementById('loadingSpinner');
+    const video = document.getElementById('videoEl');
 
-    function loadVideo() {
-      var videoUrl = videoUrlInput.value;
-      if (isYouTubeLink(videoUrl)) {
-        loadYouTubeVideo(videoUrl);
-      } else {
-        loadVideoFromUrl(videoUrl);
-      }
+    function handleVideo(e) {
+      const file = e.target.files[0];
+      if (!file) return;
+
+      const url = URL.createObjectURL(file);
+      video.src = url;
+      document.getElementById('playerWrap').style.display = 'block';
+      document.getElementById('dropzone').style.display = 'none';
+      video.play();
     }
 
-    function loadYouTubeVideo(videoUrl) {
-      var videoId = getYouTubeId(videoUrl);
-      var embedUrl = 'https://www.youtube.com/embed/' + videoId + '?autoplay=1';
-      var iframe = document.createElement('iframe');
-      iframe.width = '100%';
-      iframe.height = '100%';
-      iframe.src = embedUrl;
-      iframe.frameborder = '0';
-      videoContainer.innerHTML = '';
-      videoContainer.appendChild(iframe);
+    function setSpeed(val) {
+      video.playbackRate = parseFloat(val);
     }
 
-    function loadVideoFromUrl(videoUrl) {
-      var video = document.createElement('video');
-      video.controls = true;
-      video.autoplay = false;
-      video.src = videoUrl;
-      videoContainer.innerHTML = '';
-      videoContainer.appendChild(video);
-      videoPlayer = video;
-      initializeVideoPlayer();
-    }
-
-    function loadLocalVideo() {
-      var file = videoFileInput.files[0];
-      if (file) {
-        var url = URL.createObjectURL(file);
-        loadVideoFromUrl(url);
-      }
-    }
-
-    function initializeVideoPlayer() {
-      videoPlayer.addEventListener('timeupdate', updateProgress);
-      videoPlayer.addEventListener('durationchange', function() {
-        totalDuration.textContent = formatTime(videoPlayer.duration);
-      });
-      videoPlayer.addEventListener('volumechange', function() {
-        volumeSlider.value = videoPlayer.volume;
-      });
-    }
-
-    function togglePlayPause() {
-      if (videoPlayer.paused) {
-        videoPlayer.play();
-      } else {
-        videoPlayer.pause();
-      }
-    }
-
-    function toggleMute() {
-      videoPlayer.muted = !videoPlayer.muted;
-    }
-
-    function skipForward() {
-      videoPlayer.currentTime += 10;
-    }
-
-    function skipBackward() {
-      videoPlayer.currentTime -= 10;
-    }
-
-    function restart() {
-      videoPlayer.currentTime = 0;
-    }
-
-    function toggleFullScreen() {
-      if (!document.fullscreenElement && !document.webkitFullscreenElement) {
-        if (videoPlayer.requestFullscreen) {
-          videoPlayer.requestFullscreen();
-        } else if (videoPlayer.webkitRequestFullscreen) {
-          videoPlayer.webkitRequestFullscreen();
+    async function togglePiP() {
+      try {
+        if (document.pictureInPictureElement) {
+          await document.exitPictureInPicture();
+        } else if (document.pictureInPictureEnabled) {
+          await video.requestPictureInPicture();
         }
-      } else {
-        if (document.exitFullscreen) {
-          document.exitFullscreen();
-        } else if (document.webkitExitFullscreen) {
-          document.webkitExitFullscreen();
-        }
+      } catch(e) {
+        alert("Picture-in-Picture not supported by your browser.");
       }
     }
 
-    function changeVolume() {
-      videoPlayer.volume = volumeSlider.value;
-    }
+    function captureFrame() {
+      if (!video.videoWidth) return;
+      const canvas = document.createElement('canvas');
+      canvas.width = video.videoWidth;
+      canvas.height = video.videoHeight;
+      const ctx = canvas.getContext('2d');
+      ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
 
-    function changeQuality() {
-      var selectedQuality = qualitySelect.value;
-      console.log("Selected quality: " + selectedQuality);
+      const a = document.createElement('a');
+      a.href = canvas.toDataURL('image/png');
+      a.download = `frame_${Math.floor(video.currentTime)}s.png`;
+      a.click();
     }
-
-    function changeSpeed() {
-      var selectedSpeed = speedSelect.value;
-      videoPlayer.playbackRate = parseFloat(selectedSpeed);
-      playbackRate.textContent = selectedSpeed + 'x';
-    }
-
-    function updateProgress() {
-      var progressPercent = (videoPlayer.currentTime / videoPlayer.duration) * 100;
-      progress.style.width = progressPercent + '%';
-      currentTime.textContent = formatTime(videoPlayer.currentTime);
-    }
-
-    function formatTime(timeInSeconds) {
-      var minutes = Math.floor(timeInSeconds / 60);
-      var seconds = Math.floor(timeInSeconds - minutes * 60);
-      var formattedTime = (minutes < 10 ? '0' : '') + minutes + ':' + (seconds < 10 ? '0' : '') + seconds;
-      return formattedTime;
-    }
-
-    function isYouTubeLink(url) {
-      return url.includes('youtube.com') || url.includes('youtu.be');
-    }
-
-    function getYouTubeId(url) {
-      var videoId = '';
-      if (url.includes('youtube.com')) {
-        var params = new URLSearchParams(new URL(url).search);
-        videoId = params.get('v');
-      } else if (url.includes('youtu.be')) {
-        var parts = url.split('/');
-        videoId = parts[parts.length - 1];
-      }
-      return videoId;
-    }
-
-    function showLoadingSpinner() {
-      loadingSpinner.style.display = 'block';
-    }
-
-    function hideLoadingSpinner() {
-      loadingSpinner.style.display = 'none';
-    }
-
-    // Autoplay handling
-    var iOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
-    if (iOS) {
-      videoUrlInput.setAttribute('autoplay', 'false');
-    } else {
-      videoUrlInput.setAttribute('autoplay', 'true');
-    }
-
-    setInterval(updateProgress, 1000);
   </script>
+  <script src="js/app.js"></script>
 </body>
 </html>

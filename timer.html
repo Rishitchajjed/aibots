@@ -1,451 +1,304 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-<meta name="google-site-verification" content="ndzq-U-NLijgza_QqgQdcc2U3oMRoud_BT2ZZiwFREM">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="google-site-verification" content="ndzq-U-NLijgza_QqgQdcc2U3oMRoud_BT2ZZiwFREM">
   <meta name="google-site-verification" content="-Yb6Nx74gbZ3wRN5uP-Y8KKwDWlt1DPpxs4nA3PkE6M">
   <meta name="robots" content="index, follow">
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-     <link rel="icon" href="https://i.ibb.co/XjHbck3/logo.png" type="image/png" /> 
-     <!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-2L87FMQS3W"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'G-2L87FMQS3W');
-</script>
-    <title>Advanced Stopwatch</title>
-    <style>
-body {
-    font-family: Arial, sans-serif;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    margin: 0;
-    background-color: #f0f0f0;
-    transition: background-color 0.3s ease;
-}
-
-.stopwatch-container {
-    text-align: center;
-}
-
-h1 {
-    color: #007bff; /* Blue color */
-    font-size: 2.5em; /* Large font size */
-    margin-bottom: 20px; /* Spacing at the bottom */
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2); /* Soft shadow effect */
-    /* Adding a gradient background for depth */
-    background: linear-gradient(45deg, #007bff, #00bfff);
-    /* Ensuring text is legible on gradient background */
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    /* Adding a slight animation for subtle movement */
-    animation: glow 1.5s ease-in-out infinite alternate;
-}
-
-/* Defining the glow animation */
-@keyframes glow {
-    0% {
-        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+  <title>Stopwatch & Timer — AI Bots</title>
+  <meta name="description" content="Precision digital stopwatch and countdown timer with laps, split times, and Pomodoro focus alarm. 100% free online.">
+  <meta name="keywords" content="stopwatch, online timer, countdown timer, pomodoro timer, lap timer, ai bots timer">
+  <link rel="icon" href="https://i.ibb.co/G2NFYHG/logo.png" type="image/png">
+  <link rel="canonical" href="https://www.aibots.co.in/timer.html">
+  <!-- Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-2L87FMQS3W"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-2L87FMQS3W');
+  </script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="css/theme.css">
+  <style>
+    .timer-card { max-width: 620px; margin: 0 auto; text-align: center; }
+    .mode-tabs { display: flex; justify-content: center; gap: 8px; margin-bottom: 24px; }
+    .mode-tab {
+      background: var(--bg-primary); border: 1px solid var(--border-color);
+      border-radius: 999px; padding: 8px 20px; font-size: 0.9rem; font-weight: 700;
+      color: var(--text-secondary); cursor: pointer; transition: all 0.15s;
     }
-    100% {
-        text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.3);
+    .mode-tab.active {
+      background: color-mix(in srgb, var(--primary) 12%, transparent);
+      border-color: var(--primary); color: var(--primary);
     }
-}
+    .display-box {
+      background: var(--bg-primary);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      padding: 36px 20px;
+      margin-bottom: 24px;
+      box-shadow: var(--shadow-sm);
+    }
+    .big-time {
+      font-family: monospace;
+      font-size: clamp(2.5rem, 8vw, 4.2rem);
+      font-weight: 800;
+      color: var(--text-primary);
+      letter-spacing: 0.05em;
+    }
+    .ms-part { font-size: 0.55em; color: var(--primary); }
+    .timer-btn-row { display: flex; justify-content: center; gap: 12px; }
+    .t-btn {
+      min-width: 110px; padding: 12px 24px; font-size: 1rem; font-weight: 700;
+      border-radius: var(--radius-md); border: none; cursor: pointer;
+      display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+      transition: all 0.15s;
+    }
+    .t-btn-start { background: var(--success); color: white; }
+    .t-btn-stop { background: var(--danger); color: white; }
+    .t-btn-lap { background: var(--primary); color: white; }
+    .t-btn-reset { background: var(--bg-secondary); border: 1px solid var(--border-color); color: var(--text-secondary); }
+    .t-btn:hover { transform: translateY(-2px); }
 
-/* Optional: Hover effect for interaction */
-h1:hover {
-    transform: scale(1.05); /* Slightly increase size on hover */
-}
-
-
-#display {
-    position: relative;
-    width: 250px;
-    height: 250px;
-    margin: 20px auto;
-    background: linear-gradient(45deg, #007bff, #00ff00, #ff00ff, #007bff);
-    border-radius: 50%;
-    box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
-    overflow: hidden;
-}
-
-#display::before {
-    content: "";
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: calc(100% - 40px);
-    height: calc(100% - 40px);
-    background-color: #fff;
-    border-radius: 50%;
-    box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.5);
-}
-
-#display #time {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    font-size: 2em;
-    color: #fff;
-    text-shadow: 0 0 10px rgba(0, 0, 0, 0.7);
-}
-
-.logo-container {
-    margin-bottom: 20px;
-}
-
-.logo-container img {
-    width: 150px;
-    height: auto;
-    border-radius: 50%;
-    box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
-    transition: transform 0.3s ease;
-}
-
-.logo-container img:hover {
-    transform: scale(1.1);
-}
-
-.buttons button {
-    padding: 10px 20px;
-    margin: 5px;
-    font-size: 1em;
-    border-radius: 5px;
-    background-color: #007bff;
-    color: #fff;
-    border: 2px solid transparent;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    /* Adding box-shadow for depth */
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-/* Hover effect for all buttons */
-.buttons button:hover {
-    background-color: #0056b3;
-    border-color: #0056b3;
-}
-
-/* Styling for the reset button */
-#resetBtn {
-    background-color: #dc3545;
-}
-
-/* Hover effect for the reset button */
-#resetBtn:hover {
-    background-color: #bd2130;
-    border-color: #bd2130;
-    /* Adding a slight animation for emphasis */
-    transform: scale(1.05);
-}
-
-/* Focus styles for accessibility */
-.buttons button:focus {
-    outline: none;
-    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.4);
-}
-
-/* Adding a pressed effect on click */
-.buttons button:active {
-    transform: translateY(1px); /* Move button down slightly when pressed */
-    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1); /* Adjust shadow on press */
-}
-
-#laps {
-    list-style-type: none;
-    padding: 0;
-    margin: 20px 0;
-}
-
-#laps li {
-    background: #e0e0e0;
-    margin: 5px 0;
-    padding: 10px;
-    font-size: 1em;
-    display: flex;
-    justify-content: space-between;
-    border-radius: 5px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
-}
-
-.dark-mode {
-    background-color: #333;
-    color: #fff;
-}
-
-.dark-mode #laps li {
-    background: #444;
-}
-.popup {
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background-color: rgba(0, 0, 0, 0.8);
-    color: white;
-    padding: 20px;
-    border-radius: 10px;
-    z-index: 9999;
-    /* Adding box-shadow for depth */
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    /* Adding a slight animation for smooth appearance */
-    transition: all 0.3s ease;
-}
-
-/* Adding hover effect */
-.popup:hover {
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
-}
-
-.popup-content {
-    text-align: center;
-}
-
-.popup h2 {
-    margin-top: 0;
-}
-
-.popup p {
-    margin-bottom: 0;
-}
-
-
-
-    </style>
+    .laps-container {
+      margin-top: 24px; max-height: 200px; overflow-y: auto;
+      border-top: 1px solid var(--border-color); padding-top: 16px;
+    }
+    .lap-row {
+      display: flex; justify-content: space-between; padding: 6px 14px;
+      font-size: 0.88rem; font-family: monospace; border-bottom: 1px solid rgba(255,255,255,0.05);
+    }
+    .preset-pills { display: flex; justify-content: center; gap: 6px; flex-wrap: wrap; margin-bottom: 20px; }
+    .preset-pill {
+      background: var(--bg-primary); border: 1px solid var(--border-color);
+      border-radius: 6px; padding: 5px 10px; font-size: 0.78rem; font-weight: 600;
+      color: var(--text-secondary); cursor: pointer;
+    }
+    .preset-pill:hover { border-color: var(--primary); color: var(--primary); }
+  </style>
 </head>
 <body>
-    <div class="stopwatch-container">
-         <div class="logo-container">
-            <img src="https://i.ibb.co/XjHbck3/logo.png" alt="Your Logo">
+  <div class="bg-mesh"></div>
+
+  <!-- Navbar -->
+  <header class="navbar">
+    <div class="app-container" style="width: 100%;">
+      <div class="nav-wrapper">
+        <a href="index.html" class="brand-link">
+          <img src="https://i.ibb.co/G2NFYHG/logo.png" alt="AI Bots Logo" class="brand-logo-img">
+          <span>AI Bots</span>
+          <span class="brand-badge">Stopwatch & Timer</span>
+        </a>
+
+        <div class="nav-actions">
+          <a href="index.html" class="btn btn-secondary btn-sm"><i class="fas fa-house"></i> Hub</a>
+          <button class="icon-btn theme-toggle-btn" title="Toggle Dark/Light Mode"><i class="fas fa-moon"></i></button>
         </div>
-        <h1>Advanced Stopwatch</h1>
-        <div id="display">
-            <div class="progress"></div>
-            <span id="time">00:00:00.000</span>
-        </div>
-        <div class="buttons">
-            <button id="startStopBtn">Start</button>
-            <button id="pauseBtn" style="display:none;">Pause</button>
-            <button id="resetBtn">Reset</button>
-            <button id="lapBtn" style="display:none;">Lap</button>
-            <button id="countdownBtn">Countdown</button>
-            <button id="exportBtn">Export</button>
-            <button id="modeToggleBtn">Dark Mode</button>
-        </div>
-        <div class="settings">
-            <label for="timeFormat">Time Format:</label>
-            <select id="timeFormat">
-                <option value="HH:MM:SS">HH:MM:SS</option>
-                <option value="MM:SS">MM:SS</option>
-                <option value="SS.ms">SS.ms</option>
-                <option value="HH:MM:SS.ms" selected>HH:MM:SS.ms</option>
-            </select>
-        </div>
-        <ul id="laps"></ul>
+      </div>
     </div>
-    <script>
-    let startTime;
-        let updatedTime;
-        let difference = 0;
-        let tInterval;
-        let running = false;
-        let paused = false;
-        let laps = [];
-        let countdownMode = false;
-        let countdownTime;
-        const display = document.getElementById('display');
-        const progress = document.querySelector('.progress');
-        const timeDisplay = document.getElementById('time');
-        const startStopBtn = document.getElementById('startStopBtn');
-        const pauseBtn = document.getElementById('pauseBtn');
-        const resetBtn = document.getElementById('resetBtn');
-        const lapBtn = document.getElementById('lapBtn');
-        const countdownBtn = document.getElementById('countdownBtn');
-        const exportBtn = document.getElementById('exportBtn');
-        const modeToggleBtn = document.getElementById('modeToggleBtn');
-        const timeFormat = document.getElementById('timeFormat');
-        const lapsList = document.getElementById('laps');
+  </header>
 
-        function startStop() {
-            if (!running) {
-                if (paused) {
-                    startTime = new Date().getTime() - difference;
-                    paused = false;
-                } else {
-                    startTime = new Date().getTime();
-                }
-                tInterval = setInterval(updateTime, 10);
-                startStopBtn.textContent = 'Stop';
-                pauseBtn.style.display = 'inline';
-                lapBtn.style.display = 'inline';
-                running = true;
-                progress.style.transition = 'transform 0s linear';
-                progress.style.transform = 'translate(-50%, -50%) rotate(0deg)';
-                setTimeout(() => {
-                    progress.style.transition = 'transform linear';
-                    progress.style.transform = 'translate(-50%, -50%) rotate(360deg)';
-                }, 10);
-            } else {
-                clearInterval(tInterval);
-                startStopBtn.textContent = 'Start';
-                pauseBtn.style.display = 'none';
-                lapBtn.style.display = 'none';
-                running = false;
-            }
-        }
+  <main class="app-container tool-page-wrapper">
+    <div class="tool-header">
+      <span class="tool-header-badge"><i class="fas fa-stopwatch"></i> Precision Timing</span>
+      <h1 class="tool-title">Stopwatch & Timer</h1>
+      <p class="tool-desc">Digital stopwatch with lap tracking & customizable countdown timer with focus alarm.</p>
+    </div>
 
-        function pause() {
-            if (running) {
-                clearInterval(tInterval);
-                paused = true;
-                running = false;
-                startStopBtn.textContent = 'Start';
-                pauseBtn.style.display = 'none';
-            }
-        }
+    <div class="tool-card-container timer-card">
+      <div class="mode-tabs">
+        <button class="mode-tab active" id="tabSw" onclick="setMode('stopwatch')"><i class="fas fa-stopwatch"></i> Stopwatch</button>
+        <button class="mode-tab" id="tabCd" onclick="setMode('countdown')"><i class="fas fa-hourglass-half"></i> Countdown Timer</button>
+      </div>
 
-       function reset() {
-    clearInterval(tInterval);
-    timeDisplay.textContent = '00:00:00.000';
-    startStopBtn.textContent = 'Start';
-    pauseBtn.style.display = 'none';
-    lapBtn.style.display = 'none';
-    difference = 0;
-    laps = [];
-    lapsList.innerHTML = '';
-    running = false;
-    paused = false;
-    removePopup(); // Remove the popup
-}
+      <!-- Countdown Presets -->
+      <div class="preset-pills" id="cdPresets" style="display:none;">
+        <button class="preset-pill" onclick="setCdTime(60)">1 Min</button>
+        <button class="preset-pill" onclick="setCdTime(300)">5 Mins</button>
+        <button class="preset-pill" onclick="setCdTime(600)">10 Mins</button>
+        <button class="preset-pill" onclick="setCdTime(1500)">25 Mins (Pomodoro)</button>
+        <button class="preset-pill" onclick="setCdTime(3600)">1 Hour</button>
+      </div>
 
-function removePopup() {
-    if (popupElement) {
-        document.body.removeChild(popupElement);
-        popupElement = null; // Reset the reference to null
+      <div class="display-box">
+        <div class="big-time" id="timeDisplay">00:00:00<span class="ms-part" id="msPart">.00</span></div>
+      </div>
+
+      <!-- Controls -->
+      <div class="timer-btn-row">
+        <button class="t-btn t-btn-start" id="startBtn" onclick="toggleStart()"><i class="fas fa-play"></i> Start</button>
+        <button class="t-btn t-btn-lap" id="lapBtn" onclick="recordLap()"><i class="fas fa-flag"></i> Lap</button>
+        <button class="t-btn t-btn-reset" onclick="resetTimer()"><i class="fas fa-rotate"></i> Reset</button>
+      </div>
+
+      <!-- Laps List -->
+      <div class="laps-container" id="lapsContainer" style="display:none;">
+        <div style="font-weight:700; font-size:0.8rem; color:var(--text-secondary); margin-bottom:8px; text-transform:uppercase;">Recorded Laps</div>
+        <div id="lapsList"></div>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    let mode = 'stopwatch';
+    let isRunning = false;
+    let startTime = 0;
+    let elapsedTime = 0;
+    let timerInterval = null;
+    let laps = [];
+
+    let cdTotalSec = 300;
+    let cdRemaining = 300;
+
+    function setMode(newMode) {
+      if (isRunning) resetTimer();
+      mode = newMode;
+      document.getElementById('tabSw').classList.toggle('active', mode === 'stopwatch');
+      document.getElementById('tabCd').classList.toggle('active', mode === 'countdown');
+      document.getElementById('cdPresets').style.display = mode === 'countdown' ? 'flex' : 'none';
+      document.getElementById('lapBtn').style.display = mode === 'stopwatch' ? 'inline-flex' : 'none';
+      resetTimer();
     }
-}
 
-
-      function updateTime() {
-    if (countdownMode) {
-        difference = countdownTime - (new Date().getTime() - startTime);
-        if (difference <= 0) {
-            clearInterval(tInterval);
-            timeDisplay.textContent = '00:00:00.000';
-            startStopBtn.textContent = 'Start';
-            pauseBtn.style.display = 'none';
-            lapBtn.style.display = 'none';
-            running = false;
-            countdownMode = false;
-            showPopup(); // Call function to display the popup
-        }
-    } else {
-        updatedTime = new Date().getTime();
-        difference = updatedTime - startTime;
+    function setCdTime(sec) {
+      if (isRunning) resetTimer();
+      cdTotalSec = sec;
+      cdRemaining = sec;
+      updateDisplay();
     }
-    displayTime();
-}
 
-function showPopup() {
-    popupElement = document.createElement('div');
-    popupElement.innerHTML = `
-        <div id="popup" class="popup">
-            <div class="popup-content">
-                <h2>Time's Up!</h2>
-                <p>Your countdown has finished.</p>
-            </div>
+    function toggleStart() {
+      if (isRunning) {
+        pauseTimer();
+      } else {
+        startTimer();
+      }
+    }
+
+    function startTimer() {
+      isRunning = true;
+      document.getElementById('startBtn').className = 't-btn t-btn-stop';
+      document.getElementById('startBtn').innerHTML = '<i class="fas fa-pause"></i> Pause';
+
+      if (mode === 'stopwatch') {
+        startTime = Date.now() - elapsedTime;
+        timerInterval = setInterval(updateStopwatch, 10);
+      } else {
+        startTime = Date.now();
+        timerInterval = setInterval(updateCountdown, 100);
+      }
+    }
+
+    function pauseTimer() {
+      isRunning = false;
+      clearInterval(timerInterval);
+      document.getElementById('startBtn').className = 't-btn t-btn-start';
+      document.getElementById('startBtn').innerHTML = '<i class="fas fa-play"></i> Resume';
+    }
+
+    function resetTimer() {
+      isRunning = false;
+      clearInterval(timerInterval);
+      elapsedTime = 0;
+      laps = [];
+      document.getElementById('lapsContainer').style.display = 'none';
+      document.getElementById('lapsList').innerHTML = '';
+      document.getElementById('startBtn').className = 't-btn t-btn-start';
+      document.getElementById('startBtn').innerHTML = '<i class="fas fa-play"></i> Start';
+
+      if (mode === 'countdown') {
+        cdRemaining = cdTotalSec;
+      }
+      updateDisplay();
+    }
+
+    function updateStopwatch() {
+      elapsedTime = Date.now() - startTime;
+      updateDisplay();
+    }
+
+    function updateCountdown() {
+      const now = Date.now();
+      const elapsedSec = Math.floor((now - startTime) / 1000);
+      cdRemaining = Math.max(0, cdTotalSec - elapsedSec);
+      updateDisplay();
+
+      if (cdRemaining === 0) {
+        pauseTimer();
+        playAlarm();
+        alert("⏰ Time is up!");
+      }
+    }
+
+    function updateDisplay() {
+      if (mode === 'stopwatch') {
+        const totalMs = elapsedTime;
+        const ms = Math.floor((totalMs % 1000) / 10);
+        const sec = Math.floor((totalMs / 1000) % 60);
+        const min = Math.floor((totalMs / 60000) % 60);
+        const hrs = Math.floor(totalMs / 3600000);
+
+        const str = `${pad(hrs)}:${pad(min)}:${pad(sec)}`;
+        document.getElementById('timeDisplay').childNodes[0].nodeValue = str;
+        document.getElementById('msPart').textContent = `.${pad(ms)}`;
+      } else {
+        const sec = cdRemaining % 60;
+        const min = Math.floor((cdRemaining / 60) % 60);
+        const hrs = Math.floor(cdRemaining / 3600);
+
+        const str = `${pad(hrs)}:${pad(min)}:${pad(sec)}`;
+        document.getElementById('timeDisplay').childNodes[0].nodeValue = str;
+        document.getElementById('msPart').textContent = '';
+      }
+    }
+
+    function pad(n) { return n < 10 ? '0' + n : n; }
+
+    function recordLap() {
+      if (!isRunning && elapsedTime === 0) return;
+      const totalMs = elapsedTime;
+      const ms = Math.floor((totalMs % 1000) / 10);
+      const sec = Math.floor((totalMs / 1000) % 60);
+      const min = Math.floor((totalMs / 60000) % 60);
+      const hrs = Math.floor(totalMs / 3600000);
+      const lapTimeStr = `${pad(hrs)}:${pad(min)}:${pad(sec)}.${pad(ms)}`;
+
+      laps.unshift(lapTimeStr);
+      document.getElementById('lapsContainer').style.display = 'block';
+      const list = document.getElementById('lapsList');
+      list.innerHTML = laps.map((l, i) => `
+        <div class="lap-row">
+          <span>Lap ${laps.length - i}</span>
+          <span style="color:var(--primary); font-weight:700;">${l}</span>
         </div>
-    `;
-    document.body.appendChild(popupElement);
+      `).join('');
+    }
 
-    // Add event listener to remove popup on touch
-    popupElement.addEventListener('click', removePopup);
-}
-
-
-
-        function displayTime() {
-            let formattedTime;
-            const hours = Math.floor((difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-            const minutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
-            const seconds = Math.floor((difference % (1000 * 60)) / 1000);
-            const milliseconds = Math.floor((difference % 1000) / 10);
-
-            if (timeFormat.value === 'HH:MM:SS') {
-                formattedTime = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
-            } else if (timeFormat.value === 'MM:SS') {
-                formattedTime = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
-            } else if (timeFormat.value === 'SS.ms') {
-                formattedTime = `${seconds.toString().padStart(2, '0')}.${milliseconds.toString().padStart(3, '0')}`;
-            } else if (timeFormat.value === 'HH:MM:SS.ms') {
-                formattedTime = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}.${milliseconds.toString().padStart(3, '0')}`;
-            }
-            timeDisplay.textContent = formattedTime;
+    function playAlarm() {
+      try {
+        const AudioCtx = window.AudioContext || window.webkitAudioContext;
+        if (AudioCtx) {
+          const ctx = new AudioCtx();
+          [587, 880, 587, 880].forEach((freq, i) => {
+            setTimeout(() => {
+              const osc = ctx.createOscillator();
+              const g = ctx.createGain();
+              osc.frequency.setValueAtTime(freq, ctx.currentTime);
+              g.gain.setValueAtTime(0.2, ctx.currentTime);
+              osc.connect(g);
+              g.connect(ctx.destination);
+              osc.start();
+              osc.stop(ctx.currentTime + 0.15);
+            }, i * 200);
+          });
         }
+      } catch(e) {}
+    }
 
-        function recordLap() {
-            if (running) {
-                const lapTime = timeDisplay.textContent;
-                laps.push(lapTime);
-                const li = document.createElement('li');
-                li.textContent = `Lap ${laps.length}: ${lapTime}`;
-                lapsList.appendChild(li);
-            }
-        }
-
-        function exportLaps() {
-            const csvContent = laps.map((lap, index) => `Lap ${index + 1},${lap}`).join('\n');
-            const blob = new Blob([csvContent], { type: 'text/csv' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = 'laps.csv';
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-        }
-
-        function toggleMode() {
-            document.body.classList.toggle('dark-mode');
-            modeToggleBtn.textContent = document.body.classList.contains('dark-mode') ? 'Light Mode' : 'Dark Mode';
-        }
-
-        function switchToCountdown() {
-            const input = prompt('Enter countdown time in seconds:');
-            if (input && !isNaN(input)) {
-                countdownTime = input * 1000;
-                startTime = new Date().getTime();
-                difference = countdownTime;
-                countdownMode = true;
-                startStop();
-            }
-        }
-
-        startStopBtn.addEventListener('click', startStop);
-        pauseBtn.addEventListener('click', pause);
-        resetBtn.addEventListener('click', reset);
-        lapBtn.addEventListener('click', recordLap);
-        exportBtn.addEventListener('click', exportLaps);
-        modeToggleBtn.addEventListener('click', toggleMode);
-        countdownBtn.addEventListener('click', switchToCountdown);
-
-        document.addEventListener('keydown', (event) => {
-            if (event.key === 's') startStop();
-            if (event.key === 'p') pause();
-            if (event.key === 'r') reset();
-            if (event.key === 'l') recordLap();
-        });
-
-        // Initialize variables to handle time differences
-        difference = 0;
-    </script>
+    updateDisplay();
+  </script>
+  <script src="js/app.js"></script>
 </body>
 </html>
-

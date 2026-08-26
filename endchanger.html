@@ -1,8 +1,9 @@
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
-      <!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-2L87FMQS3W"></script>
+<!-- Google tag (gtag.js) -->
+<script async="" src="https://www.googletagmanager.com/gtag/js?id=G-2L87FMQS3W"></script>
 <script>
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
@@ -10,11 +11,11 @@
 
   gtag('config', 'G-2L87FMQS3W');
 </script>
-<link rel="icon" href="https://i.ibb.co/XjHbck3/logo.png" type="image/png" />
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>File Extension Changer</title>
-    <style>
+<link href="css/theme.css" rel="stylesheet"/><link href="https://i.ibb.co/XjHbck3/logo.png" rel="icon" type="image/png"/>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>File Extension Changer</title>
+<style>
 /* Apply default styles to the entire document */
 body {
     font-family: Arial, sans-serif; /* Set default font */
@@ -268,44 +269,42 @@ button:hover {
     </style>
 </head>
 <body>
-    <h1>File Extension Changer</h1>
-    <input type="file" id="fileInput" multiple>
-    <input type="text" id="extensionSearch" placeholder="Search for extension...">
-    <select id="extensionSelect" size="10" multiple>
-        <option value="mp3">MP3</option>
-        <option value="html">HTML</option>
-        <option value="mp4">MP4</option>
-        <option value="txt">TXT</option>
-        <option value="png">PNG</option>
-        <option value="pdf">PDF</option>
-        <option value="mov">MOV</option>
-        <option value="ppt">PPT</option>
-        <option value="jpeg">JPEG</option>
-        <option value="doc">DOC</option>
-        <option value="xls">XLS</option>
-        <option value="docx">DOCX</option>
-        <option value="xlsx">XLSX</option>
-        <option value="svg">SVG</option>
-        <option value="gif">GIF</option>
-        <option value="zip">ZIP</option>
-        <!-- Add more options as needed -->
-    </select>
-    <label><input type="checkbox" id="customExtCheckbox"> Custom Extension</label><br>
-    <input type="text" id="customExtension" placeholder="Enter custom extension..." disabled><br>
-    <div class="preview">
-        <h2>Preview</h2>
-        <div id="previewList">
-            <img src="https://i.ibb.co/G2NFYHG/logo.png" alt="logo" class="logo"><br>
-
-        </div>
-    </div>
-    <button onclick="changeFileExtension()">Change Extension</button>
-    <button onclick="clearSelection()" id="clearButton">Clear Selection</button>
-    <div id="progressBar">
-        <div class="progress"></div>
-    </div>
-
-    <script>
+<h1>File Extension Changer</h1>
+<input id="fileInput" multiple="" type="file"/>
+<input id="extensionSearch" placeholder="Search for extension..." type="text"/>
+<select id="extensionSelect" multiple="" size="10">
+<option value="mp3">MP3</option>
+<option value="html">HTML</option>
+<option value="mp4">MP4</option>
+<option value="txt">TXT</option>
+<option value="png">PNG</option>
+<option value="pdf">PDF</option>
+<option value="mov">MOV</option>
+<option value="ppt">PPT</option>
+<option value="jpeg">JPEG</option>
+<option value="doc">DOC</option>
+<option value="xls">XLS</option>
+<option value="docx">DOCX</option>
+<option value="xlsx">XLSX</option>
+<option value="svg">SVG</option>
+<option value="gif">GIF</option>
+<option value="zip">ZIP</option>
+<!-- Add more options as needed -->
+</select>
+<label><input id="customExtCheckbox" type="checkbox"/> Custom Extension</label><br/>
+<input disabled="" id="customExtension" placeholder="Enter custom extension..." type="text"/><br/>
+<div class="preview">
+<h2>Preview</h2>
+<div id="previewList">
+<img alt="logo" class="logo" src="https://i.ibb.co/G2NFYHG/logo.png"/><br/>
+</div>
+</div>
+<button onclick="changeFileExtension()">Change Extension</button>
+<button id="clearButton" onclick="clearSelection()">Clear Selection</button>
+<div id="progressBar">
+<div class="progress"></div>
+</div>
+<script>
         function generatePreview() {
             const fileInput = document.getElementById('fileInput');
             const extensionSelect = document.getElementById('extensionSelect');
@@ -444,5 +443,5 @@ button:hover {
             generatePreview();
         });
     </script>
-</body>
+<script src="js/common.js"></script><script>abInitChrome('endchanger');</script></body>
 </html>

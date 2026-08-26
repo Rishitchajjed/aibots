@@ -1,20 +1,21 @@
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Printing Website</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.9.359/pdf.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-     <!-- Google tag (gtag.js) -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-2L87FMQS3W"></script>
-    <script>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Printing Website</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.9.359/pdf.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<!-- Google tag (gtag.js) -->
+<script async="" src="https://www.googletagmanager.com/gtag/js?id=G-2L87FMQS3W"></script>
+<script>
         window.dataLayer = window.dataLayer || [];
         function gtag(){dataLayer.push(arguments);}
         gtag('js', new Date());
         gtag('config', 'G-2L87FMQS3W');
     </script>
-    <link rel="icon" href="https://i.ibb.co/XjHbck3/logo.png" type="image/png" />
+<link href="css/theme.css" rel="stylesheet"/><link href="https://i.ibb.co/XjHbck3/logo.png" rel="icon" type="image/png"/>
 </head>
 <body>
 <style>
@@ -171,43 +172,35 @@
         box-shadow: 0 2px 4px rgba(0,0,0,0.1);
     }  
 </style>
-
-    <h1>Printing Website</h1>
-    <div class="logo-container">
-        <img height="80" breadth="120" src="https://i.ibb.co/G2NFYHG/logo.png" alt="AI Bots Logo">
-    </div><br>
-    <input type="file" id="fileInput" accept=".pdf">
-    
-    <label for="pageRange">Page Range:</label>
-    <input type="text" id="pageRange" placeholder="e.g., 1-5, 8, 10-12">
-    
-    <label for="oddEven">Odd/Even Pages:</label>
-    <select id="oddEven">
-        <option value="all">All</option>
-        <option value="odd">Odd</option>
-        <option value="even">Even</option>
-    </select>
-    
-    <label for="paperSize">Paper Size:</label>
-    <select id="paperSize">
-        <option value="a4">A4</option>
-        <option value="letter">Letter</option>
-        <option value="default" selected>Default</option>
-    </select>
-    
-    <label for="orientation">Orientation:</label>
-    <select id="orientation">
-        <option value="portrait">Portrait</option>
-        <option value="landscape">Landscape</option>
-    </select>
-    
-    <button onclick="previewDocument()">Preview</button>
-    <button onclick="customizeAndDownload()">Download</button>
-    <button onclick="customizeAndPrint()">Print</button>
-
-    <div id="preview"></div>
-
-    <script>
+<h1>Printing Website</h1>
+<div class="logo-container">
+<img alt="AI Bots Logo" breadth="120" height="80" src="https://i.ibb.co/G2NFYHG/logo.png"/>
+</div><br/>
+<input accept=".pdf" id="fileInput" type="file"/>
+<label for="pageRange">Page Range:</label>
+<input id="pageRange" placeholder="e.g., 1-5, 8, 10-12" type="text"/>
+<label for="oddEven">Odd/Even Pages:</label>
+<select id="oddEven">
+<option value="all">All</option>
+<option value="odd">Odd</option>
+<option value="even">Even</option>
+</select>
+<label for="paperSize">Paper Size:</label>
+<select id="paperSize">
+<option value="a4">A4</option>
+<option value="letter">Letter</option>
+<option selected="" value="default">Default</option>
+</select>
+<label for="orientation">Orientation:</label>
+<select id="orientation">
+<option value="portrait">Portrait</option>
+<option value="landscape">Landscape</option>
+</select>
+<button onclick="previewDocument()">Preview</button>
+<button onclick="customizeAndDownload()">Download</button>
+<button onclick="customizeAndPrint()">Print</button>
+<div id="preview"></div>
+<script>
                 // Initialize PDF.js
         pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.9.359/pdf.worker.min.js';
 
@@ -444,5 +437,5 @@
             return scale;
         }
     </script>
-</body>
+<script src="js/common.js"></script><script>abInitChrome('print');</script></body>
 </html>

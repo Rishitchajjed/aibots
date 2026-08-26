@@ -1,256 +1,205 @@
 <!DOCTYPE html>
-<html lang="en">
+
+<html>
 <head>
-  <!-- Google Analytics -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-2L87FMQS3W"></script>
-  <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-    gtag('config', 'G-2L87FMQS3W');
-  </script>
-
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="google-site-verification" content="-Yb6Nx74gbZ3wRN5uP-Y8KKwDWlt1DPpxs4nA3PkE6M">
-  <link rel="icon" href="https://i.ibb.co/G2NFYHG/logo.png" type="image/png">
-  <title>Photo & Image Generator - AI Bots</title>
-
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <link rel="stylesheet" href="css/theme.css">
-  <style>
-    .photos-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-      gap: 18px;
-      margin: 24px 0;
-    }
-    .photo-card {
-      position: relative;
-      aspect-ratio: 4/3;
-      border-radius: var(--radius-lg);
-      overflow: hidden;
-      border: 1px solid var(--border-color);
-      box-shadow: var(--shadow-sm);
-      cursor: pointer;
-      transition: var(--transition);
-      background: var(--bg-tertiary);
-    }
-    .photo-card:hover {
-      transform: scale(1.03);
-      box-shadow: var(--shadow-lg);
-      border-color: var(--primary);
-    }
-    .photo-card img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
-    .quick-chips {
-      display: flex;
-      gap: 8px;
-      flex-wrap: wrap;
-      justify-content: center;
-      margin-top: 14px;
-    }
-    .chip-btn {
-      padding: 4px 12px;
-      background: var(--bg-tertiary);
-      border: 1px solid var(--border-color);
-      border-radius: var(--radius-full);
-      font-size: 0.8rem;
-      color: var(--text-secondary);
-      cursor: pointer;
-      transition: var(--transition);
-    }
-    .chip-btn:hover {
-      background: var(--primary-light);
-      color: var(--primary-text);
-      border-color: var(--primary);
-    }
-  </style>
+<!-- Google tag (gtag.js) -->
+<script async="" src="https://www.googletagmanager.com/gtag/js?id=G-2L87FMQS3W"></script>
+<script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-2L87FMQS3W');
+    </script>
+<meta charset="utf-8"/>
+<title>Image Generator</title>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<link href="css/theme.css" rel="stylesheet"/><link href="https://i.ibb.co/G2NFYHG/logo.png" rel="icon" type="image/x-icon"/>
+<style>
+    body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+            text-align: center;
+            padding: 20px;
+            background: linear-gradient(yellow, orange);
+        }
+        h1 {
+            color: #333;
+        }
+        .generator-container {
+            max-width: 500px;
+            margin: 0 auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        .generator-container input[type="text"] {
+            width: 100%;
+            padding: 8px;
+            border-radius: 3px;
+            border: 1px solid #ccc;
+            margin-bottom: 10px;
+        }
+        .generator-container button {
+            background-color: #4CAF50;
+            color: #fff;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        .generator-container .photos-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-top: 20px;
+        }
+        .generator-container .photos-container .photo {
+            margin: 10px;
+            width: 200px;
+            height: 200px;
+            overflow: hidden;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+        }
+        .generator-container .photos-container .photo img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            cursor: pointer;
+        }
+        .generator-container .photos-container .photo:hover {
+            transform: scale(1.05);
+        }
+        .generator-container .selected-photo {
+            margin-top: 20px;
+        }
+        .generator-container .selected-photo img {
+            width: 100%;
+            height: auto;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            margin-top: 10px;
+        }
+        .generator-container .selected-photo button {
+            background-color: #4CAF50;
+            color: #fff;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 10px;
+        }
+    </style>
 </head>
 <body>
-  <div class="bg-mesh"></div>
+<div class="generator-container" id="generator-container">
+<h1>Image Generator</h1>
+<img alt="AI Bots Logo" height="150px" src="https://i.ibb.co/G2NFYHG/logo.png" width="250px"/>
+<input id="search-input" placeholder="Enter search term" type="text"/>
+<button onclick="searchImages()">Search</button>
+<div class="photos-container">
+<!-- Photo elements will be dynamically added here -->
+</div>
+<div class="selected-photo">
+<h3>Selected Photo:</h3>
+<img id="selected-image" src=""/>
+<br/>
+<button onclick="downloadSelectedPhoto()" style="display: none;">Download</button>
+</div>
+</div>
+<script>
+        var selectedPhotoUrl = '';
 
-  <!-- Navbar -->
-  <header class="navbar">
-    <div class="app-container" style="width: 100%;">
-      <div class="nav-wrapper">
-        <a href="index.html" class="brand-link">
-          <img src="https://i.ibb.co/G2NFYHG/logo.png" alt="AI Bots Logo" class="brand-logo-img">
-          <span>AI Bots</span>
-          <span class="brand-badge">Photo Search</span>
-        </a>
-
-        <div class="nav-actions">
-          <a href="index.html" class="btn btn-secondary btn-sm"><i class="fas fa-house"></i> Hub</a>
-          <button class="icon-btn theme-toggle-btn" title="Toggle Dark/Light Mode"><i class="fas fa-moon"></i></button>
-        </div>
-      </div>
-    </div>
-  </header>
-
-  <main class="app-container tool-page-wrapper">
-    <div class="tool-header">
-      <span class="tool-header-badge"><i class="fas fa-image"></i> Unsplash API</span>
-      <h1 class="tool-title">Photo & Image Generator</h1>
-      <p class="tool-desc">Search and discover millions of high-resolution, copyright-free stock photos and inspiration.</p>
-    </div>
-
-    <div class="tool-card-container">
-      
-      <!-- Search Box -->
-      <form onsubmit="event.preventDefault(); searchImages();" style="display: flex; gap: 10px;">
-        <input type="text" id="search-input" class="form-control" placeholder="Search keywords (e.g. Cyberpunk, Mountain, Minimal, Nature)..." value="Futuristic AI">
-        <button type="submit" class="btn btn-primary" style="padding: 0 24px;">
-          <i class="fas fa-magnifying-glass"></i> Search
-        </button>
-      </form>
-
-      <!-- Quick Topic Chips -->
-      <div class="quick-chips">
-        <button type="button" class="chip-btn" onclick="quickSearch('Abstract Art')">Abstract Art</button>
-        <button type="button" class="chip-btn" onclick="quickSearch('Cyberpunk City')">Cyberpunk</button>
-        <button type="button" class="chip-btn" onclick="quickSearch('Nature Forest')">Nature</button>
-        <button type="button" class="chip-btn" onclick="quickSearch('Technology')">Technology</button>
-        <button type="button" class="chip-btn" onclick="quickSearch('Minimal Workspace')">Minimal</button>
-        <button type="button" class="chip-btn" onclick="quickSearch('Space Nebula')">Space</button>
-      </div>
-
-      <!-- Photo Results Grid -->
-      <div class="photos-grid" id="photosContainer"></div>
-
-      <!-- Selected Photo Preview & Download -->
-      <div class="selected-photo" id="selectedPhotoSection" style="display: none; margin-top: 36px; padding-top: 24px; border-top: 1px solid var(--border-color); text-align: center;">
-        <label class="form-label" style="font-size: 1.1rem; margin-bottom: 16px;">
-          <i class="fas fa-circle-check" style="color: var(--success);"></i> Selected High-Resolution Photo
-        </label>
-        
-        <div class="preview-box">
-          <img id="selected-image" src="" alt="Selected Photo">
-        </div>
-
-        <button onclick="downloadSelectedPhoto()" class="btn btn-success btn-lg" style="margin-top: 16px;">
-          <i class="fas fa-download"></i> Download Full Image (JPG)
-        </button>
-      </div>
-
-    </div>
-  </main>
-
-  <footer class="app-footer">
-    <div class="app-container">
-      <p class="footer-text">&copy; 2026 AI Bots. All rights reserved.</p>
-      <p class="footer-credits">Website designed by <strong>Rishit Chajjed</strong>.</p>
-    </div>
-  </footer>
-
-  <script src="js/app.js"></script>
-  <script>
-    let selectedPhotoUrl = '';
-    const accessKey = "krm0d7mqv3OwJofRKwJsq51uFx9I5wJplmquliNSEVE";
-
-    function quickSearch(query) {
-      document.getElementById('search-input').value = query;
-      searchImages();
-    }
-
-    function searchImages() {
-      const searchTerm = document.getElementById('search-input').value.trim();
-      if (!searchTerm) {
-        showToast('Please enter a search term', 'error');
-        return;
-      }
-
-      showToast(`Searching for "${searchTerm}"...`, 'info');
-      const apiUrl = `https://api.unsplash.com/search/photos?query=${encodeURIComponent(searchTerm)}&per_page=9&client_id=${accessKey}`;
-      const photosContainer = document.getElementById('photosContainer');
-      photosContainer.innerHTML = '';
-
-      fetch(apiUrl)
-        .then(response => {
-          if (!response.ok) throw new Error('Unsplash API rate limit');
-          return response.json();
-        })
-        .then(data => {
-          const results = data.results;
-          if (!results || results.length === 0) {
-            photosContainer.innerHTML = `<p style="grid-column: 1/-1; text-align: center; color: var(--text-muted);">No images found for "${searchTerm}". Try another keyword!</p>`;
-            return;
-          }
-
-          results.forEach(item => {
-            const card = document.createElement('div');
-            card.className = 'photo-card';
-            
-            const img = document.createElement('img');
-            img.src = item.urls.small;
-            img.alt = item.alt_description || 'Unsplash Photo';
-            img.onclick = () => selectPhoto(item.urls.regular || item.urls.small);
-
-            card.appendChild(img);
-            photosContainer.appendChild(card);
-          });
-        })
-        .catch(err => {
-          console.warn('API Search error, fallback to curated images:', err);
-          renderFallbackPhotos(searchTerm);
+        document.getElementById('search-input').addEventListener('keydown', function(event) {
+            if (event.key === 'Enter') {
+                searchImages();
+            }
         });
-    }
 
-    function renderFallbackPhotos(term) {
-      const fallbackList = [
-        'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=600&auto=format&fit=crop',
-        'https://images.unsplash.com/photo-1579783902614-a3fb3927b675?w=600&auto=format&fit=crop',
-        'https://images.unsplash.com/photo-1620641788421-7a1c342ea42e?w=600&auto=format&fit=crop',
-        'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=600&auto=format&fit=crop',
-        'https://images.unsplash.com/photo-1550745165-9bc0b252726f?w=600&auto=format&fit=crop',
-        'https://images.unsplash.com/photo-1507499739999-097706ad8914?w=600&auto=format&fit=crop'
-      ];
-      const photosContainer = document.getElementById('photosContainer');
-      photosContainer.innerHTML = '';
-      fallbackList.forEach(url => {
-        const card = document.createElement('div');
-        card.className = 'photo-card';
-        const img = document.createElement('img');
-        img.src = url;
-        img.onclick = () => selectPhoto(url);
-        card.appendChild(img);
-        photosContainer.appendChild(card);
-      });
-    }
+        function searchImages() {
+            var searchTerm = document.getElementById('search-input').value.trim();
 
-    function selectPhoto(url) {
-      selectedPhotoUrl = url;
-      const selectedImage = document.getElementById('selected-image');
-      selectedImage.src = url;
-      document.getElementById('selectedPhotoSection').style.display = 'block';
-      document.getElementById('selectedPhotoSection').scrollIntoView({ behavior: 'smooth' });
-      showToast('Photo selected! Ready for download.', 'success');
-    }
+            if (searchTerm === '') {
+                alert('Please enter a search term.');
+                return;
+            }
 
-    function downloadSelectedPhoto() {
-      if (!selectedPhotoUrl) return;
-      showToast('Downloading image...', 'info');
+            var accessKey = "krm0d7mqv3OwJofRKwJsq51uFx9I5wJplmquliNSEVE";
+            var apiUrl = "https://api.unsplash.com/search/photos?query=" + encodeURIComponent(searchTerm) + "&per_page=6&client_id=" + accessKey;
 
-      fetch(selectedPhotoUrl)
-        .then(response => response.blob())
-        .then(blob => {
-          const url = URL.createObjectURL(blob);
-          const link = document.createElement('a');
-          link.href = url;
-          link.download = 'photo_download.jpg';
-          link.click();
-          showToast('Image downloaded!', 'success');
-        })
-        .catch(err => {
-          window.open(selectedPhotoUrl, '_blank');
-        });
-    }
+            var photosContainer = document.querySelector('.photos-container');
+            photosContainer.innerHTML = '';
 
-    // Run initial search
-    searchImages();
-  </script>
-</body>
+            fetch(apiUrl)
+                .then(response => response.json())
+                .then(data => {
+                    var searchResults = data.results;
+
+                    for (var i = 0; i < searchResults.length; i++) {
+                        var photoDiv = document.createElement('div');
+                        photoDiv.classList.add('photo');
+
+                        var photoImg = document.createElement('img');
+                        photoImg.src = searchResults[i].urls.small;
+                        photoImg.onclick = function() {
+                            selectPhoto(this);
+                        };
+
+                        photoDiv.appendChild(photoImg);
+                        photosContainer.appendChild(photoDiv);
+                    }
+
+                    clearSelectedPhoto();
+                })
+                .catch(error => {
+                    console.log('Error:', error);
+                });
+        }
+
+        function selectPhoto(photo) {
+            var selectedImage = document.getElementById('selected-image');
+            selectedImage.onload = function() {
+                if (selectedImage.width > 600) {
+                    selectedImage.width = 600;
+                }
+            };
+            selectedImage.src = photo.src;
+            selectedPhotoUrl = photo.src;
+
+            var downloadButton = document.querySelector('.selected-photo button');
+            downloadButton.style.display = 'block';
+        }
+
+        function downloadSelectedPhoto() {
+            if (selectedPhotoUrl) {
+                fetch(selectedPhotoUrl)
+                    .then(response => response.blob())
+                    .then(blob => {
+                        var url = URL.createObjectURL(blob);
+                        var link = document.createElement('a');
+                        link.href = url;
+                        link.download = 'selected-photo.jpg';
+                        link.click();
+                    })
+                    .catch(error => {
+                        console.log('Error:', error);
+                    });
+            }
+        }
+
+        function clearSelectedPhoto() {
+            var selectedImage = document.getElementById('selected-image');
+            selectedImage.src = '';
+
+            selectedPhotoUrl = '';
+
+            var downloadButton = document.querySelector('.selected-photo button');
+            downloadButton.style.display = 'none';
+        }
+    </script>
+<script src="js/common.js"></script><script>abInitChrome('photogenerator');</script></body>
 </html>

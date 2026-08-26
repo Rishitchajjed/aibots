@@ -1,0 +1,925 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Cricket Score Counter</title>
+<!-- Google tag (gtag.js) -->
+<script async="" src="https://www.googletagmanager.com/gtag/js?id=G-2L87FMQS3W"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-2L87FMQS3W');
+</script>
+<link href="css/theme.css" rel="stylesheet"/><link href="https://i.ibb.co/XjHbck3/logo.png" rel="icon" type="image/png"/>
+</head>
+<body>
+<style media="all" type="text/css">
+/* General Styles */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    text-align: center;
+    background: linear-gradient(135deg, #2c3e50, #bdc3c7);
+    color: #fff;
+    padding: 20px;
+    overflow-x: hidden; /* Prevent horizontal scroll */
+}
+
+.container {
+    margin: 0 auto;
+    max-width: 800px;
+    padding: 20px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 15px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
+    animation: fadeIn 1s ease-in-out;
+}
+
+h1 {
+    color: #f39c12;
+    font-size: 3em;
+    margin-bottom: 20px;
+    text-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+}
+
+/* Logo Styles */
+.logo {
+    position: relative;
+    display: inline-block;
+}
+
+.logo img {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    border: 5px solid #fff;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
+    transition: transform 0.5s ease, border-color 0.5s ease, box-shadow 0.5s ease, filter 0.5s ease;
+    animation: initial-scale 0.8s ease-out forwards, glow 2s infinite alternate;
+    position: relative;
+    z-index: 1;
+}
+
+.logo img:hover {
+    transform: rotate(360deg) scale(1.3); /* Enhanced scale for more impact */
+    border-color: #ff8c00; /* Orange color to match a sporty theme */
+    box-shadow: 0 0 25px rgba(255, 140, 0, 0.8); /* Enhanced shadow effect with sporty color */
+    filter: brightness(1.2); /* Added brightness for extra pop */
+}
+
+/* Initial Scale Animation */
+@keyframes initial-scale {
+    from {
+        transform: scale(0.8);
+        opacity: 0;
+    }
+    to {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+/* Glow Animation */
+@keyframes glow {
+    from {
+        box-shadow: 0 0 15px rgba(255, 255, 255, 0.5);
+    }
+    to {
+        box-shadow: 0 0 25px rgba(255, 140, 0, 1); /* Orange glow to reflect the cricket theme */
+    }
+}
+
+/* Pulsating Background Animation */
+.logo::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 140px;
+    height: 140px;
+    background: radial-gradient(circle, rgba(255, 140, 0, 0.6), transparent);
+    border-radius: 50%;
+    transform: translate(-50%, -50%) scale(1);
+    z-index: 0;
+    animation: pulse 2s infinite alternate;
+}
+
+/* Pulse Animation */
+@keyframes pulse {
+    from {
+        transform: translate(-50%, -50%) scale(1);
+        opacity: 0.7;
+    }
+    to {
+        transform: translate(-50%, -50%) scale(1.2);
+        opacity: 1;
+    }
+}
+
+/* Additional Outer Glow Animation */
+.logo::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 160px;
+    height: 160px;
+    background: radial-gradient(circle, rgba(255, 140, 0, 0.4), transparent);
+    border-radius: 50%;
+    transform: translate(-50%, -50%) scale(1);
+    z-index: -1;
+    animation: outer-glow 3s infinite alternate;
+}
+
+/* Outer Glow Animation */
+@keyframes outer-glow {
+    from {
+        transform: translate(-50%, -50%) scale(1);
+        opacity: 0.5;
+    }
+    to {
+        transform: translate(-50%, -50%) scale(1.3);
+        opacity: 0.8;
+    }
+}
+
+/* Styles for the Total Score container */
+.total-score {
+    position: sticky;
+    top: 10px; /* Adjusted top position for better alignment */
+    width: calc(100% - 20px); /* Adjusted width to fit smaller screens */
+    max-width: 300px; /* Set maximum width for better fit */
+    background-color: rgba(52, 73, 94, 0.9); /* Adjusted background color and opacity */
+    padding: 15px;
+    z-index: 999; /* Ensure it appears above other content */
+    transition: all 0.3s ease; /* Add smooth transition effect */
+    border-bottom: 3px solid #f39c12; /* Add a bottom border */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Refined box shadow for depth */
+    border-radius: 10px; /* Adjusted border radius for rounded corners */
+    margin: 0 auto 20px; /* Center the container horizontally and add bottom margin */
+    opacity: 0; /* Initially hide the container */
+    animation: fadeInScale 0.5s forwards; /* Add combined fade-in and scale animation */
+}
+
+/* Keyframes for combined fade-in and scale animation */
+@keyframes fadeInScale {
+    from {
+        opacity: 0;
+        transform: translateY(-20px) scale(0.9); /* Move container up slightly and scale down */
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1); /* Bring container to its original position and scale to normal */
+    }
+}
+
+/* Styles for text within the Total Score container */
+.total-score p {
+    color: #fff; /* Set text color to white */
+    margin-bottom: 10px; /* Adjusted margin at the bottom for better spacing */
+    font-size: 18px; /* Adjusted font size for better readability */
+    line-height: 1.0; /* Adjusted line height for better readability */
+}
+
+/* Styles for the score value within the Total Score container */
+.total-score span {
+    color: #f39c12; /* Set score value color */
+    font-weight: bold; /* Make the score value bold */
+    font-size: 24px; /* Adjusted font size for better emphasis */
+    text-shadow: 0 0 3px rgba(243, 156, 18, 0.8); /* Adjusted text shadow for emphasis */
+}
+
+/* Animation on hover */
+.total-score:hover p {
+    transform: translateY(-2px); /* Slightly move text upward on hover */
+}
+
+
+/* Responsive styles */
+@media screen and (max-width: 768px) {
+    .total-score {
+        padding: 15px;
+    }
+    .total-score p {
+        font-size: 18px;
+    }
+    .total-score span {
+        font-size: 24px;
+    }
+}
+
+/* Players Section */
+.players input[type="text"] {
+    padding: 10px;
+    font-size: 16px;
+    width: calc(50% - 20px);
+    margin: 10px;
+    border: none;
+    border-radius: 4px;
+    background: rgba(255, 255, 255, 0.8);
+    color: #34495e;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: background 0.3s ease, box-shadow 0.3s ease;
+}
+
+.players input[type="text"]:focus {
+    background: #fff;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* Buttons */
+button {
+    padding: 10px 20px;
+    font-size: 18px;
+    margin: 10px;
+    cursor: pointer;
+    background-color: #f39c12;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    animation: slide-up 0.5s ease-out forwards;
+}
+
+button:hover {
+    background-color: #e67e22;
+    transform: translateY(-2px);
+}
+
+button.undo {
+    background-color: #e74c3c;
+}
+
+button.undo:hover {
+    background-color: #c0392b;
+}
+
+button.reset {
+    background-color: #3498db;
+}
+
+button.reset:hover {
+    background-color: #2980b9;
+}
+
+/* Score Section */
+.score {
+    font-size: 18px; /* Reduced font size for better readability */
+    margin-bottom: 20px;
+    padding: 15px; /* Maintain padding */
+    border-radius: 10px; /* Maintain border radius */
+    background-color: rgba(255, 255, 255, 0.3); /* Adjusted background color and opacity */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    animation: slide-up 0.5s ease-out forwards;
+    transition: transform 0.3s ease, box-shadow 0.3s ease; /* Added transition for smoother effect */
+}
+
+/* Animation on hover */
+.score:hover {
+    transform: translateY(-3px); /* Lift the section slightly on hover */
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2); /* Adjusted box shadow on hover for depth */
+}
+
+.score p {
+    margin: 8px 0; /* Maintain paragraph margin */
+    position: relative;
+    line-height: 1.4; /* Improved line height for better readability */
+}
+
+.score p.wicket span {
+    color: #e74c3c; /* Set color for wicket */
+    font-weight: bold; /* Make wicket text bold */
+}
+
+.score p.boundary span {
+    color: #2ecc71; /* Set color for boundary */
+    font-weight: bold; /* Make boundary text bold */
+}
+
+/* Animation for score updates */
+.score p span.score-update {
+    position: absolute;
+    top: 50%;
+    left: 100%;
+    transform: translateY(-50%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.score p:hover span.score-update {
+    opacity: 1;
+}
+
+/* Score highlight animation */
+@keyframes scoreHighlight {
+    0% {
+        background-color: rgba(255, 255, 255, 0.3);
+    }
+    50% {
+        background-color: rgba(255, 255, 255, 0.5);
+    }
+    100% {
+        background-color: rgba(255, 255, 255, 0.3);
+    }
+}
+
+.score p.highlighted {
+    animation: scoreHighlight 1.5s infinite;
+}
+
+/* Runs Buttons Section */
+.runs-buttons {
+    margin-bottom: 40px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px; /* Increased gap between buttons for better readability */
+    animation: slide-up 0.5s ease-out forwards;
+}
+
+/* Individual button style */
+.runs-buttons button {
+    padding: 12px 24px;
+    font-size: 16px;
+    cursor: pointer;
+    background-color: #4CAF50;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+    box-shadow: 0 6px 10px rgba(0, 0, 0, 0.2);
+}
+
+/* Hover effect on buttons */
+.runs-buttons button:hover {
+    background-color: #45a049;
+    transform: translateY(-3px); /* Slightly lift on hover */
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.3); /* Enhance shadow on hover */
+}
+
+.runs-buttons div {
+    margin: 10px; /* Maintain margin */
+    padding: 15px; /* Reduced padding for more compact buttons */
+    border-radius: 10px; /* Adjusted border radius for rounded corners */
+    background-color: rgba(255, 255, 255, 0.3); /* Adjusted background color and opacity */
+    box-shadow: 0 6px 8px rgba(0, 0, 0, 0.2); /* Adjusted box shadow for depth */
+    transition: transform 0.3s ease; /* Added transition for smoother hover effect */
+}
+
+.runs-buttons div:hover {
+    transform: translateY(-5px); /* Added slight lift effect on hover */
+}
+
+.runs-buttons label {
+    font-weight: bold;
+    margin-bottom: 10px; /* Adjusted bottom margin for label */
+    color: #fff;
+}
+
+.runs-buttons button {
+    margin: 5px; /* Reduced margin */
+    padding: 10px 20px; /* Adjusted padding for smaller button size */
+    font-size: 16px; /* Reduced font size for better fit */
+    cursor: pointer;
+    background-color: #4CAF50; /* Button color */
+    color: #fff;
+    border: none;
+    border-radius: 8px; /* Adjusted border radius for slightly rounded corners */
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    box-shadow: 0 6px 10px rgba(0, 0, 0, 0.2);
+    flex: 1 1 calc(33.33% - 20px); /* Ensure more than 2 buttons per row */
+    min-width: 150px; /* Ensure minimum button width */
+}
+
+.runs-buttons button:hover {
+    background-color: #45a049; /* Darker shade on hover for contrast */
+    transform: translateY(-5px); /* Increased hover lift effect */
+}
+
+/* Media Queries for Smaller Devices */
+@media (max-width: 600px) {
+    .runs-buttons button {
+        flex: 1 1 calc(33.33% - 20px); /* 3 buttons per row on small devices */
+    }
+}
+
+@media (max-width: 400px) {
+    .runs-buttons button {
+        flex: 1 1 calc(50% - 20px); /* 2 buttons per row on very small devices */
+    }
+}
+
+
+/* Media Queries for Smaller Screens */
+@media (max-width: 768px) {
+    .runs-buttons {
+        gap: 8px; /* Further reduced gap between buttons */
+    }
+
+    .runs-buttons div {
+        padding: 10px; /* Further reduced padding */
+    }
+
+    .runs-buttons button {
+        padding: 8px 15px; /* Further reduced padding for smaller button size */
+        font-size: 14px; /* Further reduced font size */
+    }
+}
+
+/* Animation Keyframes */
+@keyframes slide-up {
+    from {
+        transform: translateY(20px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+/* New Animations and Hover Effects */
+.logo img:hover {
+    transform: rotate(360deg) scale(1.2);
+    border-color: #f39c12;
+}
+
+button.undo:hover {
+    background-color: #c0392b;
+    transform: scale(1.05);
+}
+
+button.reset:hover {
+    background-color: #2980b9;
+    transform: scale(1.05);
+}
+
+.score:hover {
+transform: scale(1.05);
+transition: transform 0.3s ease;
+}
+
+.score p:hover {
+color: #f39c12;
+transition: color 0.3s ease;
+}
+
+.runs-buttons button:hover {
+background-color: #2980b9;
+transform: translateY(-2px) scale(1.05);
+}
+
+
+/* Animations */
+@keyframes slide-up {
+0% {
+opacity: 0;
+transform: translateY(20px);
+}
+100% {
+opacity: 1;
+transform: translateY(0);
+}
+}
+
+@keyframes fadeIn {
+0% {
+opacity: 0;
+transform: scale(0.9);
+}
+100% {
+opacity: 1;
+transform: scale(1);
+}
+}
+
+/* Mobile Responsive Styles */
+@media only screen and (max-width: 600px) {
+.container {
+padding: 10px;
+}
+h1 {
+font-size: 2.5em;
+}
+.logo img {
+width: 80px;
+height: 80px;
+}
+.players input[type="text"] {
+width: calc(100% - 20px);
+}
+.runs-buttons div {
+width: calc(50% - 20px);
+}
+
+}
+}
+table {
+    width: 90%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-size: 16px;
+    text-align: center;
+}
+
+th, td {
+    padding: 1em;
+    border: 1px solid #ddd;
+    color: #333;
+}
+
+th {
+    background-color: #f2f2f2;
+    font-weight: bold;
+    color: #444;
+}
+
+tbody tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+tbody tr:nth-child(odd) {
+    background-color: #ffffff;
+}
+
+tbody tr:hover {
+    background-color: #e6e6e6;
+}
+
+tbody td {
+    font-size: 16px;
+    font-weight: 400;
+}
+
+tbody td:first-child {
+    font-weight: bold;
+}
+
+@media screen and (max-width: 600px) {
+    th, td {
+        padding: 0.5em;
+    }
+
+    .container {
+        width: 100%; /* Make sure container spans full width */
+        padding: 0 10px; /* Add some padding to the container */
+    }
+
+    .partnership-score {
+        padding: 10px; /* Adjust padding for smaller screens */
+    }
+
+    /* Adjust table width to fit within screen */
+    #scoreTable {
+        width: 90%; /* Make table span full width */
+        overflow-x: auto; /* Add horizontal scroll for overflow */
+    }
+}
+
+    .partnership-score {
+            padding: 12px;
+            background-color: #4CAF50; /* Green background color */
+            border-top: 2px solid #388E3C; /* Darker green border top */
+            border-bottom: 2px solid #388E3C; /* Darker green border bottom */
+            border-radius: 6px;
+            color: #fff; /* White text color */
+        }
+
+        .partnership-score p {
+            margin: 0;
+            font-size: 16px;
+        }
+
+        .partnership-score span {
+            font-weight: bold;
+            font-size: 18px;
+        }
+</style>
+<div class="container">
+<div class="logo">
+<img alt="Cricket Score Counter Logo" src="https://i.ibb.co/XjHbck3/logo.png"/>
+</div>
+<h1>Cricket Score Counter</h1>
+<div class="total-score">
+<p>Total Score: <span id="totalScore">0</span> (<span id="totalBalls">0</span>)</p>
+<p>Overs: <span id="overs"></span></p>
+<p>Wickets: <span id="wickets">0</span></p>
+<p>Run Rate: <span id="runRate">0.00</span></p>
+</div>
+<div class="players">
+<label for="player1Name">Player 1 Name:</label>
+<input id="player1Name" oninput="updateNames()" type="text"/><br/>
+<label for="player2Name">Player 2 Name:</label>
+<input id="player2Name" oninput="updateNames()" type="text"/>
+</div>
+<button onclick="wide()">Wide</button> <!-- Single Wide Button -->
+<div class="runs-buttons">
+<div>
+<label for="player1"><span class="player1NameDisplay">Player 1</span></label>
+<button onclick="incrementScore('player1', 1)">1 Run</button>
+<button onclick="incrementScore('player1', 2)">2 Runs</button>
+<button onclick="incrementScore('player1', 3)">3 Runs</button>
+<button onclick="incrementScore('player1', 4)">4 Runs</button>
+<button onclick="incrementScore('player1', 6)">6 Runs</button>
+<button onclick="dotBall('player1')">Dot Ball</button>
+<button onclick="out('player1')">Out</button>
+</div>
+<div>
+<label for="player2"><span class="player2NameDisplay">Player 2</span></label>
+<button onclick="incrementScore('player2', 1)">1 Run</button>
+<button onclick="incrementScore('player2', 2)">2 Runs</button>
+<button onclick="incrementScore('player2', 3)">3 Runs</button>
+<button onclick="incrementScore('player2', 4)">4 Runs</button>
+<button onclick="incrementScore('player2', 6)">6 Runs</button>
+<button onclick="dotBall('player2')">Dot Ball</button>
+<button onclick="out('player2')">Out</button>
+</div>
+</div>
+<div class="score">
+<p> (<span class="player1NameDisplay">Player 1</span>): <span id="player1Score">0</span></p>
+<p>Balls Faced: <span id="player1Balls">0</span></p> <!-- Display balls faced by Player 1 -->
+<p><span class="player1NameDisplay">Player 1</span> Runs Summary: <span id="player1RunsSummary">-</span></p>
+</div>
+<div class="partnership-score">
+<p align="center">Partnership Score: <span id="partnershipScore">0</span></p>
+</div><br/>
+<div class="score">
+<p>(<span class="player2NameDisplay">Player 2</span>): <span id="player2Score">0</span></p>
+<p>Balls Faced: <span id="player2Balls">0</span></p> <!-- Display balls faced by Player 2 -->
+<p><span class="player2NameDisplay">Player 2</span> Runs Summary: <span id="player2RunsSummary">-</span></p>
+</div>
+<h2>Match Summary</h2>
+<table align="center" id="scoreTable">
+<thead>
+<tr>
+<th>Over</th>
+<th>Runs</th>
+<th>Wickets</th>
+<th>Wides</th>
+<th>Dots</th>
+</tr>
+</thead>
+<tbody>
+</tbody>
+</table>
+<button onclick="resetScore()">Reset</button>
+</div>
+<script>
+var player1NameInput = document.getElementById('player1Name');
+var player2NameInput = document.getElementById('player2Name');
+var player1Score = document.getElementById('player1Score');
+var player2Score = document.getElementById('player2Score');
+var totalScoreDisplay = document.getElementById('totalScore');
+var player1RunsSummary = document.getElementById('player1RunsSummary');
+var player2RunsSummary = document.getElementById('player2RunsSummary');
+var player1BallsDisplay = document.getElementById('player1Balls');
+var player2BallsDisplay = document.getElementById('player2Balls');
+var totalBallsDisplay = document.getElementById('totalBalls');
+var oversDisplay = document.getElementById('overs');
+var wicketsDisplay = document.getElementById('wickets');
+var partnershipScoreDisplay = document.getElementById('partnershipScore');
+var runRateDisplay = document.getElementById('runRate'); // Add a variable for run rate display
+
+var player1Runs = [];
+var player2Runs = [];
+var player1Balls = 0;
+var player2Balls = 0;
+var totalScore = 0;
+var totalBalls = 0;
+var overs = 0;
+var wickets = 0;
+var partnershipScore = 0;
+
+let currentOver = 1;
+let ballsInOver = 0;
+let overSummary = {
+    runs: 0,
+    wickets: 0,
+    wides: 0,
+    dots: 0
+};
+
+let currentOverBalls = [];
+
+function updateTable() {
+    const tableBody = document.getElementById('scoreTable').querySelector('tbody');
+    tableBody.innerHTML += ` <tr>
+            <td>${currentOver}</td>
+            <td>${overSummary.runs}</td>
+            <td>${overSummary.wickets}</td>
+            <td>${overSummary.wides}</td>
+            <td>${overSummary.dots}</td>
+        </tr>
+    `;
+    currentOver++;
+    ballsInOver = 0;
+    overSummary = {
+        runs: 0,
+        wickets: 0,
+        wides: 0,
+        dots: 0
+    };
+}
+
+function incrementScore(player, runs) {
+    var scoreSpan = (player === 'player1') ? player1Score : player2Score;
+    var runsArray = (player === 'player1') ? player1Runs : player2Runs;
+    var ballsDisplay = (player === 'player1') ? player1BallsDisplay : player2BallsDisplay;
+    var balls = (player === 'player1') ? ++player1Balls : ++player2Balls;
+
+    scoreSpan.textContent = parseInt(scoreSpan.textContent) + runs;
+    runsArray.push(runs);
+    updateRunsSummary(player, runsArray);
+    ballsDisplay.textContent = balls;
+    updateTotalScore(runs);
+    updateTotalBalls(1);
+    overSummary.runs += runs;
+    partnershipScore += runs;
+    partnershipScoreDisplay.textContent = partnershipScore;
+    ballsInOver++;
+    if (ballsInOver >= 6) {
+        updateTable();
+    }
+    updateOvers(runs);
+}
+
+function dotBall(player) {
+    var runsSummary = (player === 'player1') ? player1RunsSummary : player2RunsSummary;
+    runsSummary.textContent += ',0';
+
+    if (player === 'player1') {
+        player1Balls++;
+        player1BallsDisplay.textContent = player1Balls;
+    } else if (player === 'player2') {
+        player2Balls++;
+        player2BallsDisplay.textContent = player2Balls;
+    }
+
+    overSummary.dots++;
+    ballsInOver++;
+    partnershipScoreDisplay.textContent = partnershipScore;
+    if (ballsInOver >= 6) {
+        updateTable();
+    }
+
+    updateTotalBalls(1);
+    updateOvers('0');
+}
+
+function out(player) {
+    console.log('Out button clicked for:', player);
+
+    var scoreSpan = (player === 'player1') ? player1Score : player2Score;
+    var runsArray = (player === 'player1') ? player1Runs : player2Runs;
+    var ballsDisplay = (player === 'player1') ? player1BallsDisplay : player2BallsDisplay;
+
+    scoreSpan.textContent = '0';
+    runsArray.length = 0;
+    updateRunsSummary(player, []);
+
+    if (player === 'player1') {
+        player1Balls = 0;
+        player1BallsDisplay.textContent = '0';
+    } else if (player === 'player2') {
+        player2Balls = 0;
+        player2BallsDisplay.textContent = '0';
+    }
+
+    overSummary.wickets++;
+    ballsInOver++;
+    partnershipScore = 0;
+    partnershipScoreDisplay.textContent = partnershipScore;
+    if (ballsInOver >= 6) {
+        updateTable();
+    }
+
+    wickets++;
+    wicketsDisplay.textContent = wickets;
+
+    updateTotalBalls(1);
+    updateOvers('W');
+}
+
+function wide() {
+    var currentScore = parseInt(totalScoreDisplay.textContent);
+    totalScoreDisplay.textContent = currentScore + 1;
+    overSummary.wides++;
+    updateTotalScore(1);
+    updateOvers('WD');
+    partnershipScore++;
+    partnershipScoreDisplay.textContent = partnershipScore;
+}
+
+function resetScore() {
+    player1Score.textContent = '0';
+    player2Score.textContent = '0';
+    player1Runs = [];
+    player2Runs = [];
+    player1Balls = 0;
+    player2Balls = 0;
+    player1BallsDisplay.textContent = '0';
+    player2BallsDisplay.textContent = '0';
+    player1RunsSummary.textContent = '-';
+    player2RunsSummary.textContent = '-';
+    totalScore = 0;
+    totalBalls = 0;
+    overs = 0;
+    wickets = 0;
+    partnershipScore = 0;
+    partnershipScoreDisplay.textContent = partnershipScore;
+    totalScoreDisplay.textContent = totalScore;
+    totalBallsDisplay.textContent = totalBalls;
+    oversDisplay.textContent = '0.0 ()';
+    wicketsDisplay.textContent = wickets;
+    runRateDisplay.textContent = '0.00';
+
+    currentOver = 1;
+    ballsInOver = 0;
+    currentOverBalls = [];
+    overSummary = {
+        runs: 0,
+        wickets: 0,
+        wides: 0,
+        dots: 0
+    };
+
+    // Reset the match summary table
+    const tableBody = document.getElementById('scoreTable').querySelector('tbody');
+    tableBody.innerHTML = '';
+}
+
+
+function updateTotalScore(runs) {
+    totalScore += runs;
+    totalScoreDisplay.textContent = totalScore;
+    updateRunRate(); // Update the run rate whenever the total score changes
+}
+
+function updateTotalBalls(count) {
+    totalBalls += count;
+    totalBallsDisplay.textContent = totalBalls;
+    updateRunRate(); // Update the run rate whenever the total balls change
+}
+
+function updateRunsSummary(player, runsArray) {
+    var runsSummary = (player === 'player1') ? player1RunsSummary : player2RunsSummary;
+    runsSummary.textContent = runsArray.join(' ,');
+}
+
+function updateOvers(ballType) {
+    var overs = Math.floor(totalBalls / 6);
+    var balls = totalBalls % 6;
+
+    if (balls === 0 && totalBalls !== 0) {
+        currentOverBalls = [];
+    }
+
+    currentOverBalls.push(ballType);
+
+    var overText = `${overs}.${balls}`;
+    var ballDetails = `(${currentOverBalls.join(' ,')})`;
+
+    oversDisplay.textContent = `${overText} ${ballDetails}`;
+}
+
+// Initialize the overs display
+updateOvers('');
+
+function updateRunRate() {
+    var oversBowled = totalBalls / 6;
+    var runRate = (oversBowled > 0) ? (totalScore / oversBowled).toFixed(2) : '0.00';
+    runRateDisplay.textContent = runRate;
+}
+
+window.addEventListener('scroll', function() {
+    var totalScoreContainer = document.querySelector('.total-score');
+    var stickyClass = 'sticky';
+    var scrollPosition = window.scrollY;
+
+    if (scrollPosition > totalScoreContainer.offsetTop) {
+        totalScoreContainer.classList.add(stickyClass);
+    } else {
+        totalScoreContainer.classList.remove(stickyClass);
+    }
+});
+
+function updateNames() {
+    var player1Name = document.getElementById('player1Name').value;
+    var player2Name = document.getElementById('player2Name').value;
+
+    document.querySelectorAll('.player1NameDisplay').forEach(function(span) {
+        span.textContent = player1Name;
+    });
+
+    document.querySelectorAll('.player2NameDisplay').forEach(function(span) {
+        span.textContent = player2Name;
+    });
+}
+</script>
+<script src="js/common.js"></script><script>abInitChrome('cricket');</script></body>
+</html>

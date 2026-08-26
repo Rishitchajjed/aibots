@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Word Counter — AI Bots</title>
+<meta name="description" content="Count words, characters, sentences and reading time as you type, with keyword density.">
+<link rel="icon" href="https://i.ibb.co/XjHbck3/logo.png" type="image/png">
+<link rel="stylesheet" href="css/theme.css">
+<style>
+  .wc-wrap{ display:grid; grid-template-columns:1fr 260px; gap:18px; align-items:start; }
+  @media(max-width:760px){ .wc-wrap{ grid-template-columns:1fr; } }
+  #wcInput{ min-height:340px; font-size:15.5px; line-height:1.6; resize:vertical; }
+  .stat-grid{ display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+  .stat{ background:var(--surface-2); border-radius:var(--radius-sm); padding:12px; text-align:center; }
+  .stat .v{ font-family:var(--font-mono); font-size:22px; font-weight:700; }
+  .stat .l{ font-size:11px; color:var(--muted); text-transform:uppercase; letter-spacing:.03em; }
+  .kw-row{ display:flex; justify-content:space-between; font-size:13px; padding:6px 0; border-bottom:1px solid var(--border); }
+  .kw-row:last-child{ border-bottom:none; }
+</style>
+</head>
+<body>
+<div class="ab-shell">
+  <div class="ab-page-head">
+    <h1>📝 Word Counter</h1>
+    <p>Paste or type text to see live word, character and reading-time stats, plus top keywords.</p>
+  </div>
+
+  <div class="wc-wrap">
+    <div class="ab-card">
+      <textarea id="wcInput" class="ab-input" placeholder="Start typing or paste your text here…"></textarea>
+      <div class="ab-row ab-mt-16">
+        <button class="ab-btn secondary sm" id="clearBtn">Clear</button>
+        <button class="ab-btn secondary sm" id="copyBtn">Copy text</button>
+        <button class="ab-btn secondary sm" id="upperBtn">UPPERCASE</button>
+        <button class="ab-btn secondary sm" id="lowerBtn">lowercase</button>
+        <button class="ab-btn secondary sm" id="titleBtn">Title Case</button>
+      </div>
+    </div>
+
+    <div class="ab-card">
+      <div class="stat-grid">
+        <div class="stat"><div class="v" id="stWords">0</div><div class="l">Words</div></div>
+        <div class="stat"><div class="v" id="stChars">0</div><div class="l">Characters</div></div>
+        <div class="stat"><div class="v" id="stCharsNs">0</div><div class="l">No spaces</div></div>
+        <div class="stat"><div class="v" id="stSentences">0</div><div class="l">Sentences</div></div>
+        <div class="stat"><div class="v" id="stParas">0</div><div class="l">Paragraphs</div></div>
+        <div class="stat"><div class="v" id="stTime">0m</div><div class="l">Read time</div></div>
+      </div>
+      <h3 style="font-size:14px; margin:18px 0 6px;">Top keywords</h3>
+      <div id="kwList" style="color:var(--muted); font-size:13px;">Nothing yet.</div>
+    </div>
+  </div>
+</div>
+
+<script src="js/common.js"></script>
+<script>
+abInitChrome('wordcounter');
+
+const input = document.getElementById('wcInput');
+const STOPWORDS = new Set(['the','a','an','and','or','but','is','are','was','were','to','of','in','on','for','with','as','at','by','it','this','that','be','have','has','had','i','you','he','she','they','we','my','your','their','our','not','so','if','from']);
+
+function analyze(){
+  const text = input.value;
+  const words = (text.match(/[A-Za-z0-9''-]+/g) || []);
+  const chars = text.length;
+  const charsNs = text.replace(/\s/g,'').length;
+  const sentences = (text.match(/[.!?]+(\s|$)/g) || []).length || (text.trim() ? 1 : 0);
+  const paras = text.split(/\n{2,}|\n/).filter(p=>p.trim()).length;
+  const readMins = Math.max(1, Math.round(words.length / 200));
+
+  document.getElementById('stWords').textContent = words.length;
+  document.getElementById('stChars').textContent = chars;
+  document.getElementById('stCharsNs').textContent = charsNs;
+  document.getElementById('stSentences').textContent = sentences;
+  document.getElementById('stParas').textContent = paras;
+  document.getElementById('stTime').textContent = text.trim() ? readMins + 'm' : '0m';
+
+  const freq = {};
+  words.forEach(w=>{
+    const lw = w.toLowerCase();
+    if (lw.length < 3 || STOPWORDS.has(lw)) return;
+    freq[lw] = (freq[lw]||0) + 1;
+  });
+  const top = Object.entries(freq).sort((a,b)=>b[1]-a[1]).slice(0,8);
+  const kwList = document.getElementById('kwList');
+  if (!top.length){ kwList.textContent = 'Nothing yet.'; return; }
+  kwList.innerHTML = top.map(([w,c])=>`<div class="kw-row"><span>${w}</span><span class="ab-mono">${c}</span></div>`).join('');
+}
+
+input.addEventListener('input', analyze);
+
+document.getElementById('clearBtn').addEventListener('click', ()=>{ input.value=''; analyze(); });
+document.getElementById('copyBtn').addEventListener('click', ()=>{
+  navigator.clipboard.writeText(input.value).then(()=> abToast('Copied to clipboard'));
+});
+document.getElementById('upperBtn').addEventListener('click', ()=>{ input.value = input.value.toUpperCase(); analyze(); });
+document.getElementById('lowerBtn').addEventListener('click', ()=>{ input.value = input.value.toLowerCase(); analyze(); });
+document.getElementById('titleBtn').addEventListener('click', ()=>{
+  input.value = input.value.replace(/\w\S*/g, t => t.charAt(0).toUpperCase() + t.substr(1).toLowerCase());
+  analyze();
+});
+
+analyze();
+</script>
+</body>
+</html>

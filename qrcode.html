@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>QR Code Generator — AI Bots</title>
+<meta name="description" content="Turn any link, text, or Wi-Fi detail into a downloadable QR code.">
+<link rel="icon" href="https://i.ibb.co/XjHbck3/logo.png" type="image/png">
+<link rel="stylesheet" href="css/theme.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<style>
+  .qr-wrap{ display:grid; grid-template-columns:1fr 300px; gap:20px; align-items:start; }
+  @media(max-width:720px){ .qr-wrap{ grid-template-columns:1fr; } }
+  .qr-preview{ display:flex; flex-direction:column; align-items:center; gap:14px; position:sticky; top:80px; }
+  #qrCanvas{ background:#fff; padding:16px; border-radius:var(--radius); box-shadow:var(--shadow); }
+  .swatch-row{ display:flex; gap:8px; }
+  .swatch{ width:30px; height:30px; border-radius:8px; border:2px solid var(--border); cursor:pointer; padding:0; }
+  .swatch.active{ border-color: var(--accent); }
+</style>
+</head>
+<body>
+<div class="ab-shell">
+  <div class="ab-page-head">
+    <h1>▦ QR Code Generator</h1>
+    <p>Encode a link, text, email, or Wi-Fi network into a QR code you can download as PNG.</p>
+  </div>
+
+  <div class="qr-wrap">
+    <div class="ab-card">
+      <div class="ab-filters" style="margin:0 0 18px;">
+        <button class="ab-chip active" data-type="text">Text / Link</button>
+        <button class="ab-chip" data-type="email">Email</button>
+        <button class="ab-chip" data-type="wifi">Wi-Fi</button>
+      </div>
+
+      <div id="fieldsText">
+        <label class="ab-label" for="qrText">Text or URL</label>
+        <textarea id="qrText" class="ab-input" rows="3" placeholder="https://example.com">https://aibots.co.in</textarea>
+      </div>
+
+      <div id="fieldsEmail" class="ab-hidden">
+        <div class="ab-col"><label class="ab-label">Email address</label><input type="email" id="qrEmail" class="ab-input" placeholder="hello@example.com"></div>
+        <div class="ab-col ab-mt-16"><label class="ab-label">Subject (optional)</label><input type="text" id="qrEmailSub" class="ab-input"></div>
+      </div>
+
+      <div id="fieldsWifi" class="ab-hidden">
+        <div class="ab-col"><label class="ab-label">Network name (SSID)</label><input type="text" id="qrSsid" class="ab-input"></div>
+        <div class="ab-col ab-mt-16"><label class="ab-label">Password</label><input type="text" id="qrWifiPass" class="ab-input"></div>
+        <div class="ab-col ab-mt-16"><label class="ab-label">Security</label>
+          <select id="qrWifiSec" class="ab-select">
+            <option value="WPA">WPA/WPA2</option>
+            <option value="WEP">WEP</option>
+            <option value="nopass">None</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="ab-col ab-mt-24">
+        <label class="ab-label">Size</label>
+        <input type="range" id="qrSize" min="150" max="500" value="260" step="10">
+      </div>
+      <div class="ab-col ab-mt-16">
+        <label class="ab-label">Foreground color</label>
+        <div class="swatch-row" id="colorRow">
+          <button class="swatch active" style="background:#1c1917" data-color="#1c1917"></button>
+          <button class="swatch" style="background:#ea580c" data-color="#ea580c"></button>
+          <button class="swatch" style="background:#2563eb" data-color="#2563eb"></button>
+          <button class="swatch" style="background:#16a34a" data-color="#16a34a"></button>
+          <button class="swatch" style="background:#dc2626" data-color="#dc2626"></button>
+        </div>
+      </div>
+    </div>
+
+    <div class="ab-card qr-preview">
+      <div id="qrCanvas"></div>
+      <button class="ab-btn block" id="downloadQr">⬇ Download PNG</button>
+    </div>
+  </div>
+</div>
+
+<script src="js/common.js"></script>
+<script>
+abInitChrome('qrcode');
+
+let currentType = 'text';
+let fgColor = '#1c1917';
+let qr = null;
+const qrCanvas = document.getElementById('qrCanvas');
+
+document.querySelectorAll('[data-type]').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    document.querySelectorAll('[data-type]').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    currentType = btn.dataset.type;
+    ['Text','Email','Wifi'].forEach(t=>{
+      document.getElementById('fields'+t).classList.toggle('ab-hidden', t.toLowerCase() !== currentType);
+    });
+    render();
+  });
+});
+
+document.querySelectorAll('.swatch').forEach(sw=>{
+  sw.addEventListener('click', ()=>{
+    document.querySelectorAll('.swatch').forEach(s=>s.classList.remove('active'));
+    sw.classList.add('active');
+    fgColor = sw.dataset.color;
+    render();
+  });
+});
+
+function buildPayload(){
+  if (currentType === 'text') return document.getElementById('qrText').value || ' ';
+  if (currentType === 'email'){
+    const to = document.getElementById('qrEmail').value;
+    const sub = document.getElementById('qrEmailSub').value;
+    return `mailto:${to}${sub ? '?subject='+encodeURIComponent(sub) : ''}`;
+  }
+  if (currentType === 'wifi'){
+    const ssid = document.getElementById('qrSsid').value;
+    const pass = document.getElementById('qrWifiPass').value;
+    const sec = document.getElementById('qrWifiSec').value;
+    return `WIFI:T:${sec};S:${ssid};P:${pass};;`;
+  }
+  return ' ';
+}
+
+function render(){
+  const size = +document.getElementById('qrSize').value;
+  qrCanvas.innerHTML = '';
+  qrCanvas.style.width = size + 'px';
+  qrCanvas.style.height = size + 'px';
+  qr = new QRCode(qrCanvas, {
+    text: buildPayload(),
+    width: size, height: size,
+    colorDark: fgColor, colorLight: '#ffffff',
+    correctLevel: QRCode.CorrectLevel.M
+  });
+}
+
+document.querySelectorAll('input, textarea, select').forEach(el=>{
+  el.addEventListener('input', ()=>{ clearTimeout(window._qrT); window._qrT = setTimeout(render, 200); });
+});
+
+document.getElementById('downloadQr').addEventListener('click', ()=>{
+  const img = qrCanvas.querySelector('img') || qrCanvas.querySelector('canvas');
+  const link = document.createElement('a');
+  link.download = 'qrcode.png';
+  if (img.tagName === 'CANVAS'){
+    link.href = img.toDataURL('image/png');
+  } else {
+    link.href = img.src;
+  }
+  link.click();
+});
+
+render();
+</script>
+</body>
+</html>

@@ -1,448 +1,250 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-     <link rel="icon" href="https://i.ibb.co/XjHbck3/logo.png" type="image/png" /> 
-     <!-- Google tag (gtag.js) -->
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Timer & Stopwatch — AI Bots</title>
+<meta name="description" content="Countdown timer, stopwatch with laps, and a Pomodoro focus timer, all in one page.">
+<link rel="icon" href="https://i.ibb.co/XjHbck3/logo.png" type="image/png">
+<link rel="stylesheet" href="css/theme.css">
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-2L87FMQS3W"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-2L87FMQS3W');</script>
+<style>
+  .tm-card{ max-width: 560px; margin:0 auto; text-align:center; }
+  .tm-face{
+    font-family:var(--font-mono); font-size:clamp(52px,13vw,90px); font-weight:700; letter-spacing:-1px;
+    margin:14px 0; color:var(--ink);
+  }
+  .tm-face.warn{ color:var(--danger); }
+  .tm-ring{ position:relative; width:min(280px,70vw); height:min(280px,70vw); margin:10px auto; }
+  .tm-ring svg{ transform:rotate(-90deg); width:100%; height:100%; }
+  .tm-ring circle{ fill:none; stroke-width:8; }
+  .tm-ring .bg{ stroke:var(--surface-2); }
+  .tm-ring .fg{ stroke:var(--accent); stroke-linecap:round; transition:stroke-dashoffset .3s linear; }
+  .tm-ring .center{ position:absolute; inset:0; display:flex; align-items:center; justify-content:center; flex-direction:column; }
 
-  gtag('config', 'G-2L87FMQS3W');
-</script>
-    <title>Advanced Stopwatch</title>
-    <style>
-body {
-    font-family: Arial, sans-serif;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    margin: 0;
-    background-color: #f0f0f0;
-    transition: background-color 0.3s ease;
-}
+  .tm-inputs{ display:flex; gap:8px; justify-content:center; }
+  .tm-inputs .ab-col{ width:80px; }
+  .tm-inputs input{ text-align:center; font-family:var(--font-mono); font-size:20px; }
 
-.stopwatch-container {
-    text-align: center;
-}
+  .lap-list{ margin-top:16px; max-height:220px; overflow:auto; text-align:left; }
+  .lap-row{ display:flex; justify-content:space-between; padding:8px 12px; border-bottom:1px solid var(--border); font-family:var(--font-mono); font-size:13.5px; }
+  .lap-row:last-child{ border-bottom:none; }
 
-h1 {
-    color: #007bff; /* Blue color */
-    font-size: 2.5em; /* Large font size */
-    margin-bottom: 20px; /* Spacing at the bottom */
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2); /* Soft shadow effect */
-    /* Adding a gradient background for depth */
-    background: linear-gradient(45deg, #007bff, #00bfff);
-    /* Ensuring text is legible on gradient background */
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    /* Adding a slight animation for subtle movement */
-    animation: glow 1.5s ease-in-out infinite alternate;
-}
-
-/* Defining the glow animation */
-@keyframes glow {
-    0% {
-        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
-    }
-    100% {
-        text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.3);
-    }
-}
-
-/* Optional: Hover effect for interaction */
-h1:hover {
-    transform: scale(1.05); /* Slightly increase size on hover */
-}
-
-
-#display {
-    position: relative;
-    width: 250px;
-    height: 250px;
-    margin: 20px auto;
-    background: linear-gradient(45deg, #007bff, #00ff00, #ff00ff, #007bff);
-    border-radius: 50%;
-    box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
-    overflow: hidden;
-}
-
-#display::before {
-    content: "";
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: calc(100% - 40px);
-    height: calc(100% - 40px);
-    background-color: #fff;
-    border-radius: 50%;
-    box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.5);
-}
-
-#display #time {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    font-size: 2em;
-    color: #fff;
-    text-shadow: 0 0 10px rgba(0, 0, 0, 0.7);
-}
-
-.logo-container {
-    margin-bottom: 20px;
-}
-
-.logo-container img {
-    width: 150px;
-    height: auto;
-    border-radius: 50%;
-    box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
-    transition: transform 0.3s ease;
-}
-
-.logo-container img:hover {
-    transform: scale(1.1);
-}
-
-.buttons button {
-    padding: 10px 20px;
-    margin: 5px;
-    font-size: 1em;
-    border-radius: 5px;
-    background-color: #007bff;
-    color: #fff;
-    border: 2px solid transparent;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    /* Adding box-shadow for depth */
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-/* Hover effect for all buttons */
-.buttons button:hover {
-    background-color: #0056b3;
-    border-color: #0056b3;
-}
-
-/* Styling for the reset button */
-#resetBtn {
-    background-color: #dc3545;
-}
-
-/* Hover effect for the reset button */
-#resetBtn:hover {
-    background-color: #bd2130;
-    border-color: #bd2130;
-    /* Adding a slight animation for emphasis */
-    transform: scale(1.05);
-}
-
-/* Focus styles for accessibility */
-.buttons button:focus {
-    outline: none;
-    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.4);
-}
-
-/* Adding a pressed effect on click */
-.buttons button:active {
-    transform: translateY(1px); /* Move button down slightly when pressed */
-    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1); /* Adjust shadow on press */
-}
-
-#laps {
-    list-style-type: none;
-    padding: 0;
-    margin: 20px 0;
-}
-
-#laps li {
-    background: #e0e0e0;
-    margin: 5px 0;
-    padding: 10px;
-    font-size: 1em;
-    display: flex;
-    justify-content: space-between;
-    border-radius: 5px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
-}
-
-.dark-mode {
-    background-color: #333;
-    color: #fff;
-}
-
-.dark-mode #laps li {
-    background: #444;
-}
-.popup {
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background-color: rgba(0, 0, 0, 0.8);
-    color: white;
-    padding: 20px;
-    border-radius: 10px;
-    z-index: 9999;
-    /* Adding box-shadow for depth */
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    /* Adding a slight animation for smooth appearance */
-    transition: all 0.3s ease;
-}
-
-/* Adding hover effect */
-.popup:hover {
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
-}
-
-.popup-content {
-    text-align: center;
-}
-
-.popup h2 {
-    margin-top: 0;
-}
-
-.popup p {
-    margin-bottom: 0;
-}
-
-
-
-    </style>
+  .pomo-stage{ font-weight:700; color:var(--accent); text-transform:uppercase; font-size:12.5px; letter-spacing:.06em; }
+</style>
 </head>
 <body>
-    <div class="stopwatch-container">
-         <div class="logo-container">
-            <img src="https://i.ibb.co/XjHbck3/logo.png" alt="Your Logo">
-        </div>
-        <h1>Advanced Stopwatch</h1>
-        <div id="display">
-            <div class="progress"></div>
-            <span id="time">00:00:00.000</span>
-        </div>
-        <div class="buttons">
-            <button id="startStopBtn">Start</button>
-            <button id="pauseBtn" style="display:none;">Pause</button>
-            <button id="resetBtn">Reset</button>
-            <button id="lapBtn" style="display:none;">Lap</button>
-            <button id="countdownBtn">Countdown</button>
-            <button id="exportBtn">Export</button>
-            <button id="modeToggleBtn">Dark Mode</button>
-        </div>
-        <div class="settings">
-            <label for="timeFormat">Time Format:</label>
-            <select id="timeFormat">
-                <option value="HH:MM:SS">HH:MM:SS</option>
-                <option value="MM:SS">MM:SS</option>
-                <option value="SS.ms">SS.ms</option>
-                <option value="HH:MM:SS.ms" selected>HH:MM:SS.ms</option>
-            </select>
-        </div>
-        <ul id="laps"></ul>
+<div class="ab-shell">
+  <div class="ab-page-head">
+    <h1>⏱️ Timer & Stopwatch</h1>
+    <p>Switch between a countdown timer, a stopwatch with lap tracking, and a Pomodoro focus session.</p>
+  </div>
+
+  <div class="ab-filters" style="margin-top:0;">
+    <button class="ab-chip active" data-mode="countdown">Countdown</button>
+    <button class="ab-chip" data-mode="stopwatch">Stopwatch</button>
+    <button class="ab-chip" data-mode="pomodoro">Pomodoro</button>
+  </div>
+
+  <div class="ab-card tm-card ab-mt-24">
+
+    <!-- Countdown -->
+    <div id="modeCountdown">
+      <div class="tm-inputs">
+        <div class="ab-col"><label class="ab-label">Hours</label><input type="number" id="cdH" class="ab-input" min="0" value="0"></div>
+        <div class="ab-col"><label class="ab-label">Mins</label><input type="number" id="cdM" class="ab-input" min="0" max="59" value="5"></div>
+        <div class="ab-col"><label class="ab-label">Secs</label><input type="number" id="cdS" class="ab-input" min="0" max="59" value="0"></div>
+      </div>
+      <div class="tm-face ab-mono ab-mt-16" id="cdFace">05:00</div>
+      <div class="ab-row" style="justify-content:center;">
+        <button class="ab-btn" id="cdStart">Start</button>
+        <button class="ab-btn secondary" id="cdPause" disabled>Pause</button>
+        <button class="ab-btn secondary" id="cdReset">Reset</button>
+      </div>
     </div>
-    <script>
-    let startTime;
-        let updatedTime;
-        let difference = 0;
-        let tInterval;
-        let running = false;
-        let paused = false;
-        let laps = [];
-        let countdownMode = false;
-        let countdownTime;
-        const display = document.getElementById('display');
-        const progress = document.querySelector('.progress');
-        const timeDisplay = document.getElementById('time');
-        const startStopBtn = document.getElementById('startStopBtn');
-        const pauseBtn = document.getElementById('pauseBtn');
-        const resetBtn = document.getElementById('resetBtn');
-        const lapBtn = document.getElementById('lapBtn');
-        const countdownBtn = document.getElementById('countdownBtn');
-        const exportBtn = document.getElementById('exportBtn');
-        const modeToggleBtn = document.getElementById('modeToggleBtn');
-        const timeFormat = document.getElementById('timeFormat');
-        const lapsList = document.getElementById('laps');
 
-        function startStop() {
-            if (!running) {
-                if (paused) {
-                    startTime = new Date().getTime() - difference;
-                    paused = false;
-                } else {
-                    startTime = new Date().getTime();
-                }
-                tInterval = setInterval(updateTime, 10);
-                startStopBtn.textContent = 'Stop';
-                pauseBtn.style.display = 'inline';
-                lapBtn.style.display = 'inline';
-                running = true;
-                progress.style.transition = 'transform 0s linear';
-                progress.style.transform = 'translate(-50%, -50%) rotate(0deg)';
-                setTimeout(() => {
-                    progress.style.transition = 'transform linear';
-                    progress.style.transform = 'translate(-50%, -50%) rotate(360deg)';
-                }, 10);
-            } else {
-                clearInterval(tInterval);
-                startStopBtn.textContent = 'Start';
-                pauseBtn.style.display = 'none';
-                lapBtn.style.display = 'none';
-                running = false;
-            }
-        }
+    <!-- Stopwatch -->
+    <div id="modeStopwatch" class="ab-hidden">
+      <div class="tm-face ab-mono" id="swFace">00:00.00</div>
+      <div class="ab-row" style="justify-content:center;">
+        <button class="ab-btn" id="swStart">Start</button>
+        <button class="ab-btn secondary" id="swLap" disabled>Lap</button>
+        <button class="ab-btn secondary" id="swReset">Reset</button>
+      </div>
+      <div class="lap-list" id="lapList"></div>
+    </div>
 
-        function pause() {
-            if (running) {
-                clearInterval(tInterval);
-                paused = true;
-                running = false;
-                startStopBtn.textContent = 'Start';
-                pauseBtn.style.display = 'none';
-            }
-        }
+    <!-- Pomodoro -->
+    <div id="modePomodoro" class="ab-hidden">
+      <div class="pomo-stage" id="pomoStage">Focus</div>
+      <div class="tm-ring">
+        <svg viewBox="0 0 100 100">
+          <circle class="bg" cx="50" cy="50" r="44"></circle>
+          <circle class="fg" id="pomoRing" cx="50" cy="50" r="44" stroke-dasharray="276.5"></circle>
+        </svg>
+        <div class="center"><div class="tm-face ab-mono" id="pomoFace" style="margin:0; font-size:34px;">25:00</div></div>
+      </div>
+      <div class="ab-row" style="justify-content:center;">
+        <button class="ab-btn" id="pomoStart">Start</button>
+        <button class="ab-btn secondary" id="pomoSkip">Skip</button>
+        <button class="ab-btn secondary" id="pomoReset">Reset</button>
+      </div>
+      <p style="color:var(--ink-soft); font-size:13px; margin-top:14px;">25 min focus · 5 min short break · 15 min break every 4th round</p>
+    </div>
 
-       function reset() {
-    clearInterval(tInterval);
-    timeDisplay.textContent = '00:00:00.000';
-    startStopBtn.textContent = 'Start';
-    pauseBtn.style.display = 'none';
-    lapBtn.style.display = 'none';
-    difference = 0;
-    laps = [];
-    lapsList.innerHTML = '';
-    running = false;
-    paused = false;
-    removePopup(); // Remove the popup
+  </div>
+</div>
+
+<script src="js/common.js"></script>
+<script>
+abInitChrome('timer');
+
+/* ---- mode switch ---- */
+document.querySelectorAll('[data-mode]').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    document.querySelectorAll('[data-mode]').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    ['Countdown','Stopwatch','Pomodoro'].forEach(m=>{
+      document.getElementById('mode'+m).classList.toggle('ab-hidden', 'mode'+m !== 'mode'+capitalize(btn.dataset.mode));
+    });
+  });
+});
+function capitalize(s){ return s.charAt(0).toUpperCase()+s.slice(1); }
+
+function playBeep(){
+  try{
+    const ctx = new (window.AudioContext||window.webkitAudioContext)();
+    const o = ctx.createOscillator(); const g = ctx.createGain();
+    o.connect(g); g.connect(ctx.destination);
+    o.frequency.value = 880; g.gain.value = 0.15;
+    o.start(); setTimeout(()=>{ o.stop(); ctx.close(); }, 350);
+  }catch(e){}
 }
 
-function removePopup() {
-    if (popupElement) {
-        document.body.removeChild(popupElement);
-        popupElement = null; // Reset the reference to null
+/* ---- Countdown ---- */
+let cdRemaining = 300, cdTimer = null;
+const cdFace = document.getElementById('cdFace');
+function fmt(sec){
+  const h = Math.floor(sec/3600), m = Math.floor((sec%3600)/60), s = Math.floor(sec%60);
+  return (h>0 ? String(h).padStart(2,'0')+':' : '') + String(m).padStart(2,'0')+':'+String(s).padStart(2,'0');
+}
+function syncCdFromInputs(){
+  const h = +document.getElementById('cdH').value||0, m = +document.getElementById('cdM').value||0, s = +document.getElementById('cdS').value||0;
+  cdRemaining = h*3600+m*60+s;
+  cdFace.textContent = fmt(cdRemaining);
+}
+['cdH','cdM','cdS'].forEach(id=>document.getElementById(id).addEventListener('input', syncCdFromInputs));
+syncCdFromInputs();
+
+document.getElementById('cdStart').addEventListener('click', ()=>{
+  if (cdRemaining <= 0) return;
+  document.getElementById('cdStart').disabled = true;
+  document.getElementById('cdPause').disabled = false;
+  cdTimer = setInterval(()=>{
+    cdRemaining--;
+    cdFace.textContent = fmt(Math.max(cdRemaining,0));
+    cdFace.classList.toggle('warn', cdRemaining <= 10 && cdRemaining > 0);
+    if (cdRemaining <= 0){
+      clearInterval(cdTimer);
+      playBeep(); abToast('⏰ Time\'s up!');
+      document.getElementById('cdStart').disabled = false;
+      document.getElementById('cdPause').disabled = true;
     }
+  }, 1000);
+});
+document.getElementById('cdPause').addEventListener('click', ()=>{
+  clearInterval(cdTimer);
+  document.getElementById('cdStart').disabled = false;
+  document.getElementById('cdPause').disabled = true;
+});
+document.getElementById('cdReset').addEventListener('click', ()=>{
+  clearInterval(cdTimer);
+  document.getElementById('cdStart').disabled = false;
+  document.getElementById('cdPause').disabled = true;
+  cdFace.classList.remove('warn');
+  syncCdFromInputs();
+});
+
+/* ---- Stopwatch ---- */
+let swStart = 0, swElapsed = 0, swTimer = null, laps = [];
+const swFace = document.getElementById('swFace');
+function fmtMs(ms){
+  const m = Math.floor(ms/60000), s = Math.floor((ms%60000)/1000), cs = Math.floor((ms%1000)/10);
+  return String(m).padStart(2,'0')+':'+String(s).padStart(2,'0')+'.'+String(cs).padStart(2,'0');
 }
+document.getElementById('swStart').addEventListener('click', function(){
+  if (!swTimer){
+    swStart = Date.now() - swElapsed;
+    swTimer = setInterval(()=>{ swElapsed = Date.now()-swStart; swFace.textContent = fmtMs(swElapsed); }, 30);
+    this.textContent = 'Pause';
+    document.getElementById('swLap').disabled = false;
+  } else {
+    clearInterval(swTimer); swTimer = null;
+    this.textContent = 'Resume';
+  }
+});
+document.getElementById('swLap').addEventListener('click', ()=>{
+  laps.unshift({ n: laps.length+1, t: fmtMs(swElapsed) });
+  document.getElementById('lapList').innerHTML = laps.map(l=>`<div class="lap-row"><span>Lap ${l.n}</span><span>${l.t}</span></div>`).join('');
+});
+document.getElementById('swReset').addEventListener('click', ()=>{
+  clearInterval(swTimer); swTimer=null; swElapsed=0; laps=[];
+  swFace.textContent = '00:00.00';
+  document.getElementById('swStart').textContent = 'Start';
+  document.getElementById('swLap').disabled = true;
+  document.getElementById('lapList').innerHTML = '';
+});
 
-
-      function updateTime() {
-    if (countdownMode) {
-        difference = countdownTime - (new Date().getTime() - startTime);
-        if (difference <= 0) {
-            clearInterval(tInterval);
-            timeDisplay.textContent = '00:00:00.000';
-            startStopBtn.textContent = 'Start';
-            pauseBtn.style.display = 'none';
-            lapBtn.style.display = 'none';
-            running = false;
-            countdownMode = false;
-            showPopup(); // Call function to display the popup
-        }
-    } else {
-        updatedTime = new Date().getTime();
-        difference = updatedTime - startTime;
-    }
-    displayTime();
+/* ---- Pomodoro ---- */
+const POMO_FOCUS = 25*60, POMO_SHORT = 5*60, POMO_LONG = 15*60;
+let pomoRemaining = POMO_FOCUS, pomoTimer = null, pomoRound = 1, pomoStageName = 'Focus';
+const pomoFace = document.getElementById('pomoFace');
+const pomoStageEl = document.getElementById('pomoStage');
+const pomoRing = document.getElementById('pomoRing');
+const RING_LEN = 276.5;
+function pomoTotalForStage(){ return pomoStageName==='Focus'? POMO_FOCUS : (pomoRound % 4 === 0 ? POMO_LONG : POMO_SHORT); }
+function updatePomoFace(){
+  pomoFace.textContent = fmt(pomoRemaining);
+  const total = pomoTotalForStage();
+  const frac = pomoRemaining/total;
+  pomoRing.style.strokeDashoffset = RING_LEN * (1-frac);
+  pomoStageEl.textContent = pomoStageName + (pomoStageName==='Focus' ? ` · Round ${pomoRound}`: '');
 }
+pomoRing.style.strokeDashoffset = 0;
+updatePomoFace();
 
-function showPopup() {
-    popupElement = document.createElement('div');
-    popupElement.innerHTML = `
-        <div id="popup" class="popup">
-            <div class="popup-content">
-                <h2>Time's Up!</h2>
-                <p>Your countdown has finished.</p>
-            </div>
-        </div>
-    `;
-    document.body.appendChild(popupElement);
-
-    // Add event listener to remove popup on touch
-    popupElement.addEventListener('click', removePopup);
-}
-
-
-
-        function displayTime() {
-            let formattedTime;
-            const hours = Math.floor((difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-            const minutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
-            const seconds = Math.floor((difference % (1000 * 60)) / 1000);
-            const milliseconds = Math.floor((difference % 1000) / 10);
-
-            if (timeFormat.value === 'HH:MM:SS') {
-                formattedTime = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
-            } else if (timeFormat.value === 'MM:SS') {
-                formattedTime = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
-            } else if (timeFormat.value === 'SS.ms') {
-                formattedTime = `${seconds.toString().padStart(2, '0')}.${milliseconds.toString().padStart(3, '0')}`;
-            } else if (timeFormat.value === 'HH:MM:SS.ms') {
-                formattedTime = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}.${milliseconds.toString().padStart(3, '0')}`;
-            }
-            timeDisplay.textContent = formattedTime;
+document.getElementById('pomoStart').addEventListener('click', function(){
+  if (!pomoTimer){
+    pomoTimer = setInterval(()=>{
+      pomoRemaining--;
+      if (pomoRemaining < 0){
+        playBeep();
+        if (pomoStageName === 'Focus'){
+          pomoStageName = (pomoRound % 4 === 0) ? 'Long break' : 'Short break';
+        } else {
+          pomoStageName = 'Focus'; pomoRound++;
         }
-
-        function recordLap() {
-            if (running) {
-                const lapTime = timeDisplay.textContent;
-                laps.push(lapTime);
-                const li = document.createElement('li');
-                li.textContent = `Lap ${laps.length}: ${lapTime}`;
-                lapsList.appendChild(li);
-            }
-        }
-
-        function exportLaps() {
-            const csvContent = laps.map((lap, index) => `Lap ${index + 1},${lap}`).join('\n');
-            const blob = new Blob([csvContent], { type: 'text/csv' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = 'laps.csv';
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-        }
-
-        function toggleMode() {
-            document.body.classList.toggle('dark-mode');
-            modeToggleBtn.textContent = document.body.classList.contains('dark-mode') ? 'Light Mode' : 'Dark Mode';
-        }
-
-        function switchToCountdown() {
-            const input = prompt('Enter countdown time in seconds:');
-            if (input && !isNaN(input)) {
-                countdownTime = input * 1000;
-                startTime = new Date().getTime();
-                difference = countdownTime;
-                countdownMode = true;
-                startStop();
-            }
-        }
-
-        startStopBtn.addEventListener('click', startStop);
-        pauseBtn.addEventListener('click', pause);
-        resetBtn.addEventListener('click', reset);
-        lapBtn.addEventListener('click', recordLap);
-        exportBtn.addEventListener('click', exportLaps);
-        modeToggleBtn.addEventListener('click', toggleMode);
-        countdownBtn.addEventListener('click', switchToCountdown);
-
-        document.addEventListener('keydown', (event) => {
-            if (event.key === 's') startStop();
-            if (event.key === 'p') pause();
-            if (event.key === 'r') reset();
-            if (event.key === 'l') recordLap();
-        });
-
-        // Initialize variables to handle time differences
-        difference = 0;
-    </script>
+        pomoRemaining = pomoTotalForStage();
+        abToast(`Now: ${pomoStageName}`);
+      }
+      updatePomoFace();
+    }, 1000);
+    this.textContent = 'Pause';
+  } else {
+    clearInterval(pomoTimer); pomoTimer = null;
+    this.textContent = 'Resume';
+  }
+});
+document.getElementById('pomoSkip').addEventListener('click', ()=>{
+  pomoRemaining = 0;
+});
+document.getElementById('pomoReset').addEventListener('click', ()=>{
+  clearInterval(pomoTimer); pomoTimer=null;
+  pomoStageName='Focus'; pomoRound=1; pomoRemaining=POMO_FOCUS;
+  document.getElementById('pomoStart').textContent='Start';
+  updatePomoFace();
+});
+</script>
 </body>
 </html>
-

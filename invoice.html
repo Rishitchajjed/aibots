@@ -1,19 +1,20 @@
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Invoice Generator</title>
-    <link rel="icon" href="https://i.ibb.co/XjHbck3/logo.png" type="image/png" />
-    <!-- Google tag (gtag.js) -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-2L87FMQS3W"></script>
-    <script>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Invoice Generator</title>
+<link href="css/theme.css" rel="stylesheet"/><link href="https://i.ibb.co/XjHbck3/logo.png" rel="icon" type="image/png"/>
+<!-- Google tag (gtag.js) -->
+<script async="" src="https://www.googletagmanager.com/gtag/js?id=G-2L87FMQS3W"></script>
+<script>
         window.dataLayer = window.dataLayer || [];
         function gtag(){dataLayer.push(arguments);}
         gtag('js', new Date());
         gtag('config', 'G-2L87FMQS3W');
     </script>
-    <style>
+<style>
  body {
     font-family: 'Arial', sans-serif;
     background-color: #f4f4f4;
@@ -323,90 +324,88 @@ button:hover .icon {
     </style>
 </head>
 <body>
-    <div class="container no-print">
-        <h1>Invoice Generator</h1>
-        <form id="invoiceForm">
-            <div class="form-group">
-                <label for="companyName">Company Name:</label>
-                <input type="text" id="companyName" name="companyName" required>
-            </div>
-            <div class="form-group">
-                <label for="clientName">Client Name:</label>
-                <input type="text" id="clientName" name="clientName" required>
-            </div>
-            <div class="form-group">
-                <label for="clientNumber">Client Number:</label>
-                <input type="number" id="clientNumber" name="clientNumber" required>
-            </div>
-            <div class="form-group">
-                <label for="invoiceDate">Invoice Date:</label>
-                <input type="date" id="invoiceDate" name="invoiceDate" required>
-            </div>
-            <div class="form-group">
-                <label for="items">Items:</label>
-                <table id="itemsTable">
-                    <thead>
-                        <tr>
-                            <th>#</th>
-                            <th>Description</th>
-                            <th>Quantity</th>
-                            <th>Price (₹)</th>
-                            <th>Total (₹)</th>
-                            <th>Action</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>1</td>
-                            <td><input type="text" class="item-description" required></td>
-                            <td><input type="number" class="item-quantity" required></td>
-                            <td><input type="number" class="item-price" required></td>
-                            <td class="item-total text-right">0.00</td>
-                            <td><button type="button" class="remove-item" onclick="removeItem(this)">Remove</button></td>
-                        </tr>
-                    </tbody>
-                </table>
-                <button type="button" class="add-item" onclick="addItem()">Add Item</button>
-            </div>
-            <div class="form-group">
-                <label for="discount">Discount (%):</label>
-                <input type="number" id="discount" name="discount" value="0" required>
-            </div>
-            <button type="button" onclick="generateInvoice()">Generate Invoice</button>
-            <button type="button" class="reset-button no-print" id="reset" onclick="resetForm()">Reset Form</button>
-        </form>
-    </div>
-    
-    <div id="invoice" class="invoice" style="display:none;">
-        <h2>Invoice</h2>
-        <p><strong>Bill Number:</strong> <span id="displayBillNumber"></span></p>
-        <p><strong>Company Name:</strong> <span id="displayCompanyName"></span></p>
-        <p><strong>Client Name:</strong> <span id="displayClientName"></span></p>
-        <p><strong>Client Number:</strong> <span id="displayClientNumber"></span></p>
-        <p><strong>Invoice Date:</strong> <span id="displayInvoiceDate"></span></p>
-        <table>
-            <thead>
-                <tr>
-                    <th>no.</th>
-                    <th>Description</th>
-                    <th>Quantity</th>
-                    <th>Price (₹)</th>
-                    <th>Total (₹)</th>
-                </tr>
-            </thead>
-            <tbody id="invoiceItems">
-            </tbody>
-        </table>
-        <p class="text-right"><strong>Total Amount:</strong> ₹<span id="displayTotalAmount">0.00</span></p>
-        <p class="text-right"><strong>Discount:</strong> ₹<span id="displayDiscount">0.00</span></p>
-        <p class="text-right"><strong>Final Amount:</strong> ₹<span id="displayFinalAmount">0.00</span></p>
-        <button class="print-button no-print" onclick="printInvoice()">Print Invoice</button>
-    </div>
-    
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://code.jquery.com/ui/1.13.0/jquery-ui.min.js"></script>
-    <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.0/themes/base/jquery-ui.css">
-    <script>
+<div class="container no-print">
+<h1>Invoice Generator</h1>
+<form id="invoiceForm">
+<div class="form-group">
+<label for="companyName">Company Name:</label>
+<input id="companyName" name="companyName" required="" type="text"/>
+</div>
+<div class="form-group">
+<label for="clientName">Client Name:</label>
+<input id="clientName" name="clientName" required="" type="text"/>
+</div>
+<div class="form-group">
+<label for="clientNumber">Client Number:</label>
+<input id="clientNumber" name="clientNumber" required="" type="number"/>
+</div>
+<div class="form-group">
+<label for="invoiceDate">Invoice Date:</label>
+<input id="invoiceDate" name="invoiceDate" required="" type="date"/>
+</div>
+<div class="form-group">
+<label for="items">Items:</label>
+<table id="itemsTable">
+<thead>
+<tr>
+<th>#</th>
+<th>Description</th>
+<th>Quantity</th>
+<th>Price (₹)</th>
+<th>Total (₹)</th>
+<th>Action</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td><input class="item-description" required="" type="text"/></td>
+<td><input class="item-quantity" required="" type="number"/></td>
+<td><input class="item-price" required="" type="number"/></td>
+<td class="item-total text-right">0.00</td>
+<td><button class="remove-item" onclick="removeItem(this)" type="button">Remove</button></td>
+</tr>
+</tbody>
+</table>
+<button class="add-item" onclick="addItem()" type="button">Add Item</button>
+</div>
+<div class="form-group">
+<label for="discount">Discount (%):</label>
+<input id="discount" name="discount" required="" type="number" value="0"/>
+</div>
+<button onclick="generateInvoice()" type="button">Generate Invoice</button>
+<button class="reset-button no-print" id="reset" onclick="resetForm()" type="button">Reset Form</button>
+</form>
+</div>
+<div class="invoice" id="invoice" style="display:none;">
+<h2>Invoice</h2>
+<p><strong>Bill Number:</strong> <span id="displayBillNumber"></span></p>
+<p><strong>Company Name:</strong> <span id="displayCompanyName"></span></p>
+<p><strong>Client Name:</strong> <span id="displayClientName"></span></p>
+<p><strong>Client Number:</strong> <span id="displayClientNumber"></span></p>
+<p><strong>Invoice Date:</strong> <span id="displayInvoiceDate"></span></p>
+<table>
+<thead>
+<tr>
+<th>no.</th>
+<th>Description</th>
+<th>Quantity</th>
+<th>Price (₹)</th>
+<th>Total (₹)</th>
+</tr>
+</thead>
+<tbody id="invoiceItems">
+</tbody>
+</table>
+<p class="text-right"><strong>Total Amount:</strong> ₹<span id="displayTotalAmount">0.00</span></p>
+<p class="text-right"><strong>Discount:</strong> ₹<span id="displayDiscount">0.00</span></p>
+<p class="text-right"><strong>Final Amount:</strong> ₹<span id="displayFinalAmount">0.00</span></p>
+<button class="print-button no-print" onclick="printInvoice()">Print Invoice</button>
+</div>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://code.jquery.com/ui/1.13.0/jquery-ui.min.js"></script>
+<link href="https://code.jquery.com/ui/1.13.0/themes/base/jquery-ui.css" rel="stylesheet"/>
+<script>
         document.addEventListener('DOMContentLoaded', () => {
             const invoiceDateInput = document.getElementById('invoiceDate');
             const today = new Date().toISOString().split('T')[0];
@@ -575,5 +574,5 @@ button:hover .icon {
             calculateTotal();
         }
     </script>
-</body>
+<script src="js/common.js"></script><script>abInitChrome('invoice');</script></body>
 </html>

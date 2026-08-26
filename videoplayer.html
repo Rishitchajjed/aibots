@@ -1,8 +1,9 @@
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
-      <!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-2L87FMQS3W"></script>
+<!-- Google tag (gtag.js) -->
+<script async="" src="https://www.googletagmanager.com/gtag/js?id=G-2L87FMQS3W"></script>
 <script>
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
@@ -10,11 +11,11 @@
 
   gtag('config', 'G-2L87FMQS3W');
 </script>
-<link rel="icon" href="https://i.ibb.co/XjHbck3/logo.png" type="image/png" />
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Video Player</title>
-  <style>
+<link href="css/theme.css" rel="stylesheet"/><link href="https://i.ibb.co/XjHbck3/logo.png" rel="icon" type="image/png"/>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Video Player</title>
+<style>
 body {
       font-family: Arial, sans-serif;
       margin: 0;
@@ -303,51 +304,49 @@ video {
   </style>
 </head>
 <body>
-  <div class="container">
-    <img class="logo" src="https://i.ibb.co/G2NFYHG/logo.png" alt="Logo">
-    <h1 style="color: white;">Super Video Player</h1>
-    <div id="videoContainer"></div>
-    <div class="controls">
-      <input type="text" id="videoUrl" placeholder="Enter video URL">
-      <button onclick="loadVideo()">Load Video</button>
-      <label for="videoFile">Upload Video:</label>
-      <input type="file" id="videoFile" accept="video/mp4">
-      <button onclick="loadLocalVideo()">Load Local Video</button>
-      <button onclick="togglePlayPause()">Play/Pause</button>
-      <button onclick="toggleMute()">Mute/Unmute</button>
-      <button onclick="skipBackward()">-10s</button>
-      <button onclick="restart()">Restart</button>
-      <button onclick="skipForward()">+10s</button>
-      <button onclick="toggleFullScreen()" class="fullscreen">Full Screen</button>
-    </div>
-    <div class="controls">
-      <input type="range" class="slider" id="volumeSlider" min="0" max="1" step="0.01" value="1" oninput="changeVolume()">
-      <select class="quality-select" id="qualitySelect" onchange="changeQuality()">
-        <option value="auto">Auto</option>
-        <option value="low">Low</option>
-        <option value="medium">Medium</option>
-        <option value="high">High</option>
-      </select>
-      <div class="time" id="currentTime">00:00</div>
-      <div class="progress-bar">
-        <div class="progress" id="progress"></div>
-      </div>
-      <div class="time" id="totalDuration">00:00</div>
-      <span class="playback-rate" id="playbackRate">1x</span>
-      <select class="quality-select" id="speedSelect" onchange="changeSpeed()">
-        <option value="0.5">0.5x</option>
-        <option value="1" selected>1x</option>
-        <option value="1.5">1.5x</option>
-        <option value="2">2x</option>
-      </select>
-    </div>
-  </div>
-
-  <div id="loadingSpinner">
-    <div></div>
-  </div>
-
-  <script>
+<div class="container">
+<img alt="Logo" class="logo" src="https://i.ibb.co/G2NFYHG/logo.png"/>
+<h1 style="color: white;">Super Video Player</h1>
+<div id="videoContainer"></div>
+<div class="controls">
+<input id="videoUrl" placeholder="Enter video URL" type="text"/>
+<button onclick="loadVideo()">Load Video</button>
+<label for="videoFile">Upload Video:</label>
+<input accept="video/mp4" id="videoFile" type="file"/>
+<button onclick="loadLocalVideo()">Load Local Video</button>
+<button onclick="togglePlayPause()">Play/Pause</button>
+<button onclick="toggleMute()">Mute/Unmute</button>
+<button onclick="skipBackward()">-10s</button>
+<button onclick="restart()">Restart</button>
+<button onclick="skipForward()">+10s</button>
+<button class="fullscreen" onclick="toggleFullScreen()">Full Screen</button>
+</div>
+<div class="controls">
+<input class="slider" id="volumeSlider" max="1" min="0" oninput="changeVolume()" step="0.01" type="range" value="1"/>
+<select class="quality-select" id="qualitySelect" onchange="changeQuality()">
+<option value="auto">Auto</option>
+<option value="low">Low</option>
+<option value="medium">Medium</option>
+<option value="high">High</option>
+</select>
+<div class="time" id="currentTime">00:00</div>
+<div class="progress-bar">
+<div class="progress" id="progress"></div>
+</div>
+<div class="time" id="totalDuration">00:00</div>
+<span class="playback-rate" id="playbackRate">1x</span>
+<select class="quality-select" id="speedSelect" onchange="changeSpeed()">
+<option value="0.5">0.5x</option>
+<option selected="" value="1">1x</option>
+<option value="1.5">1.5x</option>
+<option value="2">2x</option>
+</select>
+</div>
+</div>
+<div id="loadingSpinner">
+<div></div>
+</div>
+<script>
     var videoContainer = document.getElementById('videoContainer');
     var videoUrlInput = document.getElementById('videoUrl');
     var videoFileInput = document.getElementById('videoFile');
@@ -513,5 +512,5 @@ video {
 
     setInterval(updateProgress, 1000);
   </script>
-</body>
+<script src="js/common.js"></script><script>abInitChrome('videoplayer');</script></body>
 </html>

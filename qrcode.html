@@ -4,76 +4,159 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>QR Code Generator — AI Bots</title>
-<meta name="description" content="Turn any link, text, or Wi-Fi detail into a downloadable QR code.">
+<meta name="description" content="Turn any link, text, email, or Wi-Fi detail into a downloadable high-resolution QR code.">
 <link rel="icon" href="https://i.ibb.co/XjHbck3/logo.png" type="image/png">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <link rel="stylesheet" href="css/theme.css">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <style>
-  .qr-wrap{ display:grid; grid-template-columns:1fr 300px; gap:20px; align-items:start; }
-  @media(max-width:720px){ .qr-wrap{ grid-template-columns:1fr; } }
-  .qr-preview{ display:flex; flex-direction:column; align-items:center; gap:14px; position:sticky; top:80px; }
-  #qrCanvas{ background:#fff; padding:16px; border-radius:var(--radius); box-shadow:var(--shadow); }
-  .swatch-row{ display:flex; gap:8px; }
-  .swatch{ width:30px; height:30px; border-radius:8px; border:2px solid var(--border); cursor:pointer; padding:0; }
-  .swatch.active{ border-color: var(--accent); }
+  .qr-layout-grid {
+    display: grid;
+    grid-template-columns: 1fr 340px;
+    gap: 24px;
+    align-items: start;
+  }
+  @media (max-width: 840px) {
+    .qr-layout-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+  .qr-preview-box {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 18px;
+    position: sticky;
+    top: 90px;
+    text-align: center;
+  }
+  .qr-canvas-holder {
+    background: #ffffff !important;
+    padding: 20px;
+    border-radius: var(--radius-lg);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    overflow: hidden;
+  }
+  .qr-canvas-holder:hover {
+    transform: scale(1.02);
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.16);
+  }
+  .qr-canvas-holder canvas,
+  .qr-canvas-holder img {
+    display: block !important;
+    max-width: 100% !important;
+    height: auto !important;
+  }
+  .swatch-row {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-top: 4px;
+  }
+  .swatch {
+    width: 36px;
+    height: 36px;
+    border-radius: var(--radius-sm);
+    border: 2px solid transparent;
+    cursor: pointer;
+    padding: 0;
+    transition: transform 0.2s ease, border-color 0.2s ease;
+    box-shadow: var(--shadow-sm);
+  }
+  .swatch:hover {
+    transform: scale(1.15);
+  }
+  .swatch.active {
+    border-color: var(--primary);
+    transform: scale(1.1);
+    box-shadow: 0 0 0 3px var(--primary-glow);
+  }
 </style>
 </head>
 <body>
 <div class="ab-shell">
   <div class="ab-page-head">
-    <h1>▦ QR Code Generator</h1>
-    <p>Encode a link, text, email, or Wi-Fi network into a QR code you can download as PNG.</p>
+    <h1><i class="fas fa-qrcode" style="color: var(--primary); margin-right: 8px;"></i> QR Code Generator</h1>
+    <p>Encode any link, text, email, or Wi-Fi network into a clean, scan-ready QR code you can download as PNG.</p>
   </div>
 
-  <div class="qr-wrap">
+  <div class="qr-layout-grid">
     <div class="ab-card">
-      <div class="ab-filters" style="margin:0 0 18px;">
-        <button class="ab-chip active" data-type="text">Text / Link</button>
-        <button class="ab-chip" data-type="email">Email</button>
-        <button class="ab-chip" data-type="wifi">Wi-Fi</button>
+      <label class="ab-label" style="margin-bottom: 10px;">Select Payload Type</label>
+      <div class="ab-filters" style="margin: 0 0 20px;">
+        <button class="ab-chip active" data-type="text"><i class="fas fa-link"></i> Text / URL</button>
+        <button class="ab-chip" data-type="email"><i class="fas fa-envelope"></i> Email</button>
+        <button class="ab-chip" data-type="wifi"><i class="fas fa-wifi"></i> Wi-Fi</button>
       </div>
 
       <div id="fieldsText">
-        <label class="ab-label" for="qrText">Text or URL</label>
-        <textarea id="qrText" class="ab-input" rows="3" placeholder="https://example.com">https://aibots.co.in</textarea>
+        <label class="ab-label" for="qrText">Text or Website URL</label>
+        <textarea id="qrText" class="ab-input" rows="3" placeholder="https://example.com">https://aibots-one.vercel.app</textarea>
       </div>
 
       <div id="fieldsEmail" class="ab-hidden">
-        <div class="ab-col"><label class="ab-label">Email address</label><input type="email" id="qrEmail" class="ab-input" placeholder="hello@example.com"></div>
-        <div class="ab-col ab-mt-16"><label class="ab-label">Subject (optional)</label><input type="text" id="qrEmailSub" class="ab-input"></div>
+        <div class="ab-col">
+          <label class="ab-label" for="qrEmail">Recipient Email Address</label>
+          <input type="email" id="qrEmail" class="ab-input" placeholder="name@example.com">
+        </div>
+        <div class="ab-col ab-mt-16">
+          <label class="ab-label" for="qrEmailSub">Subject (Optional)</label>
+          <input type="text" id="qrEmailSub" class="ab-input" placeholder="Inquiry about AI Bots">
+        </div>
       </div>
 
       <div id="fieldsWifi" class="ab-hidden">
-        <div class="ab-col"><label class="ab-label">Network name (SSID)</label><input type="text" id="qrSsid" class="ab-input"></div>
-        <div class="ab-col ab-mt-16"><label class="ab-label">Password</label><input type="text" id="qrWifiPass" class="ab-input"></div>
-        <div class="ab-col ab-mt-16"><label class="ab-label">Security</label>
+        <div class="ab-col">
+          <label class="ab-label" for="qrSsid">Network Name (SSID)</label>
+          <input type="text" id="qrSsid" class="ab-input" placeholder="Home-WiFi">
+        </div>
+        <div class="ab-col ab-mt-16">
+          <label class="ab-label" for="qrWifiPass">Password</label>
+          <input type="text" id="qrWifiPass" class="ab-input" placeholder="WiFi Password">
+        </div>
+        <div class="ab-col ab-mt-16">
+          <label class="ab-label" for="qrWifiSec">Security Type</label>
           <select id="qrWifiSec" class="ab-select">
-            <option value="WPA">WPA/WPA2</option>
+            <option value="WPA" selected>WPA / WPA2</option>
             <option value="WEP">WEP</option>
-            <option value="nopass">None</option>
+            <option value="nopass">None (Open Network)</option>
           </select>
         </div>
       </div>
 
       <div class="ab-col ab-mt-24">
-        <label class="ab-label">Size</label>
-        <input type="range" id="qrSize" min="150" max="500" value="260" step="10">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+          <label class="ab-label" for="qrSize">QR Size</label>
+          <span id="qrSizeVal" style="font-family: var(--font-mono); font-size: 13px; color: var(--primary); font-weight: 700;">240 px</span>
+        </div>
+        <input type="range" id="qrSize" class="range-slider" min="160" max="400" value="240" step="10" oninput="document.getElementById('qrSizeVal').textContent = this.value + ' px'">
       </div>
+
       <div class="ab-col ab-mt-16">
-        <label class="ab-label">Foreground color</label>
+        <label class="ab-label">Foreground Color Theme</label>
         <div class="swatch-row" id="colorRow">
-          <button class="swatch active" style="background:#1c1917" data-color="#1c1917"></button>
-          <button class="swatch" style="background:#ea580c" data-color="#ea580c"></button>
-          <button class="swatch" style="background:#2563eb" data-color="#2563eb"></button>
-          <button class="swatch" style="background:#16a34a" data-color="#16a34a"></button>
-          <button class="swatch" style="background:#dc2626" data-color="#dc2626"></button>
+          <button class="swatch active" style="background:#0f172a;" data-color="#0f172a" title="Midnight Slate"></button>
+          <button class="swatch" style="background:#4f46e5;" data-color="#4f46e5" title="Indigo Brand"></button>
+          <button class="swatch" style="background:#0284c7;" data-color="#0284c7" title="Ocean Blue"></button>
+          <button class="swatch" style="background:#10b981;" data-color="#10b981" title="Emerald Green"></button>
+          <button class="swatch" style="background:#ea580c;" data-color="#ea580c" title="Sunset Orange"></button>
+          <button class="swatch" style="background:#ec4899;" data-color="#ec4899" title="Berry Pink"></button>
         </div>
       </div>
     </div>
 
-    <div class="ab-card qr-preview">
-      <div id="qrCanvas"></div>
-      <button class="ab-btn block" id="downloadQr">⬇ Download PNG</button>
+    <div class="ab-card qr-preview-box">
+      <div style="font-size: 14px; font-weight: 700; color: var(--text-primary);">Live QR Preview</div>
+      <div id="qrCanvas" class="qr-canvas-holder"></div>
+      <button class="ab-btn block" id="downloadQr" style="margin-top: 6px;">
+        <i class="fas fa-download"></i> Download PNG
+      </button>
     </div>
   </div>
 </div>
@@ -83,74 +166,80 @@
 abInitChrome('qrcode');
 
 let currentType = 'text';
-let fgColor = '#1c1917';
+let fgColor = '#0f172a';
 let qr = null;
 const qrCanvas = document.getElementById('qrCanvas');
 
-document.querySelectorAll('[data-type]').forEach(btn=>{
-  btn.addEventListener('click', ()=>{
-    document.querySelectorAll('[data-type]').forEach(b=>b.classList.remove('active'));
+document.querySelectorAll('[data-type]').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('[data-type]').forEach(b => b.classList.remove('active'));
     btn.classList.add('active');
     currentType = btn.dataset.type;
-    ['Text','Email','Wifi'].forEach(t=>{
-      document.getElementById('fields'+t).classList.toggle('ab-hidden', t.toLowerCase() !== currentType);
+    ['Text', 'Email', 'Wifi'].forEach(t => {
+      document.getElementById('fields' + t).classList.toggle('ab-hidden', t.toLowerCase() !== currentType);
     });
     render();
   });
 });
 
-document.querySelectorAll('.swatch').forEach(sw=>{
-  sw.addEventListener('click', ()=>{
-    document.querySelectorAll('.swatch').forEach(s=>s.classList.remove('active'));
+document.querySelectorAll('.swatch').forEach(sw => {
+  sw.addEventListener('click', () => {
+    document.querySelectorAll('.swatch').forEach(s => s.classList.remove('active'));
     sw.classList.add('active');
     fgColor = sw.dataset.color;
     render();
   });
 });
 
-function buildPayload(){
-  if (currentType === 'text') return document.getElementById('qrText').value || ' ';
-  if (currentType === 'email'){
+function buildPayload() {
+  if (currentType === 'text') return document.getElementById('qrText').value || 'https://aibots-one.vercel.app';
+  if (currentType === 'email') {
     const to = document.getElementById('qrEmail').value;
     const sub = document.getElementById('qrEmailSub').value;
-    return `mailto:${to}${sub ? '?subject='+encodeURIComponent(sub) : ''}`;
+    return `mailto:${to}${sub ? '?subject=' + encodeURIComponent(sub) : ''}`;
   }
-  if (currentType === 'wifi'){
+  if (currentType === 'wifi') {
     const ssid = document.getElementById('qrSsid').value;
     const pass = document.getElementById('qrWifiPass').value;
     const sec = document.getElementById('qrWifiSec').value;
     return `WIFI:T:${sec};S:${ssid};P:${pass};;`;
   }
-  return ' ';
+  return 'https://aibots-one.vercel.app';
 }
 
-function render(){
-  const size = +document.getElementById('qrSize').value;
+function render() {
+  const size = parseInt(document.getElementById('qrSize').value) || 240;
   qrCanvas.innerHTML = '';
-  qrCanvas.style.width = size + 'px';
-  qrCanvas.style.height = size + 'px';
+  
   qr = new QRCode(qrCanvas, {
     text: buildPayload(),
-    width: size, height: size,
-    colorDark: fgColor, colorLight: '#ffffff',
+    width: size,
+    height: size,
+    colorDark: fgColor,
+    colorLight: '#ffffff',
     correctLevel: QRCode.CorrectLevel.M
   });
 }
 
-document.querySelectorAll('input, textarea, select').forEach(el=>{
-  el.addEventListener('input', ()=>{ clearTimeout(window._qrT); window._qrT = setTimeout(render, 200); });
+document.querySelectorAll('input, textarea, select').forEach(el => {
+  el.addEventListener('input', () => {
+    clearTimeout(window._qrT);
+    window._qrT = setTimeout(render, 150);
+  });
 });
 
-document.getElementById('downloadQr').addEventListener('click', ()=>{
+document.getElementById('downloadQr').addEventListener('click', () => {
   const img = qrCanvas.querySelector('img') || qrCanvas.querySelector('canvas');
+  if (!img) return;
   const link = document.createElement('a');
-  link.download = 'qrcode.png';
-  if (img.tagName === 'CANVAS'){
+  link.download = `AI_Bots_QR_${Date.now()}.png`;
+  if (img.tagName === 'CANVAS') {
     link.href = img.toDataURL('image/png');
   } else {
     link.href = img.src;
   }
   link.click();
+  abToast('QR Code downloaded! 🚀');
 });
 
 render();

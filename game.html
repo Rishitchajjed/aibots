@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Open World Game</title>
+    <style>
+/* Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+
+/* Body Styling */
+body {
+    font-family: 'Press Start 2P', sans-serif;
+    background-color: #222;
+    color: #fff;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+}
+
+/* Game World Styling */
+#gameWorld {
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    perspective: 1000px; /* Add perspective for 3D effect */
+}
+
+/* Ground Styling */
+#ground {
+    width: 100%;
+    height: 100%;
+    background-image: radial-gradient(circle, #78b7bb, #2d5366);
+    border: 1px solid #000;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+    animation: ground-bounce 5s ease-in-out infinite alternate; /* Add ground bounce animation */
+}
+
+@keyframes ground-bounce {
+    0% {
+        transform: translateY(0);
+    }
+    100% {
+        transform: translateY(-10px);
+    }
+}
+
+/* Player Styling */
+#player {
+    width: 50px;
+    height: 50px;
+    background-color: #3498db;
+    border-radius: 50%;
+    position: absolute;
+    z-index: 2;
+    transition: transform 0.2s ease-in-out, background-color 0.3s ease, box-shadow 0.3s ease;
+    box-shadow: 0 0 10px rgba(52, 152, 219, 0.6), 0 0 20px rgba(52, 152, 219, 0.4), 0 0 30px rgba(52, 152, 219, 0.2);
+    animation: bounce 2s infinite;
+}
+
+#player:hover {
+    transform: scale(1.2);
+    background-color: #1abc9c;
+    box-shadow: 0 0 15px rgba(26, 188, 156, 0.8), 0 0 30px rgba(26, 188, 156, 0.6), 0 0 45px rgba(26, 188, 156, 0.4);
+}
+
+
+
+/* Bullet Styling */
+.bullet {
+    width: 10px;
+    height: 10px;
+    background-color: #f1c40f;
+    border-radius: 50%;
+    position: absolute;
+    animation: shoot 1s linear forwards; /* Add shooting animation */
+    box-shadow: 0 0 10px rgba(241, 196, 15, 0.8), 0 0 20px rgba(241, 196, 15, 0.6), 0 0 30px rgba(241, 196, 15, 0.4);
+}
+
+@keyframes shoot {
+    0% {
+        transform: translateY(0) scale(1);
+        opacity: 1;
+    }
+    100% {
+        transform: translateY(-500px) scale(0.5);
+        opacity: 0;
+    }
+}
+
+/* Zombie Styling */
+.zombie {
+    width: 50px;
+    height: 50px;
+    background-color: #27ae60;
+    border-radius: 50%;
+    position: absolute;
+    z-index: 1;
+    animation: zombie-move 3s linear infinite alternate;
+    box-shadow: 0 0 10px rgba(39, 174, 96, 0.5), 0 0 20px rgba(39, 174, 96, 0.3), 0 0 30px rgba(39, 174, 96, 0.1);
+    transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+}
+
+.zombie:hover {
+    transform: scale(1.2);
+    box-shadow: 0 0 20px rgba(39, 174, 96, 0.7), 0 0 30px rgba(39, 174, 96, 0.5), 0 0 40px rgba(39, 174, 96, 0.3);
+}
+
+@keyframes zombie-move {
+    0% {
+        transform: translateX(-20px) rotate(0deg);
+    }
+    50% {
+        transform: translateX(0) rotate(180deg);
+    }
+    100% {
+        transform: translateX(20px) rotate(360deg);
+    }
+}
+
+/* Additional Bullet Effects */
+.bullet::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: rgba(241, 196, 15, 0.5);
+    animation: pulse 1s infinite;
+    transform: translate(-50%, -50%);
+    z-index: -1;
+}
+
+@keyframes pulse {
+    0% {
+        transform: translate(-50%, -50%) scale(1);
+        opacity: 0.7;
+    }
+    100% {
+        transform: translate(-50%, -50%) scale(1.5);
+        opacity: 0;
+    }
+}
+
+/* Health Bar Styling */
+#healthBar {
+    width: 200px;
+    height: 20px;
+    background-color: #34495e;
+    border-radius: 10px;
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    animation: pulse 1.5s ease-in-out infinite; /* Add pulse animation */
+}
+
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.1);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+#health {
+    height: 100%;
+    background-color: #2ecc71;
+    border-radius: 10px;
+    transition: width 0.2s ease-in-out; /* Add transition for health bar */
+}
+
+/* Score Bar Styling */
+#scoreBar {
+    font-size: 24px;
+    color: #fff;
+    background-color: #2c3e50;
+    padding: 10px;
+    border-radius: 5px;
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    animation: score-bounce 1s ease-in-out infinite alternate; /* Add score bounce animation */
+}
+
+@keyframes score-bounce {
+    0% {
+        transform: scale(1);
+    }
+    100% {
+        transform: scale(1.1);
+    }
+}
+
+/* Game Over Screen Styling */
+#gameOver {
+    font-size: 36px;
+    color: #e74c3c;
+    text-shadow: 2px 2px 4px rgba(231, 76, 60, 0.5);
+    text-align: center;
+    display: none;
+    align-items: center;
+    top: 50%;
+    left: 50%;
+    animation: game-over-fade 0.5s ease-in-out forwards, game-over-bounce 0.5s ease-in-out forwards, game-over-shake 0.5s ease-in-out infinite alternate;
+}
+
+@keyframes game-over-fade {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes game-over-bounce {
+    0% {
+        transform: translateY(-50px);
+    }
+    100% {
+        transform: translateY(0);
+    }
+}
+
+@keyframes game-over-shake {
+    0% {
+        transform: translateX(-5px);
+    }
+    50% {
+        transform: translateX(5px);
+    }
+    100% {
+        transform: translateX(-5px);
+    }
+}
+
+/* Replay Button Styling */
+#replayBtn {
+    background-color: #e74c3c;
+    font-weight: bold;
+    text-transform: uppercase;
+    border: 2px solid #c0392b;
+    border-radius: 5px;
+    padding: 15px 30px;
+    font-size: 28px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
+}
+
+#replayBtn:hover {
+    background-color: #c0392b;
+    border-color: #a93226;
+    color: #fff;
+}
+
+/* Shooting Animation */
+@keyframes shoot {
+    from {
+        transform: scale(1) translateY(0);
+        opacity: 1;
+    }
+    to {
+        transform: scale(0) translateY(-100px);
+        opacity: 0;
+    }
+}
+
+/* Additional Styling */
+.scoreAnimation {
+    position: absolute;
+    font-size: 24px;
+    color: #f39c12;
+    opacity: 0;
+    transition: opacity 1s, transform 1s; /* Smooth animation */
+}
+    </style>
+</head>
+<body>
+    <div id="gameWorld">
+        <div id="ground"></div>
+        <div id="player"></div>
+        <div id="healthBar">
+            <div id="health"></div>
+        </div>
+        <div id="scoreBar">Score: <span id="score">0</span></div>
+        <div id="gameOver">Game Over!<br><button id="replayBtn">Replay</button></div>
+    </div>
+
+    <!-- Add an audio element to load the sound effect -->
+    <audio id="soundEffect" preload="auto">
+        <source src="https://www.fesliyanstudios.com/play-mp3/7136" type="audio/mpeg">
+        Your browser does not support the audio element.
+    </audio>
+
+    <script>
+        const player = document.getElementById('player');
+        const gameWorld = document.getElementById('gameWorld');
+        const healthBar = document.getElementById('health');
+        const scoreDisplay = document.getElementById('score');
+        const scoreBar = document.getElementById('scoreBar');
+        const gameOverScreen = document.getElementById('gameOver');
+        const replayBtn = document.getElementById('replayBtn');
+        const zombies = [];
+        const bullets = [];
+        let health = 100;
+        let score = 0;
+        let zombieInterval;
+        const sound = document.getElementById("soundEffect");
+
+        // Function to create zombies
+        function createZombie() {
+            const zombie = document.createElement('div');
+            zombie.className = 'zombie';
+            zombie.dataset.health = 10; // Set initial health of zombie
+            const zombieSize = 50;
+            
+            // Calculate random position for the zombie while ensuring it's not too close to the player
+            let posX, posY;
+            do {
+                posX = Math.random() * (gameWorld.offsetWidth - zombieSize);
+                posY = Math.random() * (gameWorld.offsetHeight - zombieSize);
+            } while (Math.abs(posX - player.offsetLeft) < 100 || Math.abs(posY - player.offsetTop) < 100);
+            
+            zombie.style.top = posY + 'px';
+            zombie.style.left = posX + 'px';
+            gameWorld.appendChild(zombie);
+            zombies.push(zombie);
+        }
+
+        // Function to handle zombie attacks
+        function attack() {
+            decreaseHealth(10); // Zombie attacks, decrease player health
+            playSound(); // Play sound effect when attacked
+        }
+
+        // Function to decrease player's health
+        function decreaseHealth(amount) {
+            health -= amount;
+            health = Math.max(0, health);
+            healthBar.style.width = health + '%';
+            if (health === 0) {
+                endGame();
+            }
+        }
+
+        // Function to handle player attacks
+        function shoot(event) {
+            const bullet = document.createElement('div');
+            bullet.className = 'bullet';
+            bullet.style.top = player.offsetTop + 'px';
+            bullet.style.left = player.offsetLeft + 'px';
+            gameWorld.appendChild(bullet);
+            bullets.push(bullet);
+
+            // Move bullet towards clicked position
+            const dx = event.clientX - player.offsetLeft;
+            const dy = event.clientY - player.offsetTop;
+            const angle = Math.atan2(dy, dx);
+            const speed = 10;
+            const vx = Math.cos(angle) * speed;
+            const vy = Math.sin(angle) * speed;
+
+            function move() {
+                bullet.style.left = (bullet.offsetLeft + vx) + 'px';
+                bullet.style.top = (bullet.offsetTop + vy) + 'px';
+
+                // Check collision with zombies
+                zombies.forEach((zombie, index) => {
+                    const bulletRect = bullet.getBoundingClientRect();
+                    const zombieRect = zombie.getBoundingClientRect();
+                    const dx = bulletRect.x - (zombieRect.x + zombieRect.width / 2); // Center of zombie
+                    const dy = bulletRect.y - (zombieRect.y + zombieRect.height / 2); // Center of zombie
+                    const distance = Math.sqrt(dx * dx + dy * dy);
+                    if (distance < 25) {
+                        decreaseZombieHealth(zombie); // Decrease zombie health
+                        bullet.remove();
+                        bullets.splice(bullets.indexOf(bullet), 1);
+                        increaseScore(10); // Increase score on hitting a zombie
+                        showScoreAnimation(zombieRect.x, zombieRect.y, '+10'); // Show score animation
+                    }
+                });
+
+                if (bullet.offsetLeft < 0 || bullet.offsetTop < 0 || bullet.offsetLeft > gameWorld.offsetWidth || bullet.offsetTop > gameWorld.offsetHeight) {
+                    bullet.remove();
+                    bullets.splice(bullets.indexOf(bullet), 1);
+                } else {
+                    requestAnimationFrame(move);
+                }
+            }
+
+            move();
+            playSound(); // Play sound effect when shooting
+        }
+
+        // Function to decrease zombie's health
+        function decreaseZombieHealth(zombie) {
+            let zombieHealth = parseInt(zombie.dataset.health);
+            zombieHealth -= 10;
+            zombie.dataset.health = zombieHealth;
+            if (zombieHealth <= 0) {
+                zombie.remove();
+                zombies.splice(zombies.indexOf(zombie), 1);
+            }
+        }
+
+        // Increase score
+        function increaseScore(amount) {
+            score += amount;
+            scoreDisplay.textContent = score;
+        }
+
+        // Shoot when clicking or tapping
+        gameWorld.addEventListener('mousedown', shoot);
+        gameWorld.addEventListener('touchstart', (event) => {
+            event.preventDefault();
+            shoot(event.touches[0]);
+        });
+
+        // Start creating zombies
+        zombieInterval = setInterval(createZombie, 1800);
+
+        // Move zombies towards player
+        setInterval(moveZombies, 1000 / 30); // 30 FPS
+
+        // Function to move zombies
+        function moveZombies() {
+            zombies.forEach(zombie => {
+                const playerRect = player.getBoundingClientRect();
+                const zombieRect = zombie.getBoundingClientRect();
+                const dx = playerRect.x - (zombieRect.x + zombieRect.width / 2); // Center of zombie
+                const dy = playerRect.y - (zombieRect.y + zombieRect.height / 2); // Center of zombie
+                const angle = Math.atan2(dy, dx);
+                const speed = 2;
+                const vx = Math.cos(angle) * speed;
+                const vy = Math.sin(angle) * speed;
+
+                if (Math.abs(dx) > 5 && Math.abs(dy) > 5) {
+                    zombie.style.left = (zombie.offsetLeft + vx) + 'px';
+                    zombie.style.top = (zombie.offsetTop + vy) + 'px';
+                } else {
+                    attack(); // Zombie reaches player, initiate attack
+                }
+            });
+        }
+
+        // Function to handle end of the game
+        function endGame() {
+            health = 0;
+            healthBar.style.width = '0%';
+            zombies.forEach(zombie => zombie.remove());
+            bullets.forEach(bullet => bullet.remove());
+            player.style.background = 'red'; // Change player color when dead
+            gameOverScreen.style.display = 'block'; // Show game over screen
+            clearInterval(zombieInterval); // Stop spawning zombies
+        }
+
+        // Replay button functionality
+        replayBtn.addEventListener('click', () => {
+            health = 100;
+            score = 0;
+            healthBar.style.width = '100%';
+            scoreDisplay.textContent = '0';
+            player.style.background = 'blue'; // Reset player color
+            gameOverScreen.style.display = 'none'; // Hide game over screen
+            zombies.forEach(zombie => zombie.remove());
+            bullets.forEach(bullet => bullet.remove());
+            zombieInterval = setInterval(createZombie, 3000); // Restart spawning zombies
+        });
+
+        // Function to show score animation
+        function showScoreAnimation(x, y, text) {
+            const scoreAnimation = document.createElement('div');
+            scoreAnimation.className = 'scoreAnimation';
+            scoreAnimation.textContent = text;
+            scoreAnimation.style.left = x + 'px';
+            scoreAnimation.style.top = y + 'px';
+            gameWorld.appendChild(scoreAnimation);
+            setTimeout(() => {
+                scoreAnimation.style.opacity = '1';
+                scoreAnimation.style.transform = 'translateY(-50px)';
+            }, 10);
+            setTimeout(() => {
+                scoreAnimation.remove();
+            }, 1000);
+        }
+
+        // Function to play the sound effect
+        function playSound() {
+            sound.pause(); // Pause any previous playback
+            sound.currentTime = 0; // Reset the sound effect to start from the beginning
+            sound.play().catch(error => {
+                console.log("Error playing sound: ", error);
+            });
+        }
+
+        // Add event listener to start sound effect on first user interaction
+        window.addEventListener('click', () => {
+            sound.play().catch(error => {
+                console.log("Error playing sound: ", error);
+            });
+        }, { once: true });
+    </script>
+</body>
+</html>

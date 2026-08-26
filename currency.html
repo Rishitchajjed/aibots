@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+      <!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-2L87FMQS3W"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-2L87FMQS3W');
+</script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" href="https://i.ibb.co/XjHbck3/logo.png" type="image/png" />
+  <title>Currency Converter</title>
+  <style>
+/* Reset */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+/* Body styles */
+body {
+  font-family: Arial, sans-serif;
+  background-color: #f9f9f9;
+}
+
+/* Header styles */
+header {
+  background-color: #007bff;
+  color: #fff;
+  padding: 20px 0;
+  text-align: center;
+}
+
+header h2 {
+  margin: 0;
+  font-size: 24px;
+}
+
+header img {
+  width: 100px;
+  height: auto;
+}
+
+/* Container styles */
+.container {
+  max-width: 400px;
+  margin: 50px auto;
+  padding: 20px;
+  border-radius: 15px;
+  background-color: #fff;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  animation: fadeInUp 0.5s ease forwards;
+}
+
+@keyframes fadeInUp {
+  0% {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Form styles */
+form {
+  margin-bottom: 20px;
+}
+
+label {
+  display: block;
+  font-weight: bold;
+  margin-bottom: 5px;
+  color: #333;
+  animation: fadeIn 0.5s ease forwards;
+}
+
+select, input {
+  width: calc(100% - 22px);
+  padding: 12px;
+  margin: 5px 0 15px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 16px;
+  color: #555;
+  background-color: #f9f9f9;
+  animation: fadeIn 0.5s ease forwards;
+  transition: background-color 0.3s, border-color 0.3s;
+}
+
+select:hover, input:hover {
+  background-color: #f0f0f0;
+  border-color: #999;
+}
+
+select:focus, input:focus {
+  outline: none;
+  border-color: #007bff;
+}
+
+select {
+  appearance: none;
+  background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 12a1 1 0 01-.707-.293l-4-4a1 1 0 111.414-1.414L10 9.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-.707.293z" clip-rule="evenodd"/></svg>');
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  background-size: 15px;
+}
+
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.btn-group {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+}
+
+button {
+  width: calc(33.33% - 6px);
+  padding: 12px;
+  border: none;
+  border-radius: 5px;
+  background-color: #0056b3;
+  color: #fff;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background-color 0.3s, transform 0.2s;
+  animation: fadeIn 0.5s ease forwards;
+}
+
+button:hover {
+  background-color: #004080;
+  transform: scale(1.05);
+}
+
+/* Result styles */
+#result {
+  font-weight: bold;
+  text-align: center;
+  margin-top: 20px;
+  font-size: 18px;
+  color: #333;
+  animation: fadeIn 0.5s ease forwards;
+}
+
+#liveRates {
+  text-align: center;
+  margin-top: 10px;
+  font-size: 14px;
+  color: #555;
+  animation: fadeIn 0.5s ease forwards;
+}
+
+/* Search bar styles */
+.search-container {
+  text-align: center;
+  margin-top: 10px;
+}
+
+.search-container input[type=text] {
+  width: 70%;
+  padding: 12px;
+  margin: 5px 0 15px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 16px;
+  color: #555;
+  animation: fadeIn 0.5s ease forwards;
+  transition: background-color 0.3s, border-color 0.3s;
+}
+
+.search-container input[type=text]:hover {
+  background-color: #f0f0f0;
+  border-color: #999;
+}
+
+.search-container input[type=text]:focus {
+  outline: none;
+  border-color: #007bff;
+}
+
+/* Graph container styles */
+.graph-container {
+  margin-top: 20px;
+  text-align: center;
+  animation: fadeIn 0.5s ease forwards;
+}
+
+#exchange-graph {
+  width: 100%;
+  max-width: 350px;
+  height: 200px;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  animation: fadeIn 0.5s ease forwards, scaleUp 0.5s ease forwards;
+}
+
+@keyframes scaleUp {
+  0% {
+    transform: scale(0.8);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+  </style>
+</head>
+<body>
+  <header>
+    <img src="https://i.ibb.co/G2NFYHG/logo.png" alt="Your Logo">
+    <h2>Currency Converter</h2>
+  </header>
+  <div class="container">
+    <div class="search-container">
+      <input type="text" id="searchInput" onkeyup="searchCurrency()" placeholder="Search currency...">
+    </div>
+    <label for="from">From:</label>
+    <select id="from" onchange="convert()">
+      <!-- Currency options -->
+    </select>
+    <br>
+    <label for="to">To:</label>
+    <select id="to" onchange="convert()">
+      <!-- Currency options -->
+    </select>
+    <br>
+    <label for="amount">Amount:</label>
+    <input type="number" id="amount" min="0" step="0.01" oninput="convert()">
+    <div class="btn-group">
+      <button onclick="convert()">Convert</button>
+      <button onclick="clearFields()">Clear</button>
+      <button onclick="swapCurrencies()">Reverse</button>
+    </div>
+    <div id="result"></div>
+    <div id="liveRates"></div>
+    <div class="graph-container">
+      <canvas id="exchange-graph"></canvas>
+    </div>
+  </div>
+
+  <script>
+    const currencies = [
+      { code: 'USD', name: 'United States Dollar', symbol: '$', flag: '🇺🇸' },
+      { code: 'EUR', name: 'Euro', symbol: '€', flag: '🇪🇺' },
+      { code: 'GBP', name: 'British Pound Sterling', symbol: '£', flag: '🇬🇧' },
+      { code: 'INR', name: 'Indian Rupee', symbol: '₹', flag: '🇮🇳' },
+      { code: 'JPY', name: 'Japanese Yen', symbol: '¥', flag: '🇯🇵' },
+      { code: 'CNY', name: 'Chinese Yuan', symbol: '¥', flag: '🇨🇳' },
+      { code: 'IDR', name: 'Indonesian Rupiah', symbol: 'Rp', flag: '🇮🇩' },
+      { code: 'PKR', name: 'Pakistani Rupee', symbol: '₨', flag: '🇵🇰' },
+      { code: 'RUB', name: 'Russian Ruble', symbol: '₽', flag: '🇷🇺' },
+      { code: 'AED', name: 'United Arab Emirates Dirham', symbol: 'د.إ', flag: '🇦🇪' },
+      { code: 'CAD', name: 'Canadian Dollar', symbol: '$', flag: '🇨🇦' },
+      { code: 'AUD', name: 'Australian Dollar', symbol: '$', flag: '🇦🇺' },
+      { code: 'CHF', name: 'Swiss Franc', symbol: 'Fr', flag: '🇨🇭' },
+      { code: 'SGD', name: 'Singapore Dollar', symbol: '$', flag: '🇸🇬' },
+      { code: 'MXN', name: 'Mexican Peso', symbol: '$', flag: '🇲🇽' }
+      // Add more currencies as needed
+    ];
+
+    // Populate currency options
+    const fromSelect = document.getElementById("from");
+    const toSelect = document.getElementById("to");
+    currencies.forEach(currency => {
+      const option = document.createElement("option");
+      option.value = currency.code;
+      option.textContent = `${currency.flag} ${currency.symbol} ${currency.code} (${currency.name})`;
+      fromSelect.appendChild(option.cloneNode(true));
+      toSelect.appendChild(option);
+    });
+
+    // Search function
+    function searchCurrency() {
+      const filter = document.getElementById("searchInput").value.toUpperCase();
+      const options = document.querySelectorAll("#from option, #to option");
+      options.forEach(option => {
+        const txtValue = option.textContent || option.innerText;
+        if (txtValue.toUpperCase().indexOf(filter) > -1) {
+          option.style.display = "";
+        } else {
+          option.style.display = "none";
+        }
+      });
+    }
+
+    function convert() {
+      const fromCurrency = document.getElementById("from").value;
+      const toCurrency = document.getElementById("to").value;
+      const amount = document.getElementById("amount").value;
+
+      if (!amount || isNaN(amount) || amount <= 0) {
+        document.getElementById("result").innerText = "Please enter a valid amount.";
+        return;
+      }
+
+      fetch(`https://api.exchangerate-api.com/v4/latest/${fromCurrency}`)
+        .then(response => response.json())
+        .then(data => {
+          const rate = data.rates[toCurrency];
+          if (rate) {
+            const convertedAmount = (amount * rate).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+            document.getElementById("result").innerText = `${amount} ${currencies.find(curr => curr.code === fromCurrency).symbol} ${fromCurrency} = ${currencies.find(curr => curr.code === toCurrency).symbol} ${convertedAmount} ${toCurrency}`;
+            const oneUnitRate = rate.toFixed(4);
+            document.getElementById("liveRates").innerText = `1 ${currencies.find(curr => curr.code === fromCurrency).symbol} ${fromCurrency} = ${currencies.find(curr => curr.code === toCurrency).symbol} ${oneUnitRate} ${toCurrency}`;
+          } else {
+            document.getElementById("result").innerText = "Error: Unable to fetch exchange rates.";
+          }
+          // Draw exchange rate graph
+          drawExchangeRateGraph(data);
+        })
+        .catch(error => console.error("Error fetching exchange rates:", error));
+    }
+
+    function clearFields() {
+      document.getElementById("from").value = "USD";
+      document.getElementById("to").value = "USD";
+      document.getElementById("amount").value = "";
+      document.getElementById("result").innerText = "";
+      document.getElementById("liveRates").innerText = "";
+      clearExchangeRateGraph();
+    }
+
+    function swapCurrencies() {
+      const fromCurrency = document.getElementById("from").value;
+      const toCurrency = document.getElementById("to").value;
+      document.getElementById("from").value = toCurrency;
+      document.getElementById("to").value = fromCurrency;
+      convert();
+    }
+
+    // Auto-update exchange rates every 10 seconds
+    setInterval(convert, 10000);
+
+    // Function to draw exchange rate graph
+    function drawExchangeRateGraph(data) {
+      const fromCurrency = document.getElementById("from").value;
+      const toCurrency = document.getElementById("to").value;
+      const rates = data.rates;
+      const labels = Object.keys(rates);
+      const exchangeRates = Object.values(rates);
+      const ctx = document.getElementById('exchange-graph').getContext('2d');
+      const myChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: labels,
+          datasets: [{
+            label: `${fromCurrency} to ${toCurrency}`,
+            data: exchangeRates,
+            backgroundColor: 'rgba(75, 192, 192, 0.2)',
+            borderColor: 'blue',
+            borderWidth: 1
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          scales: {
+            yAxes: [{
+              ticks: {
+                beginAtZero: true
+              }
+            }]
+          }
+        }
+      });
+    }
+
+    // Function to clear exchange rate graph
+    function clearExchangeRateGraph() {
+      const ctx = document.getElementById('exchange-graph').getContext('2d');
+      ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+    }
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</body>
+</html>

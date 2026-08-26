@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Invoice Generator</title>
+    <link rel="icon" href="https://i.ibb.co/XjHbck3/logo.png" type="image/png" />
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-2L87FMQS3W"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-2L87FMQS3W');
+    </script>
+    <style>
+ body {
+    font-family: 'Arial', sans-serif;
+    background-color: #f4f4f4;
+    margin: 0;
+    padding: 20px;
+    color: #333; /* Improved text color for better readability */
+    line-height: 1.6; /* Increased line height for better readability */
+    font-size: 16px; /* Set a base font size */
+    overflow-x: hidden; /* Prevent horizontal scrolling */
+    transition: background-color 0.3s ease, color 0.3s ease; /* Smooth transitions */
+}
+.container {
+    max-width: 95%;
+    background: #fff;
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    animation: fadeIn 0.5s ease both;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+h1, h2 {
+    color: #333;
+    font-weight: 700;
+    margin-bottom: 20px;
+}
+
+.form-group {
+    margin-bottom: 25px;
+    position: relative;
+}
+
+label {
+    display: block;
+    margin-bottom: 8px;
+    color: #555;
+    transition: transform 0.3s, color 0.3s;
+}
+
+input {
+    width: calc(100% - 24px);
+    padding: 12px;
+    box-sizing: border-box;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+    transition: border-color 0.3s;
+}
+
+input:focus {
+    border-color: #007BFF;
+}
+
+input:focus + label {
+    transform: translateY(-20px);
+    color: #007BFF;
+}
+
+button {
+    display: inline-block;
+    padding: 12px 20px;
+    background: #007BFF;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    margin-top: 15px;
+    transition: background 0.3s, transform 0.3s;
+}
+
+button:hover {
+    background: #0056b3;
+    transform: translateY(-3px);
+}
+
+.invoice {
+    margin-top: 50px;
+    padding: 30px;
+    border-radius: 15px;
+    background: linear-gradient(to bottom, #f9f9f9, #e0e0e0);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+    animation: slideInDown 0.5s ease both;
+    page-break-after: always;
+    max-width: 800px; /* Added max-width for better control */
+    margin-left: auto;
+    margin-right: auto; /* Center the invoice */
+}
+
+.invoice h2 {
+    margin-bottom: 20px; /* Increased bottom margin for better spacing */
+    color: #007BFF;
+    font-size: 24px; /* Increased font size for prominence */
+    text-align: center; /* Center align the heading */
+}
+
+.invoice-details {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px; /* Increased bottom margin for better spacing */
+    padding: 15px; /* Added padding for better separation */
+    background-color: #f1f1f1; /* Light background for contrast */
+    border-radius: 10px; /* Rounded corners for details section */
+}
+
+.invoice-details span {
+    color: #555;
+    font-size: 14px; /* Increased font size for readability */
+}
+
+.invoice-details div {
+    flex: 1; /* Ensure flexible space usage */
+    text-align: center; /* Center align each detail */
+}
+
+/* Responsive Adjustments */
+@media (max-width: 600px) {
+    .invoice {
+        padding: 20px; /* Adjust padding for small screens */
+    }
+
+    .invoice h2 {
+        font-size: 20px; /* Adjust font size for small screens */
+    }
+
+    .invoice-details {
+        flex-direction: column; /* Stack details vertically */
+        align-items: flex-start; /* Align items to start */
+    }
+
+    .invoice-details div {
+        text-align: left; /* Align text to left */
+        margin-bottom: 10px; /* Add bottom margin for separation */
+    }
+}
+
+.table-container {
+    overflow-x: auto;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th, td {
+    padding: 15px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+th {
+    background-color: #f2f2f2;
+}
+#reset {
+    background-color: red;
+}
+
+.add-item, .remove-item, .print-button {
+    display: inline-block;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background 0.3s, transform 0.3s;
+}
+
+.add-item {
+    background: #28a745;
+    color: #fff;
+}
+
+.add-item:hover {
+    background: #218838;
+    transform: translateY(-3px);
+}
+
+.remove-item {
+    background: #dc3545;
+    color: #fff;
+    margin-left: 10px;
+}
+
+.remove-item:hover {
+    background: #c82333;
+    transform: translateY(-3px);
+}
+
+.print-button {
+    background: #28a745;
+    color: #fff;
+    margin-left: 10px;
+}
+
+.print-button:hover {
+    background: #218838;
+    transform: translateY(-3px);
+}
+
+.icon {
+    display: inline-block;
+    vertical-align: middle;
+    margin-right: 5px;
+    transition: transform 0.3s;
+}
+
+button:hover .icon {
+    transform: rotate(90deg);
+}
+
+@media (max-width: 600px) {
+    .container {
+        padding: 10px;
+    }
+
+    input, button {
+        width: 100%;
+    }
+
+    button {
+        margin-top: 10px;
+    }
+}
+
+@media print {
+    .no-print {
+        display: none;
+    }
+}
+
+/* Animations */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(50px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes fadeOut {
+    from {
+        opacity: 1;
+    }
+    to {
+        opacity: 0;
+    }
+}
+
+@keyframes slideInDown {
+    from {
+        opacity: 0;
+        transform: translateY(-50px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes slideInLeft {
+    from {
+        opacity: 0;
+        transform: translateX(-50px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes slideInRight {
+    from {
+        opacity: 0;
+        transform: translateX(50px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+    </style>
+</head>
+<body>
+    <div class="container no-print">
+        <h1>Invoice Generator</h1>
+        <form id="invoiceForm">
+            <div class="form-group">
+                <label for="companyName">Company Name:</label>
+                <input type="text" id="companyName" name="companyName" required>
+            </div>
+            <div class="form-group">
+                <label for="clientName">Client Name:</label>
+                <input type="text" id="clientName" name="clientName" required>
+            </div>
+            <div class="form-group">
+                <label for="clientNumber">Client Number:</label>
+                <input type="number" id="clientNumber" name="clientNumber" required>
+            </div>
+            <div class="form-group">
+                <label for="invoiceDate">Invoice Date:</label>
+                <input type="date" id="invoiceDate" name="invoiceDate" required>
+            </div>
+            <div class="form-group">
+                <label for="items">Items:</label>
+                <table id="itemsTable">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Description</th>
+                            <th>Quantity</th>
+                            <th>Price (₹)</th>
+                            <th>Total (₹)</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>1</td>
+                            <td><input type="text" class="item-description" required></td>
+                            <td><input type="number" class="item-quantity" required></td>
+                            <td><input type="number" class="item-price" required></td>
+                            <td class="item-total text-right">0.00</td>
+                            <td><button type="button" class="remove-item" onclick="removeItem(this)">Remove</button></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <button type="button" class="add-item" onclick="addItem()">Add Item</button>
+            </div>
+            <div class="form-group">
+                <label for="discount">Discount (%):</label>
+                <input type="number" id="discount" name="discount" value="0" required>
+            </div>
+            <button type="button" onclick="generateInvoice()">Generate Invoice</button>
+            <button type="button" class="reset-button no-print" id="reset" onclick="resetForm()">Reset Form</button>
+        </form>
+    </div>
+    
+    <div id="invoice" class="invoice" style="display:none;">
+        <h2>Invoice</h2>
+        <p><strong>Bill Number:</strong> <span id="displayBillNumber"></span></p>
+        <p><strong>Company Name:</strong> <span id="displayCompanyName"></span></p>
+        <p><strong>Client Name:</strong> <span id="displayClientName"></span></p>
+        <p><strong>Client Number:</strong> <span id="displayClientNumber"></span></p>
+        <p><strong>Invoice Date:</strong> <span id="displayInvoiceDate"></span></p>
+        <table>
+            <thead>
+                <tr>
+                    <th>no.</th>
+                    <th>Description</th>
+                    <th>Quantity</th>
+                    <th>Price (₹)</th>
+                    <th>Total (₹)</th>
+                </tr>
+            </thead>
+            <tbody id="invoiceItems">
+            </tbody>
+        </table>
+        <p class="text-right"><strong>Total Amount:</strong> ₹<span id="displayTotalAmount">0.00</span></p>
+        <p class="text-right"><strong>Discount:</strong> ₹<span id="displayDiscount">0.00</span></p>
+        <p class="text-right"><strong>Final Amount:</strong> ₹<span id="displayFinalAmount">0.00</span></p>
+        <button class="print-button no-print" onclick="printInvoice()">Print Invoice</button>
+    </div>
+    
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.13.0/jquery-ui.min.js"></script>
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.0/themes/base/jquery-ui.css">
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const invoiceDateInput = document.getElementById('invoiceDate');
+            const today = new Date().toISOString().split('T')[0];
+            invoiceDateInput.value = today;
+
+            function initializeAutocompleteAndShortcuts(element) {
+                $(element).autocomplete({
+                    source: [
+                        { label: "mango", value: 100 },
+                        { label: "apple", value: 50 },
+                        { label: "charger", value: 200 },
+                        { label: "iphone 15", value: 66000 },
+                        { label: "tv", value: 180000 },
+                        { label: "microvave", value: 20000 },
+                        { label: "hd monitor", value: 7000 },
+                        { label: "ps5", value: 50000 }
+                    ],
+                    select: function(event, ui) {
+                        $(this).val(ui.item.label);
+                        const priceInput = $(this).closest('tr').find('.item-price');
+                        priceInput.val(ui.item.value);
+                        calculateTotal();
+                        return false;
+                    }
+                }).keydown(function(event) {
+                    if (event.which === 13) {
+                        event.preventDefault();
+                        const $autocomplete = $(this).data('ui-autocomplete');
+                        if ($autocomplete) {
+                            $(this).autocomplete('search', '');
+                            const $menu = $(this).autocomplete('widget');
+                            const $firstItem = $menu.find('li:first');
+                            if ($firstItem.length) {
+                                const label = $firstItem.text();
+                                $(this).val(label);
+                                const value = $firstItem.data('ui-autocomplete-item').value;
+                                const priceInput = $(this).closest('tr').find('.item-price');
+                                priceInput.val(value);
+                                calculateTotal();
+                            }
+                        }
+                        return false;
+                    }
+                });
+            }
+
+            $('.item-description').each(function() {
+                initializeAutocompleteAndShortcuts(this);
+            });
+
+            $('#itemsTable').on('DOMNodeInserted', 'tr', function() {
+                const newItemDescription = $(this).find('.item-description').get(0);
+                initializeAutocompleteAndShortcuts(newItemDescription);
+            });
+        });
+
+        function addItem() {
+            const table = document.getElementById('itemsTable').getElementsByTagName('tbody')[0];
+            const newRow = table.insertRow();
+            newRow.innerHTML = `
+                <td>${table.rows.length}</td>
+                <td><input type="text" class="item-description" required></td>
+                <td><input type="number" class="item-quantity" required></td>
+                <td><input type="number" class="item-price" required></td>
+                <td class="item-total text-right">0.00</td>
+                <td><button type="button" class="remove-item" onclick="removeItem(this)">Remove</button></td>
+            `;
+        }
+
+        function removeItem(button) {
+            const row = button.closest('tr');
+            row.remove();
+            calculateTotal();
+        }
+
+    
+        function calculateTotal() {
+            const quantities = document.getElementsByClassName('item-quantity');
+            const prices = document.getElementsByClassName('item-price');
+            const totals = document.getElementsByClassName('item-total');
+            let totalAmount = 0;
+
+            for (let i = 0; i < quantities.length; i++) {
+                const quantity = parseFloat(quantities[i].value) || 0;
+                const price = parseFloat(prices[i].value) || 0;
+                const total = quantity * price;
+                totals[i].innerText = total.toFixed(2);
+                totalAmount += total;
+            }
+
+            document.getElementById('displayTotalAmount').innerText = totalAmount.toFixed(2);
+            
+            const discountPercentage = parseFloat(document.getElementById('discount').value) || 0;
+            const discount = (discountPercentage / 100) * totalAmount;
+            document.getElementById('displayDiscount').innerText = discount.toFixed(2);
+
+            const finalAmount = totalAmount - discount;
+            document.getElementById('displayFinalAmount').innerText = finalAmount.toFixed(2);
+        }
+
+        function generateInvoice() {
+            document.getElementById('displayBillNumber').innerText = generateBillNumber();
+            document.getElementById('displayCompanyName').innerText = document.getElementById('companyName').value;
+            document.getElementById('displayClientName').innerText = document.getElementById('clientName').value;
+            document.getElementById('displayClientNumber').innerText = document.getElementById('clientNumber').value;
+            document.getElementById('displayInvoiceDate').innerText = document.getElementById('invoiceDate').value;
+
+            const invoiceItems = document.getElementById('invoiceItems');
+            invoiceItems.innerHTML = '';
+
+            const descriptions = document.getElementsByClassName('item-description');
+            const quantities = document.getElementsByClassName('item-quantity');
+            const prices = document.getElementsByClassName('item-price');
+            const totals = document.getElementsByClassName('item-total');
+
+            for (let i = 0; i < descriptions.length; i++) {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${i + 1}</td>
+                    <td>${descriptions[i].value}</td>
+                    <td>${quantities[i].value}</td>
+                    <td>${prices[i].value}</td>
+                    <td class="text-right">${totals[i].innerText}</td>
+                `;
+                invoiceItems.appendChild(row);
+            }
+
+            calculateTotal();
+            document.getElementById('invoice').style.display = 'block';
+        }
+
+        document.getElementById('invoiceForm').addEventListener('input', calculateTotal);
+
+        function generateBillNumber() {
+            return Math.floor(100000 + Math.random() * 900000);
+        }
+
+        function printInvoice() {
+            window.print();
+        }
+
+        function resetForm() {
+            document.getElementById('clientName').value = '';
+            document.getElementById('clientNumber').value = '';
+            document.getElementById('itemsTable').getElementsByTagName('tbody')[0].innerHTML = `
+                <tr>
+                    <td>1</td>
+                    <td><input type="text" class="item-description" required></td>
+                    <td><input type="number" class="item-quantity" required></td>
+                    <td><input type="number" class="item-price" required></td>
+                    <td class="item-total text-right">0.00</td>
+                    <td><button type="button" class="remove-item" onclick="removeItem(this)">Remove</button></td>
+                </tr>
+            `;
+            document.getElementById('invoice').style.display = 'none';
+    document.getElementById('displayBillNumber').innerText = '';
+    document.getElementById('displayCompanyName').innerText = '';
+    document.getElementById('displayClientName').innerText = '';
+    document.getElementById('displayClientNumber').innerText = '';
+    document.getElementById('displayInvoiceDate').innerText = '';
+    document.getElementById('invoiceItems').innerHTML = '';
+    document.getElementById('displayTotalAmount').innerText = '0.00';
+    document.getElementById('displayDiscount').innerText = '0.00';
+    document.getElementById('displayFinalAmount').innerText = '0.00';
+
+            calculateTotal();
+        }
+    </script>
+</body>
+</html>

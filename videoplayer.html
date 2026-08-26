@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+      <!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-2L87FMQS3W"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-2L87FMQS3W');
+</script>
+<link rel="icon" href="https://i.ibb.co/XjHbck3/logo.png" type="image/png" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Video Player</title>
+  <style>
+body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #222;
+      color: #fff;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 20px auto;
+      background-color: #333;
+      padding: 20px;
+      border-radius: 20px;
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.4);
+      animation: fadeIn 0.5s ease-out;
+    }
+
+ /* Video */
+video {
+    width: 100%;
+    border-radius: 20px;
+    display: block;
+    opacity: 0;
+    animation: fadeInVideo 0.5s ease forwards;
+    transition: opacity 0.3s ease; /* Smooth transition for opacity */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Add subtle shadow for depth */
+}
+
+/* Controls */
+.controls {
+    margin-top: 20px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* Control buttons */
+.controls button {
+    background-color: #3498db;
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    padding: 10px 20px;
+    margin: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.controls button:hover {
+    background-color: #2980b9;
+    transform: translateY(-3px); /* Add subtle lift effect on hover */
+}
+
+/* Animation for fading in video */
+@keyframes fadeInVideo {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+    .controls input[type="text"],
+    .controls input[type="file"],
+    .controls button {
+      margin-bottom: 10px;
+      padding: 15px 25px;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 25px;
+      cursor: pointer;
+      transition: background-color 0.3s, transform 0.3s, box-shadow 0.3s;
+      animation: buttonFadeIn 0.5s ease forwards;
+    }
+
+    .controls input[type="text"],
+    .controls input[type="file"] {
+      flex: 1 0 45%;
+    }
+
+    .controls button {
+      flex: 0 0 30%;
+    }
+
+    .controls input[type="text"]:focus,
+    .controls input[type="file"]:focus {
+      background-color: #45a049;
+    }
+
+    .controls button:hover {
+      background-color: #45a049;
+      transform: scale(1.05) rotate(3deg);
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+    }
+
+    .fullscreen {
+      cursor: pointer;
+      font-size: 18px;
+      padding: 15px 25px;
+      border-radius: 25px;
+      background-color: #4CAF50;
+      color: white;
+      transition: background-color 0.3s, transform 0.3s, box-shadow 0.3s;
+    }
+
+    .fullscreen:hover {
+      background-color: #45a049;
+      transform: scale(1.05) rotate(3deg);
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+    }
+
+    .logo {
+      max-width: 150px;
+      height: auto;
+      margin-bottom: 20px;
+      animation: bounceIn 1s ease;
+    }
+
+    .slider {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 100%;
+      height: 15px;
+      background: #555;
+      outline: none;
+      border-radius: 20px;
+      transition: background 0.3s, transform 0.3s;
+    }
+
+    .slider::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 25px;
+      height: 25px;
+      background: #4CAF50;
+      border-radius: 50%;
+      cursor: pointer;
+      transition: background 0.3s, transform 0.3s;
+    }
+
+    .progress-bar {
+      width: 100%;
+      height: 10px;
+      background-color: #666;
+      border-radius: 20px;
+      position: relative;
+      overflow: hidden;
+      margin-top: 20px;
+    }
+
+    .progress {
+      height: 100%;
+      background-color: #4CAF50;
+      border-radius: 20px;
+      position: absolute;
+      top: 0;
+      left: 0;
+      transition: width 0.3s;
+    }
+
+    .time {
+      font-size: 16px;
+      color: white;
+      margin-top: 10px;
+    }
+
+    .quality-select {
+      padding: 15px;
+      border-radius: 25px;
+      border: none;
+      background-color: #444;
+      color: white;
+      transition: background-color 0.3s, transform 0.3s;
+    }
+
+    .quality-select:hover {
+      background-color: #555;
+      transform: scale(1.05) rotate(-2deg);
+    }
+
+    .playback-rate {
+      font-size: 16px;
+      margin-left: 20px;
+      color: white;
+      transition: background-color 0.3s, transform 0.3s;
+    }
+
+    .playback-rate:hover {
+      background-color: #555;
+      transform: scale(1.05) rotate(2deg);
+    }
+
+    @media screen and (max-width: 600px) {
+      .container {
+        width: 90%;
+      }
+
+      .controls input[type="text"],
+      .controls input[type="file"],
+      .controls button {
+        flex: 1 0 100%;
+      }
+
+      .controls button {
+        margin-top: 10px;
+      }
+    }
+
+    /* Animation */
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(-20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes fadeInVideo {
+      from {
+        opacity: 0;
+        transform: scale(0.9);
+      }
+      to {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+
+    @keyframes buttonFadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(-20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes bounceIn {
+      0% {
+        transform: scale(0.1);
+        opacity: 0;
+      }
+      60% {
+        transform: scale(1.2);
+        opacity: 1;
+      }
+      100% {
+        transform: scale(1);
+        opacity: 1;
+      }
+    }    
+     /* Loading Spinner */
+    #loadingSpinner {
+      display: none;
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      z-index: 9999;
+    }
+
+    #loadingSpinner div {
+      border: 4px solid rgba(255, 255, 255, 0.3);
+      border-radius: 50%;
+      border-top: 4px solid #fff;
+      width: 40px;
+      height: 40px;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <img class="logo" src="https://i.ibb.co/G2NFYHG/logo.png" alt="Logo">
+    <h1 style="color: white;">Super Video Player</h1>
+    <div id="videoContainer"></div>
+    <div class="controls">
+      <input type="text" id="videoUrl" placeholder="Enter video URL">
+      <button onclick="loadVideo()">Load Video</button>
+      <label for="videoFile">Upload Video:</label>
+      <input type="file" id="videoFile" accept="video/mp4">
+      <button onclick="loadLocalVideo()">Load Local Video</button>
+      <button onclick="togglePlayPause()">Play/Pause</button>
+      <button onclick="toggleMute()">Mute/Unmute</button>
+      <button onclick="skipBackward()">-10s</button>
+      <button onclick="restart()">Restart</button>
+      <button onclick="skipForward()">+10s</button>
+      <button onclick="toggleFullScreen()" class="fullscreen">Full Screen</button>
+    </div>
+    <div class="controls">
+      <input type="range" class="slider" id="volumeSlider" min="0" max="1" step="0.01" value="1" oninput="changeVolume()">
+      <select class="quality-select" id="qualitySelect" onchange="changeQuality()">
+        <option value="auto">Auto</option>
+        <option value="low">Low</option>
+        <option value="medium">Medium</option>
+        <option value="high">High</option>
+      </select>
+      <div class="time" id="currentTime">00:00</div>
+      <div class="progress-bar">
+        <div class="progress" id="progress"></div>
+      </div>
+      <div class="time" id="totalDuration">00:00</div>
+      <span class="playback-rate" id="playbackRate">1x</span>
+      <select class="quality-select" id="speedSelect" onchange="changeSpeed()">
+        <option value="0.5">0.5x</option>
+        <option value="1" selected>1x</option>
+        <option value="1.5">1.5x</option>
+        <option value="2">2x</option>
+      </select>
+    </div>
+  </div>
+
+  <div id="loadingSpinner">
+    <div></div>
+  </div>
+
+  <script>
+    var videoContainer = document.getElementById('videoContainer');
+    var videoUrlInput = document.getElementById('videoUrl');
+    var videoFileInput = document.getElementById('videoFile');
+    var videoPlayer;
+    var volumeSlider = document.getElementById('volumeSlider');
+    var currentTime = document.getElementById('currentTime');
+    var totalDuration = document.getElementById('totalDuration');
+    var progress = document.getElementById('progress');
+    var qualitySelect = document.getElementById('qualitySelect');
+    var speedSelect = document.getElementById('speedSelect');
+    var playbackRate = document.getElementById('playbackRate');
+    var loadingSpinner = document.getElementById('loadingSpinner');
+
+    function loadVideo() {
+      var videoUrl = videoUrlInput.value;
+      if (isYouTubeLink(videoUrl)) {
+        loadYouTubeVideo(videoUrl);
+      } else {
+        loadVideoFromUrl(videoUrl);
+      }
+    }
+
+    function loadYouTubeVideo(videoUrl) {
+      var videoId = getYouTubeId(videoUrl);
+      var embedUrl = 'https://www.youtube.com/embed/' + videoId + '?autoplay=1';
+      var iframe = document.createElement('iframe');
+      iframe.width = '100%';
+      iframe.height = '100%';
+      iframe.src = embedUrl;
+      iframe.frameborder = '0';
+      videoContainer.innerHTML = '';
+      videoContainer.appendChild(iframe);
+    }
+
+    function loadVideoFromUrl(videoUrl) {
+      var video = document.createElement('video');
+      video.controls = true;
+      video.autoplay = false;
+      video.src = videoUrl;
+      videoContainer.innerHTML = '';
+      videoContainer.appendChild(video);
+      videoPlayer = video;
+      initializeVideoPlayer();
+    }
+
+    function loadLocalVideo() {
+      var file = videoFileInput.files[0];
+      if (file) {
+        var url = URL.createObjectURL(file);
+        loadVideoFromUrl(url);
+      }
+    }
+
+    function initializeVideoPlayer() {
+      videoPlayer.addEventListener('timeupdate', updateProgress);
+      videoPlayer.addEventListener('durationchange', function() {
+        totalDuration.textContent = formatTime(videoPlayer.duration);
+      });
+      videoPlayer.addEventListener('volumechange', function() {
+        volumeSlider.value = videoPlayer.volume;
+      });
+    }
+
+    function togglePlayPause() {
+      if (videoPlayer.paused) {
+        videoPlayer.play();
+      } else {
+        videoPlayer.pause();
+      }
+    }
+
+    function toggleMute() {
+      videoPlayer.muted = !videoPlayer.muted;
+    }
+
+    function skipForward() {
+      videoPlayer.currentTime += 10;
+    }
+
+    function skipBackward() {
+      videoPlayer.currentTime -= 10;
+    }
+
+    function restart() {
+      videoPlayer.currentTime = 0;
+    }
+
+    function toggleFullScreen() {
+      if (!document.fullscreenElement && !document.webkitFullscreenElement) {
+        if (videoPlayer.requestFullscreen) {
+          videoPlayer.requestFullscreen();
+        } else if (videoPlayer.webkitRequestFullscreen) {
+          videoPlayer.webkitRequestFullscreen();
+        }
+      } else {
+        if (document.exitFullscreen) {
+          document.exitFullscreen();
+        } else if (document.webkitExitFullscreen) {
+          document.webkitExitFullscreen();
+        }
+      }
+    }
+
+    function changeVolume() {
+      videoPlayer.volume = volumeSlider.value;
+    }
+
+    function changeQuality() {
+      var selectedQuality = qualitySelect.value;
+      console.log("Selected quality: " + selectedQuality);
+    }
+
+    function changeSpeed() {
+      var selectedSpeed = speedSelect.value;
+      videoPlayer.playbackRate = parseFloat(selectedSpeed);
+      playbackRate.textContent = selectedSpeed + 'x';
+    }
+
+    function updateProgress() {
+      var progressPercent = (videoPlayer.currentTime / videoPlayer.duration) * 100;
+      progress.style.width = progressPercent + '%';
+      currentTime.textContent = formatTime(videoPlayer.currentTime);
+    }
+
+    function formatTime(timeInSeconds) {
+      var minutes = Math.floor(timeInSeconds / 60);
+      var seconds = Math.floor(timeInSeconds - minutes * 60);
+      var formattedTime = (minutes < 10 ? '0' : '') + minutes + ':' + (seconds < 10 ? '0' : '') + seconds;
+      return formattedTime;
+    }
+
+    function isYouTubeLink(url) {
+      return url.includes('youtube.com') || url.includes('youtu.be');
+    }
+
+    function getYouTubeId(url) {
+      var videoId = '';
+      if (url.includes('youtube.com')) {
+        var params = new URLSearchParams(new URL(url).search);
+        videoId = params.get('v');
+      } else if (url.includes('youtu.be')) {
+        var parts = url.split('/');
+        videoId = parts[parts.length - 1];
+      }
+      return videoId;
+    }
+
+    function showLoadingSpinner() {
+      loadingSpinner.style.display = 'block';
+    }
+
+    function hideLoadingSpinner() {
+      loadingSpinner.style.display = 'none';
+    }
+
+    // Autoplay handling
+    var iOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+    if (iOS) {
+      videoUrlInput.setAttribute('autoplay', 'false');
+    } else {
+      videoUrlInput.setAttribute('autoplay', 'true');
+    }
+
+    setInterval(updateProgress, 1000);
+  </script>
+</body>
+</html>

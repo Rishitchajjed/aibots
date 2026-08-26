@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-2L87FMQS3W"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-2L87FMQS3W');
+    </script>
+    <link rel="icon" href="https://i.ibb.co/XjHbck3/logo.png" type="image/png" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Typing Shooter Game</title>
+    <style>
+/* Body styles */
+body {
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    font-family: 'Roboto', sans-serif;
+    background-color: #282c34;
+    color: #fff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    flex-direction: column;
+}
+
+/* Title styles */
+h1 {
+    font-size: 3rem;
+    margin-bottom: 20px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+}
+
+/* Start button container styles */
+#startButtonContainer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+}
+
+/* Start button styles */
+#startButton {
+    font-size: 2rem;
+    padding: 20px 40px;
+    background-color: #ff6d6d;
+    color: #fff;
+    border: none;
+    border-radius: 40px;
+    cursor: pointer;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    transition: background-color 0.3s ease-in-out;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+}
+
+#startButton:hover {
+    background-color: #ff5656;
+}
+
+/* Game container styles */
+#gameContainer {
+    display: none; /* Initially hide the game container */
+    position: relative;
+    width: 90%;
+    max-width: 90%; /* Adjusted for smaller screens */
+    height: 70vh;
+    border: 5px solid #fff;
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: 30px;
+    overflow: hidden;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+}
+
+/* Word styles */
+.word {
+    position: absolute;
+    font-size: 2.5rem;
+    color: #ff6d6d;
+    transition: color 0.2s ease-in-out;
+    white-space: nowrap;
+    font-weight: bold;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.highlight {
+    color: #00ff00;
+}
+
+/* Input container styles */
+#inputContainer {
+    margin-top: 20px;
+    text-align: center;
+}
+
+#wordInput {
+    font-size: 1.8rem;
+    padding: 15px 30px;
+    border: none;
+    border-radius: 30px;
+    background-color: rgba(255, 255, 255, 0.3);
+    color: #fff;
+    width: 80%;
+    max-width: 80%; /* Adjusted for smaller screens */
+    text-align: center;
+    outline: none;
+    font-family: 'Roboto', sans-serif;
+}
+
+/* Info container styles */
+#infoContainer {
+    display: flex;
+    justify-content: space-between;
+    width: 80%;
+    max-width: 80%; /* Adjusted for smaller screens */
+    margin-top: 40px;
+}
+
+/* Stopwatch and scoreboard styles */
+#stopwatch,
+#scoreboard {
+    font-size: 1.5rem;
+}
+
+/* Medal styles */
+.medal {
+    margin-top: 40px;
+    font-size: 2rem;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+.gold {
+    color: gold;
+}
+
+.silver {
+    color: silver;
+}
+
+.bronze {
+    color: #cd7f32; /* Bronze color */
+}
+
+/* Game over message styles */
+.gameOverMessage {
+    margin-top: 40px;
+    font-size: 3rem;
+    font-weight: bold;
+    text-transform: uppercase;
+    color: #ff6d6d;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+/* Background animation styles */
+@keyframes backgroundAnimation {
+    0% {
+        background-position: 0 0;
+    }
+    100% {
+        background-position: 100% 0;
+    }
+}
+
+body {
+    background: linear-gradient(-45deg, #ff6d6d, #50c9c3, #f8b852, #3c96f3);
+    background-size: 400% 400%;
+    animation: backgroundAnimation 15s infinite alternate;
+}
+
+    </style>
+</head>
+<body>
+    <h1>Typing Shooter Game</h1>
+   <div id="startButtonContainer">
+        <button id="startButton">Start Game</button>
+    </div>
+    <div id="gameContainer"></div>
+    <div id="inputContainer">
+        <input type="text" id="wordInput" placeholder="Type here..." autofocus>
+    </div>
+    <div id="infoContainer">
+        <div id="stopwatch">Time: 00:00</div>
+        <div id="scoreboard">Score: 0</div>
+    </div>
+<script>
+    const gameContainer = document.getElementById('gameContainer');
+    const wordInput = document.getElementById('wordInput');
+    const stopwatch = document.getElementById('stopwatch');
+    const scoreboard = document.getElementById('scoreboard');
+    const startButton = document.getElementById('startButton');
+
+    const words = ['apple', 'banana', 'cherry', 'orange', 'grape', 'pineapple', 'strawberry', 'blueberry', 'kiwi', 'mango', 'peach', 'watermelon', 'pear', 'apricot', 'plum', 'lemon', 'lime', 'pomegranate', 'coconut', 'raspberry', 'avocado', 'blackberry', 'cantaloupe', 'fig', 'guava', 'honeydew', 'nectarine', 'papaya', 'persimmon', 'quince', 'tangerine', 'jackfruit'];
+    let activeWords = [];
+    let score = 0;
+    let timeElapsed = 0;
+    let stopwatchInterval;
+    let endGame = false;
+
+    function getRandomWord() {
+        return words[Math.floor(Math.random() * words.length)];
+    }
+document.addEventListener("DOMContentLoaded", function () {
+    const startButton = document.getElementById("startButton");
+    const startButtonContainer = document.getElementById("startButtonContainer");
+    const gameContainer = document.getElementById("gameContainer");
+
+    startButton.addEventListener("click", function () {
+        startButtonContainer.style.display = "none"; // Hide the start button container
+        gameContainer.style.display = "block"; // Show the game container
+    });
+});
+
+    function createWordElement(word) {
+        const wordElement = document.createElement('div');
+        wordElement.className = 'word';
+        wordElement.innerText = word;
+        wordElement.style.top = `${Math.random() * 80}%`;
+        wordElement.style.left = '100%';
+        gameContainer.appendChild(wordElement);
+        return wordElement;
+    }
+
+    function moveWords() {
+        activeWords.forEach(wordObj => {
+            if (!endGame) {
+                wordObj.element.style.left = `${wordObj.position}%`;
+                wordObj.position -= 0.5;
+                if (wordObj.position < 0) {
+                    endGame = true;
+                    stopGame();
+                }
+            }
+        });
+    }
+
+    function spawnWord() {
+        if (!endGame) {
+            const word = getRandomWord();
+            const wordElement = createWordElement(word);
+            const wordObj = { word, element: wordElement, position: 100 };
+            activeWords.push(wordObj);
+        }
+    }
+
+    function checkInput() {
+        if (!endGame) {
+            const typedWord = wordInput.value.trim();
+            activeWords.forEach(wordObj => {
+                if (wordObj.word === typedWord) {
+                    gameContainer.removeChild(wordObj.element);
+                    activeWords.splice(activeWords.indexOf(wordObj), 1);
+                    wordInput.value = '';
+                    score++;
+                    scoreboard.innerText = `Score: ${score}`;
+                    wordObj.element.style.color = '#ff6d6d';
+                    setTimeout(() => {
+                        gameContainer.removeChild(wordObj.element);
+                    }, 200);
+                    // Trigger word blast effect
+                    wordBlast(wordObj.element);
+                } else {
+                    // Highlight the current letter being typed
+                    highlightCurrentLetter(wordObj.element, typedWord);
+                }
+            });
+        }
+    }
+
+    function highlightCurrentLetter(wordElement, typedWord) {
+        const word = wordElement.innerText;
+        for (let i = 0; i < typedWord.length; i++) {
+            if (typedWord[i] === word[i]) {
+                wordElement.innerHTML = `<span class="highlight">${typedWord.slice(0, i + 1)}</span>${word.slice(i + 1)}`;
+            } else {
+                break;
+            }
+        }
+    }
+
+    function wordBlast(wordElement) {
+        const wordRect = wordElement.getBoundingClientRect();
+        const blastElement = document.createElement('div');
+        blastElement.className = 'blast';
+        blastElement.style.top = wordRect.top + 'px';
+        blastElement.style.left = wordRect.left + 'px';
+        blastElement.innerText = '💥';
+        document.body.appendChild(blastElement); // Append blast element to the body
+        setTimeout(() => {
+            document.body.removeChild(blastElement); // Remove blast element from the body
+        }, 1000);
+    }
+
+    function startStopwatch() {
+        stopwatchInterval = setInterval(() => {
+            if (!endGame) {
+                timeElapsed++;
+                const minutes = Math.floor(timeElapsed / 60);
+                const seconds = timeElapsed % 60;
+                stopwatch.innerText = `Time: ${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+            }
+        }, 1000);
+    }
+
+    function stopStopwatch() {
+        clearInterval(stopwatchInterval);
+    }
+
+    function stopGame() {
+        endGame = true;
+        stopStopwatch();
+        wordInput.disabled = true;
+        wordInput.placeholder = 'Game Over';
+        wordInput.value = '';
+        calculateMedals();
+        startButton.style.display = 'block'; // Show the start button when the game ends
+    }
+
+   function calculateMedals() {
+    let medal = '';
+    if (score >= 70) {
+        medal = 'Diamond';
+    } else if (score >= 50) {
+        medal = 'Gold';
+    } else if (score >= 30) {
+        medal = 'Silver';
+    } else if (score >= 15){
+        medal = 'Bronze';
+    } else {
+        medal = "better luck next time"
+    }
+    alert(`Congratulations! You earned a ${medal} medal with a score of ${score}!`);
+}
+
+
+    startButton.addEventListener('click', () => {
+        startButton.style.display = 'none'; // Hide the start button when the game starts
+        endGame = false;
+        score = 0;
+        timeElapsed = 0;
+        scoreboard.innerText = `Score: ${score}`;
+        stopwatch.innerText = `Time: 00:00`;
+        wordInput.disabled = false; // Enable the input field when the game starts
+        wordInput.placeholder = 'Type here...';
+        wordInput.focus();
+        activeWords.forEach(wordObj => {
+            gameContainer.removeChild(wordObj.element);
+        });
+        activeWords.length = 0;
+        startStopwatch();
+        setInterval(spawnWord, 2300); // Spawn a new word every 2.3 seconds
+        setInterval(moveWords, 100);  // Move words every 100ms
+        wordInput.addEventListener('input', checkInput);
+    });
+</script>
+
+</body>
+</html>
+

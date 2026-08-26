@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Printing Website</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.9.359/pdf.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+     <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-2L87FMQS3W"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-2L87FMQS3W');
+    </script>
+    <link rel="icon" href="https://i.ibb.co/XjHbck3/logo.png" type="image/png" />
+</head>
+<body>
+<style>
+  body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        margin: 0;
+        padding: 0;
+        background: linear-gradient(135deg, #2980b9, #6dd5fa, #ffffff);
+        color: #333;
+        line-height: 1.6;
+    }
+
+    h1 {
+        text-align: center;
+        margin-top: 40px;
+        color: #fff;
+        font-size: 42px;
+        text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+    }
+
+    .logo-container {
+        text-align: center;
+        margin-top: 30px;
+    }
+
+    input[type="file"] {
+        display: block;
+        margin: 20px auto;
+        padding: 12px;
+        border: none;
+        border-radius: 5px;
+        outline: none;
+        font-size: 16px;
+        transition: background-color 0.3s ease;
+        background-color: #f3f3f3;
+        color: #333;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    input[type="file"]:focus {
+        background-color: #e0e0e0;
+    }
+
+    label {
+        display: block;
+        margin-top: 20px;
+        color: #fff;
+        font-size: 20px;
+        text-align: center;
+    }
+
+    select, input[type="text"] {
+        width: 100%;
+        padding: 12px;
+        margin-top: 10px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        box-sizing: border-box;
+        font-size: 16px;
+        outline: none;
+        background-color: #f3f3f3;
+        color: #333;
+    }
+
+    select:focus, input[type="text"]:focus {
+        border-color: #007bff;
+    }
+
+    button {
+        display: block;
+        width: 100%;
+        padding: 16px;
+        margin-top: 30px;
+        background-color: #007bff;
+        color: #fff;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 18px;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        transition: background-color 0.3s ease;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+
+    button:hover {
+        background-color: #0056b3;
+    }
+
+   /* Main styling for the #preview container */
+#preview {
+    margin-top: 30px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    max-width: 100%;
+    box-sizing: border-box; /* Ensures padding and borders are included in the element's total width and height */
+    overflow: hidden; /* Prevents overflow issues */
+    padding: 20px; /* Adds padding around the container */
+    background-color: #fafafa; /* Light background color for the container */
+    border-radius: 10px; /* Rounded corners for the container */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Soft shadow for the container */
+}
+
+/* Styling for child elements within #preview */
+#preview > div {
+    flex: 1 1 auto; /* Allows flex items to grow and shrink as needed */
+    max-width: 100%; /* Ensures no element grows beyond the container's width */
+    box-sizing: border-box; /* Includes padding and borders in the element's total width and height */
+    margin: 10px; /* Space around the child elements */
+    padding: 20px; /* Internal padding for child elements */
+    background-color: #ffffff; /* White background for child elements */
+    border: 1px solid #ddd; /* Light grey border for child elements */
+    border-radius: 8px; /* Rounded corners for child elements */
+    text-align: center; /* Center-align text within child elements */
+    transition: transform 0.2s, box-shadow 0.2s; /* Smooth transition for hover effects */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Soft shadow for child elements */
+}
+
+#preview > div:hover {
+    transform: scale(1.05); /* Slightly enlarges the element on hover */
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2); /* Darker shadow on hover */
+}
+
+/* Responsive adjustments for smaller screens */
+@media (max-width: 600px) {
+    #preview {
+        margin-top: 20px; /* Adjustments for smaller screens */
+    }
+    
+    #preview > div {
+        flex-basis: calc(100% - 20px); /* Single column layout on very small screens */
+    }
+}
+
+/* Responsive adjustments for medium screens */
+@media (min-width: 601px) and (max-width: 1024px) {
+    #preview > div {
+        flex-basis: calc(50% - 20px); /* Two columns layout on medium screens */
+    }
+}
+
+/* Responsive adjustments for large screens */
+@media (min-width: 1025px) {
+    #preview > div {
+        flex-basis: calc(33.333% - 20px); /* Three columns layout on large screens */
+    }
+}
+
+    canvas {
+        margin: 20px;
+        border: 2px solid #ccc;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }  
+</style>
+
+    <h1>Printing Website</h1>
+    <div class="logo-container">
+        <img height="80" breadth="120" src="https://i.ibb.co/G2NFYHG/logo.png" alt="AI Bots Logo">
+    </div><br>
+    <input type="file" id="fileInput" accept=".pdf">
+    
+    <label for="pageRange">Page Range:</label>
+    <input type="text" id="pageRange" placeholder="e.g., 1-5, 8, 10-12">
+    
+    <label for="oddEven">Odd/Even Pages:</label>
+    <select id="oddEven">
+        <option value="all">All</option>
+        <option value="odd">Odd</option>
+        <option value="even">Even</option>
+    </select>
+    
+    <label for="paperSize">Paper Size:</label>
+    <select id="paperSize">
+        <option value="a4">A4</option>
+        <option value="letter">Letter</option>
+        <option value="default" selected>Default</option>
+    </select>
+    
+    <label for="orientation">Orientation:</label>
+    <select id="orientation">
+        <option value="portrait">Portrait</option>
+        <option value="landscape">Landscape</option>
+    </select>
+    
+    <button onclick="previewDocument()">Preview</button>
+    <button onclick="customizeAndDownload()">Download</button>
+    <button onclick="customizeAndPrint()">Print</button>
+
+    <div id="preview"></div>
+
+    <script>
+                // Initialize PDF.js
+        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.9.359/pdf.worker.min.js';
+
+        async function previewDocument() {
+            const file = document.getElementById('fileInput').files[0];
+            const pageRange = document.getElementById('pageRange').value;
+            const oddEven = document.getElementById('oddEven').value;
+            const paperSize = document.getElementById('paperSize').value;
+            const orientation = document.getElementById('orientation').value;
+
+            if (!file) {
+                alert("Please select a file.");
+                return;
+            }
+
+            const dataUrl = await readFile(file);
+
+            const preview = document.getElementById('preview');
+            preview.innerHTML = '';
+
+            if (file.type === 'application/pdf') {
+                renderPDF(dataUrl, preview, pageRange, oddEven, paperSize, orientation);
+            } else {
+                displayImage(dataUrl, preview);
+            }
+        }
+
+        async function customizeAndDownload() {
+            const file = document.getElementById('fileInput').files[0];
+            const pageRange = document.getElementById('pageRange').value;
+            const oddEven = document.getElementById('oddEven').value;
+            const paperSize = document.getElementById('paperSize').value;
+            const orientation = document.getElementById('orientation').value;
+
+            if (!file) {
+                alert("Please select a file.");
+                return;
+            }
+
+            const dataUrl = await readFile(file);
+
+            if (file.type === 'application/pdf') {
+                await downloadPDF(dataUrl, pageRange, oddEven, paperSize, orientation);
+            } else {
+                downloadImage(dataUrl);
+            }
+        }
+
+        async function customizeAndPrint() {
+            const file = document.getElementById('fileInput').files[0];
+            const pageRange = document.getElementById('pageRange').value;
+            const oddEven = document.getElementById('oddEven').value;
+            const paperSize = document.getElementById('paperSize').value;
+            const orientation = document.getElementById('orientation').value;
+
+            if (!file) {
+                alert("Please select a file.");
+                return;
+            }
+
+            const dataUrl = await readFile(file);
+
+            if (file.type === 'application/pdf') {
+                const pdfDoc = await downloadPDF(dataUrl, pageRange, oddEven, paperSize, orientation, true);
+                const blob = pdfDoc.output('blob');
+                const url = URL.createObjectURL(blob);
+                const printWindow = window.open(url);
+                printWindow.onload = () => {
+                    printWindow.print();
+                };
+            } 
+        }
+
+        function readFile(file) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    resolve(event.target.result);
+                };
+                reader.onerror = function(error) {
+                    reject(error);
+                };
+                reader.readAsDataURL(file);
+            });
+        }
+
+  async function renderPDF(dataUrl, preview, pageRange, oddEven, paperSize, orientation) {
+    const loadingTask = pdfjsLib.getDocument({ url: dataUrl });
+    const pdf = await loadingTask.promise;
+    let totalPages = pdf.numPages;
+    let pagesToPrint = getPagesToPrint(pageRange, oddEven, totalPages);
+
+    for (let i = 0; i < pagesToPrint.length; i++) {
+        const pageNum = pagesToPrint[i];
+        const page = await pdf.getPage(pageNum);
+        const viewport = page.getViewport({ scale: 1 });
+        const scale = getScale(viewport, paperSize, orientation);
+        const scaledViewport = page.getViewport({ scale });
+
+        // Prepare canvas using PDF page dimensions
+        const canvas = document.createElement('canvas');
+        const context = canvas.getContext('2d');
+        canvas.width = scaledViewport.width;
+        canvas.height = scaledViewport.height;
+
+        // Render PDF page into canvas context
+        const renderContext = {
+            canvasContext: context,
+            viewport: scaledViewport
+        };
+        await page.render(renderContext).promise;
+
+        // Add page number
+        context.font = "16px Arial";
+        context.fillStyle = "black";
+        context.textAlign = "center";
+        context.fillText(`Page ${i + 1} of ${pagesToPrint.length}`, canvas.width / 2, canvas.height - 10);
+
+        // Append canvas to preview
+        preview.appendChild(canvas);
+    }
+}
+
+         async function downloadPDF(dataUrl, pageRange, oddEven, paperSize, orientation, returnDoc = false) {
+            const loadingTask = pdfjsLib.getDocument({ url: dataUrl });
+            const pdf = await loadingTask.promise;
+            let totalPages = pdf.numPages;
+            let pagesToPrint = getPagesToPrint(pageRange, oddEven, totalPages);
+            const { jsPDF } = window.jspdf;
+
+            let format = paperSize;
+            if (format === 'default') {
+                format = 'a4';
+            }
+
+            const doc = new jsPDF({
+                orientation: orientation,
+                unit: 'mm',
+                format: format
+            });
+
+            for (const [index, pageNum] of pagesToPrint.entries()) {
+                const page = await pdf.getPage(pageNum);
+                const viewport = page.getViewport({ scale: 2 }); // Higher scale for better quality
+                const canvas = document.createElement('canvas');
+                const context = canvas.getContext('2d');
+                canvas.height = viewport.height;
+                canvas.width = viewport.width;
+
+                const renderContext = {
+                    canvasContext: context,
+                    viewport: viewport
+                };
+
+     await page.render(renderContext).promise;
+                const imgData = canvas.toDataURL('image/jpeg', 1.0);
+                const imgWidth = orientation === 'portrait' ? doc.internal.pageSize.getWidth() : doc.internal.pageSize.getHeight();
+                const imgHeight = imgWidth * (canvas.height / canvas.width);
+                if (index > 0) {
+                    doc.addPage();
+                }
+                doc.addImage(imgData, 'JPEG', 0, 0, imgWidth, imgHeight);
+            }
+
+            if (returnDoc) {
+                return doc;
+            } else {
+                doc.save('customized_document.pdf');
+            }
+        }
+
+        function getPagesToPrint(pageRange, oddEven, totalPages) {
+            let pagesToPrint = [];
+            if (pageRange.trim() !== '') {
+                const ranges = pageRange.split(',');
+                ranges.forEach(range => {
+                    const parts = range.split('-');
+                    if (parts.length === 1) {
+                        const pageNum = parseInt(parts[0].trim());
+                        if (!isNaN(pageNum) && pageNum > 0 && pageNum <= totalPages) {
+                            pagesToPrint.push(pageNum);
+                        }
+                    } else if (parts.length === 2) {
+                        const start = parseInt(parts[0].trim());
+                        const end = parseInt(parts[1].trim());
+                        if (!isNaN(start) && !isNaN(end) && start >= 1 && start <= end && end <= totalPages) {
+                            for (let i = start; i <= end; i++) {
+                                pagesToPrint.push(i);
+                            }
+                        }
+                    }
+                });
+            } else {
+                for (let i = 1; i <= totalPages; i++) {
+                    pagesToPrint.push(i);
+                }
+            }
+
+            if (oddEven === 'odd') {
+                pagesToPrint = pagesToPrint.filter(page => page % 2 !== 0);
+            } else if (oddEven === 'even') {
+                pagesToPrint = pagesToPrint.filter(page => page % 2 === 0);
+            }
+
+            return pagesToPrint.sort((a, b) => a - b); // Ensure pages are in order
+        }
+
+    
+
+        function getScale(viewport, paperSize, orientation) {
+            let scale = 1;
+            const width = viewport.width;
+            const height = viewport.height;
+            const aspectRatio = width / height;
+
+            if (orientation === 'portrait') {
+                if (paperSize === 'a4') {
+                    const a4Width = 210; // mm
+                    scale = a4Width / width;
+                } else if (paperSize === 'letter') {
+                    const letterWidth = 215.9; // mm
+                    scale = letterWidth / width;
+                }
+            } else {
+                if (paperSize === 'a4') {
+                    const a4Height = 297; // mm
+                    scale = a4Height / height;
+                } else if (paperSize === 'letter') {
+                    const letterHeight = 279.4; // mm
+                    scale = letterHeight / height;
+                }
+            }
+
+            return scale;
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,910 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+      <!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-2L87FMQS3W"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-2L87FMQS3W');
+</script>
+<link rel="icon" href="https://i.ibb.co/XjHbck3/logo.png" type="image/png" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Online Emoji Picker</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+  <style>
+    /* Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap');
+
+/* Body */
+body {
+  font-family: 'Poppins', sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: #f9f9f9;
+  color: #333;
+  overflow-x: hidden; /* Prevent horizontal scrolling */
+}
+
+/* Header */
+.header {
+  background-color: #4CAF50;
+  padding: 20px 0;
+  text-align: center;
+}
+
+.header h1 {
+  font-size: 36px;
+  font-weight: 700;
+  color: #fff;
+}
+
+/* Logo */
+.logo {
+  display: block;
+  margin: 0 auto;
+  width: 120px; /* Adjust size as needed */
+  margin-bottom: 20px;
+}
+
+/* Container */
+.container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+  background-color: #fff;
+  border-radius: 20px;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+}
+
+/* Search Input */
+.search-input {
+  padding: 15px;
+  width: calc(100% - 30px);
+  margin: 0 auto 30px auto;
+  border: 2px solid #4CAF50;
+  border-radius: 30px;
+  box-sizing: border-box;
+  font-size: 18px;
+  outline: none;
+  transition: border-color 0.3s;
+}
+
+.search-input:focus {
+  border-color: #45a049;
+}
+
+/* Emoji List */
+.emoji-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  background-color: #f9f9f9;
+  border-radius: 15px;
+  padding: 15px;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+}
+
+/* Emoji Item */
+.emoji-item {
+  margin: 20px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  cursor: pointer;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+/* Add hover effect on emoji item */
+.emoji-item:hover {
+  transform: translateY(-5px); /* Lift the emoji item on hover */
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3); /* Add shadow on hover */
+}
+
+/* Adjust hover effect for active emoji item */
+.emoji-item.active {
+  transform: translateY(-10px); /* Lift more for active emoji item */
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5); /* More shadow for active emoji item */
+}
+
+/* Emoji Image */
+.emoji-image {
+  width: 100px; /* Adjust width as needed */
+  height: auto;
+}
+
+/* Emoji Label */
+.emoji-label {
+  text-align: center;
+  margin-top: 10px;
+  font-size: 16px;
+  color: #333;
+}
+
+/* Emoji Categories */
+.emoji-categories {
+  margin-bottom: 20px;
+  display: flex;
+  justify-content: center;
+}
+
+.emoji-category {
+  cursor: pointer;
+  padding: 15px 25px;
+  border-radius: 20px;
+  background-color: #f0f0f0;
+  margin-right: 15px;
+  font-size: 16px;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: #333;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s ease;
+  transform-origin: center;
+}
+
+.emoji-category.active {
+  background-color: #4CAF50;
+  color: #fff;
+  transform: scale(1.1);
+  box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.3);
+}
+
+/* Add hover effect for better user interaction */
+.emoji-category:hover {
+  background-color: #ccc;
+}
+
+/* Add animation for entry */
+@keyframes slideIn {
+  0% {
+    opacity: 0;
+    transform: translateY(-30px) scale(0.9);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.emoji-category {
+  animation: slideIn 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55) forwards;
+}
+
+/* Add pulse animation when category is active */
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.emoji-category.active {
+  animation: pulse 1s infinite alternate;
+}
+
+.emoji-item:hover {
+  transform: scale(1.1);
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+}
+
+/* Emoji */
+.emoji {
+  font-size: 48px;
+  cursor: pointer;
+}
+
+/* Full Screen Container */
+.full-screen-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.9);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  opacity: 0;
+  animation: fadeIn 0.5s ease forwards;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* Full Screen Emoji */
+.full-screen-emoji {
+  font-size: 200px;
+  color: #fff;
+  animation: bounce 0.8s ease forwards, rotate 2s linear infinite;
+}
+
+@keyframes bounce {
+  0%, 100% {
+    transform: translateY(-20px);
+  }
+  50% {
+    transform: translateY(20px);
+  }
+}
+
+@keyframes rotate {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Full Screen Options */
+.full-screen-options {
+  margin-top: 40px;
+}
+
+.full-screen-options button {
+  padding: 20px 40px;
+  margin: 0 20px;
+  font-size: 20px;
+  border-radius: 10px;
+  background-color: #4CAF50;
+  color: #fff;
+  cursor: pointer;
+  border: none;
+  outline: none;
+  transition: background-color 0.3s, transform 0.2s;
+}
+
+.full-screen-options button:hover {
+  background-color: #45a049;
+  transform: translateY(-3px) rotate(-5deg);
+}
+
+.full-screen-options button:active {
+  transform: translateY(0);
+}
+ /* Navigation Arrows */
+    .emoji-prev,
+    .emoji-next {
+      cursor: pointer;
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 24px;
+      background-color: rgba(255, 255, 255, 0.8);
+      padding: 10px;
+      border-radius: 50%;
+      transition: background-color 0.3s ease;
+    }
+
+    .emoji-prev:hover,
+    .emoji-next:hover {
+      background-color: rgba(255, 255, 255, 1);
+    }
+
+    .emoji-prev {
+      left: 10px;
+    }
+
+    .emoji-next {
+      right: 10px;
+    }
+    /* Emoji Categories */
+.emoji-slider {
+  position: relative;
+  overflow: hidden;
+  margin-bottom: 20px;
+  width: 100%;
+  max-width: 800px;
+  border-radius: 20px;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+}
+
+/* Add gradient background for a sleek look */
+.emoji-slider::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, #4CAF50, #2E8B57);
+  z-index: -1;
+  border-radius: 20px;
+}
+
+/* Track for emoji slides */
+.emoji-slide-track {
+  display: flex;
+  transition: transform 0.5s ease;
+  padding: 10px; /* Add padding to adjust for slide padding */
+}
+
+/* Individual emoji slide */
+.emoji-slide {
+  flex: 0 0 100%;
+  padding: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 24px;
+  color: white;
+  border-radius: 10px;
+  background-color: rgba(255, 255, 255, 0.1); /* Add transparent background */
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3); /* Add shadow for depth */
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* Hover effect on emoji slides */
+.emoji-slide:hover {
+  transform: translateY(-5px); /* Add slight lift on hover */
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5); /* Enhance shadow on hover */
+}
+
+/* Adjust hover effect for active slide */
+.emoji-slide.active {
+  transform: translateY(-10px); /* Lift more for active slide */
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.6); /* More shadow for active slide */
+}
+
+
+  </style>
+</head>
+<body>
+  <div class="header">
+    <img src="https://i.ibb.co/XjHbck3/logo.png" alt="Your Logo" class="logo">
+    <h1>Online Emoji Picker</h1>
+  </div>
+  <div class="container">
+    <input type="text" id="search" class="search-input" placeholder="Search for emojis...">
+    <div class="emoji-slider">
+      <div class="emoji-slide-track">
+        <div class="emoji-slide">
+          <div class="emoji-categories">
+            <div class="emoji-category active" onclick="filterByCategory('all')">All</div>
+            <div class="emoji-category" onclick="filterByCategory('smileys')">Smileys</div>
+            <div class="emoji-category" onclick="filterByCategory('animals')">Animals</div>
+            </div></div>
+            <div class="emoji-slide">
+          <div class="emoji-categories">
+            <div class="emoji-category" onclick="filterByCategory('activities')">Activities</div>
+            <div class="emoji-category" onclick="filterByCategory('food')">Food</div>
+             <div class="emoji-category" onclick="filterByCategory('clothes')">Clothes</div>
+          </div>
+        </div>
+        <div class="emoji-slide">
+          <div class="emoji-categories">
+            <div class="emoji-category" onclick="filterByCategory('travel')">Travel</div>
+            <div class="emoji-category" onclick="filterByCategory('vehicle')">Vehicle</div>
+            <div class="emoji-category" onclick="filterByCategory('nature')">Nature</div>
+            </div>
+            </div>
+              <div class="emoji-slide">
+          <div class="emoji-categories">
+            <div class="emoji-category" onclick="filterByCategory('flag')">Flags</div>
+            <div class="emoji-category" onclick="filterByCategory('people')">People</div>
+             <div class="emoji-category" onclick="filterByCategory('symbols')">Symbols</div>
+          </div>
+        </div>
+            <div class="emoji-slide">
+          <div class="emoji-categories">
+            <div class="emoji-category" onclick="filterByCategory('social media')">Social Media</div>
+            <div class="emoji-category" onclick="filterByCategory('accessories')">Accessories</div>
+          </div>
+        </div>
+      </div>
+      <div class="emoji-prev" onclick="prevSlide()">&lsaquo;</div>
+      <div class="emoji-next" onclick="nextSlide()">&rsaquo;</div>
+    </div>
+    <ul class="emoji-list" id="emojiList">
+      <!-- Emoji icons will be dynamically inserted here -->
+    </ul>
+  </div>
+
+  <script>
+    // Emoji data
+    const emojis = [
+      { name: "grinning", icon: "😀", category: "smileys" },
+      { name: "grinning_face_with_big_eyes", icon: "😃", category: "smileys" },
+      { name: "grinning_face_with_smiling_eyes", icon: "😄", category: "smileys" },
+{ name: "dog_face", icon: "🐶", category: "animals" },
+{ name: "cat_face", icon: "🐱", category: "animals" },
+{ name: "elephant", icon: "🐘", category: "animals" },
+{ name: "grinning_face_with_sweat", icon: "😅", category: "smileys" },
+{ name: "rolling_on_the_floor_laughing", icon: "🤣", category: "smileys" },
+{ name: "smiling_face_with_heart-eyes", icon: "😍", category: "smileys" },
+{ name: "face_blowing_a_kiss", icon: "😘", category: "smileys" },
+{ name: "winking_face", icon: "😉", category: "smileys" },
+{ name: "hugging_face", icon: "🤗", category: "smileys" },
+{ name: "thinking_face", icon: "🤔", category: "smileys" },
+{ name: "face_with_raised_eyebrow", icon: "🤨", category: "smileys" },
+{ name: "zipper-mouth_face", icon: "🤐", category: "smileys" },
+{ name: "nerd_face", icon: "🤓", category: "smileys" },
+{ name: "clown_face", icon: "🤡", category: "smileys" },
+{ name: "lying_face", icon: "🤥", category: "smileys" },
+{ name: "shushing_face", icon: "🤫", category: "smileys" },
+{ name: "face_with_hand_over_mouth", icon: "🤭", category: "smileys" },
+{ name: "face_with_monocle", icon: "🧐", category: "smileys" },
+{ name: "slightly_smiling_face", icon: "🙂", category: "smileys" },
+{ name: "upside-down_face", icon: "🙃", category: "smileys" },
+{ name: "face_screaming_in_fear", icon: "😱", category: "smileys" },
+{ name: "face_with_open_mouth", icon: "😮", category: "smileys" },
+{ name: "exploding_head", icon: "🤯", category: "smileys" },
+{ name: "grimacing_face", icon: "😬", category: "smileys" },
+{ name: "angry_face", icon: "😠", category: "smileys" },
+{ name: "face_with_symbols_on_mouth", icon: "🤬", category: "smileys" },
+{ name: "pouting_face", icon: "😡", category: "smileys" },
+{ name: "crying_face", icon: "😢", category: "smileys" },
+
+{ name: "dog", icon: "🐕", category: "animals" },
+{ name: "poodle", icon: "🐩", category: "animals" },
+{ name: "wolf", icon: "🐺", category: "animals" },
+{ name: "fox_face", icon: "🦊", category: "animals" },
+{ name: "cat", icon: "🐈", category: "animals" },
+{ name: "lion_face", icon: "🦁", category: "animals" },
+{ name: "tiger_face", icon: "🐯", category: "animals" },
+{ name: "leopard", icon: "🐆", category: "animals" },
+{ name: "horse", icon: "🐴", category: "animals" },
+{ name: "unicorn", icon: "🦄", category: "animals" },
+{ name: "cow_face", icon: "🐮", category: "animals" },
+{ name: "pig_face", icon: "🐷", category: "animals" },
+{ name: "boar", icon: "🐗", category: "animals" },
+{ name: "sheep", icon: "🐑", category: "animals" },
+{ name: "goat", icon: "🐐", category: "animals" },
+{ name: "camel", icon: "🐪", category: "animals" },
+{ name: "rabbit", icon: "🐇", category: "animals" },
+{ name: "hamster", icon: "🐹", category: "animals" },
+{ name: "koala", icon: "🐨", category: "animals" },
+{ name: "panda_face", icon: "🐼", category: "animals" },
+{ name: "bear", icon: "🐻", category: "animals" },
+{ name: "koala", icon: "🐨", category: "animals" },
+{ name: "paw_prints", icon: "🐾", category: "animals" },
+{ name: "bird", icon: "🐦", category: "animals" },
+{ name: "penguin", icon: "🐧", category: "animals" },
+
+// Activities
+  { name: "soccer", icon: "⚽️", category: "activities" },
+  { name: "basketball", icon: "🏀", category: "activities" },
+  { name: "football", icon: "🏈", category: "activities" },
+  { name: "baseball", icon: "⚾️", category: "activities" },
+  { name: "golf", icon: "⛳️", category: "activities" },
+  { name: "tennis", icon: "🎾", category: "activities" },
+  { name: "volleyball", icon: "🏐", category: "activities" },
+  { name: "rugby_football", icon: "🏉", category: "activities" },
+  { name: "ping_pong", icon: "🏓", category: "activities" },
+  { name: "badminton", icon: "🏸", category: "activities" },
+  { name: "ice_hockey", icon: "🏒", category: "activities" },
+  { name: "field_hockey", icon: "🏑", category: "activities" },
+  { name: "lacrosse", icon: "🥍", category: "activities" },
+  { name: "cricket_game", icon: "🏏", category: "activities" },
+  { name: "bowling", icon: "🎳", category: "activities" },
+  { name: "boxing_glove", icon: "🥊", category: "activities" },
+  { name: "martial_arts_uniform", icon: "🥋", category: "activities" },
+  { name: "ice_skate", icon: "⛸", category: "activities" },
+  { name: "ski", icon: "🎿", category: "activities" },
+  { name: "sled", icon: "🛷", category: "activities" },
+  { name: "snowboarder", icon: "🏂", category: "activities" },
+  { name: "swimmer", icon: "🏊", category: "activities" },
+  { name: "person_playing_water_polo", icon: "🤽", category: "activities" },
+  { name: "person_playing_handball", icon: "🤾", category: "activities" },
+  { name: "person_juggling", icon: "🤹", category: "activities" },
+
+  // Food
+  { name: "green_apple", icon: "🍏", category: "food" },
+  { name: "red_apple", icon: "🍎", category: "food" },
+  { name: "pear", icon: "🍐", category: "food" },
+  { name: "tangerine", icon: "🍊", category: "food" },
+  { name: "lemon", icon: "🍋", category: "food" },
+  { name: "banana", icon: "🍌", category: "food" },
+  { name: "watermelon", icon: "🍉", category: "food" },
+  { name: "grapes", icon: "🍇", category: "food" },
+  { name: "strawberry", icon: "🍓", category: "food" },
+  { name: "melon", icon: "🍈", category: "food" },
+  { name: "cherries", icon: "🍒", category: "food" },
+  { name: "peach", icon: "🍑", category: "food" },
+  { name: "pineapple", icon: "🍍", category: "food" },
+  { name: "coconut", icon: "🥥", category: "food" },
+  { name: "kiwi_fruit", icon: "🥝", category: "food" },
+  { name: "tomato", icon: "🍅", category: "food" },
+  { name: "eggplant", icon: "🍆", category: "food" },
+  { name: "avocado", icon: "🥑", category: "food" },
+  { name: "potato", icon: "🥔", category: "food" },
+  { name: "carrot", icon: "🥕", category: "food" },
+  { name: "corn", icon: "🌽", category: "food" },
+  { name: "hot_pepper", icon: "🌶", category: "food" },
+  { name: "cucumber", icon: "🥒", category: "food" },
+  { name: "leafy_green", icon: "🥬", category: "food" },
+  { name: "broccoli", icon: "🥦", category: "food" },
+  
+   // Travel
+  { name: "airplane", icon: "✈️", category: "travel" },
+  { name: "seat", icon: "💺", category: "travel" },
+  { name: "helicopter", icon: "🚁", category: "travel" },
+  { name: "steam_locomotive", icon: "🚂", category: "travel" },
+  { name: "tram_car", icon: "🚋", category: "travel" },
+  { name: "mountain_railway", icon: "🚞", category: "travel" },
+  { name: "bike", icon: "🚲", category: "travel" },
+  { name: "motor_scooter", icon: "🛵", category: "travel" },
+  { name: "bus", icon: "🚌", category: "travel" },
+  { name: "trolleybus", icon: "🚎", category: "travel" },
+  { name: "minibus", icon: "🚐", category: "travel" },
+  { name: "ambulance", icon: "🚑", category: "travel" },
+  { name: "fire_engine", icon: "🚒", category: "travel" },
+  { name: "police_car", icon: "🚓", category: "travel" },
+  { name: "taxi", icon: "🚕", category: "travel" },
+  { name: "car", icon: "🚗", category: "travel" },
+  { name: "delivery_truck", icon: "🚚", category: "travel" },
+  { name: "articulated_lorry", icon: "🚛", category: "travel" },
+  { name: "tractor", icon: "🚜", category: "travel" },
+  { name: "racing_car", icon: "🏎", category: "travel" },
+  { name: "motorcycle", icon: "🏍", category: "travel" },
+  { name: "motorized_wheelchair", icon: "🛺", category: "travel" },
+  { name: "auto_rickshaw", icon: "🛺", category: "travel" },
+  { name: "bicycle", icon: "🚲", category: "travel" },
+  { name: "kick_scooter", icon: "🛴", category: "travel" },
+
+  // Vehicle
+  { name: "anchor", icon: "⚓️", category: "vehicle" },
+  { name: "sailboat", icon: "⛵️", category: "vehicle" },
+  { name: "canoe", icon: "🛶", category: "vehicle" },
+  { name: "speedboat", icon: "🚤", category: "vehicle" },
+  { name: "ferry", icon: "⛴", category: "vehicle" },
+  { name: "motor_boat", icon: "🛥", category: "vehicle" },
+  { name: "ship", icon: "🚢", category: "vehicle" },
+  { name: "airplane_departure", icon: "🛫", category: "vehicle" },
+  { name: "airplane_arrival", icon: "🛬", category: "vehicle" },
+  { name: "parachute", icon: "🪂", category: "vehicle" },
+  { name: "seat", icon: "💺", category: "vehicle" },
+  { name: "helicopter", icon: "🚁", category: "vehicle" },
+  { name: "tram", icon: "🚊", category: "vehicle" },
+  { name: "mountain_cableway", icon: "🚠", category: "vehicle" },
+  { name: "aerial_tramway", icon: "🚡", category: "vehicle" },
+  { name: "suspension_railway", icon: "🚟", category: "vehicle" },
+  { name: "railway_car", icon: "🚃", category: "vehicle" },
+  { name: "train", icon: "🚆", category: "vehicle" },
+  { name: "high-speed_train", icon: "🚄", category: "vehicle" },
+  { name: "bullet_train", icon: "🚅", category: "vehicle" },
+  { name: "light_rail", icon: "🚈", category: "vehicle" },
+  { name: "mountain_railway", icon: "🚞", category: "vehicle" },
+  { name: "monorail", icon: "🚝", category: "vehicle" },
+  { name: "maglev", icon: "🚅", category: "vehicle" },
+  { name: "funicular", icon: "🚠", category: "vehicle" },
+  
+  { name: "thumbs_up", icon: "👍", category: "social media" },
+  { name: "thumbs_down", icon: "👎", category: "social media" },
+  { name: "clapping_hands", icon: "👏", category: "social media" },
+  { name: "raising_hands", icon: "🙌", category: "social media" },
+  { name: "folded_hands", icon: "🙏", category: "social media" },
+  { name: "victory_hand", icon: "✌️", category: "social media" },
+  { name: "OK_hand", icon: "👌", category: "social media" },
+  { name: "raised_fist", icon: "✊", category: "social media" },
+  { name: "writing_hand", icon: "✍️", category: "social media" },
+  { name: "rock_on", icon: "🤘", category: "social media" },
+  { name: "metal", icon: "🤟", category: "social media" },
+  { name: "peace_fingers", icon: "🤞", category: "social media" },
+  { name: "index_pointing_up", icon: "☝️", category: "social media" },
+  { name: "backhand_index_pointing_up", icon: "👆", category: "social media" },
+  { name: "backhand_index_pointing_down", icon: "👇", category: "social media" },
+  { name: "backhand_index_pointing_left", icon: "👈", category: "social media" },
+  { name: "backhand_index_pointing_right", icon: "👉", category: "social media" },
+  { name: "heart", icon: "❤️", category: "social media" },
+  { name: "broken_heart", icon: "💔", category: "social media" },
+  { name: "heart_exclamation", icon: "❣️", category: "social media" },
+  { name: "red_heart", icon: "❤️‍🔥", category: "social media" },
+  { name: "yellow_heart", icon: "❤️‍🩹", category: "social media" },
+  { name: "green_heart", icon: "💚", category: "social media" },
+  { name: "blue_heart", icon: "💙", category: "social media" },
+  { name: "purple_heart", icon: "💜", category: "social media" },
+
+// Nature
+  { name: "seedling", icon: "🌱", category: "nature" },
+  { name: "evergreen_tree", icon: "🌲", category: "nature" },
+  { name: "deciduous_tree", icon: "🌳", category: "nature" },
+  { name: "palm_tree", icon: "🌴", category: "nature" },
+  { name: "cactus", icon: "🌵", category: "nature" },
+  { name: "ear_of_rice", icon: "🌾", category: "nature" },
+  { name: "herb", icon: "🌿", category: "nature" },
+  { name: "shamrock", icon: "☘️", category: "nature" },
+  { name: "four_leaf_clover", icon: "🍀", category: "nature" },
+  { name: "maple_leaf", icon: "🍁", category: "nature" },
+  { name: "fallen_leaf", icon: "🍂", category: "nature" },
+  { name: "leaf_fluttering_in_wind", icon: "🍃", category: "nature" },
+  { name: "sunflower", icon: "🌻", category: "nature" },
+  { name: "blossom", icon: "🌼", category: "nature" },
+  { name: "tulip", icon: "🌷", category: "nature" },
+  { name: "rose", icon: "🌹", category: "nature" },
+  { name: "wilted_flower", icon: "🥀", category: "nature" },
+  { name: "hibiscus", icon: "🌺", category: "nature" },
+  { name: "cherry_blossom", icon: "🌸", category: "nature" },
+  { name: "white_flower", icon: "💮", category: "nature" },
+  { name: "rosette", icon: "🏵️", category: "nature" },
+  
+  // Clothes
+
+  { name: "tshirt", icon: "👕", category: "clothes" },
+  { name: "jeans", icon: "👖", category: "clothes" },
+  { name: "dress", icon: "👗", category: "clothes" },
+  { name: "bikini", icon: "👙", category: "clothes" },
+  { name: "kimono", icon: "👘", category: "clothes" },
+  { name: "coat", icon: "🧥", category: "clothes" },
+  { name: "robe", icon: "👘", category: "clothes" },
+  { name: "gloves", icon: "🧤", category: "clothes" },
+  { name: "scarf", icon: "🧣", category: "clothes" },
+  { name: "hat", icon: "🎩", category: "clothes" },
+  { name: "cap", icon: "🧢", category: "clothes" },
+  { name: "socks", icon: "🧦", category: "clothes" },
+  { name: "shoes", icon: "👞", category: "clothes" },
+  { name: "sandal", icon: "👡", category: "clothes" },
+  { name: "boot", icon: "👢", category: "clothes" },
+  { name: "high_heel", icon: "👠", category: "clothes" },
+  { name: "ballet_shoes", icon: "🩰", category: "clothes" },
+  { name: "wedding_dress", icon: "👰", category: "clothes" },
+  { name: "tie", icon: "👔", category: "clothes" },
+  { name: "bowtie", icon: "🎀", category: "clothes" },
+  { name: "briefs", icon: "🩲", category: "clothes" },
+  { name: "shorts", icon: "🩳", category: "clothes" },
+  { name: "swim_trunks", icon: "🩱", category: "clothes" },
+  { name: "sari", icon: "🩱", category: "clothes" },
+  { name: "kimono", icon: "👘", category: "clothes" },
+
+
+// Accessories
+
+  { name: "glasses", icon: "👓", category: "accessories" },
+  { name: "sunglasses", icon: "🕶️", category: "accessories" },
+  { name: "scarf", icon: "🧣", category: "accessories" },
+  { name: "gloves", icon: "🧤", category: "accessories" },
+  { name: "hat", icon: "🎩", category: "accessories" },
+  { name: "cap", icon: "🧢", category: "accessories" },
+  { name: "crown", icon: "👑", category: "accessories" },
+  { name: "earmuffs", icon: "🧣", category: "accessories" },
+  { name: "necktie", icon: "👔", category: "accessories" },
+  { name: "bowtie", icon: "🎀", category: "accessories" },
+  { name: "clutch_bag", icon: "👝", category: "accessories" },
+  { name: "purse", icon: "👜", category: "accessories" },
+  { name: "backpack", icon: "🎒", category: "accessories" },
+  { name: "briefcase", icon: "💼", category: "accessories" },
+  { name: "handbag", icon: "👜", category: "accessories" },
+  { name: "pouch", icon: "👝", category: "accessories" },
+  { name: "shopping_bags", icon: "🛍️", category: "accessories" },
+      { name: "gloves", icon: "🧤", category: "accessories" },
+      
+      // Flag category
+    { name: "United States", icon: "🇺🇸", category: "flag" },
+    { name: "United Kingdom", icon: "🇬🇧", category: "flag" },
+    { name: "Canada", icon: "🇨🇦", category: "flag" },
+    { name: "France", icon: "🇫🇷", category: "flag" },
+    { name: "Germany", icon: "🇩🇪", category: "flag" },
+    { name: "Italy", icon: "🇮🇹", category: "flag" },
+    { name: "Japan", icon: "🇯🇵", category: "flag" },
+    { name: "Australia", icon: "🇦🇺", category: "flag" },
+    { name: "Brazil", icon: "🇧🇷", category: "flag" },
+    { name: "China", icon: "🇨🇳", category: "flag" },
+    { name: "Spain", icon: "🇪🇸", category: "flag" },
+    { name: "India", icon: "🇮🇳", category: "flag" },
+    { name: "South Korea", icon: "🇰🇷", category: "flag" },
+    { name: "Mexico", icon: "🇲🇽", category: "flag" },
+    { name: "Netherlands", icon: "🇳🇱", category: "flag" },
+    { name: "Russia", icon: "🇷🇺", category: "flag" },
+    { name: "Saudi Arabia", icon: "🇸🇦", category: "flag" },
+    { name: "Turkey", icon: "🇹🇷", category: "flag" },
+    { name: "United Arab Emirates", icon: "🇦🇪", category: "flag" },
+    { name: "South Africa", icon: "🇿🇦", category: "flag" },
+    { name: "Argentina", icon: "🇦🇷", category: "flag" },
+    { name: "Switzerland", icon: "🇨🇭", category: "flag" },
+    { name: "Sweden", icon: "🇸🇪", category: "flag" },
+    { name: "Norway", icon: "🇳🇴", category: "flag" },
+    { name: "Finland", icon: "🇫🇮", category: "flag" },
+    
+      { name: "Heart", icon: "❤️", category: "symbols" },
+    { name: "Peace", icon: "☮️", category: "symbols" },
+    { name: "Sparkles", icon: "✨", category: "symbols" },
+    { name: "Sun", icon: "☀️", category: "symbols" },
+    { name: "Cloud", icon: "☁️", category: "symbols" },
+    { name: "Umbrella", icon: "☔", category: "symbols" },
+    { name: "Lightning", icon: "⚡", category: "symbols" },
+    { name: "Star", icon: "⭐", category: "symbols" },
+    { name: "Moon", icon: "🌙", category: "symbols" },
+    { name: "Rainbow", icon: "🌈", category: "symbols" },
+    { name: "Party Popper", icon: "🎉", category: "symbols" },
+    { name: "Balloon", icon: "🎈", category: "symbols" },
+    { name: "Gift", icon: "🎁", category: "symbols" },
+    { name: "Gem Stone", icon: "💎", category: "symbols" },
+    { name: "Bouquet", icon: "💐", category: "symbols" },
+    { name: "Maple Leaf", icon: "🍁", category: "symbols" },
+    { name: "Four Leaf Clover", icon: "🍀", category: "symbols" },
+    { name: "Rose", icon: "🌹", category: "symbols" },
+    { name: "Tulip", icon: "🌷", category: "symbols" },
+    { name: "Cherry Blossom", icon: "🌸", category: "symbols" },
+    { name: "Hibiscus", icon: "🌺", category: "symbols" },
+    { name: "Blossom", icon: "🌼", category: "symbols" },
+    { name: "Sunflower", icon: "🌻", category: "symbols" },
+    { name: "Palm Tree", icon: "🌴", category: "symbols" },
+    { name: "Cactus", icon: "🌵", category: "symbols" },
+    
+     { name: "Woman", icon: "👩", category: "people" },
+    { name: "Man", icon: "👨", category: "people" },
+    { name: "Girl", icon: "👧", category: "people" },
+    { name: "Boy", icon: "👦", category: "people" },
+    { name: "Baby", icon: "👶", category: "people" },
+    { name: "Old Man", icon: "👴", category: "people" },
+    { name: "Old Woman", icon: "👵", category: "people" },
+    { name: "Police Officer", icon: "👮", category: "people" },
+    { name: "Construction Worker", icon: "👷", category: "people" },
+    { name: "Guard", icon: "💂", category: "people" },
+    { name: "Detective Woman", icon: "🕵️‍♀️", category: "people" },
+    { name: "Detective Man", icon: "🕵️‍♂️", category: "people" },
+    { name: "Woman Astronaut", icon: "👩‍🚀", category: "people" },
+    { name: "Man Astronaut", icon: "👨‍🚀", category: "people" },
+    { name: "Woman Health Worker", icon: "👩‍⚕️", category: "people" },
+    { name: "Man Health Worker", icon: "👨‍⚕️", category: "people" },
+    { name: "Woman Cook", icon: "👩‍🍳", category: "people" },
+    { name: "Man Cook", icon: "👨‍🍳", category: "people" },
+    { name: "Woman Student", icon: "👩‍🎓", category: "people" },
+    { name: "Man Student", icon: "👨‍🎓", category: "people" },
+    { name: "Woman Singer", icon: "👩‍🎤", category: "people" },
+    { name: "Man Singer", icon: "👨‍🎤", category: "people" },
+    { name: "Woman Teacher", icon: "👩‍🏫", category: "people" },
+    { name: "Man Teacher", icon: "👨‍🏫", category: "people" },
+    { name: "Woman Factory Worker", icon: "👩‍🏭", category: "people" },
+      // Add more emojis here
+    ];
+
+  
+    // Function to display emojis
+    function displayEmojis(emojiArray) {
+      const emojiList = document.getElementById("emojiList");
+      emojiList.innerHTML = "";
+      emojiArray.forEach(emoji => {
+        const li = document.createElement("li");
+        li.classList.add("emoji-item");
+        li.innerHTML = `<span class="emoji" onclick="showEmojiFullScreen('${emoji.icon}')">${emoji.icon}</span>`;
+        emojiList.appendChild(li);
+      });
+    }
+
+   // Function for fuzzy search
+function fuzzySearch(needle, haystack) {
+  const regex = new RegExp(needle.split('').join('.*?'), 'gi');
+  return haystack.match(regex);
+}
+
+// Function to filter emojis based on search query
+function filterEmojis(query) {
+  const filteredEmojis = emojis.filter(emoji => {
+    return fuzzySearch(query.toLowerCase(), emoji.name.toLowerCase());
+  });
+  displayEmojis(filteredEmojis);
+}
+
+// Event listener for search input
+document.getElementById("search").addEventListener("input", function() {
+  const query = this.value.trim(); // Trim to remove leading and trailing spaces
+  if (query.length > 0) {
+    filterEmojis(query);
+  } else {
+    displayEmojis(emojis); // If search query is empty, show all emojis
+  }
+});
+
+    // Function to copy emoji to clipboard
+    function copyEmoji(emoji) {
+      navigator.clipboard.writeText(emoji)
+        .then(() => alert("Emoji copied to clipboard!"))
+        .catch(err => console.error("Failed to copy:", err));
+    }
+
+    // Function to show emoji in full-screen
+    function showEmojiFullScreen(emoji) {
+      const fullScreenContainer = document.createElement("div");
+      fullScreenContainer.classList.add("full-screen-container");
+      const fontSize = 120; // Adjust as needed
+      fullScreenContainer.innerHTML = `
+        <div class="full-screen-emoji">${emoji}</div>
+        <div class="full-screen-options">
+          <button onclick="copyEmoji('${emoji}')">Copy</button>
+          <button onclick="downloadEmoji('${emoji}', ${fontSize})">Download</button>
+          <button onclick="closeFullScreen()">Close</button>
+        </div>`;
+      document.body.appendChild(fullScreenContainer);
+    }
+
+    // Function to close full-screen view
+    function closeFullScreen() {
+      const fullScreenContainer = document.querySelector(".full-screen-container");
+      if (fullScreenContainer) {
+        fullScreenContainer.remove();
+      }
+    }
+
+    // Function to download emoji as image
+    function downloadEmoji(emoji, fontSize) {
+      const canvas = document.createElement('canvas');
+      const context = canvas.getContext('2d');
+      const canvasSize = fontSize * 1.5; // Adjust as needed
+      canvas.width = canvasSize;
+      canvas.height = canvasSize;
+      context.font = `${fontSize}px Arial`;
+      context.fillText(emoji, 0, fontSize);
+      const dataURL = canvas.toDataURL();
+      const a = document.createElement('a');
+      a.href = dataURL;
+      a.download = 'emoji.png';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+    }
+
+    // Function to filter emojis by category
+    function filterByCategory(category) {
+      const filteredEmojis = category === 'all' ? emojis : emojis.filter(emoji => emoji.category === category);
+      displayEmojis(filteredEmojis);
+      toggleActiveCategory(category);
+    }
+
+    // Function to toggle active category
+    function toggleActiveCategory(category) {
+      const categories = document.querySelectorAll('.emoji-category');
+      categories.forEach(cat => {
+        if (cat.textContent.toLowerCase() === category) {
+          cat.classList.add('active');
+        } else {
+          cat.classList.remove('active');
+        }
+      });
+    }
+
+    // Slide Navigation
+    let slideIndex = 0;
+
+    function nextSlide() {
+      const slides = document.querySelectorAll('.emoji-slide');
+      slideIndex = (slideIndex + 1) % slides.length;
+      showSlides();
+    }
+
+    function prevSlide() {
+      const slides = document.querySelectorAll('.emoji-slide');
+      slideIndex = (slideIndex - 1 + slides.length) % slides.length;
+      showSlides();
+    }
+
+    function showSlides() {
+      const slides = document.querySelectorAll('.emoji-slide');
+      slides.forEach((slide, index) => {
+        if (index === slideIndex) {
+          slide.style.display = "block";
+        } else {
+          slide.style.display = "none";
+        }
+      });
+    }
+
+    // Initial display of all emojis
+    displayEmojis(emojis);
+
+    // Event listener for search input
+    document.getElementById("search").addEventListener("input", function() {
+      filterEmojis(this.value);
+    });
+  </script>
+</body>
+</html>

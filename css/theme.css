@@ -1,4 +1,4 @@
-/* AI Bots Creative Studio - Design System & Modern Theme */
+﻿/* AI Bots Creative Studio - Design System & Modern Theme */
 @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
 
 :root {
@@ -1814,3 +1814,251 @@ input:checked + .slider::before {
   letter-spacing: 0.05em;
 }
 
+
+
+/* ══════════════════════════════════════════════════════
+   NAVBAR ENHANCEMENTS — brand logo, nav links, breadcrumb
+   ══════════════════════════════════════════════════════ */
+
+.ab-brand-logo {
+  height: 28px;
+  width: 28px;
+  border-radius: 6px;
+  object-fit: contain;
+}
+.ab-brand-name {
+  font-size: 1.1rem;
+  font-weight: 800;
+  background: linear-gradient(135deg, var(--primary) 0%, var(--secondary, #a78bfa) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.ab-breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: .88rem;
+  color: var(--text-secondary);
+}
+.ab-sep { color: var(--border-color); }
+.ab-cur-tool { color: var(--text-primary); font-weight: 600; }
+
+/* Desktop nav links */
+.ab-nav-links {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.ab-nav-link {
+  padding: 6px 13px;
+  border-radius: 8px;
+  font-size: .88rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+  text-decoration: none;
+  transition: background .18s, color .18s;
+}
+.ab-nav-link:hover, .ab-nav-active {
+  background: color-mix(in srgb, var(--primary) 10%, transparent);
+  color: var(--primary);
+}
+@media (max-width: 680px) {
+  .ab-nav-links { display: none; }
+}
+
+/* ── Hamburger ── */
+.ab-hamburger {
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  gap: 5px;
+  width: 36px;
+  height: 36px;
+  border: 1.5px solid var(--border-color);
+  border-radius: 8px;
+  background: transparent;
+  cursor: pointer;
+  padding: 6px 7px;
+  flex-shrink: 0;
+}
+.ab-hamburger span {
+  display: block;
+  height: 2px;
+  width: 100%;
+  background: var(--text-primary);
+  border-radius: 2px;
+  transition: .2s;
+}
+@media (max-width: 680px) {
+  .ab-hamburger { display: flex; }
+}
+
+/* ── Mobile Drawer ── */
+.ab-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.45);
+  z-index: 199;
+  backdrop-filter: blur(2px);
+}
+.ab-overlay.show { display: block; animation: fadeIn .2s ease; }
+
+.ab-drawer {
+  position: fixed;
+  top: 0;
+  right: -320px;
+  width: 300px;
+  height: 100dvh;
+  background: var(--bg-secondary);
+  border-left: 1px solid var(--border-color);
+  z-index: 200;
+  overflow-y: auto;
+  transition: right .28s cubic-bezier(.4,0,.2,1);
+  box-shadow: -8px 0 32px rgba(0,0,0,.2);
+}
+.ab-drawer.open { right: 0; }
+
+.ab-drawer-inner {
+  display: flex;
+  flex-direction: column;
+  padding: 20px 16px 40px;
+  gap: 4px;
+}
+.ab-drawer-close {
+  align-self: flex-end;
+  background: var(--bg-primary);
+  border: 1.5px solid var(--border-color);
+  border-radius: 8px;
+  width: 32px;
+  height: 32px;
+  cursor: pointer;
+  color: var(--text-primary);
+  font-size: .95rem;
+  margin-bottom: 12px;
+}
+.ab-drawer-section { margin: 10px 0 4px; }
+.ab-drawer-cat {
+  font-size: .72rem;
+  font-weight: 700;
+  letter-spacing: .07em;
+  text-transform: uppercase;
+  color: var(--primary);
+  padding: 6px 10px 4px;
+}
+.ab-drawer-link {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 10px;
+  border-radius: 10px;
+  text-decoration: none;
+  color: var(--text-primary);
+  font-size: .9rem;
+  transition: background .15s;
+}
+.ab-drawer-link:hover, .ab-drawer-active {
+  background: color-mix(in srgb, var(--primary) 10%, var(--bg-primary));
+  color: var(--primary);
+}
+.ab-dl-icon { font-size: 1.1rem; width: 24px; text-align: center; }
+.ab-new-badge {
+  margin-left: auto;
+  font-size: .65rem;
+  font-weight: 700;
+  padding: 2px 7px;
+  border-radius: 999px;
+  background: var(--primary);
+  color: #fff;
+  letter-spacing: .04em;
+}
+
+/* ══════════════════════════════════════════════════════
+   IMPROVED FOOTER
+   ══════════════════════════════════════════════════════ */
+.ab-footer {
+  background: var(--bg-secondary);
+  border-top: 1px solid var(--border-color);
+  padding: 32px 24px 24px;
+  margin-top: auto;
+}
+.ab-footer-inner {
+  max-width: 900px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  align-items: center;
+  text-align: center;
+}
+.ab-footer-brand {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 700;
+  font-size: 1rem;
+}
+.ab-footer-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 10px;
+  justify-content: center;
+}
+.ab-footer-links a {
+  text-decoration: none;
+  color: var(--text-secondary);
+  font-size: .85rem;
+  padding: 4px 10px;
+  border-radius: 8px;
+  transition: color .15s, background .15s;
+  border: 1px solid transparent;
+}
+.ab-footer-links a:hover {
+  color: var(--primary);
+  border-color: var(--primary);
+  background: color-mix(in srgb, var(--primary) 6%, transparent);
+}
+.ab-footer-copy {
+  font-size: .8rem;
+  color: var(--text-secondary);
+}
+.ab-footer-copy a { color: var(--primary); }
+
+/* ══════════════════════════════════════════════════════
+   GENERAL IMPROVEMENTS — scroll, focus, selection
+   ══════════════════════════════════════════════════════ */
+html { scroll-behavior: smooth; }
+*:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+::selection { background: color-mix(in srgb, var(--primary) 25%, transparent); }
+
+/* Better toast */
+.ab-toast {
+  position: fixed;
+  bottom: 28px;
+  left: 50%;
+  transform: translateX(-50%) translateY(20px);
+  background: #18181b;
+  color: #fff;
+  padding: 12px 22px;
+  border-radius: 14px;
+  font-size: .9rem;
+  font-weight: 500;
+  box-shadow: 0 8px 30px rgba(0,0,0,.3);
+  z-index: 9999;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .25s, transform .25s;
+  white-space: nowrap;
+  max-width: 90vw;
+}
+.ab-toast.show {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }

@@ -1,9 +1,16 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-<meta name="google-site-verification" content="ndzq-U-NLijgza_QqgQdcc2U3oMRoud_BT2ZZiwFREM">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="google-site-verification" content="ndzq-U-NLijgza_QqgQdcc2U3oMRoud_BT2ZZiwFREM">
   <meta name="google-site-verification" content="-Yb6Nx74gbZ3wRN5uP-Y8KKwDWlt1DPpxs4nA3PkE6M">
   <meta name="robots" content="index, follow">
+  <title>Smart Image Resizer — AI Bots</title>
+  <meta name="description" content="Resize images by exact pixels, percentage, or social media presets (Instagram, YouTube, Twitter, Passport). Convert to PNG, JPEG, WebP with custom quality. 100% free and client-side.">
+  <meta name="keywords" content="image resizer, resize image online, change image dimensions, compress image, resize photo for passport, instagram post resizer, ai bots resizer">
+  <link rel="icon" href="https://i.ibb.co/G2NFYHG/logo.png" type="image/png">
+  <link rel="canonical" href="https://www.aibots.co.in/resizeimage.html">
   <!-- Google Analytics -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-2L87FMQS3W"></script>
   <script>
@@ -12,254 +19,344 @@
     gtag('js', new Date());
     gtag('config', 'G-2L87FMQS3W');
   </script>
-
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="google-site-verification" content="-Yb6Nx74gbZ3wRN5uP-Y8KKwDWlt1DPpxs4nA3PkE6M">
-  <link rel="icon" href="https://i.ibb.co/G2NFYHG/logo.png" type="image/png">
-  <title>Image Resizer - AI Bots</title>
-
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link rel="stylesheet" href="css/theme.css">
+  <style>
+    .rs-container {
+      max-width: 1040px;
+      margin: 30px auto 80px;
+      padding: 0 16px;
+    }
+    .rs-header {
+      text-align: center;
+      margin-bottom: 32px;
+    }
+    .rs-title {
+      font-size: 2.2rem;
+      font-weight: 800;
+      margin: 0 0 8px;
+      background: linear-gradient(135deg, #06b6d4, #3b82f6, #6366f1);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .rs-dropzone {
+      border: 2.5px dashed var(--primary, #06b6d4);
+      border-radius: 18px;
+      padding: 44px 20px;
+      text-align: center;
+      background: var(--bg-secondary, #1e293b);
+      cursor: pointer;
+      position: relative;
+      transition: all 0.2s;
+    }
+    .rs-dropzone:hover {
+      background: color-mix(in srgb, var(--primary, #06b6d4) 10%, var(--bg-secondary));
+    }
+    .rs-dropzone i { font-size: 3rem; color: #06b6d4; margin-bottom: 10px; display: block; }
+    .rs-dropzone input[type="file"] {
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      cursor: pointer;
+      width: 100%;
+      height: 100%;
+    }
+
+    /* Main Workspace */
+    .rs-workspace {
+      display: grid;
+      grid-template-columns: 320px 1fr;
+      gap: 24px;
+      margin-top: 28px;
+    }
+    @media (max-width: 840px) {
+      .rs-workspace { grid-template-columns: 1fr; }
+    }
+
+    .rs-panel {
+      background: var(--bg-secondary, #1e293b);
+      border: 1px solid var(--border-color, rgba(255,255,255,0.1));
+      border-radius: 16px;
+      padding: 22px;
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+    }
+    .rs-panel h3 {
+      font-size: 1.05rem;
+      font-weight: 700;
+      margin: 0;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: #38bdf8;
+    }
+    .rs-preset-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+    .rs-chip {
+      background: var(--bg-primary, #0f172a);
+      border: 1px solid var(--border-color, rgba(255,255,255,0.1));
+      border-radius: 8px;
+      padding: 5px 10px;
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--text-secondary, #94a3b8);
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .rs-chip:hover, .rs-chip.active {
+      border-color: #06b6d4;
+      color: #38bdf8;
+      background: rgba(6, 182, 212, 0.1);
+    }
+
+    .rs-preview-card {
+      background: var(--bg-secondary, #1e293b);
+      border: 1px solid var(--border-color, rgba(255,255,255,0.1));
+      border-radius: 16px;
+      padding: 22px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 380px;
+      position: relative;
+    }
+    .rs-img-preview-box {
+      max-width: 100%;
+      max-height: 440px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      border-radius: 10px;
+      background: repeating-conic-gradient(#1e293b 0% 25%, #0f172a 0% 50%) 50% / 20px 20px;
+      border: 1px solid var(--border-color);
+    }
+    .rs-img-preview-box img {
+      max-width: 100%;
+      max-height: 440px;
+      object-fit: contain;
+      display: block;
+    }
+    .rs-meta-pill {
+      display: inline-flex;
+      gap: 12px;
+      padding: 6px 14px;
+      background: var(--bg-primary);
+      border-radius: 999px;
+      border: 1px solid var(--border-color);
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--text-secondary);
+      margin-top: 14px;
+    }
+  </style>
 </head>
 <body>
-  <div class="bg-mesh"></div>
 
-  <!-- Navbar -->
-  <header class="navbar">
-    <div class="app-container" style="width: 100%;">
-      <div class="nav-wrapper">
-        <a href="index.html" class="brand-link">
-          <img src="https://i.ibb.co/G2NFYHG/logo.png" alt="AI Bots Logo" class="brand-logo-img">
-          <span>AI Bots</span>
-          <span class="brand-badge">Image Resizer</span>
-        </a>
+  <div class="rs-container">
+    <div class="rs-header">
+      <h1 class="rs-title"><i class="fas fa-expand"></i> Smart Image Resizer</h1>
+      <p style="margin: 0; color: var(--text-secondary); font-size: 0.95rem;">
+        Resize, convert, and optimize images pixel-perfect for social media, print, or web.
+      </p>
+    </div>
 
-        <div class="nav-actions">
-          <a href="index.html" class="btn btn-secondary btn-sm"><i class="fas fa-house"></i> Hub</a>
-          <button class="icon-btn theme-toggle-btn" title="Toggle Dark/Light Mode"><i class="fas fa-moon"></i></button>
+    <!-- Upload Dropzone -->
+    <div class="rs-dropzone" id="dropzone" onclick="document.getElementById('fileInput').click()">
+      <input type="file" id="fileInput" accept="image/*" onchange="handleImage(event)">
+      <i class="fas fa-cloud-arrow-up"></i>
+      <h3 style="margin: 0 0 6px;">Choose or Drop an Image</h3>
+      <p style="margin: 0; color: var(--text-secondary); font-size: 0.85rem;">Supports JPG, PNG, WebP, GIF, SVG, BMP</p>
+    </div>
+
+    <!-- Workspace -->
+    <div class="rs-workspace" id="workspace" style="display: none;">
+      <!-- Controls -->
+      <div class="rs-panel">
+        <h3><i class="fas fa-sliders"></i> Resize Settings</h3>
+
+        <!-- Dimensions -->
+        <div style="display: flex; gap: 10px; align-items: flex-end;">
+          <div style="flex: 1;">
+            <label style="font-size: 0.78rem; font-weight: 700; color: var(--text-secondary);">WIDTH (PX)</label>
+            <input type="number" id="widthInput" class="ab-input" style="margin-top: 4px;" oninput="onWidthChange()">
+          </div>
+          <button class="ab-btn" id="aspectBtn" style="padding: 10px; margin-bottom: 2px;" onclick="toggleAspect()" title="Lock/Unlock Aspect Ratio">
+            <i class="fas fa-link" id="aspectIcon"></i>
+          </button>
+          <div style="flex: 1;">
+            <label style="font-size: 0.78rem; font-weight: 700; color: var(--text-secondary);">HEIGHT (PX)</label>
+            <input type="number" id="heightInput" class="ab-input" style="margin-top: 4px;" oninput="onHeightChange()">
+          </div>
+        </div>
+
+        <!-- Scale Percent -->
+        <div>
+          <div style="display: flex; justify-content: space-between; font-size: 0.8rem; font-weight: 700; color: var(--text-secondary); margin-bottom: 6px;">
+            <span>SCALE PERCENTAGE</span>
+            <span id="scaleVal" style="color: #38bdf8;">100%</span>
+          </div>
+          <input type="range" id="scaleSlider" min="10" max="200" value="100" class="slider" style="width: 100%;" oninput="onScaleChange()">
+        </div>
+
+        <!-- Preset Chips -->
+        <div>
+          <label style="font-size: 0.78rem; font-weight: 700; color: var(--text-secondary); display: block; margin-bottom: 8px;">POPULAR PRESETS</label>
+          <div class="rs-preset-chips">
+            <button class="rs-chip" onclick="applyPreset(1080, 1080)">IG Post (1080x1080)</button>
+            <button class="rs-chip" onclick="applyPreset(1080, 1920)">Story / Reel (1080x1920)</button>
+            <button class="rs-chip" onclick="applyPreset(1280, 720)">YouTube (1280x720)</button>
+            <button class="rs-chip" onclick="applyPreset(1500, 500)">Twitter / X (1500x500)</button>
+            <button class="rs-chip" onclick="applyPreset(600, 600)">Passport (600x600)</button>
+            <button class="rs-chip" onclick="applyPreset(1920, 1080)">Full HD (1920x1080)</button>
+          </div>
+        </div>
+
+        <!-- Output Format & Quality -->
+        <div>
+          <label style="font-size: 0.78rem; font-weight: 700; color: var(--text-secondary); display: block; margin-bottom: 6px;">OUTPUT FORMAT</label>
+          <select id="formatSelect" class="ab-select">
+            <option value="image/jpeg">JPEG (.jpg)</option>
+            <option value="image/png">PNG (.png)</option>
+            <option value="image/webp">WebP (.webp)</option>
+          </select>
+        </div>
+
+        <div>
+          <div style="display: flex; justify-content: space-between; font-size: 0.8rem; font-weight: 700; color: var(--text-secondary); margin-bottom: 6px;">
+            <span>IMAGE QUALITY</span>
+            <span id="qualityVal" style="color: #38bdf8;">92%</span>
+          </div>
+          <input type="range" id="qualitySlider" min="20" max="100" value="92" class="slider" style="width: 100%;" oninput="document.getElementById('qualityVal').textContent = this.value + '%'">
+        </div>
+
+        <!-- Actions -->
+        <button class="ab-btn" style="background: linear-gradient(135deg, #06b6d4, #3b82f6); color: white; width: 100%; padding: 12px; font-weight: 700; font-size: 0.95rem;" onclick="downloadResized()">
+          <i class="fas fa-download"></i> Download Resized Image
+        </button>
+      </div>
+
+      <!-- Preview Area -->
+      <div class="rs-preview-card">
+        <div class="rs-img-preview-box">
+          <img id="previewImg" src="" alt="Resized Preview">
+        </div>
+        <div class="rs-meta-pill">
+          <span>Original: <strong id="origSizeText">0 x 0</strong></span>
+          <span>Target: <strong id="targetSizeText" style="color: #38bdf8;">0 x 0</strong></span>
         </div>
       </div>
     </div>
-  </header>
+  </div>
 
-  <main class="app-container tool-page-wrapper">
-    <div class="tool-header">
-      <span class="tool-header-badge"><i class="fas fa-expand"></i> Pixel & Paper Presets</span>
-      <h1 class="tool-title">Precision Image Resizer</h1>
-      <p class="tool-desc">Scale photos to exact pixel dimensions or standard international paper formats with aspect ratio lock.</p>
-    </div>
-
-    <div class="tool-card-container">
-      
-      <!-- Upload Dropzone -->
-      <div class="dropzone-container" id="dropzone">
-        <input type="file" id="upload-image" class="dropzone-input" accept="image/*" onchange="displayOriginalSize()">
-        <div class="dropzone-icon"><i class="fas fa-file-arrow-up"></i></div>
-        <div class="dropzone-title">Click to Upload Image or Drag & Drop Here</div>
-        <div class="dropzone-subtitle">Supports JPG, PNG, WEBP, SVG</div>
-      </div>
-
-      <!-- Original Dimensions Pill -->
-      <div id="original-size" style="text-align: center; font-family: var(--font-mono); font-size: 0.85rem; color: var(--primary-text); margin-bottom: 20px; font-weight: 600;"></div>
-
-      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
-        <div class="form-group">
-          <label class="form-label" for="width"><i class="fas fa-arrows-left-right"></i> Target Width (px)</label>
-          <input type="number" id="width" class="form-control" placeholder="Width in px" min="1">
-        </div>
-
-        <div class="form-group">
-          <label class="form-label" for="height"><i class="fas fa-arrows-up-down"></i> Target Height (px)</label>
-          <input type="number" id="height" class="form-control" placeholder="Height in px" min="1">
-        </div>
-      </div>
-
-      <!-- Preset Sizes Select -->
-      <div class="form-group">
-        <label class="form-label" for="preset-sizes"><i class="fas fa-book-bookmark"></i> Standard Paper / Envelope Presets</label>
-        <select id="preset-sizes" class="form-control" onchange="handlePresetChange()">
-          <option value="">Custom Pixel Dimensions</option>
-          <optgroup label="Standard ISO A-Series">
-            <option value="841,1189">A0 (841 × 1189 mm / pt)</option>
-            <option value="594,841">A1 (594 × 841 mm / pt)</option>
-            <option value="420,594">A2 (420 × 594 mm / pt)</option>
-            <option value="297,420">A3 (297 × 420 mm / pt)</option>
-            <option value="595,842">A4 Standard (595 × 842 pt)</option>
-            <option value="210,297">A4 Portrait (210 × 297 mm)</option>
-            <option value="297,210">A4 Landscape (297 × 210 mm)</option>
-            <option value="148,210">A5 (148 × 210 mm / pt)</option>
-            <option value="105,148">A6 (105 × 148 mm / pt)</option>
-            <option value="74,105">A7 (74 × 105 mm / pt)</option>
-            <option value="52,74">A8 (52 × 74 mm / pt)</option>
-            <option value="37,52">A9 (37 × 52 mm / pt)</option>
-            <option value="26,37">A10 (26 × 37 mm / pt)</option>
-          </optgroup>
-          <optgroup label="North American Standard">
-            <option value="612,792">US Letter (612 × 792 pt)</option>
-          </optgroup>
-          <optgroup label="ISO B-Series">
-            <option value="1000,1414">B0 (1000 × 1414 mm / pt)</option>
-            <option value="707,1000">B1 (707 × 1000 mm / pt)</option>
-            <option value="500,707">B2 (500 × 707 mm / pt)</option>
-            <option value="353,500">B3 (353 × 500 mm / pt)</option>
-            <option value="250,353">B4 (250 × 353 mm / pt)</option>
-            <option value="176,250">B5 (176 × 250 mm / pt)</option>
-            <option value="125,176">B6 (125 × 176 mm / pt)</option>
-            <option value="88,125">B7 (88 × 125 mm / pt)</option>
-            <option value="62,88">B8 (62 × 88 mm / pt)</option>
-            <option value="44,62">B9 (44 × 62 mm / pt)</option>
-            <option value="31,44">B10 (31 × 44 mm / pt)</option>
-          </optgroup>
-          <optgroup label="ISO C-Series Envelopes">
-            <option value="324,458">C3 Envelope (324 × 458 mm)</option>
-            <option value="229,324">C4 Envelope (229 × 324 mm)</option>
-            <option value="162,229">C5 Envelope (162 × 229 mm)</option>
-            <option value="114,162">C6 Envelope (114 × 162 mm)</option>
-            <option value="81,114">C7 Envelope (81 × 114 mm)</option>
-            <option value="81,114">C8 Envelope (81 × 114 mm)</option>
-            <option value="57,81">C9 Envelope (57 × 81 mm)</option>
-            <option value="40,57">C10 Envelope (40 × 57 mm)</option>
-          </optgroup>
-        </select>
-      </div>
-
-      <!-- Action Button -->
-      <button class="btn btn-primary btn-lg" onclick="resizeImage()" style="width: 100%; margin-top: 10px;">
-        <i class="fas fa-expand"></i> Resize Image Now
-      </button>
-
-      <!-- Preview Output -->
-      <div class="preview-box" id="previewContainer" style="margin-top: 24px; display: none;">
-        <img id="resized-image" class="image-preview" src="" alt="Resized Image">
-      </div>
-
-      <div style="text-align: center; margin-top: 16px;">
-        <a id="download-link" class="btn btn-success btn-lg" style="display: none;" download="resized_image.png">
-          <i class="fas fa-download"></i> Download Resized Image (PNG)
-        </a>
-      </div>
-
-      <p id="resized-size" style="text-align: center; font-family: var(--font-mono); font-size: 0.85rem; color: var(--success); margin-top: 12px; font-weight: 600;"></p>
-
-    </div>
-  </main>
-
-  <footer class="app-footer">
-    <div class="app-container">
-      <p class="footer-text">&copy; 2026 AI Bots. All rights reserved.</p>
-      <p class="footer-credits">Website designed by <strong>Rishit Chajjed</strong>.</p>
-    </div>
-  </footer>
-
-  <script src="js/app.js"></script>
   <script>
-    let originalImageWidth = 0;
-    let originalImageHeight = 0;
+    let origImage = null;
+    let origWidth = 0;
+    let origHeight = 0;
+    let lockAspect = true;
 
-    function displayOriginalSize() {
-      const fileInput = document.getElementById('upload-image');
-      const originalSizeElement = document.getElementById('original-size');
-      const file = fileInput.files[0];
-
+    function handleImage(e) {
+      const file = e.target.files[0];
       if (file) {
         const reader = new FileReader();
-        reader.onloadend = function(e) {
+        reader.onload = (ev) => {
           const img = new Image();
-          img.src = e.target.result;
-          img.onload = function() {
-            originalImageWidth = img.width;
-            originalImageHeight = img.height;
-            originalSizeElement.innerHTML = `<i class="fas fa-circle-info"></i> Original Dimensions: <strong>${img.width} px</strong> (W) &times; <strong>${img.height} px</strong> (H)`;
+          img.onload = () => {
+            origImage = img;
+            origWidth = img.naturalWidth;
+            origHeight = img.naturalHeight;
             
-            // Prepopulate inputs with current dimensions
-            document.getElementById('width').value = img.width;
-            document.getElementById('height').value = img.height;
-            showToast('Image dimensions detected!', 'info');
+            document.getElementById('widthInput').value = origWidth;
+            document.getElementById('heightInput').value = origHeight;
+            document.getElementById('origSizeText').textContent = `${origWidth} × ${origHeight}`;
+            document.getElementById('targetSizeText').textContent = `${origWidth} × ${origHeight}`;
+            document.getElementById('previewImg').src = ev.target.result;
+            
+            document.getElementById('workspace').style.display = 'grid';
+            document.getElementById('dropzone').style.display = 'none';
           };
+          img.src = ev.target.result;
         };
         reader.readAsDataURL(file);
-      } else {
-        originalSizeElement.textContent = '';
       }
     }
 
-    function handlePresetChange() {
-      const presetSelect = document.getElementById('preset-sizes');
-      if (presetSelect.value) {
-        const [w, h] = presetSelect.value.split(',');
-        document.getElementById('width').value = w;
-        document.getElementById('height').value = h;
-      }
+    function toggleAspect() {
+      lockAspect = !lockAspect;
+      const icon = document.getElementById('aspectIcon');
+      icon.className = lockAspect ? 'fas fa-link' : 'fas fa-link-slash';
+      document.getElementById('aspectBtn').style.opacity = lockAspect ? '1' : '0.5';
     }
 
-    function resizeImage() {
-      const fileInput = document.getElementById('upload-image');
-      const widthInput = document.getElementById('width');
-      const heightInput = document.getElementById('height');
-      const presetSizesSelect = document.getElementById('preset-sizes');
-      const downloadLink = document.getElementById('download-link');
-      const resizedImage = document.getElementById('resized-image');
-      const previewContainer = document.getElementById('previewContainer');
-      const resizedSizeElement = document.getElementById('resized-size');
-      const file = fileInput.files[0];
-
-      if (!file) {
-        showToast('Please select an image first', 'error');
-        return;
+    function onWidthChange() {
+      const w = parseInt(document.getElementById('widthInput').value) || 1;
+      if (lockAspect && origWidth > 0) {
+        const h = Math.round(w * (origHeight / origWidth));
+        document.getElementById('heightInput').value = h;
       }
+      updateTargetDisplay();
+    }
 
-      let width = parseInt(widthInput.value);
-      let height = parseInt(heightInput.value);
-      const presetSize = presetSizesSelect.value ? presetSizesSelect.value.split(',') : [];
-
-      if (isNaN(width) && isNaN(height) && presetSize.length === 0) {
-        showToast('Please specify target width and/or height, or select a preset', 'error');
-        return;
+    function onHeightChange() {
+      const h = parseInt(document.getElementById('heightInput').value) || 1;
+      if (lockAspect && origHeight > 0) {
+        const w = Math.round(h * (origWidth / origHeight));
+        document.getElementById('widthInput').value = w;
       }
+      updateTargetDisplay();
+    }
 
-      showToast('Resizing image...', 'info');
+    function onScaleChange() {
+      const pct = parseInt(document.getElementById('scaleSlider').value) || 100;
+      document.getElementById('scaleVal').textContent = `${pct}%`;
+      const w = Math.round(origWidth * (pct / 100));
+      const h = Math.round(origHeight * (pct / 100));
+      document.getElementById('widthInput').value = w;
+      document.getElementById('heightInput').value = h;
+      updateTargetDisplay();
+    }
 
-      const reader = new FileReader();
-      reader.onloadend = function(e) {
-        const img = new Image();
-        img.src = e.target.result;
-        img.onload = function() {
-          const canvas = document.createElement('canvas');
-          const ctx = canvas.getContext('2d');
+    function applyPreset(w, h) {
+      document.getElementById('widthInput').value = w;
+      document.getElementById('heightInput').value = h;
+      updateTargetDisplay();
+    }
 
-          if (!isNaN(width) && isNaN(height)) {
-            height = Math.round(img.height * (width / img.width));
-          } else if (isNaN(width) && !isNaN(height)) {
-            width = Math.round(img.width * (height / img.height));
-          } else if (presetSize.length > 0 && presetSize[0] !== '') {
-            width = parseInt(presetSize[0]);
-            height = parseInt(presetSize[1]);
-          }
+    function updateTargetDisplay() {
+      const w = document.getElementById('widthInput').value;
+      const h = document.getElementById('heightInput').value;
+      document.getElementById('targetSizeText').textContent = `${w} × ${h}`;
+    }
 
-          canvas.width = width;
-          canvas.height = height;
+    function downloadResized() {
+      if (!origImage) return;
+      const targetW = parseInt(document.getElementById('widthInput').value) || origWidth;
+      const targetH = parseInt(document.getElementById('heightInput').value) || origHeight;
+      const format = document.getElementById('formatSelect').value;
+      const quality = (parseInt(document.getElementById('qualitySlider').value) || 92) / 100;
 
-          // High quality image smoothing
-          ctx.imageSmoothingEnabled = true;
-          ctx.imageSmoothingQuality = 'high';
-          ctx.drawImage(img, 0, 0, width, height);
+      const canvas = document.createElement('canvas');
+      canvas.width = targetW;
+      canvas.height = targetH;
+      const ctx = canvas.getContext('2d');
+      ctx.drawImage(origImage, 0, 0, targetW, targetH);
 
-          const resultDataUrl = canvas.toDataURL('image/png');
-          resizedImage.src = resultDataUrl;
-          previewContainer.style.display = 'flex';
+      const ext = format === 'image/png' ? 'png' : (format === 'image/webp' ? 'webp' : 'jpg');
+      const dataUrl = canvas.toDataURL(format, quality);
 
-          downloadLink.href = resultDataUrl;
-          downloadLink.download = `resized_${width}x${height}.png`;
-          downloadLink.style.display = 'inline-flex';
-
-          resizedSizeElement.innerHTML = `<i class="fas fa-check-circle"></i> Successfully Resized: <strong>${width} px</strong> &times; <strong>${height} px</strong>`;
-          showToast('Image resized successfully!', 'success');
-          downloadLink.scrollIntoView({ behavior: 'smooth' });
-        };
-      };
-      reader.readAsDataURL(file);
+      const a = document.createElement('a');
+      a.href = dataUrl;
+      a.download = `resized_${targetW}x${targetH}.${ext}`;
+      a.click();
     }
   </script>
+
+  <script src="js/common.js"></script>
+  <script>abInitChrome('resizeimage');</script>
 </body>
 </html>

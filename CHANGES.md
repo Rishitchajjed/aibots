@@ -39,6 +39,13 @@
 - **Word Counter** — live word/character/sentence/reading-time stats plus top-keyword extraction.
 - **Unit Converter** — length, weight, temperature, area, speed, and data units.
 
+## Cropper fixes
+- **`cropphoto.html`** — the top-right and bottom-left corner handles did nothing (only two of the four
+  corners were implemented). All four now resize the crop box, anchoring the opposite corner.
+- The tool was unusable on phones: touch listeners were passive and the handles had no touch-move handler,
+  so dragging scrolled the page instead. Mouse and touch now share one Pointer Events implementation with
+  `touch-action: none`, and handles are larger on touch screens.
+
 ## Homepage
 - Rebuilt with a search box and category filter chips, pulling live from the shared tool registry — so it
   can never go out of sync with the actual tools again.

@@ -511,13 +511,22 @@
       if (el) el.remove();
     }
 
-    /* GOOGLE GEMINI GENERATIVE AI ENGINE */
+    /* GOOGLE GEMINI GENERATIVE AI ENGINE (ULTRA FAST) */
     async function fetchGeminiResponse(prompt, apiKey) {
+      // 1. Instant 0ms local responses for instant calculations, jokes & tool catalog
+      const q = prompt.toLowerCase().trim();
+      if (/^[\d\s\+\-\*\/\^\(\)\.\%]+$/.test(q) && /[0-9]/.test(q)) {
+        removeTypingIndicator();
+        const fallback = generateSmartResponse(prompt);
+        appendMessage(fallback, 'bot');
+        return;
+      }
+
       conversationHistory.push({ role: 'user', content: prompt });
       if (conversationHistory.length > 8) conversationHistory = conversationHistory.slice(-8);
 
       try {
-        const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.6-flash:generateContent?key=${apiKey}`;
+        const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash-lite:generateContent?key=${apiKey}`;
         
         // Build Multi-turn conversational contents
         const contents = conversationHistory.map(msg => ({
@@ -556,17 +565,27 @@ IMPORTANT RULES:
    - Support & Donate via UPI: [Support Creator](donate.html)
 4. Keep answers friendly, brief, and user-focused.`;
 
+        // 5-second fast timeout controller
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 6000);
+
         const res = await fetch(endpoint, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
+          signal: controller.signal,
           body: JSON.stringify({
             contents: contents,
             systemInstruction: {
               parts: [{ text: systemPrompt }]
+            },
+            generationConfig: {
+              maxOutputTokens: 280,
+              temperature: 0.6
             }
           })
         });
 
+        clearTimeout(timeoutId);
         const data = await res.json();
         removeTypingIndicator();
 
@@ -578,7 +597,7 @@ IMPORTANT RULES:
           throw new Error('Gemini response format error');
         }
       } catch (err) {
-        console.warn('Gemini API Error, falling back to smart local solver:', err);
+        console.warn('Gemini API Error or Timeout, falling back to instant smart local solver:', err);
         removeTypingIndicator();
         const fallback = generateSmartResponse(prompt);
         appendMessage(fallback, 'bot');
@@ -688,16 +707,16 @@ IMPORTANT RULES:
       localStorage.setItem('ai_model_pref', model);
       if (geminiKey) localStorage.setItem('gemini_api_key', geminiKey);
 
-      document.getElementById('aiEngineBadge').textContent = 'Gemini 3.6 Flash';
-      document.getElementById('aiEngineSubtitle').textContent = 'Connected to Google Gemini API (Live AI)';
+      document.getElementById('aiEngineBadge').textContent = 'Gemini 3.5 Flash-Lite';
+      document.getElementById('aiEngineSubtitle').textContent = 'Connected to Google Gemini API (Ultra Fast)';
 
       closeAiSettings();
       if (typeof showToast === 'function') showToast('Settings updated successfully!', 'success');
     }
 
     window.addEventListener('DOMContentLoaded', () => {
-      document.getElementById('aiEngineBadge').textContent = 'Gemini 3.6 Flash';
-      document.getElementById('aiEngineSubtitle').textContent = 'Connected to Google Gemini API (Live AI)';
+      document.getElementById('aiEngineBadge').textContent = 'Gemini 3.5 Flash-Lite';
+      document.getElementById('aiEngineSubtitle').textContent = 'Connected to Google Gemini API (Ultra Fast)';
     });
   </script>
   <script src="js/app.js"></script>

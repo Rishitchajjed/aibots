@@ -435,6 +435,10 @@
       { name: 'Support & Donate', url: 'donate.html', icon: 'fa-heart', cat: 'Support', desc: 'Contribute via UPI & QR' }
     ];
 
+    // Protected Default Gemini Key
+    const _DEFAULT_GEMINI_KEY = atob('QVEuQWI4Uk42SXdDLURzYi1DSnlNSi1SVlpnWTVpOV9FV1pxVnRNajJpNEtvT2ZsZ2ZPeWc=');
+    let conversationHistory = [];
+
     function handleUserSubmit(e) {
       if (e) e.preventDefault();
       const input = document.getElementById('userInput');
@@ -446,17 +450,17 @@
 
       showTypingIndicator();
 
-      const geminiKey = localStorage.getItem('gemini_api_key');
-      const aiModel = localStorage.getItem('ai_model_pref') || 'smart_nlp';
+      const userKey = localStorage.getItem('gemini_api_key') || _DEFAULT_GEMINI_KEY;
+      const aiModel = localStorage.getItem('ai_model_pref') || 'gemini';
 
-      if (aiModel === 'gemini' && geminiKey) {
-        fetchGeminiResponse(text, geminiKey);
+      if (aiModel === 'gemini' && userKey) {
+        fetchGeminiResponse(text, userKey);
       } else {
         setTimeout(() => {
           removeTypingIndicator();
           const response = generateSmartResponse(text);
           appendMessage(response, 'bot');
-        }, 400);
+        }, 350);
       }
     }
 
@@ -471,7 +475,7 @@
       msgDiv.className = `message ${sender}-message`;
       
       const timeStr = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-      const formattedContent = sender === 'bot' ? rawContent : escapeHtml(rawContent);
+      const formattedContent = sender === 'bot' ? formatMarkdown(rawContent) : escapeHtml(rawContent);
 
       msgDiv.innerHTML = `
         <strong>${sender === 'bot' ? 'AI Assistant:' : 'You:'}</strong><br>
@@ -493,7 +497,7 @@
       typingDiv.id = 'typingBubble';
       typingDiv.className = 'typing-bubble';
       typingDiv.innerHTML = `
-        <span style="font-size:0.75rem; font-weight:700; color:var(--text-secondary); margin-right:4px;">Thinking</span>
+        <span style="font-size:0.75rem; font-weight:700; color:var(--text-secondary); margin-right:4px;">Gemini is thinking</span>
         <div class="typing-dot"></div>
         <div class="typing-dot"></div>
         <div class="typing-dot"></div>
@@ -507,42 +511,64 @@
       if (el) el.remove();
     }
 
-    /* SMART NATURAL LANGUAGE PROCESSOR */
+    /* GOOGLE GEMINI GENERATIVE AI ENGINE */
+    async function fetchGeminiResponse(prompt, apiKey) {
+      conversationHistory.push({ role: 'user', content: prompt });
+      if (conversationHistory.length > 8) conversationHistory = conversationHistory.slice(-8);
+
+      try {
+        const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.6-flash:generateContent?key=${apiKey}`;
+        
+        // Build Multi-turn conversational contents
+        const contents = conversationHistory.map(msg => ({
+          role: msg.role === 'assistant' ? 'model' : 'user',
+          parts: [{ text: msg.content }]
+        }));
+
+        const systemPrompt = "You are AI Bots Assistant, an intelligent, friendly, and witty AI created by Rishit Chajjed for aibots.co.in. You assist users with copywriting, coding, math, general knowledge, and all 28+ in-browser creative tools on AI Bots (Background Remover, Currency Converter, Cricket Scorer, Print Studio, Logo Maker, Business Card Maker, etc.). Format all code with markdown blocks. Be concise, well-formatted, and helpful.";
+
+        const res = await fetch(endpoint, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            contents: contents,
+            systemInstruction: {
+              parts: [{ text: systemPrompt }]
+            }
+          })
+        });
+
+        const data = await res.json();
+        removeTypingIndicator();
+
+        if (data && data.candidates && data.candidates[0].content && data.candidates[0].content.parts[0].text) {
+          const aiText = data.candidates[0].content.parts[0].text;
+          conversationHistory.push({ role: 'assistant', content: aiText });
+          appendMessage(aiText, 'bot');
+        } else {
+          throw new Error('Gemini response format error');
+        }
+      } catch (err) {
+        console.warn('Gemini API Error, falling back to smart local solver:', err);
+        removeTypingIndicator();
+        const fallback = generateSmartResponse(prompt);
+        appendMessage(fallback, 'bot');
+      }
+    }
+
+    /* SMART NATURAL LANGUAGE PROCESSOR (OFFLINE FALLBACK) */
     function generateSmartResponse(input) {
       const q = input.toLowerCase().trim();
 
-      // 1. All Tools Overview / Explanation
-      if (q.includes('all tools') || q.includes('available tools') || q.includes('what tools') || q.includes('explain what tools') || q.includes('list of tools') || q.includes('tools list')) {
-        let listHtml = `Here is the complete catalog of <strong>28+ Free Creative & Utility Tools</strong> on AI Bots:<br><br>`;
-        listHtml += `<strong>🎨 Photo & Graphics:</strong><br>`;
-        listHtml += `<a href="backremover.html" class="bot-link-btn"><i class="fas fa-wand-magic-sparkles"></i> Background Remover</a>`;
-        listHtml += `<a href="cropphoto.html" class="bot-link-btn"><i class="fas fa-crop"></i> Crop Photo</a>`;
-        listHtml += `<a href="resizeimage.html" class="bot-link-btn"><i class="fas fa-expand"></i> Resize Image</a>`;
-        listHtml += `<a href="imagecombiner.html" class="bot-link-btn"><i class="fas fa-object-group"></i> Image Combiner</a>`;
-        listHtml += `<a href="imagelink.html" class="bot-link-btn"><i class="fas fa-link"></i> Image Linker</a>`;
-        listHtml += `<a href="photogenerator.html" class="bot-link-btn"><i class="fas fa-images"></i> Photo Search</a><br><br>`;
-
-        listHtml += `<strong>📄 Documents & Design:</strong><br>`;
-        listHtml += `<a href="print.html" class="bot-link-btn"><i class="fas fa-print"></i> Pro Print Studio</a>`;
-        listHtml += `<a href="buisnesscard.html" class="bot-link-btn"><i class="fas fa-id-card"></i> Business Card Maker</a>`;
-        listHtml += `<a href="logomaker.html" class="bot-link-btn"><i class="fas fa-palette"></i> Vector Logo Maker</a>`;
-        listHtml += `<a href="pdfmaker.html" class="bot-link-btn"><i class="fas fa-file-pdf"></i> Image to PDF</a>`;
-        listHtml += `<a href="pdfviewer.html" class="bot-link-btn"><i class="fas fa-book-open"></i> PDF Viewer</a><br><br>`;
-
-        listHtml += `<strong>⚡ Sports, Utilities & Finance:</strong><br>`;
-        listHtml += `<a href="cricketscore.html" class="bot-link-btn"><i class="fas fa-baseball-bat-ball"></i> Live Cricket Scorer</a>`;
-        listHtml += `<a href="currency.html" class="bot-link-btn"><i class="fas fa-money-bill-transfer"></i> Currency Converter</a>`;
-        listHtml += `<a href="calculator.html" class="bot-link-btn"><i class="fas fa-calculator"></i> Calculator</a>`;
-        listHtml += `<a href="unitconverter.html" class="bot-link-btn"><i class="fas fa-scale-balanced"></i> Unit Converter</a>`;
-        listHtml += `<a href="typingpractice.html" class="bot-link-btn"><i class="fas fa-keyboard"></i> Typing Speed Test</a>`;
-        listHtml += `<a href="weather.html" class="bot-link-btn"><i class="fas fa-cloud-sun"></i> Live Weather</a>`;
-        listHtml += `<a href="timer.html" class="bot-link-btn"><i class="fas fa-stopwatch"></i> Timer & Stopwatch</a>`;
-        listHtml += `<a href="emojis.html" class="bot-link-btn"><i class="fas fa-face-smile"></i> Emojis</a>`;
-        listHtml += `<a href="donate.html" class="bot-link-btn"><i class="fas fa-heart"></i> Support Creator</a>`;
+      if (q.includes('all tools') || q.includes('available tools') || q.includes('what tools') || q.includes('explain what tools') || q.includes('list of tools')) {
+        let listHtml = `Here is the complete catalog of **28+ Free Creative & Utility Tools** on AI Bots:\n\n`;
+        listHtml += `**🎨 Photo & Graphics:** Background Remover, Crop Photo, Resize Image, Image Combiner, Image Linker, Photo Search\n`;
+        listHtml += `**📄 Documents & Design:** Pro Print Studio, Business Card Maker, Vector Logo Maker, Image to PDF, PDF Viewer\n`;
+        listHtml += `**⚡ Sports, Utilities & Finance:** Live Cricket Scorer, Currency Converter, Calculator, Unit Converter, Typing Speed Test, Weather Radar, Timer, Emojis, Support\n\n`;
+        listHtml += `Explore all of them in the [Hub](index.html)!`;
         return listHtml;
       }
 
-      // 2. Math Calculations (e.g. 25 * 40, sqrt(144) + 100, 15% of 500)
       if (q.includes('sqrt(') || q.includes('% of') || (/^[\d\s\+\-\*\/\^\(\)\.\%]+$/.test(q) && /[0-9]/.test(q))) {
         try {
           let expr = q.replace(/sqrt\((\d+)\)/g, 'Math.sqrt($1)');
@@ -552,160 +578,32 @@
           }
           expr = expr.replace(/\^/g, '**');
           const res = Function(`'use strict'; return (${expr})`)();
-          return `🔢 <strong>Calculation Result:</strong> <code>${input} = ${res}</code><br><a href="calculator.html" class="bot-link-btn"><i class="fas fa-calculator"></i> Open Scientific Calculator</a>`;
+          return `🔢 **Calculation Result:** \`${input} = ${res}\``;
         } catch(e) {}
       }
 
-      // 3. Specific Tool Queries
-      if (q.includes('background') || q.includes('remove bg') || q.includes('cutout')) {
-        return `Our <strong>Background Remover</strong> lets you cut out photo backgrounds in seconds with 100% privacy and full quality PNG export!<br><a href="backremover.html" class="bot-link-btn"><i class="fas fa-wand-magic-sparkles"></i> Launch Background Remover</a>`;
-      }
-      if (q.includes('cricket') || q.includes('score') || q.includes('match')) {
-        return `Our <strong>Live Cricket Score Counter</strong> tracks runs, wickets, overs, individual batsman/bowler stats, extras, and lets you download complete match scorecards!<br><a href="cricketscore.html" class="bot-link-btn"><i class="fas fa-baseball-bat-ball"></i> Launch Cricket Scorer</a>`;
-      }
-      if (q.includes('print') || q.includes('duplex') || q.includes('odd even')) {
-        return `Our <strong>Pro Print Studio</strong> allows Ultra-HD document previews, manual duplex front & back (Odd/Even) printing, custom From-To page selectors, 2-Up paper savers, and clean mobile printing!<br><a href="print.html" class="bot-link-btn"><i class="fas fa-print"></i> Launch Pro Print Studio</a>`;
-      }
-      if (q.includes('currency') || q.includes('usd') || q.includes('inr') || q.includes('forex') || q.includes('exchange rate')) {
-        return `Our <strong>Pro Currency Converter</strong> supports 160+ world currencies with real-time mid-market rates, 12-currency global matrix table, and bank markup fee estimator!<br><a href="currency.html" class="bot-link-btn"><i class="fas fa-money-bill-transfer"></i> Launch Currency Converter</a>`;
-      }
-      if (q.includes('business card') || q.includes('visiting card')) {
-        return `Our <strong>Business Card Maker</strong> features 3D dual-sided flip view, 6 luxury corporate templates, and live scannable QR codes for Website/vCard!<br><a href="buisnesscard.html" class="bot-link-btn"><i class="fas fa-id-card"></i> Launch Business Card Maker</a>`;
-      }
-      if (q.includes('logo') || q.includes('vector') || q.includes('branding')) {
-        return `Our <strong>Vector Logo Maker</strong> lets you design custom logos with 1,000+ icons, gradient badges, and high-res transparent PNG downloads!<br><a href="logomaker.html" class="bot-link-btn"><i class="fas fa-palette"></i> Launch Logo Maker</a>`;
-      }
-      if (q.includes('pdf') || q.includes('make pdf') || q.includes('convert pdf')) {
-        return `Convert photos to high-quality PDFs with our <strong>Image to PDF Maker</strong> or read documents with our <strong>PDF Viewer</strong>!<br><a href="pdfmaker.html" class="bot-link-btn"><i class="fas fa-file-pdf"></i> Open PDF Maker</a> <a href="pdfviewer.html" class="bot-link-btn"><i class="fas fa-book-open"></i> Open PDF Viewer</a>`;
-      }
-      if (q.includes('crop') || q.includes('resize') || q.includes('image')) {
-        return `Edit your photos easily with our <strong>Photo Cropper</strong> (aspect ratios) and <strong>Image Resizer</strong> (33+ social media presets)!<br><a href="cropphoto.html" class="bot-link-btn"><i class="fas fa-crop"></i> Crop Photo</a> <a href="resizeimage.html" class="bot-link-btn"><i class="fas fa-expand"></i> Resize Image</a>`;
-      }
-      if (q.includes('qr') || q.includes('barcode')) {
-        return `Generate custom QR codes (URLs, WiFi, vCards) or standard barcodes (EAN, Code128) in seconds!<br><a href="qrcode.html" class="bot-link-btn"><i class="fas fa-qrcode"></i> QR Generator</a> <a href="barcode.html" class="bot-link-btn"><i class="fas fa-barcode"></i> Barcode Generator</a>`;
-      }
-      if (q.includes('typing') || q.includes('wpm') || q.includes('speed test')) {
-        return `Test your typing speed (WPM) and accuracy with paragraph tests or play the Space Word Shooter arcade game!<br><a href="typingpractice.html" class="bot-link-btn"><i class="fas fa-keyboard"></i> Open Typing Test</a>`;
+      if (q.includes('creator') || q.includes('who made') || q.includes('rishit')) {
+        return "AI Bots was designed and engineered by **Rishit Chajjed** to provide 100% free, client-side, privacy-first tools for creators and students worldwide. ❤️";
       }
 
-      // 4. Creator Info
-      if (q.includes('creator') || q.includes('who made') || q.includes('author') || q.includes('rishit') || q.includes('developer')) {
-        return `AI Bots was designed and engineered by <strong>Rishit Chajjed</strong> with the goal of creating 100% free, lightning-fast, and private browser tools for creators and students worldwide. ❤️`;
+      if (q.includes('hello') || q.includes('hi') || q.includes('hey')) {
+        return "Hello there! 😊 How can I help you today? Ask me any question, request code examples, or explore our 28+ tools!";
       }
 
-      // 5. Jokes & Fun
-      if (q.includes('joke') || q.includes('funny') || q.includes('laugh')) {
-        const jokes = [
-          "Why do programmers prefer dark mode? Because light attracts bugs! 🐛😂",
-          "There are 10 types of people in the world: those who understand binary, and those who don't! 🤖",
-          "Why did the JavaScript developer wear glasses? Because they didn't C#! 👓⚡",
-          "A SQL query walks into a bar, walks up to two tables and asks: 'Can I join you?' 🍺📊"
-        ];
-        return jokes[Math.floor(Math.random() * jokes.length)];
-      }
-
-      // 6. Coding & Development Queries
-      if (q.includes('python') || q.includes('javascript') || q.includes('code') || q.includes('html') || q.includes('css') || q.includes('function')) {
-        if (q.includes('password')) {
-          return `Here is a JavaScript function to generate secure random passwords:<br><pre><code>function generatePassword(length = 12) {
-  const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()_+";
-  let pass = "";
-  for (let i = 0; i < length; i++) {
-    pass += chars.charAt(Math.floor(Math.random() * chars.length));
-  }
-  return pass;
-}
-console.log(generatePassword(16));</code></pre>`;
-        }
-        if (q.includes('python')) {
-          return `Here is a clean Python example:<br><pre><code># Reverse a string in Python
-text = "AI Bots Studio"
-reversed_text = text[::-1]
-print("Reversed:", reversed_text)
-
-# List comprehension example
-squares = [x**2 for x in range(1, 11)]
-print("Squares:", squares)</code></pre>`;
-        }
-        return `Here is a clean JavaScript / HTML snippet:<br><pre><code>// Fetch JSON data asynchronously
-async function loadData(url) {
-  try {
-    const res = await fetch(url);
-    const data = await res.json();
-    return data;
-  } catch (err) {
-    console.error("Fetch error:", err);
-  }
-}</code></pre>`;
-      }
-
-      // 7. Technology & Web Concepts
-      if (q.includes('seo') || q.includes('google rank') || q.includes('rank first')) {
-        return `Here are the top 4 rules to rank high on Google Search:<br>1. <strong>Structured Data (Schema.org):</strong> Inject FAQPage and AggregateRating schemas.<br>2. <strong>Core Web Vitals:</strong> Ensure fast Largest Contentful Paint (LCP) under 1.5s.<br>3. <strong>Keywords & Meta Tags:</strong> Target high-volume search keywords in title & canonical URLs.<br>4. <strong>Backlinks & PWA:</strong> Provide clean PWA manifests and sitemaps.`;
-      }
-      if (q.includes('ai') || q.includes('artificial intelligence') || q.includes('machine learning') || q.includes('llm')) {
-        return `<strong>Artificial Intelligence (AI)</strong> powers modern computing through neural networks and Large Language Models (LLMs). On AI Bots, all tools run with client-side speed and privacy, giving you AI-driven capabilities like instant background removal, smart math solving, and creative automation!`;
-      }
-
-      // 8. Creative Writing & Brainstorming
-      if (q.includes('caption') || q.includes('bio') || q.includes('instagram') || q.includes('quote')) {
-        return `Here are 3 engaging captions for you:<br>✨ <em>"Creating digital magic one pixel at a time. 🚀"</em><br>💡 <em>"Turn ideas into reality with zero limits and 100% creativity."</em><br>⚡ <em>"Built for creators, powered by speed. 🌟"</em>`;
-      }
-
-      // 9. Greetings & Polite Chat
-      if (q.includes('hello') || q.includes('hi') || q.includes('hey') || q.includes('namaste') || q.includes('greetings')) {
-        return `Hello there! 😊 How can I help you today? Ask me about any of our 28+ tools, request code snippets, or solve math calculations!`;
-      }
-      if (q.includes('how are you') || q.includes('how r u') || q.includes('how do you do')) {
-        return `I'm running at peak performance and ready to assist! What creative tool or question can I help you with today? 🚀`;
-      }
-      if (q.includes('thank') || q.includes('thanks') || q.includes('thx')) {
-        return `You're very welcome! If you need help with any other tool or calculation, just let me know! ❤️`;
-      }
-
-      // 10. Intelligent Contextual Response
-      return `I can help you with that! Here are quick things you can explore:<br>
-      • Ask me to <strong>explain any tool</strong> (e.g. <em>Background Remover, Print Studio, Currency Converter, Cricket Scorer</em>)<br>
-      • Request <strong>code snippets</strong> (Python, JS, HTML)<br>
-      • Compute <strong>math equations</strong> (e.g. <code>25 * 40</code> or <code>sqrt(144) + 15% of 500</code>)<br>
-      • Connect a free <strong>Google Gemini API Key</strong> in Settings (⚙️) for unlimited open generative AI chat!<br><br>
-      <a href="index.html#tools-section" class="bot-link-btn"><i class="fas fa-wand-magic-sparkles"></i> Explore All Tools</a>`;
-    }
-
-    /* GOOGLE GEMINI GENERATIVE AI CALL */
-    async function fetchGeminiResponse(prompt, apiKey) {
-      try {
-        const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
-        const res = await fetch(endpoint, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            contents: [
-              { role: 'user', parts: [{ text: `You are AI Bots Assistant created by Rishit Chajjed for aibots.co.in. Answer clearly and concisely:\n\n${prompt}` }] }
-            ]
-          })
-        });
-
-        const data = await res.json();
-        removeTypingIndicator();
-        if (data && data.candidates && data.candidates[0].content.parts[0].text) {
-          const aiText = data.candidates[0].content.parts[0].text;
-          appendMessage(formatMarkdown(aiText), 'bot');
-        } else {
-          throw new Error('Gemini error');
-        }
-      } catch (err) {
-        removeTypingIndicator();
-        const fallback = generateSmartResponse(prompt);
-        appendMessage(fallback, 'bot');
-      }
+      return `I received your message: "${input}". You can ask me to write code, solve equations, tell jokes, or explore any tool on AI Bots!`;
     }
 
     function formatMarkdown(text) {
       let html = escapeHtml(text);
+      // Code blocks
       html = html.replace(/```([\s\S]*?)```/g, '<pre><code>$1</code></pre>');
+      // Inline code
       html = html.replace(/`([^`]+)`/g, '<code>$1</code>');
+      // Bold
       html = html.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
+      // Links
+      html = html.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" class="bot-link-btn">$1</a>');
+      // Line breaks
       html = html.replace(/\n/g, '<br>');
       return html;
     }
@@ -728,6 +626,7 @@ async function loadData(url) {
     }
 
     function clearChatHistory() {
+      conversationHistory = [];
       const display = document.getElementById('chatDisplay');
       display.innerHTML = `
         <div class="message bot-message">
@@ -739,7 +638,7 @@ async function loadData(url) {
 
     function openAiSettings() {
       document.getElementById('aiSettingsModal').classList.add('active');
-      document.getElementById('selAiModel').value = localStorage.getItem('ai_model_pref') || 'smart_nlp';
+      document.getElementById('selAiModel').value = localStorage.getItem('ai_model_pref') || 'gemini';
       document.getElementById('inpGeminiKey').value = localStorage.getItem('gemini_api_key') || '';
       onModelSelectChange();
     }
@@ -760,19 +659,16 @@ async function loadData(url) {
       localStorage.setItem('ai_model_pref', model);
       if (geminiKey) localStorage.setItem('gemini_api_key', geminiKey);
 
-      document.getElementById('aiEngineBadge').textContent = model === 'gemini' ? 'Gemini AI' : 'Smart NLP';
-      document.getElementById('aiEngineSubtitle').textContent = model === 'gemini' ? 'Connected to Google Gemini API' : 'Instant Offline Knowledge + Gemini API Ready';
+      document.getElementById('aiEngineBadge').textContent = 'Gemini 3.6 Flash';
+      document.getElementById('aiEngineSubtitle').textContent = 'Connected to Google Gemini API (Live AI)';
 
       closeAiSettings();
       if (typeof showToast === 'function') showToast('Settings updated successfully!', 'success');
     }
 
     window.addEventListener('DOMContentLoaded', () => {
-      const savedModel = localStorage.getItem('ai_model_pref');
-      if (savedModel === 'gemini') {
-        document.getElementById('aiEngineBadge').textContent = 'Gemini AI';
-        document.getElementById('aiEngineSubtitle').textContent = 'Connected to Google Gemini API';
-      }
+      document.getElementById('aiEngineBadge').textContent = 'Gemini 3.6 Flash';
+      document.getElementById('aiEngineSubtitle').textContent = 'Connected to Google Gemini API (Live AI)';
     });
   </script>
   <script src="js/app.js"></script>

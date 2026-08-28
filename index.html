@@ -183,9 +183,9 @@
   }
   </script>
 
-  <!-- Stylesheets & Fonts (Asynchronous Non-Render-Blocking) -->
-  <link rel="preload" href="css/theme.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
-  <noscript><link rel="stylesheet" href="css/theme.css"></noscript>
+  <!-- Stylesheets & Design System -->
+  <link rel="preload" href="css/theme.css" as="style">
+  <link rel="stylesheet" href="css/theme.css">
   <script>
     let _faLoaded = false;
     function loadFontAwesome() {
@@ -539,7 +539,7 @@
 
       <h1 class="hero-title">
         The All-In-One Platform to <br>
-        <span class="gradient-text" id="dynamicTypingText">Remove Backgrounds</span><span class="typing-cursor"></span>
+        <span class="gradient-text">Create, Design & Score Live</span>
       </h1>
 
       <p class="hero-subtitle">
@@ -1127,47 +1127,6 @@
   <script src="js/app.min.js" defer></script>
   <script src="js/effects.js" defer></script>
   <script>
-    // 1. Dynamic Typing Text Animation in Hero
-    const phrases = [
-      "Remove Backgrounds",
-      "Count Cricket Scores",
-      "Design Vector Logos",
-      "Convert Images to PDF",
-      "Resize to 33+ Formats",
-      "Generate Instant Image Links",
-      "Crop Photos Pixel-Perfect"
-    ];
-    let phraseIndex = 0;
-    let charIndex = phrases[0].length;
-    let isDeleting = true;
-    const typingElement = document.getElementById("dynamicTypingText");
-
-    function typeEffect() {
-      const currentPhrase = phrases[phraseIndex];
-      if (isDeleting) {
-        typingElement.textContent = currentPhrase.substring(0, charIndex - 1);
-        charIndex--;
-      } else {
-        typingElement.textContent = currentPhrase.substring(0, charIndex + 1);
-        charIndex++;
-      }
-
-      let speed = isDeleting ? 35 : 75;
-
-      if (!isDeleting && charIndex === currentPhrase.length) {
-        speed = 2500; // Pause at end of phrase
-        isDeleting = true;
-      } else if (isDeleting && charIndex === 0) {
-        isDeleting = false;
-        phraseIndex = (phraseIndex + 1) % phrases.length;
-        speed = 350;
-      }
-
-      setTimeout(typeEffect, speed);
-    }
-    // Initial delay so first paint is 100% stable with zero CLS
-    setTimeout(typeEffect, 3200);
-
     // 2. Category Filtering Logic
     const filterButtons = document.querySelectorAll('.filter-btn');
     const toolCards = document.querySelectorAll('.tool-card');

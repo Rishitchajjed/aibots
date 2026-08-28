@@ -1396,9 +1396,9 @@
 
       try {
         const res = await fetch(AIBOTS_CLOUD_BIN, {
-          method: 'PUT',
+          method: 'PATCH',
           headers: {
-            'Content-Type': 'text/plain;charset=UTF-8'
+            'Content-Type': 'application/merge-patch+json'
           },
           body: JSON.stringify(fullConfig)
         });

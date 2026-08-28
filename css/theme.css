@@ -370,6 +370,8 @@ body {
   letter-spacing: -0.02em;
   margin-bottom: 20px;
   color: var(--text-primary);
+  min-height: 2.4em;
+  contain: layout;
 }
 
 .gradient-text {
@@ -377,6 +379,7 @@ body {
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   display: inline-block;
+  min-height: 1.2em;
 }
 
 .hero-subtitle {
@@ -384,6 +387,7 @@ body {
   color: var(--text-secondary);
   max-width: 680px;
   margin: 0 auto 36px;
+  min-height: 3.5em;
 }
 
 /* Interactive Bouncing/Throw Logo from Original AI Bots */

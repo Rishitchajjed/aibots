@@ -210,6 +210,19 @@
       font-display: swap;
     }
 
+    /* Zero-CLS Layout Stabilization */
+    .hero-title {
+      min-height: 2.4em;
+      contain: layout;
+    }
+    #dynamicTypingText {
+      display: inline-block;
+      min-height: 1.2em;
+    }
+    .hero-subtitle {
+      min-height: 3.5em;
+    }
+
     /* Hero Typography Typing Animation */
     .typing-cursor {
       display: inline-block;
@@ -1125,8 +1138,8 @@
       "Crop Photos Pixel-Perfect"
     ];
     let phraseIndex = 0;
-    let charIndex = 0;
-    let isDeleting = false;
+    let charIndex = phrases[0].length;
+    let isDeleting = true;
     const typingElement = document.getElementById("dynamicTypingText");
 
     function typeEffect() {
@@ -1139,20 +1152,21 @@
         charIndex++;
       }
 
-      let speed = isDeleting ? 40 : 80;
+      let speed = isDeleting ? 35 : 75;
 
       if (!isDeleting && charIndex === currentPhrase.length) {
-        speed = 2200; // Pause at end of phrase
+        speed = 2500; // Pause at end of phrase
         isDeleting = true;
       } else if (isDeleting && charIndex === 0) {
         isDeleting = false;
         phraseIndex = (phraseIndex + 1) % phrases.length;
-        speed = 400;
+        speed = 350;
       }
 
       setTimeout(typeEffect, speed);
     }
-    typeEffect();
+    // Initial delay so first paint is 100% stable with zero CLS
+    setTimeout(typeEffect, 3200);
 
     // 2. Category Filtering Logic
     const filterButtons = document.querySelectorAll('.filter-btn');

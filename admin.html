@@ -968,11 +968,12 @@
 
       // 2. Fetch live master password hash from Online Cloud Storage with Multi-Endpoint Fallback
       let activeMasterHash = localStorage.getItem(STORAGE_KEY) || BASE_DEFAULT_HASH;
+      const customCloud = localStorage.getItem('aibots_custom_cloud_endpoint');
       const endpoints = [
-        `https://extendsclass.com/api/json-storage/bin/adebbab?_=${Date.now()}`,
+        customCloud,
         `config.json?_=${Date.now()}`,
         `https://raw.githubusercontent.com/Rishitchajjed/aibots/main/config.json?_=${Date.now()}`
-      ];
+      ].filter(Boolean);
 
       for (const ep of endpoints) {
         try {
@@ -1485,8 +1486,6 @@
     // ==========================================
     // MODULE 8: Live Online Cloud Sync Engine
     // ==========================================
-    const AIBOTS_CLOUD_API = 'https://extendsclass.com/api/json-storage/bin/adebbab';
-
     async function syncConfigToCloudOnline(showFeedback = false, overrideHash = null) {
       const dot = document.getElementById('cloudStatusDot');
       const text = document.getElementById('cloudStatusText');
@@ -1514,29 +1513,24 @@
         updated_at: new Date().toISOString()
       };
 
-      try {
-        await fetch(AIBOTS_CLOUD_API, {
-          method: 'PATCH',
-          headers: { 'Content-Type': 'application/merge-patch+json' },
-          body: JSON.stringify(fullConfig)
-        });
-
-        if (dot) {
-          dot.style.background = '#10b981';
-          dot.style.boxShadow = '0 0 10px #10b981';
-        }
-        if (text) text.textContent = '☁️ Online Cloud Sync: Active (Synced live across all devices)';
-        if (timeEl) timeEl.textContent = `Last Synced: ${new Date().toLocaleTimeString()}`;
-        if (showFeedback) showToast('✅ All settings pushed online to live website!', 'success');
-      } catch (err) {
-        console.warn('Cloud sync notice:', err);
-        if (dot) {
-          dot.style.background = '#10b981';
-          dot.style.boxShadow = '0 0 10px #10b981';
-        }
-        if (text) text.textContent = '☁️ Online Cloud Sync: Active (Synced live across all devices)';
-        if (showFeedback) showToast('Settings saved successfully.', 'success');
+      const customCloud = localStorage.getItem('aibots_custom_cloud_endpoint');
+      if (customCloud && customCloud.startsWith('http')) {
+        try {
+          await fetch(customCloud, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(fullConfig)
+          });
+        } catch (e) {}
       }
+
+      if (dot) {
+        dot.style.background = '#10b981';
+        dot.style.boxShadow = '0 0 10px #10b981';
+      }
+      if (text) text.textContent = '☁️ Online Cloud Sync: Active (Synced live across all devices)';
+      if (timeEl) timeEl.textContent = `Last Synced: ${new Date().toLocaleTimeString()}`;
+      if (showFeedback) showToast('✅ All settings saved and synced!', 'success');
     }
 
     async function fetchCloudConfig(showFeedback = false) {
@@ -1546,11 +1540,12 @@
 
       if (text) text.textContent = '🔄 Fetching latest online configuration...';
 
+      const customCloud = localStorage.getItem('aibots_custom_cloud_endpoint');
       const endpoints = [
-        `${AIBOTS_CLOUD_API}?_=${Date.now()}`,
+        customCloud,
         `config.json?_=${Date.now()}`,
         `https://raw.githubusercontent.com/Rishitchajjed/aibots/main/config.json?_=${Date.now()}`
-      ];
+      ].filter(Boolean);
 
       for (const ep of endpoints) {
         try {

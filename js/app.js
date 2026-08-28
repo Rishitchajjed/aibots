@@ -924,6 +924,45 @@ window.updateDonationQR = function(amt) {
     } catch(e) {}
   }
 
+  // Global Cloud Analytics Logger
+  let analyticsSyncTimer = null;
+  function syncAnalyticsToCloud() {
+    clearTimeout(analyticsSyncTimer);
+    analyticsSyncTimer = setTimeout(async () => {
+      try {
+        const res = await fetch(AIBOTS_CLOUD_API, { cache: 'no-store' });
+        if (res.ok) {
+          const body = await res.json();
+          const cloud = body && body.data ? body.data : body;
+          const localClicks = JSON.parse(localStorage.getItem('aibots_tool_click_analytics') || '{}');
+          const localSearches = JSON.parse(localStorage.getItem('aibots_search_query_log') || '[]');
+
+          const mergedClicks = { ...(cloud.analytics_clicks || {}) };
+          Object.keys(localClicks).forEach(k => {
+            if (!mergedClicks[k] || localClicks[k] > mergedClicks[k]) {
+              mergedClicks[k] = localClicks[k];
+            }
+          });
+
+          const searchSet = new Set([...(cloud.analytics_searches || []), ...localSearches]);
+          const mergedSearches = Array.from(searchSet).slice(-50);
+
+          cloud.analytics_clicks = mergedClicks;
+          cloud.analytics_searches = mergedSearches;
+
+          await fetch(AIBOTS_CLOUD_API, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              name: 'aibots_creative_studio_global_config',
+              data: cloud
+            })
+          });
+        }
+      } catch (err) {}
+    }, 2500);
+  }
+
   // Tool Click Analytics Logger
   function setupToolAnalyticsLogger() {
     document.addEventListener('click', (e) => {
@@ -935,6 +974,7 @@ window.updateDonationQR = function(amt) {
             const clicks = JSON.parse(localStorage.getItem('aibots_tool_click_analytics') || '{}');
             clicks[tool] = (clicks[tool] || 0) + 1;
             localStorage.setItem('aibots_tool_click_analytics', JSON.stringify(clicks));
+            syncAnalyticsToCloud();
           } catch(err) {}
         }
       }
@@ -950,6 +990,7 @@ window.updateDonationQR = function(amt) {
         searches.push(query.trim());
         if (searches.length > 50) searches.shift();
         localStorage.setItem('aibots_search_query_log', JSON.stringify(searches));
+        syncAnalyticsToCloud();
       }
     } catch(e) {}
   };
@@ -1095,6 +1136,12 @@ window.updateDonationQR = function(amt) {
           }
           if (cloud.upi_config && cloud.upi_config.id) {
             localStorage.setItem('aibots_custom_upi_config', JSON.stringify(cloud.upi_config));
+          }
+          if (cloud.analytics_clicks) {
+            localStorage.setItem('aibots_tool_click_analytics', JSON.stringify(cloud.analytics_clicks));
+          }
+          if (cloud.analytics_searches) {
+            localStorage.setItem('aibots_search_query_log', JSON.stringify(cloud.analytics_searches));
           }
 
           // Re-evaluate reactive components

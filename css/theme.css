@@ -1095,6 +1095,7 @@ body {
   align-items: center;
   justify-content: center;
   padding: 20px;
+  overflow-y: auto;
 }
 
 .modal-backdrop.active {
@@ -1104,12 +1105,25 @@ body {
 .modal-card {
   width: 100%;
   max-width: 540px;
+  max-height: 90vh;
+  overflow-y: auto;
+  margin: auto;
+  position: relative;
   background: var(--bg-secondary);
   border: 1px solid var(--border-color);
   border-radius: var(--radius-xl);
   padding: 28px;
   box-shadow: var(--shadow-xl);
   animation: slideDown 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.modal-card::-webkit-scrollbar {
+  width: 6px;
+}
+
+.modal-card::-webkit-scrollbar-thumb {
+  background: var(--border-color);
+  border-radius: 4px;
 }
 
 /* Keyboard Shortcuts Modal */

@@ -1145,6 +1145,7 @@
     });
 
     // 3. Live Search Input Filter
+    let liveSearchDebounce = null;
     function filterToolsLive() {
       const query = document.getElementById('liveSearchInput').value.toLowerCase().trim();
       let visibleCount = 0;
@@ -1161,6 +1162,15 @@
           card.style.display = 'none';
         }
       });
+
+      clearTimeout(liveSearchDebounce);
+      if (query.length >= 2) {
+        liveSearchDebounce = setTimeout(() => {
+          if (typeof window.logSearchQueryToAdmin === 'function') {
+            window.logSearchQueryToAdmin(query);
+          }
+        }, 800);
+      }
     }
 
     // 4. Hero Quick Dropzone Upload Handler

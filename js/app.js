@@ -445,9 +445,19 @@ function initCommandPalette() {
     if (e.target === modalBackdrop) closePalette();
   });
 
+  let paletteSearchDebounce = null;
   if (searchInput) {
     searchInput.addEventListener('input', (e) => {
-      renderPaletteResults(e.target.value.toLowerCase().trim());
+      const val = e.target.value.toLowerCase().trim();
+      renderPaletteResults(val);
+      clearTimeout(paletteSearchDebounce);
+      if (val.length >= 2) {
+        paletteSearchDebounce = setTimeout(() => {
+          if (typeof window.logSearchQueryToAdmin === 'function') {
+            window.logSearchQueryToAdmin(val);
+          }
+        }, 800);
+      }
     });
   }
 
@@ -1003,8 +1013,12 @@ window.updateDonationQR = function(amt) {
     document.addEventListener('click', (e) => {
       const card = e.target.closest('a.tool-card, a.action-card');
       if (card) {
-        const tool = card.dataset.tool || card.getAttribute('href')?.replace('.html', '').replace('/', '');
-        if (tool) {
+        let tool = card.dataset.tool;
+        if (!tool) {
+          const href = card.getAttribute('href') || '';
+          tool = href.split('?')[0].split('#')[0].replace('.html', '').replace('./', '').replace('/', '').trim();
+        }
+        if (tool && tool !== 'index' && tool !== '#' && !tool.startsWith('http')) {
           try {
             const clicks = JSON.parse(localStorage.getItem('aibots_tool_click_analytics') || '{}');
             clicks[tool] = (clicks[tool] || 0) + 1;

@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+  <meta name="google-site-verification" content="ndzq-U-NLijgza_QqgQdcc2U3oMRoud_BT2ZZiwFREM">
+  <meta name="google-site-verification" content="-Yb6Nx74gbZ3wRN5uP-Y8KKwDWlt1DPpxs4nA3PkE6M">
+  <meta name="robots" content="index, follow">
+  <title>Support & Donate — AI Bots</title>
+  <meta name="description" content="Support AI Bots Creative Studio. Help keep 28+ online browser tools 100% free, fast, and private for creators, students, and professionals worldwide.">
+  <meta name="keywords" content="donate to ai bots, support ai bots, buy creator a coffee, rishit chajjed upi donation, support free tools">
+  <link rel="icon" href="https://i.ibb.co/G2NFYHG/logo.png" type="image/png">
+  <link rel="canonical" href="https://www.aibots.co.in/donate.html">
+  <!-- Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-2L87FMQS3W"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-2L87FMQS3W');
+  </script>
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="css/theme.css">
+  <style>
+    .donate-layout {
+      max-width: 900px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1fr 1.15fr;
+      gap: 32px;
+      align-items: start;
+    }
+    @media (max-width: 820px) {
+      .donate-layout {
+        grid-template-columns: 1fr;
+        gap: 24px;
+      }
+    }
+
+    /* Left Info Column */
+    .donate-info-card {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-xl);
+      padding: 28px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      box-shadow: var(--shadow-md);
+    }
+    .creator-badge-row {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+    .creator-avatar {
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--primary), #ec4899);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 1.4rem;
+      font-weight: 800;
+      box-shadow: var(--shadow-sm);
+    }
+    .creator-name { font-size: 1.15rem; font-weight: 800; margin: 0; color: var(--text-primary); }
+    .creator-role { font-size: 0.82rem; color: var(--text-secondary); margin-top: 2px; }
+
+    .impact-list {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+    .impact-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      font-size: 0.88rem;
+      line-height: 1.5;
+      color: var(--text-secondary);
+    }
+    .impact-icon {
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      background: color-mix(in srgb, var(--primary) 12%, transparent);
+      color: var(--primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      font-size: 0.95rem;
+    }
+
+    /* Right Payment Card */
+    .donate-pay-card {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-xl);
+      padding: 32px 24px;
+      text-align: center;
+      box-shadow: var(--shadow-xl);
+      position: relative;
+    }
+    @media (max-width: 480px) {
+      .donate-pay-card { padding: 24px 16px; }
+    }
+
+    .heart-glow-icon {
+      width: 58px;
+      height: 58px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, rgba(236, 72, 153, 0.15), rgba(244, 63, 94, 0.25));
+      color: #ec4899;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.8rem;
+      margin-bottom: 12px;
+      animation: heartBeat 2s infinite ease-in-out;
+    }
+    @keyframes heartBeat {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.08); }
+    }
+
+    .amount-input-box {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      margin: 16px 0;
+    }
+    .curr-sym {
+      font-size: 1.6rem;
+      font-weight: 800;
+      color: var(--primary);
+    }
+    .amount-input {
+      font-size: 1.5rem;
+      font-weight: 800;
+      text-align: center;
+      max-width: 160px;
+      padding: 10px;
+      font-family: monospace;
+      border-radius: var(--radius-md);
+      border: 2px solid var(--border-color);
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    .amount-input:focus { border-color: var(--primary); }
+
+    .quick-chips-grid {
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 20px;
+    }
+    .chip-btn {
+      padding: 8px 16px;
+      border-radius: 999px;
+      border: 1px solid var(--border-color);
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      font-weight: 700;
+      font-size: 0.88rem;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .chip-btn:hover, .chip-btn.active {
+      border-color: #ec4899;
+      color: #ec4899;
+      background: color-mix(in srgb, #ec4899 12%, transparent);
+      transform: translateY(-1px);
+    }
+
+    .qr-frame {
+      background: #ffffff;
+      border-radius: 16px;
+      padding: 14px;
+      display: inline-block;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+      border: 2px solid var(--border-color);
+      margin-bottom: 12px;
+    }
+    .qr-frame img {
+      width: clamp(160px, 45vw, 200px);
+      height: clamp(160px, 45vw, 200px);
+      display: block;
+    }
+
+    .upi-verified-badge {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      background: var(--bg-primary);
+      border: 1px solid var(--border-color);
+      border-radius: 10px;
+      padding: 10px 16px;
+      margin: 14px 0;
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+      font-weight: 700;
+    }
+
+    .mobile-pay-cta {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      width: 100%;
+      padding: 14px;
+      border-radius: var(--radius-md);
+      font-size: 1rem;
+      font-weight: 800;
+      color: white;
+      background: linear-gradient(135deg, var(--primary) 0%, #ec4899 100%);
+      text-decoration: none;
+      box-shadow: 0 8px 20px rgba(79, 70, 229, 0.35);
+      transition: transform 0.15s, box-shadow 0.15s;
+    }
+    .mobile-pay-cta:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 26px rgba(79, 70, 229, 0.5);
+    }
+
+    .supported-apps {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 12px;
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      margin-top: 14px;
+      flex-wrap: wrap;
+    }
+  </style>
+</head>
+<body>
+  <div class="bg-mesh"></div>
+
+  <!-- Navbar -->
+  <header class="navbar">
+    <div class="app-container" style="width: 100%;">
+      <div class="nav-wrapper">
+        <a href="index.html" class="brand-link">
+          <img src="https://i.ibb.co/G2NFYHG/logo.png" alt="AI Bots Logo" class="brand-logo-img">
+          <span>AI Bots</span>
+          <span class="brand-badge">Support Creator</span>
+        </a>
+
+        <div class="nav-actions">
+          <a href="index.html" class="btn btn-secondary btn-sm"><i class="fas fa-house"></i> Hub</a>
+          <button class="icon-btn theme-toggle-btn" title="Toggle Dark/Light Mode"><i class="fas fa-moon"></i></button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="app-container tool-page-wrapper">
+    <div class="tool-header">
+      <span class="tool-header-badge" style="background:rgba(236,72,153,0.15); color:#ec4899; border-color:rgba(236,72,153,0.3);">
+        <i class="fas fa-heart"></i> Empower Free Web Tools
+      </span>
+      <h1 class="tool-title">Support AI Bots Creative Studio</h1>
+      <p class="tool-desc">Help us maintain and build 28+ completely free, private, client-side tools for everyone.</p>
+    </div>
+
+    <div class="donate-layout">
+      
+      <!-- Left: Purpose & Creator Message -->
+      <div class="donate-info-card">
+        <div class="creator-badge-row">
+          <div class="creator-avatar">R</div>
+          <div>
+            <h3 class="creator-name">Rishit Chajjed</h3>
+            <div class="creator-role">Founder & Lead Engineer &bull; AI Bots</div>
+          </div>
+        </div>
+
+        <p style="margin: 0; color: var(--text-secondary); font-size: 0.92rem; line-height: 1.6;">
+          "I created AI Bots with a single mission: to provide <strong>100% free, lightning-fast, and private creative tools</strong> without annoying paywalls, forced logins, or subscriptions. Every contribution helps cover hosting, domain maintenance, and ongoing development."
+        </p>
+
+        <div class="section-label" style="font-size:0.75rem; font-weight:700; text-transform:uppercase; color:var(--text-secondary); border-bottom:1px solid var(--border-color); padding-bottom:4px;">Why Support AI Bots?</div>
+
+        <div class="impact-list">
+          <div class="impact-item">
+            <div class="impact-icon"><i class="fas fa-bolt"></i></div>
+            <div><strong>100% Free Forever:</strong> No paywalls, trial limits, or hidden fees for any of the 28+ tools.</div>
+          </div>
+
+          <div class="impact-item">
+            <div class="impact-icon"><i class="fas fa-shield-halved"></i></div>
+            <div><strong>Client-Side Privacy:</strong> Your photos, documents, and videos are processed directly in your browser.</div>
+          </div>
+
+          <div class="impact-item">
+            <div class="impact-icon"><i class="fas fa-sparkles"></i></div>
+            <div><strong>Continuous Updates:</strong> New features, games, calculators, and design tools added regularly.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right: UPI Payment Suite -->
+      <div class="donate-pay-card">
+        <div class="heart-glow-icon"><i class="fas fa-heart"></i></div>
+        <h2 style="margin: 0 0 4px; font-size: 1.4rem;">Contribute via UPI</h2>
+        <p style="margin: 0; color: var(--text-secondary); font-size: 0.85rem;">
+          Choose or enter any amount you wish to contribute:
+        </p>
+
+        <!-- Custom Amount -->
+        <div class="amount-input-box">
+          <span class="curr-sym">₹</span>
+          <input type="number" id="pageDonateAmt" class="amount-input" value="50" min="1" step="any" placeholder="Amount" oninput="handlePageAmtInput(this.value)">
+        </div>
+
+        <!-- Quick Chips -->
+        <div class="quick-chips-grid">
+          <button class="chip-btn" onclick="setPageAmt(20, this)">₹20</button>
+          <button class="chip-btn active" onclick="setPageAmt(50, this)">₹50</button>
+          <button class="chip-btn" onclick="setPageAmt(100, this)">₹100</button>
+          <button class="chip-btn" onclick="setPageAmt(250, this)">₹250</button>
+          <button class="chip-btn" onclick="setPageAmt(500, this)">₹500</button>
+          <button class="chip-btn" onclick="setPageAmt(1000, this)">₹1,000</button>
+        </div>
+
+        <!-- Live QR Code -->
+        <div class="qr-frame">
+          <img id="pageQrImg" src="" alt="Scan to Donate via UPI">
+        </div>
+        <div style="font-size: 0.78rem; font-weight: 700; color: var(--text-secondary);">
+          <i class="fas fa-qrcode" style="color: var(--primary); margin-right: 4px;"></i> Scan with Google Pay / PhonePe / Paytm / BHIM
+        </div>
+
+        <!-- Verified Creator Badge -->
+        <div class="upi-verified-badge">
+          <i class="fas fa-shield-check" style="color: var(--success); font-size: 1.1rem;"></i>
+          <span>Verified Creator Account &bull; Note: "Donated to AI Bots"</span>
+        </div>
+
+        <!-- Mobile Intent Direct Button -->
+        <a id="pageDirectPay" href="#" class="mobile-pay-cta">
+          <i class="fas fa-mobile-screen"></i> Pay with UPI App (GPay / PhonePe)
+        </a>
+
+        <div class="supported-apps">
+          <span><i class="fas fa-lock" style="color:var(--success);"></i> 100% Direct to Creator</span>
+          <span>&bull;</span>
+          <span>Zero Platform Commission</span>
+          <span>&bull;</span>
+          <span>Instant UPI</span>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <footer class="app-footer">
+    <div class="app-container">
+      <p class="footer-text">&copy; 2026 AI Bots. All rights reserved.</p>
+      <p class="footer-credits">Website engineered with ❤️ by <strong>Rishit Chajjed</strong>.</p>
+    </div>
+  </footer>
+
+  <script>
+    const UPI_ID = atob('OTM4NDM2MTAwOEBtYms='); // 9384361008@mbk
+    const CREATOR_NAME = 'Rishit Chajjed';
+    const TXN_NOTE = 'Donated to AI Bots';
+
+    function setPageAmt(amt, btn) {
+      document.querySelectorAll('.chip-btn').forEach(c => c.classList.remove('active'));
+      if (btn) btn.classList.add('active');
+      document.getElementById('pageDonateAmt').value = amt;
+      updatePageQR(amt);
+    }
+
+    function handlePageAmtInput(val) {
+      document.querySelectorAll('.chip-btn').forEach(c => c.classList.remove('active'));
+      const amt = parseFloat(val) || 0;
+      updatePageQR(amt > 0 ? amt : '');
+    }
+
+    function updatePageQR(amt) {
+      let upiUrl = `upi://pay?pa=${UPI_ID}&pn=${encodeURIComponent(CREATOR_NAME)}&tn=${encodeURIComponent(TXN_NOTE)}&cu=INR`;
+      if (amt && amt > 0) {
+        upiUrl += `&am=${amt}`;
+      }
+
+      document.getElementById('pageQrImg').src = `https://api.qrserver.com/v1/create-qr-code/?size=260x260&data=${encodeURIComponent(upiUrl)}`;
+      document.getElementById('pageDirectPay').href = upiUrl;
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      updatePageQR(50);
+    });
+  </script>
+  <script src="js/app.js"></script>
+</body>
+</html>

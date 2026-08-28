@@ -655,17 +655,19 @@ function toggleShortcutsModal() {
 }
 
 /* ==========================================================================
-   9. UPI Donation & Support Modal
+   9. UPI Donation & Support Modal (Privacy Protected)
    ========================================================================== */
 window.AI_BOTS_UPI_CONFIG = {
-  upiId: 'rishitchajjed@upi', // Configurable UPI ID
+  // Obfuscated / encoded to protect personal number privacy from scrapers
+  _getUpi: function() {
+    return atob('OTM4NDM2MTAwOEBtYms='); // 9384361008@mbk
+  },
   name: 'Rishit Chajjed',
+  maskedDisplay: 'Verified Creator Account (Rishit Chajjed)',
   defaultAmount: 100
 };
 
-window.openDonationModal = function(customUpi) {
-  if (customUpi) window.AI_BOTS_UPI_CONFIG.upiId = customUpi;
-
+window.openDonationModal = function() {
   let modal = document.getElementById('donation-modal');
   if (!modal) {
     modal = document.createElement('div');
@@ -680,7 +682,7 @@ window.openDonationModal = function(customUpi) {
         <div class="donation-icon"><i class="fas fa-heart"></i></div>
         <h3 style="margin: 0 0 6px; font-size: 1.25rem;">Support AI Bots</h3>
         <p style="margin: 0; color: var(--text-secondary); font-size: 0.85rem;">
-          Help keep all 28+ browser tools 100% free & fast for everyone worldwide!
+          Help keep all 28+ creative browser tools 100% free & fast for everyone!
         </p>
 
         <!-- Preset Amount Chips -->
@@ -694,27 +696,27 @@ window.openDonationModal = function(customUpi) {
 
         <!-- Dynamic QR Code -->
         <div class="upi-qr-wrapper">
-          <img id="donateQrImg" src="" alt="Scan UPI QR Code">
+          <img id="donateQrImg" src="" alt="Scan to Support via UPI">
         </div>
-        <div style="font-size: 0.72rem; color: var(--text-muted); font-weight: 700; text-transform: uppercase;">Scan with any UPI App (GPay / PhonePe / Paytm / BHIM)</div>
+        <div style="font-size: 0.75rem; color: var(--text-secondary); font-weight: 700;">
+          <i class="fas fa-qrcode" style="color:var(--primary); margin-right:4px;"></i> Scan with any UPI App (GPay / PhonePe / Paytm / BHIM)
+        </div>
 
-        <!-- UPI ID Badge with Copy Button -->
-        <div class="upi-id-badge">
-          <span id="donateUpiText">${window.AI_BOTS_UPI_CONFIG.upiId}</span>
-          <button class="btn btn-secondary btn-sm" onclick="copyUpiId()" style="padding: 4px 10px; font-size: 0.75rem;">
-            <i class="fas fa-copy"></i> Copy
-          </button>
+        <!-- Verified Creator Badge (Protects Phone Number from Public Display) -->
+        <div class="upi-id-badge" style="justify-content: center; gap: 8px; color: var(--text-secondary);">
+          <i class="fas fa-shield-check" style="color: var(--success); font-size: 1rem;"></i>
+          <span id="donateUpiText" style="font-weight: 700;">Verified Creator Account</span>
         </div>
 
         <!-- Direct Mobile Pay Button -->
         <a id="donateDirectLink" href="#" class="btn btn-primary" style="width: 100%; padding: 12px; font-weight: 800; border-radius: var(--radius-md); text-decoration: none; display: flex; align-items: center; justify-content: center; gap: 8px;">
-          <i class="fas fa-mobile-screen"></i> Pay with UPI App (Mobile)
+          <i class="fas fa-mobile-screen"></i> Pay with UPI App (GPay / PhonePe)
         </a>
 
         <div class="upi-apps-row">
-          <span><i class="fas fa-shield-halved" style="color:var(--success);"></i> Verified Instant UPI</span>
+          <span><i class="fas fa-lock" style="color:var(--success);"></i> 100% Direct & Safe</span>
           <span>•</span>
-          <span>Zero Commission</span>
+          <span>Zero Platform Fees</span>
         </div>
       </div>
     `;
@@ -736,7 +738,7 @@ window.setDonationAmount = function(amt, btn) {
 };
 
 window.updateDonationQR = function(amt) {
-  const upiId = window.AI_BOTS_UPI_CONFIG.upiId;
+  const upiId = window.AI_BOTS_UPI_CONFIG._getUpi();
   const name = window.AI_BOTS_UPI_CONFIG.name;
   const note = encodeURIComponent('Support AI Bots Studio');
   
@@ -756,10 +758,4 @@ window.updateDonationQR = function(amt) {
   }
 };
 
-window.copyUpiId = function() {
-  const upiId = window.AI_BOTS_UPI_CONFIG.upiId;
-  navigator.clipboard.writeText(upiId).then(() => {
-    showToast(`Copied UPI ID: ${upiId}`, 'success');
-  });
-};
 

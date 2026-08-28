@@ -279,14 +279,14 @@
         Enter your Master Administrator Password to access the full control center.
       </p>
 
-      <form onsubmit="handleLogin(event)">
+      <form onsubmit="handleLogin(event)" autocomplete="off">
         <div class="passcode-input-wrapper">
-          <input type="password" id="adminPasswordInput" class="passcode-input" placeholder="••••••••" autofocus autocomplete="current-password">
+          <input type="password" id="adminPasswordInput" name="custom_secure_gate_code" class="passcode-input" placeholder="••••••••" readonly onfocus="this.removeAttribute('readonly');" autocomplete="new-password">
           <i class="fas fa-eye passcode-toggle-eye" id="togglePassIcon" onclick="togglePassVisibility()"></i>
         </div>
 
         <div id="authErrorMsg" style="display: none; color: #ef4444; font-size: 0.85rem; font-weight: 600; margin-bottom: 14px;">
-          <i class="fas fa-circle-exclamation"></i> Incorrect password. (Default: <code>admin123</code> or <code>rishit2026</code>)
+          <i class="fas fa-circle-exclamation"></i> Incorrect Master Password.
         </div>
 
         <button type="submit" class="btn btn-primary" style="width: 100%; padding: 12px; font-weight: 800; font-size: 1rem;">
@@ -802,15 +802,15 @@
             <h2 class="admin-card-title"><i class="fas fa-key" style="color: var(--primary);"></i> Master Password Management</h2>
           </div>
 
-          <form onsubmit="handleChangePassword(event)" style="max-width: 450px;">
+          <form onsubmit="handleChangePassword(event)" style="max-width: 450px;" autocomplete="off">
             <div style="display: flex; flex-direction: column; gap: 14px;">
               <div>
                 <label class="form-label">NEW MASTER PASSWORD</label>
-                <input type="password" id="newMasterPassInput" class="form-control" placeholder="Minimum 6 characters" required>
+                <input type="password" id="newMasterPassInput" class="form-control" placeholder="Minimum 6 characters" autocomplete="new-password" required>
               </div>
               <div>
                 <label class="form-label">CONFIRM NEW PASSWORD</label>
-                <input type="password" id="confirmMasterPassInput" class="form-control" placeholder="Re-type new password" required>
+                <input type="password" id="confirmMasterPassInput" class="form-control" placeholder="Re-type new password" autocomplete="new-password" required>
               </div>
               <button type="submit" class="btn btn-primary btn-sm" style="width: fit-content;">
                 <i class="fas fa-shield-check"></i> Update Master Password

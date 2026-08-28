@@ -1106,53 +1106,61 @@ window.updateDonationQR = function(amt) {
     }
   }
 
-  // Global Online Cloud Sync Engine
-  const AIBOTS_CLOUD_API = 'https://extendsclass.com/api/json-storage/bin/adebbab';
+  // Multi-Layer Global Online Cloud Sync Engine
+  const CLOUD_ENDPOINTS = [
+    'https://extendsclass.com/api/json-storage/bin/adebbab',
+    'config.json',
+    'https://raw.githubusercontent.com/Rishitchajjed/aibots/main/config.json'
+  ];
   
   window.fetchAndApplyGlobalCloudConfig = async function() {
-    try {
-      const res = await fetch(`${AIBOTS_CLOUD_API}?_=${Date.now()}`, { cache: 'no-store' });
-      if (res.ok) {
-        const body = await res.json();
-        const cloud = (body && typeof body === 'object' && body.data) ? body.data : body;
-        if (cloud) {
-          if (cloud.global_maintenance !== undefined) {
-            localStorage.setItem('aibots_global_maintenance', cloud.global_maintenance ? 'true' : 'false');
-          }
-          if (cloud.disabled_tools !== undefined) {
-            localStorage.setItem('aibots_disabled_tools', JSON.stringify(cloud.disabled_tools));
-          }
-          if (cloud.featured_tool) {
-            localStorage.setItem('aibots_featured_tool', cloud.featured_tool);
-          }
-          if (cloud.announcement) {
-            localStorage.setItem('aibots_global_announcement', JSON.stringify(cloud.announcement));
-          }
-          if (cloud.welcome_modal) {
-            localStorage.setItem('aibots_welcome_modal_config', JSON.stringify(cloud.welcome_modal));
-          }
-          if (cloud.festive_effects) {
-            localStorage.setItem('aibots_festive_effects', JSON.stringify(cloud.festive_effects));
-          }
-          if (cloud.upi_config && cloud.upi_config.id) {
-            localStorage.setItem('aibots_custom_upi_config', JSON.stringify(cloud.upi_config));
-          }
-          if (cloud.analytics_clicks) {
-            localStorage.setItem('aibots_tool_click_analytics', JSON.stringify(cloud.analytics_clicks));
-          }
-          if (cloud.analytics_searches) {
-            localStorage.setItem('aibots_search_query_log', JSON.stringify(cloud.analytics_searches));
-          }
+    for (const endpoint of CLOUD_ENDPOINTS) {
+      try {
+        const url = endpoint.includes('?') ? endpoint : `${endpoint}?_=${Date.now()}`;
+        const res = await fetch(url, { cache: 'no-store' });
+        if (res.ok) {
+          const body = await res.json();
+          const cloud = (body && typeof body === 'object' && body.data) ? body.data : body;
+          if (cloud) {
+            if (cloud.global_maintenance !== undefined) {
+              localStorage.setItem('aibots_global_maintenance', cloud.global_maintenance ? 'true' : 'false');
+            }
+            if (cloud.disabled_tools !== undefined) {
+              localStorage.setItem('aibots_disabled_tools', JSON.stringify(cloud.disabled_tools));
+            }
+            if (cloud.featured_tool) {
+              localStorage.setItem('aibots_featured_tool', cloud.featured_tool);
+            }
+            if (cloud.announcement) {
+              localStorage.setItem('aibots_global_announcement', JSON.stringify(cloud.announcement));
+            }
+            if (cloud.welcome_modal) {
+              localStorage.setItem('aibots_welcome_modal_config', JSON.stringify(cloud.welcome_modal));
+            }
+            if (cloud.festive_effects) {
+              localStorage.setItem('aibots_festive_effects', JSON.stringify(cloud.festive_effects));
+            }
+            if (cloud.upi_config && cloud.upi_config.id) {
+              localStorage.setItem('aibots_custom_upi_config', JSON.stringify(cloud.upi_config));
+            }
+            if (cloud.analytics_clicks) {
+              localStorage.setItem('aibots_tool_click_analytics', JSON.stringify(cloud.analytics_clicks));
+            }
+            if (cloud.analytics_searches) {
+              localStorage.setItem('aibots_search_query_log', JSON.stringify(cloud.analytics_searches));
+            }
 
-          // Re-evaluate reactive components
-          checkMaintenanceShield();
-          window.renderGlobalAnnouncement();
-          window.renderWelcomeModal();
-          highlightFeaturedTool();
+            // Re-evaluate reactive components
+            checkMaintenanceShield();
+            window.renderGlobalAnnouncement();
+            window.renderWelcomeModal();
+            highlightFeaturedTool();
+            break; // Successfully loaded and applied
+          }
         }
+      } catch(err) {
+        // Try next fallback endpoint
       }
-    } catch(err) {
-      console.warn('Cloud sync fetch warning:', err);
     }
   };
 

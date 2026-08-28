@@ -1,0 +1,40 @@
+﻿{
+  "admin_password_hash": "25db1abcf4f86ca6a3f1927a722063f35c46ae2986e64fe56ae2241463f6d0c0",
+  "global_maintenance": false,
+  "disabled_tools": [],
+  "featured_tool": "backremover",
+  "announcement": {
+    "enabled": false,
+    "text": "",
+    "theme": "primary",
+    "link": ""
+  },
+  "welcome_modal": {
+    "enabled": false,
+    "title": "",
+    "body": ""
+  },
+  "festive_effects": {},
+  "upi_config": {
+    "id": "9384361008@mbk",
+    "name": "Rishit Chajjed",
+    "chips": "20, 50, 100, 250, 500"
+  },
+  "analytics_clicks": {
+    "backremover": 42,
+    "invoice": 28,
+    "pdf": 24,
+    "qr": 19,
+    "summarizer": 15,
+    "resume": 12
+  },
+  "analytics_searches": [
+    "remove background",
+    "invoice generator",
+    "pdf editor",
+    "qr code",
+    "gemini ai",
+    "resume builder"
+  ],
+  "updated_at": "2026-08-28T22:03:00Z"
+}

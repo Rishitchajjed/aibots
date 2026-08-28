@@ -959,20 +959,27 @@
       // 1. Compute SHA-256 of entered password
       const inputHash = await sha256(input);
 
-      // 2. Fetch live master password hash from Online Cloud Storage
+      // 2. Fetch live master password hash from Online Cloud Storage with Multi-Endpoint Fallback
       let activeMasterHash = localStorage.getItem(STORAGE_KEY) || BASE_DEFAULT_HASH;
-      try {
-        const res = await fetch(`https://extendsclass.com/api/json-storage/bin/adebbab?_=${Date.now()}`, { cache: 'no-store' });
-        if (res.ok) {
-          const body = await res.json();
-          const cloudData = (body && typeof body === 'object' && body.data) ? body.data : body;
-          if (cloudData && cloudData.admin_password_hash) {
-            activeMasterHash = cloudData.admin_password_hash;
-            localStorage.setItem(STORAGE_KEY, activeMasterHash);
+      const endpoints = [
+        `https://extendsclass.com/api/json-storage/bin/adebbab?_=${Date.now()}`,
+        `config.json?_=${Date.now()}`,
+        `https://raw.githubusercontent.com/Rishitchajjed/aibots/main/config.json?_=${Date.now()}`
+      ];
+
+      for (const ep of endpoints) {
+        try {
+          const res = await fetch(ep, { cache: 'no-store' });
+          if (res.ok) {
+            const body = await res.json();
+            const cloudData = (body && typeof body === 'object' && body.data) ? body.data : body;
+            if (cloudData && cloudData.admin_password_hash) {
+              activeMasterHash = cloudData.admin_password_hash;
+              localStorage.setItem(STORAGE_KEY, activeMasterHash);
+              break;
+            }
           }
-        }
-      } catch (err) {
-        console.warn('Using local master hash cache:', err);
+        } catch (err) {}
       }
 
       // 3. Strict Verification: ONLY the active master hash is accepted
@@ -1543,64 +1550,72 @@
 
       if (text) text.textContent = '🔄 Fetching latest online configuration...';
 
-      try {
-        const res = await fetch(`${AIBOTS_CLOUD_API}?_=${Date.now()}`, { cache: 'no-store' });
-        if (res.ok) {
-          const body = await res.json();
-          const cloud = (body && typeof body === 'object' && body.data) ? body.data : body;
-          if (cloud) {
-            if (cloud.admin_password_hash) {
-              localStorage.setItem(STORAGE_KEY, cloud.admin_password_hash);
-            }
-            if (cloud.global_maintenance !== undefined) {
-              localStorage.setItem('aibots_global_maintenance', cloud.global_maintenance ? 'true' : 'false');
-            }
-            if (cloud.disabled_tools !== undefined) {
-              localStorage.setItem('aibots_disabled_tools', JSON.stringify(cloud.disabled_tools));
-            }
-            if (cloud.featured_tool !== undefined) {
-              localStorage.setItem('aibots_featured_tool', cloud.featured_tool);
-            }
-            if (cloud.announcement) {
-              localStorage.setItem('aibots_global_announcement', JSON.stringify(cloud.announcement));
-            }
-            if (cloud.welcome_modal) {
-              localStorage.setItem('aibots_welcome_modal_config', JSON.stringify(cloud.welcome_modal));
-            }
-            if (cloud.festive_effects) {
-              localStorage.setItem('aibots_festive_effects', JSON.stringify(cloud.festive_effects));
-            }
-            if (cloud.upi_config) {
-              localStorage.setItem('aibots_custom_upi_config', JSON.stringify(cloud.upi_config));
-            }
-            if (cloud.analytics_clicks) {
-              localStorage.setItem('aibots_tool_click_analytics', JSON.stringify(cloud.analytics_clicks));
-            }
-            if (cloud.analytics_searches) {
-              localStorage.setItem('aibots_search_query_log', JSON.stringify(cloud.analytics_searches));
-            }
+      const endpoints = [
+        `${AIBOTS_CLOUD_API}?_=${Date.now()}`,
+        `config.json?_=${Date.now()}`,
+        `https://raw.githubusercontent.com/Rishitchajjed/aibots/main/config.json?_=${Date.now()}`
+      ];
 
-            // Re-render local UI with cloud values
-            initMaintenanceControls();
-            renderToolsRegistry();
-            initAiSettings();
-            initAnnouncementSettings();
-            initFestiveSettings();
-            initUpiSettings();
-            renderAnalytics();
+      for (const ep of endpoints) {
+        try {
+          const res = await fetch(ep, { cache: 'no-store' });
+          if (res.ok) {
+            const body = await res.json();
+            const cloud = (body && typeof body === 'object' && body.data) ? body.data : body;
+            if (cloud) {
+              if (cloud.admin_password_hash) {
+                localStorage.setItem(STORAGE_KEY, cloud.admin_password_hash);
+              }
+              if (cloud.global_maintenance !== undefined) {
+                localStorage.setItem('aibots_global_maintenance', cloud.global_maintenance ? 'true' : 'false');
+              }
+              if (cloud.disabled_tools !== undefined) {
+                localStorage.setItem('aibots_disabled_tools', JSON.stringify(cloud.disabled_tools));
+              }
+              if (cloud.featured_tool !== undefined) {
+                localStorage.setItem('aibots_featured_tool', cloud.featured_tool);
+              }
+              if (cloud.announcement) {
+                localStorage.setItem('aibots_global_announcement', JSON.stringify(cloud.announcement));
+              }
+              if (cloud.welcome_modal) {
+                localStorage.setItem('aibots_welcome_modal_config', JSON.stringify(cloud.welcome_modal));
+              }
+              if (cloud.festive_effects) {
+                localStorage.setItem('aibots_festive_effects', JSON.stringify(cloud.festive_effects));
+              }
+              if (cloud.upi_config) {
+                localStorage.setItem('aibots_custom_upi_config', JSON.stringify(cloud.upi_config));
+              }
+              if (cloud.analytics_clicks) {
+                localStorage.setItem('aibots_tool_click_analytics', JSON.stringify(cloud.analytics_clicks));
+              }
+              if (cloud.analytics_searches) {
+                localStorage.setItem('aibots_search_query_log', JSON.stringify(cloud.analytics_searches));
+              }
 
-            if (dot) {
-              dot.style.background = '#10b981';
-              dot.style.boxShadow = '0 0 10px #10b981';
+              // Re-render local UI with cloud values
+              initMaintenanceControls();
+              renderToolsRegistry();
+              initAiSettings();
+              initAnnouncementSettings();
+              initFestiveSettings();
+              initUpiSettings();
+              renderAnalytics();
+
+              if (dot) {
+                dot.style.background = '#10b981';
+                dot.style.boxShadow = '0 0 10px #10b981';
+              }
+              if (text) text.textContent = '☁️ Online Cloud Sync: Active (Synced live across all devices)';
+              if (timeEl) timeEl.textContent = `Last Pulled: ${new Date().toLocaleTimeString()}`;
+              if (showFeedback) showToast('✅ Latest settings pulled from live cloud!', 'success');
+              break;
             }
-            if (text) text.textContent = '☁️ Online Cloud Sync: Active (Synced live across all devices)';
-            if (timeEl) timeEl.textContent = `Last Pulled: ${new Date().toLocaleTimeString()}`;
-            if (showFeedback) showToast('✅ Latest settings pulled from live cloud!', 'success');
           }
+        } catch (err) {
+          // Try next fallback endpoint
         }
-      } catch(err) {
-        console.warn('Fetch cloud config error:', err);
-        if (showFeedback) showToast('Could not reach cloud server. Using local settings.', 'warning');
       }
     }
 

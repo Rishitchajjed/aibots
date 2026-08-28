@@ -611,8 +611,19 @@ function initInteractiveLogo() {
    ========================================================================== */
 function initGlobalHotkeys() {
   document.addEventListener('keydown', (e) => {
+    // ESC to close all open modals
+    if (e.key === 'Escape') {
+      const donateModal = document.getElementById('donation-modal');
+      if (donateModal && donateModal.classList.contains('active')) {
+        donateModal.classList.remove('active');
+      }
+      const shortcutsModal = document.getElementById('shortcuts-modal');
+      if (shortcutsModal && shortcutsModal.classList.contains('active')) {
+        shortcutsModal.classList.remove('active');
+      }
+    }
     // Open Shortcuts Cheatsheet with '?' (Shift + /)
-    if (e.key === '?' && !['INPUT', 'TEXTAREA', 'SELECT'].includes(document.activeElement.tagName)) {
+    else if (e.key === '?' && !['INPUT', 'TEXTAREA', 'SELECT'].includes(document.activeElement.tagName)) {
       e.preventDefault();
       toggleShortcutsModal();
     }
@@ -668,6 +679,13 @@ window.AI_BOTS_UPI_CONFIG = {
   defaultAmount: 50
 };
 
+window.closeDonationModal = function() {
+  const modal = document.getElementById('donation-modal');
+  if (modal) {
+    modal.classList.remove('active');
+  }
+};
+
 window.openDonationModal = function() {
   let modal = document.getElementById('donation-modal');
   if (!modal) {
@@ -676,7 +694,7 @@ window.openDonationModal = function() {
     modal.className = 'modal-backdrop';
     modal.innerHTML = `
       <div class="donation-modal-card">
-        <button onclick="document.getElementById('donation-modal').classList.remove('active')" class="btn btn-secondary btn-sm" style="position: absolute; top: 16px; right: 16px; border-radius: 50%; width: 32px; height: 32px; padding: 0;">
+        <button onclick="closeDonationModal()" class="btn btn-secondary btn-sm" style="position: absolute; top: 14px; right: 14px; border-radius: 50%; width: 36px; height: 36px; padding: 0; z-index: 10; display: flex; align-items: center; justify-content: center; font-size: 1rem; cursor: pointer;" title="Close Modal">
           <i class="fas fa-xmark"></i>
         </button>
 
@@ -722,6 +740,11 @@ window.openDonationModal = function() {
           <i class="fas fa-mobile-screen"></i> Pay with UPI App (Mobile)
         </a>
 
+        <!-- Bottom Close Button -->
+        <button onclick="closeDonationModal()" class="btn btn-secondary btn-sm" style="width: 100%; margin-top: 10px; padding: 8px; border-radius: var(--radius-md); font-weight: 600;">
+          <i class="fas fa-xmark"></i> Close
+        </button>
+
         <div class="upi-apps-row" style="margin-top: 8px;">
           <span><i class="fas fa-lock" style="color:var(--success);"></i> 100% Direct to Creator</span>
           <span>•</span>
@@ -731,7 +754,7 @@ window.openDonationModal = function() {
     `;
 
     modal.addEventListener('click', (e) => {
-      if (e.target === modal) modal.classList.remove('active');
+      if (e.target === modal) closeDonationModal();
     });
     document.body.appendChild(modal);
   }

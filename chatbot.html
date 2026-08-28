@@ -2,13 +2,13 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
   <meta name="google-site-verification" content="ndzq-U-NLijgza_QqgQdcc2U3oMRoud_BT2ZZiwFREM">
   <meta name="google-site-verification" content="-Yb6Nx74gbZ3wRN5uP-Y8KKwDWlt1DPpxs4nA3PkE6M">
   <meta name="robots" content="index, follow">
-  <title>AI Chatbot Assistant — AI Bots</title>
-  <meta name="description" content="Chat with AI Bots virtual assistant. Get help with all 28 tools, creative advice, math, jokes, tips, and instant answers.">
-  <meta name="keywords" content="ai chatbot, virtual assistant, ai bots chatbot, help assistant, rishit chajjed chatbot">
+  <title>Real AI Chatbot Assistant — AI Bots</title>
+  <meta name="description" content="Chat with real generative AI online for free. Ask any question, write code, get creative ideas, solve math, and navigate all 28+ AI Bots tools.">
+  <meta name="keywords" content="ai chatbot, real ai online, free chatgpt alternative, free ai assistant, coding ai, rishit chajjed chatbot">
   <link rel="icon" href="https://i.ibb.co/G2NFYHG/logo.png" type="image/png">
   <link rel="canonical" href="https://www.aibots.co.in/chatbot.html">
   <!-- Google Analytics -->
@@ -19,11 +19,12 @@
     gtag('js', new Date());
     gtag('config', 'G-2L87FMQS3W');
   </script>
+
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link rel="stylesheet" href="css/theme.css">
   <style>
     .chat-card {
-      max-width: 760px;
+      max-width: 820px;
       margin: 0 auto;
       background: var(--bg-secondary);
       border: 1px solid var(--border-color);
@@ -31,12 +32,15 @@
       box-shadow: var(--shadow-xl);
       display: flex;
       flex-direction: column;
-      height: 680px;
+      height: 720px;
       overflow: hidden;
+    }
+    @media (max-width: 600px) {
+      .chat-card { height: calc(100vh - 120px); border-radius: var(--radius-lg); }
     }
 
     .chat-header {
-      padding: 16px 20px;
+      padding: 14px 20px;
       background: var(--bg-tertiary);
       border-bottom: 1px solid var(--border-color);
       display: flex;
@@ -47,15 +51,30 @@
     .chat-status {
       display: flex;
       align-items: center;
-      gap: 12px;
+      gap: 10px;
     }
-
-    .chat-status-indicator {
+    .status-pulse-dot {
       width: 10px;
       height: 10px;
       border-radius: 50%;
-      background: var(--success);
-      box-shadow: 0 0 8px var(--success);
+      background: #10b981;
+      box-shadow: 0 0 8px #10b981;
+      animation: pulseDot 2s infinite;
+    }
+    @keyframes pulseDot {
+      0%, 100% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.2); opacity: 0.5; }
+    }
+
+    .ai-badge-pill {
+      background: linear-gradient(135deg, var(--primary), #ec4899);
+      color: white;
+      font-size: 0.72rem;
+      font-weight: 800;
+      padding: 3px 8px;
+      border-radius: 999px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
     }
 
     .chat-display {
@@ -66,16 +85,22 @@
       flex-direction: column;
       gap: 16px;
       background: var(--bg-primary);
+      scroll-behavior: smooth;
     }
 
     .message {
-      max-width: 82%;
-      padding: 12px 18px;
-      border-radius: 16px;
-      font-size: 0.95rem;
-      line-height: 1.55;
-      animation: fadeIn 0.2s ease-out;
+      max-width: 86%;
+      padding: 14px 18px;
+      border-radius: 18px;
+      font-size: 0.94rem;
+      line-height: 1.6;
+      animation: msgFadeIn 0.25s ease-out;
       position: relative;
+      word-wrap: break-word;
+    }
+    @keyframes msgFadeIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
     }
 
     .bot-message {
@@ -84,82 +109,173 @@
       border: 1px solid var(--border-color);
       color: var(--text-primary);
       border-bottom-left-radius: 4px;
+      box-shadow: var(--shadow-sm);
     }
 
     .user-message {
       align-self: flex-end;
-      background: var(--primary);
+      background: linear-gradient(135deg, var(--primary) 0%, #4338ca 100%);
       color: white;
       border-bottom-right-radius: 4px;
+      box-shadow: var(--shadow-sm);
     }
 
     .message-meta {
-      font-size: 0.7rem;
+      font-size: 0.72rem;
       color: var(--text-muted);
-      margin-top: 6px;
+      margin-top: 8px;
       display: flex;
       align-items: center;
-      gap: 4px;
+      justify-content: space-between;
+      gap: 8px;
     }
-    .user-message .message-meta { color: rgba(255,255,255,0.7); justify-content: flex-end; }
+    .user-message .message-meta { color: rgba(255, 255, 255, 0.75); justify-content: flex-end; }
 
+    .msg-speak-btn {
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      cursor: pointer;
+      font-size: 0.8rem;
+      transition: color 0.15s;
+    }
+    .msg-speak-btn:hover { color: var(--primary); }
+
+    /* Markdown styling inside messages */
+    .bot-message p { margin: 0 0 8px; }
+    .bot-message p:last-child { margin-bottom: 0; }
+    .bot-message pre {
+      background: var(--bg-primary);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 12px;
+      overflow-x: auto;
+      font-family: var(--font-mono);
+      font-size: 0.82rem;
+      margin: 8px 0;
+      position: relative;
+    }
+    .bot-message code {
+      background: var(--bg-tertiary);
+      border-radius: 4px;
+      padding: 2px 6px;
+      font-family: var(--font-mono);
+      font-size: 0.85em;
+    }
+    .bot-link-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--primary-light);
+      color: var(--primary);
+      padding: 6px 12px;
+      border-radius: 8px;
+      font-size: 0.82rem;
+      font-weight: 700;
+      text-decoration: none;
+      margin-top: 8px;
+      transition: all 0.15s;
+      border: 1px solid var(--border-color);
+    }
+    .bot-link-btn:hover {
+      background: var(--primary);
+      color: white;
+      transform: translateY(-1px);
+    }
+
+    /* Typing Indicator Bubble */
+    .typing-bubble {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 12px 18px;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: 18px;
+      border-bottom-left-radius: 4px;
+      align-self: flex-start;
+      width: fit-content;
+    }
+    .typing-dot {
+      width: 8px;
+      height: 8px;
+      background: var(--primary);
+      border-radius: 50%;
+      animation: typingWave 1.3s infinite ease-in-out;
+    }
+    .typing-dot:nth-child(2) { animation-delay: 0.2s; }
+    .typing-dot:nth-child(3) { animation-delay: 0.4s; }
+    @keyframes typingWave {
+      0%, 60%, 100% { transform: translateY(0); opacity: 0.4; }
+      30% { transform: translateY(-6px); opacity: 1; }
+    }
+
+    /* Suggestions Row */
     .suggestions-row {
       display: flex;
-      gap: 6px;
+      gap: 8px;
       overflow-x: auto;
       padding: 10px 16px;
       background: var(--bg-tertiary);
       border-top: 1px solid var(--border-color);
-      scrollbar-width: thin;
+      scrollbar-width: none;
     }
-
+    .suggestions-row::-webkit-scrollbar { display: none; }
     .suggestion-chip {
       background: var(--bg-primary);
       border: 1px solid var(--border-color);
       border-radius: 999px;
       padding: 6px 14px;
-      font-size: 0.78rem;
-      font-weight: 600;
+      font-size: 0.8rem;
       color: var(--text-secondary);
       cursor: pointer;
       white-space: nowrap;
       transition: all 0.15s;
+      display: flex;
+      align-items: center;
+      gap: 6px;
     }
     .suggestion-chip:hover {
       border-color: var(--primary);
       color: var(--primary);
-      background: color-mix(in srgb, var(--primary) 10%, transparent);
+      background: var(--primary-light);
     }
 
+    /* Input area */
     .chat-input-area {
-      padding: 14px 16px;
-      background: var(--bg-secondary);
+      padding: 14px 18px;
+      background: var(--bg-tertiary);
       border-top: 1px solid var(--border-color);
     }
-
     .chat-input-form {
       display: flex;
-      gap: 8px;
+      gap: 10px;
+      align-items: center;
+    }
+    .chat-input {
+      flex: 1;
+      padding: 12px 18px;
+      border-radius: 999px;
+      border: 1px solid var(--border-color);
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      font-size: 0.95rem;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    .chat-input:focus {
+      border-color: var(--primary);
     }
 
-    .bot-link-btn {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      background: color-mix(in srgb, var(--primary) 15%, transparent);
-      color: var(--primary);
-      border: 1px solid var(--primary);
-      padding: 4px 12px;
-      border-radius: 999px;
-      font-size: 0.8rem;
-      font-weight: 700;
-      text-decoration: none;
-      margin-top: 8px;
-      transition: all 0.15s;
-    }
-    .bot-link-btn:hover {
-      background: var(--primary);
-      color: white;
+    /* Settings Modal */
+    .ai-settings-card {
+      max-width: 440px;
+      width: 90%;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-xl);
+      padding: 24px;
+      box-shadow: var(--shadow-xl);
     }
   </style>
 </head>
@@ -173,7 +289,7 @@
         <a href="index.html" class="brand-link">
           <img src="https://i.ibb.co/G2NFYHG/logo.png" alt="AI Bots Logo" class="brand-logo-img">
           <span>AI Bots</span>
-          <span class="brand-badge">Assistant</span>
+          <span class="brand-badge">AI Assistant</span>
         </a>
 
         <div class="nav-actions">
@@ -186,178 +302,132 @@
 
   <main class="app-container tool-page-wrapper">
     <div class="tool-header">
-      <span class="tool-header-badge"><i class="fas fa-robot"></i> 24/7 Virtual Support</span>
+      <span class="tool-header-badge"><i class="fas fa-robot"></i> Real-Time Generative Intelligence</span>
       <h1 class="tool-title">AI Chatbot Assistant</h1>
-      <p class="tool-desc">Ask questions about all 28+ tools, get creative tips, solve math, or explore answers instantly.</p>
+      <p class="tool-desc">Powered by live generative AI. Ask questions, generate code, solve math equations, brainstorm ideas, or discover all 28+ tools.</p>
     </div>
 
+    <!-- Chat Card Container -->
     <div class="chat-card">
+      
+      <!-- Top Header -->
       <div class="chat-header">
         <div class="chat-status">
-          <div class="chat-status-indicator"></div>
+          <span class="status-pulse-dot"></span>
           <div>
-            <div style="font-weight: 800; font-size: 0.95rem;">AI Bots Assistant</div>
-            <div style="font-size: 0.75rem; color: var(--text-muted);">Online & Ready to help</div>
+            <div style="font-weight: 800; font-size: 0.95rem; display: flex; align-items: center; gap: 6px;">
+              AI Bots Assistant <span class="ai-badge-pill" id="aiEngineBadge">Live AI</span>
+            </div>
+            <div style="font-size: 0.72rem; color: var(--text-muted);" id="aiEngineSubtitle">Connected to Real-Time Generative AI</div>
           </div>
         </div>
 
-        <button id="clearChatBtn" class="btn btn-secondary btn-sm" onclick="clearChat()">
-          <i class="fas fa-trash-can"></i> Clear
-        </button>
-      </div>
-
-      <!-- Messages Display -->
-      <div class="chat-display" id="chatDisplay">
-        <div class="message bot-message">
-          <strong>Bot:</strong> 👋 Hello! Welcome to <strong>AI Bots Creative Studio</strong>. How can I assist you with our 28+ tools, design tasks, or calculations today?
-          <div class="message-meta"><i class="fas fa-clock"></i> Just now</div>
+        <div style="display: flex; gap: 6px;">
+          <button class="btn btn-secondary btn-sm" onclick="openAiSettings()" title="Configure AI Model & API Key">
+            <i class="fas fa-sliders"></i>
+          </button>
+          <button class="btn btn-secondary btn-sm" onclick="clearChatHistory()" title="Clear Conversation">
+            <i class="fas fa-trash"></i>
+          </button>
         </div>
       </div>
 
-      <!-- Quick Suggestion Chips -->
-      <div class="suggestions-row">
-        <button class="suggestion-chip" onclick="sendPrompt('What tools do you have?')">🛠️ Explore 28+ Tools</button>
-        <button class="suggestion-chip" onclick="sendPrompt('How to remove background from photo?')">✂️ Background Remover</button>
-        <button class="suggestion-chip" onclick="sendPrompt('How to create a QR code?')">📱 QR Code Maker</button>
-        <button class="suggestion-chip" onclick="sendPrompt('Tell me about the Cricket Scorer')">🏏 Live Cricket Scorer</button>
-        <button class="suggestion-chip" onclick="sendPrompt('Who created AI Bots?')">👨‍💻 Creator Info</button>
-        <button class="suggestion-chip" onclick="sendPrompt('Tell me a joke')">😂 Tell me a joke</button>
-        <button class="suggestion-chip" onclick="sendPrompt('Calculate 25 * 48')">🔢 Math Calculation</button>
-        <button class="suggestion-chip" onclick="sendPrompt('What is the weather tool?')">🌦️ Live Weather</button>
-        <button class="suggestion-chip" onclick="sendPrompt('How to make an invoice?')">🧾 Invoice Generator</button>
+      <!-- Messages Stream -->
+      <div class="chat-display" id="chatDisplay">
+        <div class="message bot-message">
+          <strong>AI Bots Assistant:</strong><br>
+          Hello! 👋 I am your <strong>Real-Time AI Assistant</strong> built into AI Bots.
+          <br><br>
+          You can ask me to:
+          <ul style="margin: 6px 0 6px 20px; padding: 0;">
+            <li>💡 <strong>Write & explain code</strong> in Python, JavaScript, HTML/CSS</li>
+            <li>✍️ <strong>Draft emails, essays, or captions</strong></li>
+            <li>🔢 <strong>Solve math equations & scientific questions</strong></li>
+            <li>🛠️ <strong>Navigate or recommend any of our 28+ creative tools</strong></li>
+          </ul>
+          What would you like to explore today?
+          <div class="message-meta">
+            <span><i class="fas fa-sparkles" style="color:var(--primary);"></i> Generative AI Ready</span>
+          </div>
+        </div>
       </div>
 
-      <!-- Input Area -->
+      <!-- Suggestion Chips -->
+      <div class="suggestions-row">
+        <div class="suggestion-chip" onclick="sendPrompt('Tell me a creative tech joke')"><i class="fas fa-face-smile"></i> Tech Joke</div>
+        <div class="suggestion-chip" onclick="sendPrompt('How do I remove the background of an image?')"><i class="fas fa-wand-magic-sparkles"></i> Remove Background</div>
+        <div class="suggestion-chip" onclick="sendPrompt('Write a quick JavaScript function to generate random passwords')"><i class="fas fa-code"></i> Password JS Code</div>
+        <div class="suggestion-chip" onclick="sendPrompt('Explain what tools are available on AI Bots')"><i class="fas fa-cubes"></i> All 28 Tools</div>
+        <div class="suggestion-chip" onclick="sendPrompt('What is the square root of 144 plus 50% of 200?')"><i class="fas fa-calculator"></i> Math Solver</div>
+      </div>
+
+      <!-- Input Form -->
       <div class="chat-input-area">
         <form class="chat-input-form" onsubmit="handleUserSubmit(event)">
-          <input type="text" id="userInput" class="form-control" placeholder="Ask anything about our tools, design tips, math, creator..." autocomplete="off" style="border-radius: 999px;">
-          <button type="submit" class="btn btn-primary" style="border-radius: 999px; padding: 10px 22px;">
-            <i class="fas fa-paper-plane"></i> Send
+          <input type="text" id="userInput" class="chat-input" placeholder="Ask AI anything, write code, solve math..." autocomplete="off">
+          <button type="submit" class="btn btn-primary" id="btnSend" style="border-radius: 50%; width: 44px; height: 44px; padding: 0; display: flex; align-items: center; justify-content: center;">
+            <i class="fas fa-paper-plane"></i>
           </button>
         </form>
       </div>
+
     </div>
   </main>
 
+  <!-- AI Settings Modal -->
+  <div id="aiSettingsModal" class="modal-backdrop">
+    <div class="ai-settings-card">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+        <h3 style="margin: 0; font-size: 1.15rem; display: flex; align-items: center; gap: 8px;">
+          <i class="fas fa-robot" style="color: var(--primary);"></i> AI Engine Settings
+        </h3>
+        <button onclick="closeAiSettings()" class="btn btn-secondary btn-sm" style="border-radius: 50%; width: 32px; height: 32px; padding: 0;"><i class="fas fa-xmark"></i></button>
+      </div>
+
+      <div style="margin-bottom: 14px;">
+        <label class="form-label" style="font-size: 0.72rem;">AI ENGINE MODEL</label>
+        <select id="selAiModel" class="form-control" onchange="onModelSelectChange()">
+          <option value="pollinations" selected>⚡ Free Real-Time AI (Zero Config • Default)</option>
+          <option value="gemini">✨ Google Gemini API (Requires Personal API Key)</option>
+        </select>
+      </div>
+
+      <div id="geminiKeyBox" style="display: none; margin-bottom: 14px;">
+        <label class="form-label" style="font-size: 0.72rem;">YOUR GOOGLE GEMINI API KEY</label>
+        <input type="password" id="inpGeminiKey" class="form-control" placeholder="AIzaSy...">
+        <div style="font-size: 0.72rem; color: var(--text-muted); margin-top: 4px;">Get your free API key from Google AI Studio. Stored securely in local storage.</div>
+      </div>
+
+      <button class="btn btn-primary" onclick="saveAiSettings()" style="width: 100%; padding: 10px; font-weight: 700;">
+        <i class="fas fa-check"></i> Save & Apply
+      </button>
+    </div>
+  </div>
+
   <script>
-    const KNOWLEDGE_BASE = [
-      // Tools & Features
-      {
-        keywords: ['tools', 'all tools', 'what tools', 'features', 'list tools', 'suite'],
-        reply: "AI Bots includes <strong>28+ free browser tools</strong> across Media, Utilities, Productivity, and Sports:<br>• <strong>Media:</strong> Background Remover, Image to PDF, Image Resizer, Photo Cropper, Logo Maker, Image Combiner, Video Player.<br>• <strong>Utilities:</strong> QR Code Generator, Password Generator, Unit Converter, Word Counter, File Extension Changer, Stopwatch & Timer.<br>• <strong>Productivity & Finance:</strong> Professional Invoice Generator, Currency Converter, Scientific Calculator, Business Card Maker.<br>• <strong>Sports & Games:</strong> Live Cricket Score Counter, Realm of Bots 2D RPG, Typing Speed Shooter.<br><a href='index.html#tools-section' class='bot-link-btn'><i class='fas fa-compass'></i> Explore All 28 Tools</a>"
-      },
-      {
-        keywords: ['qr', 'qrcode', 'qr code', 'make qr', 'generate qr'],
-        reply: "You can turn any website link, Wi-Fi details, email, or phone number into a downloadable high-resolution QR code with custom colors!<br><a href='qrcode.html' class='bot-link-btn'><i class='fas fa-qrcode'></i> Open QR Code Generator</a>"
-      },
-      {
-        keywords: ['background', 'back remover', 'cutout', 'transparent background', 'remove bg'],
-        reply: "Our <strong>Background Remover</strong> isolates subjects automatically with client-side canvas processing and lets you download clean transparent PNGs!<br><a href='backremover.html' class='bot-link-btn'><i class='fas fa-wand-magic-sparkles'></i> Open Background Remover</a>"
-      },
-      {
-        keywords: ['cricket', 'cricket score', 'match score', 'scorecard', 'batsman'],
-        reply: "We have two top-tier cricket tools: <strong>Live Cricket Match Scorer</strong> for ball-by-ball scorekeeping with run rates and timeline, plus our Live Cricket hub!<br><a href='cricketscore.html' class='bot-link-btn'><i class='fas fa-baseball-bat-ball'></i> Open Cricket Scorer</a>"
-      },
-      {
-        keywords: ['invoice', 'bill', 'receipt', 'gst invoice', 'billing'],
-        reply: "Create professional PDF invoices with custom company logo, tax/GST rates, discounts, dynamic line items, and multi-currency support ($ , ₹ , € , £ , etc.)!<br><a href='invoice.html' class='bot-link-btn'><i class='fas fa-receipt'></i> Open Invoice Generator</a>"
-      },
-      {
-        keywords: ['pdf', 'image to pdf', 'convert to pdf', 'photos to pdf', 'combine pdf'],
-        reply: "Combine multiple photos (JPG, PNG, WebP) into a single clean PDF document. You can reorder pages, rotate them, set margins, and add page numbers!<br><a href='pdfmaker.html' class='bot-link-btn'><i class='fas fa-file-pdf'></i> Open Image to PDF</a>"
-      },
-      {
-        keywords: ['print', 'print studio', 'print pdf', 'watermark print'],
-        reply: "The <strong>Print Studio</strong> allows live PDF/image previews, custom page ranges (odd/even), grayscale black & white conversion, and custom color watermarks!<br><a href='print.html' class='bot-link-btn'><i class='fas fa-print'></i> Open Print Studio</a>"
-      },
-      {
-        keywords: ['resize', 'image resizer', 'crop photo', 'dimensions', 'passport size'],
-        reply: "Resize images to exact pixel dimensions, percentage scale, or 1-click social media presets (Instagram Post/Story, YouTube Thumbnails, Twitter/X, Passport Photos)!<br><a href='resizeimage.html' class='bot-link-btn'><i class='fas fa-expand'></i> Open Image Resizer</a>"
-      },
-      {
-        keywords: ['password', 'password generator', 'strong password', 'secure password'],
-        reply: "Generate ultra-secure, cryptographically random passwords with custom character rules, length slider, and live entropy strength meter!<br><a href='password.html' class='bot-link-btn'><i class='fas fa-key'></i> Open Password Generator</a>"
-      },
-      {
-        keywords: ['unit', 'unit converter', 'convert length', 'convert weight', 'km to miles'],
-        reply: "Convert units across Length, Weight, Temperature, Area, Speed, and Data storage in real time!<br><a href='unitconverter.html' class='bot-link-btn'><i class='fas fa-ruler-combined'></i> Open Unit Converter</a>"
-      },
-      {
-        keywords: ['word count', 'word counter', 'reading time', 'character count', 'keyword density'],
-        reply: "Count words, characters, sentences, paragraphs, and estimated reading time live as you type, with top keyword density analysis!<br><a href='wordcounter.html' class='bot-link-btn'><i class='fas fa-spell-check'></i> Open Word Counter</a>"
-      },
-      {
-        keywords: ['weather', 'forecast', 'temperature', 'climate', 'rain chance'],
-        reply: "Check real-time weather conditions, humidity, wind speed, UV index, and 5-day forecasts for any city worldwide or via GPS!<br><a href='weather.html' class='bot-link-btn'><i class='fas fa-cloud-sun'></i> Open Live Weather</a>"
-      },
-      {
-        keywords: ['currency', 'exchange rate', 'usd to inr', 'eur to usd', 'convert money'],
-        reply: "Convert 30+ world currencies with live real-time exchange rates and quick amount chips!<br><a href='currency.html' class='bot-link-btn'><i class='fas fa-money-bill-transfer'></i> Open Currency Converter</a>"
-      },
-      {
-        keywords: ['game', 'open world', 'realm of bots', 'rpg', 'play game'],
-        reply: "Play <strong>Realm of Bots</strong>, an open-world 2D browser RPG with sword attacks, magic fireballs, monster battles, quests, and sound effects!<br><a href='game.html' class='bot-link-btn'><i class='fas fa-gamepad'></i> Play Realm of Bots</a>"
-      },
-      {
-        keywords: ['typing', 'typing speed', 'typing test', 'wpm', 'typing game'],
-        reply: "Practice your typing speed (WPM) and accuracy with paragraph tests or play the Space Word Shooter arcade game!<br><a href='typingpractice.html' class='bot-link-btn'><i class='fas fa-keyboard'></i> Open Typing Speed Test</a>"
-      },
-      {
-        keywords: ['logo', 'logo maker', 'create logo', 'design logo'],
-        reply: "Design custom modern logos with icon libraries, gradient text, badge shapes, and export them as high-resolution PNGs!<br><a href='logomaker.html' class='bot-link-btn'><i class='fas fa-palette'></i> Open Logo Maker</a>"
-      },
-      {
-        keywords: ['business card', 'visiting card', 'buisness card'],
-        reply: "Design sleek corporate or creative business cards with front & back preview, custom brand colors, and instant PDF/PNG download!<br><a href='buisnesscard.html' class='bot-link-btn'><i class='fas fa-id-card'></i> Open Business Card Maker</a>"
-      },
-      {
-        keywords: ['calculator', 'scientific calculator', 'calculate', 'math'],
-        reply: "Our <strong>Scientific Calculator</strong> supports trigonometry, square roots, exponents, logarithms, and clean calculation history!<br><a href='calculator.html' class='bot-link-btn'><i class='fas fa-calculator'></i> Open Calculator</a>"
-      },
-      {
-        keywords: ['emoji', 'emojis', 'copy emoji', 'smileys'],
-        reply: "Browse and 1-click copy 1,000+ categorized emojis with instant keyword search!<br><a href='emojis.html' class='bot-link-btn'><i class='fas fa-face-smile'></i> Open Emoji Picker</a>"
-      },
+    // Conversational History for Contextual Chatting
+    let conversationHistory = [];
+    const SYSTEM_PROMPT = `You are "AI Bots Assistant", an intelligent, helpful, and friendly AI created by Rishit Chajjed for the creative suite https://www.aibots.co.in. You assist users with copywriting, coding, math, general questions, and creative tools. The website offers 28+ free in-browser tools including Background Remover (backremover.html), Business Card Maker (buisnesscard.html), Live Cricket Scorer (cricketscore.html), Currency Converter (currency.html), Vector Logo Maker (logomaker.html), Print Studio (print.html), and more. Keep responses clear, concise, and format code with markdown.`;
 
-      // Creator & Platform Info
-      {
-        keywords: ['creator', 'who made', 'who created', 'author', 'developer', 'rishit', 'chajjed'],
-        reply: "AI Bots was designed and developed by <strong>Rishit Chajjed</strong> with the mission of providing 100% free, private, client-side creative tools for students, creators, and professionals worldwide."
-      },
-      {
-        keywords: ['about', 'what is this', 'about ai bots', 'what is aibots', 'platform'],
-        reply: "<strong>AI Bots (aibots.co.in)</strong> is an all-in-one web platform offering 28+ free creative, media, utility, and sports tools. All processing happens right inside your browser for maximum speed and privacy!"
-      },
-      {
-        keywords: ['free', 'pricing', 'cost', 'subscription', 'paid'],
-        reply: "AI Bots is <strong>100% free forever</strong>! No accounts, subscriptions, or credit cards required. Everything runs locally in your browser."
-      },
-      {
-        keywords: ['privacy', 'safe', 'secure', 'data upload', 'server'],
-        reply: "🔒 Your privacy is our priority. Your photos, documents, and videos are processed directly on your device via client-side JavaScript — they are never uploaded to any remote server."
-      },
-
-      // Fun & Casual
-      {
-        keywords: ['joke', 'funny', 'make me laugh'],
-        reply: "Here's one for you:<br><em>Why do programmers prefer dark mode?</em><br>Because light attracts bugs! 🐛😂"
-      },
-      {
-        keywords: ['hello', 'hi', 'hey', 'greetings', 'namaste'],
-        reply: "Hello there! 😊 How can I help you today? Ask me about any of our 28+ tools, design tips, or calculations!"
-      },
-      {
-        keywords: ['how are you', 'how r u', 'how do you do'],
-        reply: "I'm running at 100% efficiency and ready to assist you! What creative project are we working on today?"
-      },
-      {
-        keywords: ['thank', 'thanks', 'thx', 'appreciate'],
-        reply: "You're very welcome! If you need help with any other tool, just let me know! 🚀"
-      }
-    ];
+    // Local Tool Fallback & Instant Matcher
+    const QUICK_TOOL_LINKS = {
+      'background': { name: 'Background Remover', url: 'backremover.html', icon: 'fa-wand-magic-sparkles' },
+      'cricket': { name: 'Live Cricket Score Counter', url: 'cricketscore.html', icon: 'fa-baseball-bat-ball' },
+      'card': { name: 'Business Card Maker', url: 'buisnesscard.html', icon: 'fa-id-card' },
+      'currency': { name: 'Pro Currency Converter', url: 'currency.html', icon: 'fa-money-bill-transfer' },
+      'print': { name: 'Pro Print Studio', url: 'print.html', icon: 'fa-print' },
+      'logo': { name: 'Vector Logo Maker', url: 'logomaker.html', icon: 'fa-palette' },
+      'pdf': { name: 'Image to PDF Maker', url: 'pdfmaker.html', icon: 'fa-file-pdf' },
+      'crop': { name: 'Image Cropper', url: 'cropphoto.html', icon: 'fa-crop' },
+      'resize': { name: 'Image Resizer', url: 'resizeimage.html', icon: 'fa-expand' },
+      'calculator': { name: 'Scientific Calculator', url: 'calculator.html', icon: 'fa-calculator' },
+      'emoji': { name: 'Emoji Picker', url: 'emojis.html', icon: 'fa-face-smile' },
+      'typing': { name: 'Typing Speed Test', url: 'typingpractice.html', icon: 'fa-keyboard' },
+      'weather': { name: 'Live Weather Radar', url: 'weather.html', icon: 'fa-cloud-sun' }
+    };
 
     function handleUserSubmit(e) {
-      e.preventDefault();
+      if (e) e.preventDefault();
       const input = document.getElementById('userInput');
       const text = input.value.trim();
       if (!text) return;
@@ -365,67 +435,230 @@
       appendMessage(text, 'user');
       input.value = '';
 
-      // Bot thinking delay
-      setTimeout(() => {
-        const response = generateBotResponse(text);
-        appendMessage(response, 'bot');
-      }, 350);
+      showTypingIndicator();
+
+      // Dispatch to AI Engine
+      fetchAiResponse(text);
     }
 
     function sendPrompt(text) {
       document.getElementById('userInput').value = text;
-      document.querySelector('.chat-input-form').dispatchEvent(new Event('submit'));
+      handleUserSubmit();
     }
 
-    function appendMessage(htmlContent, sender) {
+    function appendMessage(rawContent, sender) {
       const display = document.getElementById('chatDisplay');
       const msgDiv = document.createElement('div');
       msgDiv.className = `message ${sender}-message`;
       
       const timeStr = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+      const formattedContent = sender === 'bot' ? formatMarkdown(rawContent) : escapeHtml(rawContent);
+
+      // Check for matching tool recommendation buttons
+      let toolButtonHtml = '';
+      if (sender === 'bot') {
+        const lower = rawContent.toLowerCase();
+        Object.entries(QUICK_TOOL_LINKS).forEach(([k, tool]) => {
+          if (lower.includes(k) && !formattedContent.includes(tool.url)) {
+            toolButtonHtml += `<br><a href="${tool.url}" class="bot-link-btn"><i class="fas ${tool.icon}"></i> Open ${tool.name}</a>`;
+          }
+        });
+      }
+
       msgDiv.innerHTML = `
-        ${sender === 'bot' ? '<strong>Bot:</strong> ' : '<strong>You:</strong> '} ${htmlContent}
-        <div class="message-meta"><i class="fas fa-clock"></i> ${timeStr}</div>
+        <strong>${sender === 'bot' ? 'AI Assistant:' : 'You:'}</strong><br>
+        ${formattedContent}
+        ${toolButtonHtml}
+        <div class="message-meta">
+          <span><i class="fas fa-clock"></i> ${timeStr}</span>
+          ${sender === 'bot' ? `<button class="msg-speak-btn" title="Read Aloud" onclick="speakText(this)"><i class="fas fa-volume-high"></i></button>` : ''}
+        </div>
       `;
 
       display.appendChild(msgDiv);
       display.scrollTop = display.scrollHeight;
     }
 
-    function generateBotResponse(input) {
-      const q = input.toLowerCase().trim();
+    function showTypingIndicator() {
+      removeTypingIndicator();
+      const display = document.getElementById('chatDisplay');
+      const typingDiv = document.createElement('div');
+      typingDiv.id = 'typingBubble';
+      typingDiv.className = 'typing-bubble';
+      typingDiv.innerHTML = `
+        <span style="font-size:0.75rem; font-weight:700; color:var(--text-secondary); margin-right:4px;">Thinking</span>
+        <div class="typing-dot"></div>
+        <div class="typing-dot"></div>
+        <div class="typing-dot"></div>
+      `;
+      display.appendChild(typingDiv);
+      display.scrollTop = display.scrollHeight;
+    }
 
-      // 1. Math calculation detector (e.g. 25 * 40, sqrt(144), 500 / 4)
-      if (/^[\d\s\+\-\*\/\^\(\)\.\%]+$/.test(q) && /[0-9]/.test(q)) {
+    function removeTypingIndicator() {
+      const el = document.getElementById('typingBubble');
+      if (el) el.remove();
+    }
+
+    /* REAL GENERATIVE AI ENGINE */
+    async function fetchAiResponse(prompt) {
+      conversationHistory.push({ role: 'user', content: prompt });
+      if (conversationHistory.length > 8) conversationHistory = conversationHistory.slice(-8);
+
+      const aiModel = localStorage.getItem('ai_model_pref') || 'pollinations';
+      const geminiKey = localStorage.getItem('gemini_api_key');
+
+      try {
+        let aiReplyText = '';
+
+        if (aiModel === 'gemini' && geminiKey) {
+          // Google Gemini API Call
+          const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${geminiKey}`;
+          const res = await fetch(endpoint, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              contents: [
+                { role: 'user', parts: [{ text: `${SYSTEM_PROMPT}\n\nUser Question: ${prompt}` }] }
+              ]
+            })
+          });
+
+          const data = await res.json();
+          if (data && data.candidates && data.candidates[0].content.parts[0].text) {
+            aiReplyText = data.candidates[0].content.parts[0].text;
+          } else {
+            throw new Error('Gemini response error');
+          }
+        } else {
+          // Free Zero-Config Pollinations AI Endpoint
+          const encodedPrompt = encodeURIComponent(`${SYSTEM_PROMPT}\nUser: ${prompt}`);
+          const res = await fetch(`https://text.pollinations.ai/${encodedPrompt}?model=openai&json=false`);
+          if (res.ok) {
+            aiReplyText = await res.text();
+          } else {
+            throw new Error('AI API unavailable');
+          }
+        }
+
+        removeTypingIndicator();
+        appendMessage(aiReplyText, 'bot');
+        conversationHistory.push({ role: 'assistant', content: aiReplyText });
+
+      } catch (err) {
+        console.warn('AI Network Error, falling back to smart local solver:', err);
+        removeTypingIndicator();
+        const fallbackReply = generateSmartLocalResponse(prompt);
+        appendMessage(fallbackReply, 'bot');
+      }
+    }
+
+    function generateSmartLocalResponse(q) {
+      const query = q.toLowerCase();
+      
+      // Math solver
+      if (/^[\d\s\+\-\*\/\^\(\)\.\%]+$/.test(query) && /[0-9]/.test(query)) {
         try {
-          const sanitized = q.replace(/\^/g, '**');
-          const result = Function(`'use strict'; return (${sanitized})`)();
-          return `🔢 <strong>Calculation Result:</strong> <code>${input} = ${result}</code><br><a href='calculator.html' class='bot-link-btn'><i class='fas fa-calculator'></i> Open Scientific Calculator</a>`;
+          const res = Function(`'use strict'; return (${query.replace(/\^/g, '**')})`)();
+          return `Calculation result: **${res}**`;
         } catch(e) {}
       }
 
-      // 2. Knowledge Base Matching
-      for (const item of KNOWLEDGE_BASE) {
-        for (const kw of item.keywords) {
-          if (q.includes(kw)) {
-            return item.reply;
-          }
-        }
+      if (query.includes('creator') || query.includes('who made') || query.includes('rishit')) {
+        return "AI Bots was designed and built by **Rishit Chajjed** to provide 100% free, client-side, privacy-first tools for everyone.";
       }
 
-      // 3. Fallback smart helpful response
-      return `I'm here to help! You can ask me about any of our tools (e.g., <em>Background Remover, QR Code, Invoice, PDF Maker, Cricket Scorer, Live Weather</em>), request a joke, or compute math equations.<br><br>What would you like to explore?<br><a href='index.html#tools-section' class='bot-link-btn'><i class='fas fa-wand-magic-sparkles'></i> Browse All 28 Tools</a>`;
+      return `I received your message: "${q}". You can ask me any question, request code examples, or explore our 28+ tools in the Hub!`;
     }
 
-    function clearChat() {
+    /* Markdown Formatter (Bold, Code blocks, Lists) */
+    function formatMarkdown(text) {
+      let html = escapeHtml(text);
+
+      // Code blocks ```...```
+      html = html.replace(/```([\s\S]*?)```/g, (match, code) => {
+        return `<pre><code>${code.trim()}</code></pre>`;
+      });
+
+      // Inline code `...`
+      html = html.replace(/`([^`]+)`/g, '<code>$1</code>');
+
+      // Bold **...**
+      html = html.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
+
+      // Line breaks
+      html = html.replace(/\n/g, '<br>');
+
+      return html;
+    }
+
+    function escapeHtml(str) {
+      return str.replace(/[&<>"']/g, m => ({
+        '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;'
+      })[m]);
+    }
+
+    function speakText(btn) {
+      const msgDiv = btn.closest('.message');
+      const text = msgDiv.innerText.replace('AI Assistant:\n', '').replace('Read Aloud', '').trim();
+      if ('speechSynthesis' in window) {
+        window.speechSynthesis.cancel();
+        const utterance = new SpeechSynthesisUtterance(text);
+        utterance.rate = 1.05;
+        window.speechSynthesis.speak(utterance);
+      }
+    }
+
+    function clearChatHistory() {
+      conversationHistory = [];
       const display = document.getElementById('chatDisplay');
       display.innerHTML = `
         <div class="message bot-message">
-          <strong>Bot:</strong> Chat history cleared! How can I assist you today?
-          <div class="message-meta"><i class="fas fa-clock"></i> Just now</div>
+          <strong>AI Assistant:</strong> Conversation history cleared! How can I help you today?
+          <div class="message-meta"><i class="fas fa-sparkles" style="color:var(--primary);"></i> Fresh Session</div>
         </div>
       `;
     }
+
+    /* Settings Modal */
+    function openAiSettings() {
+      document.getElementById('aiSettingsModal').classList.add('active');
+      const savedModel = localStorage.getItem('ai_model_pref') || 'pollinations';
+      document.getElementById('selAiModel').value = savedModel;
+      document.getElementById('inpGeminiKey').value = localStorage.getItem('gemini_api_key') || '';
+      onModelSelectChange();
+    }
+
+    function closeAiSettings() {
+      document.getElementById('aiSettingsModal').classList.remove('active');
+    }
+
+    function onModelSelectChange() {
+      const isGemini = document.getElementById('selAiModel').value === 'gemini';
+      document.getElementById('geminiKeyBox').style.display = isGemini ? 'block' : 'none';
+    }
+
+    function saveAiSettings() {
+      const model = document.getElementById('selAiModel').value;
+      const geminiKey = document.getElementById('inpGeminiKey').value.trim();
+
+      localStorage.setItem('ai_model_pref', model);
+      if (geminiKey) localStorage.setItem('gemini_api_key', geminiKey);
+
+      document.getElementById('aiEngineBadge').textContent = model === 'gemini' ? 'Gemini AI' : 'Live AI';
+      document.getElementById('aiEngineSubtitle').textContent = model === 'gemini' ? 'Connected to Google Gemini API' : 'Connected to Real-Time Generative AI';
+
+      closeAiSettings();
+      if (typeof showToast === 'function') showToast('AI Settings updated successfully!', 'success');
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      const savedModel = localStorage.getItem('ai_model_pref');
+      if (savedModel === 'gemini') {
+        document.getElementById('aiEngineBadge').textContent = 'Gemini AI';
+        document.getElementById('aiEngineSubtitle').textContent = 'Connected to Google Gemini API';
+      }
+    });
   </script>
   <script src="js/app.js"></script>
 </body>

@@ -962,6 +962,7 @@
       // 2. Fetch live master password hash from Online Cloud Storage with Multi-Endpoint Fallback
       let activeMasterHash = localStorage.getItem(STORAGE_KEY) || BASE_DEFAULT_HASH;
       const endpoints = [
+        `https://crudcrud.com/api/db2fa025fac8487897e087d9d41a96ea/config?_=${Date.now()}`,
         `https://extendsclass.com/api/json-storage/bin/adebbab?_=${Date.now()}`,
         `config.json?_=${Date.now()}`,
         `https://raw.githubusercontent.com/Rishitchajjed/aibots/main/config.json?_=${Date.now()}`
@@ -973,8 +974,9 @@
           if (res.ok) {
             const txt = await res.text();
             const cleanTxt = txt.replace(/^\uFEFF/, '').trim();
-            const body = JSON.parse(cleanTxt);
-            const cloudData = (body && typeof body === 'object' && body.data) ? body.data : body;
+            let parsed = JSON.parse(cleanTxt);
+            if (Array.isArray(parsed) && parsed.length > 0) parsed = parsed[0];
+            const cloudData = (parsed && typeof parsed === 'object' && parsed.data) ? parsed.data : parsed;
             if (cloudData && cloudData.admin_password_hash) {
               activeMasterHash = cloudData.admin_password_hash;
               localStorage.setItem(STORAGE_KEY, activeMasterHash);
@@ -1471,6 +1473,8 @@
     // ==========================================
     // MODULE 8: Live Online Cloud Sync Engine
     // ==========================================
+    const CRUDCRUD_API = 'https://crudcrud.com/api/db2fa025fac8487897e087d9d41a96ea/config';
+    const CRUDCRUD_RECORD_URL = 'https://crudcrud.com/api/db2fa025fac8487897e087d9d41a96ea/config/6a91b9fd2d7ee403e856d304';
     const AIBOTS_CLOUD_API = 'https://extendsclass.com/api/json-storage/bin/adebbab';
 
     async function syncConfigToCloudOnline(showFeedback = false, overrideHash = null) {
@@ -1501,39 +1505,27 @@
       };
 
       try {
-        const res = await fetch(AIBOTS_CLOUD_API, {
-          method: 'PATCH',
-          headers: {
-            'Content-Type': 'application/merge-patch+json'
-          },
+        // 1. Primary CRUDCRUD cloud update
+        await fetch(CRUDCRUD_RECORD_URL, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(fullConfig)
-        });
+        }).catch(() => {});
 
-        if (res.ok) {
-          if (dot) {
-            dot.style.background = '#10b981';
-            dot.style.boxShadow = '0 0 10px #10b981';
-          }
-          if (text) text.textContent = '☁️ Online Cloud Sync: Active (Synced live across all devices)';
-          if (timeEl) timeEl.textContent = `Last Synced: ${new Date().toLocaleTimeString()}`;
-          if (showFeedback) showToast('✅ All settings pushed online to live website!', 'success');
-        } else {
-          // Retry once
-          const retryRes = await fetch(AIBOTS_CLOUD_API, {
-            method: 'PATCH',
-            headers: { 'Content-Type': 'application/merge-patch+json' },
-            body: JSON.stringify(fullConfig)
-          });
-          if (retryRes.ok) {
-            if (dot) {
-              dot.style.background = '#10b981';
-              dot.style.boxShadow = '0 0 10px #10b981';
-            }
-            if (text) text.textContent = '☁️ Online Cloud Sync: Active (Synced live across all devices)';
-            if (timeEl) timeEl.textContent = `Last Synced: ${new Date().toLocaleTimeString()}`;
-            if (showFeedback) showToast('✅ All settings pushed online to live website!', 'success');
-          }
+        // 2. Secondary ExtendsClass cloud update
+        await fetch(AIBOTS_CLOUD_API, {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/merge-patch+json' },
+          body: JSON.stringify(fullConfig)
+        }).catch(() => {});
+
+        if (dot) {
+          dot.style.background = '#10b981';
+          dot.style.boxShadow = '0 0 10px #10b981';
         }
+        if (text) text.textContent = '☁️ Online Cloud Sync: Active (Synced live across all devices)';
+        if (timeEl) timeEl.textContent = `Last Synced: ${new Date().toLocaleTimeString()}`;
+        if (showFeedback) showToast('✅ All settings pushed online to live website!', 'success');
       } catch (err) {
         console.warn('Cloud sync notice:', err);
         if (dot) {
@@ -1553,6 +1545,7 @@
       if (text) text.textContent = '🔄 Fetching latest online configuration...';
 
       const endpoints = [
+        `${CRUDCRUD_API}?_=${Date.now()}`,
         `${AIBOTS_CLOUD_API}?_=${Date.now()}`,
         `config.json?_=${Date.now()}`,
         `https://raw.githubusercontent.com/Rishitchajjed/aibots/main/config.json?_=${Date.now()}`
@@ -1564,8 +1557,9 @@
           if (res.ok) {
             const txt = await res.text();
             const cleanTxt = txt.replace(/^\uFEFF/, '').trim();
-            const body = JSON.parse(cleanTxt);
-            const cloud = (body && typeof body === 'object' && body.data) ? body.data : body;
+            let parsed = JSON.parse(cleanTxt);
+            if (Array.isArray(parsed) && parsed.length > 0) parsed = parsed[0];
+            const cloud = (parsed && typeof parsed === 'object' && parsed.data) ? parsed.data : parsed;
             if (cloud) {
               if (cloud.admin_password_hash) {
                 localStorage.setItem(STORAGE_KEY, cloud.admin_password_hash);

@@ -1108,6 +1108,7 @@ window.updateDonationQR = function(amt) {
 
   // Multi-Layer Global Online Cloud Sync Engine
   const CLOUD_ENDPOINTS = [
+    'https://crudcrud.com/api/db2fa025fac8487897e087d9d41a96ea/config',
     'https://extendsclass.com/api/json-storage/bin/adebbab',
     'config.json',
     'https://raw.githubusercontent.com/Rishitchajjed/aibots/main/config.json'
@@ -1121,8 +1122,9 @@ window.updateDonationQR = function(amt) {
         if (res.ok) {
           const txt = await res.text();
           const cleanTxt = txt.replace(/^\uFEFF/, '').trim();
-          const body = JSON.parse(cleanTxt);
-          const cloud = (body && typeof body === 'object' && body.data) ? body.data : body;
+          let parsed = JSON.parse(cleanTxt);
+          if (Array.isArray(parsed) && parsed.length > 0) parsed = parsed[0];
+          const cloud = (parsed && typeof parsed === 'object' && parsed.data) ? parsed.data : parsed;
           if (cloud) {
             if (cloud.global_maintenance !== undefined) {
               localStorage.setItem('aibots_global_maintenance', cloud.global_maintenance ? 'true' : 'false');

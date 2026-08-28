@@ -188,20 +188,23 @@
   <link rel="preload" href="css/theme.css" as="style">
   <link rel="stylesheet" href="css/theme.css">
   <script>
+    let _faLoaded = false;
     function loadFontAwesome() {
-      if (document.getElementById('fa-icons-css')) return;
+      if (_faLoaded) return;
+      _faLoaded = true;
       const link = document.createElement('link');
       link.id = 'fa-icons-css';
       link.rel = 'stylesheet';
       link.href = 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css';
       document.head.appendChild(link);
-    }
-    if (document.readyState === 'complete') {
-      loadFontAwesome();
-    } else {
-      window.addEventListener('load', loadFontAwesome, { passive: true });
+      ['mousemove', 'scroll', 'touchstart', 'click', 'keydown'].forEach(ev => window.removeEventListener(ev, loadFontAwesome));
     }
     ['mousemove', 'scroll', 'touchstart', 'click', 'keydown'].forEach(ev => window.addEventListener(ev, loadFontAwesome, { passive: true, once: true }));
+    if ('requestIdleCallback' in window) {
+      requestIdleCallback(loadFontAwesome, { timeout: 4000 });
+    } else {
+      setTimeout(loadFontAwesome, 3000);
+    }
   </script>
   <style>
     @font-face {

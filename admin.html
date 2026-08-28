@@ -332,6 +332,9 @@
           </p>
         </div>
         <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+          <a href="https://github.com/Rishitchajjed/aibots/archive/refs/heads/main.zip" class="btn btn-primary btn-sm" style="background: linear-gradient(135deg, #10b981, #059669); border-color: #059669; font-weight: 800; color: white;" title="Download complete website source code as ZIP archive">
+            <i class="fas fa-file-zipper"></i> Download Full Site (.zip)
+          </a>
           <button onclick="exportAllConfigs()" class="btn btn-secondary btn-sm"><i class="fas fa-file-export"></i> Export Config (.json)</button>
           <button onclick="document.getElementById('importConfigInput').click()" class="btn btn-secondary btn-sm"><i class="fas fa-file-import"></i> Import Config</button>
           <input type="file" id="importConfigInput" style="display: none;" accept=".json" onchange="importAllConfigs(event)">
@@ -781,6 +784,25 @@
               </button>
             </div>
           </form>
+        </div>
+
+        <!-- Full Website Source Code Download & Backup -->
+        <div class="admin-card">
+          <div class="admin-card-header">
+            <h2 class="admin-card-title"><i class="fas fa-file-zipper" style="color: #10b981;"></i> Complete Website Backup & Source Code</h2>
+          </div>
+          <p style="font-size: 0.88rem; color: var(--text-secondary); margin-bottom: 16px;">
+            Download the complete offline folder containing all 30 HTML tools, CSS styles, JavaScript libraries, and media assets in a single compressed ZIP archive.
+          </p>
+
+          <div style="display: flex; gap: 12px; flex-wrap: wrap;">
+            <a href="https://github.com/Rishitchajjed/aibots/archive/refs/heads/main.zip" class="btn btn-primary" style="background: linear-gradient(135deg, #10b981, #059669); border-color: #059669; font-weight: 800;" download>
+              <i class="fas fa-download"></i> Download Complete Site (.zip)
+            </a>
+            <button onclick="exportAllConfigs()" class="btn btn-secondary">
+              <i class="fas fa-file-code"></i> Export Config JSON
+            </button>
+          </div>
         </div>
       </div>
 

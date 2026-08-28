@@ -1,9 +1,17 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-<meta name="google-site-verification" content="ndzq-U-NLijgza_QqgQdcc2U3oMRoud_BT2ZZiwFREM">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+  <meta name="google-site-verification" content="ndzq-U-NLijgza_QqgQdcc2U3oMRoud_BT2ZZiwFREM">
   <meta name="google-site-verification" content="-Yb6Nx74gbZ3wRN5uP-Y8KKwDWlt1DPpxs4nA3PkE6M">
   <meta name="robots" content="index, follow">
+  <title>Scientific & Standard Calculator — AI Bots</title>
+  <meta name="description" content="Free pro scientific calculator with trigonometry (sin, cos, tan), DEG/RAD mode, logarithms, square roots, powers, factorials, memory functions, and full calculation history.">
+  <meta name="keywords" content="scientific calculator, online calculator, math calculator, trigonometry calculator, deg rad calculator, responsive calculator">
+  <link rel="icon" href="https://i.ibb.co/G2NFYHG/logo.png" type="image/png">
+  <link rel="canonical" href="https://www.aibots.co.in/calculator.html">
+
   <!-- Google Analytics -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-2L87FMQS3W"></script>
   <script>
@@ -13,123 +21,255 @@
     gtag('config', 'G-2L87FMQS3W');
   </script>
 
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="google-site-verification" content="-Yb6Nx74gbZ3wRN5uP-Y8KKwDWlt1DPpxs4nA3PkE6M">
-  <link rel="icon" href="https://i.ibb.co/G2NFYHG/logo.png" type="image/png">
-  <title>Calculator - AI Bots</title>
-
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link rel="stylesheet" href="css/theme.css">
   <style>
-    .calc-wrapper {
-      max-width: 440px;
+    .calc-layout-container {
+      max-width: 860px;
       margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1fr 280px;
+      gap: 24px;
+      align-items: start;
+    }
+    @media (max-width: 850px) {
+      .calc-layout-container { grid-template-columns: 1fr; }
+    }
+
+    .calc-card {
       background: var(--bg-secondary);
       border: 1px solid var(--border-color);
       border-radius: var(--radius-xl);
-      padding: 28px;
+      padding: 24px;
       box-shadow: var(--shadow-xl);
     }
+    @media (max-width: 480px) {
+      .calc-card { padding: 16px 12px; }
+    }
 
-    .calc-screen-container {
+    /* Screen display */
+    .calc-screen {
       background: var(--bg-tertiary);
       border: 1px solid var(--border-color);
       border-radius: var(--radius-lg);
       padding: 16px 20px;
-      margin-bottom: 24px;
+      margin-bottom: 20px;
       text-align: right;
+      box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.05);
     }
 
-    .calc-history {
+    .calc-top-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 6px;
+    }
+    .calc-mode-indicator {
+      font-size: 0.72rem;
+      font-weight: 800;
+      letter-spacing: 0.05em;
+      padding: 2px 8px;
+      border-radius: 4px;
+      background: var(--primary-light);
+      color: var(--primary);
+      text-transform: uppercase;
+    }
+    .calc-history-line {
       font-family: var(--font-mono);
-      font-size: 0.85rem;
+      font-size: 0.88rem;
       color: var(--text-muted);
-      min-height: 20px;
+      min-height: 22px;
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
     }
 
-    .calc-display {
+    .calc-main-display {
       width: 100%;
       background: transparent;
       border: none;
       font-family: var(--font-mono);
-      font-size: 2.2rem;
+      font-size: 2.3rem;
       font-weight: 700;
       color: var(--text-primary);
       text-align: right;
       outline: none;
-      letter-spacing: 0.05em;
+      letter-spacing: 0.02em;
+    }
+    @media (max-width: 480px) {
+      .calc-main-display { font-size: 1.8rem; }
     }
 
-    .calc-grid {
+    /* Toggle Mode Bar */
+    .calc-mode-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .mode-switch-group {
+      display: flex;
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      padding: 4px;
+      gap: 4px;
+    }
+    .mode-switch-btn {
+      padding: 6px 14px;
+      border-radius: 6px;
+      border: none;
+      background: transparent;
+      color: var(--text-secondary);
+      font-size: 0.8rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .mode-switch-btn.active {
+      background: var(--bg-primary);
+      color: var(--primary);
+      box-shadow: var(--shadow-sm);
+    }
+
+    /* Keypad Grid */
+    .keypad-grid {
       display: grid;
+      gap: 8px;
+      transition: all 0.25s ease;
+    }
+    .keypad-grid.standard {
       grid-template-columns: repeat(4, 1fr);
-      gap: 12px;
+    }
+    .keypad-grid.scientific {
+      grid-template-columns: repeat(5, 1fr);
+    }
+    @media (max-width: 480px) {
+      .keypad-grid { gap: 6px; }
+      .keypad-grid.scientific { grid-template-columns: repeat(5, 1fr); }
     }
 
-    .calc-btn {
-      height: 64px;
-      border-radius: var(--radius-lg);
+    /* Key buttons */
+    .k-btn {
+      height: 52px;
+      border-radius: var(--radius-md);
       border: 1px solid var(--border-color);
       background: var(--bg-tertiary);
       color: var(--text-primary);
       font-family: var(--font-sans);
-      font-size: 1.3rem;
+      font-size: 1.15rem;
       font-weight: 600;
       cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
-      transition: var(--transition);
+      transition: all 0.12s ease;
       user-select: none;
+      touch-action: manipulation;
     }
-
-    .calc-btn:hover {
-      background: var(--bg-secondary);
-      border-color: var(--border-color-hover);
+    @media (max-width: 480px) {
+      .k-btn { height: 46px; font-size: 1rem; }
+    }
+    .k-btn:hover {
+      background: var(--bg-primary);
+      border-color: var(--primary);
       transform: translateY(-2px);
       box-shadow: var(--shadow-sm);
     }
-
-    .calc-btn:active {
+    .k-btn:active {
       transform: translateY(1px);
     }
 
-    .calc-btn.op {
+    /* Button Colors */
+    .k-btn.op {
       background: var(--primary-light);
       color: var(--primary);
-      border-color: rgba(99, 102, 241, 0.2);
+      font-weight: 700;
     }
-
-    .calc-btn.op:hover {
+    .k-btn.op:hover {
       background: var(--primary);
       color: #ffffff;
     }
 
-    .calc-btn.clear {
+    .k-btn.sci {
+      background: var(--bg-primary);
+      color: var(--secondary);
+      font-size: 0.92rem;
+      font-weight: 700;
+    }
+    @media (max-width: 480px) {
+      .k-btn.sci { font-size: 0.8rem; }
+    }
+    .k-btn.sci:hover {
+      background: var(--secondary);
+      color: white;
+    }
+
+    .k-btn.danger {
       background: rgba(239, 68, 68, 0.1);
-      color: var(--danger);
+      color: #ef4444;
       border-color: rgba(239, 68, 68, 0.2);
     }
-
-    .calc-btn.clear:hover {
-      background: var(--danger);
-      color: #ffffff;
+    .k-btn.danger:hover {
+      background: #ef4444;
+      color: white;
     }
 
-    .calc-btn.equals {
-      background: var(--accent-gradient);
-      color: #ffffff;
-      grid-column: span 2;
-      box-shadow: 0 4px 12px rgba(124, 58, 237, 0.3);
+    .k-btn.equals {
+      background: linear-gradient(135deg, var(--primary) 0%, #4338ca 100%);
+      color: white;
+      font-weight: 800;
+      font-size: 1.4rem;
+      box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
     }
-
-    .calc-btn.equals:hover {
+    .k-btn.equals:hover {
       filter: brightness(1.1);
-      box-shadow: 0 6px 18px rgba(124, 58, 237, 0.4);
+      box-shadow: 0 6px 16px rgba(79, 70, 229, 0.4);
+    }
+
+    /* History Sidebar */
+    .history-card {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-xl);
+      padding: 20px;
+      box-shadow: var(--shadow-lg);
+    }
+    .history-list {
+      max-height: 480px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 14px;
+      padding-right: 4px;
+    }
+    .history-item {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      padding: 10px 12px;
+      cursor: pointer;
+      transition: all 0.15s;
+      text-align: right;
+    }
+    .history-item:hover {
+      border-color: var(--primary);
+      background: var(--primary-light);
+    }
+    .history-item-exp {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      font-family: var(--font-mono);
+    }
+    .history-item-res {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      font-family: var(--font-mono);
+      margin-top: 2px;
     }
   </style>
 </head>
@@ -143,7 +283,7 @@
         <a href="index.html" class="brand-link">
           <img src="https://i.ibb.co/G2NFYHG/logo.png" alt="AI Bots Logo" class="brand-logo-img">
           <span>AI Bots</span>
-          <span class="brand-badge">Calculator</span>
+          <span class="brand-badge">Scientific Calculator</span>
         </a>
 
         <div class="nav-actions">
@@ -156,137 +296,356 @@
 
   <main class="app-container tool-page-wrapper">
     <div class="tool-header">
-      <span class="tool-header-badge"><i class="fas fa-calculator"></i> Math & Science</span>
-      <h1 class="tool-title">Enhanced Calculator</h1>
-      <p class="tool-desc">Standard and scientific expressions evaluator powered by Math.js with keyboard typing support.</p>
+      <span class="tool-header-badge"><i class="fas fa-calculator"></i> Math & Science Studio</span>
+      <h1 class="tool-title">Pro Scientific Calculator</h1>
+      <p class="tool-desc">Full standard & advanced scientific calculator with trigonometry, logarithms, DEG/RAD angle modes, constants, factorials, and calculation history.</p>
     </div>
 
-    <div class="calc-wrapper">
-      <div class="calc-screen-container">
-        <div class="calc-history" id="historyText">Ready</div>
-        <input type="text" id="result" class="calc-display" placeholder="0" readonly>
+    <div class="calc-layout-container">
+      
+      <!-- Left: Calculator Body -->
+      <div class="calc-card">
+        
+        <!-- Top Screen -->
+        <div class="calc-screen">
+          <div class="calc-top-row">
+            <span class="calc-mode-indicator" id="angleBadge">DEG</span>
+            <div class="calc-history-line" id="calcHistory">Ready</div>
+          </div>
+          <input type="text" id="calcDisplay" class="calc-main-display" placeholder="0" readonly>
+        </div>
+
+        <!-- Mode & Switch Bar -->
+        <div class="calc-mode-bar">
+          <div class="mode-switch-group">
+            <button class="mode-switch-btn active" id="btnStandardMode" onclick="setCalcMode('standard')">
+              <i class="fas fa-calculator"></i> Standard
+            </button>
+            <button class="mode-switch-btn" id="btnScientificMode" onclick="setCalcMode('scientific')">
+              <i class="fas fa-flask"></i> Scientific
+            </button>
+          </div>
+
+          <div style="display: flex; gap: 6px;">
+            <button class="btn btn-secondary btn-sm" id="btnDegRad" onclick="toggleDegRad()" title="Toggle Degree and Radian Angles">
+              DEG / RAD
+            </button>
+            <button class="btn btn-secondary btn-sm" onclick="copyResult()" title="Copy Result to Clipboard">
+              <i class="fas fa-copy"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- Dynamic Keypad Grid -->
+        <div class="keypad-grid standard" id="keypad">
+          <!-- Populated by JavaScript -->
+        </div>
+
       </div>
 
-      <div class="calc-grid">
-        <button onclick="clearResult()" class="calc-btn clear">C</button>
-        <button onclick="calculateSquareRoot()" class="calc-btn op" title="Square Root">√</button>
-        <button onclick="appendExponentiation()" class="calc-btn op" title="Power (^)">^</button>
-        <button onclick="appendOperator('/')" class="calc-btn op">&divide;</button>
+      <!-- Right: Calculation History & Memory Drawer -->
+      <div class="history-card">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+          <h3 style="font-size: 1rem; margin: 0; display: flex; align-items: center; gap: 8px;">
+            <i class="fas fa-clock-rotate-left" style="color:var(--primary);"></i> History
+          </h3>
+          <button class="btn btn-secondary btn-sm" onclick="clearHistory()" title="Clear Calculation History">
+            <i class="fas fa-trash"></i>
+          </button>
+        </div>
 
-        <button onclick="appendNumber('7')" class="calc-btn">7</button>
-        <button onclick="appendNumber('8')" class="calc-btn">8</button>
-        <button onclick="appendNumber('9')" class="calc-btn">9</button>
-        <button onclick="appendOperator('*')" class="calc-btn op">&times;</button>
-
-        <button onclick="appendNumber('4')" class="calc-btn">4</button>
-        <button onclick="appendNumber('5')" class="calc-btn">5</button>
-        <button onclick="appendNumber('6')" class="calc-btn">6</button>
-        <button onclick="appendOperator('-')" class="calc-btn op">&minus;</button>
-
-        <button onclick="appendNumber('1')" class="calc-btn">1</button>
-        <button onclick="appendNumber('2')" class="calc-btn">2</button>
-        <button onclick="appendNumber('3')" class="calc-btn">3</button>
-        <button onclick="appendOperator('+')" class="calc-btn op">+</button>
-
-        <button onclick="appendNumber('0')" class="calc-btn">0</button>
-        <button onclick="appendDecimalPoint()" class="calc-btn">.</button>
-        <button onclick="calculate()" class="calc-btn equals">=</button>
+        <div class="history-list" id="historyContainer">
+          <div style="text-align: center; color: var(--text-muted); font-size: 0.85rem; padding: 24px 0;">
+            No calculations yet
+          </div>
+        </div>
       </div>
+
     </div>
   </main>
 
   <footer class="app-footer">
     <div class="app-container">
       <p class="footer-text">&copy; 2026 AI Bots. All rights reserved.</p>
-      <p class="footer-credits">Website designed by <strong>Rishit Chajjed</strong>.</p>
+      <p class="footer-credits">Engineered by <strong>Rishit Chajjed</strong>.</p>
     </div>
   </footer>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/9.4.4/math.min.js"></script>
   <script src="js/app.js"></script>
   <script>
-    const resultInput = document.getElementById("result");
-    const historyText = document.getElementById("historyText");
+    const display = document.getElementById('calcDisplay');
+    const historyLine = document.getElementById('calcHistory');
+    const keypad = document.getElementById('keypad');
+    const historyContainer = document.getElementById('historyContainer');
+    const angleBadge = document.getElementById('angleBadge');
 
-    function appendNumber(num) {
-      resultInput.value += num;
+    let currentMode = 'standard';
+    let angleMode = 'DEG'; // 'DEG' or 'RAD'
+    let historyStack = JSON.parse(localStorage.getItem('calc_history_stack') || '[]');
+
+    /* STANDARD KEYPAD CONFIG */
+    const STANDARD_KEYS = [
+      { label: 'C', cls: 'danger', action: 'clear' },
+      { label: '⌫', cls: 'op', action: 'backspace' },
+      { label: '%', cls: 'op', action: () => appendSymbol('%') },
+      { label: '÷', cls: 'op', action: () => appendOperator('/') },
+
+      { label: '7', cls: '', action: () => appendNumber('7') },
+      { label: '8', cls: '', action: () => appendNumber('8') },
+      { label: '9', cls: '', action: () => appendNumber('9') },
+      { label: '×', cls: 'op', action: () => appendOperator('*') },
+
+      { label: '4', cls: '', action: () => appendNumber('4') },
+      { label: '5', cls: '', action: () => appendNumber('5') },
+      { label: '6', cls: '', action: () => appendNumber('6') },
+      { label: '−', cls: 'op', action: () => appendOperator('-') },
+
+      { label: '1', cls: '', action: () => appendNumber('1') },
+      { label: '2', cls: '', action: () => appendNumber('2') },
+      { label: '3', cls: '', action: () => appendNumber('3') },
+      { label: '+', cls: 'op', action: () => appendOperator('+') },
+
+      { label: '±', cls: 'op', action: 'toggleSign' },
+      { label: '0', cls: '', action: () => appendNumber('0') },
+      { label: '.', cls: '', action: 'decimal' },
+      { label: '=', cls: 'equals', action: 'calculate' }
+    ];
+
+    /* SCIENTIFIC KEYPAD CONFIG (5 COLUMNS) */
+    const SCIENTIFIC_KEYS = [
+      // Row 1
+      { label: 'sin', cls: 'sci', action: () => appendFunction('sin') },
+      { label: 'cos', cls: 'sci', action: () => appendFunction('cos') },
+      { label: 'tan', cls: 'sci', action: () => appendFunction('tan') },
+      { label: 'C', cls: 'danger', action: 'clear' },
+      { label: '⌫', cls: 'op', action: 'backspace' },
+
+      // Row 2
+      { label: 'ln', cls: 'sci', action: () => appendFunction('log') },
+      { label: 'log', cls: 'sci', action: () => appendFunction('log10') },
+      { label: '√x', cls: 'sci', action: () => appendFunction('sqrt') },
+      { label: 'xʸ', cls: 'sci', action: () => appendOperator('^') },
+      { label: '÷', cls: 'op', action: () => appendOperator('/') },
+
+      // Row 3
+      { label: 'π', cls: 'sci', action: () => appendSymbol('pi') },
+      { label: '7', cls: '', action: () => appendNumber('7') },
+      { label: '8', cls: '', action: () => appendNumber('8') },
+      { label: '9', cls: '', action: () => appendNumber('9') },
+      { label: '×', cls: 'op', action: () => appendOperator('*') },
+
+      // Row 4
+      { label: 'e', cls: 'sci', action: () => appendSymbol('e') },
+      { label: '4', cls: '', action: () => appendNumber('4') },
+      { label: '5', cls: '', action: () => appendNumber('5') },
+      { label: '6', cls: '', action: () => appendNumber('6') },
+      { label: '−', cls: 'op', action: () => appendOperator('-') },
+
+      // Row 5
+      { label: 'x!', cls: 'sci', action: () => appendOperator('!') },
+      { label: '1', cls: '', action: () => appendNumber('1') },
+      { label: '2', cls: '', action: () => appendNumber('2') },
+      { label: '3', cls: '', action: () => appendNumber('3') },
+      { label: '+', cls: 'op', action: () => appendOperator('+') },
+
+      // Row 6
+      { label: '(', cls: 'sci', action: () => appendSymbol('(') },
+      { label: ')', cls: 'sci', action: () => appendSymbol(')') },
+      { label: '0', cls: '', action: () => appendNumber('0') },
+      { label: '.', cls: '', action: 'decimal' },
+      { label: '=', cls: 'equals', action: 'calculate' }
+    ];
+
+    function setCalcMode(mode) {
+      currentMode = mode;
+      document.getElementById('btnStandardMode').classList.toggle('active', mode === 'standard');
+      document.getElementById('btnScientificMode').classList.toggle('active', mode === 'scientific');
+      
+      keypad.className = `keypad-grid ${mode}`;
+      renderKeypad();
     }
 
-    function appendOperator(operator) {
-      if (resultInput.value === '' && operator === '-') {
-        resultInput.value += '-';
+    function toggleDegRad() {
+      angleMode = angleMode === 'DEG' ? 'RAD' : 'DEG';
+      angleBadge.textContent = angleMode;
+      showToast(`Angle mode: ${angleMode}`, 'info');
+    }
+
+    function renderKeypad() {
+      keypad.innerHTML = '';
+      const keys = currentMode === 'scientific' ? SCIENTIFIC_KEYS : STANDARD_KEYS;
+
+      keys.forEach(k => {
+        const btn = document.createElement('button');
+        btn.className = `k-btn ${k.cls}`;
+        btn.innerHTML = k.label;
+
+        btn.onclick = () => {
+          if (typeof k.action === 'function') {
+            k.action();
+          } else if (k.action === 'clear') {
+            clearScreen();
+          } else if (k.action === 'backspace') {
+            backspace();
+          } else if (k.action === 'decimal') {
+            appendDecimal();
+          } else if (k.action === 'toggleSign') {
+            toggleSign();
+          } else if (k.action === 'calculate') {
+            calculateResult();
+          }
+        };
+
+        keypad.appendChild(btn);
+      });
+    }
+
+    function appendNumber(num) {
+      if (display.value === '0' || display.value === 'Error') display.value = '';
+      display.value += num;
+    }
+
+    function appendOperator(op) {
+      if (display.value === '' && op === '-') {
+        display.value = '-';
         return;
       }
-      if (resultInput.value !== '') {
-        const lastChar = resultInput.value.slice(-1);
+      if (display.value !== '' && display.value !== 'Error') {
+        const lastChar = display.value.slice(-1);
         if (['+', '-', '*', '/', '^'].includes(lastChar)) {
-          resultInput.value = resultInput.value.slice(0, -1) + operator;
+          display.value = display.value.slice(0, -1) + op;
         } else {
-          resultInput.value += operator;
+          display.value += op;
         }
       }
     }
 
-    function appendDecimalPoint() {
-      const current = resultInput.value;
-      const parts = current.split(/[\+\-\*\/\^]/);
+    function appendFunction(fn) {
+      if (display.value === '0' || display.value === 'Error') display.value = '';
+      display.value += fn + '(';
+    }
+
+    function appendSymbol(sym) {
+      if (display.value === '0' || display.value === 'Error') display.value = '';
+      display.value += sym;
+    }
+
+    function appendDecimal() {
+      const cur = display.value;
+      const parts = cur.split(/[\+\-\*\/\^\(\)]/);
       const lastPart = parts[parts.length - 1];
       if (!lastPart.includes('.')) {
-        resultInput.value += '.';
+        display.value += (cur === '' || cur === '0') ? '0.' : '.';
       }
     }
 
-    function calculate() {
-      const expression = resultInput.value;
-      if (!expression) return;
-      let res;
+    function toggleSign() {
+      if (display.value && display.value !== '0' && display.value !== 'Error') {
+        if (display.value.startsWith('-')) {
+          display.value = display.value.slice(1);
+        } else {
+          display.value = '-' + display.value;
+        }
+      }
+    }
+
+    function clearScreen() {
+      display.value = '';
+      historyLine.textContent = 'Ready';
+    }
+
+    function backspace() {
+      if (display.value && display.value !== 'Error') {
+        display.value = display.value.slice(0, -1);
+      }
+    }
+
+    function calculateResult() {
+      const rawExpr = display.value.trim();
+      if (!rawExpr || rawExpr === 'Error') return;
+
       try {
-        res = math.evaluate(expression);
-        historyText.textContent = `${expression} =`;
-        resultInput.value = res;
-      } catch (error) {
-        console.error("Evaluation error:", error);
-        resultInput.value = "Error";
+        let parsed = rawExpr;
+
+        // Custom handling for DEG mode in trig functions
+        if (angleMode === 'DEG') {
+          parsed = parsed.replace(/sin\(([^)]+)\)/g, 'sin(($1) * pi / 180)')
+                         .replace(/cos\(([^)]+)\)/g, 'cos(($1) * pi / 180)')
+                         .replace(/tan\(([^)]+)\)/g, 'tan(($1) * pi / 180)');
+        }
+
+        const result = math.evaluate(parsed);
+        const formattedResult = math.format(result, { precision: 12 }).replace(/e\+?(\d+)/, ' × 10^$1');
+
+        historyLine.textContent = `${rawExpr} =`;
+        display.value = formattedResult;
+
+        // Save to History Stack
+        saveToHistory(rawExpr, formattedResult);
+
+      } catch (err) {
+        console.error('Calculation error:', err);
+        display.value = 'Error';
       }
     }
 
-    function calculateSquareRoot() {
-      const expression = resultInput.value;
-      if (!expression) return;
-      let res;
-      try {
-        const val = math.evaluate(expression);
-        res = Math.sqrt(val);
-        historyText.textContent = `√(${expression}) =`;
-        resultInput.value = res;
-      } catch (error) {
-        console.error("Evaluation error:", error);
-        resultInput.value = "Error";
-      }
+    function saveToHistory(expr, res) {
+      historyStack.unshift({ expr, res, time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) });
+      if (historyStack.length > 20) historyStack.pop();
+      localStorage.setItem('calc_history_stack', JSON.stringify(historyStack));
+      renderHistory();
     }
 
-    function appendExponentiation() {
-      if (resultInput.value !== '') {
-        resultInput.value += '^';
+    function renderHistory() {
+      if (historyStack.length === 0) {
+        historyContainer.innerHTML = '<div style="text-align: center; color: var(--text-muted); font-size: 0.85rem; padding: 24px 0;">No calculations yet</div>';
+        return;
       }
+
+      historyContainer.innerHTML = '';
+      historyStack.forEach(item => {
+        const div = document.createElement('div');
+        div.className = 'history-item';
+        div.innerHTML = `
+          <div class="history-item-exp">${item.expr} =</div>
+          <div class="history-item-res">${item.res}</div>
+        `;
+        div.onclick = () => {
+          display.value = item.res;
+          historyLine.textContent = `${item.expr} =`;
+        };
+        historyContainer.appendChild(div);
+      });
     }
 
-    function clearResult() {
-      resultInput.value = '';
-      historyText.textContent = 'Cleared';
+    function clearHistory() {
+      historyStack = [];
+      localStorage.removeItem('calc_history_stack');
+      renderHistory();
+      showToast('History cleared!', 'info');
+    }
+
+    function copyResult() {
+      if (display.value && display.value !== 'Error') {
+        navigator.clipboard.writeText(display.value);
+        showToast(`Copied ${display.value} to clipboard!`, 'success');
+      }
     }
 
     // Physical Keyboard Listener
     document.addEventListener('keydown', (e) => {
-      if (e.key >= '0' && e.key <= '9') appendNumber(e.key);
-      else if (e.key === '.') appendDecimalPoint();
-      else if (['+', '-', '*', '/'].includes(e.key)) appendOperator(e.key);
-      else if (e.key === '^') appendExponentiation();
-      else if (e.key === 'Enter' || e.key === '=') { e.preventDefault(); calculate(); }
-      else if (e.key === 'Backspace') {
-        resultInput.value = resultInput.value.slice(0, -1);
-      }
-      else if (e.key === 'Escape' || e.key.toLowerCase() === 'c') clearResult();
+      if (['0','1','2','3','4','5','6','7','8','9'].includes(e.key)) appendNumber(e.key);
+      else if (['+','-','*','/','^','(',')','!','%'].includes(e.key)) appendOperator(e.key);
+      else if (e.key === '.') appendDecimal();
+      else if (e.key === 'Enter' || e.key === '=') { e.preventDefault(); calculateResult(); }
+      else if (e.key === 'Backspace') backspace();
+      else if (e.key === 'Escape' || e.key === 'c' || e.key === 'C') clearScreen();
+    });
+
+    window.addEventListener('DOMContentLoaded', () => {
+      renderKeypad();
+      renderHistory();
     });
   </script>
 </body>

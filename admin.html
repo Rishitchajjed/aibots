@@ -994,12 +994,11 @@
 
       // 2. Fetch live master password hash from Online Cloud Storage with Multi-Endpoint Fallback
       let activeMasterHash = localStorage.getItem(STORAGE_KEY) || BASE_DEFAULT_HASH;
-      const customCloud = localStorage.getItem('aibots_custom_cloud_endpoint');
       const endpoints = [
-        customCloud,
+        `https://script.google.com/macros/s/AKfycbwXmAujjr_UEo1keKOfC0yWuUHoIzmP1OL7pR7HelrasdaDtCYyC0BMyh6mI5731XPrvQ/exec?_=${Date.now()}`,
         `config.json?_=${Date.now()}`,
         `https://raw.githubusercontent.com/Rishitchajjed/aibots/main/config.json?_=${Date.now()}`
-      ].filter(Boolean);
+      ];
 
       for (const ep of endpoints) {
         try {
@@ -1510,8 +1509,10 @@
     }
 
     // ==========================================
-    // MODULE 8: Live Online Cloud Sync Engine
+    // MODULE 8: Live Online Cloud Sync Engine (Google Drive Cloud Backend)
     // ==========================================
+    const GOOGLE_DRIVE_CLOUD_API = 'https://script.google.com/macros/s/AKfycbwXmAujjr_UEo1keKOfC0yWuUHoIzmP1OL7pR7HelrasdaDtCYyC0BMyh6mI5731XPrvQ/exec';
+
     async function syncConfigToCloudOnline(showFeedback = false, overrideHash = null) {
       const dot = document.getElementById('cloudStatusDot');
       const text = document.getElementById('cloudStatusText');
@@ -1521,7 +1522,7 @@
         dot.style.background = '#f59e0b';
         dot.style.boxShadow = '0 0 10px #f59e0b';
       }
-      if (text) text.textContent = '☁️ Syncing changes online to live website...';
+      if (text) text.textContent = '☁️ Syncing changes online to Google Drive Cloud...';
 
       const activeHash = overrideHash || localStorage.getItem(STORAGE_KEY) || BASE_DEFAULT_HASH;
 
@@ -1539,24 +1540,22 @@
         updated_at: new Date().toISOString()
       };
 
-      const customCloud = localStorage.getItem('aibots_custom_cloud_endpoint');
-      if (customCloud && customCloud.startsWith('http')) {
-        try {
-          await fetch(customCloud, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(fullConfig)
-          });
-        } catch (e) {}
-      }
+      try {
+        await fetch(GOOGLE_DRIVE_CLOUD_API, {
+          method: 'POST',
+          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+          body: JSON.stringify(fullConfig),
+          mode: 'no-cors'
+        });
+      } catch (e) {}
 
       if (dot) {
         dot.style.background = '#10b981';
         dot.style.boxShadow = '0 0 10px #10b981';
       }
-      if (text) text.textContent = '☁️ Online Cloud Sync: Active (Synced live across all devices)';
+      if (text) text.textContent = '🟢 Google Drive Cloud Sync: Active (Synced live 24/7)';
       if (timeEl) timeEl.textContent = `Last Synced: ${new Date().toLocaleTimeString()}`;
-      if (showFeedback) showToast('✅ All settings saved and synced!', 'success');
+      if (showFeedback) showToast('✅ All settings saved and synced to Google Drive!', 'success');
     }
 
     async function fetchCloudConfig(showFeedback = false) {
@@ -1564,14 +1563,13 @@
       const text = document.getElementById('cloudStatusText');
       const timeEl = document.getElementById('cloudLastSyncTime');
 
-      if (text) text.textContent = '🔄 Fetching latest online configuration...';
+      if (text) text.textContent = '🔄 Fetching latest configuration from Google Drive...';
 
-      const customCloud = localStorage.getItem('aibots_custom_cloud_endpoint');
       const endpoints = [
-        customCloud,
+        `${GOOGLE_DRIVE_CLOUD_API}?_=${Date.now()}`,
         `config.json?_=${Date.now()}`,
         `https://raw.githubusercontent.com/Rishitchajjed/aibots/main/config.json?_=${Date.now()}`
-      ].filter(Boolean);
+      ];
 
       for (const ep of endpoints) {
         try {
@@ -1650,14 +1648,12 @@
     }
 
     function initCustomCloudSettings() {
-      const url = localStorage.getItem('aibots_custom_cloud_endpoint') || '';
+      const url = localStorage.getItem('aibots_custom_cloud_endpoint') || GOOGLE_DRIVE_CLOUD_API;
       const input = document.getElementById('customCloudUrlInput');
       const statusEl = document.getElementById('customCloudStatus');
       if (input) input.value = url;
       if (statusEl) {
-        statusEl.innerHTML = url 
-          ? `<span style="color: #10b981; font-weight: 700;"><i class="fas fa-circle-check"></i> Connected to: <code>${url}</code></span>` 
-          : `<span style="color: var(--text-secondary);"><i class="fas fa-info-circle"></i> Running in high-speed local mode. Paste your custom database URL above if you want real-time worldwide cloud sync.</span>`;
+        statusEl.innerHTML = `<span style="color: #10b981; font-weight: 700;"><i class="fas fa-circle-check"></i> Connected to Google Drive Cloud: <code>${GOOGLE_DRIVE_CLOUD_API}</code></span>`;
       }
     }
 

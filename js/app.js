@@ -934,7 +934,9 @@ window.updateDonationQR = function(amt) {
     } catch(e) {}
   }
 
-  // Global Cloud Analytics Logger (Worldwide Multi-Device Telemetry)
+  // Global Cloud Analytics Logger (Worldwide Multi-Device Telemetry via Google Drive)
+  const GOOGLE_DRIVE_CLOUD_API = 'https://script.google.com/macros/s/AKfycbwXmAujjr_UEo1keKOfC0yWuUHoIzmP1OL7pR7HelrasdaDtCYyC0BMyh6mI5731XPrvQ/exec';
+
   window.recordToolLaunchClick = function(toolId) {
     if (!toolId || toolId === 'index' || toolId === 'admin' || toolId === '#' || toolId.startsWith('http')) return;
     
@@ -950,20 +952,19 @@ window.updateDonationQR = function(amt) {
       clicks[toolId] = (Number(clicks[toolId]) || 0) + 1;
       localStorage.setItem('aibots_tool_click_analytics', JSON.stringify(clicks));
 
-      // If custom cloud endpoint is configured by admin, push to it
-      const customCloud = localStorage.getItem('aibots_custom_cloud_endpoint');
-      if (customCloud && customCloud.startsWith('http')) {
-        const payload = {
-          analytics_clicks: clicks,
-          updated_at: new Date().toISOString()
-        };
-        fetch(customCloud, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(payload),
-          keepalive: true
-        }).catch(() => {});
-      }
+      const payload = {
+        analytics_clicks: clicks,
+        updated_at: new Date().toISOString()
+      };
+
+      // Push to Google Drive 24/7 Cloud API with keepalive
+      fetch(GOOGLE_DRIVE_CLOUD_API, {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body: JSON.stringify(payload),
+        mode: 'no-cors',
+        keepalive: true
+      }).catch(() => {});
     } catch(e) {}
   };
 
@@ -1101,6 +1102,7 @@ window.updateDonationQR = function(amt) {
 
   // Multi-Layer Global Online Cloud Sync Engine
   const CLOUD_ENDPOINTS = [
+    'https://script.google.com/macros/s/AKfycbwXmAujjr_UEo1keKOfC0yWuUHoIzmP1OL7pR7HelrasdaDtCYyC0BMyh6mI5731XPrvQ/exec',
     'config.json',
     'https://raw.githubusercontent.com/Rishitchajjed/aibots/main/config.json'
   ];

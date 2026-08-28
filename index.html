@@ -1,6 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
   <!-- Resource Preconnect for Core Web Vitals Speed -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -16,8 +19,6 @@
     gtag('config', 'G-2L87FMQS3W');
   </script>
 
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="google-site-verification" content="ndzq-U-NLijgza_QqgQdcc2U3oMRoud_BT2ZZiwFREM">
   <meta name="google-site-verification" content="-Yb6Nx74gbZ3wRN5uP-Y8KKwDWlt1DPpxs4nA3PkE6M">
   <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
@@ -168,7 +169,8 @@
   </script>
 
   <!-- Google Fonts & Font Awesome Icons -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"></noscript>
   <link rel="stylesheet" href="css/theme.css">
   <style>
     /* Hero Typography Typing Animation */
@@ -444,7 +446,7 @@
     <div class="app-container" style="width: 100%;">
       <div class="nav-wrapper">
         <a href="index.html" class="brand-link">
-          <img src="https://i.ibb.co/G2NFYHG/logo.png" alt="AI Bots Logo" class="brand-logo-img">
+          <img src="https://i.ibb.co/G2NFYHG/logo.png" alt="AI Bots Logo" class="brand-logo-img" width="32" height="32" title="AI Bots Logo" style="width: 32px; height: 32px; object-fit: contain; aspect-ratio: 1/1;">
           <span>AI Bots</span>
           <span class="brand-badge">Studio Hub v2.0</span>
         </a>
@@ -476,7 +478,7 @@
     <!-- Hero Section -->
     <section class="hero-section">
       <div class="hero-logo-wrapper">
-        <img src="https://i.ibb.co/G2NFYHG/logo.png" alt="AI Bots Logo" class="hero-interactive-logo" id="interactive-logo" title="Drag & throw me!">
+        <img src="https://i.ibb.co/G2NFYHG/logo.png" alt="AI Bots Logo" class="hero-interactive-logo" id="interactive-logo" width="90" height="90" style="width: 90px; height: 90px; object-fit: contain; aspect-ratio: 1/1;" title="Drag & throw me!">
         <div class="hero-logo-hint"><i class="fas fa-hand-pointer"></i> Drag & throw the logo with physics!</div>
       </div>
 
@@ -565,12 +567,13 @@
             </button>
           </div>
         </div>
-        <iframe id="studio-iframe" class="studio-frame" src=""></iframe>
+        <iframe id="studio-iframe" class="studio-frame" src="" title="AI Bots Interactive Workspace"></iframe>
       </div>
     </section>
 
     <!-- Tools Discovery & Filtering Section -->
     <section id="tools-section" style="scroll-margin-top: 100px;">
+      <h2 class="section-title" style="margin-bottom: 24px;">Explore All Creative Tools & Utilities</h2>
       
       <!-- Live Search Bar -->
       <div style="max-width: 600px; margin: 0 auto 24px; position: relative;">
@@ -923,7 +926,7 @@
     <section style="margin-bottom: 60px;">
       <div style="position: relative; width: 100%; height: 0; padding-top: 56.25%; box-shadow: var(--shadow-xl); border-radius: var(--radius-xl); overflow: hidden; border: 1px solid var(--border-color);">
         <iframe loading="lazy" style="position: absolute; width: 100%; height: 100%; top: 0; left: 0; border: none;"
-          src="https://www.canva.com/design/DAF-hkNIJq0/RCG-t2isep1Z5oxEh00urA/watch?embed" allowfullscreen="allowfullscreen" allow="fullscreen">
+          src="https://www.canva.com/design/DAF-hkNIJq0/RCG-t2isep1Z5oxEh00urA/watch?embed" title="AI Bots Creative Studio Interactive Showcase" allowfullscreen="allowfullscreen" allow="fullscreen">
         </iframe>
       </div>
     </section>
@@ -951,16 +954,15 @@
         </div>
 
         <div class="feature-box">
-          <div class="feature-box-icon"><i class="fas fa-gift"></i></div>
+          <div class="feature-box-icon"><i class="fas fa-hand-holding-dollar"></i></div>
           <div class="feature-box-content">
             <h3>Zero Subscriptions & Watermarks</h3>
-            <p>Enjoy all creative tools, cricket scoring, and downloads with clean high-resolution exports completely free.</p>
+            <p>Free for everyone forever. No hidden paywalls, account registrations, or watermarks on your generated designs.</p>
           </div>
         </div>
       </div>
     </section>
-
-    <!-- Interactive FAQ Section -->
+        <!-- FAQ Section for Rich Snippet SEO -->
     <section class="faq-section">
       <h2 class="section-title">Frequently Asked Questions</h2>
       <p class="section-subtitle">Everything you need to know about the AI Bots platform.</p>
@@ -972,7 +974,7 @@
             <i class="fas fa-chevron-down"></i>
           </div>
           <div class="faq-answer">
-            Yes! All 13+ tools on AI Bots are 100% free with no hidden fees, subscriptions, or required account sign-ups.
+            Yes! All 28+ tools on AI Bots are 100% free with no hidden fees, subscriptions, or required account sign-ups.
           </div>
         </div>
 
@@ -1026,9 +1028,9 @@
       <div class="footer-grid">
         <div class="footer-col">
           <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 12px;">
-            <img src="https://i.ibb.co/G2NFYHG/logo.png" alt="AI Bots Logo" style="height: 36px;">
+            <img src="https://i.ibb.co/G2NFYHG/logo.png" alt="AI Bots Logo" width="36" height="36" style="height: 36px; width: 36px; object-fit: contain; aspect-ratio: 1/1;" loading="lazy">
             <strong style="font-size: 1.1rem;">AI Bots Creative Suite</strong>
-          </div>
+          </div>        
           <p style="font-size: 0.85rem; color: var(--text-secondary); line-height: 1.6; margin-bottom: 12px;">
             A fast, private, all-in-one suite of creative & productivity tools designed to make designing, converting, and scoring effortless.
           </p>

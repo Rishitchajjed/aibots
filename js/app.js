@@ -783,9 +783,10 @@ window.handleCustomDonationInput = function(val) {
 };
 
 window.updateDonationQR = function(amt) {
-  const upiId = window.AI_BOTS_UPI_CONFIG._getUpi();
-  const name = window.AI_BOTS_UPI_CONFIG.name;
-  const note = encodeURIComponent(window.AI_BOTS_UPI_CONFIG.note); // "Donated to AI Bots"
+  const customUpi = JSON.parse(localStorage.getItem('aibots_custom_upi_config') || '{}');
+  const upiId = customUpi.id || window.AI_BOTS_UPI_CONFIG._getUpi();
+  const name = customUpi.name || window.AI_BOTS_UPI_CONFIG.name;
+  const note = encodeURIComponent(window.AI_BOTS_UPI_CONFIG.note);
   
   // Standard UPI URI specification
   let upiUrl = `upi://pay?pa=${upiId}&pn=${encodeURIComponent(name)}&tn=${note}&cu=INR`;
@@ -855,12 +856,132 @@ window.updateDonationQR = function(amt) {
     }
   }
 
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', renderGlobalAnnouncement);
-  } else {
+  // Welcome Popup Modal Handler
+  function renderWelcomeModal() {
+    try {
+      const modalCfg = JSON.parse(localStorage.getItem('aibots_welcome_modal_config') || '{}');
+      if (modalCfg && modalCfg.enabled && modalCfg.title) {
+        if (sessionStorage.getItem('aibots_welcome_modal_shown') === 'true') return;
+
+        const modalDiv = document.createElement('div');
+        modalDiv.style.cssText = `
+          position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+          background: rgba(0,0,0,0.65); backdrop-filter: blur(8px);
+          z-index: 99999; display: flex; align-items: center; justify-content: center; padding: 20px;
+        `;
+        modalDiv.innerHTML = `
+          <div style="background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--radius-xl); padding: 32px; max-width: 460px; width: 100%; box-shadow: var(--shadow-xl); text-align: center;">
+            <div style="font-size: 2.5rem; margin-bottom: 12px;"><i class="fas fa-sparkles" style="color: var(--primary);"></i></div>
+            <h2 style="font-size: 1.3rem; font-weight: 800; margin-bottom: 10px; color: var(--text-primary);">${modalCfg.title}</h2>
+            <p style="font-size: 0.92rem; color: var(--text-secondary); line-height: 1.6; margin-bottom: 22px;">${modalCfg.body}</p>
+            <button onclick="this.closest('div[style*=fixed]').remove(); sessionStorage.setItem('aibots_welcome_modal_shown', 'true');" class="btn btn-primary" style="width: 100%; padding: 12px; font-weight: 800;">
+              <i class="fas fa-rocket"></i> Explore Studio
+            </button>
+          </div>
+        `;
+        document.body.appendChild(modalDiv);
+      }
+    } catch(e) {}
+  }
+
+  // Festive Visual Effects Handler
+  function renderFestiveEffects() {
+    try {
+      const effects = JSON.parse(localStorage.getItem('aibots_festive_effects') || '{}');
+      if (effects.confetti && typeof confetti === 'function') {
+        setTimeout(() => {
+          confetti({ particleCount: 80, spread: 70, origin: { y: 0.6 } });
+        }, 600);
+      }
+
+      if (effects.snow) {
+        const snowContainer = document.createElement('div');
+        snowContainer.style.cssText = 'position:fixed; top:0; left:0; width:100vw; height:100vh; pointer-events:none; z-index:9999; overflow:hidden;';
+        for (let i = 0; i < 30; i++) {
+          const flake = document.createElement('div');
+          flake.innerHTML = '❄';
+          flake.style.cssText = `
+            position: absolute; color: #93c5fd; opacity: ${Math.random() * 0.7 + 0.3};
+            font-size: ${Math.random() * 14 + 10}px; left: ${Math.random() * 100}vw; top: -20px;
+            animation: fallSnow ${Math.random() * 6 + 4}s linear infinite;
+            animation-delay: ${Math.random() * 5}s;
+          `;
+          snowContainer.appendChild(flake);
+        }
+        const style = document.createElement('style');
+        style.textContent = `@keyframes fallSnow { to { transform: translateY(105vh) rotate(360deg); } }`;
+        document.head.appendChild(style);
+        document.body.appendChild(snowContainer);
+      }
+    } catch(e) {}
+  }
+
+  // Tool Click Analytics Logger
+  function setupToolAnalyticsLogger() {
+    document.addEventListener('click', (e) => {
+      const card = e.target.closest('a.tool-card, a.action-card');
+      if (card) {
+        const tool = card.dataset.tool || card.getAttribute('href')?.replace('.html', '').replace('/', '');
+        if (tool) {
+          try {
+            const clicks = JSON.parse(localStorage.getItem('aibots_tool_click_analytics') || '{}');
+            clicks[tool] = (clicks[tool] || 0) + 1;
+            localStorage.setItem('aibots_tool_click_analytics', JSON.stringify(clicks));
+          } catch(err) {}
+        }
+      }
+    });
+  }
+
+  // Search Query Logger
+  window.logSearchQueryToAdmin = function(query) {
+    if (!query || query.trim().length < 2) return;
+    try {
+      let searches = JSON.parse(localStorage.getItem('aibots_search_query_log') || '[]');
+      if (!searches.includes(query.trim())) {
+        searches.push(query.trim());
+        if (searches.length > 50) searches.shift();
+        localStorage.setItem('aibots_search_query_log', JSON.stringify(searches));
+      }
+    } catch(e) {}
+  };
+
+  // Featured Tool Highlight on Homepage
+  function highlightFeaturedTool() {
+    const featuredId = localStorage.getItem('aibots_featured_tool');
+    if (featuredId) {
+      const card = document.querySelector(`.tool-card[data-tool="${featuredId}"]`);
+      if (card) {
+        card.style.border = '2px solid var(--primary)';
+        card.style.boxShadow = '0 0 20px rgba(79, 70, 229, 0.4)';
+        let badge = card.querySelector('.tool-badge-pill');
+        if (!badge) {
+          badge = document.createElement('span');
+          badge.className = 'tool-badge-pill badge-featured';
+          card.prepend(badge);
+        }
+        badge.textContent = '⭐ FEATURED';
+        badge.style.background = 'linear-gradient(135deg, #f59e0b, #ef4444)';
+        badge.style.color = '#ffffff';
+      }
+    }
+  }
+
+  const initAllAdminModules = () => {
     renderGlobalAnnouncement();
+    renderWelcomeModal();
+    renderFestiveEffects();
+    setupToolAnalyticsLogger();
+    highlightFeaturedTool();
+  };
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initAllAdminModules);
+  } else {
+    initAllAdminModules();
   }
 })();
+
 
 
 

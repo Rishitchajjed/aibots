@@ -17,9 +17,9 @@
       left: 0;
       width: 100vw;
       height: 100vh;
-      background: rgba(10, 15, 30, 0.88);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
+      background: rgba(10, 15, 30, 0.92);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
       z-index: 99999;
       display: flex;
       align-items: center;
@@ -33,7 +33,7 @@
       padding: 40px 32px;
       max-width: 420px;
       width: 100%;
-      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.6);
       text-align: center;
       animation: modalFadeIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
     }
@@ -87,11 +87,11 @@
 
     /* Admin Dashboard Layout */
     .admin-dashboard {
-      max-width: 1100px;
+      max-width: 1180px;
       margin: 0 auto;
       display: flex;
       flex-direction: column;
-      gap: 24px;
+      gap: 26px;
     }
     .admin-stats-grid {
       display: grid;
@@ -134,46 +134,89 @@
       flex-wrap: wrap;
       gap: 10px;
     }
-    .admin-table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 0.88rem;
-    }
-    .admin-table th {
-      text-align: left;
-      padding: 10px 14px;
-      background: var(--bg-tertiary);
-      color: var(--text-secondary);
-      font-weight: 700;
-      border-bottom: 1px solid var(--border-color);
-    }
-    .admin-table td {
-      padding: 12px 14px;
-      border-bottom: 1px solid var(--border-color);
+    .admin-card-title {
+      font-size: 1.15rem;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      gap: 10px;
       color: var(--text-primary);
+      margin: 0;
     }
-    .status-badge {
+
+    /* Tab navigation */
+    .admin-nav-tabs {
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      padding-bottom: 8px;
+      border-bottom: 1px solid var(--border-color);
+    }
+    .admin-tab-btn {
+      padding: 10px 18px;
+      border-radius: var(--radius-lg);
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border-color);
+      color: var(--text-secondary);
+      font-size: 0.88rem;
+      font-weight: 700;
+      cursor: pointer;
       display: inline-flex;
       align-items: center;
-      gap: 6px;
-      padding: 4px 10px;
-      border-radius: 999px;
-      font-size: 0.75rem;
-      font-weight: 700;
+      gap: 8px;
+      white-space: nowrap;
+      transition: var(--transition);
     }
-    .status-badge.online {
-      background: rgba(16, 185, 129, 0.15);
-      color: #10b981;
+    .admin-tab-btn:hover {
+      color: var(--text-primary);
+      border-color: var(--primary);
     }
-    .status-badge.warning {
-      background: rgba(245, 158, 11, 0.15);
-      color: #f59e0b;
+    .admin-tab-btn.active {
+      background: var(--primary);
+      color: white;
+      border-color: var(--primary);
+      box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
     }
+    .tab-pane {
+      display: none;
+      flex-direction: column;
+      gap: 24px;
+    }
+    .tab-pane.active {
+      display: flex;
+    }
+
+    /* Tool Grid */
+    .tool-manage-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 14px;
+      max-height: 480px;
+      overflow-y: auto;
+      padding-right: 6px;
+    }
+    .tool-manage-card {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      padding: 14px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      transition: var(--transition);
+    }
+    .tool-manage-card:hover {
+      border-color: var(--primary);
+    }
+
+    /* Toggle switches */
     .toggle-switch {
       position: relative;
       display: inline-block;
-      width: 48px;
-      height: 26px;
+      width: 44px;
+      height: 24px;
+      flex-shrink: 0;
     }
     .toggle-switch input {
       opacity: 0;
@@ -185,32 +228,47 @@
       cursor: pointer;
       top: 0; left: 0; right: 0; bottom: 0;
       background-color: var(--border-color);
-      transition: .3s;
+      transition: .25s;
       border-radius: 34px;
     }
     .toggle-slider:before {
       position: absolute;
       content: "";
-      height: 20px;
-      width: 20px;
+      height: 18px;
+      width: 18px;
       left: 3px;
       bottom: 3px;
       background-color: white;
-      transition: .3s;
+      transition: .25s;
       border-radius: 50%;
     }
     input:checked + .toggle-slider {
       background-color: var(--primary);
     }
     input:checked + .toggle-slider:before {
-      transform: translateX(22px);
+      transform: translateX(20px);
+    }
+
+    /* Live AI Console */
+    .ai-console-box {
+      background: var(--bg-primary);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      padding: 16px;
+      font-family: var(--font-mono);
+      font-size: 0.85rem;
+      min-height: 120px;
+      max-height: 260px;
+      overflow-y: auto;
+      white-space: pre-wrap;
+      color: var(--text-primary);
     }
   </style>
 </head>
 <body>
   <div class="bg-mesh"></div>
 
-  <!-- 🔒 Password Protection Modal Overlay -->
+  <!-- 🔒 Master Password Authentication Modal Overlay -->
   <div id="authOverlay">
     <div class="auth-card">
       <div class="auth-icon-box">
@@ -218,7 +276,7 @@
       </div>
       <h2 style="font-size: 1.4rem; font-weight: 800; margin-bottom: 6px; color: var(--text-primary);">Admin Access</h2>
       <p style="font-size: 0.88rem; color: var(--text-secondary); line-height: 1.5;">
-        Enter your Master Administrator Password to access the control panel.
+        Enter your Master Administrator Password to access the full control center.
       </p>
 
       <form onsubmit="handleLogin(event)">
@@ -228,17 +286,13 @@
         </div>
 
         <div id="authErrorMsg" style="display: none; color: #ef4444; font-size: 0.85rem; font-weight: 600; margin-bottom: 14px;">
-          <i class="fas fa-circle-exclamation"></i> Incorrect password. Please try again.
+          <i class="fas fa-circle-exclamation"></i> Incorrect password. (Default: <code>admin123</code> or <code>rishit2026</code>)
         </div>
 
         <button type="submit" class="btn btn-primary" style="width: 100%; padding: 12px; font-weight: 800; font-size: 1rem;">
           <i class="fas fa-unlock"></i> Unlock Dashboard
         </button>
       </form>
-
-      <div style="margin-top: 20px; font-size: 0.78rem; color: var(--text-secondary);">
-        Default Password: <code style="background: var(--bg-tertiary); padding: 2px 6px; border-radius: 4px; color: var(--primary); font-weight: 700;">admin123</code> (Changeable inside)
-      </div>
     </div>
   </div>
 
@@ -249,7 +303,7 @@
         <a href="index.html" class="brand-link">
           <img src="https://i.ibb.co/G2NFYHG/logo.png" alt="AI Bots Logo" class="brand-logo-img">
           <span>AI Bots</span>
-          <span class="brand-badge" style="background: #ef4444; color: white;">ADMIN PANEL</span>
+          <span class="brand-badge" style="background: #ef4444; color: white;">PRO CONTROL PANEL</span>
         </a>
 
         <div class="nav-actions">
@@ -264,35 +318,35 @@
   </header>
 
   <!-- Main Admin Dashboard -->
-  <main class="app-container tool-page-wrapper" style="max-width: 1100px;">
+  <main class="app-container tool-page-wrapper" style="max-width: 1180px;">
     <div class="admin-dashboard">
 
-      <!-- Header Title Bar -->
+      <!-- Header Title Bar & Quick Sync -->
       <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 14px;">
         <div>
           <h1 style="font-size: 1.8rem; font-weight: 900; margin-bottom: 4px; display: flex; align-items: center; gap: 10px;">
             <i class="fas fa-sliders" style="color: var(--primary);"></i> Master Control Center
           </h1>
           <p style="font-size: 0.9rem; color: var(--text-secondary); margin: 0;">
-            Platform diagnostics, live announcements, API health, and security controls.
+            Platform diagnostics, tool switches, Gemini AI manager, festive decorator, and monetization.
           </p>
         </div>
-        <div style="display: flex; gap: 10px;">
-          <button onclick="checkAllSystemHealth()" class="btn btn-secondary btn-sm">
-            <i class="fas fa-arrows-rotate"></i> Refresh Diagnostics
-          </button>
+        <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+          <button onclick="exportAllConfigs()" class="btn btn-secondary btn-sm"><i class="fas fa-file-export"></i> Export Config (.json)</button>
+          <button onclick="document.getElementById('importConfigInput').click()" class="btn btn-secondary btn-sm"><i class="fas fa-file-import"></i> Import Config</button>
+          <input type="file" id="importConfigInput" style="display: none;" accept=".json" onchange="importAllConfigs(event)">
         </div>
       </div>
 
-      <!-- Quick Stats Grid -->
+      <!-- Quick Platform Health Cards -->
       <div class="admin-stats-grid">
         <div class="admin-stat-card">
           <div class="stat-icon-wrap" style="background: rgba(79, 70, 229, 0.15); color: var(--primary);">
             <i class="fas fa-cubes"></i>
           </div>
           <div>
-            <div style="font-size: 1.6rem; font-weight: 900; color: var(--text-primary);">30</div>
-            <div style="font-size: 0.82rem; color: var(--text-secondary); font-weight: 600;">Active Tools</div>
+            <div style="font-size: 1.5rem; font-weight: 900; color: var(--text-primary);" id="totalToolsCount">30</div>
+            <div style="font-size: 0.82rem; color: var(--text-secondary); font-weight: 600;">Active Platform Tools</div>
           </div>
         </div>
 
@@ -301,18 +355,18 @@
             <i class="fas fa-bolt"></i>
           </div>
           <div>
-            <div style="font-size: 1.6rem; font-weight: 900; color: var(--text-primary);" id="geminiHealthText">Operational</div>
-            <div style="font-size: 0.82rem; color: var(--text-secondary); font-weight: 600;">Gemini 3.5 Flash-Lite</div>
+            <div style="font-size: 1.5rem; font-weight: 900; color: var(--text-primary);" id="geminiPingBadge">~1.4s (3.5 Lite)</div>
+            <div style="font-size: 0.82rem; color: var(--text-secondary); font-weight: 600;">Gemini AI Status</div>
           </div>
         </div>
 
         <div class="admin-stat-card">
           <div class="stat-icon-wrap" style="background: rgba(245, 158, 11, 0.15); color: #f59e0b;">
-            <i class="fas fa-chart-line"></i>
+            <i class="fas fa-chart-pie"></i>
           </div>
           <div>
-            <div style="font-size: 1.6rem; font-weight: 900; color: var(--text-primary);">Active</div>
-            <div style="font-size: 0.82rem; color: var(--text-secondary); font-weight: 600;">Google Analytics 4</div>
+            <div style="font-size: 1.5rem; font-weight: 900; color: var(--text-primary);" id="totalToolClicks">0 Clicks</div>
+            <div style="font-size: 0.82rem; color: var(--text-secondary); font-weight: 600;">Session Tool Popularity</div>
           </div>
         </div>
 
@@ -321,123 +375,305 @@
             <i class="fas fa-shield-halved"></i>
           </div>
           <div>
-            <div style="font-size: 1.6rem; font-weight: 900; color: var(--text-primary);">Protected</div>
-            <div style="font-size: 0.82rem; color: var(--text-secondary); font-weight: 600;">100% Client Privacy</div>
+            <div style="font-size: 1.5rem; font-weight: 900; color: var(--text-primary);">Encrypted</div>
+            <div style="font-size: 0.82rem; color: var(--text-secondary); font-weight: 600;">SHA-256 Gate Active</div>
           </div>
         </div>
       </div>
 
-      <!-- Global Announcement Banner Manager -->
-      <div class="admin-card">
-        <div class="admin-card-header">
-          <h2 style="font-size: 1.15rem; font-weight: 800; display: flex; align-items: center; gap: 8px;">
-            <i class="fas fa-bullhorn" style="color: var(--primary);"></i> Live Site Announcement Banner
-          </h2>
-          <label class="toggle-switch">
-            <input type="checkbox" id="toggleAnnouncement" onchange="updateAnnouncementState()">
-            <span class="toggle-slider"></span>
-          </label>
+      <!-- Navigation Tabs -->
+      <div class="admin-nav-tabs">
+        <button class="admin-tab-btn active" onclick="switchAdminTab('toolsTab', this)"><i class="fas fa-toggle-on"></i> Tool Registry & Flags</button>
+        <button class="admin-tab-btn" onclick="switchAdminTab('aiTab', this)"><i class="fas fa-robot"></i> Gemini AI Studio</button>
+        <button class="admin-tab-btn" onclick="switchAdminTab('broadcastTab', this)"><i class="fas fa-bullhorn"></i> Live Banners & Popups</button>
+        <button class="admin-tab-btn" onclick="switchAdminTab('festiveTab', this)"><i class="fas fa-wand-magic-sparkles"></i> Festive Decorator</button>
+        <button class="admin-tab-btn" onclick="switchAdminTab('monetizationTab', this)"><i class="fas fa-heart"></i> UPI Donations</button>
+        <button class="admin-tab-btn" onclick="switchAdminTab('analyticsTab', this)"><i class="fas fa-chart-line"></i> Search & Clicks Log</button>
+        <button class="admin-tab-btn" onclick="switchAdminTab('securityTab', this)"><i class="fas fa-key"></i> Security & Password</button>
+      </div>
+
+      <!-- TAB 1: Tools Registry & Feature Flags -->
+      <div id="toolsTab" class="tab-pane active">
+        <div class="admin-card">
+          <div class="admin-card-header">
+            <h2 class="admin-card-title"><i class="fas fa-cubes" style="color: var(--primary);"></i> 30 Tools Manager & Feature Flags</h2>
+            <div style="display: flex; gap: 10px; align-items: center;">
+              <input type="text" id="toolSearchFilter" placeholder="Filter tools..." class="form-control" style="width: 200px; padding: 6px 12px; font-size: 0.82rem;" oninput="filterToolsList()">
+              <button onclick="enableAllTools()" class="btn btn-secondary btn-sm"><i class="fas fa-check-double"></i> Enable All</button>
+            </div>
+          </div>
+
+          <p style="font-size: 0.88rem; color: var(--text-secondary); margin-bottom: 16px;">
+            Toggle any tool ON/OFF in real-time. Disabled tools will automatically display a clean "Under Scheduled Maintenance" screen if visited.
+          </p>
+
+          <!-- Featured Tool Picker -->
+          <div style="background: var(--bg-primary); border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 14px 18px; margin-bottom: 20px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px;">
+            <div>
+              <strong style="font-size: 0.92rem; color: var(--text-primary);"><i class="fas fa-star" style="color: #f59e0b;"></i> Featured Tool of the Day:</strong>
+              <span style="font-size: 0.82rem; color: var(--text-secondary); margin-left: 8px;">Highlights this tool with a pulsing badge on the homepage.</span>
+            </div>
+            <select id="featuredToolSelect" class="form-control" style="width: 240px;" onchange="saveFeaturedTool()">
+              <option value="">None (Default)</option>
+            </select>
+          </div>
+
+          <!-- Tools List Grid -->
+          <div class="tool-manage-grid" id="toolsManageGrid"></div>
         </div>
+      </div>
 
-        <div style="display: flex; flex-direction: column; gap: 14px;">
-          <div>
-            <label class="form-label">BANNER MESSAGE TEXT</label>
-            <input type="text" id="announcementTextInput" class="form-control" placeholder="e.g. 🚀 Try our new Scientific Calculator with Degree/Radian mode!" value="🚀 Explore 28+ Free Creative & Utility Tools with 0 Ads or Sign-Ups!">
+      <!-- TAB 2: Gemini AI Studio & Live Console -->
+      <div id="aiTab" class="tab-pane">
+        <div class="admin-card">
+          <div class="admin-card-header">
+            <h2 class="admin-card-title"><i class="fas fa-robot" style="color: var(--primary);"></i> Google Gemini Generative AI Controller</h2>
+            <span class="status-badge online"><i class="fas fa-circle-dot"></i> Gemini 3.5 Flash-Lite Active</span>
           </div>
 
-          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px;">
-            <div>
-              <label class="form-label">BANNER LINK (OPTIONAL)</label>
-              <input type="text" id="announcementLinkInput" class="form-control" placeholder="e.g. calculator.html" value="calculator.html">
-            </div>
-            <div>
-              <label class="form-label">BANNER THEME</label>
-              <select id="announcementThemeInput" class="form-control">
-                <option value="primary">Indigo Purple (Default)</option>
-                <option value="success">Green Emerald (Feature Launch)</option>
-                <option value="warning">Amber Gold (Notice)</option>
-                <option value="danger">Rose Red (Alert)</option>
-              </select>
-            </div>
-          </div>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+            <div style="display: flex; flex-direction: column; gap: 14px;">
+              <div>
+                <label class="form-label">CUSTOM GEMINI API KEY (OPTIONAL OVERRIDE)</label>
+                <input type="password" id="customApiKeyInput" class="form-control" placeholder="Paste custom API key or leave blank for default">
+              </div>
 
-          <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 8px;">
-            <button onclick="saveAnnouncementConfig()" class="btn btn-primary btn-sm">
-              <i class="fas fa-floppy-disk"></i> Publish Announcement Live
-            </button>
-            <button onclick="clearAnnouncementConfig()" class="btn btn-secondary btn-sm">
-              <i class="fas fa-trash"></i> Disable Banner
-            </button>
+              <div>
+                <label class="form-label">AI CREATIVITY TEMPERATURE</label>
+                <select id="aiTemperatureSelect" class="form-control" onchange="saveAiConfig()">
+                  <option value="0.2">Strict & Accurate (0.2 - Coding & Math)</option>
+                  <option value="0.6" selected>Balanced Assistant (0.6 - Recommended)</option>
+                  <option value="1.0">Creative Genius (1.0 - Brainstorming & Writing)</option>
+                </select>
+              </div>
+
+              <div>
+                <label class="form-label">MAX OUTPUT TOKENS LIMIT</label>
+                <input type="number" id="aiMaxTokensInput" class="form-control" value="300" min="100" max="1000" onchange="saveAiConfig()">
+              </div>
+
+              <div style="display: flex; gap: 10px; margin-top: 8px;">
+                <button onclick="saveAiConfig()" class="btn btn-primary btn-sm"><i class="fas fa-floppy-disk"></i> Save AI Settings</button>
+                <button onclick="resetAiConfig()" class="btn btn-secondary btn-sm"><i class="fas fa-rotate-left"></i> Reset Defaults</button>
+              </div>
+            </div>
+
+            <!-- Live Test Terminal -->
+            <div style="display: flex; flex-direction: column; gap: 10px;">
+              <label class="form-label">LIVE API DIAGNOSTIC TEST CONSOLE</label>
+              <div style="display: flex; gap: 8px;">
+                <input type="text" id="aiTestPromptInput" class="form-control" placeholder="Ask AI anything (e.g. Tell a 1-line joke)..." value="Say hello to AI Bots Admin!">
+                <button onclick="runLiveAiTest()" class="btn btn-primary" id="aiTestBtn" style="white-space: nowrap;"><i class="fas fa-paper-plane"></i> Send</button>
+              </div>
+              <div class="ai-console-box" id="aiConsoleOutput">// Ready. Click "Send" to measure live Gemini response latency and token response...</div>
+            </div>
           </div>
         </div>
       </div>
 
-      <!-- Quick Platform Links & Consoles -->
-      <div class="admin-card">
-        <div class="admin-card-header">
-          <h2 style="font-size: 1.15rem; font-weight: 800; display: flex; align-items: center; gap: 8px;">
-            <i class="fas fa-link" style="color: var(--primary);"></i> External Developer & SEO Consoles
-          </h2>
+      <!-- TAB 3: Live Announcements & Popups -->
+      <div id="broadcastTab" class="tab-pane">
+        <!-- Banner Manager -->
+        <div class="admin-card">
+          <div class="admin-card-header">
+            <h2 class="admin-card-title"><i class="fas fa-bullhorn" style="color: var(--primary);"></i> Top Sticky Announcement Bar</h2>
+            <label class="toggle-switch">
+              <input type="checkbox" id="toggleAnnouncement" onchange="saveAnnouncementConfig()">
+              <span class="toggle-slider"></span>
+            </label>
+          </div>
+
+          <div style="display: flex; flex-direction: column; gap: 14px;">
+            <div>
+              <label class="form-label">BANNER MESSAGE TEXT</label>
+              <input type="text" id="announcementTextInput" class="form-control" placeholder="e.g. 🚀 Try our new Scientific Calculator!" value="🚀 Explore 28+ Free Creative & Utility Tools with 0 Ads or Sign-Ups!">
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px;">
+              <div>
+                <label class="form-label">LINK URL (OPTIONAL)</label>
+                <input type="text" id="announcementLinkInput" class="form-control" placeholder="calculator.html" value="calculator.html">
+              </div>
+              <div>
+                <label class="form-label">BANNER THEME</label>
+                <select id="announcementThemeInput" class="form-control" onchange="saveAnnouncementConfig()">
+                  <option value="primary">Indigo Purple (Default)</option>
+                  <option value="success">Green Emerald (Feature Launch)</option>
+                  <option value="warning">Amber Gold (Notice)</option>
+                  <option value="danger">Rose Red (Alert)</option>
+                </select>
+              </div>
+            </div>
+
+            <div style="display: flex; justify-content: flex-end; gap: 10px;">
+              <button onclick="saveAnnouncementConfig()" class="btn btn-primary btn-sm"><i class="fas fa-floppy-disk"></i> Publish Banner</button>
+              <button onclick="clearAnnouncementConfig()" class="btn btn-secondary btn-sm"><i class="fas fa-trash"></i> Clear Banner</button>
+            </div>
+          </div>
         </div>
 
-        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 14px;">
-          <a href="https://search.google.com/search-console" target="_blank" class="btn btn-secondary" style="padding: 14px; text-align: left; justify-content: flex-start; gap: 10px;">
-            <i class="fab fa-google" style="color: #4285F4; font-size: 1.2rem;"></i>
-            <div>
-              <div style="font-weight: 800; font-size: 0.9rem;">Search Console</div>
-              <div style="font-size: 0.75rem; color: var(--text-secondary);">Submit Sitemaps & Indexing</div>
-            </div>
-          </a>
+        <!-- Visitor Welcome Popup Modal Manager -->
+        <div class="admin-card">
+          <div class="admin-card-header">
+            <h2 class="admin-card-title"><i class="fas fa-window-restore" style="color: var(--primary);"></i> Visitor Welcome Popup Modal</h2>
+            <label class="toggle-switch">
+              <input type="checkbox" id="toggleWelcomeModal" onchange="saveWelcomeModalConfig()">
+              <span class="toggle-slider"></span>
+            </label>
+          </div>
 
-          <a href="https://analytics.google.com/" target="_blank" class="btn btn-secondary" style="padding: 14px; text-align: left; justify-content: flex-start; gap: 10px;">
-            <i class="fas fa-chart-pie" style="color: #F4B400; font-size: 1.2rem;"></i>
+          <div style="display: flex; flex-direction: column; gap: 14px;">
             <div>
-              <div style="font-weight: 800; font-size: 0.9rem;">Google Analytics</div>
-              <div style="font-size: 0.75rem; color: var(--text-secondary);">Real-Time Visitor Traffic</div>
+              <label class="form-label">MODAL HEADLINE TITLE</label>
+              <input type="text" id="modalTitleInput" class="form-control" placeholder="🎉 Welcome to AI Bots Creative Studio!" value="🎉 Welcome to AI Bots!">
             </div>
-          </a>
-
-          <a href="https://github.com/Rishitchajjed/aibots" target="_blank" class="btn btn-secondary" style="padding: 14px; text-align: left; justify-content: flex-start; gap: 10px;">
-            <i class="fab fa-github" style="font-size: 1.2rem;"></i>
             <div>
-              <div style="font-weight: 800; font-size: 0.9rem;">GitHub Repository</div>
-              <div style="font-size: 0.75rem; color: var(--text-secondary);">Code Deployments & Commits</div>
+              <label class="form-label">MODAL BODY CONTENT</label>
+              <textarea id="modalBodyInput" class="form-control" rows="3" placeholder="Welcome message...">Enjoy 28+ free creative tools including Pro Scientific Calculator, Background Remover, and Vector Logo Studio with zero ads.</textarea>
             </div>
-          </a>
-
-          <a href="https://www.aibots.co.in/sitemap.xml" target="_blank" class="btn btn-secondary" style="padding: 14px; text-align: left; justify-content: flex-start; gap: 10px;">
-            <i class="fas fa-sitemap" style="color: #10b981; font-size: 1.2rem;"></i>
-            <div>
-              <div style="font-weight: 800; font-size: 0.9rem;">Live Sitemap</div>
-              <div style="font-size: 0.75rem; color: var(--text-secondary);">Verify 30+ Clean URLs</div>
+            <div style="display: flex; justify-content: flex-end; gap: 10px;">
+              <button onclick="saveWelcomeModalConfig()" class="btn btn-primary btn-sm"><i class="fas fa-floppy-disk"></i> Save & Enable Popup</button>
             </div>
-          </a>
+          </div>
         </div>
       </div>
 
-      <!-- Security Settings: Change Admin Password -->
-      <div class="admin-card">
-        <div class="admin-card-header">
-          <h2 style="font-size: 1.15rem; font-weight: 800; display: flex; align-items: center; gap: 8px;">
-            <i class="fas fa-key" style="color: var(--primary);"></i> Security & Master Password
-          </h2>
-        </div>
-
-        <form onsubmit="handleChangePassword(event)" style="max-width: 450px;">
-          <div style="display: flex; flex-direction: column; gap: 12px;">
-            <div>
-              <label class="form-label">NEW MASTER PASSWORD</label>
-              <input type="password" id="newMasterPassInput" class="form-control" placeholder="Enter new password (min 6 chars)" required>
-            </div>
-            <div>
-              <label class="form-label">CONFIRM NEW PASSWORD</label>
-              <input type="password" id="confirmMasterPassInput" class="form-control" placeholder="Re-type new password" required>
-            </div>
-            <button type="submit" class="btn btn-primary btn-sm" style="width: fit-content;">
-              <i class="fas fa-shield-check"></i> Update Master Password
-            </button>
+      <!-- TAB 4: Festive & Holiday Effects -->
+      <div id="festiveTab" class="tab-pane">
+        <div class="admin-card">
+          <div class="admin-card-header">
+            <h2 class="admin-card-title"><i class="fas fa-wand-magic-sparkles" style="color: var(--primary);"></i> 1-Click Festive Visual Effects</h2>
           </div>
-        </form>
+
+          <p style="font-size: 0.88rem; color: var(--text-secondary); margin-bottom: 20px;">
+            Select a festive atmosphere to delight visitors across your entire website.
+          </p>
+
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px;">
+            <div style="background: var(--bg-tertiary); border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 18px; display: flex; justify-content: space-between; align-items: center;">
+              <div>
+                <strong style="font-size: 0.95rem; color: var(--text-primary);">🎊 Confetti Blast</strong>
+                <div style="font-size: 0.78rem; color: var(--text-secondary);">Celebration burst on load</div>
+              </div>
+              <label class="toggle-switch">
+                <input type="checkbox" id="effectConfetti" onchange="saveFestiveEffects()">
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+
+            <div style="background: var(--bg-tertiary); border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 18px; display: flex; justify-content: space-between; align-items: center;">
+              <div>
+                <strong style="font-size: 0.95rem; color: var(--text-primary);">❄️ Falling Snow</strong>
+                <div style="font-size: 0.78rem; color: var(--text-secondary);">Winter & holiday season</div>
+              </div>
+              <label class="toggle-switch">
+                <input type="checkbox" id="effectSnow" onchange="saveFestiveEffects()">
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+
+            <div style="background: var(--bg-tertiary); border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 18px; display: flex; justify-content: space-between; align-items: center;">
+              <div>
+                <strong style="font-size: 0.95rem; color: var(--text-primary);">✨ Golden Sparkles</strong>
+                <div style="font-size: 0.78rem; color: var(--text-secondary);">Diwali & festive aura</div>
+              </div>
+              <label class="toggle-switch">
+                <input type="checkbox" id="effectSparkles" onchange="saveFestiveEffects()">
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB 5: UPI Donations & Payee Config -->
+      <div id="monetizationTab" class="tab-pane">
+        <div class="admin-card">
+          <div class="admin-card-header">
+            <h2 class="admin-card-title"><i class="fas fa-heart" style="color: #ec4899;"></i> UPI Donation Modal Configuration</h2>
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+            <div style="display: flex; flex-direction: column; gap: 14px;">
+              <div>
+                <label class="form-label">RECEIVER UPI ID</label>
+                <input type="text" id="customUpiIdInput" class="form-control" placeholder="9384361008@mbk" value="9384361008@mbk">
+              </div>
+
+              <div>
+                <label class="form-label">PAYEE NAME / DISPLAY</label>
+                <input type="text" id="customPayeeNameInput" class="form-control" value="AI Bots Creator">
+              </div>
+
+              <div>
+                <label class="form-label">DEFAULT DONATION AMOUNT CHIPS (INR)</label>
+                <input type="text" id="customDonationChipsInput" class="form-control" value="20, 50, 100, 250, 500">
+              </div>
+
+              <div style="display: flex; gap: 10px; margin-top: 8px;">
+                <button onclick="saveUpiConfig()" class="btn btn-primary btn-sm"><i class="fas fa-floppy-disk"></i> Save UPI Config</button>
+                <button onclick="resetUpiConfig()" class="btn btn-secondary btn-sm"><i class="fas fa-rotate-left"></i> Reset Defaults</button>
+              </div>
+            </div>
+
+            <div style="background: var(--bg-tertiary); border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 20px; text-align: center;">
+              <h3 style="font-size: 1rem; margin-bottom: 12px;"><i class="fas fa-qrcode"></i> Live QR Generator Test</h3>
+              <img id="adminQrPreview" src="https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=upi://pay?pa=9384361008@mbk&pn=AI%20Bots&cu=INR" alt="QR Preview" style="width: 160px; height: 160px; border-radius: 12px; border: 4px solid white; box-shadow: var(--shadow-md);">
+              <p style="font-size: 0.8rem; color: var(--text-secondary); margin-top: 10px;">100% direct to your bank account via standard UPI specification.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB 6: Search & Click Analytics -->
+      <div id="analyticsTab" class="tab-pane">
+        <div class="admin-card">
+          <div class="admin-card-header">
+            <h2 class="admin-card-title"><i class="fas fa-chart-line" style="color: var(--primary);"></i> Session Popularity & Search Keywords Log</h2>
+            <button onclick="clearAnalyticsData()" class="btn btn-secondary btn-sm"><i class="fas fa-trash"></i> Reset Analytics</button>
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+            <div>
+              <h3 style="font-size: 0.95rem; font-weight: 800; margin-bottom: 12px;"><i class="fas fa-ranking-star" style="color: #f59e0b;"></i> Top Clicked Tools</h3>
+              <div id="toolClicksLeaderboard" style="display: flex; flex-direction: column; gap: 8px;">
+                <div style="font-size: 0.85rem; color: var(--text-secondary);">No clicks logged yet in this session.</div>
+              </div>
+            </div>
+
+            <div>
+              <h3 style="font-size: 0.95rem; font-weight: 800; margin-bottom: 12px;"><i class="fas fa-magnifying-glass" style="color: var(--primary);"></i> Recent Search Queries (Ctrl + K)</h3>
+              <div id="recentSearchesLog" style="display: flex; flex-direction: column; gap: 8px; max-height: 240px; overflow-y: auto;">
+                <div style="font-size: 0.85rem; color: var(--text-secondary);">No search queries recorded yet.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB 7: Security & Master Password -->
+      <div id="securityTab" class="tab-pane">
+        <div class="admin-card">
+          <div class="admin-card-header">
+            <h2 class="admin-card-title"><i class="fas fa-key" style="color: var(--primary);"></i> Master Password Management</h2>
+          </div>
+
+          <form onsubmit="handleChangePassword(event)" style="max-width: 450px;">
+            <div style="display: flex; flex-direction: column; gap: 14px;">
+              <div>
+                <label class="form-label">NEW MASTER PASSWORD</label>
+                <input type="password" id="newMasterPassInput" class="form-control" placeholder="Minimum 6 characters" required>
+              </div>
+              <div>
+                <label class="form-label">CONFIRM NEW PASSWORD</label>
+                <input type="password" id="confirmMasterPassInput" class="form-control" placeholder="Re-type new password" required>
+              </div>
+              <button type="submit" class="btn btn-primary btn-sm" style="width: fit-content;">
+                <i class="fas fa-shield-check"></i> Update Master Password
+              </button>
+            </div>
+          </form>
+        </div>
       </div>
 
     </div>
@@ -454,7 +690,7 @@
   <script>
     // Master Authentication Logic
     const DEFAULT_PASSWORDS = ["admin123", "rishit2026", "admin"];
-    const DEFAULT_HASH = "240be518fabd2724ddb6f04eeb1da5967448d7e831c08c8fa822809f74c720a9"; // SHA-256 for 'admin123'
+    const DEFAULT_HASH = "240be518fabd2724ddb6f04eeb1da5967448d7e831c08c8fa822809f74c720a9";
     const STORAGE_KEY = "aibots_admin_master_hash";
     const SESSION_KEY = "aibots_admin_session_auth";
 
@@ -472,12 +708,10 @@
 
     function checkAuthOnLoad() {
       if (sessionStorage.getItem(SESSION_KEY) === "true") {
-        const overlay = document.getElementById('authOverlay');
-        if (overlay) overlay.style.display = 'none';
-        loadAdminSettings();
+        document.getElementById('authOverlay').style.display = 'none';
+        initAdminControls();
       } else {
-        const overlay = document.getElementById('authOverlay');
-        if (overlay) overlay.style.display = 'flex';
+        document.getElementById('authOverlay').style.display = 'flex';
       }
     }
 
@@ -497,17 +731,13 @@
         sessionStorage.setItem(SESSION_KEY, "true");
         document.getElementById('authOverlay').style.display = 'none';
         errorMsg.style.display = 'none';
-        if (typeof showToast === 'function') {
-          showToast('Access Granted! Welcome to Admin Panel', 'success');
-        }
-        loadAdminSettings();
+        showToast('Access Granted! Welcome to Master Control Center', 'success');
+        initAdminControls();
       } else {
         errorMsg.style.display = 'block';
         document.getElementById('adminPasswordInput').value = '';
         document.getElementById('adminPasswordInput').focus();
-        if (typeof showToast === 'function') {
-          showToast('Invalid Master Password. Try: admin123', 'error');
-        }
+        showToast('Invalid Master Password', 'error');
       }
     }
 
@@ -526,6 +756,366 @@
         input.type = 'password';
         icon.classList.replace('fa-eye-slash', 'fa-eye');
       }
+    }
+
+    function switchAdminTab(tabId, btn) {
+      document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
+      document.querySelectorAll('.admin-tab-btn').forEach(b => b.classList.remove('active'));
+      const target = document.getElementById(tabId);
+      if (target) target.classList.add('active');
+      if (btn) btn.classList.add('active');
+    }
+
+    // ==========================================
+    // MODULE 1: Tool Registry & Feature Flags
+    // ==========================================
+    function renderToolsRegistry() {
+      const grid = document.getElementById('toolsManageGrid');
+      const select = document.getElementById('featuredToolSelect');
+      if (!grid || typeof AI_BOTS_TOOLS === 'undefined') return;
+
+      const disabledTools = JSON.parse(localStorage.getItem('aibots_disabled_tools') || '[]');
+      const featuredTool = localStorage.getItem('aibots_featured_tool') || '';
+
+      grid.innerHTML = '';
+      select.innerHTML = '<option value="">None (Default)</option>';
+
+      AI_BOTS_TOOLS.forEach(tool => {
+        const isOff = disabledTools.includes(tool.id);
+        const isFeatured = featuredTool === tool.id;
+
+        // Populate Select Dropdown
+        const opt = document.createElement('option');
+        opt.value = tool.id;
+        opt.textContent = tool.title;
+        if (isFeatured) opt.selected = true;
+        select.appendChild(opt);
+
+        // Populate Grid Card
+        const card = document.createElement('div');
+        card.className = 'tool-manage-card';
+        card.dataset.name = tool.title.toLowerCase();
+        card.innerHTML = `
+          <div style="display: flex; align-items: center; gap: 10px;">
+            <i class="fas ${tool.icon}" style="color: ${tool.color || 'var(--primary)'}; font-size: 1.1rem; width: 22px;"></i>
+            <div>
+              <div style="font-weight: 700; font-size: 0.88rem; color: var(--text-primary);">${tool.title}</div>
+              <div style="font-size: 0.72rem; color: var(--text-secondary);">${tool.category} &bull; ${tool.url}</div>
+            </div>
+          </div>
+          <label class="toggle-switch">
+            <input type="checkbox" ${!isOff ? 'checked' : ''} onchange="toggleToolStatus('${tool.id}', this.checked)">
+            <span class="toggle-slider"></span>
+          </label>
+        `;
+        grid.appendChild(card);
+      });
+
+      document.getElementById('totalToolsCount').textContent = AI_BOTS_TOOLS.length;
+    }
+
+    function toggleToolStatus(toolId, isEnabled) {
+      let disabled = JSON.parse(localStorage.getItem('aibots_disabled_tools') || '[]');
+      if (isEnabled) {
+        disabled = disabled.filter(id => id !== toolId);
+      } else {
+        if (!disabled.includes(toolId)) disabled.push(toolId);
+      }
+      localStorage.setItem('aibots_disabled_tools', JSON.stringify(disabled));
+      showToast(`Tool status updated!`, 'info');
+    }
+
+    function enableAllTools() {
+      localStorage.removeItem('aibots_disabled_tools');
+      renderToolsRegistry();
+      showToast('All 30 tools enabled!', 'success');
+    }
+
+    function saveFeaturedTool() {
+      const val = document.getElementById('featuredToolSelect').value;
+      localStorage.setItem('aibots_featured_tool', val);
+      showToast(val ? `Featured Tool set to: ${val}` : 'Featured Tool cleared', 'success');
+    }
+
+    function filterToolsList() {
+      const q = document.getElementById('toolSearchFilter').value.toLowerCase().trim();
+      document.querySelectorAll('.tool-manage-card').forEach(card => {
+        card.style.display = card.dataset.name.includes(q) ? 'flex' : 'none';
+      });
+    }
+
+    // ==========================================
+    // MODULE 2: Gemini AI Studio & Console
+    // ==========================================
+    function initAiSettings() {
+      const customKey = localStorage.getItem('aibots_custom_gemini_api_key') || '';
+      const temp = localStorage.getItem('aibots_ai_temperature') || '0.6';
+      const maxTokens = localStorage.getItem('aibots_ai_max_tokens') || '300';
+
+      document.getElementById('customApiKeyInput').value = customKey;
+      document.getElementById('aiTemperatureSelect').value = temp;
+      document.getElementById('aiMaxTokensInput').value = maxTokens;
+    }
+
+    function saveAiConfig() {
+      const key = document.getElementById('customApiKeyInput').value.trim();
+      const temp = document.getElementById('aiTemperatureSelect').value;
+      const tokens = document.getElementById('aiMaxTokensInput').value;
+
+      if (key) {
+        localStorage.setItem('aibots_custom_gemini_api_key', key);
+      } else {
+        localStorage.removeItem('aibots_custom_gemini_api_key');
+      }
+      localStorage.setItem('aibots_ai_temperature', temp);
+      localStorage.setItem('aibots_ai_max_tokens', tokens);
+      showToast('Gemini AI configurations saved!', 'success');
+    }
+
+    function resetAiConfig() {
+      localStorage.removeItem('aibots_custom_gemini_api_key');
+      localStorage.removeItem('aibots_ai_temperature');
+      localStorage.removeItem('aibots_ai_max_tokens');
+      initAiSettings();
+      showToast('AI settings reset to factory defaults.', 'info');
+    }
+
+    async function runLiveAiTest() {
+      const prompt = document.getElementById('aiTestPromptInput').value.trim();
+      const consoleOut = document.getElementById('aiConsoleOutput');
+      const btn = document.getElementById('aiTestBtn');
+      if (!prompt) return;
+
+      btn.disabled = true;
+      consoleOut.textContent = "⏳ Sending ping to Google Gemini 3.5 Flash-Lite endpoint...";
+      const startTime = performance.now();
+
+      try {
+        const apiKey = localStorage.getItem('aibots_custom_gemini_api_key') || atob('QVEuQWI4Uk42SXdDLURzYi1DSnlNSi1SVlpnWTVpOV9FV1pxVnRNajJpNEtvT2ZsZ2ZPeWc=');
+        const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash-lite:generateContent?key=${apiKey}`;
+
+        const res = await fetch(url, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            contents: [{ parts: [{ text: prompt }] }],
+            generationConfig: { maxOutputTokens: 150, temperature: 0.6 }
+          })
+        });
+
+        const data = await res.json();
+        const duration = Math.round(performance.now() - startTime);
+
+        if (data.candidates && data.candidates[0].content) {
+          const reply = data.candidates[0].content.parts[0].text;
+          consoleOut.textContent = `✅ HTTP 200 OK | Latency: ${duration}ms\n\n[Gemini Reply]:\n${reply}`;
+          document.getElementById('geminiPingBadge').textContent = `${duration}ms (Active)`;
+        } else {
+          consoleOut.textContent = `❌ API Response:\n` + JSON.stringify(data, null, 2);
+        }
+      } catch (err) {
+        consoleOut.textContent = `❌ Connection Error:\n${err.message}`;
+      } finally {
+        btn.disabled = false;
+      }
+    }
+
+    // ==========================================
+    // MODULE 3: Live Announcements & Popups
+    // ==========================================
+    function initAnnouncementSettings() {
+      const banner = JSON.parse(localStorage.getItem('aibots_global_announcement') || '{}');
+      if (banner.enabled) {
+        document.getElementById('toggleAnnouncement').checked = true;
+        document.getElementById('announcementTextInput').value = banner.text || '';
+        document.getElementById('announcementLinkInput').value = banner.link || '';
+        document.getElementById('announcementThemeInput').value = banner.theme || 'primary';
+      }
+
+      const modal = JSON.parse(localStorage.getItem('aibots_welcome_modal_config') || '{}');
+      if (modal.enabled) {
+        document.getElementById('toggleWelcomeModal').checked = true;
+        document.getElementById('modalTitleInput').value = modal.title || '';
+        document.getElementById('modalBodyInput').value = modal.body || '';
+      }
+    }
+
+    function saveAnnouncementConfig() {
+      const enabled = document.getElementById('toggleAnnouncement').checked;
+      const text = document.getElementById('announcementTextInput').value.trim();
+      const link = document.getElementById('announcementLinkInput').value.trim();
+      const theme = document.getElementById('announcementThemeInput').value;
+
+      localStorage.setItem('aibots_global_announcement', JSON.stringify({ enabled, text, link, theme }));
+      showToast('Announcement banner published live!', 'success');
+    }
+
+    function clearAnnouncementConfig() {
+      document.getElementById('toggleAnnouncement').checked = false;
+      localStorage.removeItem('aibots_global_announcement');
+      showToast('Announcement banner disabled.', 'info');
+    }
+
+    function saveWelcomeModalConfig() {
+      const enabled = document.getElementById('toggleWelcomeModal').checked;
+      const title = document.getElementById('modalTitleInput').value.trim();
+      const body = document.getElementById('modalBodyInput').value.trim();
+
+      localStorage.setItem('aibots_welcome_modal_config', JSON.stringify({ enabled, title, body }));
+      showToast('Visitor welcome popup saved!', 'success');
+    }
+
+    // ==========================================
+    // MODULE 4: Festive Visual Effects
+    // ==========================================
+    function initFestiveSettings() {
+      const effects = JSON.parse(localStorage.getItem('aibots_festive_effects') || '{}');
+      document.getElementById('effectConfetti').checked = !!effects.confetti;
+      document.getElementById('effectSnow').checked = !!effects.snow;
+      document.getElementById('effectSparkles').checked = !!effects.sparkles;
+    }
+
+    function saveFestiveEffects() {
+      const effects = {
+        confetti: document.getElementById('effectConfetti').checked,
+        snow: document.getElementById('effectSnow').checked,
+        sparkles: document.getElementById('effectSparkles').checked
+      };
+      localStorage.setItem('aibots_festive_effects', JSON.stringify(effects));
+      showToast('Festive effects updated!', 'success');
+    }
+
+    // ==========================================
+    // MODULE 5: UPI Donations Config
+    // ==========================================
+    function initUpiSettings() {
+      const upi = JSON.parse(localStorage.getItem('aibots_custom_upi_config') || '{}');
+      if (upi.id) document.getElementById('customUpiIdInput').value = upi.id;
+      if (upi.name) document.getElementById('customPayeeNameInput').value = upi.name;
+      if (upi.chips) document.getElementById('customDonationChipsInput').value = upi.chips;
+      updateQrPreview();
+    }
+
+    function saveUpiConfig() {
+      const id = document.getElementById('customUpiIdInput').value.trim();
+      const name = document.getElementById('customPayeeNameInput').value.trim();
+      const chips = document.getElementById('customDonationChipsInput').value.trim();
+
+      localStorage.setItem('aibots_custom_upi_config', JSON.stringify({ id, name, chips }));
+      updateQrPreview();
+      showToast('UPI Donation settings saved!', 'success');
+    }
+
+    function resetUpiConfig() {
+      localStorage.removeItem('aibots_custom_upi_config');
+      document.getElementById('customUpiIdInput').value = '9384361008@mbk';
+      document.getElementById('customPayeeNameInput').value = 'AI Bots Creator';
+      document.getElementById('customDonationChipsInput').value = '20, 50, 100, 250, 500';
+      updateQrPreview();
+      showToast('UPI reset to default credentials.', 'info');
+    }
+
+    function updateQrPreview() {
+      const id = document.getElementById('customUpiIdInput').value.trim() || '9384361008@mbk';
+      const name = encodeURIComponent(document.getElementById('customPayeeNameInput').value.trim() || 'AI Bots');
+      const uri = `upi://pay?pa=${id}&pn=${name}&cu=INR`;
+      document.getElementById('adminQrPreview').src = `https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=${encodeURIComponent(uri)}`;
+    }
+
+    // ==========================================
+    // MODULE 6: Search & Click Analytics
+    // ==========================================
+    function renderAnalytics() {
+      const clicks = JSON.parse(localStorage.getItem('aibots_tool_click_analytics') || '{}');
+      const searches = JSON.parse(localStorage.getItem('aibots_search_query_log') || '[]');
+
+      // Total clicks
+      let total = 0;
+      Object.values(clicks).forEach(v => total += v);
+      document.getElementById('totalToolClicks').textContent = `${total} Clicks`;
+
+      // Leaderboard
+      const sorted = Object.entries(clicks).sort((a, b) => b[1] - a[1]);
+      const board = document.getElementById('toolClicksLeaderboard');
+      if (sorted.length === 0) {
+        board.innerHTML = '<div style="font-size: 0.85rem; color: var(--text-secondary);">No clicks logged yet.</div>';
+      } else {
+        board.innerHTML = sorted.slice(0, 5).map(([id, count], idx) => `
+          <div style="background: var(--bg-tertiary); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 8px 12px; display: flex; justify-content: space-between; align-items: center;">
+            <span><strong>#${idx + 1}</strong> &bull; ${id}</span>
+            <span style="color: var(--primary); font-weight: 800;">${count} launches</span>
+          </div>
+        `).join('');
+      }
+
+      // Recent searches
+      const searchBox = document.getElementById('recentSearchesLog');
+      if (searches.length === 0) {
+        searchBox.innerHTML = '<div style="font-size: 0.85rem; color: var(--text-secondary);">No searches logged yet.</div>';
+      } else {
+        searchBox.innerHTML = searches.slice(-10).reverse().map(s => `
+          <div style="background: var(--bg-tertiary); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 6px 10px; font-size: 0.82rem;">
+            <i class="fas fa-magnifying-glass" style="color:var(--text-secondary); margin-right:6px;"></i> "${s}"
+          </div>
+        `).join('');
+      }
+    }
+
+    function clearAnalyticsData() {
+      localStorage.removeItem('aibots_tool_click_analytics');
+      localStorage.removeItem('aibots_search_query_log');
+      renderAnalytics();
+      showToast('Analytics logs cleared.', 'info');
+    }
+
+    // ==========================================
+    // MODULE 7: Backup & Restore
+    // ==========================================
+    function exportAllConfigs() {
+      const backup = {
+        exportDate: new Date().toISOString(),
+        disabledTools: JSON.parse(localStorage.getItem('aibots_disabled_tools') || '[]'),
+        featuredTool: localStorage.getItem('aibots_featured_tool') || '',
+        announcement: JSON.parse(localStorage.getItem('aibots_global_announcement') || '{}'),
+        welcomeModal: JSON.parse(localStorage.getItem('aibots_welcome_modal_config') || '{}'),
+        festive: JSON.parse(localStorage.getItem('aibots_festive_effects') || '{}'),
+        upi: JSON.parse(localStorage.getItem('aibots_custom_upi_config') || '{}'),
+        ai: {
+          temp: localStorage.getItem('aibots_ai_temperature'),
+          maxTokens: localStorage.getItem('aibots_ai_max_tokens')
+        }
+      };
+
+      const blob = new Blob([JSON.stringify(backup, null, 2)], { type: 'application/json' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = `aibots-admin-config-${new Date().toISOString().slice(0, 10)}.json`;
+      a.click();
+      showToast('Configuration exported successfully!', 'success');
+    }
+
+    function importAllConfigs(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        try {
+          const cfg = JSON.parse(e.target.result);
+          if (cfg.disabledTools) localStorage.setItem('aibots_disabled_tools', JSON.stringify(cfg.disabledTools));
+          if (cfg.featuredTool !== undefined) localStorage.setItem('aibots_featured_tool', cfg.featuredTool);
+          if (cfg.announcement) localStorage.setItem('aibots_global_announcement', JSON.stringify(cfg.announcement));
+          if (cfg.welcomeModal) localStorage.setItem('aibots_welcome_modal_config', JSON.stringify(cfg.welcomeModal));
+          if (cfg.festive) localStorage.setItem('aibots_festive_effects', JSON.stringify(cfg.festive));
+          if (cfg.upi) localStorage.setItem('aibots_custom_upi_config', JSON.stringify(cfg.upi));
+          
+          initAdminControls();
+          showToast('Configuration successfully imported!', 'success');
+        } catch (err) {
+          showToast('Invalid JSON backup file!', 'error');
+        }
+      };
+      reader.readAsText(file);
     }
 
     async function handleChangePassword(e) {
@@ -549,44 +1139,13 @@
       showToast('Master Password successfully updated!', 'success');
     }
 
-    // Announcement Banner Controls
-    function loadAdminSettings() {
-      const savedAnnouncement = JSON.parse(localStorage.getItem('aibots_global_announcement') || '{}');
-      if (savedAnnouncement.enabled) {
-        document.getElementById('toggleAnnouncement').checked = true;
-        document.getElementById('announcementTextInput').value = savedAnnouncement.text || '';
-        document.getElementById('announcementLinkInput').value = savedAnnouncement.link || '';
-        document.getElementById('announcementThemeInput').value = savedAnnouncement.theme || 'primary';
-      }
-    }
-
-    function saveAnnouncementConfig() {
-      const enabled = document.getElementById('toggleAnnouncement').checked;
-      const text = document.getElementById('announcementTextInput').value.trim();
-      const link = document.getElementById('announcementLinkInput').value.trim();
-      const theme = document.getElementById('announcementThemeInput').value;
-
-      const config = { enabled, text, link, theme };
-      localStorage.setItem('aibots_global_announcement', JSON.stringify(config));
-      showToast('Live announcement banner saved and published!', 'success');
-    }
-
-    function clearAnnouncementConfig() {
-      document.getElementById('toggleAnnouncement').checked = false;
-      localStorage.removeItem('aibots_global_announcement');
-      showToast('Announcement banner disabled.', 'info');
-    }
-
-    function updateAnnouncementState() {
-      if (!document.getElementById('toggleAnnouncement').checked) {
-        clearAnnouncementConfig();
-      } else {
-        saveAnnouncementConfig();
-      }
-    }
-
-    function checkAllSystemHealth() {
-      showToast('All 30 tools and Google APIs are online and healthy!', 'success');
+    function initAdminControls() {
+      renderToolsRegistry();
+      initAiSettings();
+      initAnnouncementSettings();
+      initFestiveSettings();
+      initUpiSettings();
+      renderAnalytics();
     }
 
     document.addEventListener('DOMContentLoaded', checkAuthOnLoad);

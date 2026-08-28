@@ -236,90 +236,6 @@
       width: 22px; height: 22px; border-radius: 6px; cursor: pointer; border: 2px solid transparent; transition: all 0.15s;
     }
     .swatch.active { border-color: var(--text-primary); transform: scale(1.2); }
-
-    /* Clean Print Container (Used ONLY during actual print execution) */
-    #printContainer {
-      display: none;
-    }
-
-    /* ==========================================================================
-       STRICT @media print STYLES — PREVENTS CUTTING OR MULTI-PAGE SPILL OVERFLOW
-       ========================================================================== */
-    @media print {
-      @page {
-        size: auto;
-        margin: 0mm !important; /* Zero margin on browser page level so internal padding guarantees 100% fit */
-      }
-      *, *::before, *::after {
-        box-sizing: border-box !important;
-      }
-      html, body {
-        background: #ffffff !important;
-        color: #000000 !important;
-        margin: 0 !important;
-        padding: 0 !important;
-        width: 100% !important;
-        height: auto !important;
-      }
-      .navbar, .bg-mesh, .tool-header, .ps-dropzone, .ps-sidebar, .stage-top-bar, .app-footer, .tool-icon-btn, .page-gallery {
-        display: none !important;
-      }
-      .ps-workspace, .ps-stage, .tool-page-wrapper {
-        display: block !important;
-        border: none !important;
-        box-shadow: none !important;
-        background: transparent !important;
-        padding: 0 !important;
-        margin: 0 !important;
-        width: 100% !important;
-        max-width: 100% !important;
-      }
-      #printContainer {
-        display: block !important;
-        width: 100% !important;
-        margin: 0 !important;
-        padding: 0 !important;
-      }
-      .printable-page {
-        width: 100vw !important;
-        height: 100vh !important;
-        max-height: 100vh !important;
-        margin: 0 !important;
-        padding: 10mm 8mm !important; /* Safe printable padding */
-        display: flex !important;
-        flex-direction: column !important;
-        align-items: center !important;
-        justify-content: center !important;
-        position: relative !important;
-        background: #ffffff !important;
-        page-break-after: always !important;
-        break-after: page !important;
-        page-break-inside: avoid !important;
-        break-inside: avoid !important;
-        overflow: hidden !important; /* CRITICAL: Prevents any bottom pixel from bleeding into an extra page */
-      }
-      .printable-page:last-child {
-        page-break-after: avoid !important;
-        break-after: avoid !important;
-      }
-      .printable-page img {
-        max-width: 100% !important;
-        max-height: calc(100vh - 24mm) !important; /* Strictly bounded inside sheet */
-        width: auto !important;
-        height: auto !important;
-        object-fit: contain !important;
-        display: block !important;
-        margin: auto !important;
-        image-rendering: -webkit-optimize-contrast !important;
-        image-rendering: high-quality !important;
-      }
-      .print-header-text {
-        position: absolute; top: 4mm; left: 10mm; font-size: 8.5pt; color: #475569; font-family: sans-serif;
-      }
-      .print-footer-text {
-        position: absolute; bottom: 4mm; right: 10mm; font-size: 8.5pt; color: #475569; font-family: sans-serif;
-      }
-    }
   </style>
 </head>
 <body>
@@ -402,7 +318,7 @@
         <div class="section-lbl">Layout & Paper Saving</div>
         <div>
           <label class="form-label" style="font-size:0.7rem;">PAGES PER SHEET (N-UP)</label>
-          <select id="nUpSelect" class="form-control" onchange="rebuildPrintSheets()">
+          <select id="nUpSelect" class="form-control" onchange="updateGalleryOnly()">
             <option value="1" selected>1 Page per Sheet (Standard)</option>
             <option value="2">2 Pages per Sheet (2-Up Paper Saver)</option>
             <option value="4">4 Pages per Sheet (4-Up Handout)</option>
@@ -411,7 +327,7 @@
 
         <div>
           <label class="form-label" style="font-size:0.7rem;">PAPER ORIENTATION</label>
-          <select id="orientationSelect" class="form-control" onchange="rebuildPrintSheets()">
+          <select id="orientationSelect" class="form-control" onchange="updateGalleryOnly()">
             <option value="portrait" selected>Portrait</option>
             <option value="landscape">Landscape</option>
           </select>
@@ -421,12 +337,12 @@
         <div class="section-lbl">Enhancements & Ink Saver</div>
         <div style="display:flex; justify-content:space-between; align-items:center;">
           <span style="font-size:0.82rem; font-weight:600;"><i class="fas fa-circle-half-stroke"></i> Grayscale / B&W</span>
-          <input type="checkbox" id="chkGrayscale" onchange="rebuildPrintSheets()">
+          <input type="checkbox" id="chkGrayscale" onchange="renderGallery()">
         </div>
 
         <div style="display:flex; justify-content:space-between; align-items:center;">
           <span style="font-size:0.82rem; font-weight:600;"><i class="fas fa-wand-magic-sparkles"></i> Clean Scan (High Contrast)</span>
-          <input type="checkbox" id="chkCleanScan" onchange="rebuildPrintSheets()">
+          <input type="checkbox" id="chkCleanScan" onchange="renderGallery()">
         </div>
 
         <!-- 4. Watermark -->
@@ -436,7 +352,7 @@
           <input type="checkbox" id="chkWm" onchange="toggleWmOptions()">
         </div>
         <div id="wmBox" style="display:none; flex-direction:column; gap:8px;">
-          <input type="text" id="wmTextInput" class="form-control" value="CONFIDENTIAL" placeholder="Watermark Text" oninput="rebuildPrintSheets()">
+          <input type="text" id="wmTextInput" class="form-control" value="CONFIDENTIAL" placeholder="Watermark Text" oninput="renderGallery()">
           <div class="swatch-row">
             <div class="swatch active" style="background:#ef4444;" data-c="#ef4444" onclick="setWmColor(this)"></div>
             <div class="swatch" style="background:#3b82f6;" data-c="#3b82f6" onclick="setWmColor(this)"></div>
@@ -449,11 +365,11 @@
         <div class="section-lbl">Header & Page Number</div>
         <div>
           <label class="form-label" style="font-size:0.7rem;">HEADER TEXT / TITLE</label>
-          <input type="text" id="headerTextInput" class="form-control" placeholder="Optional Header (e.g. Project Notes)" oninput="rebuildPrintSheets()">
+          <input type="text" id="headerTextInput" class="form-control" placeholder="Optional Header (e.g. Project Notes)">
         </div>
         <div style="display:flex; justify-content:space-between; align-items:center;">
           <span style="font-size:0.82rem; font-weight:600;"><i class="fas fa-hashtag"></i> Page Numbers (Page 1 of N)</span>
-          <input type="checkbox" id="chkPageNums" checked onchange="rebuildPrintSheets()">
+          <input type="checkbox" id="chkPageNums" checked>
         </div>
 
         <!-- Action Buttons -->
@@ -489,9 +405,6 @@
       </div>
 
     </div>
-
-    <!-- Hidden Clean Printable Container for window.print() -->
-    <div id="printContainer"></div>
   </main>
 
   <script>
@@ -528,7 +441,6 @@
       document.getElementById('inpToPage').max = loadedPages.length;
 
       renderGallery();
-      rebuildPrintSheets();
     }
 
     async function loadPdf(file) {
@@ -537,7 +449,6 @@
 
       for (let i = 1; i <= pdf.numPages; i++) {
         const page = await pdf.getPage(i);
-        // Ultra-HD 3.5x scale (approx 300 DPI for crystal clear print & zoom)
         const viewport = page.getViewport({ scale: 3.5 });
         const canvas = document.createElement('canvas');
         canvas.width = viewport.width;
@@ -575,6 +486,10 @@
       });
     }
 
+    function updateGalleryOnly() {
+      renderGallery();
+    }
+
     function renderGallery() {
       const gallery = document.getElementById('pageGallery');
       gallery.innerHTML = '';
@@ -585,7 +500,6 @@
         const card = document.createElement('div');
         card.className = `thumb-card ${p.included ? '' : 'excluded'}`;
 
-        // Preview Rotated canvas
         const previewCanvas = document.createElement('canvas');
         applyTransformsToCanvas(p.canvas, previewCanvas, p.rotation);
 
@@ -608,7 +522,6 @@
       });
     }
 
-    /* Odd / Even Filter for Duplex Front & Back Printing */
     function setPageFilter(filter, btn) {
       currentFilter = filter;
       document.querySelectorAll('.duplex-btn').forEach(b => b.classList.remove('active'));
@@ -626,10 +539,8 @@
       });
 
       renderGallery();
-      rebuildPrintSheets();
     }
 
-    /* From-To Page Range Filter */
     function applyFromToRange() {
       const from = parseInt(document.getElementById('inpFromPage').value) || 1;
       const to = parseInt(document.getElementById('inpToPage').value) || loadedPages.length;
@@ -647,25 +558,21 @@
       });
 
       renderGallery();
-      rebuildPrintSheets();
     }
 
     function rotatePage(idx) {
       loadedPages[idx].rotation = (loadedPages[idx].rotation + 90) % 360;
       renderGallery();
-      rebuildPrintSheets();
     }
 
     function rotateAllPages(deg) {
       loadedPages.forEach(p => p.rotation = (p.rotation + deg) % 360);
       renderGallery();
-      rebuildPrintSheets();
     }
 
     function togglePage(idx) {
       loadedPages[idx].included = !loadedPages[idx].included;
       renderGallery();
-      rebuildPrintSheets();
     }
 
     function includeAllPages() {
@@ -677,14 +584,14 @@
     function toggleWmOptions() {
       const chk = document.getElementById('chkWm').checked;
       document.getElementById('wmBox').style.display = chk ? 'flex' : 'none';
-      rebuildPrintSheets();
+      renderGallery();
     }
 
     function setWmColor(el) {
       document.querySelectorAll('.swatch').forEach(s => s.classList.remove('active'));
       el.classList.add('active');
       wmColor = el.getAttribute('data-c');
-      rebuildPrintSheets();
+      renderGallery();
     }
 
     function applyTransformsToCanvas(srcCanvas, destCanvas, rotation) {
@@ -704,7 +611,6 @@
       ctx.drawImage(srcCanvas, -srcCanvas.width / 2, -srcCanvas.height / 2);
       ctx.restore();
 
-      // Filters
       const grayscale = document.getElementById('chkGrayscale').checked;
       const cleanScan = document.getElementById('chkCleanScan').checked;
 
@@ -723,7 +629,6 @@
         ctx.putImageData(imgData, 0, 0);
       }
 
-      // Watermark
       const hasWm = document.getElementById('chkWm').checked;
       if (hasWm) {
         const wmText = document.getElementById('wmTextInput').value || 'CONFIDENTIAL';
@@ -740,40 +645,17 @@
       }
     }
 
-    function rebuildPrintSheets() {
-      const container = document.getElementById('printContainer');
-      container.innerHTML = '';
-
+    function buildSheetsDataUrls() {
       const validPages = loadedPages.filter(p => p.included);
-      if (validPages.length === 0) return;
+      if (validPages.length === 0) return [];
 
       const nUp = parseInt(document.getElementById('nUpSelect').value) || 1;
-      const headerText = document.getElementById('headerTextInput').value.trim();
-      const showPageNums = document.getElementById('chkPageNums').checked;
+      const sheetUrls = [];
 
-      // Group pages according to N-Up
       for (let i = 0; i < validPages.length; i += nUp) {
         const chunk = validPages.slice(i, i + nUp);
-        const sheet = document.createElement('div');
-        sheet.className = 'printable-page';
-
-        if (headerText) {
-          const h = document.createElement('div');
-          h.className = 'print-header-text';
-          h.textContent = headerText;
-          sheet.appendChild(h);
-        }
-
-        if (showPageNums) {
-          const totalSheets = Math.ceil(validPages.length / nUp);
-          const currSheetNum = Math.floor(i / nUp) + 1;
-          const f = document.createElement('div');
-          f.className = 'print-footer-text';
-          f.textContent = `Page ${currSheetNum} of ${totalSheets}`;
-          sheet.appendChild(f);
-        }
-
         const sheetCanvas = document.createElement('canvas');
+
         if (nUp === 1) {
           applyTransformsToCanvas(chunk[0].canvas, sheetCanvas, chunk[0].rotation);
         } else if (nUp === 2) {
@@ -813,44 +695,172 @@
           if (canvases[3]) sCtx.drawImage(canvases[3], halfW + 20, halfH + 20);
         }
 
-        // Render as high-res <img> to ensure mobile printers size it reliably inside 1 single physical sheet
-        const sheetImg = document.createElement('img');
-        sheetImg.src = sheetCanvas.toDataURL('image/png');
-        sheet.appendChild(sheetImg);
+        sheetUrls.push({
+          url: sheetCanvas.toDataURL('image/png'),
+          width: sheetCanvas.width,
+          height: sheetCanvas.height
+        });
+      }
 
-        container.appendChild(sheet);
+      return sheetUrls;
+    }
+
+    /* FOOLPROOF ISOLATED PRINT ENGINE (Works 100% on iOS Safari, Android, Chrome & Desktop) */
+    function triggerCleanPrint() {
+      const sheets = buildSheetsDataUrls();
+      if (sheets.length === 0) { alert("No pages selected to print!"); return; }
+
+      const headerText = document.getElementById('headerTextInput').value.trim();
+      const showPageNums = document.getElementById('chkPageNums').checked;
+      const orientation = document.getElementById('orientationSelect').value;
+
+      // Remove any existing print iframe
+      const oldIframe = document.getElementById('cleanPrintIframe');
+      if (oldIframe) oldIframe.remove();
+
+      const iframe = document.createElement('iframe');
+      iframe.id = 'cleanPrintIframe';
+      iframe.style.cssText = 'position:fixed; top:-9999px; left:-9999px; width:1px; height:1px; border:none; visibility:hidden;';
+      document.body.appendChild(iframe);
+
+      const doc = iframe.contentWindow.document;
+      doc.open();
+      doc.write(`
+        <!DOCTYPE html>
+        <html>
+        <head>
+          <title>AI Bots Print Studio</title>
+          <style>
+            @page {
+              size: ${orientation === 'landscape' ? 'landscape' : 'portrait'};
+              margin: 0;
+            }
+            * {
+              box-sizing: border-box;
+              margin: 0;
+              padding: 0;
+            }
+            html, body {
+              background: #ffffff;
+              margin: 0;
+              padding: 0;
+              width: 100%;
+              height: auto;
+              font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            }
+            .page-container {
+              width: 100vw;
+              height: 100vh;
+              page-break-after: always;
+              break-after: page;
+              page-break-inside: avoid;
+              break-inside: avoid;
+              display: flex;
+              flex-direction: column;
+              align-items: center;
+              justify-content: center;
+              padding: 8mm 6mm;
+              position: relative;
+              box-sizing: border-box;
+              overflow: hidden;
+            }
+            .page-container:last-child {
+              page-break-after: avoid;
+              break-after: avoid;
+            }
+            .page-container img {
+              max-width: 100%;
+              max-height: 94vh;
+              width: auto;
+              height: auto;
+              object-fit: contain;
+              display: block;
+              margin: auto;
+            }
+            .p-header {
+              position: absolute;
+              top: 3mm;
+              left: 6mm;
+              font-size: 8pt;
+              color: #475569;
+            }
+            .p-footer {
+              position: absolute;
+              bottom: 3mm;
+              right: 6mm;
+              font-size: 8pt;
+              color: #475569;
+            }
+          </style>
+        </head>
+        <body>
+          ${sheets.map((s, idx) => `
+            <div class="page-container">
+              ${headerText ? `<div class="p-header">${escapeXml(headerText)}</div>` : ''}
+              <img src="${s.url}" alt="Page ${idx + 1}">
+              ${showPageNums ? `<div class="p-footer">Page ${idx + 1} of ${sheets.length}</div>` : ''}
+            </div>
+          `).join('')}
+        </body>
+        </html>
+      `);
+      doc.close();
+
+      const images = doc.querySelectorAll('img');
+      let loaded = 0;
+
+      function doExecutePrint() {
+        loaded++;
+        if (loaded >= images.length) {
+          setTimeout(() => {
+            iframe.contentWindow.focus();
+            iframe.contentWindow.print();
+          }, 350);
+        }
+      }
+
+      if (images.length === 0) {
+        iframe.contentWindow.print();
+      } else {
+        images.forEach(img => {
+          if (img.complete) doExecutePrint();
+          else img.onload = img.onerror = doExecutePrint;
+        });
       }
     }
 
-    function triggerCleanPrint() {
-      rebuildPrintSheets();
-      setTimeout(() => {
-        window.print();
-      }, 300);
+    function escapeXml(unsafe) {
+      return unsafe.replace(/[<>&'"]/g, c => {
+        switch (c) {
+          case '<': return '&lt;';
+          case '>': return '&gt;';
+          case '&': return '&amp;';
+          case '\'': return '&apos;';
+          case '"': return '&quot;';
+        }
+      });
     }
 
     async function downloadExportPDF() {
-      rebuildPrintSheets();
-      const validPages = loadedPages.filter(p => p.included);
-      if (validPages.length === 0) { alert("No pages selected to export!"); return; }
+      const sheets = buildSheetsDataUrls();
+      if (sheets.length === 0) { alert("No pages selected to export!"); return; }
 
       const { jsPDF } = window.jspdf;
       const orientation = document.getElementById('orientationSelect').value;
       const doc = new jsPDF({ orientation: orientation, unit: 'mm', format: 'a4' });
 
-      const sheets = document.getElementById('printContainer').querySelectorAll('.printable-page img');
-      sheets.forEach((img, idx) => {
+      sheets.forEach((s, idx) => {
         if (idx > 0) doc.addPage();
         const pageWidth = orientation === 'portrait' ? 210 : 297;
         const pageHeight = orientation === 'portrait' ? 297 : 210;
 
-        const ratio = Math.min((pageWidth - 20) / img.naturalWidth, (pageHeight - 20) / img.naturalHeight);
-        const w = img.naturalWidth * ratio;
-        const h = img.naturalHeight * ratio;
+        const ratio = Math.min((pageWidth - 20) / s.width, (pageHeight - 20) / s.height);
+        const w = s.width * ratio;
+        const h = s.height * ratio;
         const x = (pageWidth - w) / 2;
         const y = (pageHeight - h) / 2;
 
-        doc.addImage(img.src, 'PNG', x, y, w, h, undefined, 'FAST');
+        doc.addImage(s.url, 'PNG', x, y, w, h, undefined, 'FAST');
       });
 
       doc.save("print_studio_document.pdf");
@@ -861,7 +871,8 @@
       document.getElementById('fileInput').value = '';
       document.getElementById('dropzone').style.display = 'block';
       document.getElementById('psWorkspace').style.display = 'none';
-      document.getElementById('printContainer').innerHTML = '';
+      const oldIframe = document.getElementById('cleanPrintIframe');
+      if (oldIframe) oldIframe.remove();
     }
   </script>
   <script src="js/app.js"></script>

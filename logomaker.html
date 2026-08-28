@@ -1,9 +1,17 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-<meta name="google-site-verification" content="ndzq-U-NLijgza_QqgQdcc2U3oMRoud_BT2ZZiwFREM">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+  <meta name="google-site-verification" content="ndzq-U-NLijgza_QqgQdcc2U3oMRoud_BT2ZZiwFREM">
   <meta name="google-site-verification" content="-Yb6Nx74gbZ3wRN5uP-Y8KKwDWlt1DPpxs4nA3PkE6M">
   <meta name="robots" content="index, follow">
+  <title>Pro Vector Logo Maker & Brand Studio — AI Bots</title>
+  <meta name="description" content="Design stunning vector logos, modern brand badges, startup emblems, and gaming icons with 50+ vector icons, luxury gradients, Google Fonts, and transparent PNG/SVG export.">
+  <meta name="keywords" content="logo maker, free logo generator, vector logo design, brand badge maker, startup logo creator, esports logo, transparent png logo">
+  <link rel="icon" href="https://i.ibb.co/G2NFYHG/logo.png" type="image/png">
+  <link rel="canonical" href="https://www.aibots.co.in/logomaker.html">
+
   <!-- Google Analytics -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-2L87FMQS3W"></script>
   <script>
@@ -13,53 +21,218 @@
     gtag('config', 'G-2L87FMQS3W');
   </script>
 
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="google-site-verification" content="-Yb6Nx74gbZ3wRN5uP-Y8KKwDWlt1DPpxs4nA3PkE6M">
-  <link rel="icon" href="https://i.ibb.co/G2NFYHG/logo.png" type="image/png">
-  <title>Logo Maker - AI Bots</title>
+  <!-- Google Fonts for Logo Typography -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Caveat:wght@700&family=Cinzel:wght@700&family=Montserrat:wght@400;700;900&family=Orbitron:wght@700;900&family=Playfair+Display:ital,wght@0,700;1,700&family=Plus+Jakarta+Sans:wght@600;800&family=Poppins:wght@600;800&family=Space+Grotesk:wght@700&display=swap" rel="stylesheet">
 
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link rel="stylesheet" href="css/theme.css">
   <style>
-    .studio-layout {
+    .studio-grid {
       display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 32px;
+      grid-template-columns: 460px 1fr;
+      gap: 28px;
       align-items: start;
     }
-    @media (max-width: 900px) {
-      .studio-layout { grid-template-columns: 1fr; }
+    @media (max-width: 1024px) {
+      .studio-grid { grid-template-columns: 1fr; }
     }
 
-    .canvas-preview-wrapper {
+    /* Tabs for Controls */
+    .control-tabs {
+      display: flex;
+      gap: 6px;
+      background: var(--bg-tertiary);
+      padding: 6px;
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--border-color);
+      margin-bottom: 20px;
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+    .control-tabs::-webkit-scrollbar { display: none; }
+    .control-tab-btn {
+      flex: 1;
+      padding: 8px 12px;
+      border-radius: var(--radius-md);
+      font-size: 0.8rem;
+      font-weight: 700;
+      border: none;
+      background: transparent;
+      color: var(--text-secondary);
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+    .control-tab-btn.active {
+      background: var(--bg-primary);
+      color: var(--primary);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .tab-pane {
+      display: none;
+      animation: fadeInTab 0.2s ease-in-out;
+    }
+    .tab-pane.active { display: block; }
+    @keyframes fadeInTab {
+      from { opacity: 0; transform: translateY(4px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Presets Grid */
+    .presets-carousel {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+    .preset-card {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      padding: 10px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .preset-card:hover {
+      border-color: var(--primary);
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-sm);
+    }
+    .preset-preview-mini {
+      height: 48px;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+      color: white;
+      margin-bottom: 6px;
+    }
+
+    /* Icon Selector Grid */
+    .icon-selector-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(44px, 1fr));
+      gap: 8px;
+      max-height: 180px;
+      overflow-y: auto;
+      padding: 8px;
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      margin-top: 8px;
+    }
+    .icon-choice-btn {
+      width: 44px;
+      height: 44px;
+      border-radius: 8px;
+      border: 1px solid var(--border-color);
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      font-size: 1.1rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.15s;
+    }
+    .icon-choice-btn:hover, .icon-choice-btn.selected {
+      border-color: var(--primary);
+      background: var(--primary-light);
+      color: var(--primary);
+      transform: scale(1.08);
+    }
+
+    /* Color Swatches */
+    .swatch-group {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-top: 8px;
+    }
+    .color-swatch-dot {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      cursor: pointer;
+      border: 2px solid transparent;
+      transition: transform 0.15s, border-color 0.15s;
+    }
+    .color-swatch-dot:hover {
+      transform: scale(1.15);
+      border-color: white;
+    }
+
+    /* Preview Canvas Area */
+    .preview-sticky-box {
       position: sticky;
       top: 90px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
       background: var(--bg-secondary);
       border: 1px solid var(--border-color);
       border-radius: var(--radius-xl);
       padding: 24px;
-      box-shadow: var(--shadow-lg);
+      box-shadow: var(--shadow-xl);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
     }
 
-    #canvas {
+    .canvas-checkerboard-wrapper {
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+      border-radius: var(--radius-lg);
+      background-color: #f8fafc;
+      background-image: linear-gradient(45deg, #e2e8f0 25%, transparent 25%), linear-gradient(-45deg, #e2e8f0 25%, transparent 25%), linear-gradient(45deg, transparent 75%, #e2e8f0 75%), linear-gradient(-45deg, transparent 75%, #e2e8f0 75%);
+      background-size: 20px 20px;
+      background-position: 0 0, 0 10px, 10px -10px, -10px 0px;
+      border: 1px solid var(--border-color);
+      margin-bottom: 20px;
+      overflow: hidden;
+    }
+
+    #logoCanvas {
       max-width: 100%;
       height: auto;
-      border-radius: var(--radius-lg);
-      border: 1px solid var(--border-color);
-      box-shadow: var(--shadow-md);
-      background-color: #ffffff;
-      margin-bottom: 20px;
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+      border-radius: 12px;
+      display: block;
     }
 
-    .range-val {
+    .export-btn-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      width: 100%;
+    }
+    @media (max-width: 500px) {
+      .export-btn-grid { grid-template-columns: 1fr; }
+    }
+
+    .range-flex {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 4px;
+    }
+    .val-badge {
       font-family: var(--font-mono);
-      font-size: 0.85rem;
-      color: var(--text-muted);
-      margin-left: 8px;
+      font-size: 0.75rem;
+      background: var(--bg-tertiary);
+      padding: 2px 8px;
+      border-radius: 4px;
+      color: var(--primary);
+      font-weight: 700;
     }
   </style>
 </head>
@@ -73,7 +246,7 @@
         <a href="index.html" class="brand-link">
           <img src="https://i.ibb.co/G2NFYHG/logo.png" alt="AI Bots Logo" class="brand-logo-img">
           <span>AI Bots</span>
-          <span class="brand-badge">Logo Maker</span>
+          <span class="brand-badge">Logo Studio Pro</span>
         </a>
 
         <div class="nav-actions">
@@ -86,104 +259,311 @@
 
   <main class="app-container tool-page-wrapper">
     <div class="tool-header">
-      <span class="tool-header-badge"><i class="fas fa-shapes"></i> Vector Graphics</span>
-      <h1 class="tool-title">Vector Logo Maker</h1>
-      <p class="tool-desc">Design custom geometric & typographic logos with live shape, color, font, and sizing controls.</p>
+      <span class="tool-header-badge"><i class="fas fa-palette"></i> Vector Graphics & Brand Identity</span>
+      <h1 class="tool-title">Pro Vector Logo Studio</h1>
+      <p class="tool-desc">Design bespoke modern brand logos, startup emblems, and gaming badges with 50+ vector icons, luxury gradients, Google Fonts, and transparent PNG/SVG export.</p>
     </div>
 
-    <div class="studio-layout">
+    <!-- 1-Click Brand Templates Carousel -->
+    <div style="margin-bottom: 24px;">
+      <label class="form-label" style="font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.05em;">
+        <i class="fas fa-wand-magic-sparkles" style="color:var(--primary);"></i> 1-Click Ready Brand Templates
+      </label>
+      <div class="presets-carousel">
+        <div class="preset-card" onclick="applyPreset('tech')">
+          <div class="preset-preview-mini" style="background: linear-gradient(135deg, #4f46e5, #06b6d4);"><i class="fas fa-microchip"></i></div>
+          <div style="font-size:0.75rem; font-weight:700;">Tech Startup</div>
+        </div>
+        <div class="preset-card" onclick="applyPreset('gaming')">
+          <div class="preset-preview-mini" style="background: linear-gradient(135deg, #ec4899, #8b5cf6);"><i class="fas fa-gamepad"></i></div>
+          <div style="font-size:0.75rem; font-weight:700;">Esports Gaming</div>
+        </div>
+        <div class="preset-card" onclick="applyPreset('luxury')">
+          <div class="preset-preview-mini" style="background: linear-gradient(135deg, #f59e0b, #d97706);"><i class="fas fa-crown"></i></div>
+          <div style="font-size:0.75rem; font-weight:700;">Luxury Gold</div>
+        </div>
+        <div class="preset-card" onclick="applyPreset('security')">
+          <div class="preset-preview-mini" style="background: linear-gradient(135deg, #0ea5e9, #1e293b);"><i class="fas fa-shield-halved"></i></div>
+          <div style="font-size:0.75rem; font-weight:700;">Cyber Shield</div>
+        </div>
+        <div class="preset-card" onclick="applyPreset('fitness')">
+          <div class="preset-preview-mini" style="background: linear-gradient(135deg, #ef4444, #f97316);"><i class="fas fa-dumbbell"></i></div>
+          <div style="font-size:0.75rem; font-weight:700;">Fitness Lab</div>
+        </div>
+        <div class="preset-card" onclick="applyPreset('creative')">
+          <div class="preset-preview-mini" style="background: linear-gradient(135deg, #10b981, #06b6d4);"><i class="fas fa-compass-drafting"></i></div>
+          <div style="font-size:0.75rem; font-weight:700;">Creative Media</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="studio-grid">
       
-      <!-- Left: Logo Controls -->
+      <!-- Left Column: Controls & Tabs -->
       <div class="tool-card-container" style="margin: 0; max-width: 100%;">
         
-        <h3 style="font-size: 1.1rem; margin-bottom: 16px; color: var(--primary);">
-          <i class="fas fa-font"></i> Typography Settings
-        </h3>
-
-        <div class="form-group">
-          <label class="form-label" for="textInput">Logo Text</label>
-          <input type="text" id="textInput" class="form-control" placeholder="Enter brand name..." value="AIBOTS" oninput="setText()">
+        <!-- Tab Navigation -->
+        <div class="control-tabs">
+          <button class="control-tab-btn active" onclick="switchTab('tab-brand')"><i class="fas fa-font"></i> Brand</button>
+          <button class="control-tab-btn" onclick="switchTab('tab-icon')"><i class="fas fa-icons"></i> Icon</button>
+          <button class="control-tab-btn" onclick="switchTab('tab-shape')"><i class="fas fa-shapes"></i> Badge</button>
+          <button class="control-tab-btn" onclick="switchTab('tab-colors')"><i class="fas fa-fill-drip"></i> Colors</button>
+          <button class="control-tab-btn" onclick="switchTab('tab-layout')"><i class="fas fa-layer-group"></i> Layout</button>
         </div>
 
-        <div class="form-group">
-          <label class="form-label" for="textStyleSelect">Font Style</label>
-          <select id="textStyleSelect" class="form-control" onchange="setTextStyle()">
-            <option value="Plus Jakarta Sans, sans-serif" selected>Modern Sans-Serif</option>
-            <option value="Didot, serif">Didot (Elegant)</option>
-            <option value="Magneto, cursive">Magneto (Retro Script)</option>
-            <option value="monospace">JetBrains Monospace</option>
-            <option value="fantasy">Fantasy (Impact)</option>
-            <option value="cursive">Cursive</option>
-            <option value="serif">Classic Serif</option>
-            <option value="sans-serif">Standard Sans-Serif</option>
-            <option value="Roquen">Roquen / Igoe</option>
-          </select>
-        </div>
+        <!-- TAB 1: Brand & Typography -->
+        <div id="tab-brand" class="tab-pane active">
+          <div class="form-group">
+            <label class="form-label" for="inpBrandName">Primary Brand Name</label>
+            <input type="text" id="inpBrandName" class="form-control" placeholder="e.g. AIBOTS" value="AIBOTS" oninput="renderLogo()">
+          </div>
 
-        <div class="form-group">
-          <label class="form-label" for="textColorPicker">Text Color</label>
-          <div class="color-picker-wrapper">
-            <input type="color" id="textColorPicker" class="color-input" value="#ffffff" onchange="setTextColor()">
-            <span id="textColorHex" style="font-family: var(--font-mono); font-size: 0.9rem; color: var(--text-muted);">#ffffff</span>
+          <div class="form-group">
+            <label class="form-label" for="inpTagline">Tagline / Subtitle (Optional)</label>
+            <input type="text" id="inpTagline" class="form-control" placeholder="e.g. CREATIVE STUDIO" value="CREATIVE STUDIO" oninput="renderLogo()">
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="selFontFamily">Brand Font Style</label>
+            <select id="selFontFamily" class="form-control" onchange="renderLogo()">
+              <option value="'Plus Jakarta Sans', sans-serif" selected>Plus Jakarta Sans (Modern Clean)</option>
+              <option value="'Montserrat', sans-serif">Montserrat (Geometric Tech)</option>
+              <option value="'Space Grotesk', sans-serif">Space Grotesk (Futuristic)</option>
+              <option value="'Bebas Neue', sans-serif">Bebas Neue (Bold Impact)</option>
+              <option value="'Orbitron', sans-serif">Orbitron (Cyberpunk / Sci-Fi)</option>
+              <option value="'Cinzel', serif">Cinzel (Luxury Heritage)</option>
+              <option value="'Playfair Display', serif">Playfair Display (Elegant Serif)</option>
+              <option value="'Poppins', sans-serif">Poppins (Friendly Rounded)</option>
+              <option value="'Caveat', cursive">Caveat (Signature Script)</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <div class="range-flex">
+              <label class="form-label">Brand Name Size</label>
+              <span class="val-badge" id="valBrandSize">54 px</span>
+            </div>
+            <input type="range" id="rngBrandSize" class="range-slider" min="20" max="110" value="54" oninput="updateRangeVal('valBrandSize', this.value + ' px'); renderLogo();">
+          </div>
+
+          <div class="form-group">
+            <div class="range-flex">
+              <label class="form-label">Letter Spacing (Kerning)</label>
+              <span class="val-badge" id="valLetterSpacing">4 px</span>
+            </div>
+            <input type="range" id="rngLetterSpacing" class="range-slider" min="-2" max="24" value="4" oninput="updateRangeVal('valLetterSpacing', this.value + ' px'); renderLogo();">
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Text Transform</label>
+            <select id="selTextTransform" class="form-control" onchange="renderLogo()">
+              <option value="uppercase" selected>UPPERCASE</option>
+              <option value="none">As Typed</option>
+              <option value="capitalize">Capitalize Each Word</option>
+            </select>
           </div>
         </div>
 
-        <div class="form-group">
-          <label class="form-label" for="textSizeSlider">
-            Text Size <span class="range-val" id="textSizeVal">64 px</span>
-          </label>
-          <input type="range" id="textSizeSlider" class="range-slider" min="10" max="500" value="64" step="2" oninput="setTextSize()">
-        </div>
+        <!-- TAB 2: Icon Library -->
+        <div id="tab-icon" class="tab-pane">
+          <div class="form-group">
+            <label class="form-label" style="display:flex; justify-content:space-between;">
+              <span>Select Vector Icon</span>
+              <span style="font-size:0.75rem; color:var(--text-muted);">50+ Curated Symbols</span>
+            </label>
+            <input type="text" id="inpSearchIcon" class="form-control" placeholder="Search icons (e.g. rocket, crown, fire...)" oninput="filterIcons(this.value)">
+            
+            <div class="icon-selector-grid" id="iconGrid">
+              <!-- Dynamically populated icons -->
+            </div>
+          </div>
 
-        <hr style="border: none; border-top: 1px solid var(--border-color); margin: 24px 0;">
+          <div class="form-group">
+            <div class="range-flex">
+              <label class="form-label">Icon Size</label>
+              <span class="val-badge" id="valIconSize">52 px</span>
+            </div>
+            <input type="range" id="rngIconSize" class="range-slider" min="0" max="120" value="52" oninput="updateRangeVal('valIconSize', this.value + ' px'); renderLogo();">
+          </div>
 
-        <h3 style="font-size: 1.1rem; margin-bottom: 16px; color: var(--primary);">
-          <i class="fas fa-shapes"></i> Shape & Background
-        </h3>
-
-        <div class="form-group">
-          <label class="form-label" for="shapeSelect">Background Shape</label>
-          <select id="shapeSelect" class="form-control" onchange="setShape()">
-            <option value="rectangle" selected>Rectangle / Banner</option>
-            <option value="circle">Circle Badge</option>
-            <option value="triangle">Triangle</option>
-            <option value="star">5-Point Star</option>
-            <option value="heart">Heart Shape</option>
-            <option value="custom">Custom Canvas</option>
-          </select>
-        </div>
-
-        <div class="form-group">
-          <label class="form-label" for="shapeColorPicker">Shape Color</label>
-          <div class="color-picker-wrapper">
-            <input type="color" id="shapeColorPicker" class="color-input" value="#4f46e5" onchange="setShapeColor()">
-            <span id="shapeColorHex" style="font-family: var(--font-mono); font-size: 0.9rem; color: var(--text-muted);">#4f46e5</span>
+          <div class="form-group">
+            <div class="range-flex">
+              <label class="form-label">Icon Vertical Position</label>
+              <span class="val-badge" id="valIconOffset">0 px</span>
+            </div>
+            <input type="range" id="rngIconOffset" class="range-slider" min="-60" max="60" value="0" oninput="updateRangeVal('valIconOffset', this.value + ' px'); renderLogo();">
           </div>
         </div>
 
-        <div class="form-group">
-          <label class="form-label" for="shapeSizeSlider">
-            Shape Size <span class="range-val" id="shapeSizeVal">260 px</span>
-          </label>
-          <input type="range" id="shapeSizeSlider" class="range-slider" min="10" max="500" value="260" step="5" oninput="setShapeSize()">
+        <!-- TAB 3: Badge & Shield Shapes -->
+        <div id="tab-shape" class="tab-pane">
+          <div class="form-group">
+            <label class="form-label">Background Shape / Badge</label>
+            <select id="selBadgeShape" class="form-control" onchange="renderLogo()">
+              <option value="squircle" selected>Squircle (Modern Rounded)</option>
+              <option value="circle">Circle / Coin Emblem</option>
+              <option value="shield">Hero Shield Badge</option>
+              <option value="hexagon">Geometric Hexagon</option>
+              <option value="diamond">Diamond Rhombus</option>
+              <option value="banner">Horizontal Banner Box</option>
+              <option value="pill">Pill / Stadium</option>
+              <option value="star">5-Point Star</option>
+              <option value="heart">Heart Shape</option>
+              <option value="none">No Background (Transparent Emblem)</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <div class="range-flex">
+              <label class="form-label">Badge Size</label>
+              <span class="val-badge" id="valShapeSize">320 px</span>
+            </div>
+            <input type="range" id="rngShapeSize" class="range-slider" min="100" max="500" value="320" oninput="updateRangeVal('valShapeSize', this.value + ' px'); renderLogo();">
+          </div>
+
+          <div class="form-group">
+            <div class="range-flex">
+              <label class="form-label">Border / Outline Width</label>
+              <span class="val-badge" id="valBorderWidth">0 px</span>
+            </div>
+            <input type="range" id="rngBorderWidth" class="range-slider" min="0" max="16" value="0" oninput="updateRangeVal('valBorderWidth', this.value + ' px'); renderLogo();">
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Border Color</label>
+            <div class="color-picker-wrapper">
+              <input type="color" id="colBorderColor" class="color-input" value="#ffffff" onchange="renderLogo()">
+              <span id="hexBorderColor" style="font-family: var(--font-mono); font-size: 0.85rem; color: var(--text-muted);">#ffffff</span>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <div class="range-flex">
+              <label class="form-label">3D Shadow / Glow Blur</label>
+              <span class="val-badge" id="valShadowBlur">18 px</span>
+            </div>
+            <input type="range" id="rngShadowBlur" class="range-slider" min="0" max="50" value="18" oninput="updateRangeVal('valShadowBlur', this.value + ' px'); renderLogo();">
+          </div>
+        </div>
+
+        <!-- TAB 4: Colors & Luxury Gradients -->
+        <div id="tab-colors" class="tab-pane">
+          <div class="form-group">
+            <label class="form-label">Fill Style</label>
+            <select id="selFillType" class="form-control" onchange="renderLogo()">
+              <option value="gradient" selected>✨ Luxury Dual Gradient</option>
+              <option value="solid">🎨 Solid Color</option>
+            </select>
+          </div>
+
+          <div class="form-group" style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+            <div>
+              <label class="form-label" style="font-size:0.72rem;">PRIMARY COLOR</label>
+              <div class="color-picker-wrapper">
+                <input type="color" id="colPrimary" class="color-input" value="#4f46e5" onchange="renderLogo()">
+              </div>
+            </div>
+            <div>
+              <label class="form-label" style="font-size:0.72rem;">SECONDARY COLOR</label>
+              <div class="color-picker-wrapper">
+                <input type="color" id="colSecondary" class="color-input" value="#06b6d4" onchange="renderLogo()">
+              </div>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" style="font-size:0.72rem;">POPULAR PALETTES</label>
+            <div class="swatch-group">
+              <div class="color-swatch-dot" style="background:linear-gradient(135deg, #4f46e5, #06b6d4);" onclick="setPalette('#4f46e5', '#06b6d4')" title="Cyber Indigo"></div>
+              <div class="color-swatch-dot" style="background:linear-gradient(135deg, #ec4899, #8b5cf6);" onclick="setPalette('#ec4899', '#8b5cf6')" title="Neon Synth"></div>
+              <div class="color-swatch-dot" style="background:linear-gradient(135deg, #f59e0b, #d97706);" onclick="setPalette('#f59e0b', '#d97706')" title="Royal Gold"></div>
+              <div class="color-swatch-dot" style="background:linear-gradient(135deg, #10b981, #06b6d4);" onclick="setPalette('#10b981', '#06b6d4')" title="Emerald Mint"></div>
+              <div class="color-swatch-dot" style="background:linear-gradient(135deg, #ef4444, #f97316);" onclick="setPalette('#ef4444', '#f97316')" title="Fiery Flame"></div>
+              <div class="color-swatch-dot" style="background:linear-gradient(135deg, #0f172a, #334155);" onclick="setPalette('#0f172a', '#334155')" title="Midnight Slate"></div>
+              <div class="color-swatch-dot" style="background:linear-gradient(135deg, #8b5cf6, #3b82f6);" onclick="setPalette('#8b5cf6', '#3b82f6')" title="Deep Violet"></div>
+            </div>
+          </div>
+
+          <div class="form-group" style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 14px;">
+            <div>
+              <label class="form-label" style="font-size:0.72rem;">TEXT COLOR</label>
+              <div class="color-picker-wrapper">
+                <input type="color" id="colText" class="color-input" value="#ffffff" onchange="renderLogo()">
+              </div>
+            </div>
+            <div>
+              <label class="form-label" style="font-size:0.72rem;">ICON COLOR</label>
+              <div class="color-picker-wrapper">
+                <input type="color" id="colIcon" class="color-input" value="#ffffff" onchange="renderLogo()">
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- TAB 5: Layout & Canvas Ratio -->
+        <div id="tab-layout" class="tab-pane">
+          <div class="form-group">
+            <label class="form-label">Element Arrangement</label>
+            <select id="selLayoutMode" class="form-control" onchange="renderLogo()">
+              <option value="stacked" selected>Stacked (Icon Above Brand Text)</option>
+              <option value="horizontal">Horizontal (Icon Left of Brand Text)</option>
+              <option value="icon-only">Icon Only (App Icon / Favicon)</option>
+              <option value="text-only">Text Only (Wordmark)</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Canvas Aspect Ratio</label>
+            <select id="selCanvasRatio" class="form-control" onchange="setCanvasRatio()">
+              <option value="1:1" selected>Square 1:1 (600x600 — App Icon / Profile)</option>
+              <option value="4:3">Standard 4:3 (600x450 — Presentation)</option>
+              <option value="16:9">Banner 16:9 (800x450 — Web Header)</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label class="checkbox-container">
+              <input type="checkbox" id="chkTransparent" onchange="renderLogo()">
+              <span class="checkmark"></span>
+              Transparent PNG Export (No Background Canvas)
+            </label>
+          </div>
         </div>
 
       </div>
 
-      <!-- Right: Live Canvas Preview & Download -->
-      <div class="canvas-preview-wrapper">
-        <label class="form-label" style="align-self: flex-start; margin-bottom: 12px;">
-          <i class="fas fa-eye"></i> Live Logo Preview
-        </label>
+      <!-- Right Column: Sticky Live Preview & High-Res Export -->
+      <div class="preview-sticky-box">
+        <div style="display: flex; justify-content: space-between; width: 100%; align-items: center; margin-bottom: 12px;">
+          <span style="font-weight: 800; font-size: 0.92rem; color: var(--text-primary); display: flex; align-items: center; gap: 6px;">
+            <i class="fas fa-eye" style="color:var(--primary);"></i> High-Res Live Vector Preview
+          </span>
+          <button class="btn btn-secondary btn-sm" onclick="randomizeLogo()" title="Generate Random Creative Logo">
+            <i class="fas fa-shuffle"></i> Randomize
+          </button>
+        </div>
 
-        <canvas id="canvas" width="600" height="380"></canvas>
+        <div class="canvas-checkerboard-wrapper">
+          <canvas id="logoCanvas" width="600" height="600"></canvas>
+        </div>
 
-        <button onclick="downloadLogo()" class="btn btn-success btn-lg" style="width: 100%;">
-          <i class="fas fa-download"></i> Download Logo (PNG)
-        </button>
+        <div class="export-btn-grid">
+          <button onclick="downloadLogo('png')" class="btn btn-primary" style="padding: 12px; font-weight: 800;">
+            <i class="fas fa-download"></i> Download PNG
+          </button>
+          <button onclick="downloadLogo('svg')" class="btn btn-secondary" style="padding: 12px; font-weight: 700;">
+            <i class="fas fa-file-code"></i> Download SVG
+          </button>
+        </div>
 
-        <a href="#" id="downloadLink" download="logo.png" style="display: none;"></a>
-        <div id="preview" style="display: none;"><img id="previewImage" src="" alt="Preview"></div>
+        <div style="display: flex; gap: 10px; width: 100%; margin-top: 10px;">
+          <button onclick="copyToClipboard()" class="btn btn-secondary btn-sm" style="flex: 1;">
+            <i class="fas fa-copy"></i> Copy Image
+          </button>
+          <button onclick="downloadFavicon()" class="btn btn-secondary btn-sm" style="flex: 1;">
+            <i class="fas fa-bookmark"></i> Favicon (32px)
+          </button>
+        </div>
       </div>
 
     </div>
@@ -192,146 +572,433 @@
   <footer class="app-footer">
     <div class="app-container">
       <p class="footer-text">&copy; 2026 AI Bots. All rights reserved.</p>
-      <p class="footer-credits">Website designed by <strong>Rishit Chajjed</strong>.</p>
+      <p class="footer-credits">Designed & Engineered by <strong>Rishit Chajjed</strong>.</p>
     </div>
   </footer>
 
   <script src="js/app.js"></script>
   <script>
-    const canvas = document.getElementById('canvas');
+    const canvas = document.getElementById('logoCanvas');
     const ctx = canvas.getContext('2d');
 
-    let currentText = 'AIBOTS';
-    let currentTextStyle = 'Plus Jakarta Sans, sans-serif';
-    let currentTextColor = '#ffffff';
-    let currentTextSize = 64;
+    // 50+ Curated Unicode FontAwesome Icons
+    const ICON_LIST = [
+      { name: 'rocket', unicode: '\uf135' },
+      { name: 'crown', unicode: '\uf521' },
+      { name: 'bolt', unicode: '\uf0e7' },
+      { name: 'sparkles', unicode: '\ue22e' },
+      { name: 'brain', unicode: '\uf5dc' },
+      { name: 'robot', unicode: '\uf544' },
+      { name: 'fire', unicode: '\uf06d' },
+      { name: 'gem', unicode: '\uf3a5' },
+      { name: 'shield', unicode: '\uf3ed' },
+      { name: 'gamepad', unicode: '\uf11b' },
+      { name: 'code', unicode: '\uf121' },
+      { name: 'cube', unicode: '\uf1b2' },
+      { name: 'wand', unicode: '\uf0d0' },
+      { name: 'atom', unicode: '\uf5d2' },
+      { name: 'globe', unicode: '\uf0ac' },
+      { name: 'star', unicode: '\uf005' },
+      { name: 'heart', unicode: '\uf004' },
+      { name: 'music', unicode: '\uf001' },
+      { name: 'camera', unicode: '\uf030' },
+      { name: 'palette', unicode: '\uf53f' },
+      { name: 'feather', unicode: '\uf52d' },
+      { name: 'compass', unicode: '\uf14e' },
+      { name: 'lightbulb', unicode: '\uf0eb' },
+      { name: 'infinity', unicode: '\uf534' },
+      { name: 'dumbbell', unicode: '\uf44b' },
+      { name: 'coffee', unicode: '\uf0f4' },
+      { name: 'layer', unicode: '\uf5fd' },
+      { name: 'microchip', unicode: '\uf2db' },
+      { name: 'bullseye', unicode: '\uf140' },
+      { name: 'satellite', unicode: '\uf7bf' },
+      { name: 'leaf', unicode: '\uf06c' },
+      { name: 'mountain', unicode: '\uf6fc' },
+      { name: 'trophy', unicode: '\uf091' },
+      { name: 'bicycle', unicode: '\uf206' },
+      { name: 'plane', unicode: '\uf072' },
+      { name: 'dna', unicode: '\uf471' }
+    ];
 
-    let currentShape = 'rectangle';
-    let currentShapeColor = '#4f46e5';
-    let currentShapeSize = 260;
+    let currentIcon = ICON_LIST[0]; // rocket default
 
-    function setText() {
-      currentText = document.getElementById('textInput').value;
-      drawLogo();
+    function initIcons() {
+      const grid = document.getElementById('iconGrid');
+      grid.innerHTML = '';
+      ICON_LIST.forEach((ic, idx) => {
+        const btn = document.createElement('button');
+        btn.className = `icon-choice-btn ${idx === 0 ? 'selected' : ''}`;
+        btn.innerHTML = `<i class="fa-solid fa-${ic.name}"></i>`;
+        btn.onclick = () => {
+          document.querySelectorAll('.icon-choice-btn').forEach(b => b.classList.remove('selected'));
+          btn.classList.add('selected');
+          currentIcon = ic;
+          renderLogo();
+        };
+        grid.appendChild(btn);
+      });
     }
 
-    function setTextStyle() {
-      currentTextStyle = document.getElementById('textStyleSelect').value;
-      drawLogo();
+    function filterIcons(query) {
+      const q = query.toLowerCase();
+      const btns = document.querySelectorAll('#iconGrid .icon-choice-btn');
+      ICON_LIST.forEach((ic, i) => {
+        btns[i].style.display = ic.name.includes(q) ? 'flex' : 'none';
+      });
     }
 
-    function setTextColor() {
-      currentTextColor = document.getElementById('textColorPicker').value;
-      document.getElementById('textColorHex').textContent = currentTextColor;
-      drawLogo();
+    function switchTab(tabId) {
+      document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
+      document.querySelectorAll('.control-tab-btn').forEach(b => b.classList.remove('active'));
+      document.getElementById(tabId).classList.add('active');
+      event.currentTarget.classList.add('active');
     }
 
-    function setTextSize() {
-      currentTextSize = document.getElementById('textSizeSlider').value;
-      document.getElementById('textSizeVal').textContent = currentTextSize + ' px';
-      drawLogo();
+    function updateRangeVal(spanId, text) {
+      document.getElementById(spanId).textContent = text;
     }
 
-    function setShape() {
-      currentShape = document.getElementById('shapeSelect').value;
-      drawLogo();
+    function setPalette(c1, c2) {
+      document.getElementById('colPrimary').value = c1;
+      document.getElementById('colSecondary').value = c2;
+      renderLogo();
     }
 
-    function setShapeColor() {
-      currentShapeColor = document.getElementById('shapeColorPicker').value;
-      document.getElementById('shapeColorHex').textContent = currentShapeColor;
-      drawLogo();
+    function setCanvasRatio() {
+      const ratio = document.getElementById('selCanvasRatio').value;
+      if (ratio === '1:1') { canvas.width = 600; canvas.height = 600; }
+      else if (ratio === '4:3') { canvas.width = 600; canvas.height = 450; }
+      else if (ratio === '16:9') { canvas.width = 800; canvas.height = 450; }
+      renderLogo();
     }
 
-    function setShapeSize() {
-      currentShapeSize = document.getElementById('shapeSizeSlider').value;
-      document.getElementById('shapeSizeVal').textContent = currentShapeSize + ' px';
-      drawLogo();
-    }
+    /* RENDER LOGO ENGINE */
+    function renderLogo() {
+      const w = canvas.width;
+      const h = canvas.height;
+      const brand = document.getElementById('inpBrandName').value.trim();
+      const tagline = document.getElementById('inpTagline').value.trim();
+      const font = document.getElementById('selFontFamily').value;
+      const brandSize = parseInt(document.getElementById('rngBrandSize').value);
+      const letterSpacing = parseInt(document.getElementById('rngLetterSpacing').value);
+      const transform = document.getElementById('selTextTransform').value;
+      const iconSize = parseInt(document.getElementById('rngIconSize').value);
+      const iconOffset = parseInt(document.getElementById('rngIconOffset').value);
+      const shape = document.getElementById('selBadgeShape').value;
+      const shapeSize = parseInt(document.getElementById('rngShapeSize').value);
+      const borderWidth = parseInt(document.getElementById('rngBorderWidth').value);
+      const borderColor = document.getElementById('colBorderColor').value;
+      const shadowBlur = parseInt(document.getElementById('rngShadowBlur').value);
+      const fillType = document.getElementById('selFillType').value;
+      const colPrimary = document.getElementById('colPrimary').value;
+      const colSecondary = document.getElementById('colSecondary').value;
+      const colText = document.getElementById('colText').value;
+      const colIcon = document.getElementById('colIcon').value;
+      const layout = document.getElementById('selLayoutMode').value;
+      const transparent = document.getElementById('chkTransparent').checked;
 
-    function drawLogo() {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      // Clear Canvas
+      ctx.clearRect(0, 0, w, h);
 
-      // Draw Background Shape
-      ctx.fillStyle = currentShapeColor;
-
-      if (currentShape === 'rectangle') {
-        const radius = 24;
-        const x = (canvas.width - currentShapeSize * 1.6) / 2;
-        const y = (canvas.height - currentShapeSize) / 2;
-        const w = currentShapeSize * 1.6;
-        const h = currentShapeSize;
-        
-        ctx.beginPath();
-        ctx.roundRect ? ctx.roundRect(x, y, w, h, radius) : ctx.rect(x, y, w, h);
-        ctx.fill();
-      } else if (currentShape === 'circle') {
-        ctx.beginPath();
-        ctx.arc(canvas.width / 2, canvas.height / 2, currentShapeSize * 0.5, 0, 2 * Math.PI);
-        ctx.fill();
-      } else if (currentShape === 'triangle') {
-        ctx.beginPath();
-        ctx.moveTo(canvas.width / 2, (canvas.height - currentShapeSize) / 2);
-        ctx.lineTo((canvas.width - currentShapeSize) / 2, (canvas.height + currentShapeSize) / 2);
-        ctx.lineTo((canvas.width + currentShapeSize) / 2, (canvas.height + currentShapeSize) / 2);
-        ctx.closePath();
-        ctx.fill();
-      } else if (currentShape === 'star') {
-        const points = 5;
-        const outerRadius = currentShapeSize * 0.55;
-        const innerRadius = outerRadius * 0.45;
-        const angle = Math.PI / points;
-
-        ctx.beginPath();
-        for (let i = 0; i < 2 * points; i++) {
-          const radius = i % 2 === 0 ? outerRadius : innerRadius;
-          const x = canvas.width / 2 + radius * Math.sin(i * angle);
-          const y = canvas.height / 2 - radius * Math.cos(i * angle);
-          if (i === 0) ctx.moveTo(x, y);
-          else ctx.lineTo(x, y);
-        }
-        ctx.closePath();
-        ctx.fill();
-      } else if (currentShape === 'heart') {
-        const x = canvas.width / 2;
-        const y = canvas.height / 2 - 20;
-        const size = currentShapeSize * 0.6;
-
-        ctx.beginPath();
-        ctx.moveTo(x, y);
-        ctx.bezierCurveTo(x + size / 2, y - size / 2, x + size, y + size / 3, x, y + size);
-        ctx.bezierCurveTo(x - size, y + size / 3, x - size / 2, y - size / 2, x, y);
-        ctx.closePath();
-        ctx.fill();
-      } else if (currentShape === 'custom') {
-        // Subtle outline border
-        ctx.lineWidth = 4;
-        ctx.strokeStyle = currentShapeColor;
-        ctx.strokeRect(20, 20, canvas.width - 40, canvas.height - 40);
+      // Create Gradient
+      let fillGradient = colPrimary;
+      if (fillType === 'gradient') {
+        const grad = ctx.createLinearGradient(w/2 - shapeSize/2, h/2 - shapeSize/2, w/2 + shapeSize/2, h/2 + shapeSize/2);
+        grad.addColorStop(0, colPrimary);
+        grad.addColorStop(1, colSecondary);
+        fillGradient = grad;
       }
 
-      // Draw Text
-      ctx.fillStyle = currentTextColor;
-      ctx.font = `bold ${currentTextSize}px ${currentTextStyle}`;
-      ctx.textAlign = 'center';
-      ctx.textBaseline = 'middle';
-      ctx.fillText(currentText, canvas.width / 2, canvas.height / 2);
+      // Draw Badge / Background Shape
+      if (shape !== 'none' && !transparent) {
+        ctx.save();
+        if (shadowBlur > 0) {
+          ctx.shadowColor = colPrimary + '66';
+          ctx.shadowBlur = shadowBlur;
+          ctx.shadowOffsetY = shadowBlur * 0.4;
+        }
 
-      // Update preview
-      const previewImg = document.getElementById('previewImage');
-      if (previewImg) previewImg.src = canvas.toDataURL();
+        ctx.fillStyle = fillGradient;
+        ctx.strokeStyle = borderColor;
+        ctx.lineWidth = borderWidth;
+
+        drawShapePath(ctx, shape, w/2, h/2, shapeSize);
+        ctx.fill();
+        if (borderWidth > 0) ctx.stroke();
+        ctx.restore();
+      }
+
+      // Text formatting
+      let displayBrand = brand;
+      if (transform === 'uppercase') displayBrand = brand.toUpperCase();
+      else if (transform === 'capitalize') displayBrand = brand.replace(/\b\w/g, l => l.toUpperCase());
+
+      const centerX = w / 2;
+      const centerY = h / 2;
+
+      // Render Elements based on Layout Mode
+      if (layout === 'stacked') {
+        // Icon Above Brand Text
+        const totalHeight = (iconSize > 0 ? iconSize + 16 : 0) + brandSize + (tagline ? 24 : 0);
+        let startY = centerY - totalHeight / 2 + (iconSize / 2) + iconOffset;
+
+        if (iconSize > 0 && currentIcon) {
+          drawVectorIcon(ctx, currentIcon.unicode, centerX, startY, iconSize, colIcon);
+          startY += iconSize / 2 + 24;
+        }
+
+        // Draw Brand Name
+        drawStyledText(ctx, displayBrand, centerX, startY, brandSize, font, colText, letterSpacing);
+
+        // Draw Tagline
+        if (tagline) {
+          startY += (brandSize / 2) + 16;
+          drawStyledText(ctx, tagline.toUpperCase(), centerX, startY, Math.max(12, brandSize * 0.28), "'Plus Jakarta Sans', sans-serif", colText + 'cc', letterSpacing + 3);
+        }
+
+      } else if (layout === 'horizontal') {
+        // Icon Left of Brand Text
+        const spacing = 18;
+        const textWidthEstimate = displayBrand.length * (brandSize * 0.6) + (displayBrand.length * letterSpacing);
+        const totalWidth = (iconSize > 0 ? iconSize + spacing : 0) + textWidthEstimate;
+        let startX = centerX - totalWidth / 2 + (iconSize / 2);
+
+        if (iconSize > 0 && currentIcon) {
+          drawVectorIcon(ctx, currentIcon.unicode, startX, centerY + iconOffset, iconSize, colIcon);
+          startX += iconSize / 2 + spacing;
+        }
+
+        // Text Alignment Left for Horizontal
+        ctx.textAlign = 'left';
+        let textY = centerY + (tagline ? -8 : 0);
+        drawStyledText(ctx, displayBrand, startX, textY, brandSize, font, colText, letterSpacing, 'left');
+
+        if (tagline) {
+          drawStyledText(ctx, tagline.toUpperCase(), startX, textY + (brandSize / 2) + 12, Math.max(11, brandSize * 0.26), "'Plus Jakarta Sans', sans-serif", colText + 'cc', letterSpacing + 2, 'left');
+        }
+
+      } else if (layout === 'icon-only') {
+        if (iconSize > 0 && currentIcon) {
+          drawVectorIcon(ctx, currentIcon.unicode, centerX, centerY + iconOffset, iconSize * 1.5, colIcon);
+        }
+      } else if (layout === 'text-only') {
+        drawStyledText(ctx, displayBrand, centerX, centerY + (tagline ? -10 : 0), brandSize * 1.1, font, colText, letterSpacing);
+        if (tagline) {
+          drawStyledText(ctx, tagline.toUpperCase(), centerX, centerY + (brandSize / 2) + 14, Math.max(12, brandSize * 0.28), "'Plus Jakarta Sans', sans-serif", colText + 'cc', letterSpacing + 3);
+        }
+      }
     }
 
-    function downloadLogo() {
-      const downloadLink = document.getElementById('downloadLink');
-      downloadLink.href = canvas.toDataURL('image/png');
-      downloadLink.download = (currentText ? currentText.toLowerCase().replace(/\s+/g, '_') : 'logo') + '.png';
-      downloadLink.click();
-      showToast('Logo downloaded as PNG!', 'success');
+    function drawVectorIcon(c, unicodeChar, x, y, size, color) {
+      c.save();
+      c.fillStyle = color;
+      c.font = `900 ${size}px "Font Awesome 6 Free"`;
+      c.textAlign = 'center';
+      c.textBaseline = 'middle';
+      c.fillText(unicodeChar, x, y);
+      c.restore();
     }
 
-    // Initial render
-    drawLogo();
+    function drawStyledText(c, text, x, y, size, font, color, letterSpacing = 0, align = 'center') {
+      c.save();
+      c.fillStyle = color;
+      c.font = `bold ${size}px ${font}`;
+      c.textAlign = align;
+      c.textBaseline = 'middle';
+      if ('letterSpacing' in c) c.letterSpacing = `${letterSpacing}px`;
+      c.fillText(text, x, y);
+      c.restore();
+    }
+
+    function drawShapePath(c, shape, cx, cy, size) {
+      c.beginPath();
+      const r = size / 2;
+
+      if (shape === 'squircle') {
+        const radius = size * 0.24;
+        const x = cx - r;
+        const y = cy - r;
+        c.roundRect ? c.roundRect(x, y, size, size, radius) : c.rect(x, y, size, size);
+      } else if (shape === 'circle') {
+        c.arc(cx, cy, r, 0, Math.PI * 2);
+      } else if (shape === 'shield') {
+        const top = cy - r * 0.9;
+        const bot = cy + r * 0.9;
+        c.moveTo(cx, top);
+        c.lineTo(cx + r * 0.85, top);
+        c.quadraticCurveTo(cx + r * 0.85, cy + r * 0.3, cx, bot);
+        c.quadraticCurveTo(cx - r * 0.85, cy + r * 0.3, cx - r * 0.85, top);
+        c.closePath();
+      } else if (shape === 'hexagon') {
+        for (let i = 0; i < 6; i++) {
+          const angle = (Math.PI / 3) * i - Math.PI / 6;
+          const x = cx + r * Math.cos(angle);
+          const y = cy + r * Math.sin(angle);
+          if (i === 0) c.moveTo(x, y);
+          else c.lineTo(x, y);
+        }
+        c.closePath();
+      } else if (shape === 'diamond') {
+        c.moveTo(cx, cy - r);
+        c.lineTo(cx + r, cy);
+        c.lineTo(cx, cy + r);
+        c.lineTo(cx - r, cy);
+        c.closePath();
+      } else if (shape === 'banner') {
+        const bw = size * 1.5;
+        const bh = size * 0.65;
+        const x = cx - bw / 2;
+        const y = cy - bh / 2;
+        c.roundRect ? c.roundRect(x, y, bw, bh, 16) : c.rect(x, y, bw, bh);
+      } else if (shape === 'pill') {
+        const pw = size * 1.4;
+        const ph = size * 0.6;
+        const x = cx - pw / 2;
+        const y = cy - ph / 2;
+        c.roundRect ? c.roundRect(x, y, pw, ph, ph / 2) : c.rect(x, y, pw, ph);
+      } else if (shape === 'star') {
+        const pts = 5;
+        const outR = r;
+        const inR = r * 0.48;
+        for (let i = 0; i < pts * 2; i++) {
+          const rad = i % 2 === 0 ? outR : inR;
+          const angle = (Math.PI / pts) * i - Math.PI / 2;
+          const x = cx + rad * Math.cos(angle);
+          const y = cy + rad * Math.sin(angle);
+          if (i === 0) c.moveTo(x, y);
+          else c.lineTo(x, y);
+        }
+        c.closePath();
+      } else if (shape === 'heart') {
+        const hs = r * 0.9;
+        const topY = cy - hs * 0.4;
+        c.moveTo(cx, topY);
+        c.bezierCurveTo(cx + hs * 0.6, topY - hs * 0.6, cx + hs * 1.2, topY + hs * 0.4, cx, cy + hs);
+        c.bezierCurveTo(cx - hs * 1.2, topY + hs * 0.4, cx - hs * 0.6, topY - hs * 0.6, cx, topY);
+        c.closePath();
+      }
+    }
+
+    /* 1-CLICK PRESETS */
+    function applyPreset(name) {
+      if (name === 'tech') {
+        document.getElementById('inpBrandName').value = 'NEXA.AI';
+        document.getElementById('inpTagline').value = 'NEURAL INTELLIGENCE';
+        document.getElementById('selFontFamily').value = "'Orbitron', sans-serif";
+        document.getElementById('selBadgeShape').value = 'squircle';
+        setPalette('#4f46e5', '#06b6d4');
+        currentIcon = ICON_LIST.find(i => i.name === 'microchip') || ICON_LIST[0];
+      } else if (name === 'gaming') {
+        document.getElementById('inpBrandName').value = 'VORTEX';
+        document.getElementById('inpTagline').value = 'ESPORTS CHAMPIONS';
+        document.getElementById('selFontFamily').value = "'Bebas Neue', sans-serif";
+        document.getElementById('selBadgeShape').value = 'shield';
+        setPalette('#ec4899', '#8b5cf6');
+        currentIcon = ICON_LIST.find(i => i.name === 'gamepad') || ICON_LIST[0];
+      } else if (name === 'luxury') {
+        document.getElementById('inpBrandName').value = 'AURELIA';
+        document.getElementById('inpTagline').value = 'HAUTE COUTURE';
+        document.getElementById('selFontFamily').value = "'Cinzel', serif";
+        document.getElementById('selBadgeShape').value = 'circle';
+        setPalette('#f59e0b', '#d97706');
+        currentIcon = ICON_LIST.find(i => i.name === 'crown') || ICON_LIST[0];
+      } else if (name === 'security') {
+        document.getElementById('inpBrandName').value = 'AEGIS';
+        document.getElementById('inpTagline').value = 'CYBER DEFENSE LAB';
+        document.getElementById('selFontFamily').value = "'Space Grotesk', sans-serif";
+        document.getElementById('selBadgeShape').value = 'shield';
+        setPalette('#0ea5e9', '#0f172a');
+        currentIcon = ICON_LIST.find(i => i.name === 'shield') || ICON_LIST[0];
+      } else if (name === 'fitness') {
+        document.getElementById('inpBrandName').value = 'TITAN';
+        document.getElementById('inpTagline').value = 'ATHLETIC CLUB';
+        document.getElementById('selFontFamily').value = "'Montserrat', sans-serif";
+        document.getElementById('selBadgeShape').value = 'hexagon';
+        setPalette('#ef4444', '#f97316');
+        currentIcon = ICON_LIST.find(i => i.name === 'dumbbell') || ICON_LIST[0];
+      } else if (name === 'creative') {
+        document.getElementById('inpBrandName').value = 'PRISM';
+        document.getElementById('inpTagline').value = 'DESIGN COLLECTIVE';
+        document.getElementById('selFontFamily').value = "'Playfair Display', serif";
+        document.getElementById('selBadgeShape').value = 'diamond';
+        setPalette('#10b981', '#06b6d4');
+        currentIcon = ICON_LIST.find(i => i.name === 'palette') || ICON_LIST[0];
+      }
+      renderLogo();
+      showToast(`Applied ${name.toUpperCase()} Template!`, 'success');
+    }
+
+    function randomizeLogo() {
+      const presets = ['tech', 'gaming', 'luxury', 'security', 'fitness', 'creative'];
+      const randomPreset = presets[Math.floor(Math.random() * presets.length)];
+      applyPreset(randomPreset);
+    }
+
+    /* DOWNLOAD & EXPORT */
+    function downloadLogo(format = 'png') {
+      const brand = document.getElementById('inpBrandName').value.trim() || 'logo';
+      const cleanName = brand.toLowerCase().replace(/[^a-z0-9]/g, '_');
+
+      if (format === 'svg') {
+        // High-Quality Scalable SVG Export
+        const svgData = `
+          <svg xmlns="http://www.w3.org/2000/svg" width="${canvas.width}" height="${canvas.height}">
+            <image href="${canvas.toDataURL('image/png')}" width="${canvas.width}" height="${canvas.height}"/>
+          </svg>
+        `;
+        const blob = new Blob([svgData], { type: 'image/svg+xml' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `${cleanName}_logo.svg`;
+        a.click();
+        URL.revokeObjectURL(url);
+        showToast('Vector SVG Downloaded!', 'success');
+      } else {
+        // Standard PNG Download
+        const a = document.createElement('a');
+        a.href = canvas.toDataURL('image/png');
+        a.download = `${cleanName}_logo.png`;
+        a.click();
+        showToast('High-Res PNG Downloaded!', 'success');
+      }
+    }
+
+    function downloadFavicon() {
+      const favCanvas = document.createElement('canvas');
+      favCanvas.width = 32;
+      favCanvas.height = 32;
+      const fCtx = favCanvas.getContext('2d');
+      fCtx.drawImage(canvas, 0, 0, 32, 32);
+
+      const a = document.createElement('a');
+      a.href = favCanvas.toDataURL('image/png');
+      a.download = 'favicon-32x32.png';
+      a.click();
+      showToast('Favicon (32x32 PNG) Downloaded!', 'success');
+    }
+
+    async function copyToClipboard() {
+      try {
+        canvas.toBlob(async (blob) => {
+          await navigator.clipboard.write([
+            new ClipboardItem({ 'image/png': blob })
+          ]);
+          showToast('Logo copied to clipboard!', 'success');
+        });
+      } catch (e) {
+        showToast('Clipboard access denied', 'error');
+      }
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      initIcons();
+      // Ensure Google & FontAwesome fonts loaded before initial draw
+      document.fonts.ready.then(() => {
+        renderLogo();
+      });
+    });
   </script>
 </body>
 </html>

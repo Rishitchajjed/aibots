@@ -542,46 +542,154 @@
       <div id="festiveTab" class="tab-pane">
         <div class="admin-card">
           <div class="admin-card-header">
-            <h2 class="admin-card-title"><i class="fas fa-wand-magic-sparkles" style="color: var(--primary);"></i> 1-Click Festive Visual Effects</h2>
+            <h2 class="admin-card-title"><i class="fas fa-wand-magic-sparkles" style="color: var(--primary);"></i> 8 Universal Festive Visual Effects</h2>
+            <button onclick="window.stopAllEffects(); showToast('All active effects stopped.', 'info');" class="btn btn-secondary btn-sm" style="color: #ef4444; border-color: rgba(239,68,68,0.4);">
+              <i class="fas fa-stop"></i> Stop All Effects
+            </button>
           </div>
 
           <p style="font-size: 0.88rem; color: var(--text-secondary); margin-bottom: 20px;">
-            Select a festive atmosphere to delight visitors across your entire website.
+            Enable festive animations across your entire website or test them instantly with the <strong>Preview Live</strong> button!
           </p>
 
-          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px;">
-            <div style="background: var(--bg-tertiary); border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 18px; display: flex; justify-content: space-between; align-items: center;">
-              <div>
-                <strong style="font-size: 0.95rem; color: var(--text-primary);">🎊 Confetti Blast</strong>
-                <div style="font-size: 0.78rem; color: var(--text-secondary);">Celebration burst on load</div>
+          <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 16px;">
+            
+            <!-- 1. Confetti -->
+            <div style="background: var(--bg-tertiary); border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 18px; display: flex; flex-direction: column; justify-content: space-between; gap: 14px;">
+              <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                <div>
+                  <strong style="font-size: 1rem; color: var(--text-primary);">🎊 Confetti Celebration</strong>
+                  <div style="font-size: 0.78rem; color: var(--text-secondary); margin-top: 2px;">Vibrant celebration ribbons</div>
+                </div>
+                <label class="toggle-switch">
+                  <input type="checkbox" id="effectConfetti" onchange="saveFestiveEffects()">
+                  <span class="toggle-slider"></span>
+                </label>
               </div>
-              <label class="toggle-switch">
-                <input type="checkbox" id="effectConfetti" onchange="saveFestiveEffects()">
-                <span class="toggle-slider"></span>
-              </label>
+              <button onclick="window.triggerVisualEffect('confetti', true)" class="btn btn-secondary btn-sm" style="width: 100%; justify-content: center;">
+                <i class="fas fa-play" style="color:var(--primary);"></i> Preview Live
+              </button>
             </div>
 
-            <div style="background: var(--bg-tertiary); border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 18px; display: flex; justify-content: space-between; align-items: center;">
-              <div>
-                <strong style="font-size: 0.95rem; color: var(--text-primary);">❄️ Falling Snow</strong>
-                <div style="font-size: 0.78rem; color: var(--text-secondary);">Winter & holiday season</div>
+            <!-- 2. Falling Snow -->
+            <div style="background: var(--bg-tertiary); border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 18px; display: flex; flex-direction: column; justify-content: space-between; gap: 14px;">
+              <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                <div>
+                  <strong style="font-size: 1rem; color: var(--text-primary);">❄️ Winter Snowfall</strong>
+                  <div style="font-size: 0.78rem; color: var(--text-secondary); margin-top: 2px;">Gentle drifting snowflakes</div>
+                </div>
+                <label class="toggle-switch">
+                  <input type="checkbox" id="effectSnow" onchange="saveFestiveEffects()">
+                  <span class="toggle-slider"></span>
+                </label>
               </div>
-              <label class="toggle-switch">
-                <input type="checkbox" id="effectSnow" onchange="saveFestiveEffects()">
-                <span class="toggle-slider"></span>
-              </label>
+              <button onclick="window.triggerVisualEffect('snow', true)" class="btn btn-secondary btn-sm" style="width: 100%; justify-content: center;">
+                <i class="fas fa-play" style="color:#38bdf8;"></i> Preview Live
+              </button>
             </div>
 
-            <div style="background: var(--bg-tertiary); border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 18px; display: flex; justify-content: space-between; align-items: center;">
-              <div>
-                <strong style="font-size: 0.95rem; color: var(--text-primary);">✨ Golden Sparkles</strong>
-                <div style="font-size: 0.78rem; color: var(--text-secondary);">Diwali & festive aura</div>
+            <!-- 3. Golden Sparkles -->
+            <div style="background: var(--bg-tertiary); border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 18px; display: flex; flex-direction: column; justify-content: space-between; gap: 14px;">
+              <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                <div>
+                  <strong style="font-size: 1rem; color: var(--text-primary);">✨ Golden Sparkles</strong>
+                  <div style="font-size: 0.78rem; color: var(--text-secondary); margin-top: 2px;">Diwali & luxury star glow</div>
+                </div>
+                <label class="toggle-switch">
+                  <input type="checkbox" id="effectSparkles" onchange="saveFestiveEffects()">
+                  <span class="toggle-slider"></span>
+                </label>
               </div>
-              <label class="toggle-switch">
-                <input type="checkbox" id="effectSparkles" onchange="saveFestiveEffects()">
-                <span class="toggle-slider"></span>
-              </label>
+              <button onclick="window.triggerVisualEffect('sparkles', true)" class="btn btn-secondary btn-sm" style="width: 100%; justify-content: center;">
+                <i class="fas fa-play" style="color:#f59e0b;"></i> Preview Live
+              </button>
             </div>
+
+            <!-- 4. Grand Fireworks -->
+            <div style="background: var(--bg-tertiary); border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 18px; display: flex; flex-direction: column; justify-content: space-between; gap: 14px;">
+              <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                <div>
+                  <strong style="font-size: 1rem; color: var(--text-primary);">🎆 Grand Fireworks</strong>
+                  <div style="font-size: 0.78rem; color: var(--text-secondary); margin-top: 2px;">Exploding rockets & burst trails</div>
+                </div>
+                <label class="toggle-switch">
+                  <input type="checkbox" id="effectFireworks" onchange="saveFestiveEffects()">
+                  <span class="toggle-slider"></span>
+                </label>
+              </div>
+              <button onclick="window.triggerVisualEffect('fireworks', true)" class="btn btn-secondary btn-sm" style="width: 100%; justify-content: center;">
+                <i class="fas fa-play" style="color:#ec4899;"></i> Preview Live
+              </button>
+            </div>
+
+            <!-- 5. Cyberpunk Matrix -->
+            <div style="background: var(--bg-tertiary); border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 18px; display: flex; flex-direction: column; justify-content: space-between; gap: 14px;">
+              <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                <div>
+                  <strong style="font-size: 1rem; color: var(--text-primary);">💚 Matrix Digital Rain</strong>
+                  <div style="font-size: 0.78rem; color: var(--text-secondary); margin-top: 2px;">Neon green falling code glyphs</div>
+                </div>
+                <label class="toggle-switch">
+                  <input type="checkbox" id="effectMatrix" onchange="saveFestiveEffects()">
+                  <span class="toggle-slider"></span>
+                </label>
+              </div>
+              <button onclick="window.triggerVisualEffect('matrix', true)" class="btn btn-secondary btn-sm" style="width: 100%; justify-content: center;">
+                <i class="fas fa-play" style="color:#10b981;"></i> Preview Live
+              </button>
+            </div>
+
+            <!-- 6. Floating Hearts -->
+            <div style="background: var(--bg-tertiary); border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 18px; display: flex; flex-direction: column; justify-content: space-between; gap: 14px;">
+              <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                <div>
+                  <strong style="font-size: 1rem; color: var(--text-primary);">💖 Floating Hearts</strong>
+                  <div style="font-size: 0.78rem; color: var(--text-secondary); margin-top: 2px;">Romantic drifting hearts aura</div>
+                </div>
+                <label class="toggle-switch">
+                  <input type="checkbox" id="effectHearts" onchange="saveFestiveEffects()">
+                  <span class="toggle-slider"></span>
+                </label>
+              </div>
+              <button onclick="window.triggerVisualEffect('hearts', true)" class="btn btn-secondary btn-sm" style="width: 100%; justify-content: center;">
+                <i class="fas fa-play" style="color:#f43f5e;"></i> Preview Live
+              </button>
+            </div>
+
+            <!-- 7. Party Balloons -->
+            <div style="background: var(--bg-tertiary); border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 18px; display: flex; flex-direction: column; justify-content: space-between; gap: 14px;">
+              <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                <div>
+                  <strong style="font-size: 1rem; color: var(--text-primary);">🎈 Celebration Balloons</strong>
+                  <div style="font-size: 0.78rem; color: var(--text-secondary); margin-top: 2px;">Rising party balloons & strings</div>
+                </div>
+                <label class="toggle-switch">
+                  <input type="checkbox" id="effectBalloons" onchange="saveFestiveEffects()">
+                  <span class="toggle-slider"></span>
+                </label>
+              </div>
+              <button onclick="window.triggerVisualEffect('balloons', true)" class="btn btn-secondary btn-sm" style="width: 100%; justify-content: center;">
+                <i class="fas fa-play" style="color:#8b5cf6;"></i> Preview Live
+              </button>
+            </div>
+
+            <!-- 8. Halloween Embers -->
+            <div style="background: var(--bg-tertiary); border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 18px; display: flex; flex-direction: column; justify-content: space-between; gap: 14px;">
+              <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                <div>
+                  <strong style="font-size: 1rem; color: var(--text-primary);">🎃 Glowing Embers</strong>
+                  <div style="font-size: 0.78rem; color: var(--text-secondary); margin-top: 2px;">Halloween mystical embers</div>
+                </div>
+                <label class="toggle-switch">
+                  <input type="checkbox" id="effectHalloween" onchange="saveFestiveEffects()">
+                  <span class="toggle-slider"></span>
+                </label>
+              </div>
+              <button onclick="window.triggerVisualEffect('halloween', true)" class="btn btn-secondary btn-sm" style="width: 100%; justify-content: center;">
+                <i class="fas fa-play" style="color:#f97316;"></i> Preview Live
+              </button>
+            </div>
+
           </div>
         </div>
       </div>
@@ -687,6 +795,7 @@
   </footer>
 
   <script src="js/app.js"></script>
+  <script src="js/effects.js"></script>
   <script>
     // Master Authentication Logic
     const DEFAULT_PASSWORDS = ["admin123", "rishit2026", "admin"];
@@ -970,19 +1079,27 @@
     // ==========================================
     function initFestiveSettings() {
       const effects = JSON.parse(localStorage.getItem('aibots_festive_effects') || '{}');
-      document.getElementById('effectConfetti').checked = !!effects.confetti;
-      document.getElementById('effectSnow').checked = !!effects.snow;
-      document.getElementById('effectSparkles').checked = !!effects.sparkles;
+      const effectKeys = ['confetti', 'snow', 'sparkles', 'fireworks', 'matrix', 'hearts', 'balloons', 'halloween'];
+      effectKeys.forEach(k => {
+        const id = 'effect' + k.charAt(0).toUpperCase() + k.slice(1);
+        const el = document.getElementById(id);
+        if (el) el.checked = !!effects[k];
+      });
     }
 
     function saveFestiveEffects() {
-      const effects = {
-        confetti: document.getElementById('effectConfetti').checked,
-        snow: document.getElementById('effectSnow').checked,
-        sparkles: document.getElementById('effectSparkles').checked
-      };
+      const effectKeys = ['confetti', 'snow', 'sparkles', 'fireworks', 'matrix', 'hearts', 'balloons', 'halloween'];
+      const effects = {};
+      effectKeys.forEach(k => {
+        const id = 'effect' + k.charAt(0).toUpperCase() + k.slice(1);
+        const el = document.getElementById(id);
+        if (el && el.checked) {
+          effects[k] = true;
+          window.triggerVisualEffect(k, false);
+        }
+      });
       localStorage.setItem('aibots_festive_effects', JSON.stringify(effects));
-      showToast('Festive effects updated!', 'success');
+      showToast('Festive effects updated and active!', 'success');
     }
 
     // ==========================================

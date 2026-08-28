@@ -894,6 +894,32 @@
           </form>
         </div>
 
+        <!-- Custom Cloud Database Connection -->
+        <div class="admin-card">
+          <div class="admin-card-header">
+            <h2 class="admin-card-title"><i class="fas fa-cloud" style="color: #3b82f6;"></i> Connect Custom Cloud Database</h2>
+          </div>
+          <p style="font-size: 0.88rem; color: var(--text-secondary); margin-bottom: 16px;">
+            Connect your custom cloud database (e.g. <strong>Google Firebase Realtime Database</strong>, <strong>Supabase</strong>, <strong>JSONBin</strong>, or <strong>Cloudflare Worker</strong>) to sync tool launches, settings, and passwords across all devices worldwide.
+          </p>
+
+          <div style="display: flex; flex-direction: column; gap: 12px; max-width: 550px;">
+            <div>
+              <label class="form-label">CUSTOM CLOUD DATABASE REST URL</label>
+              <input type="url" id="customCloudUrlInput" class="form-control" placeholder="e.g. https://your-project.firebaseio.com/config.json">
+            </div>
+            <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+              <button onclick="saveCustomCloudEndpoint()" class="btn btn-primary btn-sm">
+                <i class="fas fa-link"></i> Connect & Sync Cloud
+              </button>
+              <button onclick="disconnectCustomCloudEndpoint()" class="btn btn-secondary btn-sm">
+                <i class="fas fa-unlink"></i> Disconnect Custom Cloud
+              </button>
+            </div>
+            <div id="customCloudStatus" style="font-size: 0.8rem; color: var(--text-secondary); margin-top: 4px;"></div>
+          </div>
+        </div>
+
         <!-- Full Website Source Code Download & Backup -->
         <div class="admin-card">
           <div class="admin-card-header">
@@ -1623,6 +1649,37 @@
       syncConfigToCloudOnline();
     }
 
+    function initCustomCloudSettings() {
+      const url = localStorage.getItem('aibots_custom_cloud_endpoint') || '';
+      const input = document.getElementById('customCloudUrlInput');
+      const statusEl = document.getElementById('customCloudStatus');
+      if (input) input.value = url;
+      if (statusEl) {
+        statusEl.innerHTML = url 
+          ? `<span style="color: #10b981; font-weight: 700;"><i class="fas fa-circle-check"></i> Connected to: <code>${url}</code></span>` 
+          : `<span style="color: var(--text-secondary);"><i class="fas fa-info-circle"></i> Running in high-speed local mode. Paste your custom database URL above if you want real-time worldwide cloud sync.</span>`;
+      }
+    }
+
+    async function saveCustomCloudEndpoint() {
+      const input = document.getElementById('customCloudUrlInput');
+      const val = input ? input.value.trim() : '';
+      if (!val) {
+        showToast('Please enter a valid Cloud URL.', 'warning');
+        return;
+      }
+      localStorage.setItem('aibots_custom_cloud_endpoint', val);
+      initCustomCloudSettings();
+      showToast('Custom Cloud Connected! Testing sync...', 'info');
+      await syncConfigToCloudOnline(true);
+    }
+
+    function disconnectCustomCloudEndpoint() {
+      localStorage.removeItem('aibots_custom_cloud_endpoint');
+      initCustomCloudSettings();
+      showToast('Custom cloud disconnected. Running in local mode.', 'info');
+    }
+
     function initAdminControls() {
       initMaintenanceControls();
       renderToolsRegistry();
@@ -1630,6 +1687,7 @@
       initAnnouncementSettings();
       initFestiveSettings();
       initUpiSettings();
+      initCustomCloudSettings();
       renderAnalytics();
       fetchCloudConfig();
     }

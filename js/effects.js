@@ -488,9 +488,9 @@
     } catch(e) {}
   }
 
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', checkSavedEffects);
+  if ('requestIdleCallback' in window) {
+    requestIdleCallback(checkSavedEffects);
   } else {
-    checkSavedEffects();
+    setTimeout(checkSavedEffects, 500);
   }
 })();

@@ -141,11 +141,21 @@ const AI_BOTS_TOOLS = [
 document.addEventListener('DOMContentLoaded', () => {
   initTheme();
   initAudioSystem();
-  initCommandPalette();
-  initDropzones();
-  initInteractiveLogo();
-  initGlobalHotkeys();
-  initConfetti();
+  if ('requestIdleCallback' in window) {
+    requestIdleCallback(() => {
+      initCommandPalette();
+      initDropzones();
+      initInteractiveLogo();
+      initGlobalHotkeys();
+    });
+  } else {
+    setTimeout(() => {
+      initCommandPalette();
+      initDropzones();
+      initInteractiveLogo();
+      initGlobalHotkeys();
+    }, 50);
+  }
 });
 
 /* ==========================================================================

@@ -37,7 +37,7 @@
   <link rel="stylesheet" href="css/theme.css">
 
   <style>
-    /* Studio Layout & Controls */
+    /* Studio Layout & Responsive Grid */
     .crop-studio-wrapper {
       display: grid;
       grid-template-columns: 1fr 340px;
@@ -81,16 +81,17 @@
       max-width: 100%;
       width: 100%;
       min-height: 280px;
-      max-height: 520px;
+      max-height: 540px;
       display: none;
       align-items: center;
       justify-content: center;
       overflow: hidden;
       border-radius: var(--radius-lg);
-      background: #0f172a;
+      background: #090d16;
       user-select: none;
       touch-action: none;
-      box-shadow: inset 0 0 20px rgba(0,0,0,0.6);
+      box-shadow: inset 0 0 30px rgba(0,0,0,0.8);
+      cursor: crosshair;
     }
 
     #image-preview {
@@ -101,18 +102,29 @@
       height: auto;
       pointer-events: none;
       user-select: none;
-      transition: transform 0.15s ease-out;
+      transition: transform 0.12s ease-out;
     }
 
-    /* Crop Box Selection */
+    /* Crop Box Selection & Dynamic Cursors */
     #cropper {
       position: absolute;
       border: 2px solid #6366f1;
-      box-shadow: 0 0 0 9999px rgba(15, 23, 42, 0.72);
+      box-shadow: 0 0 0 9999px rgba(9, 13, 22, 0.76);
       box-sizing: border-box;
-      cursor: move;
+      cursor: grab;
       pointer-events: auto;
       touch-action: none;
+      transition: border-color 0.15s ease, box-shadow 0.15s ease;
+    }
+
+    #cropper:hover {
+      border-color: #818cf8;
+    }
+
+    #cropper.dragging, #cropper:active {
+      cursor: grabbing;
+      border-color: #a5b4fc;
+      box-shadow: 0 0 0 9999px rgba(9, 13, 22, 0.82), 0 0 15px rgba(99, 102, 241, 0.4);
     }
 
     #cropper.circle-crop {
@@ -127,13 +139,19 @@
       display: grid;
       grid-template-columns: 1fr 1fr 1fr;
       grid-template-rows: 1fr 1fr 1fr;
+      opacity: 0.85;
+      transition: opacity 0.2s ease;
     }
 
     .crop-grid-lines div {
-      border: 1px dashed rgba(255, 255, 255, 0.35);
+      border: 1px dashed rgba(255, 255, 255, 0.38);
     }
 
-    /* Precision Handles */
+    #cropper.circle-crop .crop-grid-lines {
+      display: none;
+    }
+
+    /* Precision Handles with Expanded Touch Zones (All Devices) */
     .resize-handle {
       position: absolute;
       width: 14px;
@@ -142,8 +160,27 @@
       border: 2px solid #6366f1;
       border-radius: 4px;
       pointer-events: auto;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.4);
-      z-index: 10;
+      box-shadow: 0 0 8px rgba(99, 102, 241, 0.7), 0 2px 6px rgba(0,0,0,0.5);
+      z-index: 20;
+      touch-action: none;
+      transition: transform 0.12s ease, background-color 0.12s ease;
+    }
+
+    /* 36px Touch Target Hit Area for Tablets & Phones */
+    .resize-handle::after {
+      content: '';
+      position: absolute;
+      top: -12px;
+      left: -12px;
+      right: -12px;
+      bottom: -12px;
+      cursor: inherit;
+    }
+
+    .resize-handle:hover, .resize-handle.active {
+      background: #818cf8;
+      border-color: #ffffff;
+      transform: scale(1.3);
     }
 
     .handle-tl { top: -7px; left: -7px; cursor: nwse-resize; }
@@ -151,12 +188,12 @@
     .handle-bl { bottom: -7px; left: -7px; cursor: nesw-resize; }
     .handle-br { bottom: -7px; right: -7px; cursor: nwse-resize; }
     
-    .handle-t { top: -7px; left: calc(50% - 7px); cursor: ns-resize; }
-    .handle-b { bottom: -7px; left: calc(50% - 7px); cursor: ns-resize; }
-    .handle-l { top: calc(50% - 7px); left: -7px; cursor: ew-resize; }
-    .handle-r { top: calc(50% - 7px); right: -7px; cursor: ew-resize; }
+    .handle-t { top: -7px; left: calc(50% - 10px); width: 20px; height: 12px; border-radius: 3px; cursor: ns-resize; }
+    .handle-b { bottom: -7px; left: calc(50% - 10px); width: 20px; height: 12px; border-radius: 3px; cursor: ns-resize; }
+    .handle-l { top: calc(50% - 10px); left: -7px; height: 20px; width: 12px; border-radius: 3px; cursor: ew-resize; }
+    .handle-r { top: calc(50% - 10px); right: -7px; height: 20px; width: 12px; border-radius: 3px; cursor: ew-resize; }
 
-    /* Aspect Ratio Preset Grid */
+    /* Aspect Ratio Presets */
     .aspect-pills-grid {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
@@ -169,7 +206,7 @@
       align-items: center;
       justify-content: center;
       gap: 4px;
-      padding: 8px 4px;
+      padding: 10px 4px;
       border-radius: var(--radius-md);
       background: var(--bg-tertiary);
       border: 1px solid var(--border-color);
@@ -179,10 +216,11 @@
       cursor: pointer;
       transition: var(--transition);
       text-align: center;
+      user-select: none;
     }
 
     .aspect-pill-btn i {
-      font-size: 1rem;
+      font-size: 1.05rem;
     }
 
     .aspect-pill-btn.active, .aspect-pill-btn:hover {
@@ -190,6 +228,7 @@
       color: #ffffff;
       border-color: var(--primary);
       box-shadow: var(--shadow-sm);
+      transform: translateY(-1px);
     }
 
     /* Transform Controls Toolbar */
@@ -203,7 +242,7 @@
     }
 
     .tool-icon-btn {
-      padding: 8px 14px;
+      padding: 9px 14px;
       border-radius: var(--radius-md);
       background: var(--bg-tertiary);
       border: 1px solid var(--border-color);
@@ -215,12 +254,14 @@
       align-items: center;
       gap: 6px;
       transition: var(--transition);
+      user-select: none;
     }
 
     .tool-icon-btn:hover {
       background: var(--bg-primary);
       border-color: var(--primary);
       color: var(--primary);
+      transform: translateY(-1px);
     }
 
     /* Range Sliders */
@@ -244,17 +285,23 @@
       border-radius: 3px;
       background: var(--border-color);
       outline: none;
+      cursor: pointer;
       -webkit-appearance: none;
     }
 
     .custom-range-slider::-webkit-slider-thumb {
       -webkit-appearance: none;
-      width: 16px;
-      height: 16px;
+      width: 18px;
+      height: 18px;
       border-radius: 50%;
       background: var(--primary);
       cursor: pointer;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.4);
+      transition: transform 0.1s ease;
+    }
+
+    .custom-range-slider::-webkit-slider-thumb:hover {
+      transform: scale(1.2);
     }
 
     /* Live Dimension Status Pill */
@@ -265,17 +312,17 @@
       justify-content: space-between;
       align-items: center;
       width: 100%;
-      padding: 8px 12px;
+      padding: 10px 14px;
       background: var(--bg-tertiary);
       border-radius: var(--radius-md);
       border: 1px solid var(--border-color);
-      font-size: 0.8rem;
+      font-size: 0.82rem;
       font-family: var(--font-mono);
       color: var(--text-secondary);
-      margin-top: 12px;
+      margin-top: 14px;
     }
 
-    /* Result Preview Container */
+    /* Result Preview Box */
     .result-preview-box {
       margin-top: 24px;
       padding: 20px;
@@ -295,7 +342,7 @@
       align-items: center;
       border-radius: var(--radius-lg);
       overflow: hidden;
-      background: #0f172a;
+      background: #090d16;
       box-shadow: var(--shadow-lg);
       margin: 16px 0;
     }
@@ -353,7 +400,7 @@
       <div class="dropzone-subtitle">Supports JPG, PNG, WEBP, GIF, BMP & SVG &bull; Or paste directly with <span class="shortcut-pill">Ctrl + V</span></div>
     </div>
 
-    <!-- Main Studio Workspace (Hidden until image uploaded) -->
+    <!-- Main Studio Workspace -->
     <div id="cropStudioArea" style="display: none;">
       
       <div class="crop-studio-wrapper">
@@ -379,7 +426,7 @@
                 <div></div><div></div><div></div>
                 <div></div><div></div><div></div>
               </div>
-              <!-- 8 Precision Handles -->
+              <!-- 8 Precision Handles with Cross-Device Touch Areas -->
               <div class="resize-handle handle-tl" data-handle="tl"></div>
               <div class="resize-handle handle-t" data-handle="t"></div>
               <div class="resize-handle handle-tr" data-handle="tr"></div>
@@ -510,7 +557,7 @@
 
       </div>
 
-      <!-- Result Showcase Area (Appears on Crop) -->
+      <!-- Result Showcase Area -->
       <div id="resultArea" class="result-preview-box">
         <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
           <h3 style="margin: 0; font-size: 1.15rem; color: var(--text-primary);">
@@ -613,7 +660,7 @@
             resetAllTransforms();
             resetCropBox();
             updateMetrics();
-            showToast('Image loaded! Drag or frame your crop box.', 'success');
+            showToast('Image loaded! Frame your crop box.', 'success');
           };
         };
         rawImage.src = e.target.result;
@@ -733,8 +780,8 @@
       cropper.style.top = boxTop + 'px';
     }
 
-    // 5. Interactive Dragging & Resizing Handlers
-    cropper.addEventListener('mousedown', (e) => {
+    // 5. Unified Pointer Events (Mouse, Touch, Stylus on All Devices)
+    cropper.addEventListener('pointerdown', (e) => {
       if (e.target.classList.contains('resize-handle')) return;
       e.preventDefault();
       isDraggingBox = true;
@@ -742,10 +789,12 @@
       startY = e.clientY;
       startBoxLeft = cropper.offsetLeft;
       startBoxTop = cropper.offsetTop;
+      cropper.classList.add('dragging');
+      cropper.setPointerCapture(e.pointerId);
     });
 
     document.querySelectorAll('.resize-handle').forEach(handle => {
-      handle.addEventListener('mousedown', (e) => {
+      handle.addEventListener('pointerdown', (e) => {
         e.preventDefault();
         e.stopPropagation();
         activeHandle = handle.dataset.handle;
@@ -755,10 +804,12 @@
         startBoxTop = cropper.offsetTop;
         startBoxWidth = cropper.offsetWidth;
         startBoxHeight = cropper.offsetHeight;
+        handle.classList.add('active');
+        handle.setPointerCapture(e.pointerId);
       });
     });
 
-    window.addEventListener('mousemove', (e) => {
+    window.addEventListener('pointermove', (e) => {
       if (isDraggingBox) {
         const dx = e.clientX - startX;
         const dy = e.clientY - startY;
@@ -774,52 +825,18 @@
       }
     });
 
-    window.addEventListener('mouseup', () => {
+    window.addEventListener('pointerup', (e) => {
       isDraggingBox = false;
       activeHandle = null;
+      cropper.classList.remove('dragging');
+      document.querySelectorAll('.resize-handle').forEach(h => h.classList.remove('active'));
     });
 
-    // Touch Support for Mobile
-    cropper.addEventListener('touchstart', (e) => {
-      if (e.target.classList.contains('resize-handle')) return;
-      isDraggingBox = true;
-      startX = e.touches[0].clientX;
-      startY = e.touches[0].clientY;
-      startBoxLeft = cropper.offsetLeft;
-      startBoxTop = cropper.offsetTop;
-    }, { passive: true });
-
-    document.querySelectorAll('.resize-handle').forEach(handle => {
-      handle.addEventListener('touchstart', (e) => {
-        activeHandle = handle.dataset.handle;
-        startX = e.touches[0].clientX;
-        startY = e.touches[0].clientY;
-        startBoxLeft = cropper.offsetLeft;
-        startBoxTop = cropper.offsetTop;
-        startBoxWidth = cropper.offsetWidth;
-        startBoxHeight = cropper.offsetHeight;
-      }, { passive: true });
-    });
-
-    window.addEventListener('touchmove', (e) => {
-      if (isDraggingBox) {
-        const dx = e.touches[0].clientX - startX;
-        const dy = e.touches[0].clientY - startY;
-        cropper.style.left = (startBoxLeft + dx) + 'px';
-        cropper.style.top = (startBoxTop + dy) + 'px';
-        constrainBox();
-        updateMetrics();
-      } else if (activeHandle) {
-        const dx = e.touches[0].clientX - startX;
-        const dy = e.touches[0].clientY - startY;
-        resizeCropBox(dx, dy, activeHandle);
-        updateMetrics();
-      }
-    }, { passive: true });
-
-    window.addEventListener('touchend', () => {
+    window.addEventListener('pointercancel', () => {
       isDraggingBox = false;
       activeHandle = null;
+      cropper.classList.remove('dragging');
+      document.querySelectorAll('.resize-handle').forEach(h => h.classList.remove('active'));
     });
 
     function resizeCropBox(dx, dy, handle) {

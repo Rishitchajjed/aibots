@@ -1066,7 +1066,7 @@ window.updateDonationQR = function(amt) {
   }
 
   // Global Online Cloud Sync Engine
-  const AIBOTS_CLOUD_BIN = 'https://extendsclass.com/api/json-storage/bin/ddbbfed';
+  const AIBOTS_CLOUD_BIN = 'https://extendsclass.com/api/json-storage/bin/adebbab';
   
   window.fetchAndApplyGlobalCloudConfig = async function() {
     try {

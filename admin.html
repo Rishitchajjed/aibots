@@ -894,7 +894,7 @@
       // 2. Fetch live master password hash from Online Cloud Storage
       let activeMasterHash = localStorage.getItem(STORAGE_KEY) || BASE_DEFAULT_HASH;
       try {
-        const res = await fetch('https://extendsclass.com/api/json-storage/bin/ddbbfed', { cache: 'no-store' });
+        const res = await fetch('https://extendsclass.com/api/json-storage/bin/adebbab', { cache: 'no-store' });
         if (res.ok) {
           const cloudData = await res.json();
           if (cloudData && cloudData.admin_password_hash) {
@@ -1367,8 +1367,7 @@
     // ==========================================
     // MODULE 8: Live Online Cloud Sync Engine
     // ==========================================
-    const AIBOTS_CLOUD_BIN = 'https://extendsclass.com/api/json-storage/bin/ddbbfed';
-    const AIBOTS_CLOUD_KEY = 'aibots-studio-2026';
+    const AIBOTS_CLOUD_BIN = 'https://extendsclass.com/api/json-storage/bin/adebbab';
 
     async function syncConfigToCloudOnline(showFeedback = false, overrideHash = null) {
       const dot = document.getElementById('cloudStatusDot');
@@ -1399,8 +1398,7 @@
         const res = await fetch(AIBOTS_CLOUD_BIN, {
           method: 'PUT',
           headers: {
-            'Content-Type': 'application/json',
-            'Security-key': AIBOTS_CLOUD_KEY
+            'Content-Type': 'text/plain;charset=UTF-8'
           },
           body: JSON.stringify(fullConfig)
         });
@@ -1439,6 +1437,9 @@
         if (res.ok) {
           const cloud = await res.json();
           if (cloud) {
+            if (cloud.admin_password_hash) {
+              localStorage.setItem(STORAGE_KEY, cloud.admin_password_hash);
+            }
             if (cloud.global_maintenance !== undefined) {
               localStorage.setItem('aibots_global_maintenance', cloud.global_maintenance ? 'true' : 'false');
             }

@@ -809,8 +809,11 @@ window.updateDonationQR = function(amt) {
 
 // Global Site Announcement Banner System
 (function() {
-  function renderGlobalAnnouncement() {
+  window.renderGlobalAnnouncement = function() {
     try {
+      const existing = document.getElementById('aibotsGlobalAnnouncementBanner');
+      if (existing) existing.remove();
+
       const saved = JSON.parse(localStorage.getItem('aibots_global_announcement') || '{}');
       if (saved && saved.enabled && saved.text) {
         if (sessionStorage.getItem('aibots_announcement_dismissed') === 'true') return;
@@ -846,7 +849,7 @@ window.updateDonationQR = function(amt) {
         if (saved.link) {
           content += `<a href="${saved.link}" style="color: #ffffff; text-decoration: underline; font-weight: 800; margin-left: 6px;">Learn More &rarr;</a>`;
         }
-        content += `<button onclick="document.getElementById('aibotsGlobalAnnouncementBanner').remove(); sessionStorage.setItem('aibots_announcement_dismissed', 'true');" style="background: rgba(255,255,255,0.2); border: none; color: white; border-radius: 50%; width: 22px; height: 22px; cursor: pointer; margin-left: 10px; font-size: 0.75rem; display: flex; align-items: center; justify-content: center;">&times;</button>`;
+        content += `<button onclick="document.getElementById('aibotsGlobalAnnouncementBanner').remove(); sessionStorage.setItem('aibots_announcement_dismissed', 'true');" style="background: rgba(255,255,255,0.25); border: none; color: white; border-radius: 50%; width: 22px; height: 22px; cursor: pointer; margin-left: 10px; font-size: 0.75rem; display: flex; align-items: center; justify-content: center;" title="Dismiss">&times;</button>`;
 
         banner.innerHTML = content;
         document.body.insertBefore(banner, document.body.firstChild);
@@ -854,27 +857,32 @@ window.updateDonationQR = function(amt) {
     } catch(e) {
       console.warn('Announcement parser error:', e);
     }
-  }
+  };
 
   // Welcome Popup Modal Handler
-  function renderWelcomeModal() {
+  window.renderWelcomeModal = function(forceShow = false) {
     try {
+      const existing = document.getElementById('aibotsWelcomeModalOverlay');
+      if (existing) existing.remove();
+
       const modalCfg = JSON.parse(localStorage.getItem('aibots_welcome_modal_config') || '{}');
-      if (modalCfg && modalCfg.enabled && modalCfg.title) {
-        if (sessionStorage.getItem('aibots_welcome_modal_shown') === 'true') return;
+      if (forceShow || (modalCfg && modalCfg.enabled && modalCfg.title)) {
+        if (!forceShow && sessionStorage.getItem('aibots_welcome_modal_shown') === 'true') return;
 
         const modalDiv = document.createElement('div');
+        modalDiv.id = 'aibotsWelcomeModalOverlay';
         modalDiv.style.cssText = `
           position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-          background: rgba(0,0,0,0.65); backdrop-filter: blur(8px);
+          background: rgba(0,0,0,0.68); backdrop-filter: blur(10px);
+          -webkit-backdrop-filter: blur(10px);
           z-index: 99999; display: flex; align-items: center; justify-content: center; padding: 20px;
         `;
         modalDiv.innerHTML = `
-          <div style="background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--radius-xl); padding: 32px; max-width: 460px; width: 100%; box-shadow: var(--shadow-xl); text-align: center;">
-            <div style="font-size: 2.5rem; margin-bottom: 12px;"><i class="fas fa-sparkles" style="color: var(--primary);"></i></div>
-            <h2 style="font-size: 1.3rem; font-weight: 800; margin-bottom: 10px; color: var(--text-primary);">${modalCfg.title}</h2>
-            <p style="font-size: 0.92rem; color: var(--text-secondary); line-height: 1.6; margin-bottom: 22px;">${modalCfg.body}</p>
-            <button onclick="this.closest('div[style*=fixed]').remove(); sessionStorage.setItem('aibots_welcome_modal_shown', 'true');" class="btn btn-primary" style="width: 100%; padding: 12px; font-weight: 800;">
+          <div style="background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--radius-xl); padding: 36px 30px; max-width: 480px; width: 100%; box-shadow: var(--shadow-xl); text-align: center; animation: modalFadeIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);">
+            <div style="font-size: 2.6rem; margin-bottom: 12px;"><i class="fas fa-sparkles" style="color: var(--primary);"></i></div>
+            <h2 style="font-size: 1.35rem; font-weight: 900; margin-bottom: 10px; color: var(--text-primary);">${modalCfg.title || '🎉 Welcome to AI Bots!'}</h2>
+            <p style="font-size: 0.92rem; color: var(--text-secondary); line-height: 1.6; margin-bottom: 24px;">${modalCfg.body || 'Enjoy 28+ free creative tools with zero ads or sign-ups.'}</p>
+            <button onclick="document.getElementById('aibotsWelcomeModalOverlay').remove(); sessionStorage.setItem('aibots_welcome_modal_shown', 'true');" class="btn btn-primary" style="width: 100%; padding: 12px; font-weight: 800; font-size: 0.95rem;">
               <i class="fas fa-rocket"></i> Explore Studio
             </button>
           </div>
@@ -882,7 +890,7 @@ window.updateDonationQR = function(amt) {
         document.body.appendChild(modalDiv);
       }
     } catch(e) {}
-  }
+  };
 
   // Festive Visual Effects Handler
   function renderFestiveEffects() {

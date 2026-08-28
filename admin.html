@@ -535,6 +535,7 @@
               <textarea id="modalBodyInput" class="form-control" rows="3" placeholder="Welcome message...">Enjoy 28+ free creative tools including Pro Scientific Calculator, Background Remover, and Vector Logo Studio with zero ads.</textarea>
             </div>
             <div style="display: flex; justify-content: flex-end; gap: 10px;">
+              <button onclick="window.renderWelcomeModal(true)" class="btn btn-secondary btn-sm"><i class="fas fa-eye"></i> Preview Popup Live</button>
               <button onclick="saveWelcomeModalConfig()" class="btn btn-primary btn-sm"><i class="fas fa-floppy-disk"></i> Save & Enable Popup</button>
             </div>
           </div>
@@ -1078,12 +1079,18 @@
       const theme = document.getElementById('announcementThemeInput').value;
 
       localStorage.setItem('aibots_global_announcement', JSON.stringify({ enabled, text, link, theme }));
+      sessionStorage.removeItem('aibots_announcement_dismissed');
+      if (typeof window.renderGlobalAnnouncement === 'function') {
+        window.renderGlobalAnnouncement();
+      }
       showToast('Announcement banner published live!', 'success');
     }
 
     function clearAnnouncementConfig() {
       document.getElementById('toggleAnnouncement').checked = false;
       localStorage.removeItem('aibots_global_announcement');
+      const banner = document.getElementById('aibotsGlobalAnnouncementBanner');
+      if (banner) banner.remove();
       showToast('Announcement banner disabled.', 'info');
     }
 
@@ -1093,7 +1100,8 @@
       const body = document.getElementById('modalBodyInput').value.trim();
 
       localStorage.setItem('aibots_welcome_modal_config', JSON.stringify({ enabled, title, body }));
-      showToast('Visitor welcome popup saved!', 'success');
+      sessionStorage.removeItem('aibots_welcome_modal_shown');
+      showToast('Visitor welcome popup saved and active!', 'success');
     }
 
     // ==========================================

@@ -1,9 +1,16 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-<meta name="google-site-verification" content="ndzq-U-NLijgza_QqgQdcc2U3oMRoud_BT2ZZiwFREM">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="google-site-verification" content="ndzq-U-NLijgza_QqgQdcc2U3oMRoud_BT2ZZiwFREM">
   <meta name="google-site-verification" content="-Yb6Nx74gbZ3wRN5uP-Y8KKwDWlt1DPpxs4nA3PkE6M">
   <meta name="robots" content="index, follow">
+  <title>Pro Business Card Maker (2-Sided with QR) — AI Bots</title>
+  <meta name="description" content="Design stunning dual-sided business cards online for free. Custom templates, live scannable QR codes, luxury fonts, 300 DPI print-ready PDF, and PNG export.">
+  <meta name="keywords" content="business card maker, visiting card generator, free business card design, print ready business card, qr code business card, ai bots business card">
+  <link rel="icon" href="https://i.ibb.co/G2NFYHG/logo.png" type="image/png">
+  <link rel="canonical" href="https://www.aibots.co.in/buisnesscard.html">
   <!-- Google Analytics -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-2L87FMQS3W"></script>
   <script>
@@ -13,140 +20,331 @@
     gtag('config', 'G-2L87FMQS3W');
   </script>
 
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="google-site-verification" content="-Yb6Nx74gbZ3wRN5uP-Y8KKwDWlt1DPpxs4nA3PkE6M">
-  <link rel="icon" href="https://i.ibb.co/G2NFYHG/logo.png" type="image/png">
-  <title>Business Card Generator - AI Bots</title>
-
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link rel="stylesheet" href="css/theme.css">
+  <!-- Libraries for QR Code and PDF generation -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrious/4.0.2/qrious.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <style>
-    .builder-layout {
+    .bc-workspace {
       display: grid;
-      grid-template-columns: 1fr 1fr;
+      grid-template-columns: 380px 1fr;
       gap: 32px;
       align-items: start;
     }
-    @media (max-width: 900px) {
-      .builder-layout { grid-template-columns: 1fr; }
+    @media (max-width: 960px) {
+      .bc-workspace { grid-template-columns: 1fr; }
     }
 
-    /* Business Card Canvas Mockup */
-    #card-wrapper {
+    /* Left Form Tabs */
+    .bc-panel {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    .form-tabs {
+      display: flex;
+      gap: 6px;
+      background: var(--bg-primary);
+      border: 1px solid var(--border-color);
+      border-radius: 10px;
+      padding: 4px;
+      margin-bottom: 8px;
+    }
+    .form-tab {
+      flex: 1;
+      padding: 7px 10px;
+      font-size: 0.78rem;
+      font-weight: 700;
+      border: none;
+      background: transparent;
+      color: var(--text-secondary);
+      border-radius: 7px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      transition: all 0.15s;
+    }
+    .form-tab.active {
+      background: var(--bg-secondary);
+      color: var(--primary);
+      box-shadow: var(--shadow-sm);
+    }
+
+    /* Template Cards Selector */
+    .template-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+    }
+    .tpl-btn {
+      padding: 10px 6px;
+      border-radius: 8px;
+      border: 1.5px solid var(--border-color);
+      background: var(--bg-primary);
+      color: var(--text-secondary);
+      font-size: 0.74rem;
+      font-weight: 700;
+      cursor: pointer;
+      text-align: center;
+      transition: all 0.15s;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+    }
+    .tpl-btn i { font-size: 1.1rem; }
+    .tpl-btn:hover, .tpl-btn.active {
+      border-color: var(--primary);
+      color: var(--primary);
+      background: color-mix(in srgb, var(--primary) 10%, transparent);
+    }
+
+    /* Right Preview Stage */
+    .preview-stage {
       position: sticky;
       top: 90px;
       display: flex;
       flex-direction: column;
       align-items: center;
+      gap: 20px;
     }
 
-    #card {
+    /* Side Toggle Bar */
+    .side-toggle-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
       width: 100%;
-      max-width: 420px;
-      aspect-ratio: 1.75 / 1;
-      padding: 28px 32px;
-      background-color: #ffffff;
-      border-radius: 16px;
-      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.15);
+      max-width: 480px;
+      background: var(--bg-secondary);
       border: 1px solid var(--border-color);
-      color: #1e293b;
+      border-radius: 12px;
+      padding: 8px 14px;
+    }
+    .side-btn-group {
+      display: flex;
+      gap: 6px;
+    }
+    .side-btn {
+      padding: 6px 14px;
+      border-radius: 8px;
+      border: 1px solid var(--border-color);
+      background: var(--bg-primary);
+      color: var(--text-secondary);
+      font-size: 0.8rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .side-btn.active {
+      background: var(--primary);
+      color: white;
+      border-color: var(--primary);
+    }
+
+    /* 3D Perspective Card Container */
+    .card-3d-scene {
+      width: 100%;
+      max-width: 480px;
+      aspect-ratio: 1.75 / 1;
+      perspective: 1200px;
+    }
+    .card-flipper {
+      width: 100%;
+      height: 100%;
       position: relative;
-      overflow: hidden;
+      transform-style: preserve-3d;
+      transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .card-flipper.flipped {
+      transform: rotateY(180deg);
+    }
+
+    /* Card Sides */
+    .bc-card {
+      position: absolute;
+      inset: 0;
+      backface-visibility: hidden;
+      -webkit-backface-visibility: hidden;
+      border-radius: 16px;
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.25);
+      border: 1px solid var(--border-color);
+      padding: 28px 32px;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
-      transition: background-color 0.3s ease;
+      overflow: hidden;
+      box-sizing: border-box;
+      user-select: none;
+      transition: all 0.3s;
+    }
+    .bc-card-back {
+      transform: rotateY(180deg);
     }
 
-    #card-header {
-      display: flex;
-      align-items: center;
-      gap: 16px;
+    /* Template Theme Styles */
+    /* 1. Modern Minimalist (Light/Dark auto) */
+    .theme-minimal {
+      background: #ffffff;
+      color: #0f172a;
+      border-left: 6px solid var(--card-accent, #4f46e5);
     }
+    .theme-minimal .bc-sub { color: #64748b; }
+    .theme-minimal .bc-divider { background: #e2e8f0; }
 
-    #card img {
-      width: 60px;
-      height: 60px;
+    /* 2. Dark Neon Cyber */
+    .theme-cyber {
+      background: #090d16;
+      color: #f8fafc;
+      border: 1px solid rgba(56, 189, 248, 0.4);
+      box-shadow: 0 0 30px rgba(56, 189, 248, 0.2), inset 0 0 20px rgba(99, 102, 241, 0.1);
+    }
+    .theme-cyber .bc-sub { color: #38bdf8; }
+    .theme-cyber .bc-divider { background: rgba(56, 189, 248, 0.2); }
+
+    /* 3. Luxury Gold & Slate */
+    .theme-luxury {
+      background: linear-gradient(135deg, #111827 0%, #1f2937 100%);
+      color: #fef08a;
+      border: 2px solid #eab308;
+      box-shadow: 0 12px 35px rgba(234, 179, 8, 0.25);
+    }
+    .theme-luxury .bc-sub { color: #fde047; }
+    .theme-luxury .bc-divider { background: rgba(234, 179, 8, 0.3); }
+
+    /* 4. Emerald Forest */
+    .theme-emerald {
+      background: linear-gradient(135deg, #064e3b 0%, #047857 100%);
+      color: #ffffff;
+      border: 1px solid #10b981;
+    }
+    .theme-emerald .bc-sub { color: #a7f3d0; }
+    .theme-emerald .bc-divider { background: rgba(255, 255, 255, 0.2); }
+
+    /* 5. Creative Gradient */
+    .theme-gradient {
+      background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 50%, #ec4899 100%);
+      color: #ffffff;
+    }
+    .theme-gradient .bc-sub { color: rgba(255, 255, 255, 0.85); }
+    .theme-gradient .bc-divider { background: rgba(255, 255, 255, 0.25); }
+
+    /* 6. Executive Navy */
+    .theme-navy {
+      background: #0f172a;
+      color: #ffffff;
+      border-top: 5px solid #38bdf8;
+    }
+    .theme-navy .bc-sub { color: #94a3b8; }
+    .theme-navy .bc-divider { background: rgba(255, 255, 255, 0.1); }
+
+    /* Card Content Formatting */
+    .bc-logo-img {
+      width: 48px;
+      height: 48px;
       border-radius: 50%;
       object-fit: cover;
-      border: 2px solid var(--primary);
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      border: 2px solid currentColor;
+      box-shadow: var(--shadow-sm);
+    }
+    .bc-name {
+      font-size: 1.45rem;
+      font-weight: 800;
+      line-height: 1.15;
+      margin: 0;
+    }
+    .bc-title {
+      font-size: 0.82rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin-top: 3px;
+    }
+    .bc-company {
+      font-size: 0.85rem;
+      font-weight: 700;
+      opacity: 0.95;
+    }
+    .bc-tagline {
+      font-size: 0.72rem;
+      font-style: italic;
+      opacity: 0.8;
+    }
+    .bc-divider {
+      height: 1px;
+      margin: 8px 0;
+    }
+
+    .bc-contact-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6px 12px;
+      font-size: 0.76rem;
+    }
+    .bc-contact-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .bc-contact-item i {
+      width: 14px;
+      text-align: center;
+      opacity: 0.85;
+    }
+
+    .bc-back-content {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      height: 100%;
+    }
+    .bc-qr-box {
+      background: #ffffff;
+      padding: 8px;
+      border-radius: 10px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      box-shadow: var(--shadow-sm);
       flex-shrink: 0;
     }
-
-    #card h2 {
-      margin: 0;
-      font-size: 1.3rem;
-      font-weight: 800;
-      color: inherit;
-      line-height: 1.2;
+    .bc-qr-box canvas {
+      display: block;
+      width: 84px !important;
+      height: 84px !important;
     }
-
-    #card .business-title {
-      font-size: 0.85rem;
-      font-weight: 600;
-      color: #64748b;
-      margin-top: 2px;
+    .bc-qr-lbl {
+      font-size: 0.62rem;
+      font-weight: 800;
+      color: #0f172a;
+      margin-top: 4px;
       text-transform: uppercase;
       letter-spacing: 0.05em;
     }
 
-    #card .divider-line {
-      height: 1px;
-      background: currentColor;
-      opacity: 0.15;
-      margin: 12px 0;
-    }
-
-    #card .contact-info {
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-      font-size: 0.85rem;
-    }
-
-    #card .contact-info p {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      margin: 0;
-      opacity: 0.9;
-    }
-
-    #card .contact-info .icon {
-      font-size: 0.9rem;
-      width: 18px;
-      text-align: center;
-    }
-
-    #card .website {
-      font-size: 0.85rem;
-      font-weight: 600;
-      margin: 0;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .social-icons-preview {
+    /* Action Buttons Row */
+    .download-actions {
       display: flex;
       gap: 10px;
-      margin-top: 16px;
+      width: 100%;
+      max-width: 480px;
+      flex-wrap: wrap;
     }
-
-    .social-icons-preview a {
-      width: 32px;
-      height: 32px;
-      border-radius: 50%;
-      background: var(--bg-tertiary);
-      border: 1px solid var(--border-color);
-      color: var(--text-primary);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      text-decoration: none;
-      font-size: 0.85rem;
+    .download-actions button {
+      flex: 1;
+      min-width: 140px;
     }
   </style>
 </head>
@@ -160,7 +358,7 @@
         <a href="index.html" class="brand-link">
           <img src="https://i.ibb.co/G2NFYHG/logo.png" alt="AI Bots Logo" class="brand-logo-img">
           <span>AI Bots</span>
-          <span class="brand-badge">Card Maker</span>
+          <span class="brand-badge">Card Maker PRO</span>
         </a>
 
         <div class="nav-actions">
@@ -173,210 +371,420 @@
 
   <main class="app-container tool-page-wrapper">
     <div class="tool-header">
-      <span class="tool-header-badge"><i class="fas fa-id-card"></i> Brand Identity</span>
-      <h1 class="tool-title">Business Card Generator</h1>
-      <p class="tool-desc">Fill in your information to generate a modern business card and download in high resolution.</p>
+      <span class="tool-header-badge"><i class="fas fa-id-card"></i> Brand Identity & Print</span>
+      <h1 class="tool-title">Pro Business Card Maker</h1>
+      <p class="tool-desc">Create dual-sided luxury business cards with real scannable QR codes, designer themes, and print-ready PDF download.</p>
     </div>
 
-    <div class="builder-layout">
+    <div class="bc-workspace">
       
-      <!-- Left: Form Controls -->
-      <div class="tool-card-container" style="margin: 0; max-width: 100%;">
-        <div class="form-group">
-          <label class="form-label" for="name"><i class="fas fa-user"></i> Full Name</label>
-          <input type="text" id="name" class="form-control" placeholder="e.g. John Doe" value="John Doe">
+      <!-- Left Panel: Controls & Tabs -->
+      <div class="bc-panel">
+        <div class="form-tabs">
+          <button class="form-tab active" onclick="switchFormTab('info', this)"><i class="fas fa-user-pen"></i> Details</button>
+          <button class="form-tab" onclick="switchFormTab('design', this)"><i class="fas fa-palette"></i> Themes</button>
+          <button class="form-tab" onclick="switchFormTab('qr', this)"><i class="fas fa-qrcode"></i> QR Code</button>
         </div>
 
-        <div class="form-group">
-          <label class="form-label" for="title"><i class="fas fa-briefcase"></i> Business Title / Role</label>
-          <input type="text" id="title" class="form-control" placeholder="e.g. Creative Director & Founder" value="Business Title">
-        </div>
-
-        <div class="form-group">
-          <label class="form-label" for="logo"><i class="fas fa-image"></i> Brand Logo / Profile Photo</label>
-          <input type="file" id="logo" class="form-control" accept="image/*">
-        </div>
-
-        <div class="form-group">
-          <label class="form-label" for="location"><i class="fas fa-location-dot"></i> Location</label>
-          <input type="text" id="location" class="form-control" placeholder="e.g. New York, USA" value="City, Country">
-        </div>
-
-        <div class="form-group">
-          <label class="form-label" for="email"><i class="fas fa-envelope"></i> Email Address</label>
-          <input type="text" id="email" class="form-control" placeholder="e.g. john@example.com" value="john.doe@example.com">
-        </div>
-
-        <div class="form-group">
-          <label class="form-label" for="phone"><i class="fas fa-phone"></i> Phone Number</label>
-          <input type="text" id="phone" class="form-control" placeholder="e.g. +1 234 567 890" value="+1 234 567 890">
-        </div>
-
-        <div class="form-group">
-          <label class="form-label" for="website"><i class="fas fa-globe"></i> Website URL</label>
-          <input type="text" id="website" class="form-control" placeholder="e.g. www.example.com" value="example.com">
-        </div>
-
-        <div class="form-group">
-          <label class="form-label" for="background"><i class="fas fa-palette"></i> Card Background Color</label>
-          <div class="color-picker-wrapper">
-            <input type="color" id="background" class="color-input" value="#ffffff">
-            <span id="colorHex" style="font-family: var(--font-mono); font-size: 0.9rem; color: var(--text-muted);">#ffffff</span>
-          </div>
-        </div>
-
-        <div style="display: flex; gap: 12px; margin-top: 24px;">
-          <button id="generate" class="btn btn-primary" style="flex: 1;">
-            <i class="fas fa-wand-magic-sparkles"></i> Generate Card
-          </button>
-          <button id="clear" class="btn btn-secondary">
-            <i class="fas fa-rotate-left"></i> Reset
-          </button>
-        </div>
-      </div>
-
-      <!-- Right: Live Card Preview & Download -->
-      <div id="card-wrapper">
-        <label class="form-label" style="align-self: flex-start; margin-bottom: 12px;">
-          <i class="fas fa-eye"></i> Live Card Preview
-        </label>
-
-        <div id="card">
-          <div>
-            <div id="card-header">
-              <img id="cardLogoImg" src="https://i.ibb.co/G2NFYHG/logo.png" alt="Logo">
-              <div>
-                <h2 id="cardName">John Doe</h2>
-                <div class="business-title" id="cardTitle">Business Title</div>
-              </div>
+        <!-- Tab 1: Personal / Company Details -->
+        <div id="tab-info">
+          <div style="display: flex; gap: 8px; margin-bottom: 12px;">
+            <div style="flex: 1;">
+              <label class="form-label">FULL NAME</label>
+              <input type="text" id="inpName" class="form-control" value="Rishit Chajjed" placeholder="e.g. Rishit Chajjed" oninput="updateCards()">
             </div>
-
-            <div class="divider-line"></div>
-
-            <div class="contact-info" id="cardContactInfo">
-              <p><span class="icon"><i class="fas fa-location-dot"></i></span> <span id="cardLocation">City, Country</span></p>
-              <p><span class="icon"><i class="fas fa-envelope"></i></span> <span id="cardEmail">john.doe@example.com</span></p>
-              <p><span class="icon"><i class="fas fa-phone"></i></span> <span id="cardPhone">+1 234 567 890</span></p>
+            <div style="width: 110px;">
+              <label class="form-label">LOGO / PHOTO</label>
+              <input type="file" id="inpLogo" class="form-control" accept="image/*" style="padding: 5px; font-size: 0.72rem;" onchange="handleLogo(event)">
             </div>
           </div>
 
-          <div>
-            <div class="divider-line"></div>
-            <p class="website"><span class="icon"><i class="fas fa-globe"></i></span> <span id="cardWebsite">example.com</span></p>
+          <div style="margin-bottom: 12px;">
+            <label class="form-label">JOB TITLE / ROLE</label>
+            <input type="text" id="inpTitle" class="form-control" value="Founder & Lead Architect" placeholder="e.g. Creative Director" oninput="updateCards()">
+          </div>
+
+          <div style="display: flex; gap: 8px; margin-bottom: 12px;">
+            <div style="flex: 1;">
+              <label class="form-label">COMPANY / BRAND</label>
+              <input type="text" id="inpCompany" class="form-control" value="AI Bots Creative Studio" placeholder="Company Name" oninput="updateCards()">
+            </div>
+            <div style="flex: 1;">
+              <label class="form-label">SLOGAN / TAGLINE</label>
+              <input type="text" id="inpTagline" class="form-control" value="Empowering Free Creativity" placeholder="e.g. Innovate & Inspire" oninput="updateCards()">
+            </div>
+          </div>
+
+          <div style="display: flex; gap: 8px; margin-bottom: 12px;">
+            <div style="flex: 1;">
+              <label class="form-label">PHONE NUMBER</label>
+              <input type="text" id="inpPhone" class="form-control" value="+91 98765 43210" placeholder="+1 234 567 890" oninput="updateCards()">
+            </div>
+            <div style="flex: 1;">
+              <label class="form-label">EMAIL ADDRESS</label>
+              <input type="email" id="inpEmail" class="form-control" value="contact@aibots.co.in" placeholder="name@company.com" oninput="updateCards()">
+            </div>
+          </div>
+
+          <div style="display: flex; gap: 8px; margin-bottom: 12px;">
+            <div style="flex: 1;">
+              <label class="form-label">WEBSITE / PORTFOLIO</label>
+              <input type="text" id="inpWebsite" class="form-control" value="www.aibots.co.in" placeholder="www.yourwebsite.com" oninput="updateCards()">
+            </div>
+            <div style="flex: 1;">
+              <label class="form-label">LOCATION</label>
+              <input type="text" id="inpLocation" class="form-control" value="Mumbai, India" placeholder="City, Country" oninput="updateCards()">
+            </div>
           </div>
         </div>
 
-        <div class="social-icons-preview">
-          <a href="#" title="Social Link 1"><i class="fas fa-link"></i></a>
-          <a href="#" title="Social Link 2"><i class="fas fa-share-nodes"></i></a>
-          <a href="#" title="Social Link 3"><i class="fas fa-comment-dots"></i></a>
+        <!-- Tab 2: Designer Themes & Styles -->
+        <div id="tab-design" style="display: none;">
+          <label class="form-label" style="margin-bottom: 8px;">CHOOSE DESIGNER TEMPLATE</label>
+          <div class="template-grid">
+            <button class="tpl-btn active" onclick="setTheme('theme-minimal', this)"><i class="fas fa-minus"></i> Minimalist</button>
+            <button class="tpl-btn" onclick="setTheme('theme-cyber', this)"><i class="fas fa-bolt"></i> Cyber Neon</button>
+            <button class="tpl-btn" onclick="setTheme('theme-luxury', this)"><i class="fas fa-crown"></i> Luxury Gold</button>
+            <button class="tpl-btn" onclick="setTheme('theme-emerald', this)"><i class="fas fa-leaf"></i> Emerald</button>
+            <button class="tpl-btn" onclick="setTheme('theme-gradient', this)"><i class="fas fa-wand-magic-sparkles"></i> Sunset</button>
+            <button class="tpl-btn" onclick="setTheme('theme-navy', this)"><i class="fas fa-building"></i> Executive</button>
+          </div>
+
+          <div style="margin-top: 16px;">
+            <label class="form-label">ACCENT COLOR</label>
+            <div style="display: flex; gap: 10px; align-items: center;">
+              <input type="color" id="accentPicker" value="#4f46e5" class="color-input" onchange="setAccentColor(this.value)">
+              <span id="accentHex" style="font-family: monospace; font-size: 0.85rem; color: var(--text-secondary);">#4f46e5</span>
+            </div>
+          </div>
+
+          <div style="margin-top: 16px;">
+            <label class="form-label">FONT FAMILY</label>
+            <select id="fontPicker" class="form-control" onchange="setFontFamily(this.value)">
+              <option value="'Plus Jakarta Sans', sans-serif">Modern Sans (Plus Jakarta Sans)</option>
+              <option value="Georgia, serif">Classic Luxury (Georgia Serif)</option>
+              <option value="'JetBrains Mono', monospace">Tech Mono (JetBrains Mono)</option>
+            </select>
+          </div>
         </div>
 
-        <button id="download" class="btn btn-success btn-lg" style="width: 100%; max-width: 420px; margin-top: 20px;">
-          <i class="fas fa-download"></i> Download Business Card (PNG)
+        <!-- Tab 3: QR Code Settings -->
+        <div id="tab-qr" style="display: none;">
+          <div style="margin-bottom: 12px;">
+            <label class="form-label">QR CODE LINK TARGET</label>
+            <select id="qrTarget" class="form-control" onchange="updateQr()">
+              <option value="website">Website (www.aibots.co.in)</option>
+              <option value="vcard">Contact vCard (Phone + Email)</option>
+              <option value="email">Direct Email Link</option>
+              <option value="phone">Direct Phone Call Link</option>
+            </select>
+          </div>
+          <div style="margin-bottom: 12px;">
+            <label class="form-label">QR CODE BOTTOM LABEL</label>
+            <input type="text" id="qrLabelInput" class="form-control" value="SCAN TO CONNECT" oninput="document.getElementById('cardQrLabel').textContent = this.value">
+          </div>
+          <p style="font-size: 0.8rem; color: var(--text-muted); line-height: 1.5; margin: 0;">
+            💡 The QR code is generated live with zero server lag. Anyone scanning it with their camera will open your chosen destination instantly.
+          </p>
+        </div>
+
+        <button class="btn btn-secondary btn-sm" onclick="resetDefaults()" style="margin-top: 4px;">
+          <i class="fas fa-rotate-left"></i> Reset to Defaults
         </button>
       </div>
 
+      <!-- Right Panel: Live 3D Interactive Card Preview -->
+      <div class="preview-stage">
+        
+        <div class="side-toggle-row">
+          <span style="font-size: 0.85rem; font-weight: 700; color: var(--text-primary);">
+            <i class="fas fa-eye" style="color: var(--primary); margin-right: 6px;"></i>Interactive Preview
+          </span>
+          <div class="side-btn-group">
+            <button class="side-btn active" id="btnSideFront" onclick="showSide('front')">Front Side</button>
+            <button class="side-btn" id="btnSideBack" onclick="showSide('back')">Back Side (QR)</button>
+          </div>
+        </div>
+
+        <!-- 3D Card Scene -->
+        <div class="card-3d-scene">
+          <div class="card-flipper" id="cardFlipper">
+            
+            <!-- FRONT SIDE -->
+            <div class="bc-card theme-minimal" id="cardFront">
+              <!-- Top Row: Logo & Company -->
+              <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                <div style="display: flex; align-items: center; gap: 12px;">
+                  <img src="https://i.ibb.co/G2NFYHG/logo.png" class="bc-logo-img" id="frontLogo" alt="Brand Logo">
+                  <div>
+                    <div class="bc-company" id="frontCompany">AI Bots Creative Studio</div>
+                    <div class="bc-tagline" id="frontTagline">Empowering Free Creativity</div>
+                  </div>
+                </div>
+                <i class="fas fa-sparkles" style="opacity: 0.4;"></i>
+              </div>
+
+              <!-- Bottom Row: Person Name & Title -->
+              <div>
+                <div class="bc-divider"></div>
+                <div class="bc-name" id="frontName">Rishit Chajjed</div>
+                <div class="bc-title bc-sub" id="frontTitle">Founder & Lead Architect</div>
+              </div>
+            </div>
+
+            <!-- BACK SIDE -->
+            <div class="bc-card bc-card-back theme-minimal" id="cardBack">
+              <div class="bc-back-content">
+                <!-- Left: Contact Details -->
+                <div style="flex: 1; display: flex; flex-direction: column; justify-content: space-between; height: 100%;">
+                  <div>
+                    <div style="font-size: 1.1rem; font-weight: 800;" id="backName">Rishit Chajjed</div>
+                    <div style="font-size: 0.72rem; font-weight: 700;" class="bc-sub" id="backTitle">Founder & Lead Architect</div>
+                    <div class="bc-divider"></div>
+                  </div>
+
+                  <div class="bc-contact-grid">
+                    <div class="bc-contact-item"><i class="fas fa-phone"></i> <span id="backPhone">+91 98765 43210</span></div>
+                    <div class="bc-contact-item"><i class="fas fa-envelope"></i> <span id="backEmail">contact@aibots.co.in</span></div>
+                    <div class="bc-contact-item"><i class="fas fa-globe"></i> <span id="backWebsite">www.aibots.co.in</span></div>
+                    <div class="bc-contact-item"><i class="fas fa-location-dot"></i> <span id="backLocation">Mumbai, India</span></div>
+                  </div>
+                </div>
+
+                <!-- Right: Scannable QR Box -->
+                <div class="bc-qr-box">
+                  <canvas id="cardQrCanvas"></canvas>
+                  <div class="bc-qr-lbl" id="cardQrLabel">SCAN TO CONNECT</div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Download Buttons -->
+        <div class="download-actions">
+          <button class="btn btn-primary" onclick="downloadSide('front')">
+            <i class="fas fa-download"></i> Front (HD PNG)
+          </button>
+          <button class="btn btn-secondary" onclick="downloadSide('back')">
+            <i class="fas fa-download"></i> Back (HD PNG)
+          </button>
+          <button class="btn btn-secondary" style="flex-basis: 100%;" onclick="downloadPrintPDF()">
+            <i class="fas fa-file-pdf"></i> Print-Ready 2-Sided PDF (A4 Sheet)
+          </button>
+        </div>
+
+      </div>
     </div>
   </main>
 
-  <footer class="app-footer">
-    <div class="app-container">
-      <p class="footer-text">&copy; 2026 AI Bots. All rights reserved.</p>
-      <p class="footer-credits">Website designed by <strong>Rishit Chajjed</strong>.</p>
-    </div>
-  </footer>
-
-  <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
-  <script src="js/app.js"></script>
   <script>
-    const nameInput = document.getElementById("name");
-    const titleInput = document.getElementById("title");
-    const locationInput = document.getElementById("location");
-    const emailInput = document.getElementById("email");
-    const phoneInput = document.getElementById("phone");
-    const websiteInput = document.getElementById("website");
-    const logoInput = document.getElementById("logo");
-    const bgInput = document.getElementById("background");
-    const colorHex = document.getElementById("colorHex");
-
-    const card = document.getElementById("card");
-    const cardName = document.getElementById("cardName");
-    const cardTitle = document.getElementById("cardTitle");
-    const cardLocation = document.getElementById("cardLocation");
-    const cardEmail = document.getElementById("cardEmail");
-    const cardPhone = document.getElementById("cardPhone");
-    const cardWebsite = document.getElementById("cardWebsite");
-    const cardLogoImg = document.getElementById("cardLogoImg");
-
+    let currentTheme = 'theme-minimal';
+    let qrGenerator = null;
     let logoDataUrl = "https://i.ibb.co/G2NFYHG/logo.png";
 
-    function updateLivePreview() {
-      cardName.textContent = nameInput.value || "John Doe";
-      cardTitle.textContent = titleInput.value || "Business Title";
-      cardLocation.textContent = locationInput.value || "City, Country";
-      cardEmail.textContent = emailInput.value || "john.doe@example.com";
-      cardPhone.textContent = phoneInput.value || "+1 234 567 890";
-      cardWebsite.textContent = websiteInput.value || "example.com";
-      card.style.backgroundColor = bgInput.value;
-      colorHex.textContent = bgInput.value;
-      
-      // Auto adjust text color contrast
-      const hex = bgInput.value.replace('#', '');
-      const r = parseInt(hex.substr(0, 2), 16);
-      const g = parseInt(hex.substr(2, 2), 16);
-      const b = parseInt(hex.substr(4, 2), 16);
-      const yiq = ((r * 299) + (g * 587) + (b * 114)) / 1000;
-      card.style.color = (yiq >= 128) ? '#1e293b' : '#ffffff';
+    function switchFormTab(tabName, btn) {
+      document.querySelectorAll('.form-tab').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      ['info', 'design', 'qr'].forEach(t => {
+        document.getElementById(`tab-${t}`).style.display = t === tabName ? 'block' : 'none';
+      });
     }
 
-    [nameInput, titleInput, locationInput, emailInput, phoneInput, websiteInput, bgInput].forEach(el => {
-      el.addEventListener('input', updateLivePreview);
-    });
+    function showSide(side) {
+      const flipper = document.getElementById('cardFlipper');
+      const btnF = document.getElementById('btnSideFront');
+      const btnB = document.getElementById('btnSideBack');
 
-    logoInput.addEventListener('change', function(e) {
+      if (side === 'front') {
+        flipper.classList.remove('flipped');
+        btnF.classList.add('active');
+        btnB.classList.remove('active');
+      } else {
+        flipper.classList.add('flipped');
+        btnB.classList.add('active');
+        btnF.classList.remove('active');
+      }
+    }
+
+    function setTheme(themeName, btn) {
+      currentTheme = themeName;
+      document.querySelectorAll('.tpl-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+
+      const front = document.getElementById('cardFront');
+      const back = document.getElementById('cardBack');
+
+      front.className = `bc-card ${themeName}`;
+      back.className = `bc-card bc-card-back ${themeName}`;
+    }
+
+    function setAccentColor(color) {
+      document.getElementById('accentHex').textContent = color;
+      document.getElementById('cardFront').style.setProperty('--card-accent', color);
+      document.getElementById('cardBack').style.setProperty('--card-accent', color);
+    }
+
+    function setFontFamily(font) {
+      document.getElementById('cardFront').style.fontFamily = font;
+      document.getElementById('cardBack').style.fontFamily = font;
+    }
+
+    function handleLogo(e) {
       const file = e.target.files[0];
       if (file) {
         const reader = new FileReader();
-        reader.onload = function(evt) {
-          logoDataUrl = evt.target.result;
-          cardLogoImg.src = logoDataUrl;
-          showToast('Logo updated on card!', 'success');
+        reader.onload = (ev) => {
+          logoDataUrl = ev.target.result;
+          document.getElementById('frontLogo').src = logoDataUrl;
         };
         reader.readAsDataURL(file);
       }
-    });
+    }
 
-    document.getElementById("generate").addEventListener("click", function() {
-      updateLivePreview();
-      showToast('Business Card updated!', 'success');
-    });
+    function updateCards() {
+      const name = document.getElementById('inpName').value || 'Your Name';
+      const title = document.getElementById('inpTitle').value || 'Job Title';
+      const company = document.getElementById('inpCompany').value || 'Company Name';
+      const tagline = document.getElementById('inpTagline').value || 'Tagline or Slogan';
+      const phone = document.getElementById('inpPhone').value || '+1 234 567 890';
+      const email = document.getElementById('inpEmail').value || 'email@example.com';
+      const website = document.getElementById('inpWebsite').value || 'www.example.com';
+      const location = document.getElementById('inpLocation').value || 'City, Country';
 
-    document.getElementById("clear").addEventListener("click", function() {
-      nameInput.value = "";
-      titleInput.value = "";
-      locationInput.value = "";
-      emailInput.value = "";
-      phoneInput.value = "";
-      websiteInput.value = "";
-      logoInput.value = "";
-      bgInput.value = "#ffffff";
-      logoDataUrl = "https://i.ibb.co/G2NFYHG/logo.png";
-      cardLogoImg.src = logoDataUrl;
-      updateLivePreview();
-      showToast('Form cleared', 'info');
-    });
+      document.getElementById('frontName').textContent = name;
+      document.getElementById('frontTitle').textContent = title;
+      document.getElementById('frontCompany').textContent = company;
+      document.getElementById('frontTagline').textContent = tagline;
 
-    document.getElementById("download").addEventListener("click", function() {
-      showToast('Generating high-res card image...', 'info');
-      html2canvas(card, { scale: 3, useCORS: true }).then(function(canvas) {
-        const link = document.createElement("a");
-        link.href = canvas.toDataURL("image/png");
-        link.download = (nameInput.value ? nameInput.value.replace(/\s+/g, '_') : 'business') + "_card.png";
-        link.click();
-        showToast('Card downloaded successfully!', 'success');
+      document.getElementById('backName').textContent = name;
+      document.getElementById('backTitle').textContent = title;
+      document.getElementById('backPhone').textContent = phone;
+      document.getElementById('backEmail').textContent = email;
+      document.getElementById('backWebsite').textContent = website;
+      document.getElementById('backLocation').textContent = location;
+
+      updateQr();
+    }
+
+    function initQr() {
+      const canvas = document.getElementById('cardQrCanvas');
+      qrGenerator = new QRious({
+        element: canvas,
+        value: 'https://www.aibots.co.in',
+        size: 160,
+        level: 'M',
+        foreground: '#0f172a',
+        background: '#ffffff'
       });
+      updateQr();
+    }
+
+    function updateQr() {
+      if (!qrGenerator) return;
+      const targetType = document.getElementById('qrTarget').value;
+      let val = 'https://www.aibots.co.in';
+
+      if (targetType === 'website') {
+        val = document.getElementById('inpWebsite').value || 'https://www.aibots.co.in';
+        if (!val.startsWith('http')) val = 'https://' + val;
+      } else if (targetType === 'email') {
+        val = `mailto:${document.getElementById('inpEmail').value}`;
+      } else if (targetType === 'phone') {
+        val = `tel:${document.getElementById('inpPhone').value}`;
+      } else if (targetType === 'vcard') {
+        const n = document.getElementById('inpName').value;
+        const p = document.getElementById('inpPhone').value;
+        const e = document.getElementById('inpEmail').value;
+        const c = document.getElementById('inpCompany').value;
+        val = `BEGIN:VCARD\nVERSION:3.0\nN:${n}\nORG:${c}\nTEL:${p}\nEMAIL:${e}\nEND:VCARD`;
+      }
+
+      qrGenerator.set({ value: val });
+    }
+
+    function resetDefaults() {
+      document.getElementById('inpName').value = 'Rishit Chajjed';
+      document.getElementById('inpTitle').value = 'Founder & Lead Architect';
+      document.getElementById('inpCompany').value = 'AI Bots Creative Studio';
+      document.getElementById('inpTagline').value = 'Empowering Free Creativity';
+      document.getElementById('inpPhone').value = '+91 98765 43210';
+      document.getElementById('inpEmail').value = 'contact@aibots.co.in';
+      document.getElementById('inpWebsite').value = 'www.aibots.co.in';
+      document.getElementById('inpLocation').value = 'Mumbai, India';
+      logoDataUrl = "https://i.ibb.co/G2NFYHG/logo.png";
+      document.getElementById('frontLogo').src = logoDataUrl;
+      updateCards();
+    }
+
+    async function downloadSide(side) {
+      const cardEl = side === 'front' ? document.getElementById('cardFront') : document.getElementById('cardBack');
+      const name = (document.getElementById('inpName').value.trim() || 'business').replace(/\s+/g, '_');
+
+      // Temporarily ensure card is visible for rendering
+      const isBack = side === 'back';
+      const origTransform = cardEl.style.transform;
+      if (isBack) cardEl.style.transform = 'none';
+
+      try {
+        const canvas = await html2canvas(cardEl, { scale: 3, useCORS: true, backgroundColor: null });
+        const a = document.createElement('a');
+        a.href = canvas.toDataURL('image/png');
+        a.download = `${name}_card_${side}.png`;
+        a.click();
+      } catch(err) {
+        alert("Error saving image: " + err.message);
+      } finally {
+        if (isBack) cardEl.style.transform = origTransform;
+      }
+    }
+
+    async function downloadPrintPDF() {
+      const frontEl = document.getElementById('cardFront');
+      const backEl = document.getElementById('cardBack');
+      const name = (document.getElementById('inpName').value.trim() || 'business').replace(/\s+/g, '_');
+
+      const origBackTransform = backEl.style.transform;
+      backEl.style.transform = 'none';
+
+      try {
+        const frontCanvas = await html2canvas(frontEl, { scale: 3, useCORS: true });
+        const backCanvas = await html2canvas(backEl, { scale: 3, useCORS: true });
+
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
+
+        // A4 page setup with standard 89x51mm business card placement
+        doc.setFontSize(16);
+        doc.setTextColor(15, 23, 42);
+        doc.text("AI Bots — Print-Ready Business Card", 105, 25, { align: 'center' });
+        doc.setFontSize(10);
+        doc.setTextColor(100, 116, 139);
+        doc.text("Standard Size: 3.5\" × 2.0\" (89 mm × 51 mm) · Front & Back Layout", 105, 32, { align: 'center' });
+
+        // Draw Front
+        doc.addImage(frontCanvas.toDataURL('image/jpeg', 0.95), 'JPEG', 60, 45, 89, 51);
+        doc.setFontSize(9);
+        doc.text("▲ FRONT SIDE", 105, 102, { align: 'center' });
+
+        // Draw Back
+        doc.addImage(backCanvas.toDataURL('image/jpeg', 0.95), 'JPEG', 60, 115, 89, 51);
+        doc.text("▲ BACK SIDE (SCANNABLE QR)", 105, 172, { align: 'center' });
+
+        doc.save(`${name}_card_printable_sheet.pdf`);
+      } catch(err) {
+        alert("Error creating PDF: " + err.message);
+      } finally {
+        backEl.style.transform = origBackTransform;
+      }
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      initQr();
+      updateCards();
     });
   </script>
+  <script src="js/app.js"></script>
 </body>
 </html>

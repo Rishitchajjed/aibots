@@ -940,6 +940,14 @@ window.updateDonationQR = function(amt) {
 
   window.recordToolLaunchClick = function(toolId) {
     if (!toolId || toolId === 'index' || toolId === 'admin' || toolId === '#' || toolId.startsWith('http')) return;
+    
+    // Prevent double counting within 3 seconds (e.g. click on card + immediate page load)
+    const debounceKey = `aibots_last_launch_${toolId}`;
+    const lastLaunch = Number(sessionStorage.getItem(debounceKey) || 0);
+    const now = Date.now();
+    if (now - lastLaunch < 3000) return; // Prevent duplicate increment
+    sessionStorage.setItem(debounceKey, now.toString());
+
     try {
       const clicks = JSON.parse(localStorage.getItem('aibots_tool_click_analytics') || '{}');
       clicks[toolId] = (clicks[toolId] || 0) + 1;
@@ -988,12 +996,7 @@ window.updateDonationQR = function(amt) {
     // 2. Detect direct tool page visits (e.g. user opens bookmarked tool page)
     const currentPath = window.location.pathname.split('/').pop().replace('.html', '').trim();
     if (currentPath && currentPath !== 'index' && currentPath !== 'admin' && currentPath !== '') {
-      // Record once per session per tool
-      const sessionKey = `aibots_tracked_${currentPath}`;
-      if (!sessionStorage.getItem(sessionKey)) {
-        sessionStorage.setItem(sessionKey, '1');
-        window.recordToolLaunchClick(currentPath);
-      }
+      window.recordToolLaunchClick(currentPath);
     }
   }
 

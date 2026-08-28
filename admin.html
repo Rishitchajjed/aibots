@@ -971,7 +971,9 @@
         try {
           const res = await fetch(ep, { cache: 'no-store' });
           if (res.ok) {
-            const body = await res.json();
+            const txt = await res.text();
+            const cleanTxt = txt.replace(/^\uFEFF/, '').trim();
+            const body = JSON.parse(cleanTxt);
             const cloudData = (body && typeof body === 'object' && body.data) ? body.data : body;
             if (cloudData && cloudData.admin_password_hash) {
               activeMasterHash = cloudData.admin_password_hash;
@@ -1560,7 +1562,9 @@
         try {
           const res = await fetch(ep, { cache: 'no-store' });
           if (res.ok) {
-            const body = await res.json();
+            const txt = await res.text();
+            const cleanTxt = txt.replace(/^\uFEFF/, '').trim();
+            const body = JSON.parse(cleanTxt);
             const cloud = (body && typeof body === 'object' && body.data) ? body.data : body;
             if (cloud) {
               if (cloud.admin_password_hash) {

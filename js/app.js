@@ -1119,7 +1119,9 @@ window.updateDonationQR = function(amt) {
         const url = endpoint.includes('?') ? endpoint : `${endpoint}?_=${Date.now()}`;
         const res = await fetch(url, { cache: 'no-store' });
         if (res.ok) {
-          const body = await res.json();
+          const txt = await res.text();
+          const cleanTxt = txt.replace(/^\uFEFF/, '').trim();
+          const body = JSON.parse(cleanTxt);
           const cloud = (body && typeof body === 'object' && body.data) ? body.data : body;
           if (cloud) {
             if (cloud.global_maintenance !== undefined) {

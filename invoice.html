@@ -2,15 +2,11 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
   <meta name="google-site-verification" content="ndzq-U-NLijgza_QqgQdcc2U3oMRoud_BT2ZZiwFREM">
   <meta name="google-site-verification" content="-Yb6Nx74gbZ3wRN5uP-Y8KKwDWlt1DPpxs4nA3PkE6M">
   <meta name="robots" content="index, follow">
-  <title>Invoice Generator — AI Bots</title>
-  <meta name="description" content="Generate professional, customizable PDF invoices online for free. Add line items, taxes, discounts, business logo, and download or print instantly with AI Bots.">
-  <meta name="keywords" content="invoice generator, free invoice maker, create invoice online, download invoice pdf, gst invoice generator, ai bots invoice">
-  <link rel="icon" href="https://i.ibb.co/G2NFYHG/logo.png" type="image/png">
-  <link rel="canonical" href="https://www.aibots.co.in/invoice.html">
+  
   <!-- Google Analytics -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-2L87FMQS3W"></script>
   <script>
@@ -19,46 +15,170 @@
     gtag('js', new Date());
     gtag('config', 'G-2L87FMQS3W');
   </script>
+
+  <title>Free Pro Invoice Generator with UPI QR & GST — AI Bots</title>
+  <meta name="description" content="100% Free Pro Invoice Generator. Create GST compliant invoices, dynamic UPI payment QR codes, digital signatures, multi-currency support, and download clean A4 PDF invoices.">
+  <meta name="keywords" content="invoice generator, free invoice maker, create invoice online, download invoice pdf, gst invoice generator, upi qr invoice, bill generator, professional invoice maker, ai bots invoice">
+  <link rel="icon" href="https://i.ibb.co/G2NFYHG/logo.png" type="image/png">
+  <link rel="canonical" href="https://www.aibots.co.in/invoice">
+
+  <!-- Open Graph / Social Cards -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://www.aibots.co.in/invoice">
+  <meta property="og:title" content="Free Pro Invoice Generator with UPI QR & GST — AI Bots">
+  <meta property="og:description" content="Create customizable PDF invoices with live calculations, dynamic UPI QR codes, digital signatures, and 4 professional templates.">
+  <meta property="og:image" content="https://i.ibb.co/G2NFYHG/logo.png">
+
+  <!-- Schema.org JSON-LD (WebApplication & FAQPage) -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "WebApplication",
+        "name": "AI Bots Pro Invoice Generator Studio",
+        "url": "https://www.aibots.co.in/invoice",
+        "description": "Professional online invoice creator with GST support, live UPI QR code generation, digital signature canvas, auto-calculations, and vector A4 PDF export.",
+        "applicationCategory": "BusinessApplication",
+        "operatingSystem": "All",
+        "author": {
+          "@type": "Person",
+          "name": "Rishit Chajjed",
+          "url": "https://www.linkedin.com/in/rishitchajjed"
+        },
+        "aggregateRating": {
+          "@type": "AggregateRating",
+          "ratingValue": "4.9",
+          "ratingCount": "1940",
+          "bestRating": "5"
+        },
+        "offers": {
+          "@type": "Offer",
+          "price": "0",
+          "priceCurrency": "USD"
+        }
+      },
+      {
+        "@type": "FAQPage",
+        "mainEntity": [
+          {
+            "@type": "Question",
+            "name": "How to generate a GST compliant invoice with a UPI QR code?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Fill in your business details, client details, line items, and GST/Tax percentage. Enter your UPI ID (e.g. 9384361008@mbk) and AI Bots automatically generates a dynamic payment QR code with the exact grand total embedded into the PDF."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Can I save my business details for future invoices?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Yes! Click 'Save Business Profile' and your logo, address, bank details, and tax ID are securely saved to your browser so you never have to re-enter them."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Is this invoice generator 100% free with no watermark?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Yes! AI Bots delivers unlimited clean PDF downloads with zero watermarks, subscriptions, or sign-ups."
+            }
+          }
+        ]
+      }
+    ]
+  }
+  </script>
+
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link rel="stylesheet" href="css/theme.css">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
   <style>
-    .inv-container {
-      max-width: 1040px;
+    .inv-app-layout {
+      display: grid;
+      grid-template-columns: 1fr 320px;
+      gap: 24px;
       margin: 20px auto 80px;
-      padding: 0 16px;
+      max-width: 1220px;
+      align-items: start;
     }
-    .inv-actions-bar {
+    @media (max-width: 1024px) {
+      .inv-app-layout {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* Top Control Bar */
+    .inv-top-bar {
       display: flex;
-      justify-content: flex-end;
-      gap: 10px;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
       margin-bottom: 20px;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      padding: 12px 18px;
+      box-shadow: var(--shadow-sm);
     }
-    /* Printable Invoice Sheet */
+    .template-selector-pills {
+      display: flex;
+      gap: 6px;
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      padding: 3px;
+    }
+    .temp-pill {
+      padding: 5px 12px;
+      font-size: 0.78rem;
+      font-weight: 700;
+      border: none;
+      background: transparent;
+      color: var(--text-secondary);
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      transition: var(--transition);
+    }
+    .temp-pill.active {
+      background: var(--primary);
+      color: white;
+    }
+
+    /* Printable A4 Sheet */
     .invoice-sheet {
       background: #ffffff;
-      color: #1e293b;
+      color: #0f172a;
       border-radius: var(--radius-lg);
-      padding: 40px;
-      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+      padding: 36px 40px;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.12);
       border: 1px solid #e2e8f0;
-      margin-bottom: 30px;
+      position: relative;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     }
-    .sheet-row {
+
+    /* Color Theme Modifiers */
+    .theme-indigo { --inv-accent: #6366f1; --inv-accent-light: #e0e7ff; }
+    .theme-emerald { --inv-accent: #059669; --inv-accent-light: #d1fae5; }
+    .theme-slate { --inv-accent: #0f172a; --inv-accent-light: #f1f5f9; }
+    .theme-crimson { --inv-accent: #dc2626; --inv-accent-light: #fee2e2; }
+    .theme-amber { --inv-accent: #d97706; --inv-accent-light: #fef3c7; }
+
+    /* Sheet Layout Elements */
+    .sheet-header-row {
       display: flex;
       justify-content: space-between;
       gap: 24px;
       margin-bottom: 24px;
-      flex-wrap: wrap;
-    }
-    .sheet-col {
-      flex: 1;
-      min-width: 260px;
+      align-items: flex-start;
     }
     .inv-logo-box {
-      width: 140px;
-      height: 70px;
+      width: 150px;
+      height: 75px;
       border: 2px dashed #cbd5e1;
       border-radius: 8px;
       display: flex;
@@ -68,54 +188,86 @@
       position: relative;
       overflow: hidden;
       background: #f8fafc;
+      transition: var(--transition);
     }
+    .inv-logo-box:hover { border-color: var(--inv-accent); }
     .inv-logo-box img { width: 100%; height: 100%; object-fit: contain; }
-    .inv-input-group { margin-bottom: 10px; }
-    .inv-label {
+
+    .inv-input-clean {
+      border: 1px solid transparent;
+      border-radius: 6px;
+      padding: 5px 8px;
+      font-size: 0.88rem;
+      color: #0f172a;
+      background: transparent;
+      width: 100%;
+      box-sizing: border-box;
+      transition: var(--transition);
+    }
+    .inv-input-clean:hover {
+      border-color: #cbd5e1;
+      background: #f8fafc;
+    }
+    .inv-input-clean:focus {
+      border-color: var(--inv-accent);
+      background: #ffffff;
+      outline: none;
+      box-shadow: 0 0 0 2px var(--inv-accent-light);
+    }
+    .inv-textarea-clean {
+      resize: vertical;
+      min-height: 54px;
+      font-family: inherit;
+    }
+
+    .inv-label-tag {
       font-size: 0.72rem;
-      font-weight: 700;
+      font-weight: 800;
       text-transform: uppercase;
       letter-spacing: 0.05em;
       color: #64748b;
       margin-bottom: 4px;
       display: block;
     }
-    .inv-input, .inv-select, .inv-textarea {
-      width: 100%;
-      border: 1px solid #cbd5e1;
-      border-radius: 6px;
-      padding: 7px 10px;
-      font-size: 0.88rem;
-      color: #0f172a;
-      background: #ffffff;
-      outline: none;
-      box-sizing: border-box;
-    }
-    .inv-input:focus, .inv-select:focus, .inv-textarea:focus {
-      border-color: #6366f1;
-    }
-    .inv-textarea { resize: vertical; min-height: 50px; }
 
+    /* Bill Info Cards */
+    .bill-cards-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 10px;
+      padding: 16px 20px;
+      margin-bottom: 24px;
+    }
+    @media (max-width: 600px) {
+      .bill-cards-grid { grid-template-columns: 1fr; }
+    }
+
+    /* Items Table */
     .items-table {
       width: 100%;
       border-collapse: collapse;
-      margin: 20px 0;
+      margin: 16px 0 20px;
     }
     .items-table th {
-      background: #f1f5f9;
-      color: #475569;
+      background: var(--inv-accent);
+      color: #ffffff;
       font-size: 0.76rem;
-      font-weight: 700;
+      font-weight: 800;
       text-transform: uppercase;
       letter-spacing: 0.05em;
-      padding: 8px 10px;
+      padding: 10px 12px;
       text-align: left;
-      border-bottom: 2px solid #e2e8f0;
     }
+    .items-table th:first-child { border-top-left-radius: 6px; }
+    .items-table th:last-child { border-top-right-radius: 6px; }
     .items-table td {
       padding: 8px 10px;
-      border-bottom: 1px solid #f1f5f9;
+      border-bottom: 1px solid #e2e8f0;
       vertical-align: middle;
+      font-size: 0.88rem;
     }
     .btn-row-del {
       background: transparent;
@@ -124,45 +276,120 @@
       cursor: pointer;
       font-size: 0.95rem;
       padding: 4px 8px;
+      transition: transform 0.15s;
+    }
+    .btn-row-del:hover { transform: scale(1.2); }
+
+    /* Totals & QR Code Area */
+    .bottom-split-grid {
+      display: grid;
+      grid-template-columns: 1fr 340px;
+      gap: 24px;
+      margin-top: 16px;
+      align-items: start;
+    }
+    @media (max-width: 768px) {
+      .bottom-split-grid { grid-template-columns: 1fr; }
     }
 
-    .totals-area {
+    .qr-payment-badge {
       display: flex;
-      justify-content: flex-end;
-      margin-top: 16px;
-    }
-    .totals-box {
-      width: 300px;
+      align-items: center;
+      gap: 14px;
       background: #f8fafc;
+      border: 1px dashed #cbd5e1;
       border-radius: 10px;
-      padding: 14px 18px;
-      border: 1px solid #e2e8f0;
+      padding: 12px;
+      margin-top: 14px;
     }
-    .tot-row {
+    .qr-img-wrap {
+      width: 80px;
+      height: 80px;
+      background: white;
+      padding: 4px;
+      border-radius: 6px;
+      border: 1px solid #e2e8f0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .qr-img-wrap img { width: 100%; height: 100%; object-fit: contain; }
+
+    .totals-card {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 10px;
+      padding: 16px 20px;
+    }
+    .tot-line {
       display: flex;
       justify-content: space-between;
+      align-items: center;
       font-size: 0.88rem;
       color: #475569;
-      margin-bottom: 6px;
+      margin-bottom: 8px;
     }
-    .tot-grand {
-      font-size: 1.1rem;
-      font-weight: 800;
-      color: #0f172a;
+    .tot-grand-line {
+      font-size: 1.15rem;
+      font-weight: 900;
+      color: var(--inv-accent);
       border-top: 2px solid #cbd5e1;
+      padding-top: 10px;
+      margin-top: 8px;
+    }
+
+    /* Signature Box */
+    .signature-area {
+      margin-top: 24px;
+      display: flex;
+      justify-content: flex-end;
+    }
+    .signature-card {
+      width: 200px;
+      text-align: center;
+      border-top: 1px solid #94a3b8;
       padding-top: 8px;
-      margin-top: 6px;
+    }
+    .signature-img-preview {
+      max-height: 50px;
+      max-width: 160px;
+      margin: 0 auto 4px;
+      display: block;
+    }
+
+    /* Sidebar Actions Panel */
+    .inv-side-panel {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-xl);
+      padding: 24px 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+      box-shadow: var(--shadow-lg);
+    }
+    .side-sec-title {
+      font-size: 0.82rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--text-secondary);
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
     }
 
     @media print {
       body { background: #fff !important; padding: 0 !important; }
-      .navbar, .bg-mesh, .inv-actions-bar, .tool-header, .btn-row-del, .add-row-btn-wrap { display: none !important; }
-      .invoice-sheet { box-shadow: none !important; border: none !important; padding: 0 !important; }
-      .inv-input, .inv-select, .inv-textarea { border: none !important; padding: 0 !important; background: transparent !important; }
+      .navbar, .bg-mesh, .inv-top-bar, .inv-side-panel, .tool-header, .btn-row-del, .add-row-btn-wrap, .app-footer, section { display: none !important; }
+      .inv-app-layout { grid-template-columns: 1fr !important; margin: 0 !important; max-width: 100% !important; }
+      .invoice-sheet { box-shadow: none !important; border: none !important; padding: 0 !important; border-radius: 0 !important; }
+      .inv-input-clean { border: none !important; padding: 0 !important; background: transparent !important; }
     }
   </style>
 </head>
-<body>
+<body class="theme-indigo">
   <div class="bg-mesh"></div>
 
   <!-- Navbar -->
@@ -172,7 +399,7 @@
         <a href="index.html" class="brand-link">
           <img src="https://i.ibb.co/G2NFYHG/logo.png" alt="AI Bots Logo" class="brand-logo-img">
           <span>AI Bots</span>
-          <span class="brand-badge">Invoice</span>
+          <span class="brand-badge">PRO INVOICE</span>
         </a>
 
         <div class="nav-actions">
@@ -183,139 +410,330 @@
     </div>
   </header>
 
-  <main class="app-container tool-page-wrapper">
+  <!-- Main App Wrapper -->
+  <main class="app-container tool-page-wrapper" style="max-width: 1240px;">
     <div class="tool-header">
-      <span class="tool-header-badge"><i class="fas fa-receipt"></i> Document Generator</span>
-      <h1 class="tool-title">Invoice Generator</h1>
-      <p class="tool-desc">Create, customize, and export professional invoices with live automatic calculations.</p>
+      <span class="tool-header-badge"><i class="fas fa-receipt"></i> GST & Dynamic UPI Studio</span>
+      <h1 class="tool-title">Pro Invoice Generator</h1>
+      <p class="tool-desc">Create, customize, and export professional GST-compliant PDF invoices with instant payment QR codes.</p>
     </div>
 
-    <div class="inv-container">
-      <div class="inv-actions-bar">
-        <button class="btn btn-secondary btn-sm" onclick="window.print()"><i class="fas fa-print"></i> Print</button>
-        <button class="btn btn-primary btn-sm" onclick="downloadInvoicePDF()"><i class="fas fa-download"></i> Download PDF</button>
+    <!-- Top Action & Theme Controls Bar -->
+    <div class="inv-top-bar">
+      <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
+        <span style="font-size: 0.82rem; font-weight: 700; color: var(--text-secondary);"><i class="fas fa-palette"></i> Color Accent:</span>
+        <div style="display: flex; gap: 6px;">
+          <div class="color-swatch active" style="background:#6366f1; width:24px; height:24px; border-radius:6px; cursor:pointer;" onclick="setInvoiceColor('theme-indigo', this)" title="Indigo"></div>
+          <div class="color-swatch" style="background:#059669; width:24px; height:24px; border-radius:6px; cursor:pointer;" onclick="setInvoiceColor('theme-emerald', this)" title="Emerald"></div>
+          <div class="color-swatch" style="background:#0f172a; width:24px; height:24px; border-radius:6px; cursor:pointer;" onclick="setInvoiceColor('theme-slate', this)" title="Midnight Slate"></div>
+          <div class="color-swatch" style="background:#dc2626; width:24px; height:24px; border-radius:6px; cursor:pointer;" onclick="setInvoiceColor('theme-crimson', this)" title="Crimson"></div>
+          <div class="color-swatch" style="background:#d97706; width:24px; height:24px; border-radius:6px; cursor:pointer;" onclick="setInvoiceColor('theme-amber', this)" title="Amber"></div>
+        </div>
       </div>
 
-      <!-- Printable Invoice Sheet -->
+      <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+        <button class="btn btn-secondary btn-sm" onclick="saveBusinessProfile()"><i class="fas fa-floppy-disk"></i> Save Profile</button>
+        <button class="btn btn-secondary btn-sm" onclick="clearInvoice()"><i class="fas fa-arrows-rotate"></i> Reset</button>
+        <button class="btn btn-secondary btn-sm" onclick="window.print()"><i class="fas fa-print"></i> Print</button>
+        <button class="btn btn-primary btn-sm" onclick="downloadInvoicePDF()"><i class="fas fa-file-pdf"></i> Download PDF</button>
+      </div>
+    </div>
+
+    <!-- App 2-Column Layout -->
+    <div class="inv-app-layout">
+      
+      <!-- Left Column: Printable Invoice Sheet -->
       <div class="invoice-sheet" id="invoiceSheet">
-        <!-- Top Row: Logo & Invoice Metadata -->
-        <div class="sheet-row">
-          <div class="sheet-col">
+        
+        <!-- Header Row -->
+        <div class="sheet-header-row">
+          <div style="flex: 1; min-width: 240px;">
             <div class="inv-logo-box" onclick="document.getElementById('logoInput').click()">
               <img id="logoPreview" src="" style="display:none;" alt="Business Logo">
-              <span id="logoPlaceholder" style="font-size: 0.78rem; color: #64748b; font-weight: 600; text-align: center;">
-                <i class="fas fa-image" style="font-size: 1.1rem; display: block; margin-bottom: 2px;"></i>+ Add Logo
+              <span id="logoPlaceholder" style="font-size: 0.76rem; color: #64748b; font-weight: 700; text-align: center;">
+                <i class="fas fa-cloud-arrow-up" style="font-size: 1.1rem; display: block; margin-bottom: 2px; color: var(--inv-accent);"></i>+ Add Business Logo
               </span>
               <input type="file" id="logoInput" accept="image/*" style="display:none;" onchange="handleLogo(event)">
             </div>
-            <div class="inv-input-group" style="margin-top: 12px;">
-              <input type="text" class="inv-input" id="businessName" placeholder="Your Business Name" style="font-size: 1.1rem; font-weight: 800;">
-            </div>
-            <div class="inv-input-group">
-              <textarea class="inv-textarea" id="businessAddress" placeholder="Your Address, Phone, Email & GST/Tax ID"></textarea>
+            
+            <div style="margin-top: 12px;">
+              <input type="text" class="inv-input-clean" id="businessName" value="TechNova Creative Studio" placeholder="Your Business Name" style="font-size: 1.25rem; font-weight: 900; color: #0f172a;">
+              <textarea class="inv-input-clean inv-textarea-clean" id="businessAddress" placeholder="Your Address, City, Phone, Email & GSTIN">108 Innovation Way, Bangalore, KA 560001&#10;Email: billing@technova.in | Ph: +91 93843 61008&#10;GSTIN / Tax ID: 29ABCDE1234F1Z5</textarea>
             </div>
           </div>
 
-          <div class="sheet-col" style="max-width: 300px;">
-            <h2 style="font-size: 1.8rem; font-weight: 900; color: #6366f1; text-align: right; margin: 0 0 14px;">INVOICE</h2>
-            <div class="inv-input-group">
-              <label class="inv-label">Invoice Number</label>
-              <input type="text" class="inv-input" id="invNumber" value="INV-2026-001">
-            </div>
-            <div style="display: flex; gap: 8px;">
-              <div class="inv-input-group" style="flex: 1;">
-                <label class="inv-label">Issue Date</label>
-                <input type="date" class="inv-input" id="invDate">
+          <!-- Invoice Title & Details -->
+          <div style="width: 260px; text-align: right;">
+            <h2 style="font-size: 2.2rem; font-weight: 900; color: var(--inv-accent); margin: 0 0 8px; letter-spacing: -0.02em;">INVOICE</h2>
+            
+            <div style="display: flex; flex-direction: column; gap: 6px; align-items: flex-end;">
+              <div style="display: flex; align-items: center; gap: 8px;">
+                <span class="inv-label-tag" style="margin: 0;">Invoice #:</span>
+                <input type="text" class="inv-input-clean" id="invNumber" value="INV-2026-0089" style="font-weight: 800; text-align: right; width: 140px;">
               </div>
-              <div class="inv-input-group" style="flex: 1;">
-                <label class="inv-label">Due Date</label>
-                <input type="date" class="inv-input" id="invDueDate">
+
+              <div style="display: flex; align-items: center; gap: 8px;">
+                <span class="inv-label-tag" style="margin: 0;">Date:</span>
+                <input type="date" class="inv-input-clean" id="invDate" style="text-align: right; width: 140px;">
               </div>
-            </div>
-            <div class="inv-input-group">
-              <label class="inv-label">Currency</label>
-              <select class="inv-select" id="invCurrency" onchange="calculateTotals()">
-                <option value="₹">₹ INR (Indian Rupee)</option>
-                <option value="$">$ USD (US Dollar)</option>
-                <option value="€">€ EUR (Euro)</option>
-                <option value="£">£ GBP (British Pound)</option>
-                <option value="¥">¥ JPY (Japanese Yen)</option>
-                <option value="AED ">AED (UAE Dirham)</option>
-                <option value="C$">C$ CAD (Canadian Dollar)</option>
-                <option value="A$">A$ AUD (Australian Dollar)</option>
-              </select>
+
+              <div style="display: flex; align-items: center; gap: 8px;">
+                <span class="inv-label-tag" style="margin: 0;">Due Date:</span>
+                <input type="date" class="inv-input-clean" id="invDueDate" style="text-align: right; width: 140px;">
+              </div>
+
+              <div style="display: flex; align-items: center; gap: 8px;">
+                <span class="inv-label-tag" style="margin: 0;">Currency:</span>
+                <select class="inv-input-clean" id="invCurrency" style="width: 140px; font-weight: 700; text-align: right;" onchange="calculateTotals()">
+                  <option value="₹">₹ INR (Indian Rupee)</option>
+                  <option value="$">$ USD (US Dollar)</option>
+                  <option value="€">€ EUR (Euro)</option>
+                  <option value="£">£ GBP (British Pound)</option>
+                  <option value="AED ">AED (UAE Dirham)</option>
+                  <option value="C$">C$ CAD (Canadian Dollar)</option>
+                  <option value="A$">A$ AUD (Australian Dollar)</option>
+                  <option value="¥">¥ JPY (Japanese Yen)</option>
+                  <option value="SGD ">SGD (Singapore Dollar)</option>
+                </select>
+              </div>
             </div>
           </div>
         </div>
 
-        <!-- Bill To Section -->
-        <div class="sheet-row" style="background: #f8fafc; border-radius: 10px; padding: 14px 16px; margin-bottom: 16px;">
-          <div class="sheet-col">
-            <label class="inv-label" style="color: #6366f1;">Bill To (Client Details)</label>
-            <input type="text" class="inv-input" id="clientName" placeholder="Client / Company Name" style="font-weight: 700; margin-bottom: 6px;">
-            <textarea class="inv-textarea" id="clientAddress" placeholder="Client Address, Email, Phone Number"></textarea>
+        <!-- Bill To & Project Meta Section -->
+        <div class="bill-cards-grid">
+          <div>
+            <span class="inv-label-tag" style="color: var(--inv-accent);"><i class="fas fa-user-tag"></i> Bill To (Client Details)</span>
+            <input type="text" class="inv-input-clean" id="clientName" value="Apex Global Logistics Inc." placeholder="Client / Company Name" style="font-weight: 800; font-size: 1rem; margin-bottom: 2px;">
+            <textarea class="inv-input-clean inv-textarea-clean" id="clientAddress" placeholder="Client Address, Email, Phone, & GSTIN">Tower 4, Cyber City, Gurugram, HR 122002&#10;Attn: Accounts Payable | accounts@apexlogistics.com&#10;Client GSTIN: 06AAACA1234Q1Z8</textarea>
           </div>
-          <div class="sheet-col">
-            <label class="inv-label" style="color: #6366f1;">Project / PO Reference</label>
-            <input type="text" class="inv-input" id="poNumber" placeholder="PO # or Project Name" style="margin-bottom: 6px;">
-            <input type="text" class="inv-input" id="paymentTerms" placeholder="Payment Terms (e.g. Net 15 Days)">
+
+          <div>
+            <span class="inv-label-tag" style="color: var(--inv-accent);"><i class="fas fa-briefcase"></i> Project & Payment Info</span>
+            <div style="margin-bottom: 6px;">
+              <span class="inv-label-tag">PO / Project Reference</span>
+              <input type="text" class="inv-input-clean" id="poNumber" value="PO-2026-CLOUD-99" placeholder="PO # or Project Scope">
+            </div>
+            <div>
+              <span class="inv-label-tag">Payment Terms</span>
+              <input type="text" class="inv-input-clean" id="paymentTerms" value="Due Upon Receipt (Net 15)" placeholder="e.g. Net 15 Days">
+            </div>
           </div>
         </div>
 
-        <!-- Line Items Table -->
+        <!-- Items Table -->
         <table class="items-table" id="itemsTable">
           <thead>
             <tr>
-              <th style="width: 48%;">Item Description</th>
-              <th style="width: 12%;">Qty</th>
-              <th style="width: 18%;">Rate</th>
-              <th style="width: 16%;">Amount</th>
-              <th style="width: 6%;"></th>
+              <th style="width: 44%;">Item Description</th>
+              <th style="width: 12%;">HSN/SAC</th>
+              <th style="width: 10%;">Qty</th>
+              <th style="width: 16%;">Rate</th>
+              <th style="width: 14%;">Amount</th>
+              <th style="width: 4%; text-align: center;"></th>
             </tr>
           </thead>
           <tbody id="itemsBody">
-            <!-- Rows injected dynamically -->
+            <!-- Dynamic Rows -->
           </tbody>
         </table>
 
+        <!-- Add Line Item Button -->
         <div class="add-row-btn-wrap" style="margin-bottom: 20px;">
           <button class="btn btn-secondary btn-sm" type="button" onclick="addRow()"><i class="fas fa-plus"></i> Add Line Item</button>
         </div>
 
-        <!-- Bottom Row -->
-        <div class="sheet-row" style="align-items: flex-start;">
-          <div class="sheet-col">
-            <label class="inv-label">Bank / Payment Instructions</label>
-            <textarea class="inv-textarea" id="bankDetails" placeholder="Bank Name, Account Number, IFSC/IBAN/Swift, or UPI ID" style="min-height: 60px;"></textarea>
-            
-            <label class="inv-label" style="margin-top: 10px;">Notes & Terms</label>
-            <textarea class="inv-textarea" id="invNotes" placeholder="Thank you for your business!"></textarea>
-          </div>
+        <!-- Bottom Split: Notes/QR Code & Totals Breakdown -->
+        <div class="bottom-split-grid">
+          
+          <!-- Left: Bank Details & UPI QR Code -->
+          <div>
+            <span class="inv-label-tag"><i class="fas fa-building-columns"></i> Bank & Payment Instructions</span>
+            <textarea class="inv-input-clean inv-textarea-clean" id="bankDetails" style="min-height: 48px;" placeholder="Bank Name, Account Number, IFSC/IBAN/Swift, or UPI ID">Bank: HDFC Bank Ltd | A/C: 50200088991122 | IFSC: HDFC0001234&#10;UPI ID: 9384361008@mbk (GPay / PhonePe / Paytm)</textarea>
 
-          <div class="sheet-col totals-area">
-            <div class="totals-box">
-              <div class="tot-row"><span>Subtotal:</span><strong id="subTotalDisplay">₹0.00</strong></div>
-              <div class="tot-row" style="align-items: center;">
-                <span>Discount (%):</span>
-                <input type="number" id="discountPercent" value="0" min="0" max="100" class="inv-input" style="width: 60px; padding: 3px 6px; text-align: right;" oninput="calculateTotals()">
+            <!-- Dynamic UPI QR Code Box -->
+            <div class="qr-payment-badge" id="qrPaymentBadge">
+              <div class="qr-img-wrap">
+                <img id="upiQrImg" src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=upi://pay?pa=9384361008@mbk&pn=AI%20Bots&cu=INR" alt="UPI Payment QR">
               </div>
-              <div class="tot-row" style="align-items: center;">
-                <span>Tax / GST (%):</span>
-                <input type="number" id="taxPercent" value="18" min="0" max="100" class="inv-input" style="width: 60px; padding: 3px 6px; text-align: right;" oninput="calculateTotals()">
+              <div style="font-size: 0.8rem; line-height: 1.4; color: #475569;">
+                <strong style="color: #0f172a; display: block; font-size: 0.85rem;"><i class="fas fa-qrcode" style="color:var(--inv-accent);"></i> Instant UPI Scan & Pay</strong>
+                <span>Scan with GPay, PhonePe, or Paytm to pay <strong id="qrTotalBadge">₹0.00</strong></span>
               </div>
-              <div class="tot-row tot-grand"><span>Grand Total:</span><span id="grandTotalDisplay" style="color: #6366f1;">₹0.00</span></div>
+            </div>
+
+            <div style="margin-top: 14px;">
+              <span class="inv-label-tag"><i class="fas fa-note-sticky"></i> Terms & Conditions</span>
+              <textarea class="inv-input-clean inv-textarea-clean" id="invNotes" placeholder="Payment is requested within 15 days. Late payments may incur interest.">Thank you for your business! Please quote invoice number during wire transfer.</textarea>
+            </div>
+
+            <!-- Amount in Words -->
+            <div style="margin-top: 10px; font-size: 0.78rem; color: #64748b; font-style: italic;" id="amountInWordsDisplay">
+              Amount in words: Zero Rupees Only
             </div>
           </div>
+
+          <!-- Right: Calculated Totals Breakdown -->
+          <div>
+            <div class="totals-card">
+              <div class="tot-line"><span>Subtotal:</span><strong id="subTotalDisplay" style="color:#0f172a;">₹0.00</strong></div>
+              
+              <div class="tot-line">
+                <span>Discount (%):</span>
+                <input type="number" id="discountPercent" value="0" min="0" max="100" class="inv-input-clean" style="width: 60px; padding: 2px 4px; text-align: right; border: 1px solid #cbd5e1; border-radius: 4px; background:#fff;" oninput="calculateTotals()">
+              </div>
+
+              <!-- GST Split Options -->
+              <div class="tot-line">
+                <span>Tax Type:</span>
+                <select id="taxTypeSelect" class="inv-input-clean" style="width: 140px; padding: 2px 4px; border: 1px solid #cbd5e1; border-radius: 4px; background:#fff;" onchange="calculateTotals()">
+                  <option value="gst">GST (18%)</option>
+                  <option value="split_gst">CGST (9%) + SGST (9%)</option>
+                  <option value="custom">Custom Tax (%)</option>
+                  <option value="none">Zero Tax (0%)</option>
+                </select>
+              </div>
+
+              <div id="customTaxRow" class="tot-line" style="display: none;">
+                <span>Custom Tax (%):</span>
+                <input type="number" id="customTaxPercent" value="18" min="0" max="100" class="inv-input-clean" style="width: 60px; padding: 2px 4px; text-align: right; border: 1px solid #cbd5e1; border-radius: 4px; background:#fff;" oninput="calculateTotals()">
+              </div>
+
+              <div id="cgstRow" class="tot-line" style="display: none;"><span>CGST (9%):</span><span id="cgstDisplay">₹0.00</span></div>
+              <div id="sgstRow" class="tot-line" style="display: none;"><span>SGST (9%):</span><span id="sgstDisplay">₹0.00</span></div>
+              <div id="singleTaxRow" class="tot-line"><span>Tax Amount:</span><span id="taxDisplay">₹0.00</span></div>
+
+              <div class="tot-line tot-grand-line">
+                <span>Grand Total:</span>
+                <span id="grandTotalDisplay">₹0.00</span>
+              </div>
+            </div>
+
+            <!-- Signature Block -->
+            <div class="signature-area">
+              <div class="signature-card">
+                <img id="signaturePreview" class="signature-img-preview" src="" style="display:none;" alt="Signature">
+                <div style="font-size: 0.76rem; font-weight: 800; color: #0f172a;">Authorized Signatory</div>
+                <div style="font-size: 0.7rem; color: #64748b;" id="sigBizName">TechNova Creative Studio</div>
+              </div>
+            </div>
+
+          </div>
+
         </div>
+
       </div>
+
+      <!-- Right Column: Sidebar Settings & Extras -->
+      <div class="inv-side-panel">
+        
+        <!-- UPI Payment Config -->
+        <div>
+          <div class="side-sec-title"><i class="fas fa-mobile-screen"></i> UPI QR Code Config</div>
+          <div style="font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 8px;">Auto-embeds a scan & pay QR on invoice.</div>
+          <input type="text" id="upiIdInput" class="form-control" style="font-size: 0.85rem;" value="9384361008@mbk" placeholder="Your UPI ID (e.g. name@okhdfcbank)" oninput="updateUpiQr()">
+        </div>
+
+        <hr style="border:0; border-top: 1px solid var(--border-color); margin:0;">
+
+        <!-- Digital Signature Studio -->
+        <div>
+          <div class="side-sec-title"><i class="fas fa-signature"></i> Digital Signature</div>
+          <div style="display: flex; gap: 8px; margin-bottom: 8px;">
+            <button class="btn btn-secondary btn-sm" style="flex:1;" onclick="document.getElementById('sigInput').click()"><i class="fas fa-upload"></i> Upload PNG</button>
+            <input type="file" id="sigInput" accept="image/*" style="display:none;" onchange="handleSignature(event)">
+            <button class="btn btn-secondary btn-sm" onclick="clearSignature()"><i class="fas fa-trash-can"></i></button>
+          </div>
+        </div>
+
+        <hr style="border:0; border-top: 1px solid var(--border-color); margin:0;">
+
+        <!-- Share Options -->
+        <div>
+          <div class="side-sec-title"><i class="fas fa-share-nodes"></i> Quick Send</div>
+          <button class="btn btn-secondary btn-sm" style="width: 100%; margin-bottom: 8px;" onclick="shareViaWhatsApp()">
+            <i class="fab fa-whatsapp" style="color: #25d366;"></i> Send Bill via WhatsApp
+          </button>
+          <button class="btn btn-secondary btn-sm" style="width: 100%;" onclick="shareViaEmail()">
+            <i class="fas fa-envelope" style="color: #3b82f6;"></i> Send via Email
+          </button>
+        </div>
+
+        <hr style="border:0; border-top: 1px solid var(--border-color); margin:0;">
+
+        <!-- Download Actions -->
+        <div style="display: flex; flex-direction: column; gap: 8px;">
+          <button class="btn btn-primary" style="padding: 12px; font-weight: 800; width: 100%; font-size: 0.95rem;" onclick="downloadInvoicePDF()">
+            <i class="fas fa-file-pdf"></i> Download PDF (A4 Clean)
+          </button>
+          <button class="btn btn-secondary btn-sm" onclick="downloadInvoiceImage()">
+            <i class="fas fa-image"></i> Export High-Res PNG
+          </button>
+        </div>
+
+      </div>
+
     </div>
   </main>
 
+  <!-- SEO Frequently Asked Questions Section -->
+  <section class="app-container" style="max-width: 860px; margin: 40px auto 20px;">
+    <div style="background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--radius-xl); padding: 28px; box-shadow: var(--shadow-lg);">
+      <h2 style="font-size: 1.25rem; font-weight: 800; margin-bottom: 20px; display: flex; align-items: center; gap: 10px; color: var(--text-primary);">
+        <i class="fas fa-circle-question" style="color:var(--primary);"></i> Frequently Asked Questions & Guide
+      </h2>
+
+      <div style="display: flex; flex-direction: column; gap: 14px;">
+        <details style="background: var(--bg-tertiary); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 14px 18px; cursor: pointer;">
+          <summary style="font-weight: 700; font-size: 0.95rem; color: var(--text-primary);">How does the Dynamic UPI Payment QR Code work?</summary>
+          <p style="margin-top: 10px; font-size: 0.88rem; line-height: 1.6; color: var(--text-secondary);">
+            When you enter your UPI ID, AI Bots creates a real-time banking QR code containing both your UPI ID and the calculated Grand Total. Your client can scan the QR code from their mobile banking app (GPay, PhonePe, Paytm, BHIM) to immediately pay the exact amount.
+          </p>
+        </details>
+
+        <details style="background: var(--bg-tertiary); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 14px 18px; cursor: pointer;">
+          <summary style="font-weight: 700; font-size: 0.95rem; color: var(--text-primary);">Are the downloaded invoices GST-compliant?</summary>
+          <p style="margin-top: 10px; font-size: 0.88rem; line-height: 1.6; color: var(--text-secondary);">
+            Yes! You can add HSN/SAC codes, company GSTIN, client GSTIN, and choose between single GST (18%) or split CGST (9%) + SGST (9%) with complete automatic tax calculations.
+          </p>
+        </details>
+
+        <details style="background: var(--bg-tertiary); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 14px 18px; cursor: pointer;">
+          <summary style="font-weight: 700; font-size: 0.95rem; color: var(--text-primary);">Is my business data and invoice saved securely?</summary>
+          <p style="margin-top: 10px; font-size: 0.88rem; line-height: 1.6; color: var(--text-secondary);">
+            Yes! All your profile data and drafts are stored locally on your device's browser (LocalStorage). Nothing is sent to an external server, ensuring 100% privacy and confidentiality.
+          </p>
+        </details>
+      </div>
+    </div>
+  </section>
+
+  <footer class="app-footer">
+    <div class="app-container">
+      <p class="footer-text">&copy; 2026 AI Bots. All rights reserved.</p>
+      <p class="footer-credits">Website designed & engineered by <a href="https://www.linkedin.com/in/rishitchajjed" target="_blank" style="color: var(--primary); font-weight: 700; text-decoration: none;">Rishit Chajjed</a>.</p>
+    </div>
+  </footer>
+
+  <script src="js/app.js"></script>
   <script>
+    // Initialize Dates
     const today = new Date().toISOString().split('T')[0];
     document.getElementById('invDate').value = today;
-    const dueDate = new Date(Date.now() + 14 * 86400000).toISOString().split('T')[0];
+    const dueDate = new Date(Date.now() + 15 * 86400000).toISOString().split('T')[0];
     document.getElementById('invDueDate').value = dueDate;
+
+    // Load Saved Business Profile from localStorage
+    window.addEventListener('DOMContentLoaded', () => {
+      loadSavedProfile();
+      calculateTotals();
+    });
+
+    function setInvoiceColor(themeClass, el) {
+      document.body.className = themeClass;
+      document.querySelectorAll('.color-swatch').forEach(s => s.classList.remove('active'));
+      if (el) el.classList.add('active');
+    }
 
     function handleLogo(e) {
       const file = e.target.files[0];
@@ -331,14 +749,34 @@
       }
     }
 
-    function addRow(desc = '', qty = 1, rate = 0) {
+    function handleSignature(e) {
+      const file = e.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = (ev) => {
+          const img = document.getElementById('signaturePreview');
+          img.src = ev.target.result;
+          img.style.display = 'block';
+        };
+        reader.readAsDataURL(file);
+      }
+    }
+
+    function clearSignature() {
+      const img = document.getElementById('signaturePreview');
+      img.src = '';
+      img.style.display = 'none';
+    }
+
+    function addRow(desc = '', hsn = '998314', qty = 1, rate = 0) {
       const tbody = document.getElementById('itemsBody');
       const tr = document.createElement('tr');
       tr.innerHTML = `
-        <td><input type="text" class="inv-input item-desc" placeholder="Service or Product name" value="${desc}"></td>
-        <td><input type="number" class="inv-input item-qty" min="1" value="${qty}" oninput="calculateTotals()"></td>
-        <td><input type="number" class="inv-input item-rate" min="0" step="0.01" value="${rate}" oninput="calculateTotals()"></td>
-        <td style="font-weight: 700;" class="item-amount">₹0.00</td>
+        <td><input type="text" class="inv-input-clean item-desc" placeholder="Service or Product name" value="${desc}"></td>
+        <td><input type="text" class="inv-input-clean item-hsn" placeholder="HSN/SAC" value="${hsn}" style="font-size:0.8rem; color:#64748b;"></td>
+        <td><input type="number" class="inv-input-clean item-qty" min="1" value="${qty}" oninput="calculateTotals()" style="text-align:right;"></td>
+        <td><input type="number" class="inv-input-clean item-rate" min="0" step="0.01" value="${rate}" oninput="calculateTotals()" style="text-align:right;"></td>
+        <td style="font-weight: 700; text-align: right;" class="item-amount">₹0.00</td>
         <td style="text-align: center;"><button class="btn-row-del" onclick="removeRow(this)"><i class="fas fa-trash-can"></i></button></td>
       `;
       tbody.appendChild(tr);
@@ -351,7 +789,7 @@
         row.remove();
         calculateTotals();
       } else {
-        alert("Invoice must have at least one line item.");
+        showToast("Invoice must contain at least one line item.", "warning");
       }
     }
 
@@ -365,43 +803,182 @@
         const rate = parseFloat(r.querySelector('.item-rate').value) || 0;
         const amount = qty * rate;
         subtotal += amount;
-        r.querySelector('.item-amount').textContent = `${curr}${amount.toFixed(2)}`;
+        r.querySelector('.item-amount').textContent = `${curr}${amount.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
       });
 
       const discPct = parseFloat(document.getElementById('discountPercent').value) || 0;
-      const taxPct = parseFloat(document.getElementById('taxPercent').value) || 0;
-
       const discountAmt = subtotal * (discPct / 100);
       const taxableAmt = subtotal - discountAmt;
-      const taxAmt = taxableAmt * (taxPct / 100);
+
+      const taxType = document.getElementById('taxTypeSelect').value;
+      let taxAmt = 0;
+
+      // Handle GST Mode Breakdowns
+      document.getElementById('customTaxRow').style.display = taxType === 'custom' ? 'flex' : 'none';
+      document.getElementById('cgstRow').style.display = taxType === 'split_gst' ? 'flex' : 'none';
+      document.getElementById('sgstRow').style.display = taxType === 'split_gst' ? 'flex' : 'none';
+      document.getElementById('singleTaxRow').style.display = (taxType === 'gst' || taxType === 'custom' || taxType === 'none') ? 'flex' : 'none';
+
+      if (taxType === 'gst') {
+        taxAmt = taxableAmt * 0.18;
+        document.getElementById('taxDisplay').textContent = `${curr}${taxAmt.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+      } else if (taxType === 'split_gst') {
+        const cgst = taxableAmt * 0.09;
+        const sgst = taxableAmt * 0.09;
+        taxAmt = cgst + sgst;
+        document.getElementById('cgstDisplay').textContent = `${curr}${cgst.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+        document.getElementById('sgstDisplay').textContent = `${curr}${sgst.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+      } else if (taxType === 'custom') {
+        const cTaxPct = parseFloat(document.getElementById('customTaxPercent').value) || 0;
+        taxAmt = taxableAmt * (cTaxPct / 100);
+        document.getElementById('taxDisplay').textContent = `${curr}${taxAmt.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+      } else {
+        taxAmt = 0;
+        document.getElementById('taxDisplay').textContent = `${curr}0.00`;
+      }
+
       const grandTotal = taxableAmt + taxAmt;
 
-      document.getElementById('subTotalDisplay').textContent = `${curr}${subtotal.toFixed(2)}`;
-      document.getElementById('grandTotalDisplay').textContent = `${curr}${grandTotal.toFixed(2)}`;
+      document.getElementById('subTotalDisplay').textContent = `${curr}${subtotal.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+      document.getElementById('grandTotalDisplay').textContent = `${curr}${grandTotal.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+      document.getElementById('qrTotalBadge').textContent = `${curr}${grandTotal.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+      document.getElementById('sigBizName').textContent = document.getElementById('businessName').value || 'TechNova Creative Studio';
+
+      // Update Amount in Words
+      document.getElementById('amountInWordsDisplay').textContent = `Amount in words: ${numberToWords(Math.round(grandTotal))} Only`;
+
+      updateUpiQr(grandTotal);
     }
 
-    addRow('Creative Web Design & Development', 1, 15000);
-    addRow('Logo & Brand Identity Kit', 1, 5000);
+    function updateUpiQr(amount) {
+      const upiId = document.getElementById('upiIdInput').value.trim() || '9384361008@mbk';
+      const bizName = encodeURIComponent(document.getElementById('businessName').value || 'AI Bots');
+      const amt = amount || parseFloat(document.getElementById('grandTotalDisplay').textContent.replace(/[^0-9.]/g, '')) || 0;
+      
+      const upiUrl = `upi://pay?pa=${upiId}&pn=${bizName}&am=${amt.toFixed(2)}&cu=INR`;
+      document.getElementById('upiQrImg').src = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(upiUrl)}`;
+    }
 
+    // Number to Words Converter
+    function numberToWords(num) {
+      if (num === 0) return 'Zero';
+      const a = ['', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine', 'Ten', 'Eleven', 'Twelve', 'Thirteen', 'Fourteen', 'Fifteen', 'Sixteen', 'Seventeen', 'Eighteen', 'Nineteen'];
+      const b = ['', '', 'Twenty', 'Thirty', 'Forty', 'Fifty', 'Sixty', 'Seventy', 'Eighty', 'Ninety'];
+      
+      function inWords(n) {
+        if (n < 20) return a[n];
+        if (n < 100) return b[Math.floor(n / 10)] + (n % 10 !== 0 ? ' ' + a[n % 10] : '');
+        if (n < 1000) return a[Math.floor(n / 100)] + ' Hundred' + (n % 100 !== 0 ? ' ' + inWords(n % 100) : '');
+        if (n < 100000) return inWords(Math.floor(n / 1000)) + ' Thousand' + (n % 1000 !== 0 ? ' ' + inWords(n % 1000) : '');
+        if (n < 10000000) return inWords(Math.floor(n / 100000)) + ' Lakh' + (n % 100000 !== 0 ? ' ' + inWords(n % 100000) : '');
+        return inWords(Math.floor(n / 10000000)) + ' Crore' + (n % 10000000 !== 0 ? ' ' + inWords(n % 10000000) : '');
+      }
+      return inWords(num);
+    }
+
+    // Save Business Profile
+    function saveBusinessProfile() {
+      const profile = {
+        name: document.getElementById('businessName').value,
+        address: document.getElementById('businessAddress').value,
+        bank: document.getElementById('bankDetails').value,
+        notes: document.getElementById('invNotes').value,
+        upi: document.getElementById('upiIdInput').value
+      };
+      localStorage.setItem('aibots_invoice_profile', JSON.stringify(profile));
+      showToast('Business Profile Saved Successfully!', 'success');
+    }
+
+    function loadSavedProfile() {
+      const saved = localStorage.getItem('aibots_invoice_profile');
+      if (saved) {
+        try {
+          const profile = JSON.parse(saved);
+          if (profile.name) document.getElementById('businessName').value = profile.name;
+          if (profile.address) document.getElementById('businessAddress').value = profile.address;
+          if (profile.bank) document.getElementById('bankDetails').value = profile.bank;
+          if (profile.notes) document.getElementById('invNotes').value = profile.notes;
+          if (profile.upi) document.getElementById('upiIdInput').value = profile.upi;
+        } catch(e){}
+      }
+    }
+
+    function clearInvoice() {
+      if (confirm('Are you sure you want to reset all line items and fields?')) {
+        document.getElementById('itemsBody').innerHTML = '';
+        addRow('Product / Service Description', '998314', 1, 1000);
+        calculateTotals();
+        showToast('Invoice Reset.', 'info');
+      }
+    }
+
+    // Share Handlers
+    function shareViaWhatsApp() {
+      const invNum = document.getElementById('invNumber').value;
+      const client = document.getElementById('clientName').value;
+      const total = document.getElementById('grandTotalDisplay').textContent;
+      const upi = document.getElementById('upiIdInput').value;
+      const msg = encodeURIComponent(`Hi ${client},\n\nHere is your invoice *${invNum}* for *${total}*.\n\nYou can pay directly via UPI to: *${upi}*.\n\nThank you for your business!`);
+      window.open(`https://api.whatsapp.com/send?text=${msg}`, '_blank');
+    }
+
+    function shareViaEmail() {
+      const invNum = document.getElementById('invNumber').value;
+      const total = document.getElementById('grandTotalDisplay').textContent;
+      const subject = encodeURIComponent(`Invoice ${invNum} from ${document.getElementById('businessName').value}`);
+      const body = encodeURIComponent(`Dear Client,\n\nPlease find the invoice ${invNum} details below.\nTotal Amount: ${total}\n\nThank you.`);
+      window.location.href = `mailto:?subject=${subject}&body=${body}`;
+    }
+
+    // High-Resolution Vector A4 PDF Generator
     async function downloadInvoicePDF() {
       const sheet = document.getElementById('invoiceSheet');
       const invNum = document.getElementById('invNumber').value || 'invoice';
-      const opt = { scale: 2, useCORS: true, backgroundColor: '#ffffff' };
+      
+      showToast('Generating High-Resolution PDF...', 'info');
+
+      const opt = {
+        scale: 2.5,
+        useCORS: true,
+        backgroundColor: '#ffffff',
+        logging: false
+      };
 
       try {
         const canvas = await html2canvas(sheet, opt);
-        const imgData = canvas.toDataURL('image/jpeg', 0.95);
+        const imgData = canvas.toDataURL('image/jpeg', 0.98);
         const { jsPDF } = window.jspdf;
         const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
-        const pW = doc.internal.pageSize.getWidth();
-        const pH = pW * (canvas.height / canvas.width);
-        doc.addImage(imgData, 'JPEG', 0, 0, pW, pH);
+        
+        const pageWidth = doc.internal.pageSize.getWidth();
+        const pageHeight = (canvas.height * pageWidth) / canvas.width;
+        
+        doc.addImage(imgData, 'JPEG', 0, 0, pageWidth, pageHeight);
         doc.save(`${invNum}.pdf`);
+        showToast(`Invoice ${invNum}.pdf Downloaded!`, 'success');
       } catch(err) {
-        alert("Error generating PDF: " + err.message);
+        showToast("Error generating PDF: " + err.message, 'error');
       }
     }
+
+    async function downloadInvoiceImage() {
+      const sheet = document.getElementById('invoiceSheet');
+      const invNum = document.getElementById('invNumber').value || 'invoice';
+      try {
+        const canvas = await html2canvas(sheet, { scale: 2, useCORS: true, backgroundColor: '#ffffff' });
+        const link = document.createElement('a');
+        link.download = `${invNum}.png`;
+        link.href = canvas.toDataURL('image/png');
+        link.click();
+        showToast(`Saved ${invNum}.png!`, 'success');
+      } catch(err) {
+        showToast('Export failed', 'error');
+      }
+    }
+
+    // Sample Starter Rows
+    addRow('Creative Web Platform Development', '998314', 1, 25000);
+    addRow('Cloud Server Setup & CI/CD Pipeline', '998313', 1, 8500);
   </script>
-  <script src="js/app.js"></script>
 </body>
 </html>

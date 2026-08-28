@@ -842,7 +842,10 @@
               <h2 class="admin-card-title"><i class="fas fa-chart-simple" style="color: var(--primary);"></i> Worldwide Tool Popularity & Live Search Stream</h2>
               <span style="font-size: 0.82rem; color: var(--text-secondary);">Aggregated in real-time across all global visitors and synced to 24/7 cloud.</span>
             </div>
-            <button onclick="clearAnalyticsData()" class="btn btn-secondary btn-sm"><i class="fas fa-trash"></i> Reset Analytics</button>
+            <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+              <button onclick="fetchCloudConfig(true)" class="btn btn-primary btn-sm"><i class="fas fa-rotate"></i> Refresh Telemetry</button>
+              <button onclick="clearAnalyticsData()" class="btn btn-secondary btn-sm"><i class="fas fa-trash"></i> Reset Analytics</button>
+            </div>
           </div>
 
           <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 24px;">

@@ -924,43 +924,78 @@ window.updateDonationQR = function(amt) {
     } catch(e) {}
   }
 
-  // Global Cloud Analytics Logger
+  // Global Cloud Analytics Logger (Worldwide Multi-Device Telemetry)
+  const CLOUD_ANALYTICS_WRITE_URL = 'https://crudcrud.com/api/db2fa025fac8487897e087d9d41a96ea/config/6a91b9fd2d7ee403e856d304';
+  const CLOUD_ANALYTICS_READ_URL = 'https://crudcrud.com/api/db2fa025fac8487897e087d9d41a96ea/config';
+  const CLOUD_ANALYTICS_FALLBACK_URL = 'https://extendsclass.com/api/json-storage/bin/adebbab';
+
   let analyticsSyncTimer = null;
   function syncAnalyticsToCloud() {
     clearTimeout(analyticsSyncTimer);
     analyticsSyncTimer = setTimeout(async () => {
       try {
-        const res = await fetch(AIBOTS_CLOUD_API, { cache: 'no-store' });
-        if (res.ok) {
-          const body = await res.json();
-          const cloud = (body && typeof body === 'object' && body.data) ? body.data : body;
-          const localClicks = JSON.parse(localStorage.getItem('aibots_tool_click_analytics') || '{}');
-          const localSearches = JSON.parse(localStorage.getItem('aibots_search_query_log') || '[]');
+        let cloud = null;
+        try {
+          const res = await fetch(`${CLOUD_ANALYTICS_READ_URL}?_=${Date.now()}`, { cache: 'no-store' });
+          if (res.ok) {
+            const txt = await res.text();
+            let parsed = JSON.parse(txt.replace(/^\uFEFF/, '').trim());
+            if (Array.isArray(parsed) && parsed.length > 0) parsed = parsed[0];
+            cloud = parsed;
+          }
+        } catch (e) {}
 
-          const mergedClicks = { ...(cloud.analytics_clicks || {}) };
-          Object.keys(localClicks).forEach(k => {
-            if (!mergedClicks[k] || localClicks[k] > mergedClicks[k]) {
-              mergedClicks[k] = localClicks[k];
+        if (!cloud) {
+          try {
+            const res = await fetch(`${CLOUD_ANALYTICS_FALLBACK_URL}?_=${Date.now()}`, { cache: 'no-store' });
+            if (res.ok) {
+              const txt = await res.text();
+              cloud = JSON.parse(txt.replace(/^\uFEFF/, '').trim());
             }
-          });
+          } catch (e) {}
+        }
 
-          const searchSet = new Set([...(cloud.analytics_searches || []), ...localSearches]);
-          const mergedSearches = Array.from(searchSet).slice(-50);
+        const localClicks = JSON.parse(localStorage.getItem('aibots_tool_click_analytics') || '{}');
+        const localSearches = JSON.parse(localStorage.getItem('aibots_search_query_log') || '[]');
 
-          const patchPayload = {
+        const mergedClicks = { ...(cloud?.analytics_clicks || {}) };
+        Object.keys(localClicks).forEach(k => {
+          if (!mergedClicks[k] || localClicks[k] > mergedClicks[k]) {
+            mergedClicks[k] = localClicks[k];
+          }
+        });
+
+        const searchSet = new Set([...(cloud?.analytics_searches || []), ...localSearches]);
+        const mergedSearches = Array.from(searchSet).slice(-50);
+
+        const updatedCloudConfig = {
+          ...(cloud || {}),
+          analytics_clicks: mergedClicks,
+          analytics_searches: mergedSearches,
+          updated_at: new Date().toISOString()
+        };
+        // Remove MongoDB _id if present before PUT
+        delete updatedCloudConfig._id;
+
+        // 1. Primary CRUDCRUD cloud update
+        fetch(CLOUD_ANALYTICS_WRITE_URL, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(updatedCloudConfig)
+        }).catch(() => {});
+
+        // 2. Secondary ExtendsClass cloud update
+        fetch(CLOUD_ANALYTICS_FALLBACK_URL, {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/merge-patch+json' },
+          body: JSON.stringify({
             analytics_clicks: mergedClicks,
             analytics_searches: mergedSearches,
             updated_at: new Date().toISOString()
-          };
-
-          await fetch(AIBOTS_CLOUD_API, {
-            method: 'PATCH',
-            headers: { 'Content-Type': 'application/merge-patch+json' },
-            body: JSON.stringify(patchPayload)
-          });
-        }
+          })
+        }).catch(() => {});
       } catch (err) {}
-    }, 2500);
+    }, 2000);
   }
 
   // Tool Click Analytics Logger

@@ -108,12 +108,12 @@
     /* Checkered Transparent Pattern */
     .checkered-pattern {
       background-color: #f8fafc;
-      background-image: linear-gradient(45deg, #e2e8f0 25%, transparent 25%), 
-                        linear-gradient(-45deg, #e2e8f0 25%, transparent 25%), 
-                        linear-gradient(45deg, transparent 75%, #e2e8f0 75%), 
-                        linear-gradient(-45deg, transparent 75%, #e2e8f0 75%);
-      background-size: 18px 18px;
-      background-position: 0 0, 0 9px, 9px -9px, -9px 0px;
+      background-image: linear-gradient(45deg, #cbd5e1 25%, transparent 25%), 
+                        linear-gradient(-45deg, #cbd5e1 25%, transparent 25%), 
+                        linear-gradient(45deg, transparent 75%, #cbd5e1 75%), 
+                        linear-gradient(-45deg, transparent 75%, #cbd5e1 75%);
+      background-size: 16px 16px;
+      background-position: 0 0, 0 8px, 8px -8px, -8px 0px;
     }
     [data-theme="dark"] .checkered-pattern {
       background-color: #0b1120;
@@ -153,7 +153,7 @@
       border-radius: var(--radius-lg);
       overflow: hidden;
       min-height: 360px;
-      max-height: 500px;
+      max-height: 520px;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -164,26 +164,25 @@
       position: absolute;
       top: 10px;
       left: 10px;
-      background: rgba(15, 23, 42, 0.82);
+      background: rgba(15, 23, 42, 0.85);
       backdrop-filter: blur(6px);
       color: white;
       font-size: 0.72rem;
       font-weight: 800;
       letter-spacing: 0.05em;
-      padding: 4px 10px;
+      padding: 5px 12px;
       border-radius: var(--radius-md);
       z-index: 5;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.3);
     }
     .display-canvas {
       max-width: 100%;
-      max-height: 480px;
+      max-height: 500px;
       width: auto;
       height: auto;
       object-fit: contain;
       display: block;
       image-rendering: auto;
-      image-rendering: -webkit-optimize-contrast;
     }
 
     /* Studio Controls Sidebar */
@@ -289,7 +288,7 @@
             <canvas id="originalCanvas" class="display-canvas"></canvas>
           </div>
 
-          <!-- Right: Clean Cutout with Backdrop -->
+          <!-- Right: Clean Cutout with Direct Canvas Composite -->
           <div class="side-box checkered-pattern" id="cutoutContainer">
             <span class="side-badge">✨ HD CUTOUT RESULT</span>
             <canvas id="cutoutCanvas" class="display-canvas"></canvas>
@@ -403,7 +402,7 @@
         <details style="background: var(--bg-tertiary); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 14px 18px; cursor: pointer;">
           <summary style="font-weight: 700; font-size: 0.95rem; color: var(--text-primary);">Why is AI Bots export crystal clear with zero blur?</summary>
           <p style="margin-top: 10px; font-size: 0.88rem; line-height: 1.6; color: var(--text-secondary);">
-            Unlike other web tools that downscale your image to 720p or apply heavy compression, AI Bots processes every pixel at 100% native uncompressed resolution, keeping fine hair, textures, and details perfectly sharp.
+            Unlike other web tools that downscale your image or apply destructive blur filters, AI Bots processes every pixel at 100% native uncompressed resolution, keeping fine hair, textures, and details perfectly sharp.
           </p>
         </details>
 
@@ -433,6 +432,10 @@
 
     let cutCanvas = document.getElementById('cutoutCanvas');
     let cutCtx = cutCanvas.getContext('2d', { willReadFrequently: true });
+
+    // In-memory offscreen master cutout layer
+    let maskCanvas = document.createElement('canvas');
+    let maskCtx = maskCanvas.getContext('2d', { willReadFrequently: true });
 
     let currentBackdrop = 'transparent';
     let customBgImg = null;
@@ -492,6 +495,9 @@
           origCtx.imageSmoothingQuality = 'high';
           origCtx.drawImage(img, 0, 0, w, h);
 
+          maskCanvas.width = w;
+          maskCanvas.height = h;
+
           cutCanvas.width = w;
           cutCanvas.height = h;
 
@@ -500,7 +506,7 @@
           studioWorkspace.style.display = 'grid';
 
           processLosslessCutout();
-          showToast('Image loaded! Processing lossless cutout...', 'info');
+          showToast('Image loaded! Lossless cutout ready.', 'info');
         };
         img.src = e.target.result;
       };
@@ -516,13 +522,13 @@
       const tolerance = parseInt(document.getElementById('toleranceRange').value) || 35;
       const smoothness = parseInt(document.getElementById('smoothRange').value) || 1;
 
-      // Draw fresh uncompressed original into cutout canvas
-      cutCtx.clearRect(0, 0, w, h);
-      cutCtx.imageSmoothingEnabled = true;
-      cutCtx.imageSmoothingQuality = 'high';
-      cutCtx.drawImage(masterImg, 0, 0, w, h);
+      // Draw fresh uncompressed original into mask canvas
+      maskCtx.clearRect(0, 0, w, h);
+      maskCtx.imageSmoothingEnabled = true;
+      maskCtx.imageSmoothingQuality = 'high';
+      maskCtx.drawImage(masterImg, 0, 0, w, h);
 
-      const imgData = cutCtx.getImageData(0, 0, w, h);
+      const imgData = maskCtx.getImageData(0, 0, w, h);
       const data = imgData.data;
 
       // Sample perimeter border backdrop points
@@ -533,7 +539,7 @@
         getPixel(data, w - 1, h - 1, w),
         getPixel(data, Math.floor(w / 2), 0, w),
         getPixel(data, 0, Math.floor(h / 2), w),
-        getPixel(data, widthEdge(w), Math.floor(h / 2), w),
+        getPixel(data, Math.max(0, w - 1), Math.floor(h / 2), w),
         getPixel(data, Math.floor(w / 4), 0, w),
         getPixel(data, Math.floor(w * 0.75), 0, w)
       ];
@@ -549,18 +555,16 @@
         }
 
         if (minDist < tolerance) {
-          data[i + 3] = 0; // Transparent cutout (lossless)
-        } else if (smoothness > 0 && minDist < tolerance + (smoothness * 4)) {
-          const factor = (minDist - tolerance) / (smoothness * 4);
+          data[i + 3] = 0; // Pure transparent cutout
+        } else if (smoothness > 0 && minDist < tolerance + (smoothness * 3)) {
+          const factor = (minDist - tolerance) / (smoothness * 3);
           data[i + 3] = Math.round(data[i + 3] * factor);
         }
       }
 
-      cutCtx.putImageData(imgData, 0, 0);
-      updateBackdropView();
+      maskCtx.putImageData(imgData, 0, 0);
+      renderCompositeView();
     }
-
-    function widthEdge(w) { return Math.max(0, w - 1); }
 
     function getPixel(data, x, y, width) {
       const idx = (y * width + x) * 4;
@@ -577,36 +581,72 @@
       processLosslessCutout();
     }
 
-    // Backdrop Studio
+    // Direct Unified Canvas Compositing (100% Sharpness)
+    function renderCompositeView() {
+      if (!masterImg) return;
+
+      const w = masterImg.naturalWidth || masterImg.width;
+      const h = masterImg.naturalHeight || masterImg.height;
+
+      cutCtx.clearRect(0, 0, w, h);
+      cutCtx.imageSmoothingEnabled = true;
+      cutCtx.imageSmoothingQuality = 'high';
+
+      // 1. Draw Backdrop Layer directly onto Canvas
+      if (currentBackdrop === 'transparent') {
+        cutoutContainer.className = 'side-box checkered-pattern';
+      } else {
+        cutoutContainer.className = 'side-box';
+        
+        if (currentBackdrop.startsWith('gradient:')) {
+          const type = currentBackdrop.split(':')[1];
+          let grad = cutCtx.createLinearGradient(0, 0, w, h);
+          if (type === 'indigo') { grad.addColorStop(0, '#4f46e5'); grad.addColorStop(1, '#ec4899'); }
+          else if (type === 'sunset') { grad.addColorStop(0, '#f59e0b'); grad.addColorStop(1, '#ef4444'); }
+          else if (type === 'ocean') { grad.addColorStop(0, '#06b6d4'); grad.addColorStop(1, '#3b82f6'); }
+          else if (type === 'purple') { grad.addColorStop(0, '#8b5cf6'); grad.addColorStop(1, '#d946ef'); }
+          cutCtx.fillStyle = grad;
+          cutCtx.fillRect(0, 0, w, h);
+        } else if (currentBackdrop === 'custom_image' && customBgImg) {
+          drawCoverImage(cutCtx, customBgImg, w, h);
+        } else {
+          cutCtx.fillStyle = currentBackdrop;
+          cutCtx.fillRect(0, 0, w, h);
+        }
+      }
+
+      // 2. Composite the Sharp Cutout Layer over the Backdrop
+      cutCtx.drawImage(maskCanvas, 0, 0, w, h);
+    }
+
+    // Proper Aspect-Ratio Preserving Cover Drawing Math
+    function drawCoverImage(ctx, img, targetW, targetH) {
+      const imgRatio = img.width / img.height;
+      const targetRatio = targetW / targetH;
+      let renderW, renderH, offsetX, offsetY;
+
+      if (imgRatio > targetRatio) {
+        renderH = targetH;
+        renderW = targetH * imgRatio;
+        offsetX = (targetW - renderW) / 2;
+        offsetY = 0;
+      } else {
+        renderW = targetW;
+        renderH = targetW / imgRatio;
+        offsetX = 0;
+        offsetY = (targetH - renderH) / 2;
+      }
+      ctx.drawImage(img, offsetX, offsetY, renderW, renderH);
+    }
+
+    // Backdrop Studio Palette Handlers
     function setBackdrop(val, el) {
       currentBackdrop = val;
       document.querySelectorAll('.color-swatch').forEach(s => s.classList.remove('active'));
       if (el) el.classList.add('active');
 
-      updateBackdropView();
-      showToast('Backdrop updated!', 'info');
-    }
-
-    function updateBackdropView() {
-      if (currentBackdrop === 'transparent') {
-        cutoutContainer.className = 'side-box checkered-pattern';
-        cutoutContainer.style.background = '';
-      } else if (currentBackdrop.startsWith('gradient:')) {
-        const type = currentBackdrop.split(':')[1];
-        let grad = 'linear-gradient(135deg, #4f46e5, #ec4899)';
-        if (type === 'sunset') grad = 'linear-gradient(135deg, #f59e0b, #ef4444)';
-        else if (type === 'ocean') grad = 'linear-gradient(135deg, #06b6d4, #3b82f6)';
-        else if (type === 'purple') grad = 'linear-gradient(135deg, #8b5cf6, #d946ef)';
-
-        cutoutContainer.className = 'side-box';
-        cutoutContainer.style.background = grad;
-      } else if (currentBackdrop === 'custom_image' && customBgImg) {
-        cutoutContainer.className = 'side-box';
-        cutoutContainer.style.background = `url(${customBgImg.src}) center/cover no-repeat`;
-      } else {
-        cutoutContainer.className = 'side-box';
-        cutoutContainer.style.background = currentBackdrop;
-      }
+      renderCompositeView();
+      showToast('Backdrop updated with 100% sharpness!', 'info');
     }
 
     function handleCustomBgUpload(e) {
@@ -638,7 +678,7 @@
       expCtx.imageSmoothingEnabled = true;
       expCtx.imageSmoothingQuality = 'high';
 
-      // Draw Backdrop
+      // 1. Draw Backdrop
       if (currentBackdrop !== 'transparent') {
         if (currentBackdrop.startsWith('gradient:')) {
           const type = currentBackdrop.split(':')[1];
@@ -650,7 +690,7 @@
           expCtx.fillStyle = grad;
           expCtx.fillRect(0, 0, w, h);
         } else if (currentBackdrop === 'custom_image' && customBgImg) {
-          expCtx.drawImage(customBgImg, 0, 0, w, h);
+          drawCoverImage(expCtx, customBgImg, w, h);
         } else {
           expCtx.fillStyle = currentBackdrop;
           expCtx.fillRect(0, 0, w, h);
@@ -660,8 +700,8 @@
         expCtx.fillRect(0, 0, w, h);
       }
 
-      // Draw Cutout Layer
-      expCtx.drawImage(cutCanvas, 0, 0, w, h);
+      // 2. Draw Sharp Cutout Layer
+      expCtx.drawImage(maskCanvas, 0, 0, w, h);
 
       const mime = (format === 'jpg') ? 'image/jpeg' : 'image/png';
       const ext = (format === 'jpg') ? 'jpg' : 'png';
@@ -679,9 +719,9 @@
     }
 
     async function copyToClipboard() {
-      if (!cutCanvas) return;
+      if (!maskCanvas) return;
       try {
-        cutCanvas.toBlob(async (blob) => {
+        maskCanvas.toBlob(async (blob) => {
           await navigator.clipboard.write([
             new ClipboardItem({ 'image/png': blob })
           ]);

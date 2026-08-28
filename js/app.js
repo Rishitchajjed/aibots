@@ -664,7 +664,8 @@ window.AI_BOTS_UPI_CONFIG = {
   },
   name: 'Rishit Chajjed',
   maskedDisplay: 'Verified Creator Account (Rishit Chajjed)',
-  defaultAmount: 100
+  note: 'Donated to AI Bots',
+  defaultAmount: 50
 };
 
 window.openDonationModal = function() {
@@ -680,43 +681,51 @@ window.openDonationModal = function() {
         </button>
 
         <div class="donation-icon"><i class="fas fa-heart"></i></div>
-        <h3 style="margin: 0 0 6px; font-size: 1.25rem;">Support AI Bots</h3>
-        <p style="margin: 0; color: var(--text-secondary); font-size: 0.85rem;">
-          Help keep all 28+ creative browser tools 100% free & fast for everyone!
+        <h3 style="margin: 0 0 4px; font-size: 1.25rem;">Support AI Bots</h3>
+        <p style="margin: 0 0 12px; color: var(--text-secondary); font-size: 0.85rem;">
+          Enter any amount you wish to contribute to keep all 28+ tools 100% free!
         </p>
 
-        <!-- Preset Amount Chips -->
-        <div class="donation-amount-chips">
-          <button class="donation-chip" onclick="setDonationAmount(50, this)">₹50</button>
-          <button class="donation-chip active" onclick="setDonationAmount(100, this)">₹100</button>
+        <!-- Custom Amount Input -->
+        <div style="margin: 12px 0 8px;">
+          <div style="display: flex; align-items: center; justify-content: center; gap: 6px;">
+            <span style="font-size: 1.3rem; font-weight: 800; color: var(--primary);">₹</span>
+            <input type="number" id="customDonateInput" class="form-control" value="50" min="1" step="any" placeholder="Any Amount" style="max-width: 140px; font-size: 1.2rem; font-weight: 800; text-align: center; font-family: monospace;" oninput="handleCustomDonationInput(this.value)">
+          </div>
+        </div>
+
+        <!-- Quick Amount Chips -->
+        <div class="donation-amount-chips" style="margin: 8px 0 14px;">
+          <button class="donation-chip" onclick="setDonationAmount(20, this)">₹20</button>
+          <button class="donation-chip active" onclick="setDonationAmount(50, this)">₹50</button>
+          <button class="donation-chip" onclick="setDonationAmount(100, this)">₹100</button>
           <button class="donation-chip" onclick="setDonationAmount(250, this)">₹250</button>
           <button class="donation-chip" onclick="setDonationAmount(500, this)">₹500</button>
-          <button class="donation-chip" onclick="setDonationAmount(1000, this)">₹1,000</button>
         </div>
 
         <!-- Dynamic QR Code -->
         <div class="upi-qr-wrapper">
-          <img id="donateQrImg" src="" alt="Scan to Support via UPI">
+          <img id="donateQrImg" src="" alt="Scan to Donate to AI Bots">
         </div>
-        <div style="font-size: 0.75rem; color: var(--text-secondary); font-weight: 700;">
-          <i class="fas fa-qrcode" style="color:var(--primary); margin-right:4px;"></i> Scan with any UPI App (GPay / PhonePe / Paytm / BHIM)
+        <div style="font-size: 0.74rem; color: var(--text-secondary); font-weight: 700;">
+          <i class="fas fa-qrcode" style="color:var(--primary); margin-right:4px;"></i> Scan with GPay / PhonePe / Paytm / BHIM
         </div>
 
-        <!-- Verified Creator Badge (Protects Phone Number from Public Display) -->
-        <div class="upi-id-badge" style="justify-content: center; gap: 8px; color: var(--text-secondary);">
+        <!-- Verified Creator Badge -->
+        <div class="upi-id-badge" style="justify-content: center; gap: 8px; color: var(--text-secondary); margin: 10px 0;">
           <i class="fas fa-shield-check" style="color: var(--success); font-size: 1rem;"></i>
-          <span id="donateUpiText" style="font-weight: 700;">Verified Creator Account</span>
+          <span style="font-weight: 700;">Verified Creator &bull; Note: "Donated to AI Bots"</span>
         </div>
 
         <!-- Direct Mobile Pay Button -->
         <a id="donateDirectLink" href="#" class="btn btn-primary" style="width: 100%; padding: 12px; font-weight: 800; border-radius: var(--radius-md); text-decoration: none; display: flex; align-items: center; justify-content: center; gap: 8px;">
-          <i class="fas fa-mobile-screen"></i> Pay with UPI App (GPay / PhonePe)
+          <i class="fas fa-mobile-screen"></i> Pay with UPI App (Mobile)
         </a>
 
-        <div class="upi-apps-row">
-          <span><i class="fas fa-lock" style="color:var(--success);"></i> 100% Direct & Safe</span>
+        <div class="upi-apps-row" style="margin-top: 8px;">
+          <span><i class="fas fa-lock" style="color:var(--success);"></i> 100% Direct to Creator</span>
           <span>•</span>
-          <span>Zero Platform Fees</span>
+          <span>Zero Commission</span>
         </div>
       </div>
     `;
@@ -734,16 +743,27 @@ window.openDonationModal = function() {
 window.setDonationAmount = function(amt, btn) {
   document.querySelectorAll('.donation-chip').forEach(c => c.classList.remove('active'));
   if (btn) btn.classList.add('active');
+  const input = document.getElementById('customDonateInput');
+  if (input) input.value = amt;
   updateDonationQR(amt);
+};
+
+window.handleCustomDonationInput = function(val) {
+  document.querySelectorAll('.donation-chip').forEach(c => c.classList.remove('active'));
+  const amt = parseFloat(val) || 0;
+  updateDonationQR(amt > 0 ? amt : '');
 };
 
 window.updateDonationQR = function(amt) {
   const upiId = window.AI_BOTS_UPI_CONFIG._getUpi();
   const name = window.AI_BOTS_UPI_CONFIG.name;
-  const note = encodeURIComponent('Support AI Bots Studio');
+  const note = encodeURIComponent(window.AI_BOTS_UPI_CONFIG.note); // "Donated to AI Bots"
   
   // Standard UPI URI specification
-  const upiUrl = `upi://pay?pa=${upiId}&pn=${encodeURIComponent(name)}&am=${amt}&cu=INR&tn=${note}`;
+  let upiUrl = `upi://pay?pa=${upiId}&pn=${encodeURIComponent(name)}&tn=${note}&cu=INR`;
+  if (amt && amt > 0) {
+    upiUrl += `&am=${amt}`;
+  }
   
   // Update QR Code Image
   const qrImg = document.getElementById('donateQrImg');
@@ -757,5 +777,6 @@ window.updateDonationQR = function(amt) {
     directLink.href = upiUrl;
   }
 };
+
 
 

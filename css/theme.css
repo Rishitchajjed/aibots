@@ -1333,14 +1333,24 @@ body {
 
 .donation-modal-card {
   max-width: 440px;
-  width: 90%;
+  width: 100%;
+  max-height: 92vh;
+  overflow-y: auto;
   text-align: center;
   background: var(--bg-secondary);
   border: 1px solid var(--border-color);
   border-radius: var(--radius-xl);
-  padding: 28px 22px;
+  padding: 22px 18px;
   box-shadow: var(--shadow-xl);
   position: relative;
+  margin: auto;
+}
+.donation-modal-card::-webkit-scrollbar {
+  width: 6px;
+}
+.donation-modal-card::-webkit-scrollbar-thumb {
+  background: var(--border-color);
+  border-radius: 4px;
 }
 .donation-icon {
   width: 52px;

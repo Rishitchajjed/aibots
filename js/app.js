@@ -694,26 +694,31 @@ window.openDonationModal = function() {
     modal.className = 'modal-backdrop';
     modal.innerHTML = `
       <div class="donation-modal-card">
-        <button onclick="closeDonationModal()" class="btn btn-secondary btn-sm" style="position: absolute; top: 14px; right: 14px; border-radius: 50%; width: 36px; height: 36px; padding: 0; z-index: 10; display: flex; align-items: center; justify-content: center; font-size: 1rem; cursor: pointer;" title="Close Modal">
-          <i class="fas fa-xmark"></i>
-        </button>
+        <!-- Top Sticky / Header Bar with Guaranteed Visible Close Button -->
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; width: 100%; border-bottom: 1px solid var(--border-color); padding-bottom: 8px;">
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <div class="donation-icon" style="margin: 0; width: 32px; height: 32px; font-size: 0.95rem;"><i class="fas fa-heart"></i></div>
+            <h3 style="margin: 0; font-size: 1.1rem; font-weight: 800;">Support AI Bots</h3>
+          </div>
+          <button onclick="closeDonationModal()" class="btn btn-secondary btn-sm" style="border-radius: 50%; width: 32px; height: 32px; padding: 0; display: flex; align-items: center; justify-content: center; font-size: 1rem; cursor: pointer; border: 1px solid var(--border-color);" title="Close Modal">
+            <i class="fas fa-xmark"></i>
+          </button>
+        </div>
 
-        <div class="donation-icon"><i class="fas fa-heart"></i></div>
-        <h3 style="margin: 0 0 4px; font-size: 1.25rem;">Support AI Bots</h3>
-        <p style="margin: 0 0 12px; color: var(--text-secondary); font-size: 0.85rem;">
+        <p style="margin: 0 0 10px; color: var(--text-secondary); font-size: 0.82rem;">
           Enter any amount you wish to contribute to keep all 28+ tools 100% free!
         </p>
 
         <!-- Custom Amount Input -->
-        <div style="margin: 12px 0 8px;">
+        <div style="margin: 8px 0 6px;">
           <div style="display: flex; align-items: center; justify-content: center; gap: 6px;">
-            <span style="font-size: 1.3rem; font-weight: 800; color: var(--primary);">₹</span>
-            <input type="number" id="customDonateInput" class="form-control" value="50" min="1" step="any" placeholder="Any Amount" style="max-width: 140px; font-size: 1.2rem; font-weight: 800; text-align: center; font-family: monospace;" oninput="handleCustomDonationInput(this.value)">
+            <span style="font-size: 1.2rem; font-weight: 800; color: var(--primary);">₹</span>
+            <input type="number" id="customDonateInput" class="form-control" value="50" min="1" step="any" placeholder="Any Amount" style="max-width: 130px; font-size: 1.15rem; font-weight: 800; text-align: center; font-family: monospace; padding: 6px;" oninput="handleCustomDonationInput(this.value)">
           </div>
         </div>
 
         <!-- Quick Amount Chips -->
-        <div class="donation-amount-chips" style="margin: 8px 0 14px;">
+        <div class="donation-amount-chips" style="margin: 6px 0 10px;">
           <button class="donation-chip" onclick="setDonationAmount(20, this)">₹20</button>
           <button class="donation-chip active" onclick="setDonationAmount(50, this)">₹50</button>
           <button class="donation-chip" onclick="setDonationAmount(100, this)">₹100</button>
@@ -722,27 +727,27 @@ window.openDonationModal = function() {
         </div>
 
         <!-- Dynamic QR Code -->
-        <div class="upi-qr-wrapper">
-          <img id="donateQrImg" src="" alt="Scan to Donate to AI Bots">
+        <div class="upi-qr-wrapper" style="padding: 8px; margin: 6px 0;">
+          <img id="donateQrImg" src="" alt="Scan to Donate to AI Bots" style="width: 150px; height: 150px;">
         </div>
-        <div style="font-size: 0.74rem; color: var(--text-secondary); font-weight: 700;">
+        <div style="font-size: 0.72rem; color: var(--text-secondary); font-weight: 700;">
           <i class="fas fa-qrcode" style="color:var(--primary); margin-right:4px;"></i> Scan with GPay / PhonePe / Paytm / BHIM
         </div>
 
         <!-- Verified Creator Badge -->
-        <div class="upi-id-badge" style="justify-content: center; gap: 8px; color: var(--text-secondary); margin: 10px 0;">
-          <i class="fas fa-shield-check" style="color: var(--success); font-size: 1rem;"></i>
+        <div class="upi-id-badge" style="justify-content: center; gap: 8px; color: var(--text-secondary); margin: 8px 0; padding: 6px 10px; font-size: 0.78rem;">
+          <i class="fas fa-shield-check" style="color: var(--success); font-size: 0.95rem;"></i>
           <span style="font-weight: 700;">Verified Creator &bull; Note: "Donated to AI Bots"</span>
         </div>
 
         <!-- Direct Mobile Pay Button -->
-        <a id="donateDirectLink" href="#" class="btn btn-primary" style="width: 100%; padding: 12px; font-weight: 800; border-radius: var(--radius-md); text-decoration: none; display: flex; align-items: center; justify-content: center; gap: 8px;">
+        <a id="donateDirectLink" href="#" class="btn btn-primary" style="width: 100%; padding: 10px; font-weight: 800; border-radius: var(--radius-md); text-decoration: none; display: flex; align-items: center; justify-content: center; gap: 8px; font-size: 0.9rem;">
           <i class="fas fa-mobile-screen"></i> Pay with UPI App (Mobile)
         </a>
 
         <!-- Bottom Close Button -->
-        <button onclick="closeDonationModal()" class="btn btn-secondary btn-sm" style="width: 100%; margin-top: 10px; padding: 8px; border-radius: var(--radius-md); font-weight: 600;">
-          <i class="fas fa-xmark"></i> Close
+        <button onclick="closeDonationModal()" class="btn btn-secondary btn-sm" style="width: 100%; margin-top: 8px; padding: 7px; border-radius: var(--radius-md); font-weight: 600;">
+          <i class="fas fa-xmark"></i> Close Window
         </button>
 
         <div class="upi-apps-row" style="margin-top: 8px;">

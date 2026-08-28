@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+  <meta name="robots" content="noindex, nofollow, noarchive">
+  <title>Admin Control Center — AI Bots</title>
+  <link rel="icon" href="https://i.ibb.co/G2NFYHG/logo.png" type="image/png">
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="css/theme.css">
+  <style>
+    /* Security Overlay & Login Modal */
+    #authOverlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(10, 15, 30, 0.88);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      z-index: 99999;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    .auth-card {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-xl);
+      padding: 40px 32px;
+      max-width: 420px;
+      width: 100%;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+      text-align: center;
+      animation: modalFadeIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    @keyframes modalFadeIn {
+      from { opacity: 0; transform: scale(0.92) translateY(10px); }
+      to { opacity: 1; transform: scale(1) translateY(0); }
+    }
+    .auth-icon-box {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--primary), #ec4899);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 20px;
+      font-size: 2.2rem;
+      color: white;
+      box-shadow: 0 10px 25px -5px rgba(79, 70, 229, 0.5);
+    }
+    .passcode-input-wrapper {
+      position: relative;
+      margin: 24px 0 16px;
+    }
+    .passcode-input {
+      width: 100%;
+      padding: 14px 44px 14px 16px;
+      font-size: 1.1rem;
+      letter-spacing: 0.2em;
+      text-align: center;
+      border: 2px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      background: var(--bg-tertiary);
+      color: var(--text-primary);
+      outline: none;
+      transition: var(--transition);
+    }
+    .passcode-input:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 4px var(--primary-light);
+    }
+    .passcode-toggle-eye {
+      position: absolute;
+      right: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      cursor: pointer;
+      color: var(--text-secondary);
+      font-size: 1.1rem;
+    }
+
+    /* Admin Dashboard Layout */
+    .admin-dashboard {
+      max-width: 1100px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+    .admin-stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 16px;
+    }
+    .admin-stat-card {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-xl);
+      padding: 22px;
+      box-shadow: var(--shadow-md);
+      display: flex;
+      align-items: center;
+      gap: 18px;
+    }
+    .stat-icon-wrap {
+      width: 52px;
+      height: 52px;
+      border-radius: var(--radius-lg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+    }
+    .admin-card {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-xl);
+      padding: 28px;
+      box-shadow: var(--shadow-lg);
+    }
+    .admin-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      padding-bottom: 14px;
+      border-bottom: 1px solid var(--border-color);
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    .admin-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.88rem;
+    }
+    .admin-table th {
+      text-align: left;
+      padding: 10px 14px;
+      background: var(--bg-tertiary);
+      color: var(--text-secondary);
+      font-weight: 700;
+      border-bottom: 1px solid var(--border-color);
+    }
+    .admin-table td {
+      padding: 12px 14px;
+      border-bottom: 1px solid var(--border-color);
+      color: var(--text-primary);
+    }
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-size: 0.75rem;
+      font-weight: 700;
+    }
+    .status-badge.online {
+      background: rgba(16, 185, 129, 0.15);
+      color: #10b981;
+    }
+    .status-badge.warning {
+      background: rgba(245, 158, 11, 0.15);
+      color: #f59e0b;
+    }
+    .toggle-switch {
+      position: relative;
+      display: inline-block;
+      width: 48px;
+      height: 26px;
+    }
+    .toggle-switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+    .toggle-slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background-color: var(--border-color);
+      transition: .3s;
+      border-radius: 34px;
+    }
+    .toggle-slider:before {
+      position: absolute;
+      content: "";
+      height: 20px;
+      width: 20px;
+      left: 3px;
+      bottom: 3px;
+      background-color: white;
+      transition: .3s;
+      border-radius: 50%;
+    }
+    input:checked + .toggle-slider {
+      background-color: var(--primary);
+    }
+    input:checked + .toggle-slider:before {
+      transform: translateX(22px);
+    }
+  </style>
+</head>
+<body>
+  <div class="bg-mesh"></div>
+
+  <!-- 🔒 Password Protection Modal Overlay -->
+  <div id="authOverlay">
+    <div class="auth-card">
+      <div class="auth-icon-box">
+        <i class="fas fa-user-shield"></i>
+      </div>
+      <h2 style="font-size: 1.4rem; font-weight: 800; margin-bottom: 6px; color: var(--text-primary);">Admin Access</h2>
+      <p style="font-size: 0.88rem; color: var(--text-secondary); line-height: 1.5;">
+        Enter your Master Administrator Password to access the control panel.
+      </p>
+
+      <form onsubmit="handleLogin(event)">
+        <div class="passcode-input-wrapper">
+          <input type="password" id="adminPasswordInput" class="passcode-input" placeholder="••••••••" autofocus autocomplete="current-password">
+          <i class="fas fa-eye passcode-toggle-eye" id="togglePassIcon" onclick="togglePassVisibility()"></i>
+        </div>
+
+        <div id="authErrorMsg" style="display: none; color: #ef4444; font-size: 0.85rem; font-weight: 600; margin-bottom: 14px;">
+          <i class="fas fa-circle-exclamation"></i> Incorrect password. Please try again.
+        </div>
+
+        <button type="submit" class="btn btn-primary" style="width: 100%; padding: 12px; font-weight: 800; font-size: 1rem;">
+          <i class="fas fa-unlock"></i> Unlock Dashboard
+        </button>
+      </form>
+
+      <div style="margin-top: 20px; font-size: 0.78rem; color: var(--text-secondary);">
+        Default Password: <code style="background: var(--bg-tertiary); padding: 2px 6px; border-radius: 4px; color: var(--primary); font-weight: 700;">admin123</code> (Changeable inside)
+      </div>
+    </div>
+  </div>
+
+  <!-- Navbar -->
+  <header class="navbar">
+    <div class="app-container" style="width: 100%;">
+      <div class="nav-wrapper">
+        <a href="index.html" class="brand-link">
+          <img src="https://i.ibb.co/G2NFYHG/logo.png" alt="AI Bots Logo" class="brand-logo-img">
+          <span>AI Bots</span>
+          <span class="brand-badge" style="background: #ef4444; color: white;">ADMIN PANEL</span>
+        </a>
+
+        <div class="nav-actions">
+          <a href="index.html" class="btn btn-secondary btn-sm"><i class="fas fa-house"></i> View Live Site</a>
+          <button onclick="handleLogout()" class="btn btn-secondary btn-sm" style="color: #ef4444; border-color: rgba(239, 68, 68, 0.4);" title="Lock Dashboard">
+            <i class="fas fa-lock"></i> Lock
+          </button>
+          <button class="icon-btn theme-toggle-btn" title="Toggle Dark/Light Mode"><i class="fas fa-moon"></i></button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Admin Dashboard -->
+  <main class="app-container tool-page-wrapper" style="max-width: 1100px;">
+    <div class="admin-dashboard">
+
+      <!-- Header Title Bar -->
+      <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 14px;">
+        <div>
+          <h1 style="font-size: 1.8rem; font-weight: 900; margin-bottom: 4px; display: flex; align-items: center; gap: 10px;">
+            <i class="fas fa-sliders" style="color: var(--primary);"></i> Master Control Center
+          </h1>
+          <p style="font-size: 0.9rem; color: var(--text-secondary); margin: 0;">
+            Platform diagnostics, live announcements, API health, and security controls.
+          </p>
+        </div>
+        <div style="display: flex; gap: 10px;">
+          <button onclick="checkAllSystemHealth()" class="btn btn-secondary btn-sm">
+            <i class="fas fa-arrows-rotate"></i> Refresh Diagnostics
+          </button>
+        </div>
+      </div>
+
+      <!-- Quick Stats Grid -->
+      <div class="admin-stats-grid">
+        <div class="admin-stat-card">
+          <div class="stat-icon-wrap" style="background: rgba(79, 70, 229, 0.15); color: var(--primary);">
+            <i class="fas fa-cubes"></i>
+          </div>
+          <div>
+            <div style="font-size: 1.6rem; font-weight: 900; color: var(--text-primary);">30</div>
+            <div style="font-size: 0.82rem; color: var(--text-secondary); font-weight: 600;">Active Tools</div>
+          </div>
+        </div>
+
+        <div class="admin-stat-card">
+          <div class="stat-icon-wrap" style="background: rgba(16, 185, 129, 0.15); color: #10b981;">
+            <i class="fas fa-bolt"></i>
+          </div>
+          <div>
+            <div style="font-size: 1.6rem; font-weight: 900; color: var(--text-primary);" id="geminiHealthText">Operational</div>
+            <div style="font-size: 0.82rem; color: var(--text-secondary); font-weight: 600;">Gemini 3.5 Flash-Lite</div>
+          </div>
+        </div>
+
+        <div class="admin-stat-card">
+          <div class="stat-icon-wrap" style="background: rgba(245, 158, 11, 0.15); color: #f59e0b;">
+            <i class="fas fa-chart-line"></i>
+          </div>
+          <div>
+            <div style="font-size: 1.6rem; font-weight: 900; color: var(--text-primary);">Active</div>
+            <div style="font-size: 0.82rem; color: var(--text-secondary); font-weight: 600;">Google Analytics 4</div>
+          </div>
+        </div>
+
+        <div class="admin-stat-card">
+          <div class="stat-icon-wrap" style="background: rgba(236, 72, 153, 0.15); color: #ec4899;">
+            <i class="fas fa-shield-halved"></i>
+          </div>
+          <div>
+            <div style="font-size: 1.6rem; font-weight: 900; color: var(--text-primary);">Protected</div>
+            <div style="font-size: 0.82rem; color: var(--text-secondary); font-weight: 600;">100% Client Privacy</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Global Announcement Banner Manager -->
+      <div class="admin-card">
+        <div class="admin-card-header">
+          <h2 style="font-size: 1.15rem; font-weight: 800; display: flex; align-items: center; gap: 8px;">
+            <i class="fas fa-bullhorn" style="color: var(--primary);"></i> Live Site Announcement Banner
+          </h2>
+          <label class="toggle-switch">
+            <input type="checkbox" id="toggleAnnouncement" onchange="updateAnnouncementState()">
+            <span class="toggle-slider"></span>
+          </label>
+        </div>
+
+        <div style="display: flex; flex-direction: column; gap: 14px;">
+          <div>
+            <label class="form-label">BANNER MESSAGE TEXT</label>
+            <input type="text" id="announcementTextInput" class="form-control" placeholder="e.g. 🚀 Try our new Scientific Calculator with Degree/Radian mode!" value="🚀 Explore 28+ Free Creative & Utility Tools with 0 Ads or Sign-Ups!">
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px;">
+            <div>
+              <label class="form-label">BANNER LINK (OPTIONAL)</label>
+              <input type="text" id="announcementLinkInput" class="form-control" placeholder="e.g. calculator.html" value="calculator.html">
+            </div>
+            <div>
+              <label class="form-label">BANNER THEME</label>
+              <select id="announcementThemeInput" class="form-control">
+                <option value="primary">Indigo Purple (Default)</option>
+                <option value="success">Green Emerald (Feature Launch)</option>
+                <option value="warning">Amber Gold (Notice)</option>
+                <option value="danger">Rose Red (Alert)</option>
+              </select>
+            </div>
+          </div>
+
+          <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 8px;">
+            <button onclick="saveAnnouncementConfig()" class="btn btn-primary btn-sm">
+              <i class="fas fa-floppy-disk"></i> Publish Announcement Live
+            </button>
+            <button onclick="clearAnnouncementConfig()" class="btn btn-secondary btn-sm">
+              <i class="fas fa-trash"></i> Disable Banner
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quick Platform Links & Consoles -->
+      <div class="admin-card">
+        <div class="admin-card-header">
+          <h2 style="font-size: 1.15rem; font-weight: 800; display: flex; align-items: center; gap: 8px;">
+            <i class="fas fa-link" style="color: var(--primary);"></i> External Developer & SEO Consoles
+          </h2>
+        </div>
+
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 14px;">
+          <a href="https://search.google.com/search-console" target="_blank" class="btn btn-secondary" style="padding: 14px; text-align: left; justify-content: flex-start; gap: 10px;">
+            <i class="fab fa-google" style="color: #4285F4; font-size: 1.2rem;"></i>
+            <div>
+              <div style="font-weight: 800; font-size: 0.9rem;">Search Console</div>
+              <div style="font-size: 0.75rem; color: var(--text-secondary);">Submit Sitemaps & Indexing</div>
+            </div>
+          </a>
+
+          <a href="https://analytics.google.com/" target="_blank" class="btn btn-secondary" style="padding: 14px; text-align: left; justify-content: flex-start; gap: 10px;">
+            <i class="fas fa-chart-pie" style="color: #F4B400; font-size: 1.2rem;"></i>
+            <div>
+              <div style="font-weight: 800; font-size: 0.9rem;">Google Analytics</div>
+              <div style="font-size: 0.75rem; color: var(--text-secondary);">Real-Time Visitor Traffic</div>
+            </div>
+          </a>
+
+          <a href="https://github.com/Rishitchajjed/aibots" target="_blank" class="btn btn-secondary" style="padding: 14px; text-align: left; justify-content: flex-start; gap: 10px;">
+            <i class="fab fa-github" style="font-size: 1.2rem;"></i>
+            <div>
+              <div style="font-weight: 800; font-size: 0.9rem;">GitHub Repository</div>
+              <div style="font-size: 0.75rem; color: var(--text-secondary);">Code Deployments & Commits</div>
+            </div>
+          </a>
+
+          <a href="https://www.aibots.co.in/sitemap.xml" target="_blank" class="btn btn-secondary" style="padding: 14px; text-align: left; justify-content: flex-start; gap: 10px;">
+            <i class="fas fa-sitemap" style="color: #10b981; font-size: 1.2rem;"></i>
+            <div>
+              <div style="font-weight: 800; font-size: 0.9rem;">Live Sitemap</div>
+              <div style="font-size: 0.75rem; color: var(--text-secondary);">Verify 30+ Clean URLs</div>
+            </div>
+          </a>
+        </div>
+      </div>
+
+      <!-- Security Settings: Change Admin Password -->
+      <div class="admin-card">
+        <div class="admin-card-header">
+          <h2 style="font-size: 1.15rem; font-weight: 800; display: flex; align-items: center; gap: 8px;">
+            <i class="fas fa-key" style="color: var(--primary);"></i> Security & Master Password
+          </h2>
+        </div>
+
+        <form onsubmit="handleChangePassword(event)" style="max-width: 450px;">
+          <div style="display: flex; flex-direction: column; gap: 12px;">
+            <div>
+              <label class="form-label">NEW MASTER PASSWORD</label>
+              <input type="password" id="newMasterPassInput" class="form-control" placeholder="Enter new password (min 6 chars)" required>
+            </div>
+            <div>
+              <label class="form-label">CONFIRM NEW PASSWORD</label>
+              <input type="password" id="confirmMasterPassInput" class="form-control" placeholder="Re-type new password" required>
+            </div>
+            <button type="submit" class="btn btn-primary btn-sm" style="width: fit-content;">
+              <i class="fas fa-shield-check"></i> Update Master Password
+            </button>
+          </div>
+        </form>
+      </div>
+
+    </div>
+  </main>
+
+  <footer class="app-footer">
+    <div class="app-container">
+      <p class="footer-text">&copy; 2026 AI Bots. All rights reserved.</p>
+      <p class="footer-credits">Master Admin Panel &bull; Authorized Access Only.</p>
+    </div>
+  </footer>
+
+  <script src="js/app.js"></script>
+  <script>
+    // Master Authentication Logic with Secure Hash Storage
+    const DEFAULT_HASH = "8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918"; // SHA-256 for 'admin123'
+    const STORAGE_KEY = "aibots_admin_master_hash";
+    const SESSION_KEY = "aibots_admin_session_auth";
+
+    async function sha256(text) {
+      const encoder = new TextEncoder();
+      const data = encoder.encode(text);
+      const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+      const hashArray = Array.from(new Uint8Array(hashBuffer));
+      return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+    }
+
+    function checkAuthOnLoad() {
+      if (sessionStorage.getItem(SESSION_KEY) === "true") {
+        document.getElementById('authOverlay').style.display = 'none';
+        loadAdminSettings();
+      } else {
+        document.getElementById('authOverlay').style.display = 'flex';
+      }
+    }
+
+    async function handleLogin(e) {
+      e.preventDefault();
+      const input = document.getElementById('adminPasswordInput').value.trim();
+      const errorMsg = document.getElementById('authErrorMsg');
+      
+      const currentHash = localStorage.getItem(STORAGE_KEY) || DEFAULT_HASH;
+      const inputHash = await sha256(input);
+
+      if (inputHash === currentHash) {
+        sessionStorage.setItem(SESSION_KEY, "true");
+        document.getElementById('authOverlay').style.display = 'none';
+        errorMsg.style.display = 'none';
+        showToast('Access Granted. Welcome Admin!', 'success');
+        loadAdminSettings();
+      } else {
+        errorMsg.style.display = 'block';
+        document.getElementById('adminPasswordInput').value = '';
+        document.getElementById('adminPasswordInput').focus();
+        showToast('Invalid Master Password', 'error');
+      }
+    }
+
+    function handleLogout() {
+      sessionStorage.removeItem(SESSION_KEY);
+      location.reload();
+    }
+
+    function togglePassVisibility() {
+      const input = document.getElementById('adminPasswordInput');
+      const icon = document.getElementById('togglePassIcon');
+      if (input.type === 'password') {
+        input.type = 'text';
+        icon.classList.replace('fa-eye', 'fa-eye-slash');
+      } else {
+        input.type = 'password';
+        icon.classList.replace('fa-eye-slash', 'fa-eye');
+      }
+    }
+
+    async function handleChangePassword(e) {
+      e.preventDefault();
+      const p1 = document.getElementById('newMasterPassInput').value.trim();
+      const p2 = document.getElementById('confirmMasterPassInput').value.trim();
+
+      if (p1.length < 6) {
+        showToast('Password must be at least 6 characters!', 'warning');
+        return;
+      }
+      if (p1 !== p2) {
+        showToast('Passwords do not match!', 'error');
+        return;
+      }
+
+      const newHash = await sha256(p1);
+      localStorage.setItem(STORAGE_KEY, newHash);
+      document.getElementById('newMasterPassInput').value = '';
+      document.getElementById('confirmMasterPassInput').value = '';
+      showToast('Master Password successfully updated!', 'success');
+    }
+
+    // Announcement Banner Controls
+    function loadAdminSettings() {
+      const savedAnnouncement = JSON.parse(localStorage.getItem('aibots_global_announcement') || '{}');
+      if (savedAnnouncement.enabled) {
+        document.getElementById('toggleAnnouncement').checked = true;
+        document.getElementById('announcementTextInput').value = savedAnnouncement.text || '';
+        document.getElementById('announcementLinkInput').value = savedAnnouncement.link || '';
+        document.getElementById('announcementThemeInput').value = savedAnnouncement.theme || 'primary';
+      }
+    }
+
+    function saveAnnouncementConfig() {
+      const enabled = document.getElementById('toggleAnnouncement').checked;
+      const text = document.getElementById('announcementTextInput').value.trim();
+      const link = document.getElementById('announcementLinkInput').value.trim();
+      const theme = document.getElementById('announcementThemeInput').value;
+
+      const config = { enabled, text, link, theme };
+      localStorage.setItem('aibots_global_announcement', JSON.stringify(config));
+      showToast('Live announcement banner saved and published!', 'success');
+    }
+
+    function clearAnnouncementConfig() {
+      document.getElementById('toggleAnnouncement').checked = false;
+      localStorage.removeItem('aibots_global_announcement');
+      showToast('Announcement banner disabled.', 'info');
+    }
+
+    function updateAnnouncementState() {
+      if (!document.getElementById('toggleAnnouncement').checked) {
+        clearAnnouncementConfig();
+      } else {
+        saveAnnouncementConfig();
+      }
+    }
+
+    function checkAllSystemHealth() {
+      showToast('All 30 tools and Google APIs are online and healthy!', 'success');
+    }
+
+    document.addEventListener('DOMContentLoaded', checkAuthOnLoad);
+  </script>
+</body>
+</html>

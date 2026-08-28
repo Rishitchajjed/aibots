@@ -806,5 +806,62 @@ window.updateDonationQR = function(amt) {
   }
 };
 
+// Global Site Announcement Banner System
+(function() {
+  function renderGlobalAnnouncement() {
+    try {
+      const saved = JSON.parse(localStorage.getItem('aibots_global_announcement') || '{}');
+      if (saved && saved.enabled && saved.text) {
+        if (sessionStorage.getItem('aibots_announcement_dismissed') === 'true') return;
+
+        const themes = {
+          primary: 'linear-gradient(135deg, #4f46e5, #7c3aed)',
+          success: 'linear-gradient(135deg, #059669, #10b981)',
+          warning: 'linear-gradient(135deg, #d97706, #f59e0b)',
+          danger: 'linear-gradient(135deg, #dc2626, #ef4444)'
+        };
+
+        const bg = themes[saved.theme] || themes.primary;
+        const banner = document.createElement('div');
+        banner.id = 'aibotsGlobalAnnouncementBanner';
+        banner.style.cssText = `
+          background: ${bg};
+          color: #ffffff;
+          padding: 10px 16px;
+          text-align: center;
+          font-size: 0.88rem;
+          font-weight: 700;
+          position: sticky;
+          top: 0;
+          z-index: 10000;
+          box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: 12px;
+        `;
+
+        let content = `<span>${saved.text}</span>`;
+        if (saved.link) {
+          content += `<a href="${saved.link}" style="color: #ffffff; text-decoration: underline; font-weight: 800; margin-left: 6px;">Learn More &rarr;</a>`;
+        }
+        content += `<button onclick="document.getElementById('aibotsGlobalAnnouncementBanner').remove(); sessionStorage.setItem('aibots_announcement_dismissed', 'true');" style="background: rgba(255,255,255,0.2); border: none; color: white; border-radius: 50%; width: 22px; height: 22px; cursor: pointer; margin-left: 10px; font-size: 0.75rem; display: flex; align-items: center; justify-content: center;">&times;</button>`;
+
+        banner.innerHTML = content;
+        document.body.insertBefore(banner, document.body.firstChild);
+      }
+    } catch(e) {
+      console.warn('Announcement parser error:', e);
+    }
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', renderGlobalAnnouncement);
+  } else {
+    renderGlobalAnnouncement();
+  }
+})();
+
+
 
 

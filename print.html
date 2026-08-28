@@ -7,7 +7,7 @@
   <meta name="google-site-verification" content="-Yb6Nx74gbZ3wRN5uP-Y8KKwDWlt1DPpxs4nA3PkE6M">
   <meta name="robots" content="index, follow">
   <title>Pro Print Studio & PDF Page Manager — AI Bots</title>
-  <meta name="description" content="Professional print studio: preview PDFs and photos in ultra HD, Odd/Even front & back duplex printing, From-To page selector, 2-Up paper saver, and mobile-friendly clean printing.">
+  <meta name="description" content="Professional print studio: preview PDFs and photos in ultra HD, Odd/Even front & back duplex printing, From-To page selector, 2-Up paper saver, and mobile-friendly clean printing without page splitting.">
   <meta name="keywords" content="print studio, print pdf online, odd even print, double sided print, 2 up print, from to page print, ai bots print">
   <link rel="icon" href="https://i.ibb.co/G2NFYHG/logo.png" type="image/png">
   <link rel="canonical" href="https://www.aibots.co.in/print.html">
@@ -243,16 +243,25 @@
     }
 
     /* ==========================================================================
-       STRICT @media print STYLES — CLEAN PHYSICAL PRINTING WITHOUT UI CLUTTER
+       STRICT @media print STYLES — PREVENTS CUTTING OR MULTI-PAGE SPILL OVERFLOW
        ========================================================================== */
     @media print {
-      body, html {
-        background: #fff !important;
-        color: #000 !important;
+      @page {
+        size: auto;
+        margin: 0mm !important; /* Zero margin on browser page level so internal padding guarantees 100% fit */
+      }
+      *, *::before, *::after {
+        box-sizing: border-box !important;
+      }
+      html, body {
+        background: #ffffff !important;
+        color: #000000 !important;
         margin: 0 !important;
         padding: 0 !important;
+        width: 100% !important;
+        height: auto !important;
       }
-      .navbar, .bg-mesh, .tool-header, .ps-dropzone, .ps-sidebar, .stage-top-bar, .app-footer, .tool-icon-btn {
+      .navbar, .bg-mesh, .tool-header, .ps-dropzone, .ps-sidebar, .stage-top-bar, .app-footer, .tool-icon-btn, .page-gallery {
         display: none !important;
       }
       .ps-workspace, .ps-stage, .tool-page-wrapper {
@@ -265,47 +274,50 @@
         width: 100% !important;
         max-width: 100% !important;
       }
-      .page-gallery {
-        display: none !important;
-      }
       #printContainer {
         display: block !important;
         width: 100% !important;
-      }
-      .printable-page {
-        page-break-after: always;
-        break-after: page;
-        width: 100% !important;
-        height: auto !important;
         margin: 0 !important;
         padding: 0 !important;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        position: relative;
-        background: #fff;
+      }
+      .printable-page {
+        width: 100vw !important;
+        height: 100vh !important;
+        max-height: 100vh !important;
+        margin: 0 !important;
+        padding: 10mm 8mm !important; /* Safe printable padding */
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+        justify-content: center !important;
+        position: relative !important;
+        background: #ffffff !important;
+        page-break-after: always !important;
+        break-after: page !important;
+        page-break-inside: avoid !important;
+        break-inside: avoid !important;
+        overflow: hidden !important; /* CRITICAL: Prevents any bottom pixel from bleeding into an extra page */
       }
       .printable-page:last-child {
-        page-break-after: avoid;
-        break-after: avoid;
+        page-break-after: avoid !important;
+        break-after: avoid !important;
       }
-      .printable-page img, .printable-page canvas {
+      .printable-page img {
         max-width: 100% !important;
-        max-height: 100vh !important;
+        max-height: calc(100vh - 24mm) !important; /* Strictly bounded inside sheet */
+        width: auto !important;
+        height: auto !important;
         object-fit: contain !important;
         display: block !important;
+        margin: auto !important;
         image-rendering: -webkit-optimize-contrast !important;
         image-rendering: high-quality !important;
       }
       .print-header-text {
-        position: absolute; top: 10px; left: 20px; font-size: 9pt; color: #475569;
+        position: absolute; top: 4mm; left: 10mm; font-size: 8.5pt; color: #475569; font-family: sans-serif;
       }
       .print-footer-text {
-        position: absolute; bottom: 10px; right: 20px; font-size: 9pt; color: #475569;
-      }
-      @page {
-        size: auto;
-        margin: 8mm;
+        position: absolute; bottom: 4mm; right: 10mm; font-size: 8.5pt; color: #475569; font-family: sans-serif;
       }
     }
   </style>
@@ -801,7 +813,11 @@
           if (canvases[3]) sCtx.drawImage(canvases[3], halfW + 20, halfH + 20);
         }
 
-        sheet.appendChild(sheetCanvas);
+        // Render as high-res <img> to ensure mobile printers size it reliably inside 1 single physical sheet
+        const sheetImg = document.createElement('img');
+        sheetImg.src = sheetCanvas.toDataURL('image/png');
+        sheet.appendChild(sheetImg);
+
         container.appendChild(sheet);
       }
     }
@@ -810,7 +826,7 @@
       rebuildPrintSheets();
       setTimeout(() => {
         window.print();
-      }, 250);
+      }, 300);
     }
 
     async function downloadExportPDF() {
@@ -822,20 +838,19 @@
       const orientation = document.getElementById('orientationSelect').value;
       const doc = new jsPDF({ orientation: orientation, unit: 'mm', format: 'a4' });
 
-      const sheets = document.getElementById('printContainer').querySelectorAll('.printable-page canvas');
-      sheets.forEach((canvas, idx) => {
+      const sheets = document.getElementById('printContainer').querySelectorAll('.printable-page img');
+      sheets.forEach((img, idx) => {
         if (idx > 0) doc.addPage();
-        const imgData = canvas.toDataURL('image/png');
         const pageWidth = orientation === 'portrait' ? 210 : 297;
         const pageHeight = orientation === 'portrait' ? 297 : 210;
 
-        const ratio = Math.min((pageWidth - 20) / canvas.width, (pageHeight - 20) / canvas.height);
-        const w = canvas.width * ratio;
-        const h = canvas.height * ratio;
+        const ratio = Math.min((pageWidth - 20) / img.naturalWidth, (pageHeight - 20) / img.naturalHeight);
+        const w = img.naturalWidth * ratio;
+        const h = img.naturalHeight * ratio;
         const x = (pageWidth - w) / 2;
         const y = (pageHeight - h) / 2;
 
-        doc.addImage(imgData, 'PNG', x, y, w, h, undefined, 'FAST');
+        doc.addImage(img.src, 'PNG', x, y, w, h, undefined, 'FAST');
       });
 
       doc.save("print_studio_document.pdf");

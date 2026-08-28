@@ -47,7 +47,7 @@
         "aggregateRating": {
           "@type": "AggregateRating",
           "ratingValue": "4.9",
-          "ratingCount": "1420",
+          "ratingCount": "1450",
           "bestRating": "5"
         },
         "offers": {
@@ -104,57 +104,69 @@
       display: grid;
       grid-template-columns: 1fr 340px;
       gap: 24px;
-      margin-top: 24px;
+      margin-top: 20px;
+      align-items: start;
     }
-    @media (max-width: 900px) {
+    @media (max-width: 920px) {
       .studio-workspace {
         grid-template-columns: 1fr;
       }
     }
 
-    /* Comparison & Canvas Viewport */
-    .viewport-box {
-      position: relative;
-      width: 100%;
-      min-height: 400px;
-      max-height: 560px;
-      background: var(--bg-tertiary);
-      border: 1px solid var(--border-color);
-      border-radius: var(--radius-xl);
-      overflow: hidden;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      box-shadow: var(--shadow-lg);
-    }
+    /* Checkered Transparent Pattern */
     .checkered-pattern {
-      background-image: linear-gradient(45deg, rgba(0,0,0,0.06) 25%, transparent 25%), 
-                        linear-gradient(-45deg, rgba(0,0,0,0.06) 25%, transparent 25%), 
-                        linear-gradient(45deg, transparent 75%, rgba(0,0,0,0.06) 75%), 
-                        linear-gradient(-45deg, transparent 75%, rgba(0,0,0,0.06) 75%);
+      background-color: #f1f5f9;
+      background-image: linear-gradient(45deg, #cbd5e1 25%, transparent 25%), 
+                        linear-gradient(-45deg, #cbd5e1 25%, transparent 25%), 
+                        linear-gradient(45deg, transparent 75%, #cbd5e1 75%), 
+                        linear-gradient(-45deg, transparent 75%, #cbd5e1 75%);
       background-size: 20px 20px;
       background-position: 0 0, 0 10px, 10px -10px, -10px 0px;
     }
     [data-theme="dark"] .checkered-pattern {
-      background-image: linear-gradient(45deg, rgba(255,255,255,0.05) 25%, transparent 25%), 
-                        linear-gradient(-45deg, rgba(255,255,255,0.05) 25%, transparent 25%), 
-                        linear-gradient(45deg, transparent 75%, rgba(255,255,255,0.05) 75%), 
-                        linear-gradient(-45deg, transparent 75%, rgba(255,255,255,0.05) 75%);
+      background-color: #0f172a;
+      background-image: linear-gradient(45deg, #1e293b 25%, transparent 25%), 
+                        linear-gradient(-45deg, #1e293b 25%, transparent 25%), 
+                        linear-gradient(45deg, transparent 75%, #1e293b 75%), 
+                        linear-gradient(-45deg, transparent 75%, #1e293b 75%);
     }
 
-    /* Split Comparison Slider */
-    .split-container {
+    /* Viewport Display Box */
+    .viewport-card {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-xl);
+      padding: 16px;
+      box-shadow: var(--shadow-lg);
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    /* Ultra-Smooth Glitch-Free Split Comparison Viewport */
+    .split-viewport {
       position: relative;
       width: 100%;
-      height: 100%;
+      min-height: 380px;
       max-height: 540px;
+      border-radius: var(--radius-lg);
+      overflow: hidden;
       display: flex;
       align-items: center;
       justify-content: center;
+      border: 1px solid var(--border-color);
       user-select: none;
-      overflow: hidden;
     }
-    .split-layer {
+    .split-img {
+      max-width: 100%;
+      max-height: 520px;
+      width: auto;
+      height: auto;
+      object-fit: contain;
+      display: block;
+      margin: 0 auto;
+    }
+    .split-top-wrap {
       position: absolute;
       top: 0;
       left: 0;
@@ -163,42 +175,79 @@
       display: flex;
       align-items: center;
       justify-content: center;
+      clip-path: polygon(0 0, 50% 0, 50% 100%, 0 100%);
+      pointer-events: none;
     }
-    .split-layer img, .split-layer canvas {
-      max-width: 100%;
-      max-height: 520px;
-      object-fit: contain;
-      display: block;
-    }
-    .split-after {
+    .split-line {
       position: absolute;
       top: 0;
-      left: 0;
-      width: 50%;
-      height: 100%;
-      overflow: hidden;
-      border-right: 2px solid white;
-      box-shadow: 2px 0 10px rgba(0,0,0,0.3);
-      z-index: 5;
-    }
-    .split-divider-handle {
-      position: absolute;
-      top: 50%;
+      bottom: 0;
       left: 50%;
-      transform: translate(-50%, -50%);
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
-      background: white;
-      color: #1e293b;
+      width: 3px;
+      background: #ffffff;
+      box-shadow: 0 0 8px rgba(0,0,0,0.5);
+      pointer-events: none;
+      transform: translateX(-50%);
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 0.9rem;
-      box-shadow: 0 4px 14px rgba(0,0,0,0.35);
+    }
+    .split-button {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      background: #ffffff;
+      color: #0f172a;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.85rem;
+      border: 2px solid var(--primary);
+    }
+    .split-range-input {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      opacity: 0;
       cursor: ew-resize;
-      z-index: 10;
-      pointer-events: none;
+      z-index: 20;
+      margin: 0;
+      padding: 0;
+    }
+
+    /* Side-by-Side Viewport Grid */
+    .side-by-side-grid {
+      display: none;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      width: 100%;
+    }
+    .side-box {
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      min-height: 380px;
+      max-height: 520px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+    .side-badge {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      background: rgba(15, 23, 42, 0.75);
+      backdrop-filter: blur(6px);
+      color: white;
+      font-size: 0.75rem;
+      font-weight: 700;
+      padding: 4px 10px;
+      border-radius: var(--radius-md);
+      z-index: 5;
     }
 
     /* Studio Controls Sidebar */
@@ -209,7 +258,7 @@
       padding: 24px 20px;
       display: flex;
       flex-direction: column;
-      gap: 20px;
+      gap: 18px;
       box-shadow: var(--shadow-lg);
     }
     .panel-section-title {
@@ -242,28 +291,37 @@
       border-color: var(--primary);
       box-shadow: 0 0 10px var(--primary-light);
     }
-    .brush-cursor {
-      position: absolute;
-      border: 2px solid white;
-      box-shadow: 0 0 4px black;
-      border-radius: 50%;
-      pointer-events: none;
-      transform: translate(-50%, -50%);
-      display: none;
-      z-index: 999;
-    }
 
-    /* Loading Spinner */
-    .spinner {
-      display: none;
-      width: 20px;
-      height: 20px;
-      border: 3px solid rgba(255,255,255,0.3);
-      border-radius: 50%;
-      border-top-color: #fff;
-      animation: spin 0.8s ease-in-out infinite;
+    /* View Switcher Pills */
+    .view-mode-tabs {
+      display: flex;
+      background: var(--bg-tertiary);
+      border-radius: var(--radius-lg);
+      padding: 4px;
+      gap: 4px;
+      border: 1px solid var(--border-color);
     }
-    @keyframes spin { to { transform: rotate(360deg); } }
+    .view-tab-btn {
+      flex: 1;
+      padding: 6px 12px;
+      font-size: 0.82rem;
+      font-weight: 700;
+      border: none;
+      background: transparent;
+      color: var(--text-secondary);
+      border-radius: var(--radius-md);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      transition: var(--transition);
+    }
+    .view-tab-btn.active {
+      background: var(--primary);
+      color: white;
+      box-shadow: var(--shadow-sm);
+    }
   </style>
 </head>
 <body>
@@ -292,7 +350,7 @@
     <div class="tool-header">
       <span class="tool-header-badge"><i class="fas fa-wand-magic-sparkles"></i> AI Precision Studio</span>
       <h1 class="tool-title">Pro AI Background Remover</h1>
-      <p class="tool-desc">Instant background removal with smart edge smoothing, backdrop studio replacement, and manual retouching.</p>
+      <p class="tool-desc">100% full-resolution crisp cutout with smooth edge refinement and instant backdrop replacement.</p>
     </div>
 
     <!-- Upload Dropzone (Visible before upload) -->
@@ -306,64 +364,89 @@
     <!-- Studio Workspace (Revealed after image upload) -->
     <div class="studio-workspace" id="studioWorkspace" style="display: none;">
       
-      <!-- Center: Interactive Viewport with Split Comparison -->
-      <div style="display: flex; flex-direction: column; gap: 14px;">
-        <div class="viewport-box checkered-pattern" id="viewportBox">
-          <div class="split-container" id="splitContainer">
-            
-            <!-- Bottom Layer: Original Background (or Custom Backdrop) -->
-            <div class="split-layer" id="bgLayer">
-              <canvas id="bgCanvas"></canvas>
-            </div>
-
-            <!-- Top Layer: Transparent Cutout Mask -->
-            <div class="split-after" id="splitAfter">
-              <canvas id="cutoutCanvas"></canvas>
-            </div>
-
-            <!-- Draggable Split Divider -->
-            <div class="split-divider-handle" id="splitHandle">
-              <i class="fas fa-arrows-left-right"></i>
-            </div>
+      <!-- Left Column: Viewport & View Mode Tabs -->
+      <div class="viewport-card">
+        
+        <!-- View Mode Navigation -->
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+          <div class="view-mode-tabs">
+            <button class="view-tab-btn active" id="btnViewSplit" onclick="switchViewMode('split')">
+              <i class="fas fa-arrows-left-right"></i> Split Slider
+            </button>
+            <button class="view-tab-btn" id="btnViewSide" onclick="switchViewMode('side')">
+              <i class="fas fa-columns"></i> Side-by-Side
+            </button>
+            <button class="view-tab-btn" id="btnViewCutout" onclick="switchViewMode('cutout')">
+              <i class="fas fa-image"></i> Cutout Only
+            </button>
           </div>
-          <div id="brushIndicator" class="brush-cursor"></div>
+
+          <div style="font-size: 0.82rem; color: var(--text-secondary); font-weight: 700;" id="imageDimBadge">
+            Original: 0 × 0 px
+          </div>
+        </div>
+
+        <!-- 1. Split Comparison View (Default) -->
+        <div class="split-viewport checkered-pattern" id="splitViewportBox">
+          <!-- Background Image (Original or Custom Backdrop) -->
+          <img id="splitOriginalImg" class="split-img" alt="Original Background">
+          
+          <!-- Top Layer Cutout -->
+          <div class="split-top-wrap" id="splitCutoutWrap">
+            <img id="splitCutoutImg" class="split-img" alt="AI Cutout Result">
+          </div>
+
+          <!-- Divider Line & Handle -->
+          <div class="split-line" id="splitLine">
+            <div class="split-button"><i class="fas fa-arrows-left-right"></i></div>
+          </div>
+
+          <!-- Range Slider -->
+          <input type="range" id="splitSlider" min="0" max="100" value="50" class="split-range-input" oninput="updateSplitSlider(this.value)">
+        </div>
+
+        <!-- 2. Side-by-Side View -->
+        <div class="side-by-side-grid" id="sideBySideGrid">
+          <div class="side-box">
+            <span class="side-badge">ORIGINAL</span>
+            <img id="sideOriginalImg" class="split-img" alt="Original Photo">
+          </div>
+          <div class="side-box checkered-pattern" id="sideCutoutBox">
+            <span class="side-badge">CUTOUT</span>
+            <img id="sideCutoutImg" class="split-img" alt="Cutout Photo">
+          </div>
         </div>
 
         <!-- Viewport Toolbar -->
-        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
-          <div style="display: flex; gap: 8px;">
-            <button id="toggleSplitBtn" class="btn btn-secondary btn-sm" onclick="toggleSplitMode()">
-              <i class="fas fa-columns"></i> Split Compare
-            </button>
-            <button id="resetCutoutBtn" class="btn btn-secondary btn-sm" onclick="reprocessImage()">
-              <i class="fas fa-rotate-right"></i> Re-Process
-            </button>
-          </div>
-
-          <div style="font-size: 0.85rem; color: var(--text-secondary); font-weight: 600;" id="imageDimBadge">
-            Original: 0 x 0 px
-          </div>
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; margin-top: 4px;">
+          <button onclick="document.getElementById('imageInput').click()" class="btn btn-secondary btn-sm">
+            <i class="fas fa-cloud-arrow-up"></i> Upload Another Photo
+          </button>
+          <button onclick="reprocessCutout()" class="btn btn-secondary btn-sm">
+            <i class="fas fa-rotate-right"></i> Re-Calculate Mask
+          </button>
         </div>
+
       </div>
 
-      <!-- Right: Studio Controls Panel -->
+      <!-- Right Column: Studio Controls Panel -->
       <div class="studio-panel">
 
         <!-- 1. AI Edge Refinement Slider -->
         <div>
-          <div class="panel-section-title"><i class="fas fa-sliders"></i> AI Removal Precision</div>
+          <div class="panel-section-title"><i class="fas fa-sliders"></i> Edge Sensitivity & Mask</div>
           
           <div style="margin-bottom: 12px;">
             <div style="display: flex; justify-content: space-between; font-size: 0.82rem; margin-bottom: 4px;">
-              <span>Edge Sensitivity / Tolerance</span>
-              <strong id="toleranceVal" style="color: var(--primary);">45</strong>
+              <span>Sensitivity / Tolerance</span>
+              <strong id="toleranceVal" style="color: var(--primary);">40</strong>
             </div>
-            <input type="range" id="toleranceRange" min="5" max="95" value="45" class="form-control" style="padding: 0;" oninput="updateTolerance(this.value)">
+            <input type="range" id="toleranceRange" min="5" max="95" value="40" class="form-control" style="padding: 0;" oninput="updateTolerance(this.value)">
           </div>
 
           <div>
             <div style="display: flex; justify-content: space-between; font-size: 0.82rem; margin-bottom: 4px;">
-              <span>Feather Edge Smoothing</span>
+              <span>Edge Feather Smoothing</span>
               <strong id="featherVal" style="color: var(--primary);">2px</strong>
             </div>
             <input type="range" id="featherRange" min="0" max="6" value="2" class="form-control" style="padding: 0;" oninput="updateFeather(this.value)">
@@ -377,7 +460,7 @@
           <div class="panel-section-title"><i class="fas fa-palette"></i> Backdrop Studio</div>
           <div class="color-swatch-grid">
             <div class="color-swatch checkered-pattern active" onclick="setBackdrop('transparent', this)" title="Transparent PNG"></div>
-            <div class="color-swatch" style="background: #ffffff;" onclick="setBackdrop('#ffffff', this)" title="Studio White (Passport)"></div>
+            <div class="color-swatch" style="background: #ffffff;" onclick="setBackdrop('#ffffff', this)" title="Studio White (Passport Standard)"></div>
             <div class="color-swatch" style="background: #0f172a;" onclick="setBackdrop('#0f172a', this)" title="Midnight Slate"></div>
             <div class="color-swatch" style="background: #2563eb;" onclick="setBackdrop('#2563eb', this)" title="Royal Blue"></div>
             <div class="color-swatch" style="background: #dc2626;" onclick="setBackdrop('#dc2626', this)" title="Crimson Red"></div>
@@ -404,13 +487,13 @@
 
         <!-- 3. Export & Download Actions -->
         <div style="display: flex; flex-direction: column; gap: 10px;">
-          <button onclick="downloadCutout('png')" class="btn btn-primary" style="padding: 12px; font-weight: 800; width: 100%;">
-            <i class="fas fa-download"></i> Download HD PNG
+          <button onclick="downloadCutout('png')" class="btn btn-primary" style="padding: 12px; font-weight: 800; width: 100%; font-size: 0.95rem;">
+            <i class="fas fa-download"></i> Download Full HD PNG
           </button>
 
           <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
             <button onclick="downloadCutout('jpg')" class="btn btn-secondary btn-sm">
-              <i class="fas fa-file-image"></i> JPG
+              <i class="fas fa-file-image"></i> Download JPG
             </button>
             <button onclick="copyToClipboard()" class="btn btn-secondary btn-sm">
               <i class="fas fa-copy"></i> Copy PNG
@@ -446,9 +529,9 @@
         </details>
 
         <details style="background: var(--bg-tertiary); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 14px 18px; cursor: pointer;">
-          <summary style="font-weight: 700; font-size: 0.95rem; color: var(--text-primary);">Is this tool 100% free with no watermarks?</summary>
+          <summary style="font-weight: 700; font-size: 0.95rem; color: var(--text-primary);">Is there any watermark or image resolution limit?</summary>
           <p style="margin-top: 10px; font-size: 0.88rem; line-height: 1.6; color: var(--text-secondary);">
-            Yes! Unlike other sites that charge credits or place watermarks over your photo, AI Bots gives you unlimited full-resolution transparent PNG downloads with zero sign-ups.
+            No! AI Bots delivers 100% full-resolution PNG downloads with zero watermarks, sign-ups, or subscriptions.
           </p>
         </details>
 
@@ -471,29 +554,21 @@
 
   <script src="js/app.js"></script>
   <script>
-    // Pro Studio Canvas & Processing Variables
-    let originalImage = null;
-    let originalCanvas = document.createElement('canvas');
-    let originalCtx = originalCanvas.getContext('2d');
-    
-    let cutoutCanvas = document.getElementById('cutoutCanvas');
-    let cutoutCtx = cutoutCanvas.getContext('2d', { willReadFrequently: true });
-
-    let bgCanvas = document.getElementById('bgCanvas');
-    let bgCtx = bgCanvas.getContext('2d');
-
+    // Full-Resolution Uncompressed Image State
+    let originalBitmap = null;
+    let fullCutoutBlob = null;
+    let fullCutoutDataUrl = null;
     let currentBackdrop = 'transparent';
-    let customBgImage = null;
-    let isSplitMode = true;
+    let customBgBitmap = null;
+    let viewMode = 'split';
 
     const imageInput = document.getElementById('imageInput');
     const dropzone = document.getElementById('dropzone');
     const studioWorkspace = document.getElementById('studioWorkspace');
-    const splitContainer = document.getElementById('splitContainer');
-    const splitAfter = document.getElementById('splitAfter');
-    const splitHandle = document.getElementById('splitHandle');
+    const splitCutoutWrap = document.getElementById('splitCutoutWrap');
+    const splitLine = document.getElementById('splitLine');
 
-    // Drag & Drop & Paste Handlers
+    // Drag, Drop & Paste Listeners
     ['dragenter', 'dragover'].forEach(name => {
       dropzone.addEventListener(name, (e) => { e.preventDefault(); dropzone.style.borderColor = 'var(--primary)'; });
     });
@@ -532,58 +607,58 @@
       reader.onload = function(e) {
         const img = new Image();
         img.onload = function() {
-          originalImage = img;
-          originalCanvas.width = img.width;
-          originalCanvas.height = img.height;
-          originalCtx.drawImage(img, 0, 0);
+          originalBitmap = img;
+          const w = img.naturalWidth || img.width;
+          const h = img.naturalHeight || img.height;
 
-          cutoutCanvas.width = img.width;
-          cutoutCanvas.height = img.height;
+          document.getElementById('imageDimBadge').textContent = `Full HD: ${w} × ${h} px`;
+          document.getElementById('splitOriginalImg').src = e.target.result;
+          document.getElementById('sideOriginalImg').src = e.target.result;
 
-          bgCanvas.width = img.width;
-          bgCanvas.height = img.height;
-
-          document.getElementById('imageDimBadge').textContent = `Original: ${img.width} × ${img.height} px`;
           dropzone.style.display = 'none';
           studioWorkspace.style.display = 'grid';
 
-          reprocessImage();
-          showToast('Image loaded! Isolating background...', 'info');
+          reprocessCutout();
+          showToast('Image loaded! Isolating background at full resolution...', 'info');
         };
         img.src = e.target.result;
       };
       reader.readAsDataURL(file);
     }
 
-    // High Precision Multi-Sample Background Isolation Engine
-    function reprocessImage() {
-      if (!originalImage) return;
+    // High Precision Multi-Sampling Background Removal
+    function reprocessCutout() {
+      if (!originalBitmap) return;
 
-      const width = originalCanvas.width;
-      const height = originalCanvas.height;
-      const tolerance = parseInt(document.getElementById('toleranceRange').value) || 45;
+      const w = originalBitmap.naturalWidth || originalBitmap.width;
+      const h = originalBitmap.naturalHeight || originalBitmap.height;
+      const tolerance = parseInt(document.getElementById('toleranceRange').value) || 40;
       const feather = parseInt(document.getElementById('featherRange').value) || 2;
 
-      // Draw original image into cutout canvas
-      cutoutCtx.drawImage(originalImage, 0, 0);
-      const imgData = cutoutCtx.getImageData(0, 0, width, height);
+      // Create full-resolution canvas
+      const canvas = document.createElement('canvas');
+      canvas.width = w;
+      canvas.height = h;
+      const ctx = canvas.getContext('2d', { willReadFrequently: true });
+      ctx.drawImage(originalBitmap, 0, 0, w, h);
+
+      const imgData = ctx.getImageData(0, 0, w, h);
       const data = imgData.data;
 
-      // Sample perimeter background points (4 corners + center edges)
+      // Sample border backdrop points
       const samples = [
-        getPixel(data, 0, 0, width),
-        getPixel(data, width - 1, 0, width),
-        getPixel(data, 0, height - 1, width),
-        getPixel(data, width - 1, height - 1, width),
-        getPixel(data, Math.floor(width / 2), 0, width),
-        getPixel(data, 0, Math.floor(height / 2), width),
-        getPixel(data, width - 1, Math.floor(height / 2), width)
+        getPixel(data, 0, 0, w),
+        getPixel(data, w - 1, 0, w),
+        getPixel(data, 0, h - 1, w),
+        getPixel(data, w - 1, h - 1, w),
+        getPixel(data, Math.floor(w / 2), 0, w),
+        getPixel(data, 0, Math.floor(h / 2), w),
+        getPixel(data, w - 1, Math.floor(h / 2), w)
       ];
 
       for (let i = 0; i < data.length; i += 4) {
         const r = data[i], g = data[i+1], b = data[i+2];
 
-        // Find minimum color distance to any sampled background point
         let minDist = 999;
         for (let s of samples) {
           const dist = Math.sqrt((r - s.r)**2 + (g - s.g)**2 + (b - s.b)**2);
@@ -591,17 +666,25 @@
         }
 
         if (minDist < tolerance) {
-          // Hard cut
-          data[i + 3] = 0;
+          data[i + 3] = 0; // Cutout transparent
         } else if (feather > 0 && minDist < tolerance + (feather * 6)) {
-          // Soft alpha feathering edge
           const alphaFactor = (minDist - tolerance) / (feather * 6);
           data[i + 3] = Math.round(data[i + 3] * alphaFactor);
         }
       }
 
-      cutoutCtx.putImageData(imgData, 0, 0);
-      renderBackdrop();
+      ctx.putImageData(imgData, 0, 0);
+
+      canvas.toBlob(blob => {
+        fullCutoutBlob = blob;
+        if (fullCutoutDataUrl) URL.revokeObjectURL(fullCutoutDataUrl);
+        fullCutoutDataUrl = URL.createObjectURL(blob);
+
+        document.getElementById('splitCutoutImg').src = fullCutoutDataUrl;
+        document.getElementById('sideCutoutImg').src = fullCutoutDataUrl;
+
+        updateBackdropDisplay();
+      }, 'image/png', 1.0);
     }
 
     function getPixel(data, x, y, width) {
@@ -611,62 +694,92 @@
 
     function updateTolerance(val) {
       document.getElementById('toleranceVal').textContent = val;
-      reprocessImage();
+      reprocessCutout();
     }
 
     function updateFeather(val) {
       document.getElementById('featherVal').textContent = `${val}px`;
-      reprocessImage();
+      reprocessCutout();
     }
 
-    // Backdrop Rendering (Solid, Gradient, Custom Photo)
-    function renderBackdrop() {
-      if (!originalImage) return;
+    // Split Slider Update (Clip Path Based)
+    function updateSplitSlider(val) {
+      splitCutoutWrap.style.clipPath = `polygon(0 0, ${val}% 0, ${val}% 100%, 0 100%)`;
+      splitLine.style.left = `${val}%`;
+    }
 
-      const width = originalCanvas.width;
-      const height = originalCanvas.height;
-      bgCtx.clearRect(0, 0, width, height);
+    // View Mode Switcher (Split / Side-by-Side / Cutout Only)
+    function switchViewMode(mode) {
+      viewMode = mode;
+      document.querySelectorAll('.view-tab-btn').forEach(b => b.classList.remove('active'));
 
-      if (isSplitMode) {
-        // In split mode, the bottom layer renders original image
-        bgCtx.drawImage(originalImage, 0, 0);
-      } else {
-        if (currentBackdrop === 'transparent') {
-          // Transparent - no draw
-        } else if (currentBackdrop.startsWith('gradient:')) {
-          const type = currentBackdrop.split(':')[1];
-          const grad = bgCtx.createLinearGradient(0, 0, width, height);
-          if (type === 'indigo') { grad.addColorStop(0, '#4f46e5'); grad.addColorStop(1, '#ec4899'); }
-          else if (type === 'sunset') { grad.addColorStop(0, '#f59e0b'); grad.addColorStop(1, '#ef4444'); }
-          else if (type === 'ocean') { grad.addColorStop(0, '#06b6d4'); grad.addColorStop(1, '#3b82f6'); }
-          else if (type === 'purple') { grad.addColorStop(0, '#8b5cf6'); grad.addColorStop(1, '#d946ef'); }
-          bgCtx.fillStyle = grad;
-          bgCtx.fillRect(0, 0, width, height);
-        } else if (currentBackdrop === 'custom_image' && customBgImage) {
-          bgCtx.drawImage(customBgImage, 0, 0, width, height);
-        } else {
-          // Solid color
-          bgCtx.fillStyle = currentBackdrop;
-          bgCtx.fillRect(0, 0, width, height);
-        }
+      const splitBox = document.getElementById('splitViewportBox');
+      const sideBox = document.getElementById('sideBySideGrid');
+
+      if (mode === 'split') {
+        document.getElementById('btnViewSplit').classList.add('active');
+        splitBox.style.display = 'flex';
+        sideBox.style.display = 'none';
+        updateSplitSlider(50);
+        document.getElementById('splitSlider').style.display = 'block';
+        splitLine.style.display = 'flex';
+      } else if (mode === 'side') {
+        document.getElementById('btnViewSide').classList.add('active');
+        splitBox.style.display = 'none';
+        sideBox.style.display = 'grid';
+      } else if (mode === 'cutout') {
+        document.getElementById('btnViewCutout').classList.add('active');
+        splitBox.style.display = 'flex';
+        sideBox.style.display = 'none';
+        splitCutoutWrap.style.clipPath = `polygon(0 0, 100% 0, 100% 100%, 0 100%)`;
+        document.getElementById('splitSlider').style.display = 'none';
+        splitLine.style.display = 'none';
       }
     }
 
+    // Backdrop Management
     function setBackdrop(val, el) {
       currentBackdrop = val;
       document.querySelectorAll('.color-swatch').forEach(s => s.classList.remove('active'));
       if (el) el.classList.add('active');
 
-      if (isSplitMode && val !== 'transparent') {
-        // Auto disable split mode so the user sees their new backdrop
-        isSplitMode = false;
-        document.getElementById('toggleSplitBtn').classList.remove('active');
-        splitAfter.style.width = '100%';
-        splitHandle.style.display = 'none';
-      }
-
-      renderBackdrop();
+      updateBackdropDisplay();
       showToast('Backdrop updated!', 'info');
+    }
+
+    function updateBackdropDisplay() {
+      const viewport = document.getElementById('splitViewportBox');
+      const sideCutout = document.getElementById('sideCutoutBox');
+      const origImg = document.getElementById('splitOriginalImg');
+
+      if (currentBackdrop === 'transparent') {
+        viewport.style.background = '';
+        viewport.className = 'split-viewport checkered-pattern';
+        sideCutout.className = 'side-box checkered-pattern';
+        sideCutout.style.background = '';
+        if (originalBitmap) origImg.src = originalBitmap.src;
+      } else if (currentBackdrop.startsWith('gradient:')) {
+        const type = currentBackdrop.split(':')[1];
+        let grad = 'linear-gradient(135deg, #4f46e5, #ec4899)';
+        if (type === 'sunset') grad = 'linear-gradient(135deg, #f59e0b, #ef4444)';
+        else if (type === 'ocean') grad = 'linear-gradient(135deg, #06b6d4, #3b82f6)';
+        else if (type === 'purple') grad = 'linear-gradient(135deg, #8b5cf6, #d946ef)';
+
+        viewport.className = 'split-viewport';
+        viewport.style.background = grad;
+        sideCutout.className = 'side-box';
+        sideCutout.style.background = grad;
+      } else if (currentBackdrop === 'custom_image' && customBgBitmap) {
+        viewport.className = 'split-viewport';
+        viewport.style.background = `url(${customBgBitmap.src}) center/cover no-repeat`;
+        sideCutout.className = 'side-box';
+        sideCutout.style.background = `url(${customBgBitmap.src}) center/cover no-repeat`;
+      } else {
+        viewport.className = 'split-viewport';
+        viewport.style.background = currentBackdrop;
+        sideCutout.className = 'side-box';
+        sideCutout.style.background = currentBackdrop;
+      }
     }
 
     function handleCustomBgUpload(e) {
@@ -676,7 +789,7 @@
       reader.onload = function(evt) {
         const img = new Image();
         img.onload = function() {
-          customBgImage = img;
+          customBgBitmap = img;
           setBackdrop('custom_image', document.getElementById('customBgInput').parentElement);
         };
         img.src = evt.target.result;
@@ -684,91 +797,69 @@
       reader.readAsDataURL(file);
     }
 
-    // Split Comparison Slider Dragging
-    let isDraggingSplit = false;
-
-    function initSplitSlider() {
-      const moveHandler = (e) => {
-        if (!isDraggingSplit || !isSplitMode) return;
-        const rect = splitContainer.getBoundingClientRect();
-        const clientX = e.touches ? e.touches[0].clientX : e.clientX;
-        let pos = (clientX - rect.left) / rect.width;
-        pos = Math.max(0.05, Math.min(0.95, pos));
-
-        splitAfter.style.width = `${pos * 100}%`;
-        splitHandle.style.left = `${pos * 100}%`;
-      };
-
-      splitContainer.addEventListener('mousedown', () => isDraggingSplit = true);
-      window.addEventListener('mouseup', () => isDraggingSplit = false);
-      window.addEventListener('mousemove', moveHandler);
-
-      splitContainer.addEventListener('touchstart', () => isDraggingSplit = true);
-      window.addEventListener('touchend', () => isDraggingSplit = false);
-      window.addEventListener('touchmove', moveHandler);
-    }
-    initSplitSlider();
-
-    function toggleSplitMode() {
-      isSplitMode = !isSplitMode;
-      const btn = document.getElementById('toggleSplitBtn');
-      if (isSplitMode) {
-        btn.classList.add('active');
-        splitAfter.style.width = '50%';
-        splitHandle.style.left = '50%';
-        splitHandle.style.display = 'flex';
-      } else {
-        btn.classList.remove('active');
-        splitAfter.style.width = '100%';
-        splitHandle.style.display = 'none';
-      }
-      renderBackdrop();
-    }
-
-    // Export & Download
+    // Full HD Uncompressed Export
     function downloadCutout(format = 'png') {
-      if (!originalImage) return;
+      if (!originalBitmap) return;
+
+      const w = originalBitmap.naturalWidth || originalBitmap.width;
+      const h = originalBitmap.naturalHeight || originalBitmap.height;
 
       const exportCanvas = document.createElement('canvas');
-      exportCanvas.width = originalCanvas.width;
-      exportCanvas.height = originalCanvas.height;
-      const expCtx = exportCanvas.getContext('2d');
+      exportCanvas.width = w;
+      exportCanvas.height = h;
+      const expCtx = exportCanvas.getContext('2d', { alpha: format === 'png' });
 
-      // Draw backdrop if not transparent or if format is JPG
-      if (currentBackdrop !== 'transparent' && !isSplitMode) {
-        expCtx.drawImage(bgCanvas, 0, 0);
+      // Draw Backdrop
+      if (currentBackdrop !== 'transparent') {
+        if (currentBackdrop.startsWith('gradient:')) {
+          const type = currentBackdrop.split(':')[1];
+          const grad = expCtx.createLinearGradient(0, 0, w, h);
+          if (type === 'indigo') { grad.addColorStop(0, '#4f46e5'); grad.addColorStop(1, '#ec4899'); }
+          else if (type === 'sunset') { grad.addColorStop(0, '#f59e0b'); grad.addColorStop(1, '#ef4444'); }
+          else if (type === 'ocean') { grad.addColorStop(0, '#06b6d4'); grad.addColorStop(1, '#3b82f6'); }
+          else if (type === 'purple') { grad.addColorStop(0, '#8b5cf6'); grad.addColorStop(1, '#d946ef'); }
+          expCtx.fillStyle = grad;
+          expCtx.fillRect(0, 0, w, h);
+        } else if (currentBackdrop === 'custom_image' && customBgBitmap) {
+          expCtx.drawImage(customBgBitmap, 0, 0, w, h);
+        } else {
+          expCtx.fillStyle = currentBackdrop;
+          expCtx.fillRect(0, 0, w, h);
+        }
       } else if (format === 'jpg') {
         expCtx.fillStyle = '#ffffff';
-        expCtx.fillRect(0, 0, exportCanvas.width, exportCanvas.height);
+        expCtx.fillRect(0, 0, w, h);
       }
 
-      // Draw cutout subject
-      expCtx.drawImage(cutoutCanvas, 0, 0);
+      // Draw Full HD Cutout Layer
+      const cutoutImg = new Image();
+      cutoutImg.onload = function() {
+        expCtx.drawImage(cutoutImg, 0, 0, w, h);
 
-      const mime = (format === 'jpg') ? 'image/jpeg' : 'image/png';
-      const ext = (format === 'jpg') ? 'jpg' : 'png';
-      const quality = (format === 'jpg') ? 0.95 : 1.0;
+        const mime = (format === 'jpg') ? 'image/jpeg' : 'image/png';
+        const ext = (format === 'jpg') ? 'jpg' : 'png';
+        const quality = 1.0;
 
-      exportCanvas.toBlob(blob => {
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = `cutout_${Date.now()}.${ext}`;
-        a.click();
-        URL.revokeObjectURL(url);
-        showToast(`Downloaded HD ${ext.toUpperCase()}!`, 'success');
-      }, mime, quality);
+        exportCanvas.toBlob(blob => {
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = `cutout_${w}x${h}_${Date.now()}.${ext}`;
+          a.click();
+          URL.revokeObjectURL(url);
+          showToast(`Downloaded Full HD ${ext.toUpperCase()} (${w}×${h}px)!`, 'success');
+        }, mime, quality);
+      };
+      cutoutImg.src = fullCutoutDataUrl;
     }
 
     async function copyToClipboard() {
-      if (!originalImage) return;
+      if (!fullCutoutBlob) return;
       try {
-        cutoutCanvas.toBlob(async (blob) => {
-          await navigator.clipboard.write([
-            new ClipboardItem({ 'image/png': blob })
-          ]);
-          showToast('Transparent PNG copied to clipboard!', 'success');
-        }, 'image/png');
+        await navigator.clipboard.write([
+          new ClipboardItem({ 'image/png': fullCutoutBlob })
+        ]);
+        showToast('Full HD Transparent PNG copied to clipboard!', 'success');
       } catch (err) {
         showToast('Clipboard access denied in this browser', 'warning');
       }

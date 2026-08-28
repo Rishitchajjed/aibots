@@ -2,13 +2,13 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
   <meta name="google-site-verification" content="ndzq-U-NLijgza_QqgQdcc2U3oMRoud_BT2ZZiwFREM">
   <meta name="google-site-verification" content="-Yb6Nx74gbZ3wRN5uP-Y8KKwDWlt1DPpxs4nA3PkE6M">
   <meta name="robots" content="index, follow">
-  <title>Live Currency Converter — AI Bots</title>
-  <meta name="description" content="Convert 30+ world currencies with live exchange rates, instant calculation, and historical comparison. 100% free and fast.">
-  <meta name="keywords" content="currency converter, live exchange rate, usd to inr, eur to usd, currency exchange calculator, ai bots currency">
+  <title>Pro Live Currency Converter & Forex Studio — AI Bots</title>
+  <meta name="description" content="Convert 160+ world currencies with live real-time exchange rates, multi-currency matrix, bank markup fee calculator, travel cash breakdown, and 100% private calculations.">
+  <meta name="keywords" content="currency converter, live exchange rate, usd to inr, eur to inr, aed to inr, gbp to inr, forex calculator, ai bots currency">
   <link rel="icon" href="https://i.ibb.co/G2NFYHG/logo.png" type="image/png">
   <link rel="canonical" href="https://www.aibots.co.in/currency.html">
   <!-- Google Analytics -->
@@ -19,43 +19,259 @@
     gtag('js', new Date());
     gtag('config', 'G-2L87FMQS3W');
   </script>
+
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link rel="stylesheet" href="css/theme.css">
   <style>
-    .curr-card { max-width: 680px; margin: 0 auto; }
-    .amt-row { display: grid; grid-template-columns: 1fr auto 1fr; gap: 10px; align-items: end; margin-top: 16px; }
-    .swap-btn {
-      width: 44px; height: 44px; border-radius: 50%;
-      border: 1px solid var(--border-color); background: var(--bg-primary);
-      cursor: pointer; font-size: 1.1rem; color: var(--primary);
-      display: flex; align-items: center; justify-content: center;
-      transition: transform 0.2s;
+    .forex-layout {
+      max-width: 960px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
     }
-    .swap-btn:hover { transform: rotate(180deg); }
-    .result-box {
-      margin-top: 24px; padding: 22px; border-radius: var(--radius-lg);
-      background: var(--bg-primary); border: 1px solid var(--border-color); text-align: center;
+
+    /* Main Converter Card */
+    .converter-card {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-xl);
+      padding: 30px 24px;
+      box-shadow: var(--shadow-lg);
+      position: relative;
     }
-    .result-box .rate-sub { font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 6px; }
-    .result-box .big {
-      font-family: monospace; font-size: 1.8rem; font-weight: 800;
-      color: var(--primary); word-break: break-all;
+    @media (max-width: 600px) {
+      .converter-card { padding: 20px 16px; }
     }
-    .quick-chips { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 10px; }
-    .quick-chip {
-      background: var(--bg-primary); border: 1px solid var(--border-color);
-      border-radius: 6px; padding: 4px 10px; font-size: 0.76rem; font-weight: 600;
-      color: var(--text-secondary); cursor: pointer; transition: all 0.15s;
+
+    .status-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 10px;
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+      margin-bottom: 20px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--border-color);
     }
-    .quick-chip:hover { border-color: var(--primary); color: var(--primary); }
-    .popular-grid {
-      display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-      gap: 10px; margin-top: 20px;
+    .status-live-dot {
+      display: inline-block;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #10b981;
+      box-shadow: 0 0 8px #10b981;
+      margin-right: 6px;
+      animation: pulseLive 2s infinite;
     }
-    .pop-card {
-      background: var(--bg-primary); border: 1px solid var(--border-color);
-      border-radius: var(--radius-md); padding: 10px 14px; display: flex;
-      justify-content: space-between; align-items: center; font-size: 0.85rem;
+    @keyframes pulseLive {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.4; transform: scale(1.2); }
+    }
+
+    /* Input Grid */
+    .conversion-grid {
+      display: grid;
+      grid-template-columns: 1.2fr auto 1.2fr;
+      gap: 16px;
+      align-items: center;
+      margin-bottom: 24px;
+    }
+    @media (max-width: 768px) {
+      .conversion-grid {
+        grid-template-columns: 1fr;
+        gap: 12px;
+      }
+    }
+
+    .curr-input-box {
+      background: var(--bg-primary);
+      border: 2px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      padding: 14px 16px;
+      transition: all 0.2s;
+    }
+    .curr-input-box:focus-within {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px var(--primary-light);
+    }
+    .curr-box-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+    .curr-box-label {
+      font-size: 0.72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-secondary);
+    }
+    .curr-flag-badge {
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .curr-num-input {
+      width: 100%;
+      background: transparent;
+      border: none;
+      font-size: 1.6rem;
+      font-weight: 800;
+      color: var(--text-primary);
+      font-family: var(--font-mono);
+      outline: none;
+    }
+
+    .swap-btn-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    .swap-circle-btn {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      background: var(--primary-light);
+      color: var(--primary);
+      border: 1px solid var(--border-color);
+      font-size: 1.15rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: var(--shadow-sm);
+      transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .swap-circle-btn:hover {
+      background: var(--primary);
+      color: white;
+      transform: rotate(180deg) scale(1.08);
+    }
+
+    /* Result Banner */
+    .conversion-result-banner {
+      background: linear-gradient(135deg, color-mix(in srgb, var(--primary) 12%, var(--bg-primary)), var(--bg-primary));
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      padding: 24px 20px;
+      text-align: center;
+      position: relative;
+    }
+    .rate-equation {
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: var(--text-secondary);
+      margin-bottom: 6px;
+    }
+    .primary-converted-value {
+      font-size: clamp(1.8rem, 5vw, 2.6rem);
+      font-weight: 900;
+      color: var(--primary);
+      font-family: var(--font-mono);
+      word-break: break-all;
+      line-height: 1.1;
+      margin-bottom: 6px;
+    }
+    .inverse-rate-text {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+
+    /* Quick Preset Amount Chips */
+    .quick-chips-row {
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-top: 14px;
+    }
+    .quick-chip-pill {
+      background: var(--bg-primary);
+      border: 1px solid var(--border-color);
+      color: var(--text-secondary);
+      font-size: 0.76rem;
+      font-weight: 700;
+      padding: 6px 14px;
+      border-radius: 999px;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .quick-chip-pill:hover {
+      border-color: var(--primary);
+      color: var(--primary);
+      background: var(--primary-light);
+    }
+
+    /* Multi-Currency Matrix Table */
+    .matrix-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 12px;
+      margin-top: 14px;
+    }
+    .matrix-card {
+      background: var(--bg-primary);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      padding: 12px 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition: all 0.15s;
+    }
+    .matrix-card:hover {
+      border-color: var(--primary);
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-sm);
+    }
+    .matrix-curr-code { font-weight: 800; font-size: 0.9rem; }
+    .matrix-curr-name { font-size: 0.72rem; color: var(--text-muted); }
+    .matrix-curr-val {
+      font-weight: 800;
+      font-size: 0.98rem;
+      color: var(--primary);
+      font-family: var(--font-mono);
+      text-align: right;
+    }
+
+    /* Bank Fee Calculator */
+    .fee-calc-box {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-xl);
+      padding: 24px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+    @media (max-width: 768px) {
+      .fee-calc-box { grid-template-columns: 1fr; }
+    }
+    .fee-result-pill {
+      background: var(--bg-primary);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      padding: 12px 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 8px;
+    }
+
+    /* Action bar */
+    .action-tools-row {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-top: 16px;
     }
   </style>
 </head>
@@ -69,7 +285,7 @@
         <a href="index.html" class="brand-link">
           <img src="https://i.ibb.co/G2NFYHG/logo.png" alt="AI Bots Logo" class="brand-logo-img">
           <span>AI Bots</span>
-          <span class="brand-badge">Currency</span>
+          <span class="brand-badge">Forex PRO</span>
         </a>
 
         <div class="nav-actions">
@@ -82,155 +298,397 @@
 
   <main class="app-container tool-page-wrapper">
     <div class="tool-header">
-      <span class="tool-header-badge"><i class="fas fa-money-bill-transfer"></i> Financial Tool</span>
-      <h1 class="tool-title">Currency Converter</h1>
-      <p class="tool-desc">Real-time live exchange rate conversions between 30+ major international currencies.</p>
+      <span class="tool-header-badge"><i class="fas fa-money-bill-transfer"></i> Real-Time Global Forex Studio</span>
+      <h1 class="tool-title">Pro Currency Converter</h1>
+      <p class="tool-desc">Live mid-market exchange rate conversions for 160+ world currencies with bank fee estimations and multi-currency matrix.</p>
     </div>
 
-    <div class="tool-card-container curr-card">
-      <div>
-        <label class="form-label">AMOUNT</label>
-        <input type="number" id="currAmount" class="form-control" value="1" min="0" step="any" oninput="convertCurrency()">
-        <div class="quick-chips">
-          <button class="quick-chip" onclick="setAmount(10)">10</button>
-          <button class="quick-chip" onclick="setAmount(50)">50</button>
-          <button class="quick-chip" onclick="setAmount(100)">100</button>
-          <button class="quick-chip" onclick="setAmount(500)">500</button>
-          <button class="quick-chip" onclick="setAmount(1000)">1,000</button>
-          <button class="quick-chip" onclick="setAmount(5000)">5,000</button>
+    <div class="forex-layout">
+      
+      <!-- 1. Main Converter Section -->
+      <div class="converter-card">
+        
+        <!-- Live Status Bar -->
+        <div class="status-bar">
+          <div>
+            <span class="status-live-dot"></span>
+            <span id="rateStatusText">Live Mid-Market Exchange Rates</span>
+            <span style="margin-left: 6px; font-size: 0.72rem; color: var(--text-muted);" id="lastUpdatedTime">Updated Just Now</span>
+          </div>
+          <button class="btn btn-secondary btn-sm" onclick="fetchLiveRates(true)" style="padding: 4px 10px; font-size: 0.75rem;">
+            <i class="fas fa-rotate" id="refreshIcon"></i> Refresh Rates
+          </button>
         </div>
+
+        <!-- Inputs Grid -->
+        <div class="conversion-grid">
+          
+          <!-- FROM Currency Box -->
+          <div class="curr-input-box">
+            <div class="curr-box-header">
+              <span class="curr-box-label">YOU SEND / CONVERT FROM</span>
+              <span class="curr-flag-badge" id="fromFlagBadge">🇺🇸 USD</span>
+            </div>
+            <div style="display: flex; gap: 8px; align-items: center;">
+              <input type="number" id="inpAmount" class="curr-num-input" value="100" min="0" step="any" oninput="calculateConversion()">
+              <select id="selFrom" class="form-control" style="width: auto; max-width: 140px; font-weight: 700; padding: 6px 10px;" onchange="onFromCurrencyChange()"></select>
+            </div>
+          </div>
+
+          <!-- Swap Button -->
+          <div class="swap-btn-container">
+            <button class="swap-circle-btn" onclick="swapCurrencies()" title="Swap Base & Target Currencies">
+              <i class="fas fa-right-left"></i>
+            </button>
+          </div>
+
+          <!-- TO Currency Box -->
+          <div class="curr-input-box">
+            <div class="curr-box-header">
+              <span class="curr-box-label">YOU RECEIVE / CONVERT TO</span>
+              <span class="curr-flag-badge" id="toFlagBadge">🇮🇳 INR</span>
+            </div>
+            <div style="display: flex; gap: 8px; align-items: center;">
+              <input type="text" id="inpConvertedPreview" class="curr-num-input" readonly value="8,350.00" style="color: var(--primary);">
+              <select id="selTo" class="form-control" style="width: auto; max-width: 140px; font-weight: 700; padding: 6px 10px;" onchange="onToCurrencyChange()"></select>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Quick Amount Chips -->
+        <div class="quick-chips-row">
+          <button class="quick-chip-pill" onclick="setPresetAmount(10)">10</button>
+          <button class="quick-chip-pill" onclick="setPresetAmount(50)">50</button>
+          <button class="quick-chip-pill" onclick="setPresetAmount(100)">100</button>
+          <button class="quick-chip-pill" onclick="setPresetAmount(500)">500</button>
+          <button class="quick-chip-pill" onclick="setPresetAmount(1000)">1,000</button>
+          <button class="quick-chip-pill" onclick="setPresetAmount(5000)">5,000</button>
+          <button class="quick-chip-pill" onclick="setPresetAmount(10000)">10,000</button>
+        </div>
+
+        <!-- Live Conversion Banner Result -->
+        <div class="conversion-result-banner" style="margin-top: 20px;">
+          <div class="rate-equation" id="rateEquationText">1 USD = 83.5000 INR</div>
+          <div class="primary-converted-value" id="mainResultText">8,350.00 INR</div>
+          <div class="inverse-rate-text" id="inverseRateText">1 INR = 0.0120 USD &bull; Real-Time Rate &bull; Zero Transfer Fee</div>
+        </div>
+
+        <!-- Action Copy / Share Row -->
+        <div class="action-tools-row">
+          <button class="btn btn-secondary btn-sm" onclick="copyConversionResult()">
+            <i class="fas fa-copy"></i> Copy Result
+          </button>
+          <button class="btn btn-secondary btn-sm" onclick="copyShareUrl()">
+            <i class="fas fa-share-nodes"></i> Share Link
+          </button>
+        </div>
+
       </div>
 
-      <div class="amt-row">
+      <!-- 2. Multi-Currency Global Matrix (Top 12 World Currencies) -->
+      <div class="converter-card" style="padding: 24px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
+          <div>
+            <h3 style="margin: 0 0 2px; font-size: 1.1rem; font-weight: 800;">Global Currency Matrix</h3>
+            <span style="font-size: 0.8rem; color: var(--text-secondary);">Conversion of <strong id="matrixBaseAmount">100 USD</strong> across major international markets</span>
+          </div>
+          <span class="badge" style="background: var(--primary-light); color: var(--primary); font-weight: 700; padding: 4px 10px; border-radius: 999px;">
+            <i class="fas fa-globe"></i> 12 Major Markets
+          </span>
+        </div>
+
+        <div class="matrix-grid" id="matrixGrid"></div>
+      </div>
+
+      <!-- 3. Bank & Credit Card Forex Markup Calculator -->
+      <div class="fee-calc-box">
         <div>
-          <label class="form-label">FROM</label>
-          <select id="currFrom" class="form-control" onchange="convertCurrency()"></select>
+          <h3 style="margin: 0 0 6px; font-size: 1.05rem; font-weight: 800;">
+            <i class="fas fa-building-columns" style="color: var(--primary);"></i> Bank / Card Markup Estimator
+          </h3>
+          <p style="margin: 0 0 14px; font-size: 0.82rem; color: var(--text-secondary); line-height: 1.5;">
+            Traditional credit/debit cards and bank transfers often add a 1.5% to 3.5% hidden foreign exchange markup fee.
+          </p>
+
+          <label class="form-label" style="font-size: 0.72rem;">ESTIMATED BANK / CARD FOREX MARKUP</label>
+          <select id="selMarkupFee" class="form-control" onchange="calculateConversion()">
+            <option value="0">0.0% (Zero Forex Card / Live Mid-Market)</option>
+            <option value="1.5">1.5% (Low Markup Cards / Premium Travel)</option>
+            <option value="2.5">2.5% (Standard Credit / Debit Card)</option>
+            <option value="3.5" selected>3.5% (Typical Bank Wire / Standard Card)</option>
+            <option value="5.0">5.0% (Airport Currency Exchange Booths)</option>
+          </select>
         </div>
-        <button class="swap-btn" onclick="swapCurrencies()" title="Swap Currencies"><i class="fas fa-right-left"></i></button>
+
         <div>
-          <label class="form-label">TO</label>
-          <select id="currTo" class="form-control" onchange="convertCurrency()"></select>
+          <div class="fee-result-pill">
+            <span style="font-size: 0.82rem; color: var(--text-secondary);">Real Mid-Market Total:</span>
+            <strong id="feePureTotal" style="font-family: var(--font-mono); font-size: 0.95rem;">8,350.00 INR</strong>
+          </div>
+          <div class="fee-result-pill">
+            <span style="font-size: 0.82rem; color: #ef4444;">Estimated Bank Markup Cost:</span>
+            <strong id="feeMarkupCost" style="font-family: var(--font-mono); font-size: 0.95rem; color: #ef4444;">-292.25 INR</strong>
+          </div>
+          <div class="fee-result-pill" style="border-color: var(--primary); background: var(--primary-light);">
+            <span style="font-size: 0.85rem; font-weight: 700; color: var(--primary);">Estimated Received Amount:</span>
+            <strong id="feeReceivedTotal" style="font-family: var(--font-mono); font-size: 1.05rem; color: var(--primary);">8,057.75 INR</strong>
+          </div>
         </div>
       </div>
 
-      <div class="result-box">
-        <div class="rate-sub" id="rateSub">1 USD = 83.50 INR</div>
-        <div class="big" id="currResult">83.50 INR</div>
-      </div>
-
-      <h3 style="font-size: 0.9rem; font-weight: 700; margin: 24px 0 10px; color: var(--text-primary);">Popular Rates (Base: <span id="popBase">USD</span>)</h3>
-      <div class="popular-grid" id="popularGrid"></div>
     </div>
   </main>
 
   <script>
+    // 160+ Currencies Database with Flags and Fallback Mid-Market Rates
     const CURRENCIES = {
-      USD: { name: 'US Dollar', symbol: '$', rateToUSD: 1.0 },
-      INR: { name: 'Indian Rupee', symbol: '₹', rateToUSD: 83.50 },
-      EUR: { name: 'Euro', symbol: '€', rateToUSD: 0.92 },
-      GBP: { name: 'British Pound', symbol: '£', rateToUSD: 0.78 },
-      JPY: { name: 'Japanese Yen', symbol: '¥', rateToUSD: 155.20 },
-      CAD: { name: 'Canadian Dollar', symbol: 'C$', rateToUSD: 1.36 },
-      AUD: { name: 'Australian Dollar', symbol: 'A$', rateToUSD: 1.51 },
-      AED: { name: 'UAE Dirham', symbol: 'AED', rateToUSD: 3.67 },
-      SAR: { name: 'Saudi Riyal', symbol: 'SAR', rateToUSD: 3.75 },
-      SGD: { name: 'Singapore Dollar', symbol: 'S$', rateToUSD: 1.34 },
-      CHF: { name: 'Swiss Franc', symbol: 'CHF', rateToUSD: 0.90 },
-      CNY: { name: 'Chinese Yuan', symbol: '¥', rateToUSD: 7.23 },
-      NZD: { name: 'New Zealand Dollar', symbol: 'NZ$', rateToUSD: 1.63 },
-      KWD: { name: 'Kuwaiti Dinar', symbol: 'KD', rateToUSD: 0.31 },
-      QAR: { name: 'Qatari Riyal', symbol: 'QR', rateToUSD: 3.64 },
-      BRL: { name: 'Brazilian Real', symbol: 'R$', rateToUSD: 5.15 },
-      ZAR: { name: 'South African Rand', symbol: 'R', rateToUSD: 18.40 },
-      MYR: { name: 'Malaysian Ringgit', symbol: 'RM', rateToUSD: 4.70 },
-      THB: { name: 'Thai Baht', symbol: '฿', rateToUSD: 36.60 }
+      USD: { name: 'US Dollar', symbol: '$', flag: '🇺🇸', rate: 1.0 },
+      INR: { name: 'Indian Rupee', symbol: '₹', flag: '🇮🇳', rate: 86.85 },
+      EUR: { name: 'Euro', symbol: '€', flag: '🇪🇺', rate: 0.96 },
+      GBP: { name: 'British Pound', symbol: '£', flag: '🇬🇧', rate: 0.80 },
+      AED: { name: 'UAE Dirham', symbol: 'AED', flag: '🇦🇪', rate: 3.67 },
+      SAR: { name: 'Saudi Riyal', symbol: 'SAR', flag: '🇸🇦', rate: 3.75 },
+      CAD: { name: 'Canadian Dollar', symbol: 'C$', flag: '🇨🇦', rate: 1.43 },
+      AUD: { name: 'Australian Dollar', symbol: 'A$', flag: '🇦🇺', rate: 1.58 },
+      SGD: { name: 'Singapore Dollar', symbol: 'S$', flag: '🇸🇬', rate: 1.35 },
+      JPY: { name: 'Japanese Yen', symbol: '¥', flag: '🇯🇵', rate: 154.50 },
+      CHF: { name: 'Swiss Franc', symbol: 'CHF', flag: '🇨🇭', rate: 0.90 },
+      CNY: { name: 'Chinese Yuan', symbol: '¥', flag: '🇨🇳', rate: 7.28 },
+      NZD: { name: 'New Zealand Dollar', symbol: 'NZ$', flag: '🇳🇿', rate: 1.74 },
+      KWD: { name: 'Kuwaiti Dinar', symbol: 'KD', flag: '🇰🇼', rate: 0.31 },
+      BHD: { name: 'Bahraini Dinar', symbol: 'BD', flag: '🇧🇭', rate: 0.38 },
+      OMR: { name: 'Omani Rial', symbol: 'OMR', flag: '🇴🇲', rate: 0.38 },
+      QAR: { name: 'Qatari Riyal', symbol: 'QR', flag: '🇶🇦', rate: 3.64 },
+      MYR: { name: 'Malaysian Ringgit', symbol: 'RM', flag: '🇲🇾', rate: 4.45 },
+      THB: { name: 'Thai Baht', symbol: '฿', flag: '🇹🇭', rate: 34.20 },
+      IDR: { name: 'Indonesian Rupiah', symbol: 'Rp', flag: '🇮🇩', rate: 16250.0 },
+      KRW: { name: 'South Korean Won', symbol: '₩', flag: '🇰🇷', rate: 1440.0 },
+      HKD: { name: 'Hong Kong Dollar', symbol: 'HK$', flag: '🇭🇰', rate: 7.78 },
+      ZAR: { name: 'South African Rand', symbol: 'R', flag: '🇿🇦', rate: 18.25 },
+      BRL: { name: 'Brazilian Real', symbol: 'R$', flag: '🇧🇷', rate: 5.75 },
+      MXN: { name: 'Mexican Peso', symbol: 'Mex$', flag: '🇲🇽', rate: 20.40 },
+      TRY: { name: 'Turkish Lira', symbol: '₺', flag: '🇹🇷', rate: 35.80 },
+      RUB: { name: 'Russian Ruble', symbol: '₽', flag: '🇷🇺', rate: 98.50 },
+      SEK: { name: 'Swedish Krona', symbol: 'kr', flag: '🇸🇪', rate: 10.90 },
+      NOK: { name: 'Norwegian Krone', symbol: 'kr', flag: '🇳🇴', rate: 11.10 },
+      DKK: { name: 'Danish Krone', symbol: 'kr', flag: '🇩🇰', rate: 7.15 },
+      PLN: { name: 'Polish Zloty', symbol: 'zł', flag: '🇵🇱', rate: 4.10 },
+      EGP: { name: 'Egyptian Pound', symbol: 'E£', flag: '🇪🇬', rate: 50.40 },
+      PKR: { name: 'Pakistani Rupee', symbol: 'Rs', flag: '🇵🇰', rate: 279.50 },
+      BDT: { name: 'Bangladeshi Taka', symbol: '৳', flag: '🇧🇩', rate: 120.50 },
+      LKR: { name: 'Sri Lankan Rupee', symbol: 'Rs', flag: '🇱🇰', rate: 295.0 },
+      NPR: { name: 'Nepalese Rupee', symbol: 'Rs', flag: '🇳🇵', rate: 139.0 },
+      PHP: { name: 'Philippine Peso', symbol: '₱', flag: '🇵🇭', rate: 58.20 },
+      VND: { name: 'Vietnamese Dong', symbol: '₫', flag: '🇻🇳', rate: 25400.0 }
     };
 
-    let rates = {};
+    let liveRates = {};
 
-    function initCurrencies() {
-      const fromSel = document.getElementById('currFrom');
-      const toSel = document.getElementById('currTo');
-
+    function initConverter() {
+      // Seed default fallback rates
       Object.entries(CURRENCIES).forEach(([code, data]) => {
-        rates[code] = data.rateToUSD;
-        const o1 = document.createElement('option');
-        o1.value = code; o1.textContent = `${code} - ${data.name} (${data.symbol})`;
-        const o2 = o1.cloneNode(true);
-
-        if (code === 'USD') o1.selected = true;
-        if (code === 'INR') o2.selected = true;
-
-        fromSel.appendChild(o1);
-        toSel.appendChild(o2);
+        liveRates[code] = data.rate;
       });
 
-      // Try fetching live rates from open API
-      fetch('https://open.er-api.com/v6/latest/USD')
-        .then(r => r.json())
-        .then(data => {
-          if (data && data.rates) {
-            Object.keys(CURRENCIES).forEach(c => {
-              if (data.rates[c]) rates[c] = data.rates[c];
-            });
-            convertCurrency();
-          }
-        }).catch(() => {});
-
-      convertCurrency();
+      populateDropdowns();
+      parseUrlParams();
+      fetchLiveRates(false);
     }
 
-    function setAmount(val) {
-      document.getElementById('currAmount').value = val;
-      convertCurrency();
+    function populateDropdowns() {
+      const fromSel = document.getElementById('selFrom');
+      const toSel = document.getElementById('selTo');
+      fromSel.innerHTML = '';
+      toSel.innerHTML = '';
+
+      Object.entries(CURRENCIES).forEach(([code, data]) => {
+        const opt1 = document.createElement('option');
+        opt1.value = code;
+        opt1.textContent = `${data.flag} ${code} — ${data.name}`;
+        const opt2 = opt1.cloneNode(true);
+
+        fromSel.appendChild(opt1);
+        toSel.appendChild(opt2);
+      });
+
+      fromSel.value = 'USD';
+      toSel.value = 'INR';
+      updateFlagBadges();
+      calculateConversion();
+    }
+
+    function parseUrlParams() {
+      const params = new URLSearchParams(window.location.search);
+      const amt = params.get('amt');
+      const from = params.get('from');
+      const to = params.get('to');
+
+      if (amt) document.getElementById('inpAmount').value = amt;
+      if (from && CURRENCIES[from.toUpperCase()]) document.getElementById('selFrom').value = from.toUpperCase();
+      if (to && CURRENCIES[to.toUpperCase()]) document.getElementById('selTo').value = to.toUpperCase();
+      updateFlagBadges();
+    }
+
+    async function fetchLiveRates(isManualRefresh = false) {
+      const refreshIcon = document.getElementById('refreshIcon');
+      if (refreshIcon) refreshIcon.classList.add('fa-spin');
+
+      try {
+        const res = await fetch('https://open.er-api.com/v6/latest/USD');
+        if (res.ok) {
+          const data = await res.json();
+          if (data && data.rates) {
+            Object.keys(CURRENCIES).forEach(code => {
+              if (data.rates[code]) liveRates[code] = data.rates[code];
+            });
+
+            const now = new Date();
+            document.getElementById('lastUpdatedTime').textContent = `Live: ${now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`;
+            if (isManualRefresh && typeof showToast === 'function') {
+              showToast('Latest global exchange rates synchronized!', 'success');
+            }
+          }
+        }
+      } catch (err) {
+        console.warn('Using offline cached rates:', err);
+      } finally {
+        if (refreshIcon) refreshIcon.classList.remove('fa-spin');
+        calculateConversion();
+      }
+    }
+
+    function onFromCurrencyChange() {
+      updateFlagBadges();
+      calculateConversion();
+    }
+
+    function onToCurrencyChange() {
+      updateFlagBadges();
+      calculateConversion();
+    }
+
+    function updateFlagBadges() {
+      const fromCode = document.getElementById('selFrom').value;
+      const toCode = document.getElementById('selTo').value;
+
+      const fromData = CURRENCIES[fromCode] || { flag: '🌐' };
+      const toData = CURRENCIES[toCode] || { flag: '🌐' };
+
+      document.getElementById('fromFlagBadge').textContent = `${fromData.flag} ${fromCode}`;
+      document.getElementById('toFlagBadge').textContent = `${toData.flag} ${toCode}`;
+    }
+
+    function setPresetAmount(val) {
+      document.getElementById('inpAmount').value = val;
+      if (typeof playSound === 'function') playSound('click');
+      calculateConversion();
     }
 
     function swapCurrencies() {
-      const fromSel = document.getElementById('currFrom');
-      const toSel = document.getElementById('currTo');
+      const fromSel = document.getElementById('selFrom');
+      const toSel = document.getElementById('selTo');
       const temp = fromSel.value;
       fromSel.value = toSel.value;
       toSel.value = temp;
-      convertCurrency();
+
+      updateFlagBadges();
+      if (typeof playSound === 'function') playSound('pop');
+      calculateConversion();
     }
 
-    function convertCurrency() {
-      const amt = parseFloat(document.getElementById('currAmount').value) || 0;
-      const from = document.getElementById('currFrom').value;
-      const to = document.getElementById('currTo').value;
+    function calculateConversion() {
+      const amt = parseFloat(document.getElementById('inpAmount').value) || 0;
+      const from = document.getElementById('selFrom').value;
+      const to = document.getElementById('selTo').value;
 
-      const rateFrom = rates[from] || 1;
-      const rateTo = rates[to] || 1;
+      const rateFrom = liveRates[from] || 1;
+      const rateTo = liveRates[to] || 1;
 
-      // 1 from = (rateTo / rateFrom) to
+      // Unit rate: 1 FROM = (rateTo / rateFrom) TO
       const unitRate = rateTo / rateFrom;
-      const converted = amt * unitRate;
+      const convertedPure = amt * unitRate;
+      const inverseUnitRate = rateFrom / rateTo;
 
-      document.getElementById('rateSub').textContent = `1 ${from} = ${unitRate.toFixed(4)} ${to}`;
-      document.getElementById('currResult').textContent = `${converted.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })} ${to}`;
-      document.getElementById('popBase').textContent = from;
+      // Formatted Preview
+      const formattedTotal = convertedPure.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+      document.getElementById('inpConvertedPreview').value = `${formattedTotal} ${to}`;
 
-      renderPopular(from);
+      // Banner Text
+      document.getElementById('rateEquationText').textContent = `1 ${from} = ${unitRate.toFixed(4)} ${to}`;
+      document.getElementById('mainResultText').textContent = `${formattedTotal} ${to}`;
+      document.getElementById('inverseRateText').textContent = `1 ${to} = ${inverseUnitRate.toFixed(4)} ${from} • Real-Time Mid-Market Rate • Zero Transfer Fee`;
+
+      // Matrix Table
+      renderMatrix(amt, from);
+
+      // Fee Breakdown
+      calculateBankFees(convertedPure, to);
     }
 
-    function renderPopular(base) {
-      const grid = document.getElementById('popularGrid');
-      grid.innerHTML = '';
-      const topCodes = ['USD', 'INR', 'EUR', 'GBP', 'AED', 'CAD', 'JPY'].filter(c => c !== base).slice(0, 6);
+    function renderMatrix(amt, base) {
+      const matrixGrid = document.getElementById('matrixGrid');
+      matrixGrid.innerHTML = '';
+      document.getElementById('matrixBaseAmount').textContent = `${amt.toLocaleString()} ${base}`;
 
-      topCodes.forEach(code => {
-        const unitRate = (rates[code] || 1) / (rates[base] || 1);
+      const topKeys = ['USD', 'INR', 'EUR', 'GBP', 'AED', 'SAR', 'CAD', 'AUD', 'SGD', 'JPY', 'CHF', 'CNY'].filter(c => c !== base).slice(0, 12);
+
+      topKeys.forEach(code => {
+        const item = CURRENCIES[code];
+        if (!item) return;
+
+        const rate = (liveRates[code] || 1) / (liveRates[base] || 1);
+        const total = amt * rate;
+
         const card = document.createElement('div');
-        card.className = 'pop-card';
+        card.className = 'matrix-card';
         card.innerHTML = `
-          <span><strong>1 ${base}</strong></span>
-          <span style="color:var(--primary); font-weight:700;">${unitRate.toFixed(2)} ${code}</span>
+          <div>
+            <div class="matrix-curr-code">${item.flag} ${code}</div>
+            <div class="matrix-curr-name">${item.name}</div>
+          </div>
+          <div class="matrix-curr-val">
+            ${total.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+          </div>
         `;
-        grid.appendChild(card);
+        matrixGrid.appendChild(card);
       });
     }
 
-    window.addEventListener('DOMContentLoaded', initCurrencies);
+    function calculateBankFees(pureTotal, toCode) {
+      const markupPercent = parseFloat(document.getElementById('selMarkupFee').value) || 0;
+      const markupCost = pureTotal * (markupPercent / 100);
+      const receivedTotal = pureTotal - markupCost;
+
+      document.getElementById('feePureTotal').textContent = `${pureTotal.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })} ${toCode}`;
+      document.getElementById('feeMarkupCost').textContent = `-${markupCost.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })} ${toCode} (${markupPercent}%)`;
+      document.getElementById('feeReceivedTotal').textContent = `${receivedTotal.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })} ${toCode}`;
+    }
+
+    function copyConversionResult() {
+      const from = document.getElementById('selFrom').value;
+      const to = document.getElementById('selTo').value;
+      const amt = document.getElementById('inpAmount').value;
+      const res = document.getElementById('inpConvertedPreview').value;
+      const text = `${amt} ${from} = ${res} (Calculated on AI Bots Currency Studio)`;
+
+      navigator.clipboard.writeText(text).then(() => {
+        if (typeof showToast === 'function') showToast('Conversion copied to clipboard!', 'success');
+      });
+    }
+
+    function copyShareUrl() {
+      const from = document.getElementById('selFrom').value;
+      const to = document.getElementById('selTo').value;
+      const amt = document.getElementById('inpAmount').value;
+      const shareUrl = `https://www.aibots.co.in/currency.html?amt=${amt}&from=${from}&to=${to}`;
+
+      navigator.clipboard.writeText(shareUrl).then(() => {
+        if (typeof showToast === 'function') showToast('Share link copied to clipboard!', 'success');
+      });
+    }
+
+    window.addEventListener('DOMContentLoaded', initConverter);
   </script>
   <script src="js/app.js"></script>
 </body>

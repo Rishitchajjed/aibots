@@ -183,9 +183,9 @@
   }
   </script>
 
-  <!-- Stylesheets & Fonts -->
-  <link rel="preload" href="css/theme.css" as="style">
-  <link rel="stylesheet" href="css/theme.css">
+  <!-- Stylesheets & Fonts (Asynchronous Non-Render-Blocking) -->
+  <link rel="preload" href="css/theme.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript><link rel="stylesheet" href="css/theme.css"></noscript>
   <script>
     let _faLoaded = false;
     function loadFontAwesome() {

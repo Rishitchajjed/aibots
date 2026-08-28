@@ -933,7 +933,7 @@ window.updateDonationQR = function(amt) {
         const res = await fetch(AIBOTS_CLOUD_API, { cache: 'no-store' });
         if (res.ok) {
           const body = await res.json();
-          const cloud = body && body.data ? body.data : body;
+          const cloud = (body && typeof body === 'object' && body.data) ? body.data : body;
           const localClicks = JSON.parse(localStorage.getItem('aibots_tool_click_analytics') || '{}');
           const localSearches = JSON.parse(localStorage.getItem('aibots_search_query_log') || '[]');
 
@@ -947,16 +947,16 @@ window.updateDonationQR = function(amt) {
           const searchSet = new Set([...(cloud.analytics_searches || []), ...localSearches]);
           const mergedSearches = Array.from(searchSet).slice(-50);
 
-          cloud.analytics_clicks = mergedClicks;
-          cloud.analytics_searches = mergedSearches;
+          const patchPayload = {
+            analytics_clicks: mergedClicks,
+            analytics_searches: mergedSearches,
+            updated_at: new Date().toISOString()
+          };
 
           await fetch(AIBOTS_CLOUD_API, {
-            method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              name: 'aibots_creative_studio_global_config',
-              data: cloud
-            })
+            method: 'PATCH',
+            headers: { 'Content-Type': 'application/merge-patch+json' },
+            body: JSON.stringify(patchPayload)
           });
         }
       } catch (err) {}
@@ -1107,7 +1107,7 @@ window.updateDonationQR = function(amt) {
   }
 
   // Global Online Cloud Sync Engine
-  const AIBOTS_CLOUD_API = 'https://api.restful-api.dev/objects/ff8081819ff5b11001a04916cff355c6';
+  const AIBOTS_CLOUD_API = 'https://extendsclass.com/api/json-storage/bin/adebbab';
   
   window.fetchAndApplyGlobalCloudConfig = async function() {
     try {

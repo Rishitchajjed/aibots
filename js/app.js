@@ -653,3 +653,113 @@ function toggleShortcutsModal() {
   }
   modal.classList.toggle('active');
 }
+
+/* ==========================================================================
+   9. UPI Donation & Support Modal
+   ========================================================================== */
+window.AI_BOTS_UPI_CONFIG = {
+  upiId: 'rishitchajjed@upi', // Configurable UPI ID
+  name: 'Rishit Chajjed',
+  defaultAmount: 100
+};
+
+window.openDonationModal = function(customUpi) {
+  if (customUpi) window.AI_BOTS_UPI_CONFIG.upiId = customUpi;
+
+  let modal = document.getElementById('donation-modal');
+  if (!modal) {
+    modal = document.createElement('div');
+    modal.id = 'donation-modal';
+    modal.className = 'modal-backdrop';
+    modal.innerHTML = `
+      <div class="donation-modal-card">
+        <button onclick="document.getElementById('donation-modal').classList.remove('active')" class="btn btn-secondary btn-sm" style="position: absolute; top: 16px; right: 16px; border-radius: 50%; width: 32px; height: 32px; padding: 0;">
+          <i class="fas fa-xmark"></i>
+        </button>
+
+        <div class="donation-icon"><i class="fas fa-heart"></i></div>
+        <h3 style="margin: 0 0 6px; font-size: 1.25rem;">Support AI Bots</h3>
+        <p style="margin: 0; color: var(--text-secondary); font-size: 0.85rem;">
+          Help keep all 28+ browser tools 100% free & fast for everyone worldwide!
+        </p>
+
+        <!-- Preset Amount Chips -->
+        <div class="donation-amount-chips">
+          <button class="donation-chip" onclick="setDonationAmount(50, this)">₹50</button>
+          <button class="donation-chip active" onclick="setDonationAmount(100, this)">₹100</button>
+          <button class="donation-chip" onclick="setDonationAmount(250, this)">₹250</button>
+          <button class="donation-chip" onclick="setDonationAmount(500, this)">₹500</button>
+          <button class="donation-chip" onclick="setDonationAmount(1000, this)">₹1,000</button>
+        </div>
+
+        <!-- Dynamic QR Code -->
+        <div class="upi-qr-wrapper">
+          <img id="donateQrImg" src="" alt="Scan UPI QR Code">
+        </div>
+        <div style="font-size: 0.72rem; color: var(--text-muted); font-weight: 700; text-transform: uppercase;">Scan with any UPI App (GPay / PhonePe / Paytm / BHIM)</div>
+
+        <!-- UPI ID Badge with Copy Button -->
+        <div class="upi-id-badge">
+          <span id="donateUpiText">${window.AI_BOTS_UPI_CONFIG.upiId}</span>
+          <button class="btn btn-secondary btn-sm" onclick="copyUpiId()" style="padding: 4px 10px; font-size: 0.75rem;">
+            <i class="fas fa-copy"></i> Copy
+          </button>
+        </div>
+
+        <!-- Direct Mobile Pay Button -->
+        <a id="donateDirectLink" href="#" class="btn btn-primary" style="width: 100%; padding: 12px; font-weight: 800; border-radius: var(--radius-md); text-decoration: none; display: flex; align-items: center; justify-content: center; gap: 8px;">
+          <i class="fas fa-mobile-screen"></i> Pay with UPI App (Mobile)
+        </a>
+
+        <div class="upi-apps-row">
+          <span><i class="fas fa-shield-halved" style="color:var(--success);"></i> Verified Instant UPI</span>
+          <span>•</span>
+          <span>Zero Commission</span>
+        </div>
+      </div>
+    `;
+
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal) modal.classList.remove('active');
+    });
+    document.body.appendChild(modal);
+  }
+
+  updateDonationQR(window.AI_BOTS_UPI_CONFIG.defaultAmount);
+  modal.classList.add('active');
+};
+
+window.setDonationAmount = function(amt, btn) {
+  document.querySelectorAll('.donation-chip').forEach(c => c.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+  updateDonationQR(amt);
+};
+
+window.updateDonationQR = function(amt) {
+  const upiId = window.AI_BOTS_UPI_CONFIG.upiId;
+  const name = window.AI_BOTS_UPI_CONFIG.name;
+  const note = encodeURIComponent('Support AI Bots Studio');
+  
+  // Standard UPI URI specification
+  const upiUrl = `upi://pay?pa=${upiId}&pn=${encodeURIComponent(name)}&am=${amt}&cu=INR&tn=${note}`;
+  
+  // Update QR Code Image
+  const qrImg = document.getElementById('donateQrImg');
+  if (qrImg) {
+    qrImg.src = `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodeURIComponent(upiUrl)}`;
+  }
+
+  // Update Direct Mobile Deep Link
+  const directLink = document.getElementById('donateDirectLink');
+  if (directLink) {
+    directLink.href = upiUrl;
+  }
+};
+
+window.copyUpiId = function() {
+  const upiId = window.AI_BOTS_UPI_CONFIG.upiId;
+  navigator.clipboard.writeText(upiId).then(() => {
+    showToast(`Copied UPI ID: ${upiId}`, 'success');
+  });
+};
+

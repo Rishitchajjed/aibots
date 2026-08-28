@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <!-- Resource Preconnect for Core Web Vitals Speed -->
@@ -417,6 +417,9 @@
         </a>
 
         <div class="nav-actions">
+          <button onclick="openDonationModal()" class="donate-btn-nav" title="Support AI Bots via UPI">
+            <i class="fas fa-heart"></i> Donate
+          </button>
           <button class="icon-btn sound-toggle-btn" title="Toggle Sound FX"><i class="fas fa-volume-high"></i></button>
           <button onclick="toggleShortcutsModal()" class="icon-btn" title="Keyboard Shortcuts (?)"><i class="fas fa-keyboard"></i></button>
           
@@ -1029,7 +1032,12 @@
 
       <div style="padding-top: 24px; border-top: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;">
         <p class="footer-text" style="margin: 0;">&copy; 2026 AI Bots. All rights reserved.</p>
-        <p class="footer-credits" style="margin: 0;">Website designed & engineered by <strong>Rishit Chajjed</strong>.</p>
+        <div style="display: flex; gap: 12px; align-items: center;">
+          <button onclick="openDonationModal()" class="btn btn-secondary btn-sm" style="color: #ec4899; font-weight: 700; border-color: rgba(236, 72, 153, 0.4);">
+            <i class="fas fa-heart"></i> Buy Creator a Coffee (UPI)
+          </button>
+          <p class="footer-credits" style="margin: 0;">Website designed & engineered by <strong>Rishit Chajjed</strong>.</p>
+        </div>
       </div>
     </div>
   </footer>

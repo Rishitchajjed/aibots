@@ -1111,10 +1111,10 @@ window.updateDonationQR = function(amt) {
   
   window.fetchAndApplyGlobalCloudConfig = async function() {
     try {
-      const res = await fetch(AIBOTS_CLOUD_API, { cache: 'no-store' });
+      const res = await fetch(`${AIBOTS_CLOUD_API}?_=${Date.now()}`, { cache: 'no-store' });
       if (res.ok) {
         const body = await res.json();
-        const cloud = body && body.data ? body.data : body;
+        const cloud = (body && typeof body === 'object' && body.data) ? body.data : body;
         if (cloud) {
           if (cloud.global_maintenance !== undefined) {
             localStorage.setItem('aibots_global_maintenance', cloud.global_maintenance ? 'true' : 'false');

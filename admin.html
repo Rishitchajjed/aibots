@@ -962,7 +962,7 @@
       // 2. Fetch live master password hash from Online Cloud Storage
       let activeMasterHash = localStorage.getItem(STORAGE_KEY) || BASE_DEFAULT_HASH;
       try {
-        const res = await fetch('https://extendsclass.com/api/json-storage/bin/adebbab', { cache: 'no-store' });
+        const res = await fetch(`https://extendsclass.com/api/json-storage/bin/adebbab?_=${Date.now()}`, { cache: 'no-store' });
         if (res.ok) {
           const body = await res.json();
           const cloudData = (body && typeof body === 'object' && body.data) ? body.data : body;
@@ -1544,7 +1544,7 @@
       if (text) text.textContent = '🔄 Fetching latest online configuration...';
 
       try {
-        const res = await fetch(AIBOTS_CLOUD_API, { cache: 'no-store' });
+        const res = await fetch(`${AIBOTS_CLOUD_API}?_=${Date.now()}`, { cache: 'no-store' });
         if (res.ok) {
           const body = await res.json();
           const cloud = (body && typeof body === 'object' && body.data) ? body.data : body;

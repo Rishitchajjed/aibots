@@ -975,7 +975,98 @@ window.updateDonationQR = function(amt) {
     }
   }
 
+  // Maintenance Mode Shield Engine (Global & Individual Tools)
+  function checkMaintenanceShield() {
+    const isCurrentAdmin = window.location.pathname.toLowerCase().includes('admin');
+    if (isCurrentAdmin) return;
+
+    // 1. Check Global Site Maintenance
+    const globalMaintenance = localStorage.getItem('aibots_global_maintenance') === 'true';
+    if (globalMaintenance) {
+      document.body.innerHTML = `
+        <div style="min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 20px; text-align: center; background: var(--bg-primary); color: var(--text-primary); font-family: var(--font-sans);">
+          <div style="background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--radius-xl); padding: 40px 30px; max-width: 540px; width: 100%; box-shadow: var(--shadow-xl);">
+            <div style="width: 80px; height: 80px; border-radius: 50%; background: rgba(245, 158, 11, 0.15); color: #f59e0b; display: flex; align-items: center; justify-content: center; font-size: 2.5rem; margin: 0 auto 20px;">
+              <i class="fas fa-screwdriver-wrench"></i>
+            </div>
+            <h1 style="font-size: 1.8rem; font-weight: 900; margin-bottom: 10px;">Platform Under Maintenance</h1>
+            <p style="font-size: 0.95rem; color: var(--text-secondary); line-height: 1.6; margin-bottom: 24px;">
+              AI Bots is currently undergoing scheduled platform upgrades to bring you exciting new creative tools and performance boosts. We will be back online shortly!
+            </p>
+            <div style="display: flex; justify-content: center; gap: 12px; flex-wrap: wrap;">
+              <button onclick="location.reload()" class="btn btn-primary" style="padding: 12px 24px; font-weight: 800;">
+                <i class="fas fa-rotate-right"></i> Check Again
+              </button>
+            </div>
+            <p style="font-size: 0.75rem; color: var(--text-secondary); margin-top: 20px;">&copy; 2026 AI Bots &bull; System Maintenance</p>
+          </div>
+        </div>
+      `;
+      return;
+    }
+
+    // 2. Check Individual Tool Maintenance
+    const disabledTools = JSON.parse(localStorage.getItem('aibots_disabled_tools') || '[]');
+    const currentPath = window.location.pathname.toLowerCase();
+    const currentToolId = currentPath.split('/').pop().replace('.html', '');
+
+    // If on a disabled tool's direct page
+    if (disabledTools.includes(currentToolId) && currentToolId !== '' && currentToolId !== 'index') {
+      const toolObj = (typeof AI_BOTS_TOOLS !== 'undefined') ? AI_BOTS_TOOLS.find(t => t.id === currentToolId) : null;
+      const toolTitle = toolObj ? toolObj.title : 'This Tool';
+
+      document.body.innerHTML = `
+        <div style="min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 20px; text-align: center; background: var(--bg-primary); color: var(--text-primary); font-family: var(--font-sans);">
+          <div style="background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--radius-xl); padding: 40px 30px; max-width: 500px; width: 100%; box-shadow: var(--shadow-xl);">
+            <div style="width: 75px; height: 75px; border-radius: 50%; background: rgba(245, 158, 11, 0.15); color: #f59e0b; display: flex; align-items: center; justify-content: center; font-size: 2.2rem; margin: 0 auto 20px;">
+              <i class="fas fa-triangle-exclamation"></i>
+            </div>
+            <h1 style="font-size: 1.6rem; font-weight: 900; margin-bottom: 8px;">${toolTitle} is Under Maintenance</h1>
+            <p style="font-size: 0.92rem; color: var(--text-secondary); line-height: 1.6; margin-bottom: 24px;">
+              We are currently fine-tuning and upgrading this tool to improve speed and reliability. Please explore our other 28+ tools while we finish!
+            </p>
+            <a href="index.html" class="btn btn-primary" style="padding: 12px 24px; font-weight: 800; display: inline-flex; align-items: center; gap: 8px;">
+              <i class="fas fa-house"></i> Return to Studio Hub
+            </a>
+          </div>
+        </div>
+      `;
+      return;
+    }
+
+    // 3. Update homepage cards for disabled tools
+    if (disabledTools.length > 0) {
+      disabledTools.forEach(toolId => {
+        const card = document.querySelector(`.tool-card[data-tool="${toolId}"]`);
+        if (card) {
+          card.style.opacity = '0.65';
+          card.style.cursor = 'not-allowed';
+          let badge = card.querySelector('.tool-badge-pill');
+          if (!badge) {
+            badge = document.createElement('span');
+            badge.className = 'tool-badge-pill';
+            card.prepend(badge);
+          }
+          badge.textContent = '🛠️ MAINTENANCE';
+          badge.style.background = '#f59e0b';
+          badge.style.color = '#000000';
+
+          card.onclick = (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            if (typeof showToast === 'function') {
+              showToast('This tool is currently undergoing maintenance. Please check back shortly!', 'warning');
+            } else {
+              alert('This tool is currently undergoing maintenance. Please check back shortly!');
+            }
+          };
+        }
+      });
+    }
+  }
+
   const initAllAdminModules = () => {
+    checkMaintenanceShield();
     renderGlobalAnnouncement();
     renderWelcomeModal();
     renderFestiveEffects();

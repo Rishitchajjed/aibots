@@ -935,22 +935,21 @@ window.updateDonationQR = function(amt) {
   }
 
   // Global Cloud Analytics Logger (Worldwide Multi-Device Telemetry)
-  const CLOUD_ANALYTICS_WRITE_URL = 'https://crudcrud.com/api/db2fa025fac8487897e087d9d41a96ea/config/6a91b9fd2d7ee403e856d304';
-  const CLOUD_ANALYTICS_FALLBACK_URL = 'https://extendsclass.com/api/json-storage/bin/adebbab';
+  const AIBOTS_CLOUD_API = 'https://extendsclass.com/api/json-storage/bin/adebbab';
 
   window.recordToolLaunchClick = function(toolId) {
     if (!toolId || toolId === 'index' || toolId === 'admin' || toolId === '#' || toolId.startsWith('http')) return;
     
-    // Prevent double counting within 3 seconds (e.g. click on card + immediate page load)
+    // Prevent double counting within 2 seconds (e.g. click on card + immediate page load)
     const debounceKey = `aibots_last_launch_${toolId}`;
     const lastLaunch = Number(sessionStorage.getItem(debounceKey) || 0);
     const now = Date.now();
-    if (now - lastLaunch < 3000) return; // Prevent duplicate increment
+    if (now - lastLaunch < 2000) return; // Prevent duplicate increment
     sessionStorage.setItem(debounceKey, now.toString());
 
     try {
       const clicks = JSON.parse(localStorage.getItem('aibots_tool_click_analytics') || '{}');
-      clicks[toolId] = (clicks[toolId] || 0) + 1;
+      clicks[toolId] = (Number(clicks[toolId]) || 0) + 1;
       localStorage.setItem('aibots_tool_click_analytics', JSON.stringify(clicks));
 
       const payload = {
@@ -958,16 +957,8 @@ window.updateDonationQR = function(amt) {
         updated_at: new Date().toISOString()
       };
 
-      // 1. Instant Cloud update with keepalive: true (survives page navigation)
-      fetch(CLOUD_ANALYTICS_WRITE_URL, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload),
-        keepalive: true
-      }).catch(() => {});
-
-      // 2. Secondary fallback cloud update with keepalive: true
-      fetch(CLOUD_ANALYTICS_FALLBACK_URL, {
+      // Instant Cloud update with keepalive: true (survives page navigation)
+      fetch(AIBOTS_CLOUD_API, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/merge-patch+json' },
         body: JSON.stringify(payload),
@@ -1053,12 +1044,9 @@ window.updateDonationQR = function(amt) {
 
     // 2. Check Individual Tool Maintenance
     const disabledTools = JSON.parse(localStorage.getItem('aibots_disabled_tools') || '[]');
-    const currentPath = window.location.pathname.toLowerCase();
-    const currentToolId = currentPath.split('/').pop().replace('.html', '');
-
-    // If on a disabled tool's direct page
-    if (disabledTools.includes(currentToolId) && currentToolId !== '' && currentToolId !== 'index') {
-      const toolObj = (typeof AI_BOTS_TOOLS !== 'undefined') ? AI_BOTS_TOOLS.find(t => t.id === currentToolId) : null;
+    const currentPath = window.location.pathname.split('/').pop().replace('.html', '').trim();
+    if (disabledTools.includes(currentPath)) {
+      const toolObj = AI_BOTS_TOOLS.find(t => t.id === currentPath);
       const toolTitle = toolObj ? toolObj.title : 'This Tool';
 
       document.body.innerHTML = `
@@ -1113,7 +1101,6 @@ window.updateDonationQR = function(amt) {
 
   // Multi-Layer Global Online Cloud Sync Engine
   const CLOUD_ENDPOINTS = [
-    'https://crudcrud.com/api/db2fa025fac8487897e087d9d41a96ea/config',
     'https://extendsclass.com/api/json-storage/bin/adebbab',
     'config.json',
     'https://raw.githubusercontent.com/Rishitchajjed/aibots/main/config.json'

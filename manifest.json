@@ -1,0 +1,23 @@
+{
+  "name": "AI Bots — Creative Studio & Browser Tools",
+  "short_name": "AI Bots",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#090d16",
+  "theme_color": "#4f46e5",
+  "description": "Free all-in-one creative studio and 28+ browser tools platform by Rishit Chajjed.",
+  "icons": [
+    {
+      "src": "https://i.ibb.co/G2NFYHG/logo.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "https://i.ibb.co/G2NFYHG/logo.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

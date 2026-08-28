@@ -12,6 +12,66 @@
   <link rel="icon" href="https://i.ibb.co/G2NFYHG/logo.png" type="image/png">
   <link rel="canonical" href="https://www.aibots.co.in/calculator.html">
 
+  <!-- Open Graph / Social Cards -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://www.aibots.co.in/calculator.html">
+  <meta property="og:title" content="Scientific & Standard Calculator Online — AI Bots">
+  <meta property="og:description" content="Free pro scientific calculator with trigonometry (sin, cos, tan), DEG/RAD angle modes, logarithms, square roots, factorials, and calculation history.">
+  <meta property="og:image" content="https://i.ibb.co/G2NFYHG/logo.png">
+
+  <!-- Schema.org JSON-LD (WebApplication & FAQPage) -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "WebApplication",
+        "name": "AI Bots Scientific Calculator",
+        "url": "https://www.aibots.co.in/calculator.html",
+        "description": "Free scientific and standard calculator with trigonometry, DEG/RAD modes, logarithm, factorial, and calculation history.",
+        "applicationCategory": "EducationalApplication",
+        "operatingSystem": "All",
+        "author": {
+          "@type": "Person",
+          "name": "Rishit Chajjed"
+        },
+        "aggregateRating": {
+          "@type": "AggregateRating",
+          "ratingValue": "4.9",
+          "ratingCount": "1510",
+          "bestRating": "5"
+        },
+        "offers": {
+          "@type": "Offer",
+          "price": "0",
+          "priceCurrency": "USD"
+        }
+      },
+      {
+        "@type": "FAQPage",
+        "mainEntity": [
+          {
+            "@type": "Question",
+            "name": "How to switch between Degree and Radian modes?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Click the 'DEG / RAD' toggle button above the keypad to switch between Degree and Radian angle units for trigonometric calculations."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Can I use physical keyboard keys to calculate?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Yes! Use numbers (0-9), operators (+, -, *, /, ^), Enter or = to evaluate, Backspace to delete, and Esc/C to clear."
+            }
+          }
+        ]
+      }
+    ]
+  }
+  </script>
+
   <!-- Google Analytics -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-2L87FMQS3W"></script>
   <script>
@@ -363,6 +423,31 @@
 
     </div>
   </main>
+
+  <!-- SEO Frequently Asked Questions Section -->
+  <section class="app-container" style="max-width: 860px; margin: 40px auto 20px;">
+    <div style="background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--radius-xl); padding: 28px; box-shadow: var(--shadow-lg);">
+      <h2 style="font-size: 1.25rem; font-weight: 800; margin-bottom: 20px; display: flex; align-items: center; gap: 10px; color: var(--text-primary);">
+        <i class="fas fa-circle-question" style="color:var(--primary);"></i> Scientific Calculator FAQs
+      </h2>
+
+      <div style="display: flex; flex-direction: column; gap: 14px;">
+        <details style="background: var(--bg-tertiary); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 14px 18px; cursor: pointer;">
+          <summary style="font-weight: 700; font-size: 0.95rem; color: var(--text-primary);">What is the difference between DEG and RAD mode?</summary>
+          <p style="margin-top: 10px; font-size: 0.88rem; line-height: 1.6; color: var(--text-secondary);">
+            In <strong>Degree (DEG)</strong> mode, angles are measured in degrees (0° to 360°), where <code>sin(90) = 1</code>. In <strong>Radian (RAD)</strong> mode, angles are measured in radians based on π, where <code>sin(π/2) = 1</code>. Use the DEG/RAD toggle to switch easily.
+          </p>
+        </details>
+
+        <details style="background: var(--bg-tertiary); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 14px 18px; cursor: pointer;">
+          <summary style="font-weight: 700; font-size: 0.95rem; color: var(--text-primary);">Does this calculator store history locally?</summary>
+          <p style="margin-top: 10px; font-size: 0.88rem; line-height: 1.6; color: var(--text-secondary);">
+            Yes! Your previous 20 calculations are saved securely in your browser's local storage so you can review and reload them anytime.
+          </p>
+        </details>
+      </div>
+    </div>
+  </section>
 
   <footer class="app-footer">
     <div class="app-container">

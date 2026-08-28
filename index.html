@@ -187,8 +187,22 @@
   <!-- Stylesheets & Fonts -->
   <link rel="preload" href="css/theme.css" as="style">
   <link rel="stylesheet" href="css/theme.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" media="print" onload="this.media='all';this.onload=null;">
-  <noscript><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"></noscript>
+  <script>
+    function loadFontAwesome() {
+      if (document.getElementById('fa-icons-css')) return;
+      const link = document.createElement('link');
+      link.id = 'fa-icons-css';
+      link.rel = 'stylesheet';
+      link.href = 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css';
+      document.head.appendChild(link);
+    }
+    if (document.readyState === 'complete') {
+      loadFontAwesome();
+    } else {
+      window.addEventListener('load', loadFontAwesome, { passive: true });
+    }
+    ['mousemove', 'scroll', 'touchstart', 'click', 'keydown'].forEach(ev => window.addEventListener(ev, loadFontAwesome, { passive: true, once: true }));
+  </script>
   <style>
     @font-face {
       font-family: 'Font Awesome 6 Free';

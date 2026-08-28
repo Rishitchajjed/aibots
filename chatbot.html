@@ -604,13 +604,72 @@
         return jokes[Math.floor(Math.random() * jokes.length)];
       }
 
-      // 6. Greetings
-      if (q.includes('hello') || q.includes('hi') || q.includes('hey') || q.includes('namaste') || q.includes('greetings')) {
-        return `Hello there! 😊 How can I help you today? Ask me about any of our 28+ tools, design tips, or calculations!`;
+      // 6. Coding & Development Queries
+      if (q.includes('python') || q.includes('javascript') || q.includes('code') || q.includes('html') || q.includes('css') || q.includes('function')) {
+        if (q.includes('password')) {
+          return `Here is a JavaScript function to generate secure random passwords:<br><pre><code>function generatePassword(length = 12) {
+  const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()_+";
+  let pass = "";
+  for (let i = 0; i < length; i++) {
+    pass += chars.charAt(Math.floor(Math.random() * chars.length));
+  }
+  return pass;
+}
+console.log(generatePassword(16));</code></pre>`;
+        }
+        if (q.includes('python')) {
+          return `Here is a clean Python example:<br><pre><code># Reverse a string in Python
+text = "AI Bots Studio"
+reversed_text = text[::-1]
+print("Reversed:", reversed_text)
+
+# List comprehension example
+squares = [x**2 for x in range(1, 11)]
+print("Squares:", squares)</code></pre>`;
+        }
+        return `Here is a clean JavaScript / HTML snippet:<br><pre><code>// Fetch JSON data asynchronously
+async function loadData(url) {
+  try {
+    const res = await fetch(url);
+    const data = await res.json();
+    return data;
+  } catch (err) {
+    console.error("Fetch error:", err);
+  }
+}</code></pre>`;
       }
 
-      // 7. General Knowledge Fallback
-      return `I'm here to assist you! You can ask about any of our 28+ tools (e.g. <em>Background Remover, Currency Converter, Cricket Scorer, Print Studio, Logo Maker</em>), solve math, or configure a Google Gemini API key in Settings (⚙️) for open generative AI chatting!<br><br><a href="index.html#tools-section" class="bot-link-btn"><i class="fas fa-wand-magic-sparkles"></i> Explore Hub Tools</a>`;
+      // 7. Technology & Web Concepts
+      if (q.includes('seo') || q.includes('google rank') || q.includes('rank first')) {
+        return `Here are the top 4 rules to rank high on Google Search:<br>1. <strong>Structured Data (Schema.org):</strong> Inject FAQPage and AggregateRating schemas.<br>2. <strong>Core Web Vitals:</strong> Ensure fast Largest Contentful Paint (LCP) under 1.5s.<br>3. <strong>Keywords & Meta Tags:</strong> Target high-volume search keywords in title & canonical URLs.<br>4. <strong>Backlinks & PWA:</strong> Provide clean PWA manifests and sitemaps.`;
+      }
+      if (q.includes('ai') || q.includes('artificial intelligence') || q.includes('machine learning') || q.includes('llm')) {
+        return `<strong>Artificial Intelligence (AI)</strong> powers modern computing through neural networks and Large Language Models (LLMs). On AI Bots, all tools run with client-side speed and privacy, giving you AI-driven capabilities like instant background removal, smart math solving, and creative automation!`;
+      }
+
+      // 8. Creative Writing & Brainstorming
+      if (q.includes('caption') || q.includes('bio') || q.includes('instagram') || q.includes('quote')) {
+        return `Here are 3 engaging captions for you:<br>✨ <em>"Creating digital magic one pixel at a time. 🚀"</em><br>💡 <em>"Turn ideas into reality with zero limits and 100% creativity."</em><br>⚡ <em>"Built for creators, powered by speed. 🌟"</em>`;
+      }
+
+      // 9. Greetings & Polite Chat
+      if (q.includes('hello') || q.includes('hi') || q.includes('hey') || q.includes('namaste') || q.includes('greetings')) {
+        return `Hello there! 😊 How can I help you today? Ask me about any of our 28+ tools, request code snippets, or solve math calculations!`;
+      }
+      if (q.includes('how are you') || q.includes('how r u') || q.includes('how do you do')) {
+        return `I'm running at peak performance and ready to assist! What creative tool or question can I help you with today? 🚀`;
+      }
+      if (q.includes('thank') || q.includes('thanks') || q.includes('thx')) {
+        return `You're very welcome! If you need help with any other tool or calculation, just let me know! ❤️`;
+      }
+
+      // 10. Intelligent Contextual Response
+      return `I can help you with that! Here are quick things you can explore:<br>
+      • Ask me to <strong>explain any tool</strong> (e.g. <em>Background Remover, Print Studio, Currency Converter, Cricket Scorer</em>)<br>
+      • Request <strong>code snippets</strong> (Python, JS, HTML)<br>
+      • Compute <strong>math equations</strong> (e.g. <code>25 * 40</code> or <code>sqrt(144) + 15% of 500</code>)<br>
+      • Connect a free <strong>Google Gemini API Key</strong> in Settings (⚙️) for unlimited open generative AI chat!<br><br>
+      <a href="index.html#tools-section" class="bot-link-btn"><i class="fas fa-wand-magic-sparkles"></i> Explore All Tools</a>`;
     }
 
     /* GOOGLE GEMINI GENERATIVE AI CALL */

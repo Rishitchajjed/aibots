@@ -332,12 +332,29 @@
           </p>
         </div>
         <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+          <button onclick="syncConfigToCloudOnline(true)" class="btn btn-primary btn-sm" style="background: linear-gradient(135deg, #6366f1, #a855f7); border: none; font-weight: 800;" title="Push all changes to live website">
+            <i class="fas fa-cloud-arrow-up"></i> Push to Live Site
+          </button>
+          <button onclick="fetchCloudConfig(true)" class="btn btn-secondary btn-sm" title="Pull latest settings from live cloud">
+            <i class="fas fa-cloud-arrow-down"></i> Pull from Cloud
+          </button>
           <a href="https://github.com/Rishitchajjed/aibots/archive/refs/heads/main.zip" class="btn btn-primary btn-sm" style="background: linear-gradient(135deg, #10b981, #059669); border-color: #059669; font-weight: 800; color: white;" title="Download complete website source code as ZIP archive">
             <i class="fas fa-file-zipper"></i> Download Full Site (.zip)
           </a>
-          <button onclick="exportAllConfigs()" class="btn btn-secondary btn-sm"><i class="fas fa-file-export"></i> Export Config (.json)</button>
-          <button onclick="document.getElementById('importConfigInput').click()" class="btn btn-secondary btn-sm"><i class="fas fa-file-import"></i> Import Config</button>
+          <button onclick="exportAllConfigs()" class="btn btn-secondary btn-sm"><i class="fas fa-file-export"></i> Export (.json)</button>
+          <button onclick="document.getElementById('importConfigInput').click()" class="btn btn-secondary btn-sm"><i class="fas fa-file-import"></i> Import</button>
           <input type="file" id="importConfigInput" style="display: none;" accept=".json" onchange="importAllConfigs(event)">
+        </div>
+      </div>
+
+      <!-- Live Online Cloud Status Bar -->
+      <div id="cloudSyncStatusBar" style="background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 10px 18px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; box-shadow: var(--shadow-sm);">
+        <div style="display: flex; align-items: center; gap: 10px;">
+          <span style="display: inline-block; width: 10px; height: 10px; border-radius: 50%; background: #10b981; box-shadow: 0 0 10px #10b981;" id="cloudStatusDot"></span>
+          <span style="font-size: 0.88rem; font-weight: 800; color: var(--text-primary);" id="cloudStatusText">☁️ Online Cloud Sync: Active (Changes sync live across all devices)</span>
+        </div>
+        <div style="font-size: 0.78rem; color: var(--text-secondary);" id="cloudLastSyncTime">
+          Last Synced: Just now
         </div>
       </div>
 
@@ -970,18 +987,21 @@
       }
       localStorage.setItem('aibots_disabled_tools', JSON.stringify(disabled));
       showToast(`Tool status updated!`, 'info');
+      syncConfigToCloudOnline();
     }
 
     function enableAllTools() {
       localStorage.removeItem('aibots_disabled_tools');
       renderToolsRegistry();
       showToast('All 30 tools enabled!', 'success');
+      syncConfigToCloudOnline();
     }
 
     function saveFeaturedTool() {
       const val = document.getElementById('featuredToolSelect').value;
       localStorage.setItem('aibots_featured_tool', val);
       showToast(val ? `Featured Tool set to: ${val}` : 'Featured Tool cleared', 'success');
+      syncConfigToCloudOnline();
     }
 
     function filterToolsList() {
@@ -1017,6 +1037,7 @@
       localStorage.setItem('aibots_ai_temperature', temp);
       localStorage.setItem('aibots_ai_max_tokens', tokens);
       showToast('Gemini AI configurations saved!', 'success');
+      syncConfigToCloudOnline();
     }
 
     function resetAiConfig() {
@@ -1025,6 +1046,7 @@
       localStorage.removeItem('aibots_ai_max_tokens');
       initAiSettings();
       showToast('AI settings reset to factory defaults.', 'info');
+      syncConfigToCloudOnline();
     }
 
     async function runLiveAiTest() {
@@ -1099,6 +1121,7 @@
         window.renderGlobalAnnouncement();
       }
       showToast('Announcement banner published live!', 'success');
+      syncConfigToCloudOnline();
     }
 
     function clearAnnouncementConfig() {
@@ -1107,6 +1130,7 @@
       const banner = document.getElementById('aibotsGlobalAnnouncementBanner');
       if (banner) banner.remove();
       showToast('Announcement banner disabled.', 'info');
+      syncConfigToCloudOnline();
     }
 
     function saveWelcomeModalConfig() {
@@ -1117,6 +1141,7 @@
       localStorage.setItem('aibots_welcome_modal_config', JSON.stringify({ enabled, title, body }));
       sessionStorage.removeItem('aibots_welcome_modal_shown');
       showToast('Visitor welcome popup saved and active!', 'success');
+      syncConfigToCloudOnline();
     }
 
     // ==========================================
@@ -1145,6 +1170,7 @@
       });
       localStorage.setItem('aibots_festive_effects', JSON.stringify(effects));
       showToast('Festive effects updated and active!', 'success');
+      syncConfigToCloudOnline();
     }
 
     // ==========================================
@@ -1166,6 +1192,7 @@
       localStorage.setItem('aibots_custom_upi_config', JSON.stringify({ id, name, chips }));
       updateQrPreview();
       showToast('UPI Donation settings saved!', 'success');
+      syncConfigToCloudOnline();
     }
 
     function resetUpiConfig() {
@@ -1175,6 +1202,7 @@
       document.getElementById('customDonationChipsInput').value = '20, 50, 100, 250, 500';
       updateQrPreview();
       showToast('UPI reset to default credentials.', 'info');
+      syncConfigToCloudOnline();
     }
 
     function updateQrPreview() {
@@ -1307,6 +1335,123 @@
       if (el) el.checked = isGlobal;
     }
 
+    // ==========================================
+    // MODULE 8: Live Online Cloud Sync Engine
+    // ==========================================
+    const AIBOTS_CLOUD_BIN = 'https://extendsclass.com/api/json-storage/bin/ddbbfed';
+    const AIBOTS_CLOUD_KEY = 'aibots-studio-2026';
+
+    async function syncConfigToCloudOnline(showFeedback = false) {
+      const dot = document.getElementById('cloudStatusDot');
+      const text = document.getElementById('cloudStatusText');
+      const timeEl = document.getElementById('cloudLastSyncTime');
+
+      if (dot) {
+        dot.style.background = '#f59e0b';
+        dot.style.boxShadow = '0 0 10px #f59e0b';
+      }
+      if (text) text.textContent = '☁️ Syncing changes online to live website...';
+
+      const fullConfig = {
+        global_maintenance: localStorage.getItem('aibots_global_maintenance') === 'true',
+        disabled_tools: JSON.parse(localStorage.getItem('aibots_disabled_tools') || '[]'),
+        featured_tool: localStorage.getItem('aibots_featured_tool') || '',
+        announcement: JSON.parse(localStorage.getItem('aibots_global_announcement') || '{}'),
+        welcome_modal: JSON.parse(localStorage.getItem('aibots_welcome_modal_config') || '{}'),
+        festive_effects: JSON.parse(localStorage.getItem('aibots_festive_effects') || '{}'),
+        upi_config: JSON.parse(localStorage.getItem('aibots_custom_upi_config') || '{"id":"9384361008@mbk","name":"Rishit Chajjed"}'),
+        updated_at: new Date().toISOString()
+      };
+
+      try {
+        const res = await fetch(AIBOTS_CLOUD_BIN, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+            'Security-key': AIBOTS_CLOUD_KEY
+          },
+          body: JSON.stringify(fullConfig)
+        });
+
+        if (res.ok) {
+          if (dot) {
+            dot.style.background = '#10b981';
+            dot.style.boxShadow = '0 0 10px #10b981';
+          }
+          if (text) text.textContent = '☁️ Online Cloud Sync: Active (Synced live across all devices)';
+          if (timeEl) timeEl.textContent = `Last Synced: ${new Date().toLocaleTimeString()}`;
+          if (showFeedback) showToast('✅ All settings pushed online to live website!', 'success');
+        } else {
+          throw new Error(`HTTP ${res.status}`);
+        }
+      } catch (err) {
+        console.warn('Cloud sync error:', err);
+        if (dot) {
+          dot.style.background = '#ef4444';
+          dot.style.boxShadow = '0 0 10px #ef4444';
+        }
+        if (text) text.textContent = '⚠️ Cloud Sync Offline (Saved locally to this device)';
+        if (showFeedback) showToast('Cloud sync offline. Settings saved locally.', 'warning');
+      }
+    }
+
+    async function fetchCloudConfig(showFeedback = false) {
+      const dot = document.getElementById('cloudStatusDot');
+      const text = document.getElementById('cloudStatusText');
+      const timeEl = document.getElementById('cloudLastSyncTime');
+
+      if (text) text.textContent = '🔄 Fetching latest online configuration...';
+
+      try {
+        const res = await fetch(AIBOTS_CLOUD_BIN, { cache: 'no-store' });
+        if (res.ok) {
+          const cloud = await res.json();
+          if (cloud) {
+            if (cloud.global_maintenance !== undefined) {
+              localStorage.setItem('aibots_global_maintenance', cloud.global_maintenance ? 'true' : 'false');
+            }
+            if (cloud.disabled_tools !== undefined) {
+              localStorage.setItem('aibots_disabled_tools', JSON.stringify(cloud.disabled_tools));
+            }
+            if (cloud.featured_tool !== undefined) {
+              localStorage.setItem('aibots_featured_tool', cloud.featured_tool);
+            }
+            if (cloud.announcement) {
+              localStorage.setItem('aibots_global_announcement', JSON.stringify(cloud.announcement));
+            }
+            if (cloud.welcome_modal) {
+              localStorage.setItem('aibots_welcome_modal_config', JSON.stringify(cloud.welcome_modal));
+            }
+            if (cloud.festive_effects) {
+              localStorage.setItem('aibots_festive_effects', JSON.stringify(cloud.festive_effects));
+            }
+            if (cloud.upi_config) {
+              localStorage.setItem('aibots_custom_upi_config', JSON.stringify(cloud.upi_config));
+            }
+
+            // Re-render local UI with cloud values
+            initMaintenanceControls();
+            renderToolsRegistry();
+            initAiSettings();
+            initAnnouncementSettings();
+            initFestiveSettings();
+            initUpiSettings();
+
+            if (dot) {
+              dot.style.background = '#10b981';
+              dot.style.boxShadow = '0 0 10px #10b981';
+            }
+            if (text) text.textContent = '☁️ Online Cloud Sync: Active (Synced live across all devices)';
+            if (timeEl) timeEl.textContent = `Last Pulled: ${new Date().toLocaleTimeString()}`;
+            if (showFeedback) showToast('✅ Latest settings pulled from live cloud!', 'success');
+          }
+        }
+      } catch(err) {
+        console.warn('Fetch cloud config error:', err);
+        if (showFeedback) showToast('Could not reach cloud server. Using local settings.', 'warning');
+      }
+    }
+
     function toggleGlobalMaintenanceMode(isEnabled) {
       localStorage.setItem('aibots_global_maintenance', isEnabled ? 'true' : 'false');
       if (isEnabled) {
@@ -1314,6 +1459,7 @@
       } else {
         showToast('✅ Global Site Maintenance Mode DEACTIVATED! Website is live.', 'success');
       }
+      syncConfigToCloudOnline();
     }
 
     function initAdminControls() {
@@ -1324,6 +1470,7 @@
       initFestiveSettings();
       initUpiSettings();
       renderAnalytics();
+      fetchCloudConfig();
     }
 
     document.addEventListener('DOMContentLoaded', checkAuthOnLoad);

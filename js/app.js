@@ -1065,6 +1065,49 @@ window.updateDonationQR = function(amt) {
     }
   }
 
+  // Global Online Cloud Sync Engine
+  const AIBOTS_CLOUD_BIN = 'https://extendsclass.com/api/json-storage/bin/ddbbfed';
+  
+  window.fetchAndApplyGlobalCloudConfig = async function() {
+    try {
+      const res = await fetch(AIBOTS_CLOUD_BIN, { cache: 'no-store' });
+      if (res.ok) {
+        const cloud = await res.json();
+        if (cloud) {
+          if (cloud.global_maintenance !== undefined) {
+            localStorage.setItem('aibots_global_maintenance', cloud.global_maintenance ? 'true' : 'false');
+          }
+          if (cloud.disabled_tools !== undefined) {
+            localStorage.setItem('aibots_disabled_tools', JSON.stringify(cloud.disabled_tools));
+          }
+          if (cloud.featured_tool) {
+            localStorage.setItem('aibots_featured_tool', cloud.featured_tool);
+          }
+          if (cloud.announcement) {
+            localStorage.setItem('aibots_global_announcement', JSON.stringify(cloud.announcement));
+          }
+          if (cloud.welcome_modal) {
+            localStorage.setItem('aibots_welcome_modal_config', JSON.stringify(cloud.welcome_modal));
+          }
+          if (cloud.festive_effect) {
+            localStorage.setItem('aibots_festive_effects', JSON.stringify({ [cloud.festive_effect]: true }));
+          }
+          if (cloud.upi_config && cloud.upi_config.id) {
+            localStorage.setItem('aibots_custom_upi_config', JSON.stringify(cloud.upi_config));
+          }
+
+          // Re-evaluate reactive components
+          checkMaintenanceShield();
+          window.renderGlobalAnnouncement();
+          window.renderWelcomeModal();
+          highlightFeaturedTool();
+        }
+      }
+    } catch(err) {
+      console.warn('Cloud sync fetch warning:', err);
+    }
+  };
+
   const initAllAdminModules = () => {
     checkMaintenanceShield();
     renderGlobalAnnouncement();
@@ -1072,6 +1115,7 @@ window.updateDonationQR = function(amt) {
     renderFestiveEffects();
     setupToolAnalyticsLogger();
     highlightFeaturedTool();
+    window.fetchAndApplyGlobalCloudConfig();
   };
 
   if (document.readyState === 'loading') {
@@ -1080,6 +1124,7 @@ window.updateDonationQR = function(amt) {
     initAllAdminModules();
   }
 })();
+
 
 
 

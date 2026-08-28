@@ -936,113 +936,66 @@ window.updateDonationQR = function(amt) {
 
   // Global Cloud Analytics Logger (Worldwide Multi-Device Telemetry)
   const CLOUD_ANALYTICS_WRITE_URL = 'https://crudcrud.com/api/db2fa025fac8487897e087d9d41a96ea/config/6a91b9fd2d7ee403e856d304';
-  const CLOUD_ANALYTICS_READ_URL = 'https://crudcrud.com/api/db2fa025fac8487897e087d9d41a96ea/config';
   const CLOUD_ANALYTICS_FALLBACK_URL = 'https://extendsclass.com/api/json-storage/bin/adebbab';
 
-  let analyticsSyncTimer = null;
-  function syncAnalyticsToCloud() {
-    clearTimeout(analyticsSyncTimer);
-    analyticsSyncTimer = setTimeout(async () => {
-      try {
-        let cloud = null;
-        try {
-          const res = await fetch(`${CLOUD_ANALYTICS_READ_URL}?_=${Date.now()}`, { cache: 'no-store' });
-          if (res.ok) {
-            const txt = await res.text();
-            let parsed = JSON.parse(txt.replace(/^\uFEFF/, '').trim());
-            if (Array.isArray(parsed) && parsed.length > 0) parsed = parsed[0];
-            cloud = parsed;
-          }
-        } catch (e) {}
+  window.recordToolLaunchClick = function(toolId) {
+    if (!toolId || toolId === 'index' || toolId === 'admin' || toolId === '#' || toolId.startsWith('http')) return;
+    try {
+      const clicks = JSON.parse(localStorage.getItem('aibots_tool_click_analytics') || '{}');
+      clicks[toolId] = (clicks[toolId] || 0) + 1;
+      localStorage.setItem('aibots_tool_click_analytics', JSON.stringify(clicks));
 
-        if (!cloud) {
-          try {
-            const res = await fetch(`${CLOUD_ANALYTICS_FALLBACK_URL}?_=${Date.now()}`, { cache: 'no-store' });
-            if (res.ok) {
-              const txt = await res.text();
-              cloud = JSON.parse(txt.replace(/^\uFEFF/, '').trim());
-            }
-          } catch (e) {}
-        }
+      const payload = {
+        analytics_clicks: clicks,
+        updated_at: new Date().toISOString()
+      };
 
-        const localClicks = JSON.parse(localStorage.getItem('aibots_tool_click_analytics') || '{}');
-        const localSearches = JSON.parse(localStorage.getItem('aibots_search_query_log') || '[]');
+      // 1. Instant Cloud update with keepalive: true (survives page navigation)
+      fetch(CLOUD_ANALYTICS_WRITE_URL, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+        keepalive: true
+      }).catch(() => {});
 
-        const mergedClicks = { ...(cloud?.analytics_clicks || {}) };
-        Object.keys(localClicks).forEach(k => {
-          if (!mergedClicks[k] || localClicks[k] > mergedClicks[k]) {
-            mergedClicks[k] = localClicks[k];
-          }
-        });
+      // 2. Secondary fallback cloud update with keepalive: true
+      fetch(CLOUD_ANALYTICS_FALLBACK_URL, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/merge-patch+json' },
+        body: JSON.stringify(payload),
+        keepalive: true
+      }).catch(() => {});
+    } catch(e) {}
+  };
 
-        const searchSet = new Set([...(cloud?.analytics_searches || []), ...localSearches]);
-        const mergedSearches = Array.from(searchSet).slice(-50);
-
-        const updatedCloudConfig = {
-          ...(cloud || {}),
-          analytics_clicks: mergedClicks,
-          analytics_searches: mergedSearches,
-          updated_at: new Date().toISOString()
-        };
-        // Remove MongoDB _id if present before PUT
-        delete updatedCloudConfig._id;
-
-        // 1. Primary CRUDCRUD cloud update
-        fetch(CLOUD_ANALYTICS_WRITE_URL, {
-          method: 'PUT',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(updatedCloudConfig)
-        }).catch(() => {});
-
-        // 2. Secondary ExtendsClass cloud update
-        fetch(CLOUD_ANALYTICS_FALLBACK_URL, {
-          method: 'PATCH',
-          headers: { 'Content-Type': 'application/merge-patch+json' },
-          body: JSON.stringify({
-            analytics_clicks: mergedClicks,
-            analytics_searches: mergedSearches,
-            updated_at: new Date().toISOString()
-          })
-        }).catch(() => {});
-      } catch (err) {}
-    }, 2000);
-  }
-
-  // Tool Click Analytics Logger
+  // Tool Click & Page Launch Analytics Logger
   function setupToolAnalyticsLogger() {
+    // 1. Detect clicks on tool cards, action cards, and navigation links
     document.addEventListener('click', (e) => {
-      const card = e.target.closest('a.tool-card, a.action-card');
+      const card = e.target.closest('a.tool-card, a.action-card, a.shortcut-item, a[href$=".html"]');
       if (card) {
         let tool = card.dataset.tool;
         if (!tool) {
           const href = card.getAttribute('href') || '';
           tool = href.split('?')[0].split('#')[0].replace('.html', '').replace('./', '').replace('/', '').trim();
         }
-        if (tool && tool !== 'index' && tool !== '#' && !tool.startsWith('http')) {
-          try {
-            const clicks = JSON.parse(localStorage.getItem('aibots_tool_click_analytics') || '{}');
-            clicks[tool] = (clicks[tool] || 0) + 1;
-            localStorage.setItem('aibots_tool_click_analytics', JSON.stringify(clicks));
-            syncAnalyticsToCloud();
-          } catch(err) {}
+        if (tool && tool !== 'index' && tool !== 'admin' && tool !== '#' && !tool.startsWith('http')) {
+          window.recordToolLaunchClick(tool);
         }
       }
     });
-  }
 
-  // Search Query Logger
-  window.logSearchQueryToAdmin = function(query) {
-    if (!query || query.trim().length < 2) return;
-    try {
-      let searches = JSON.parse(localStorage.getItem('aibots_search_query_log') || '[]');
-      if (!searches.includes(query.trim())) {
-        searches.push(query.trim());
-        if (searches.length > 50) searches.shift();
-        localStorage.setItem('aibots_search_query_log', JSON.stringify(searches));
-        syncAnalyticsToCloud();
+    // 2. Detect direct tool page visits (e.g. user opens bookmarked tool page)
+    const currentPath = window.location.pathname.split('/').pop().replace('.html', '').trim();
+    if (currentPath && currentPath !== 'index' && currentPath !== 'admin' && currentPath !== '') {
+      // Record once per session per tool
+      const sessionKey = `aibots_tracked_${currentPath}`;
+      if (!sessionStorage.getItem(sessionKey)) {
+        sessionStorage.setItem(sessionKey, '1');
+        window.recordToolLaunchClick(currentPath);
       }
-    } catch(e) {}
-  };
+    }
+  }
 
   // Featured Tool Highlight on Homepage
   function highlightFeaturedTool() {

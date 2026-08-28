@@ -15,28 +15,25 @@
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" media="print" onload="this.media='all'">
   <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap"></noscript>
 
-  <!-- Google Analytics (Deferred to Idle for Maximum PageSpeed & CWV) -->
+  <!-- Google Analytics (Loaded on User Interaction / Idle for Maximum Performance) -->
   <script>
     window.dataLayer = window.dataLayer || [];
     function gtag(){dataLayer.push(arguments);}
     gtag('js', new Date());
     gtag('config', 'G-2L87FMQS3W');
 
-    if ('requestIdleCallback' in window) {
-      requestIdleCallback(() => {
-        const s = document.createElement('script');
-        s.src = 'https://www.googletagmanager.com/gtag/js?id=G-2L87FMQS3W';
-        s.async = true;
-        document.head.appendChild(s);
-      });
-    } else {
-      window.addEventListener('load', () => {
-        const s = document.createElement('script');
-        s.src = 'https://www.googletagmanager.com/gtag/js?id=G-2L87FMQS3W';
-        s.async = true;
-        document.head.appendChild(s);
-      });
+    let _gtagLoaded = false;
+    function loadGtagOnInteraction() {
+      if (_gtagLoaded) return;
+      _gtagLoaded = true;
+      const s = document.createElement('script');
+      s.src = 'https://www.googletagmanager.com/gtag/js?id=G-2L87FMQS3W';
+      s.async = true;
+      document.head.appendChild(s);
+      ['scroll', 'touchstart', 'click', 'keydown'].forEach(ev => window.removeEventListener(ev, loadGtagOnInteraction));
     }
+    ['scroll', 'touchstart', 'click', 'keydown'].forEach(ev => window.addEventListener(ev, loadGtagOnInteraction, { once: true, passive: true }));
+    setTimeout(loadGtagOnInteraction, 3500);
   </script>
 
   <meta name="google-site-verification" content="ndzq-U-NLijgza_QqgQdcc2U3oMRoud_BT2ZZiwFREM">
@@ -193,6 +190,15 @@
   <link rel="preload" href="css/theme.css" as="style">
   <link rel="stylesheet" href="css/theme.css">
   <style>
+    @font-face {
+      font-family: 'Font Awesome 6 Free';
+      font-display: swap;
+    }
+    @font-face {
+      font-family: 'Font Awesome 6 Brands';
+      font-display: swap;
+    }
+
     /* Hero Typography Typing Animation */
     .typing-cursor {
       display: inline-block;

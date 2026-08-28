@@ -304,22 +304,22 @@ let confettiParticles = [];
 let confettiAnimId = null;
 
 function initConfetti() {
-  confettiCanvas = document.createElement('canvas');
-  confettiCanvas.id = 'confetti-canvas';
-  document.body.appendChild(confettiCanvas);
-  confettiCtx = confettiCanvas.getContext('2d');
-
-  window.addEventListener('resize', () => {
-    if (confettiCanvas) {
-      confettiCanvas.width = window.innerWidth;
-      confettiCanvas.height = window.innerHeight;
-    }
-  });
-  confettiCanvas.width = window.innerWidth;
-  confettiCanvas.height = window.innerHeight;
+  // Lazily initialized on first launch to eliminate initial forced reflow
 }
 
 function launchConfetti(count = 80) {
+  if (!confettiCanvas) {
+    confettiCanvas = document.createElement('canvas');
+    confettiCanvas.id = 'confetti-canvas';
+    document.body.appendChild(confettiCanvas);
+    confettiCtx = confettiCanvas.getContext('2d');
+    window.addEventListener('resize', () => {
+      if (confettiCanvas) {
+        confettiCanvas.width = window.innerWidth;
+        confettiCanvas.height = window.innerHeight;
+      }
+    }, { passive: true });
+  }
   if (!confettiCtx) return;
   confettiCanvas.width = window.innerWidth;
   confettiCanvas.height = window.innerHeight;

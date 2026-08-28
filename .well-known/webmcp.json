@@ -1,0 +1,51 @@
+﻿{
+    "tools":  [
+                  {
+                      "url":  "https://www.aibots.co.in/backremover.html",
+                      "description":  "Removes background from image",
+                      "name":  "remove_background",
+                      "parameters":  {
+                                         "properties":  {
+                                                            "image":  {
+                                                                          "type":  "string",
+                                                                          "description":  "Image file or data URL"
+                                                                      }
+                                                        },
+                                         "type":  "object"
+                                     }
+                  },
+                  {
+                      "url":  "https://www.aibots.co.in/invoice.html",
+                      "description":  "Creates a PDF invoice",
+                      "name":  "generate_invoice",
+                      "parameters":  {
+                                         "properties":  {
+                                                            "items":  {
+                                                                          "type":  "array"
+                                                                      },
+                                                            "client_name":  {
+                                                                                "type":  "string"
+                                                                            }
+                                                        },
+                                         "type":  "object"
+                                     }
+                  },
+                  {
+                      "url":  "https://www.aibots.co.in/qrcode.html",
+                      "description":  "Generates customized QR codes",
+                      "name":  "make_qr_code",
+                      "parameters":  {
+                                         "properties":  {
+                                                            "text":  {
+                                                                         "type":  "string",
+                                                                         "description":  "URL or text to encode"
+                                                                     }
+                                                        },
+                                         "type":  "object"
+                                     }
+                  }
+              ],
+    "description":  "A suite of 30+ browser-based creative and utility tools for image processing, PDF generation, and calculation.",
+    "name":  "AI Bots Creative Studio Tools",
+    "version":  "1.0.0"
+}

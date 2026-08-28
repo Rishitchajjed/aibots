@@ -30,10 +30,9 @@
       s.src = 'https://www.googletagmanager.com/gtag/js?id=G-2L87FMQS3W';
       s.async = true;
       document.head.appendChild(s);
-      ['scroll', 'touchstart', 'click', 'keydown'].forEach(ev => window.removeEventListener(ev, loadGtagOnInteraction));
+      ['mousemove', 'scroll', 'touchstart', 'click', 'keydown'].forEach(ev => window.removeEventListener(ev, loadGtagOnInteraction));
     }
-    ['scroll', 'touchstart', 'click', 'keydown'].forEach(ev => window.addEventListener(ev, loadGtagOnInteraction, { once: true, passive: true }));
-    setTimeout(loadGtagOnInteraction, 3500);
+    ['mousemove', 'scroll', 'touchstart', 'click', 'keydown'].forEach(ev => window.addEventListener(ev, loadGtagOnInteraction, { once: true, passive: true }));
   </script>
 
   <meta name="google-site-verification" content="ndzq-U-NLijgza_QqgQdcc2U3oMRoud_BT2ZZiwFREM">
@@ -185,10 +184,11 @@
   }
   </script>
 
-  <!-- Google Fonts & Font Awesome Icons -->
-  <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+  <!-- Stylesheets & Fonts -->
   <link rel="preload" href="css/theme.css" as="style">
   <link rel="stylesheet" href="css/theme.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" media="print" onload="this.media='all';this.onload=null;">
+  <noscript><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"></noscript>
   <style>
     @font-face {
       font-family: 'Font Awesome 6 Free';

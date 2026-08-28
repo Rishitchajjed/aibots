@@ -1291,9 +1291,21 @@ body {
   .hero-section { padding: 40px 0 20px; }
   .tool-card-container { padding: 24px 18px; }
   .features-grid { grid-template-columns: 1fr; }
-  .navbar { height: 64px; }
+  .navbar { height: 60px; }
+  .brand-badge { display: none !important; }
+  .sound-toggle-btn { display: none !important; }
+  .hide-on-mobile { display: none !important; }
+  .donate-btn-nav { display: none !important; } /* Hidden on mobile navbar to prevent covering header */
   .search-trigger-btn span:not(.search-icon) { display: none; }
   .kbd-shortcut { display: none; }
+}
+
+@media (max-width: 480px) {
+  .nav-wrapper { gap: 8px; }
+  .nav-actions { gap: 6px; }
+  .icon-btn { width: 36px; height: 36px; }
+  .brand-link span { font-size: 1.05rem; }
+  .brand-logo-img { height: 28px; width: 28px; }
 }
 
 /* ==========================================================================

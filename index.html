@@ -421,7 +421,7 @@
             <i class="fas fa-heart"></i> Donate
           </button>
           <button class="icon-btn sound-toggle-btn" title="Toggle Sound FX"><i class="fas fa-volume-high"></i></button>
-          <button onclick="toggleShortcutsModal()" class="icon-btn" title="Keyboard Shortcuts (?)"><i class="fas fa-keyboard"></i></button>
+          <button onclick="toggleShortcutsModal()" class="icon-btn hide-on-mobile" title="Keyboard Shortcuts (?)"><i class="fas fa-keyboard"></i></button>
           
           <button class="search-trigger-btn" id="search-trigger-btn" title="Quick Search (Ctrl + K)">
             <i class="fas fa-magnifying-glass search-icon"></i>
@@ -471,6 +471,9 @@
         <a href="chatbot.html" class="btn btn-secondary btn-lg">
           <i class="fas fa-robot"></i> Need Help? Chatbot
         </a>
+        <button onclick="openDonationModal()" class="btn btn-secondary btn-lg" style="color: #ec4899; border-color: rgba(236, 72, 153, 0.35); font-weight: 700;">
+          <i class="fas fa-heart"></i> Support AI Bots
+        </button>
       </div>
 
       <!-- Quick Action Dropzone Dock in Hero -->

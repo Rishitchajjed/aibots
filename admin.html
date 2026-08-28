@@ -894,9 +894,10 @@
       // 2. Fetch live master password hash from Online Cloud Storage
       let activeMasterHash = localStorage.getItem(STORAGE_KEY) || BASE_DEFAULT_HASH;
       try {
-        const res = await fetch('https://extendsclass.com/api/json-storage/bin/adebbab', { cache: 'no-store' });
+        const res = await fetch('https://api.restful-api.dev/objects/ff8081819ff5b11001a04916cff355c6', { cache: 'no-store' });
         if (res.ok) {
-          const cloudData = await res.json();
+          const body = await res.json();
+          const cloudData = body && body.data ? body.data : body;
           if (cloudData && cloudData.admin_password_hash) {
             activeMasterHash = cloudData.admin_password_hash;
             localStorage.setItem(STORAGE_KEY, activeMasterHash);
@@ -1367,7 +1368,7 @@
     // ==========================================
     // MODULE 8: Live Online Cloud Sync Engine
     // ==========================================
-    const AIBOTS_CLOUD_BIN = 'https://extendsclass.com/api/json-storage/bin/adebbab';
+    const AIBOTS_CLOUD_API = 'https://api.restful-api.dev/objects/ff8081819ff5b11001a04916cff355c6';
 
     async function syncConfigToCloudOnline(showFeedback = false, overrideHash = null) {
       const dot = document.getElementById('cloudStatusDot');
@@ -1395,12 +1396,15 @@
       };
 
       try {
-        const res = await fetch(AIBOTS_CLOUD_BIN, {
-          method: 'PATCH',
+        const res = await fetch(AIBOTS_CLOUD_API, {
+          method: 'PUT',
           headers: {
-            'Content-Type': 'application/merge-patch+json'
+            'Content-Type': 'application/json'
           },
-          body: JSON.stringify(fullConfig)
+          body: JSON.stringify({
+            name: 'aibots_creative_studio_global_config',
+            data: fullConfig
+          })
         });
 
         if (res.ok) {
@@ -1433,9 +1437,10 @@
       if (text) text.textContent = '🔄 Fetching latest online configuration...';
 
       try {
-        const res = await fetch(AIBOTS_CLOUD_BIN, { cache: 'no-store' });
+        const res = await fetch(AIBOTS_CLOUD_API, { cache: 'no-store' });
         if (res.ok) {
-          const cloud = await res.json();
+          const body = await res.json();
+          const cloud = body && body.data ? body.data : body;
           if (cloud) {
             if (cloud.admin_password_hash) {
               localStorage.setItem(STORAGE_KEY, cloud.admin_password_hash);

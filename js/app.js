@@ -1066,13 +1066,14 @@ window.updateDonationQR = function(amt) {
   }
 
   // Global Online Cloud Sync Engine
-  const AIBOTS_CLOUD_BIN = 'https://extendsclass.com/api/json-storage/bin/adebbab';
+  const AIBOTS_CLOUD_API = 'https://api.restful-api.dev/objects/ff8081819ff5b11001a04916cff355c6';
   
   window.fetchAndApplyGlobalCloudConfig = async function() {
     try {
-      const res = await fetch(AIBOTS_CLOUD_BIN, { cache: 'no-store' });
+      const res = await fetch(AIBOTS_CLOUD_API, { cache: 'no-store' });
       if (res.ok) {
-        const cloud = await res.json();
+        const body = await res.json();
+        const cloud = body && body.data ? body.data : body;
         if (cloud) {
           if (cloud.global_maintenance !== undefined) {
             localStorage.setItem('aibots_global_maintenance', cloud.global_maintenance ? 'true' : 'false');
@@ -1089,8 +1090,8 @@ window.updateDonationQR = function(amt) {
           if (cloud.welcome_modal) {
             localStorage.setItem('aibots_welcome_modal_config', JSON.stringify(cloud.welcome_modal));
           }
-          if (cloud.festive_effect) {
-            localStorage.setItem('aibots_festive_effects', JSON.stringify({ [cloud.festive_effect]: true }));
+          if (cloud.festive_effects) {
+            localStorage.setItem('aibots_festive_effects', JSON.stringify(cloud.festive_effects));
           }
           if (cloud.upi_config && cloud.upi_config.id) {
             localStorage.setItem('aibots_custom_upi_config', JSON.stringify(cloud.upi_config));

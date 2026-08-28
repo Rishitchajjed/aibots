@@ -61,7 +61,7 @@ function abInitChrome(currentId) {
   topbar.setAttribute('aria-label', 'Main navigation');
   topbar.innerHTML = `
     <a href="index.html" class="ab-brand" aria-label="AI Bots Home">
-      <img src="https://i.ibb.co/G2NFYHG/logo.png" alt="AI Bots logo" class="ab-brand-logo">
+      <img src="logo.png" alt="AI Bots logo" class="ab-brand-logo" width="32" height="32" style="width: 32px; height: 32px; object-fit: contain; aspect-ratio: 1/1;">
       <span class="ab-brand-name">AI Bots</span>
     </a>
 
@@ -99,7 +99,7 @@ function abInitChrome(currentId) {
     <div class="ab-drawer-inner">
       <button class="ab-drawer-close" id="abDrawerClose" aria-label="Close menu">✕</button>
       <a href="index.html" class="ab-brand" style="margin-bottom:20px;">
-        <img src="https://i.ibb.co/G2NFYHG/logo.png" alt="Logo" class="ab-brand-logo">
+        <img src="logo.png" alt="Logo" class="ab-brand-logo" width="32" height="32" style="width: 32px; height: 32px; object-fit: contain; aspect-ratio: 1/1;">
         <span class="ab-brand-name">AI Bots</span>
       </a>
       ${cats.map(cat => `
@@ -164,7 +164,7 @@ function abInitChrome(currentId) {
   footer.innerHTML = `
     <div class="ab-footer-inner">
       <div class="ab-footer-brand">
-        <img src="https://i.ibb.co/G2NFYHG/logo.png" alt="AI Bots" style="height:28px;">
+        <img src="logo.png" alt="AI Bots" width="28" height="28" style="height:28px; width:28px; object-fit:contain; aspect-ratio:1/1;">
         <strong>AI Bots</strong>
       </div>
       <div class="ab-footer-links">

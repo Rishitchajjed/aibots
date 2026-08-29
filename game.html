@@ -6,9 +6,9 @@
   <meta name="google-site-verification" content="ndzq-U-NLijgza_QqgQdcc2U3oMRoud_BT2ZZiwFREM">
   <meta name="google-site-verification" content="-Yb6Nx74gbZ3wRN5uP-Y8KKwDWlt1DPpxs4nA3PkE6M">
   <meta name="robots" content="index, follow">
-  <title>Realm of Bots 4.0: HD Graphics RPG — AI Bots</title>
-  <meta name="description" content="Play Realm of Bots with Enhanced HD Graphics: dynamic radial lighting, weather particle systems, animated boss wings, glowing neon circuitry, and fluid combat!">
-  <meta name="keywords" content="open world game, browser rpg, hd graphics rpg, 2d open world rpg, dynamic lighting, weather effects, realm of bots, ai bots">
+  <title>Realm of Bots: Master RPG — AI Bots</title>
+  <meta name="description" content="Play Realm of Bots with Ultra HD Terrain: dynamic grass wildflowers, desert sand dunes, glacial ice, bubbling lava pools, stone pathways, and cyber hoverbikes!">
+  <meta name="keywords" content="open world game, browser rpg, ultra hd ground, 2d open world rpg, terrain engine, realm of bots, ai bots">
   <meta name="author" content="Rishit Chajjed">
   <link rel="icon" href="logo.png" type="image/png">
   <link rel="canonical" href="https://www.aibots.co.in/game.html">
@@ -16,8 +16,8 @@
   <!-- Open Graph / Social Cards -->
   <meta property="og:type" content="game">
   <meta property="og:url" content="https://www.aibots.co.in/game.html">
-  <meta property="og:title" content="Realm of Bots: HD Graphics Edition — AI Bots">
-  <meta property="og:description" content="Enhanced HD Graphics, dynamic lighting engine, weather particles, animated dragon wings, and cyber hoverbikes!">
+  <meta property="og:title" content="Realm of Bots: Ultra Terrain Edition — AI Bots">
+  <meta property="og:description" content="Ultra HD ground & terrain engine, stone pathways, animated lava pools, desert dunes, and dynamic footprints!">
   <meta property="og:image" content="https://www.aibots.co.in/logo.png">
 
   <!-- Fonts & Icons -->
@@ -484,7 +484,7 @@
         <a href="index.html" class="brand-link">
           <img src="logo.png" alt="AI Bots Logo" class="brand-logo-img" width="32" height="32" style="width: 32px; height: 32px; object-fit: contain; aspect-ratio: 1/1;">
           <span>AI Bots</span>
-          <span class="brand-badge">HD Graphics 4.0</span>
+          <span class="brand-badge">Terrain HD 4.0</span>
         </a>
 
         <div class="nav-actions">
@@ -499,9 +499,9 @@
   <main class="app-container game-page-container">
     <div class="game-header">
       <div>
-        <h1 class="game-title"><i class="fas fa-wand-magic-sparkles" style="color: #818cf8;"></i> Realm of Bots HD</h1>
+        <h1 class="game-title"><i class="fas fa-mountain-sun" style="color: #38bdf8;"></i> Realm of Bots HD</h1>
         <p style="margin: 3px 0 0; color: var(--text-secondary); font-size: 0.85rem;">
-          Enhanced lighting shaders, weather particle systems, animated boss wings, and cyber hoverbikes!
+          Ultra HD procedural terrain, wildflowers, sand dunes, stone pathways, dynamic footprints, and cyber hoverbikes!
         </p>
       </div>
       <div style="display: flex; gap: 6px; flex-wrap: wrap;">
@@ -748,11 +748,11 @@
       <div class="info-card">
         <h4><i class="fas fa-map-location-dot"></i> Biomes, Dungeons & Titans</h4>
         <div style="font-size: 0.85rem; color: var(--text-secondary); line-height: 1.7;">
-          <div>🌲 <strong>Emerald Forest:</strong> Fireflies, Slimes & Ancient Oaks</div>
-          <div>🏜️ <strong>Golden Desert:</strong> Desert Wind, Sand Scorpions & Gold Ores</div>
-          <div>❄️ <strong>Frost Peaks:</strong> Falling Snow, Yeti King & Ice Crystals</div>
-          <div>🌋 <strong>Volcanic Nether:</strong> Magma Embers & Animated Dragon Boss!</div>
-          <div>🌀 <strong>Dungeon Portals:</strong> Fast-travel between biomes!</div>
+          <div>🌲 <strong>Emerald Forest:</strong> Wildflower patches, fireflies, moss & slimes</div>
+          <div>🏜️ <strong>Golden Desert:</strong> Wind ripples, sand dunes, scorpions & gold ores</div>
+          <div>❄️ <strong>Frost Peaks:</strong> Glacial hexagons, frozen lakes, snow footprints & Yeti King</div>
+          <div>🌋 <strong>Volcanic Nether:</strong> Magma pools, obsidian rock & Dragon Boss</div>
+          <div>🏛️ <strong>Cyber Citadel:</strong> Stone pathway roads & healing fountain</div>
         </div>
       </div>
     </div>
@@ -855,6 +855,8 @@
     let projectiles = [];
     let particles = [];
     let weatherParticles = [];
+    let groundDetails = [];
+    let footprints = [];
     let npcs = [];
     let chests = [];
     let floatingTexts = [];
@@ -871,27 +873,70 @@
     const keys = {};
     const scenery = [];
 
+    // Generate Ground Texture Elements
+    function generateWorldGroundDetails() {
+      groundDetails = [];
+      
+      // 1. Forest Wildflowers & Moss (0..1600, 0..1200)
+      for (let i = 0; i < 90; i++) {
+        groundDetails.push({
+          x: Math.random() * 1550, y: Math.random() * 1150,
+          type: Math.random() > 0.4 ? 'flower' : 'moss',
+          color: ['#facc15', '#f472b6', '#ffffff', '#38bdf8'][Math.floor(Math.random() * 4)],
+          size: 3 + Math.random() * 3
+        });
+      }
+
+      // 2. Desert Pebbles & Sand Ripples (1600..3200, 0..1200)
+      for (let i = 0; i < 75; i++) {
+        groundDetails.push({
+          x: 1650 + Math.random() * 1500, y: Math.random() * 1150,
+          type: Math.random() > 0.5 ? 'sand_ripple' : 'pebble',
+          color: '#b45309',
+          size: 4 + Math.random() * 8
+        });
+      }
+
+      // 3. Frost Glacial Cracks & Ice Tiles (0..1600, 1200..2400)
+      for (let i = 0; i < 70; i++) {
+        groundDetails.push({
+          x: Math.random() * 1550, y: 1250 + Math.random() * 1100,
+          type: 'ice_tile',
+          color: 'rgba(255, 255, 255, 0.25)',
+          size: 8 + Math.random() * 16
+        });
+      }
+
+      // 4. Volcanic Magma Pools & Bedrock Fissures (1600..3200, 1200..2400)
+      for (let i = 0; i < 55; i++) {
+        groundDetails.push({
+          x: 1650 + Math.random() * 1500, y: 1250 + Math.random() * 1100,
+          type: 'magma_pool',
+          color: '#ea580c',
+          size: 14 + Math.random() * 22
+        });
+      }
+    }
+
     function generateWorldScenery() {
       scenery.length = 0;
       ores.length = 0;
       portals.length = 0;
       weatherParticles.length = 0;
+      generateWorldGroundDetails();
 
-      // Weather Particles (Snow in Frost, Embers in Nether, Fireflies in Forest)
+      // Weather Particles
       for (let i = 0; i < 70; i++) {
-        // Snow in Frost (0..1600, 1200..2400)
         weatherParticles.push({
           x: Math.random() * 1600, y: 1200 + Math.random() * 1200,
           vx: (Math.random() - 0.5) * 0.8, vy: 0.8 + Math.random() * 1.4,
           type: 'snow', radius: 1.5 + Math.random() * 2, color: 'rgba(255,255,255,0.75)'
         });
-        // Embers in Nether (1600..3200, 1200..2400)
         weatherParticles.push({
           x: 1600 + Math.random() * 1600, y: 1200 + Math.random() * 1200,
           vx: (Math.random() - 0.5) * 1.2, vy: -(0.8 + Math.random() * 1.6),
           type: 'ember', radius: 1.5 + Math.random() * 2.5, color: '#f97316'
         });
-        // Fireflies in Forest (0..1600, 0..1200)
         weatherParticles.push({
           x: Math.random() * 1600, y: Math.random() * 1200,
           vx: (Math.random() - 0.5) * 0.6, vy: (Math.random() - 0.5) * 0.6,
@@ -934,7 +979,7 @@
     }
 
     function initWorld() {
-      enemies = []; projectiles = []; particles = []; chests = []; npcs = []; lootOrbs = [];
+      enemies = []; projectiles = []; particles = []; chests = []; npcs = []; lootOrbs = []; footprints = [];
       generateWorldScenery();
 
       // NPCs at Citadel
@@ -1415,6 +1460,7 @@
       player.hasMount = false;
       player.isMounted = false;
       player.combo = 0;
+      footprints = [];
       initWorld(); updateHud();
     }
 
@@ -1451,6 +1497,21 @@
       player.isMoving = moveX !== 0 || moveY !== 0;
       if (player.isMoving) {
         player.walkCycle += player.isMounted ? 0.35 : 0.22;
+
+        // Add Dynamic Footprints / Hover Tracks
+        if (globalTicks % 8 === 0) {
+          footprints.push({
+            x: player.x, y: player.y + (player.isMounted ? 10 : 14),
+            isMounted: player.isMounted, life: 60
+          });
+          if (footprints.length > 50) footprints.shift();
+        }
+      }
+
+      // Update Footprints Life
+      for (let i = footprints.length - 1; i >= 0; i--) {
+        footprints[i].life--;
+        if (footprints[i].life <= 0) footprints.splice(i, 1);
       }
 
       if (moveX !== 0 && moveY !== 0) { moveX *= 0.7071; moveY *= 0.7071; }
@@ -1739,70 +1800,162 @@
       ctx.save();
       ctx.translate(-camX, -camY);
 
-      // HD Biome Quadrants
-      // 1. Emerald Forest (Top-Left)
-      const gradForest = ctx.createLinearGradient(0, 0, 1600, 1200);
-      gradForest.addColorStop(0, '#064e3b');
-      gradForest.addColorStop(1, '#065f46');
+      // ============================================
+      // ULTRA HD PROCEDURAL GROUND & TERRAIN ENGINE
+      // ============================================
+
+      // 1. Emerald Forest (Top-Left: 0..1600, 0..1200)
+      const gradForest = ctx.createRadialGradient(800, 600, 100, 800, 600, 900);
+      gradForest.addColorStop(0, '#065f46');
+      gradForest.addColorStop(1, '#022c22');
       ctx.fillStyle = gradForest;
       ctx.fillRect(0, 0, 1600, 1200);
 
-      // 2. Golden Desert (Top-Right)
-      const gradDesert = ctx.createLinearGradient(1600, 0, 3200, 1200);
-      gradDesert.addColorStop(0, '#78350f');
-      gradDesert.addColorStop(1, '#92400e');
+      // 2. Golden Desert (Top-Right: 1600..3200, 0..1200)
+      const gradDesert = ctx.createRadialGradient(2400, 600, 100, 2400, 600, 900);
+      gradDesert.addColorStop(0, '#92400e');
+      gradDesert.addColorStop(1, '#451a03');
       ctx.fillStyle = gradDesert;
       ctx.fillRect(1600, 0, 1600, 1200);
 
-      // 3. Frost Peaks (Bottom-Left)
-      const gradFrost = ctx.createLinearGradient(0, 1200, 1600, 2400);
-      gradFrost.addColorStop(0, '#0c4a6e');
-      gradFrost.addColorStop(1, '#075985');
-      ctx.fillStyle = gradFrost;
-      ctx.fillRect(0, 1200, 1600, 1200);
-
-      // 4. Volcanic Nether (Bottom-Right)
-      const gradVolcano = ctx.createLinearGradient(1600, 1200, 3200, 2400);
-      gradVolcano.addColorStop(0, '#450a0a');
-      gradVolcano.addColorStop(1, '#7f1d1d');
-      ctx.fillStyle = gradVolcano;
-      ctx.fillRect(1600, 1200, 1600, 1200);
-
-      // Animated Lava Cracks in Volcanic Nether
-      ctx.strokeStyle = '#f97316';
-      ctx.lineWidth = 2.5;
-      for (let i = 0; i < 8; i++) {
-        const lx = 1800 + (i * 170);
-        const ly = 1400 + (i * 110);
+      // Desert Sand Dune Ridges
+      ctx.strokeStyle = 'rgba(217, 119, 6, 0.25)';
+      ctx.lineWidth = 14;
+      for (let i = 0; i < 6; i++) {
         ctx.beginPath();
-        ctx.moveTo(lx, ly);
-        ctx.lineTo(lx + 40, ly + 25 + Math.sin(globalTicks * 0.05 + i) * 6);
-        ctx.lineTo(lx + 80, ly + 10);
+        ctx.moveTo(1650, 180 + i * 160);
+        ctx.bezierCurveTo(2000, 120 + i * 160, 2600, 240 + i * 160, 3150, 180 + i * 160);
         ctx.stroke();
       }
 
-      // Cyber Citadel Plaza with Neon Circuit Lines
-      ctx.fillStyle = '#1e293b';
-      ctx.fillRect(1450, 1050, 300, 300);
+      // 3. Frost Peaks (Bottom-Left: 0..1600, 1200..2400)
+      const gradFrost = ctx.createRadialGradient(800, 1800, 100, 800, 1800, 900);
+      gradFrost.addColorStop(0, '#075985');
+      gradFrost.addColorStop(1, '#082f49');
+      ctx.fillStyle = gradFrost;
+      ctx.fillRect(0, 1200, 1600, 1200);
+
+      // 4. Volcanic Nether (Bottom-Right: 1600..3200, 1200..2400)
+      const gradVolcano = ctx.createRadialGradient(2400, 1800, 100, 2400, 1800, 900);
+      gradVolcano.addColorStop(0, '#7f1d1d');
+      gradVolcano.addColorStop(1, '#1c0505');
+      ctx.fillStyle = gradVolcano;
+      ctx.fillRect(1600, 1200, 1600, 1200);
+
+      // ============================================
+      // STONE HIGHWAYS & PATHWAY ROADS
+      // ============================================
+      ctx.fillStyle = 'rgba(51, 65, 85, 0.7)';
+      // Horizontal Road (Left to Right)
+      ctx.fillRect(0, 1165, WORLD.width, 70);
+      // Vertical Road (Top to Bottom)
+      ctx.fillRect(1565, 0, 70, WORLD.height);
+
+      // Cobblestone Edges & Road Markings
+      ctx.strokeStyle = 'rgba(148, 163, 184, 0.3)';
+      ctx.lineWidth = 2;
+      ctx.strokeRect(0, 1165, WORLD.width, 70);
+      ctx.strokeRect(1565, 0, 70, WORLD.height);
+
+      // ============================================
+      // PROCEDURAL GROUND DETAILS & WILDFLOWERS
+      // ============================================
+      for (const gd of groundDetails) {
+        if (gd.type === 'flower') {
+          // 4-petal wildflower
+          ctx.fillStyle = gd.color;
+          ctx.beginPath();
+          ctx.arc(gd.x - 2, gd.y, gd.size * 0.7, 0, Math.PI * 2);
+          ctx.arc(gd.x + 2, gd.y, gd.size * 0.7, 0, Math.PI * 2);
+          ctx.arc(gd.x, gd.y - 2, gd.size * 0.7, 0, Math.PI * 2);
+          ctx.arc(gd.x, gd.y + 2, gd.size * 0.7, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.fillStyle = '#ffffff';
+          ctx.beginPath(); ctx.arc(gd.x, gd.y, gd.size * 0.4, 0, Math.PI * 2); ctx.fill();
+        } else if (gd.type === 'moss') {
+          ctx.fillStyle = 'rgba(16, 185, 129, 0.25)';
+          ctx.beginPath();
+          ctx.ellipse(gd.x, gd.y, gd.size * 2, gd.size, 0, 0, Math.PI * 2);
+          ctx.fill();
+        } else if (gd.type === 'sand_ripple') {
+          ctx.strokeStyle = 'rgba(251, 191, 36, 0.18)';
+          ctx.lineWidth = 2;
+          ctx.beginPath();
+          ctx.arc(gd.x, gd.y, gd.size, 0, Math.PI * 0.8);
+          ctx.stroke();
+        } else if (gd.type === 'pebble') {
+          ctx.fillStyle = '#78350f';
+          ctx.beginPath(); ctx.ellipse(gd.x, gd.y, gd.size, gd.size * 0.6, 0, 0, Math.PI * 2); ctx.fill();
+        } else if (gd.type === 'ice_tile') {
+          ctx.strokeStyle = 'rgba(56, 189, 248, 0.25)';
+          ctx.lineWidth = 1.5;
+          ctx.beginPath();
+          ctx.moveTo(gd.x, gd.y);
+          ctx.lineTo(gd.x + gd.size, gd.y - gd.size * 0.5);
+          ctx.lineTo(gd.x + gd.size * 2, gd.y);
+          ctx.lineTo(gd.x + gd.size, gd.y + gd.size * 0.5);
+          ctx.closePath();
+          ctx.stroke();
+        } else if (gd.type === 'magma_pool') {
+          const pulse = Math.sin(globalTicks * 0.05 + gd.x) * 3;
+          const magGrad = ctx.createRadialGradient(gd.x, gd.y, 2, gd.x, gd.y, gd.size + pulse);
+          magGrad.addColorStop(0, '#fef08a');
+          magGrad.addColorStop(0.4, '#f97316');
+          magGrad.addColorStop(1, 'rgba(127, 29, 29, 0)');
+          ctx.fillStyle = magGrad;
+          ctx.beginPath();
+          ctx.ellipse(gd.x, gd.y, gd.size + pulse, (gd.size + pulse) * 0.6, 0, 0, Math.PI * 2);
+          ctx.fill();
+        }
+      }
+
+      // ============================================
+      // DYNAMIC FOOTPRINTS & TRACKS
+      // ============================================
+      for (const fp of footprints) {
+        ctx.fillStyle = fp.isMounted ? `rgba(251, 191, 36, ${fp.life / 90})` : `rgba(15, 23, 42, ${fp.life / 100})`;
+        ctx.beginPath();
+        ctx.ellipse(fp.x, fp.y, fp.isMounted ? 5 : 3.5, 2, 0, 0, Math.PI * 2);
+        ctx.fill();
+      }
+
+      // ============================================
+      // CYBER CITADEL HIGH-TECH PLAZA (CENTER)
+      // ============================================
+      ctx.fillStyle = '#0f172a';
+      ctx.fillRect(1440, 1040, 320, 320);
       ctx.strokeStyle = '#6366f1';
-      ctx.lineWidth = 3;
-      ctx.strokeRect(1450, 1050, 300, 300);
+      ctx.lineWidth = 3.5;
+      ctx.strokeRect(1440, 1040, 320, 320);
 
-      // Circuit lines
-      ctx.strokeStyle = 'rgba(56, 189, 248, 0.4)';
+      // High-Tech Cyber Circuit Traces
+      ctx.strokeStyle = 'rgba(56, 189, 248, 0.45)';
       ctx.lineWidth = 1.5;
-      ctx.strokeRect(1480, 1080, 240, 240);
+      ctx.strokeRect(1470, 1070, 260, 260);
+      ctx.strokeRect(1510, 1110, 180, 180);
 
-      // Healing Fountain with Radial Glow Shaders
-      const fountainGlow = ctx.createRadialGradient(1600, 1200, 10, 1600, 1200, 60);
-      fountainGlow.addColorStop(0, 'rgba(56, 189, 248, 0.6)');
+      // Runway Corner Neon Beacons
+      const beacons = [
+        { x: 1445, y: 1045 }, { x: 1755, y: 1045 },
+        { x: 1445, y: 1355 }, { x: 1755, y: 1355 }
+      ];
+      for (const b of beacons) {
+        ctx.fillStyle = '#38bdf8';
+        ctx.beginPath(); ctx.arc(b.x, b.y, 4, 0, Math.PI * 2); ctx.fill();
+      }
+
+      // Healing Fountain with Animated Ripple Glow
+      const fountainRipple = Math.sin(globalTicks * 0.08) * 5;
+      const fountainGlow = ctx.createRadialGradient(1600, 1200, 10, 1600, 1200, 65 + fountainRipple);
+      fountainGlow.addColorStop(0, 'rgba(56, 189, 248, 0.7)');
+      fountainGlow.addColorStop(0.7, 'rgba(56, 189, 248, 0.2)');
       fountainGlow.addColorStop(1, 'rgba(56, 189, 248, 0)');
       ctx.fillStyle = fountainGlow;
-      ctx.beginPath(); ctx.arc(1600, 1200, 60, 0, Math.PI * 2); ctx.fill();
+      ctx.beginPath(); ctx.arc(1600, 1200, 65 + fountainRipple, 0, Math.PI * 2); ctx.fill();
 
-      ctx.fillStyle = 'rgba(56, 189, 248, 0.35)';
+      ctx.fillStyle = 'rgba(56, 189, 248, 0.4)';
       ctx.beginPath(); ctx.arc(1600, 1200, 48, 0, Math.PI * 2); ctx.fill();
-      ctx.strokeStyle = '#38bdf8'; ctx.lineWidth = 2; ctx.stroke();
+      ctx.strokeStyle = '#38bdf8'; ctx.lineWidth = 2.5; ctx.stroke();
       ctx.fillStyle = '#fff'; ctx.font = 'bold 10px sans-serif'; ctx.textAlign = 'center';
       ctx.fillText('Healing Fountain', 1600, 1204);
 
@@ -1819,7 +1972,7 @@
       // Draw Scenery
       for (const s of scenery) {
         // Drop shadow for trees and rocks
-        ctx.fillStyle = 'rgba(0, 0, 0, 0.25)';
+        ctx.fillStyle = 'rgba(0, 0, 0, 0.3)';
         ctx.beginPath(); ctx.ellipse(s.x, s.y + s.size * 0.7, s.size * 0.8, s.size * 0.35, 0, 0, Math.PI * 2); ctx.fill();
 
         if (s.type === 'tree') {
@@ -1918,7 +2071,6 @@
           const wingYOffset = Math.sin(en.wingAngle || 0) * 14;
 
           ctx.fillStyle = '#991b1b';
-          // Left Wing
           ctx.beginPath();
           ctx.moveTo(en.x - 20, en.y);
           ctx.lineTo(en.x - 20 - wingSpan, en.y - 30 + wingYOffset);
@@ -1926,7 +2078,6 @@
           ctx.closePath();
           ctx.fill();
 
-          // Right Wing
           ctx.beginPath();
           ctx.moveTo(en.x + 20, en.y);
           ctx.lineTo(en.x + 20 + wingSpan, en.y - 30 + wingYOffset);
@@ -1940,7 +2091,6 @@
         ctx.fillStyle = en.color;
         ctx.beginPath(); ctx.arc(en.x, en.y + bounce, en.radius, 0, Math.PI * 2); ctx.fill();
         
-        // Eyes
         ctx.fillStyle = '#0f172a';
         ctx.beginPath(); ctx.arc(en.x - en.radius * 0.3, en.y + bounce - en.radius * 0.2, 3, 0, Math.PI * 2); ctx.fill();
         ctx.beginPath(); ctx.arc(en.x + en.radius * 0.3, en.y + bounce - en.radius * 0.2, 3, 0, Math.PI * 2); ctx.fill();
@@ -1987,12 +2137,10 @@
       // Dynamic Radial Player Headlamp Lighting & Day/Night Cycle
       const nightIntensity = Math.sin(timeOfDay * Math.PI * 2) * 0.52;
       if (nightIntensity > 0) {
-        // Darkness Overlay
         ctx.save();
         ctx.fillStyle = `rgba(2, 6, 23, ${nightIntensity})`;
         ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-        // Player Torch Light
         const torch = ctx.createRadialGradient(canvas.width / 2, canvas.height / 2, 20, canvas.width / 2, canvas.height / 2, 170);
         torch.addColorStop(0, 'rgba(255, 255, 255, 0.45)');
         torch.addColorStop(1, 'rgba(255, 255, 255, 0)');
@@ -2027,8 +2175,13 @@
       // Draw 4 Biomes
       miniCtx.fillStyle = '#064e3b'; miniCtx.fillRect(0, 0, miniCanvas.width/2, miniCanvas.height/2);
       miniCtx.fillStyle = '#78350f'; miniCtx.fillRect(miniCanvas.width/2, 0, miniCanvas.width/2, miniCanvas.height/2);
-      miniCtx.fillStyle = '#0c4a6e'; miniCtx.fillRect(0, miniCanvas.height/2, miniCanvas.width/2, miniCanvas.height/2);
-      miniCtx.fillStyle = '#450a0a'; miniCtx.fillRect(miniCanvas.width/2, miniCanvas.height/2, miniCanvas.width/2, miniCanvas.height/2);
+      miniCtx.fillStyle = '#0c4a6e'; miniCtx.fillRect(0, 1200 * scaleY, miniCanvas.width/2, miniCanvas.height/2);
+      miniCtx.fillStyle = '#450a0a'; miniCtx.fillRect(miniCanvas.width/2, 1200 * scaleY, miniCanvas.width/2, miniCanvas.height/2);
+
+      // Roads on Minimap
+      miniCtx.fillStyle = '#475569';
+      miniCtx.fillRect(0, 1165 * scaleY, miniCanvas.width, 70 * scaleY);
+      miniCtx.fillRect(1565 * scaleX, 0, 70 * scaleX, miniCanvas.height);
 
       // Draw Portals
       miniCtx.fillStyle = '#c084fc';

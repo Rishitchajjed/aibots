@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -488,7 +488,7 @@
               <div style="display: flex; align-items: center; gap: 6px;">
                 <span class="inv-label-tag" style="margin: 0;">Currency:</span>
                 <select class="inv-input-clean" id="invCurrency" style="width: 130px; font-weight: 700; text-align: right;" onchange="calculateTotals()">
-                  <option value="₹">₹ INR (Indian Rupee)</option>
+                  <option value="&#8377;">&#8377; INR (Indian Rupee)</option>
                   <option value="$">$ USD (US Dollar)</option>
                   <option value="€">€ EUR (Euro)</option>
                   <option value="£">£ GBP (British Pound)</option>
@@ -553,7 +553,7 @@
               </div>
               <div style="font-size: 0.78rem; line-height: 1.35; color: #475569;">
                 <strong style="color: #0f172a; display: block; font-size: 0.82rem;"><i class="fas fa-qrcode" style="color:var(--inv-accent);"></i> Instant UPI Scan & Pay</strong>
-                <span>Scan with GPay, PhonePe, or Paytm to pay <strong id="qrTotalBadge">₹0.00</strong></span>
+                <span>Scan with GPay, PhonePe, or Paytm to pay <strong id="qrTotalBadge">&#8377;0.00</strong></span>
               </div>
             </div>
 
@@ -566,7 +566,7 @@
           <!-- Right: Calculated Totals Breakdown -->
           <div>
             <div class="totals-card">
-              <div class="tot-line"><span>Subtotal:</span><strong id="subTotalDisplay" style="color:#0f172a;">₹0.00</strong></div>
+              <div class="tot-line"><span>Subtotal:</span><strong id="subTotalDisplay" style="color:#0f172a;">&#8377;0.00</strong></div>
               
               <div class="tot-line">
                 <span>Discount (%):</span>
@@ -589,13 +589,13 @@
                 <input type="number" id="customTaxPercent" value="18" min="0" max="100" class="inv-input-clean" style="width: 55px; padding: 2px 4px; text-align: right; border: 1px solid #cbd5e1; border-radius: 4px; background:#fff;" oninput="calculateTotals()">
               </div>
 
-              <div id="cgstRow" class="tot-line" style="display: none;"><span>CGST (9%):</span><span id="cgstDisplay">₹0.00</span></div>
-              <div id="sgstRow" class="tot-line" style="display: none;"><span>SGST (9%):</span><span id="sgstDisplay">₹0.00</span></div>
-              <div id="singleTaxRow" class="tot-line" style="display: none;"><span>Tax Amount:</span><span id="taxDisplay">₹0.00</span></div>
+              <div id="cgstRow" class="tot-line" style="display: none;"><span>CGST (9%):</span><span id="cgstDisplay">&#8377;0.00</span></div>
+              <div id="sgstRow" class="tot-line" style="display: none;"><span>SGST (9%):</span><span id="sgstDisplay">&#8377;0.00</span></div>
+              <div id="singleTaxRow" class="tot-line" style="display: none;"><span>Tax Amount:</span><span id="taxDisplay">&#8377;0.00</span></div>
 
               <div class="tot-line tot-grand-line">
                 <span>Grand Total:</span>
-                <span id="grandTotalDisplay">₹0.00</span>
+                <span id="grandTotalDisplay">&#8377;0.00</span>
               </div>
             </div>
 

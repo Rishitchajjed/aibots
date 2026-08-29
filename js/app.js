@@ -732,18 +732,18 @@ window.openDonationModal = function() {
         <!-- Custom Amount Input -->
         <div style="margin: 8px 0 6px;">
           <div style="display: flex; align-items: center; justify-content: center; gap: 6px;">
-            <span style="font-size: 1.2rem; font-weight: 800; color: var(--primary);">₹</span>
+            <span style="font-size: 1.2rem; font-weight: 800; color: var(--primary);">&#8377;</span>
             <input type="number" id="customDonateInput" class="form-control" value="50" min="1" step="any" placeholder="Any Amount" style="max-width: 130px; font-size: 1.15rem; font-weight: 800; text-align: center; font-family: monospace; padding: 6px;" oninput="handleCustomDonationInput(this.value)">
           </div>
         </div>
 
         <!-- Quick Amount Chips -->
         <div class="donation-amount-chips" style="margin: 6px 0 10px;">
-          <button class="donation-chip" onclick="setDonationAmount(20, this)">₹20</button>
-          <button class="donation-chip active" onclick="setDonationAmount(50, this)">₹50</button>
-          <button class="donation-chip" onclick="setDonationAmount(100, this)">₹100</button>
-          <button class="donation-chip" onclick="setDonationAmount(250, this)">₹250</button>
-          <button class="donation-chip" onclick="setDonationAmount(500, this)">₹500</button>
+          <button class="donation-chip" onclick="setDonationAmount(20, this)">&#8377;20</button>
+          <button class="donation-chip active" onclick="setDonationAmount(50, this)">&#8377;50</button>
+          <button class="donation-chip" onclick="setDonationAmount(100, this)">&#8377;100</button>
+          <button class="donation-chip" onclick="setDonationAmount(250, this)">&#8377;250</button>
+          <button class="donation-chip" onclick="setDonationAmount(500, this)">&#8377;500</button>
         </div>
 
         <!-- Dynamic QR Code -->

@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -6,24 +6,30 @@
   <meta name="google-site-verification" content="ndzq-U-NLijgza_QqgQdcc2U3oMRoud_BT2ZZiwFREM">
   <meta name="google-site-verification" content="-Yb6Nx74gbZ3wRN5uP-Y8KKwDWlt1DPpxs4nA3PkE6M">
   <meta name="robots" content="index, follow">
-  <title>Realm of Bots: Open World RPG — AI Bots</title>
-  <meta name="description" content="Play Realm of Bots, an open-world 2D RPG adventure in your browser. Explore realms, complete quests, fight monsters, level up, and collect treasure!">
-  <meta name="keywords" content="open world game, browser rpg, free online game, 2d open world, realm of bots, ai bots game">
+  <title>Realm of Bots: Open World RPG 2.0 — AI Bots</title>
+  <meta name="description" content="Play Realm of Bots 2.0, a massive open-world 2D RPG browser game with 4 biomes, boss battles, shop system, day/night cycle, class spells, and quests!">
+  <meta name="keywords" content="open world game, browser rpg, free online game, 2d open world rpg, realm of bots, boss fight, browser game ai bots">
+  <meta name="author" content="Rishit Chajjed">
   <link rel="icon" href="logo.png" type="image/png">
   <link rel="canonical" href="https://www.aibots.co.in/game.html">
-  <!-- Google Analytics -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-2L87FMQS3W"></script>
-  <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-    gtag('config', 'G-2L87FMQS3W');
-  </script>
+
+  <!-- Open Graph / Social Cards -->
+  <meta property="og:type" content="game">
+  <meta property="og:url" content="https://www.aibots.co.in/game.html">
+  <meta property="og:title" content="Realm of Bots: Open World RPG 2.0 — AI Bots">
+  <meta property="og:description" content="Explore a massive open world with 4 biomes, day/night cycle, boss battles, shopkeeper, classes, and spells!">
+  <meta property="og:image" content="https://www.aibots.co.in/logo.png">
+
+  <!-- High-Priority Resource Preconnects -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link rel="stylesheet" href="css/theme.css">
+
   <style>
     .game-page-container {
-      max-width: 1100px;
+      max-width: 1200px;
       margin: 20px auto 60px;
       padding: 0 16px;
     }
@@ -39,7 +45,7 @@
       font-size: 1.8rem;
       font-weight: 800;
       margin: 0;
-      background: linear-gradient(135deg, #38bdf8, #818cf8, #c084fc);
+      background: linear-gradient(135deg, #38bdf8, #818cf8, #ec4899);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       display: flex;
@@ -50,12 +56,14 @@
       position: relative;
       width: 100%;
       aspect-ratio: 16 / 9;
-      max-height: 70vh;
+      max-height: 72vh;
       background: #020617;
-      border-radius: var(--radius-lg);
+      border-radius: var(--radius-xl);
       overflow: hidden;
-      border: 2px solid rgba(129, 140, 248, 0.3);
-      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8), 0 0 30px rgba(99, 102, 241, 0.2);
+      border: 2px solid rgba(129, 140, 248, 0.4);
+      box-shadow: 0 12px 48px rgba(0, 0, 0, 0.9), 0 0 35px rgba(99, 102, 241, 0.25);
+      user-select: none;
+      touch-action: none;
     }
     #gameCanvas {
       width: 100%;
@@ -63,7 +71,9 @@
       display: block;
       image-rendering: pixelated;
     }
-    .game-hud {
+
+    /* Modern Glassmorphic HUD */
+    .game-hud-top-left {
       position: absolute;
       top: 12px;
       left: 12px;
@@ -71,46 +81,54 @@
       flex-direction: column;
       gap: 8px;
       pointer-events: none;
-      z-index: 10;
+      z-index: 15;
     }
     .hud-stat-bar {
       display: flex;
       align-items: center;
       gap: 8px;
       background: rgba(15, 23, 42, 0.85);
-      backdrop-filter: blur(8px);
+      backdrop-filter: blur(10px);
       padding: 5px 12px;
       border-radius: 999px;
-      border: 1px solid rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.15);
       font-size: 0.78rem;
       font-weight: 700;
+      color: #f8fafc;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.5);
     }
     .bar-fill-wrap {
       width: 110px;
-      height: 9px;
-      background: rgba(0,0,0,0.6);
+      height: 10px;
+      background: rgba(0,0,0,0.65);
       border-radius: 6px;
       overflow: hidden;
       border: 1px solid rgba(255,255,255,0.15);
     }
-    .bar-fill { height: 100%; transition: width 0.2s ease; }
+    .bar-fill { height: 100%; transition: width 0.15s ease-out; }
     .bar-hp { background: linear-gradient(90deg, #ef4444, #f87171); }
     .bar-mp { background: linear-gradient(90deg, #3b82f6, #60a5fa); }
     .bar-xp { background: linear-gradient(90deg, #eab308, #facc15); }
 
-    .hud-top-right {
+    .game-hud-top-right {
       position: absolute;
       top: 12px;
       right: 12px;
       display: flex;
-      align-items: center;
+      flex-direction: column;
+      align-items: flex-end;
       gap: 8px;
-      z-index: 10;
+      z-index: 15;
+      pointer-events: auto;
+    }
+    .hud-badge-row {
+      display: flex;
+      gap: 8px;
     }
     .hud-badge {
       background: rgba(15, 23, 42, 0.85);
-      backdrop-filter: blur(8px);
-      padding: 5px 12px;
+      backdrop-filter: blur(10px);
+      padding: 6px 12px;
       border-radius: 999px;
       border: 1px solid rgba(255, 255, 255, 0.15);
       font-size: 0.82rem;
@@ -119,28 +137,121 @@
       display: flex;
       align-items: center;
       gap: 6px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.5);
     }
+    .minimap-wrapper {
+      width: 105px;
+      height: 105px;
+      border-radius: 50%;
+      border: 2px solid rgba(129, 140, 248, 0.6);
+      background: rgba(15, 23, 42, 0.9);
+      overflow: hidden;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.6);
+      position: relative;
+    }
+    #minimapCanvas {
+      width: 100%;
+      height: 100%;
+    }
+
     .quest-tracker {
       position: absolute;
-      top: 110px;
+      top: 128px;
       left: 12px;
-      background: rgba(15, 23, 42, 0.85);
-      backdrop-filter: blur(8px);
-      padding: 8px 12px;
-      border-radius: 10px;
+      background: rgba(15, 23, 42, 0.88);
+      backdrop-filter: blur(10px);
+      padding: 9px 14px;
+      border-radius: var(--radius-md);
       border: 1px solid rgba(168, 85, 247, 0.4);
-      max-width: 220px;
-      font-size: 0.75rem;
-      z-index: 10;
+      max-width: 230px;
+      font-size: 0.76rem;
+      z-index: 15;
       pointer-events: none;
+      box-shadow: 0 4px 14px rgba(0,0,0,0.5);
     }
-    .quest-title { font-weight: 800; color: #c084fc; margin-bottom: 3px; display: flex; align-items: center; gap: 5px; }
+    .quest-title { font-weight: 800; color: #c084fc; margin-bottom: 4px; display: flex; align-items: center; gap: 6px; }
 
-    /* Mobile Controls Overlay */
+    /* Boss Banner */
+    .boss-health-bar {
+      position: absolute;
+      top: 16px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: min(90%, 420px);
+      background: rgba(15, 23, 42, 0.92);
+      border: 2px solid #ef4444;
+      border-radius: 999px;
+      padding: 6px 14px;
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      z-index: 20;
+      box-shadow: 0 0 25px rgba(239, 68, 68, 0.4);
+    }
+    .boss-name { font-size: 0.85rem; font-weight: 800; color: #f87171; text-transform: uppercase; letter-spacing: 1px; }
+
+    /* Bottom Hotbar */
+    .hotbar-container {
+      position: absolute;
+      bottom: 12px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 8px;
+      background: rgba(15, 23, 42, 0.88);
+      backdrop-filter: blur(10px);
+      padding: 6px 10px;
+      border-radius: var(--radius-lg);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      z-index: 15;
+      pointer-events: auto;
+    }
+    .hotbar-slot {
+      width: 42px;
+      height: 42px;
+      border-radius: var(--radius-md);
+      background: rgba(30, 41, 59, 0.8);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      font-size: 1rem;
+      position: relative;
+      cursor: pointer;
+      transition: var(--transition);
+      user-select: none;
+    }
+    .hotbar-slot:hover, .hotbar-slot:active {
+      border-color: #38bdf8;
+      transform: translateY(-2px);
+      background: rgba(56, 189, 248, 0.2);
+    }
+    .hotbar-key {
+      position: absolute;
+      bottom: 2px;
+      right: 4px;
+      font-size: 0.65rem;
+      color: rgba(255,255,255,0.6);
+      font-family: var(--font-mono);
+      font-weight: 700;
+    }
+    .hotbar-count {
+      position: absolute;
+      top: 2px;
+      left: 4px;
+      font-size: 0.7rem;
+      color: #fbbf24;
+      font-weight: 800;
+    }
+
+    /* Mobile Controls */
     .mobile-controls {
       display: none;
       position: absolute;
-      bottom: 14px;
+      bottom: 12px;
       left: 0;
       right: 0;
       padding: 0 16px;
@@ -152,17 +263,19 @@
     @media (max-width: 900px) {
       .mobile-controls { display: flex; }
       .game-canvas-wrapper { aspect-ratio: 4 / 3; }
+      .hotbar-container { bottom: 85px; }
+      .quest-tracker { display: none; }
     }
     .d-pad { width: 120px; height: 120px; position: relative; pointer-events: auto; }
     .d-btn {
       position: absolute;
-      width: 38px;
-      height: 38px;
+      width: 40px;
+      height: 40px;
       background: rgba(30, 41, 59, 0.85);
       border: 1px solid rgba(255, 255, 255, 0.2);
-      border-radius: 8px;
+      border-radius: 10px;
       color: white;
-      font-size: 1rem;
+      font-size: 1.1rem;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -170,14 +283,14 @@
       touch-action: manipulation;
     }
     .d-btn:active { background: #6366f1; }
-    .d-up { top: 0; left: 41px; }
-    .d-down { bottom: 0; left: 41px; }
-    .d-left { top: 41px; left: 0; }
-    .d-right { top: 41px; right: 0; }
-    .action-buttons { display: flex; gap: 10px; pointer-events: auto; }
+    .d-up { top: 0; left: 40px; }
+    .d-down { bottom: 0; left: 40px; }
+    .d-left { top: 40px; left: 0; }
+    .d-right { top: 40px; right: 0; }
+    .action-buttons { display: flex; gap: 8px; pointer-events: auto; flex-wrap: wrap; max-width: 130px; justify-content: flex-end; }
     .act-btn {
-      width: 50px;
-      height: 50px;
+      width: 48px;
+      height: 48px;
       border-radius: 50%;
       background: rgba(30, 41, 59, 0.85);
       border: 2px solid rgba(255, 255, 255, 0.2);
@@ -188,12 +301,38 @@
       justify-content: center;
       user-select: none;
       touch-action: manipulation;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+      box-shadow: 0 4px 14px rgba(0,0,0,0.5);
     }
-    .act-btn:active { transform: scale(0.9); }
+    .act-btn:active { transform: scale(0.92); }
     .act-attack { background: rgba(239, 68, 68, 0.85); border-color: #f87171; }
     .act-magic { background: rgba(59, 130, 246, 0.85); border-color: #60a5fa; }
+    .act-dash { background: rgba(16, 185, 129, 0.85); border-color: #34d399; }
     .act-interact { background: rgba(168, 85, 247, 0.85); border-color: #c084fc; }
+
+    /* Shop Modal & Dialogs */
+    .shop-modal-card {
+      max-width: 600px;
+    }
+    .shop-item-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 12px;
+      margin: 16px 0;
+    }
+    .shop-item {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      text-align: center;
+    }
+    .shop-item i { font-size: 1.8rem; margin-bottom: 4px; }
+    .shop-item-name { font-size: 0.85rem; font-weight: 700; color: var(--text-primary); }
+    .shop-item-desc { font-size: 0.75rem; color: var(--text-secondary); line-height: 1.3; }
 
     .game-info-grid {
       display: grid;
@@ -204,8 +343,9 @@
     .info-card {
       background: var(--bg-secondary);
       border: 1px solid var(--border-color);
-      border-radius: var(--radius-lg);
-      padding: 18px;
+      border-radius: var(--radius-xl);
+      padding: 20px;
+      box-shadow: var(--shadow-sm);
     }
     .info-card h4 {
       margin: 0 0 12px;
@@ -221,7 +361,7 @@
       border: 1px solid rgba(255,255,255,0.18);
       border-radius: 6px;
       padding: 2px 7px;
-      font-family: monospace;
+      font-family: var(--font-mono);
       font-size: 0.8rem;
       font-weight: 700;
       color: #e2e8f0;
@@ -237,9 +377,9 @@
     <div class="app-container" style="width: 100%;">
       <div class="nav-wrapper">
         <a href="index.html" class="brand-link">
-          <img src="logo.png" alt="AI Bots Logo" class="brand-logo-img">
+          <img src="logo.png" alt="AI Bots Logo" class="brand-logo-img" width="32" height="32" style="width: 32px; height: 32px; object-fit: contain; aspect-ratio: 1/1;">
           <span>AI Bots</span>
-          <span class="brand-badge">Mini Game</span>
+          <span class="brand-badge">RPG Studio 2.0</span>
         </a>
 
         <div class="nav-actions">
@@ -253,12 +393,13 @@
   <main class="app-container game-page-container">
     <div class="game-header">
       <div>
-        <h1 class="game-title"><i class="fas fa-gamepad" style="color: #818cf8;"></i> Realm of Bots</h1>
+        <h1 class="game-title"><i class="fas fa-gamepad" style="color: #818cf8;"></i> Realm of Bots 2.0</h1>
         <p style="margin: 4px 0 0; color: var(--text-secondary); font-size: 0.9rem;">
-          Explore the open wilderness, defeat monsters, complete quests, and level up!
+          Explore 4 boundless biomes, defeat monsters, slay world bosses, buy epic gear, and complete legendary quests!
         </p>
       </div>
-      <div style="display: flex; gap: 8px;">
+      <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+        <button class="btn btn-secondary btn-sm" onclick="openShopModal()"><i class="fas fa-store"></i> Shop</button>
         <button class="btn btn-secondary btn-sm" onclick="toggleMute()" id="muteBtn"><i class="fas fa-volume-up"></i> Sound</button>
         <button class="btn btn-secondary btn-sm" onclick="restartGame()"><i class="fas fa-rotate-right"></i> Reset</button>
       </div>
@@ -268,33 +409,70 @@
     <div class="game-canvas-wrapper" id="canvasWrapper">
       <canvas id="gameCanvas" width="960" height="540"></canvas>
 
-      <!-- Game HUD -->
-      <div class="game-hud">
+      <!-- Boss Banner -->
+      <div class="boss-health-bar" id="bossBar">
+        <div class="boss-name" id="bossName">Mecha Dragon Titan</div>
+        <div class="bar-fill-wrap" style="width: 100%; height: 12px;">
+          <div class="bar-fill bar-hp" id="bossHpFill" style="width: 100%;"></div>
+        </div>
+      </div>
+
+      <!-- Game HUD (Top-Left) -->
+      <div class="game-hud-top-left">
         <div class="hud-stat-bar">
           <span style="color: #ef4444; width: 18px;"><i class="fas fa-heart"></i></span>
           <div class="bar-fill-wrap"><div class="bar-fill bar-hp" id="hpFill" style="width: 100%;"></div></div>
-          <span id="hpText" style="min-width: 45px;">100/100</span>
+          <span id="hpText" style="min-width: 50px;">100/100</span>
         </div>
         <div class="hud-stat-bar">
           <span style="color: #3b82f6; width: 18px;"><i class="fas fa-bolt"></i></span>
           <div class="bar-fill-wrap"><div class="bar-fill bar-mp" id="mpFill" style="width: 100%;"></div></div>
-          <span id="mpText" style="min-width: 45px;">50/50</span>
+          <span id="mpText" style="min-width: 50px;">50/50</span>
         </div>
         <div class="hud-stat-bar">
           <span style="color: #eab308; width: 18px;"><i class="fas fa-star"></i></span>
           <div class="bar-fill-wrap"><div class="bar-fill bar-xp" id="xpFill" style="width: 0%;"></div></div>
-          <span id="lvlText" style="min-width: 45px;">Lv. 1</span>
+          <span id="lvlText" style="min-width: 50px;">Lv. 1</span>
         </div>
       </div>
 
-      <div class="hud-top-right">
-        <div class="hud-badge"><i class="fas fa-coins"></i> <span id="coinText">0</span></div>
-        <div class="hud-badge" style="color: #38bdf8;"><i class="fas fa-shield-halved"></i> Score: <span id="scoreText">0</span></div>
+      <!-- Minimap & Coins (Top-Right) -->
+      <div class="game-hud-top-right">
+        <div class="minimap-wrapper">
+          <canvas id="minimapCanvas" width="105" height="105"></canvas>
+        </div>
+        <div class="hud-badge-row">
+          <div class="hud-badge"><i class="fas fa-coins"></i> <span id="coinText">0</span></div>
+          <div class="hud-badge" style="color: #38bdf8;"><i class="fas fa-trophy"></i> <span id="scoreText">0</span></div>
+        </div>
       </div>
 
+      <!-- Active Quest Tracker -->
       <div class="quest-tracker" id="questTracker">
         <div class="quest-title"><i class="fas fa-scroll"></i> Active Quest</div>
-        <div id="questDesc" style="color: #e2e8f0; line-height: 1.4;">Defeat 3 Wild Slimes (0/3)</div>
+        <div id="questDesc" style="color: #e2e8f0; line-height: 1.4;">Defeat 3 Slimes in the Forest (0/3)</div>
+      </div>
+
+      <!-- Bottom Hotbar -->
+      <div class="hotbar-container">
+        <div class="hotbar-slot" onclick="usePotion('hp')" title="Health Potion (+50 HP)">
+          <i class="fas fa-flask" style="color: #ef4444;"></i>
+          <span class="hotbar-count" id="hpPotCount">2</span>
+          <span class="hotbar-key">H/1</span>
+        </div>
+        <div class="hotbar-slot" onclick="usePotion('mp')" title="Mana Elixir (+50 MP)">
+          <i class="fas fa-flask" style="color: #3b82f6;"></i>
+          <span class="hotbar-count" id="mpPotCount">2</span>
+          <span class="hotbar-key">M/2</span>
+        </div>
+        <div class="hotbar-slot" onclick="performDash()" title="Sprint / Dash Roll">
+          <i class="fas fa-wind" style="color: #34d399;"></i>
+          <span class="hotbar-key">Shift</span>
+        </div>
+        <div class="hotbar-slot" onclick="castUltimate()" title="Thunderstorm Ult (50 MP)">
+          <i class="fas fa-bolt-lightning" style="color: #fbbf24;"></i>
+          <span class="hotbar-key">Q/3</span>
+        </div>
       </div>
 
       <!-- Mobile Touch Controls -->
@@ -307,8 +485,52 @@
         </div>
         <div class="action-buttons">
           <div class="act-btn act-magic" id="btnMagic" title="Fireball"><i class="fas fa-fire"></i></div>
-          <div class="act-btn act-attack" id="btnAttack" title="Sword Attack"><i class="fas fa-hand-fist"></i></div>
-          <div class="act-btn act-interact" id="btnInteract" title="Interact"><i class="fas fa-comment"></i></div>
+          <div class="act-btn act-attack" id="btnAttack" title="Sword Slash"><i class="fas fa-hand-fist"></i></div>
+          <div class="act-btn act-dash" id="btnDash" title="Dash Roll"><i class="fas fa-wind"></i></div>
+          <div class="act-btn act-interact" id="btnInteract" title="Interact / Talk"><i class="fas fa-comment"></i></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Shop Modal -->
+    <div class="modal-backdrop" id="shopModal">
+      <div class="modal-card shop-modal-card">
+        <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); padding-bottom: 12px;">
+          <h3 style="margin: 0; font-size: 1.2rem; color: #fbbf24;">
+            <i class="fas fa-store"></i> Cyber Realm Armory & Shop
+          </h3>
+          <button onclick="closeModal('shopModal')" class="btn btn-secondary btn-sm">✕ Close</button>
+        </div>
+
+        <div style="margin: 12px 0; font-weight: 700; color: var(--text-secondary); font-size: 0.9rem;">
+          Your Gold: <span id="shopGoldText" style="color: #fbbf24;">0</span> <i class="fas fa-coins"></i>
+        </div>
+
+        <div class="shop-item-grid">
+          <div class="shop-item">
+            <i class="fas fa-flask" style="color: #ef4444;"></i>
+            <div class="shop-item-name">Health Potion</div>
+            <div class="shop-item-desc">Restores 50 HP instantly.</div>
+            <button class="btn btn-primary btn-sm" onclick="buyItem('hpPot', 20)">Buy (20 Gold)</button>
+          </div>
+          <div class="shop-item">
+            <i class="fas fa-flask" style="color: #3b82f6;"></i>
+            <div class="shop-item-name">Mana Elixir</div>
+            <div class="shop-item-desc">Restores 50 MP instantly.</div>
+            <button class="btn btn-primary btn-sm" onclick="buyItem('mpPot', 20)">Buy (20 Gold)</button>
+          </div>
+          <div class="shop-item">
+            <i class="fas fa-wand-magic-sparkles" style="color: #c084fc;"></i>
+            <div class="shop-item-name">Laser Blade</div>
+            <div class="shop-item-desc">+15 Sword Damage boost.</div>
+            <button class="btn btn-primary btn-sm" id="buySwordBtn" onclick="buyItem('sword', 100)">Buy (100 Gold)</button>
+          </div>
+          <div class="shop-item">
+            <i class="fas fa-shield-halved" style="color: #38bdf8;"></i>
+            <div class="shop-item-name">Aegis Shield</div>
+            <div class="shop-item-desc">+50 Max HP & Armor.</div>
+            <button class="btn btn-primary btn-sm" id="buyArmorBtn" onclick="buyItem('armor', 150)">Buy (150 Gold)</button>
+          </div>
         </div>
       </div>
     </div>
@@ -316,28 +538,41 @@
     <!-- Controls Guide & Features -->
     <div class="game-info-grid">
       <div class="info-card">
-        <h4><i class="fas fa-keyboard"></i> Desktop Controls</h4>
+        <h4><i class="fas fa-keyboard"></i> Desktop Controls & Abilities</h4>
         <div style="font-size: 0.85rem; color: var(--text-secondary); line-height: 1.8;">
-          <div><span class="key-badge">W</span> <span class="key-badge">A</span> <span class="key-badge">S</span> <span class="key-badge">D</span> or <span class="key-badge">Arrow Keys</span>: Move Hero</div>
-          <div><span class="key-badge">Space</span> or <span class="key-badge">J</span>: Sword Slash Attack</div>
-          <div><span class="key-badge">K</span> or <span class="key-badge">F</span>: Cast Magic Fireball (Cost 10 MP)</div>
-          <div><span class="key-badge">E</span>: Talk to NPCs / Open Treasure Chests</div>
+          <div><span class="key-badge">W</span> <span class="key-badge">A</span> <span class="key-badge">S</span> <span class="key-badge">D</span> / <span class="key-badge">Arrows</span>: Move Player</div>
+          <div><span class="key-badge">Space</span> / <span class="key-badge">J</span>: Sword Slash Attack</div>
+          <div><span class="key-badge">K</span> / <span class="key-badge">F</span>: Fireball Spell (10 MP)</div>
+          <div><span class="key-badge">Q</span> / <span class="key-badge">3</span>: Thunderstorm Ultimate (50 MP)</div>
+          <div><span class="key-badge">Shift</span>: Dash / Dodge Roll (with I-Frames)</div>
+          <div><span class="key-badge">E</span>: Talk to NPCs / Open Chests / Shop</div>
+          <div><span class="key-badge">1/H</span> & <span class="key-badge">2/M</span>: Use Health / Mana Potions</div>
         </div>
       </div>
 
       <div class="info-card">
-        <h4><i class="fas fa-map-location-dot"></i> Open World Features</h4>
+        <h4><i class="fas fa-map-location-dot"></i> Open World Biomes & Bosses</h4>
         <div style="font-size: 0.85rem; color: var(--text-secondary); line-height: 1.7;">
-          <div>🌲 <strong>4 Biomes:</strong> Forest, Desert, Ruins, and Crystal Mines</div>
-          <div>⚔️ <strong>Monsters:</strong> Slimes, Forest Goblins, and Dark Sorcerers</div>
-          <div>📜 <strong>Quests & Levels:</strong> Earn XP, increase attack power & max health</div>
-          <div>💾 <strong>100% Free:</strong> Runs purely in your web browser</div>
+          <div>🌲 <strong>Emerald Forest (Top-Left):</strong> Slimes, Goblins & Ancient Trees</div>
+          <div>🏜️ <strong>Golden Desert (Top-Right):</strong> Sand Scorpions & Pyramids</div>
+          <div>❄️ <strong>Frost Peaks (Bottom-Left):</strong> Ice Golems & Snowstorms</div>
+          <div>🌋 <strong>Volcanic Crater (Bottom-Right):</strong> Mecha Dragon World Boss!</div>
+          <div>🏛️ <strong>Cyber Citadel (Center):</strong> Shopkeeper, Quest Master & Safe Zone</div>
         </div>
       </div>
     </div>
   </main>
 
+  <footer class="app-footer">
+    <div class="app-container">
+      <p class="footer-text">&copy; 2026 AI Bots. All rights reserved.</p>
+      <p class="footer-credits">Website designed & engineered by <strong>Rishit Chajjed</strong>.</p>
+    </div>
+  </footer>
+
+  <script src="js/app.min.js"></script>
   <script>
+    // Audio Synthesizer Engine
     const AudioEngine = {
       ctx: null, muted: false,
       init() {
@@ -363,9 +598,12 @@
       },
       sword() { this.playTone(220, 'sawtooth', 0.1, 0.15); setTimeout(() => this.playTone(440, 'triangle', 0.1, 0.1), 40); },
       magic() { this.playTone(587, 'sine', 0.25, 0.2); setTimeout(() => this.playTone(880, 'sine', 0.2, 0.15), 60); },
-      coin() { this.playTone(987, 'sine', 0.1, 0.15); setTimeout(() => this.playTone(1318, 'sine', 0.2, 0.15), 80); },
-      hit() { this.playTone(110, 'square', 0.15, 0.2); },
-      levelUp() { [523, 659, 783, 1046].forEach((f, i) => { setTimeout(() => this.playTone(f, 'triangle', 0.2, 0.2), i * 90); }); }
+      thunder() { [150, 110, 80, 50].forEach((f, i) => { setTimeout(() => this.playTone(f, 'sawtooth', 0.3, 0.25), i * 60); }); },
+      dash() { this.playTone(300, 'triangle', 0.12, 0.15); setTimeout(() => this.playTone(600, 'sine', 0.1, 0.1), 30); },
+      coin() { this.playTone(987, 'sine', 0.1, 0.15); setTimeout(() => this.playTone(1318, 'sine', 0.2, 0.15), 70); },
+      hit() { this.playTone(110, 'square', 0.12, 0.2); },
+      potion() { this.playTone(440, 'sine', 0.15, 0.15); setTimeout(() => this.playTone(660, 'sine', 0.15, 0.15), 80); },
+      levelUp() { [523, 659, 783, 1046, 1318].forEach((f, i) => { setTimeout(() => this.playTone(f, 'triangle', 0.22, 0.2), i * 80); }); }
     };
 
     function toggleMute() {
@@ -376,14 +614,20 @@
 
     const canvas = document.getElementById('gameCanvas');
     const ctx = canvas.getContext('2d');
+    const miniCanvas = document.getElementById('minimapCanvas');
+    const miniCtx = miniCanvas.getContext('2d');
 
-    const WORLD = { width: 2400, height: 1800 };
+    const WORLD = { width: 3200, height: 2400 };
+
+    // Player State
     let player = {
-      x: 1200, y: 900, vx: 0, vy: 0, speed: 4, radius: 18,
-      hp: 100, maxHp: 100, mp: 50, maxMp: 50,
-      lvl: 1, xp: 0, nextXp: 100, coins: 0, score: 0,
+      x: 1600, y: 1200, speed: 4.5, radius: 18,
+      hp: 100, maxHp: 100, mp: 60, maxMp: 60,
+      lvl: 1, xp: 0, nextXp: 100, coins: 50, score: 0,
+      potions: { hp: 2, mp: 2 },
+      equipment: { swordDmgBonus: 0, hasArmor: false },
       facing: 'down', attacking: false, attackTimer: 0,
-      magicTimer: 0, invulnerable: 0
+      invulnerable: 0, dashTimer: 0, dashCooldown: 0
     };
 
     let enemies = [];
@@ -393,59 +637,100 @@
     let chests = [];
     let floatingTexts = [];
     let dialog = null;
+    let timeOfDay = 0; // 0 to 1 for day/night cycle
+    let screenShake = 0;
 
     let quest = {
       id: 1, target: 'slime', needed: 3, current: 0,
-      desc: 'Defeat 3 Wild Slimes', rewardCoins: 50, rewardXp: 80
+      desc: 'Defeat 3 Forest Slimes', rewardCoins: 50, rewardXp: 80
     };
 
     const keys = {};
-    const trees = [];
-    for (let i = 0; i < 80; i++) {
-      trees.push({
-        x: Math.random() * WORLD.width,
-        y: Math.random() * WORLD.height,
-        size: 24 + Math.random() * 16
-      });
+
+    // Generate Biome World Elements
+    const scenery = [];
+    function generateWorldScenery() {
+      scenery.length = 0;
+      // Forest (Top-Left 0..1600, 0..1200)
+      for (let i = 0; i < 45; i++) {
+        scenery.push({ x: Math.random() * 1500, y: Math.random() * 1100, type: 'tree', size: 24 + Math.random() * 14 });
+      }
+      // Desert (Top-Right 1600..3200, 0..1200)
+      for (let i = 0; i < 30; i++) {
+        scenery.push({ x: 1650 + Math.random() * 1500, y: Math.random() * 1100, type: 'cactus', size: 18 + Math.random() * 8 });
+      }
+      // Frost (Bottom-Left 0..1600, 1200..2400)
+      for (let i = 0; i < 35; i++) {
+        scenery.push({ x: Math.random() * 1500, y: 1250 + Math.random() * 1100, type: 'crystal', size: 16 + Math.random() * 12 });
+      }
+      // Volcanic (Bottom-Right 1600..3200, 1200..2400)
+      for (let i = 0; i < 30; i++) {
+        scenery.push({ x: 1650 + Math.random() * 1500, y: 1250 + Math.random() * 1100, type: 'volcano_rock', size: 20 + Math.random() * 15 });
+      }
     }
 
     function initWorld() {
       enemies = []; projectiles = []; particles = []; chests = []; npcs = [];
-      npcs.push({ x: 1250, y: 850, name: 'Elder Bot', dialog: "Welcome! Slimes are invading the forest. Defeat them to protect the realm!" });
-      npcs.push({ x: 600, y: 400, name: 'Wizard Spark', dialog: "Press [K] or tap Magic button to shoot glowing energy fireballs at long range!" });
+      generateWorldScenery();
 
-      for (let i = 0; i < 10; i++) {
+      // NPCs at Center Citadel
+      npcs.push({ x: 1600, y: 1100, name: 'Cyber Merchant', role: 'shop', dialog: "Welcome to the Cyber Realm Armory! Press [E] or tap Shop to buy weapons & potions." });
+      npcs.push({ x: 1520, y: 1180, name: 'Elder Bot Sage', role: 'quest', dialog: "The 4 Biomes are infested! Slime in the Forest, Scorpions in the Desert, and the Mecha Dragon in the Volcano!" });
+
+      // Spawn Chests across all biomes
+      for (let i = 0; i < 16; i++) {
         chests.push({
           x: 200 + Math.random() * (WORLD.width - 400),
           y: 200 + Math.random() * (WORLD.height - 400),
-          opened: false, coins: 20 + Math.floor(Math.random() * 30)
+          opened: false, coins: 25 + Math.floor(Math.random() * 40)
         });
       }
-      for (let i = 0; i < 15; i++) spawnEnemy();
+
+      // Initial Enemies in 4 Biomes
+      for (let i = 0; i < 18; i++) spawnEnemy();
+      
+      // Spawn Titan Boss in Volcanic Nether
+      spawnBoss();
     }
 
-    function spawnEnemy() {
-      const types = [
-        { type: 'slime', hp: 30, maxHp: 30, speed: 1.8, color: '#22c55e', radius: 14, xp: 25, coins: 5, atk: 8 },
-        { type: 'goblin', hp: 50, maxHp: 50, speed: 2.2, color: '#f59e0b', radius: 16, xp: 45, coins: 12, atk: 14 },
-        { type: 'sorcerer', hp: 80, maxHp: 80, speed: 1.5, color: '#c084fc', radius: 18, xp: 80, coins: 25, atk: 20 }
-      ];
-      const template = types[Math.floor(Math.random() * (player.lvl > 2 ? 3 : 2))];
+    function spawnBoss() {
       enemies.push({
-        ...template,
-        x: Math.random() * WORLD.width,
-        y: Math.random() * WORLD.height,
-        vx: 0, vy: 0
+        type: 'boss', name: 'Mecha Dragon Titan',
+        x: 2500, y: 1900,
+        hp: 600, maxHp: 600, speed: 1.6,
+        color: '#dc2626', radius: 45, xp: 400, coins: 200, atk: 28,
+        isBoss: true, attackTimer: 0
       });
     }
 
+    function spawnEnemy() {
+      const biomeTypes = [
+        { type: 'slime', hp: 35, maxHp: 35, speed: 1.8, color: '#22c55e', radius: 15, xp: 25, coins: 8, atk: 8, xMin: 0, xMax: 1500, yMin: 0, yMax: 1100 },
+        { type: 'scorpion', hp: 55, maxHp: 55, speed: 2.2, color: '#f59e0b', radius: 16, xp: 45, coins: 15, atk: 14, xMin: 1600, xMax: 3100, yMin: 0, yMax: 1100 },
+        { type: 'ice_golem', hp: 85, maxHp: 85, speed: 1.5, color: '#38bdf8', radius: 20, xp: 75, coins: 25, atk: 18, xMin: 0, xMax: 1500, yMin: 1200, yMax: 2300 },
+        { type: 'fire_demon', hp: 110, maxHp: 110, speed: 2.0, color: '#f43f5e', radius: 19, xp: 100, coins: 35, atk: 22, xMin: 1600, xMax: 3100, yMin: 1200, yMax: 2300 }
+      ];
+      
+      const t = biomeTypes[Math.floor(Math.random() * biomeTypes.length)];
+      enemies.push({
+        ...t,
+        x: t.xMin + Math.random() * (t.xMax - t.xMin),
+        y: t.yMin + Math.random() * (t.yMax - t.yMin)
+      });
+    }
+
+    // Keyboard & Controls Listeners
     window.addEventListener('keydown', e => {
       keys[e.key.toLowerCase()] = true;
       AudioEngine.init();
       if ([' ', 'arrowup', 'arrowdown', 'arrowleft', 'arrowright'].includes(e.key.toLowerCase())) e.preventDefault();
       if (e.key === ' ' || e.key.toLowerCase() === 'j') performAttack();
       if (e.key.toLowerCase() === 'k' || e.key.toLowerCase() === 'f') castMagic();
+      if (e.key.toLowerCase() === 'q' || e.key === '3') castUltimate();
       if (e.key.toLowerCase() === 'e') handleInteract();
+      if (e.key === 'Shift') performDash();
+      if (e.key === '1' || e.key.toLowerCase() === 'h') usePotion('hp');
+      if (e.key === '2' || e.key.toLowerCase() === 'm') usePotion('mp');
     });
 
     window.addEventListener('keyup', e => { keys[e.key.toLowerCase()] = false; });
@@ -463,15 +748,17 @@
 
     document.getElementById('btnAttack')?.addEventListener('touchstart', (e) => { e.preventDefault(); AudioEngine.init(); performAttack(); });
     document.getElementById('btnMagic')?.addEventListener('touchstart', (e) => { e.preventDefault(); AudioEngine.init(); castMagic(); });
+    document.getElementById('btnDash')?.addEventListener('touchstart', (e) => { e.preventDefault(); AudioEngine.init(); performDash(); });
     document.getElementById('btnInteract')?.addEventListener('touchstart', (e) => { e.preventDefault(); AudioEngine.init(); handleInteract(); });
 
+    // Actions & Combat
     function performAttack() {
       if (player.attackTimer > 0) return;
       player.attacking = true;
-      player.attackTimer = 18;
+      player.attackTimer = 16;
       AudioEngine.sword();
 
-      const reach = 42;
+      const reach = 48;
       let hitX = player.x; let hitY = player.y;
       if (player.facing === 'up') hitY -= reach;
       if (player.facing === 'down') hitY += reach;
@@ -481,16 +768,17 @@
       for (let i = enemies.length - 1; i >= 0; i--) {
         const en = enemies[i];
         const dist = Math.hypot(en.x - hitX, en.y - hitY);
-        if (dist < en.radius + 24) {
-          const dmg = 20 + player.lvl * 5;
+        if (dist < en.radius + 28) {
+          const dmg = 22 + player.lvl * 6 + player.equipment.swordDmgBonus;
           en.hp -= dmg;
-          addFloatingText(`-${dmg}`, en.x, en.y - 10, '#ef4444');
+          addFloatingText(`-${dmg}`, en.x, en.y - 12, '#ef4444');
           addSlashParticles(en.x, en.y, '#f87171');
           AudioEngine.hit();
+          screenShake = 6;
 
           const angle = Math.atan2(en.y - player.y, en.x - player.x);
-          en.x += Math.cos(angle) * 30;
-          en.y += Math.sin(angle) * 30;
+          en.x += Math.cos(angle) * (en.isBoss ? 8 : 28);
+          en.y += Math.sin(angle) * (en.isBoss ? 8 : 28);
 
           if (en.hp <= 0) defeatEnemy(en, i);
         }
@@ -507,33 +795,93 @@
       AudioEngine.magic();
 
       let vx = 0, vy = 0;
-      if (player.facing === 'up') vy = -8;
-      if (player.facing === 'down') vy = 8;
-      if (player.facing === 'left') vx = -8;
-      if (player.facing === 'right') vx = 8;
-      if (vx === 0 && vy === 0) vy = 8;
+      if (player.facing === 'up') vy = -9;
+      if (player.facing === 'down') vy = 9;
+      if (player.facing === 'left') vx = -9;
+      if (player.facing === 'right') vx = 9;
+      if (vx === 0 && vy === 0) vy = 9;
 
       projectiles.push({
         x: player.x, y: player.y, vx, vy,
-        radius: 8, life: 60, isPlayer: true,
-        dmg: 35 + player.lvl * 8, color: '#38bdf8'
+        radius: 9, life: 65, isPlayer: true,
+        dmg: 40 + player.lvl * 9, color: '#38bdf8'
       });
+    }
+
+    function castUltimate() {
+      if (player.mp < 50) {
+        addFloatingText("Need 50 MP!", player.x, player.y - 20, '#fbbf24');
+        return;
+      }
+      player.mp -= 50;
+      updateHud();
+      AudioEngine.thunder();
+      screenShake = 18;
+
+      // 8-Directional Thunder Spells
+      for (let i = 0; i < 8; i++) {
+        const ang = (i * Math.PI) / 4;
+        projectiles.push({
+          x: player.x, y: player.y,
+          vx: Math.cos(ang) * 11, vy: Math.sin(ang) * 11,
+          radius: 12, life: 70, isPlayer: true,
+          dmg: 75 + player.lvl * 15, color: '#facc15'
+        });
+      }
+      addFloatingText("THUNDERSTORM!", player.x, player.y - 30, '#facc15');
+      launchConfetti(20);
+    }
+
+    function performDash() {
+      if (player.dashCooldown > 0) return;
+      player.dashTimer = 14;
+      player.dashCooldown = 60;
+      player.invulnerable = 16;
+      AudioEngine.dash();
+
+      let dx = 0, dy = 0;
+      if (player.facing === 'up') dy = -1;
+      if (player.facing === 'down') dy = 1;
+      if (player.facing === 'left') dx = -1;
+      if (player.facing === 'right') dx = 1;
+
+      player.x = Math.max(player.radius, Math.min(WORLD.width - player.radius, player.x + dx * 80));
+      player.y = Math.max(player.radius, Math.min(WORLD.height - player.radius, player.y + dy * 80));
+      addSlashParticles(player.x, player.y, '#34d399');
+    }
+
+    function usePotion(type) {
+      if (type === 'hp') {
+        if (player.potions.hp <= 0) { addFloatingText("No Health Potions!", player.x, player.y - 20, '#ef4444'); return; }
+        player.potions.hp--;
+        player.hp = Math.min(player.maxHp, player.hp + 50);
+        AudioEngine.potion();
+        addFloatingText("+50 HP!", player.x, player.y - 25, '#22c55e');
+      } else if (type === 'mp') {
+        if (player.potions.mp <= 0) { addFloatingText("No Mana Elixirs!", player.x, player.y - 20, '#3b82f6'); return; }
+        player.potions.mp--;
+        player.mp = Math.min(player.maxMp, player.mp + 50);
+        AudioEngine.potion();
+        addFloatingText("+50 MP!", player.x, player.y - 25, '#38bdf8');
+      }
+      updateHud();
     }
 
     function handleInteract() {
       for (const npc of npcs) {
-        if (Math.hypot(npc.x - player.x, npc.y - player.y) < 60) {
-          dialog = { text: `${npc.name}: "${npc.dialog}"`, timer: 200 };
+        if (Math.hypot(npc.x - player.x, npc.y - player.y) < 70) {
+          if (npc.role === 'shop') { openShopModal(); return; }
+          dialog = { text: `${npc.name}: "${npc.dialog}"`, timer: 250 };
           AudioEngine.coin();
           return;
         }
       }
       for (const c of chests) {
-        if (!c.opened && Math.hypot(c.x - player.x, c.y - player.y) < 50) {
+        if (!c.opened && Math.hypot(c.x - player.x, c.y - player.y) < 60) {
           c.opened = true;
           player.coins += c.coins;
-          player.score += c.coins * 2;
-          addFloatingText(`+${c.coins} Gold!`, c.x, c.y - 20, '#fbbf24');
+          player.score += c.coins * 3;
+          addFloatingText(`+${c.coins} Gold!`, c.x, c.y - 25, '#fbbf24');
           AudioEngine.coin();
           updateHud();
           return;
@@ -546,8 +894,15 @@
       player.coins += en.coins;
       player.xp += en.xp;
       player.score += en.xp * 2;
-      addFloatingText(`+${en.xp} XP`, en.x, en.y - 15, '#facc15');
+      addFloatingText(`+${en.xp} XP`, en.x, en.y - 18, '#facc15');
       AudioEngine.coin();
+
+      if (en.isBoss) {
+        addFloatingText("TITAN DEFEATED!", player.x, player.y - 45, '#ec4899');
+        launchConfetti(60);
+        document.getElementById('bossBar').style.display = 'none';
+        setTimeout(spawnBoss, 45000);
+      }
 
       if (quest.target === en.type || quest.target === 'any') {
         quest.current++;
@@ -557,7 +912,7 @@
           addFloatingText("Quest Complete!", player.x, player.y - 30, '#c084fc');
           AudioEngine.levelUp();
           quest.id++; quest.needed += 2; quest.current = 0;
-          quest.desc = `Defeat ${quest.needed} Monsters (${quest.current}/${quest.needed})`;
+          quest.desc = `Defeat ${quest.needed} Monsters in Realm`;
           quest.target = 'any';
         }
         document.getElementById('questDesc').textContent = `${quest.desc} (${quest.current}/${quest.needed})`;
@@ -567,27 +922,61 @@
         player.lvl++;
         player.xp -= player.nextXp;
         player.nextXp = Math.floor(player.nextXp * 1.5);
-        player.maxHp += 20;
+        player.maxHp += 25;
         player.hp = player.maxHp;
-        player.maxMp += 10;
+        player.maxMp += 15;
         player.mp = player.maxMp;
         addFloatingText("LEVEL UP!", player.x, player.y - 40, '#38bdf8');
         AudioEngine.levelUp();
       }
 
       updateHud();
-      setTimeout(spawnEnemy, 3000);
+      if (!en.isBoss) setTimeout(spawnEnemy, 4000);
     }
 
-    function addFloatingText(text, x, y, color) { floatingTexts.push({ text, x, y, color, life: 40 }); }
+    // Shop System
+    function openShopModal() {
+      document.getElementById('shopGoldText').textContent = player.coins;
+      document.getElementById('shopModal').classList.add('active');
+    }
+
+    function buyItem(item, cost) {
+      if (player.coins < cost) {
+        showToast("Not enough Gold!", "error");
+        return;
+      }
+      player.coins -= cost;
+      if (item === 'hpPot') player.potions.hp++;
+      if (item === 'mpPot') player.potions.mp++;
+      if (item === 'sword') {
+        player.equipment.swordDmgBonus += 15;
+        document.getElementById('buySwordBtn').textContent = "Upgraded!";
+      }
+      if (item === 'armor') {
+        player.maxHp += 50;
+        player.hp += 50;
+        player.equipment.hasArmor = true;
+        document.getElementById('buyArmorBtn').textContent = "Equipped!";
+      }
+      AudioEngine.coin();
+      updateHud();
+      document.getElementById('shopGoldText').textContent = player.coins;
+      showToast("Item purchased successfully!", "success");
+    }
+
+    function closeModal(id) {
+      document.getElementById(id).classList.remove('active');
+    }
+
+    function addFloatingText(text, x, y, color) { floatingTexts.push({ text, x, y, color, life: 45 }); }
     function addSlashParticles(x, y, color) {
-      for (let i = 0; i < 8; i++) {
+      for (let i = 0; i < 9; i++) {
         particles.push({
           x, y,
-          vx: (Math.random() - 0.5) * 6,
-          vy: (Math.random() - 0.5) * 6,
+          vx: (Math.random() - 0.5) * 7,
+          vy: (Math.random() - 0.5) * 7,
           radius: 3 + Math.random() * 3,
-          color, life: 20
+          color, life: 22
         });
       }
     }
@@ -601,17 +990,24 @@
       document.getElementById('lvlText').textContent = `Lv. ${player.lvl}`;
       document.getElementById('coinText').textContent = player.coins;
       document.getElementById('scoreText').textContent = player.score;
+      document.getElementById('hpPotCount').textContent = player.potions.hp;
+      document.getElementById('mpPotCount').textContent = player.potions.mp;
     }
 
     function restartGame() {
-      player.hp = 100; player.maxHp = 100; player.mp = 50; player.coins = 0; player.score = 0;
-      player.lvl = 1; player.xp = 0; player.nextXp = 100; player.x = 1200; player.y = 900;
+      player.hp = 100; player.maxHp = 100; player.mp = 60; player.coins = 50; player.score = 0;
+      player.lvl = 1; player.xp = 0; player.nextXp = 100; player.x = 1600; player.y = 1200;
+      player.potions = { hp: 2, mp: 2 };
+      player.equipment = { swordDmgBonus: 0, hasArmor: false };
       initWorld(); updateHud();
     }
 
     function update() {
+      timeOfDay = (timeOfDay + 0.0003) % 1;
+      if (screenShake > 0) screenShake *= 0.88;
+
       if (player.mp < player.maxMp) {
-        player.mp = Math.min(player.maxMp, player.mp + 0.05);
+        player.mp = Math.min(player.maxMp, player.mp + 0.06);
         document.getElementById('mpFill').style.width = `${(player.mp / player.maxMp) * 100}%`;
         document.getElementById('mpText').textContent = `${Math.floor(player.mp)}/${player.maxMp}`;
       }
@@ -629,28 +1025,44 @@
 
       if (player.attackTimer > 0) player.attackTimer--;
       if (player.invulnerable > 0) player.invulnerable--;
+      if (player.dashCooldown > 0) player.dashCooldown--;
 
+      // Enemy AI & Boss Logic
+      let activeBoss = null;
       for (const en of enemies) {
+        if (en.isBoss) activeBoss = en;
         const dist = Math.hypot(player.x - en.x, player.y - en.y);
-        if (dist < 320 && dist > 10) {
+        if (dist < 380 && dist > 10) {
           const angle = Math.atan2(player.y - en.y, player.x - en.x);
           en.x += Math.cos(angle) * en.speed;
           en.y += Math.sin(angle) * en.speed;
 
           if (dist < en.radius + player.radius && player.invulnerable <= 0) {
             player.hp -= en.atk;
-            player.invulnerable = 30;
-            addFloatingText(`-${en.atk}`, player.x, player.y - 15, '#ef4444');
+            player.invulnerable = 32;
+            screenShake = 8;
+            addFloatingText(`-${en.atk}`, player.x, player.y - 18, '#ef4444');
             AudioEngine.hit();
             updateHud();
             if (player.hp <= 0) {
-              alert(`Game Over! Final Score: ${player.score}. Restarting realm...`);
+              alert(`Realm of Bots Game Over!\nFinal Score: ${player.score}\nLevel: ${player.lvl}\nRespawning at Cyber Citadel...`);
               restartGame();
             }
           }
         }
       }
 
+      // Boss Bar HUD
+      const bossBar = document.getElementById('bossBar');
+      if (activeBoss && Math.hypot(player.x - activeBoss.x, player.y - activeBoss.y) < 600) {
+        bossBar.style.display = 'flex';
+        document.getElementById('bossName').textContent = activeBoss.name;
+        document.getElementById('bossHpFill').style.width = `${(activeBoss.hp / activeBoss.maxHp) * 100}%`;
+      } else {
+        bossBar.style.display = 'none';
+      }
+
+      // Projectiles
       for (let i = projectiles.length - 1; i >= 0; i--) {
         const p = projectiles[i];
         p.x += p.vx; p.y += p.vy; p.life--;
@@ -659,8 +1071,8 @@
             const en = enemies[j];
             if (Math.hypot(en.x - p.x, en.y - p.y) < en.radius + p.radius) {
               en.hp -= p.dmg;
-              addFloatingText(`-${p.dmg}`, en.x, en.y - 10, '#38bdf8');
-              addSlashParticles(en.x, en.y, '#38bdf8');
+              addFloatingText(`-${p.dmg}`, en.x, en.y - 12, p.color);
+              addSlashParticles(en.x, en.y, p.color);
               AudioEngine.hit();
               p.life = 0;
               if (en.hp <= 0) defeatEnemy(en, j);
@@ -671,12 +1083,14 @@
         if (p.life <= 0) projectiles.splice(i, 1);
       }
 
+      // Particles
       for (let i = particles.length - 1; i >= 0; i--) {
         const part = particles[i];
         part.x += part.vx; part.y += part.vy; part.life--;
         if (part.life <= 0) particles.splice(i, 1);
       }
 
+      // Floating Texts
       for (let i = floatingTexts.length - 1; i >= 0; i--) {
         const ft = floatingTexts[i];
         ft.y -= 0.6; ft.life--;
@@ -689,70 +1103,127 @@
 
     function draw() {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
-      const camX = player.x - canvas.width / 2;
-      const camY = player.y - canvas.height / 2;
+      const camX = player.x - canvas.width / 2 + (screenShake > 0.5 ? (Math.random() - 0.5) * screenShake : 0);
+      const camY = player.y - canvas.height / 2 + (screenShake > 0.5 ? (Math.random() - 0.5) * screenShake : 0);
 
       ctx.save();
       ctx.translate(-camX, -camY);
 
-      ctx.fillStyle = '#0f172a';
-      ctx.fillRect(0, 0, WORLD.width, WORLD.height);
+      // Draw 4 Biome Quadrants
+      // Forest (Top-Left)
+      ctx.fillStyle = '#064e3b';
+      ctx.fillRect(0, 0, 1600, 1200);
+      // Desert (Top-Right)
+      ctx.fillStyle = '#78350f';
+      ctx.fillRect(1600, 0, 1600, 1200);
+      // Frost (Bottom-Left)
+      ctx.fillStyle = '#0c4a6e';
+      ctx.fillRect(0, 1200, 1600, 1200);
+      // Volcanic (Bottom-Right)
+      ctx.fillStyle = '#450a0a';
+      ctx.fillRect(1600, 1200, 1600, 1200);
 
-      ctx.strokeStyle = 'rgba(255, 255, 255, 0.03)';
+      // Center Cyber Citadel Cobblestone
+      ctx.fillStyle = '#1e293b';
+      ctx.fillRect(1450, 1050, 300, 300);
+      ctx.strokeStyle = '#6366f1';
+      ctx.lineWidth = 3;
+      ctx.strokeRect(1450, 1050, 300, 300);
+
+      // Grid Pattern
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.04)';
       ctx.lineWidth = 1;
-      for (let x = 0; x < WORLD.width; x += 80) {
+      for (let x = 0; x < WORLD.width; x += 100) {
         ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, WORLD.height); ctx.stroke();
       }
-      for (let y = 0; y < WORLD.height; y += 80) {
+      for (let y = 0; y < WORLD.height; y += 100) {
         ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(WORLD.width, y); ctx.stroke();
       }
 
-      for (const t of trees) {
-        ctx.fillStyle = 'rgba(16, 185, 129, 0.25)';
-        ctx.beginPath(); ctx.arc(t.x, t.y, t.size, 0, Math.PI * 2); ctx.fill();
-        ctx.fillStyle = '#10b981';
-        ctx.beginPath(); ctx.arc(t.x, t.y, t.size * 0.7, 0, Math.PI * 2); ctx.fill();
+      // Draw Scenery Elements
+      for (const s of scenery) {
+        if (s.type === 'tree') {
+          ctx.fillStyle = '#047857';
+          ctx.beginPath(); ctx.arc(s.x, s.y, s.size, 0, Math.PI * 2); ctx.fill();
+          ctx.fillStyle = '#10b981';
+          ctx.beginPath(); ctx.arc(s.x, s.y, s.size * 0.65, 0, Math.PI * 2); ctx.fill();
+        } else if (s.type === 'cactus') {
+          ctx.fillStyle = '#d97706';
+          ctx.fillRect(s.x - 4, s.y - s.size, 8, s.size * 2);
+          ctx.fillRect(s.x - 12, s.y - s.size * 0.4, 24, 6);
+        } else if (s.type === 'crystal') {
+          ctx.fillStyle = '#38bdf8';
+          ctx.beginPath();
+          ctx.moveTo(s.x, s.y - s.size);
+          ctx.lineTo(s.x + s.size * 0.6, s.y + s.size * 0.6);
+          ctx.lineTo(s.x - s.size * 0.6, s.y + s.size * 0.6);
+          ctx.closePath();
+          ctx.fill();
+        } else if (s.type === 'volcano_rock') {
+          ctx.fillStyle = '#7f1d1d';
+          ctx.beginPath(); ctx.arc(s.x, s.y, s.size, 0, Math.PI * 2); ctx.fill();
+          ctx.fillStyle = '#f97316';
+          ctx.beginPath(); ctx.arc(s.x, s.y, s.size * 0.4, 0, Math.PI * 2); ctx.fill();
+        }
       }
 
+      // Draw Chests
       for (const c of chests) {
         ctx.fillStyle = c.opened ? '#64748b' : '#f59e0b';
-        ctx.fillRect(c.x - 12, c.y - 10, 24, 20);
+        ctx.fillRect(c.x - 14, c.y - 12, 28, 24);
         ctx.fillStyle = '#fbbf24';
         ctx.fillRect(c.x - 4, c.y - 4, 8, 8);
       }
 
+      // Draw NPCs
       for (const npc of npcs) {
         ctx.fillStyle = '#a855f7';
-        ctx.beginPath(); ctx.arc(npc.x, npc.y, 16, 0, Math.PI * 2); ctx.fill();
-        ctx.fillStyle = '#fff'; ctx.font = '11px sans-serif'; ctx.textAlign = 'center';
-        ctx.fillText(npc.name, npc.x, npc.y - 22);
+        ctx.beginPath(); ctx.arc(npc.x, npc.y, 18, 0, Math.PI * 2); ctx.fill();
+        ctx.fillStyle = '#fff'; ctx.font = 'bold 12px sans-serif'; ctx.textAlign = 'center';
+        ctx.fillText(npc.name, npc.x, npc.y - 24);
       }
 
+      // Draw Enemies & Boss
       for (const en of enemies) {
         ctx.fillStyle = en.color;
         ctx.beginPath(); ctx.arc(en.x, en.y, en.radius, 0, Math.PI * 2); ctx.fill();
-        if (en.hp < en.maxHp) {
-          ctx.fillStyle = 'rgba(0,0,0,0.6)';
-          ctx.fillRect(en.x - 16, en.y - en.radius - 8, 32, 4);
+        
+        // Enemy Eyes
+        ctx.fillStyle = '#0f172a';
+        ctx.beginPath(); ctx.arc(en.x - en.radius * 0.3, en.y - en.radius * 0.2, 3, 0, Math.PI * 2); ctx.fill();
+        ctx.beginPath(); ctx.arc(en.x + en.radius * 0.3, en.y - en.radius * 0.2, 3, 0, Math.PI * 2); ctx.fill();
+
+        // Mini Health Bar
+        if (en.hp < en.maxHp && !en.isBoss) {
+          ctx.fillStyle = 'rgba(0,0,0,0.7)';
+          ctx.fillRect(en.x - 18, en.y - en.radius - 10, 36, 5);
           ctx.fillStyle = '#ef4444';
-          ctx.fillRect(en.x - 16, en.y - en.radius - 8, 32 * (en.hp / en.maxHp), 4);
+          ctx.fillRect(en.x - 18, en.y - en.radius - 10, 36 * (en.hp / en.maxHp), 5);
         }
       }
 
+      // Draw Projectiles
       for (const p of projectiles) {
         ctx.fillStyle = p.color;
         ctx.beginPath(); ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2); ctx.fill();
       }
 
+      // Draw Player
       ctx.save();
       ctx.translate(player.x, player.y);
       if (player.invulnerable % 4 > 2) ctx.globalAlpha = 0.5;
 
-      ctx.fillStyle = 'rgba(56, 189, 248, 0.2)';
-      ctx.beginPath(); ctx.arc(0, 0, player.radius + 6, 0, Math.PI * 2); ctx.fill();
-      ctx.fillStyle = '#38bdf8';
+      // Aura / Shield
+      if (player.equipment.hasArmor) {
+        ctx.strokeStyle = '#38bdf8';
+        ctx.lineWidth = 2;
+        ctx.beginPath(); ctx.arc(0, 0, player.radius + 6, 0, Math.PI * 2); ctx.stroke();
+      }
+
+      ctx.fillStyle = player.equipment.hasArmor ? '#0284c7' : '#38bdf8';
       ctx.beginPath(); ctx.arc(0, 0, player.radius, 0, Math.PI * 2); ctx.fill();
 
+      // Eyes
       ctx.fillStyle = '#0f172a';
       let eyeX = 0, eyeY = 0;
       if (player.facing === 'up') eyeY = -6;
@@ -761,25 +1232,28 @@
       if (player.facing === 'right') eyeX = 6;
       ctx.beginPath(); ctx.arc(eyeX, eyeY, 4, 0, Math.PI * 2); ctx.fill();
 
+      // Sword Attack Arc
       if (player.attackTimer > 0) {
-        ctx.strokeStyle = '#facc15';
-        ctx.lineWidth = 4;
+        ctx.strokeStyle = player.equipment.swordDmgBonus > 0 ? '#ec4899' : '#facc15';
+        ctx.lineWidth = 5;
         ctx.beginPath();
         let angle = 0;
         if (player.facing === 'down') angle = Math.PI / 2;
         if (player.facing === 'up') angle = -Math.PI / 2;
         if (player.facing === 'left') angle = Math.PI;
         if (player.facing === 'right') angle = 0;
-        ctx.arc(0, 0, 36, angle - 0.7, angle + 0.7);
+        ctx.arc(0, 0, 42, angle - 0.8, angle + 0.8);
         ctx.stroke();
       }
       ctx.restore();
 
+      // Particles
       for (const part of particles) {
         ctx.fillStyle = part.color;
         ctx.beginPath(); ctx.arc(part.x, part.y, part.radius, 0, Math.PI * 2); ctx.fill();
       }
 
+      // Floating Combat Numbers
       for (const ft of floatingTexts) {
         ctx.fillStyle = ft.color; ctx.font = 'bold 13px sans-serif'; ctx.textAlign = 'center';
         ctx.fillText(ft.text, ft.x, ft.y);
@@ -787,16 +1261,56 @@
 
       ctx.restore();
 
+      // Day / Night Ambient Filter
+      const nightIntensity = Math.sin(timeOfDay * Math.PI * 2) * 0.45;
+      if (nightIntensity > 0) {
+        ctx.fillStyle = `rgba(3, 7, 18, ${nightIntensity})`;
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+      }
+
+      // Dialog Popup
       if (dialog) {
-        ctx.fillStyle = 'rgba(15, 23, 42, 0.92)';
+        ctx.fillStyle = 'rgba(15, 23, 42, 0.95)';
         ctx.strokeStyle = '#a855f7';
         ctx.lineWidth = 2;
         ctx.beginPath();
-        ctx.roundRect(40, canvas.height - 85, canvas.width - 80, 60, 10);
+        ctx.roundRect(40, canvas.height - 90, canvas.width - 80, 65, 12);
         ctx.fill(); ctx.stroke();
-        ctx.fillStyle = '#f8fafc'; ctx.font = '13px sans-serif'; ctx.textAlign = 'left';
-        ctx.fillText(dialog.text, 56, canvas.height - 48);
+        ctx.fillStyle = '#f8fafc'; ctx.font = '14px sans-serif'; ctx.textAlign = 'left';
+        ctx.fillText(dialog.text, 58, canvas.height - 52);
       }
+
+      drawMinimap();
+    }
+
+    function drawMinimap() {
+      miniCtx.clearRect(0, 0, miniCanvas.width, miniCanvas.height);
+      const scaleX = miniCanvas.width / WORLD.width;
+      const scaleY = miniCanvas.height / WORLD.height;
+
+      // Draw 4 Biome Quads
+      miniCtx.fillStyle = '#064e3b'; miniCtx.fillRect(0, 0, miniCanvas.width/2, miniCanvas.height/2);
+      miniCtx.fillStyle = '#78350f'; miniCtx.fillRect(miniCanvas.width/2, 0, miniCanvas.width/2, miniCanvas.height/2);
+      miniCtx.fillStyle = '#0c4a6e'; miniCtx.fillRect(0, miniCanvas.height/2, miniCanvas.width/2, miniCanvas.height/2);
+      miniCtx.fillStyle = '#450a0a'; miniCtx.fillRect(miniCanvas.width/2, miniCanvas.height/2, miniCanvas.width/2, miniCanvas.height/2);
+
+      // Draw Chests
+      miniCtx.fillStyle = '#fbbf24';
+      for (const c of chests) {
+        if (!c.opened) miniCtx.fillRect(c.x * scaleX - 1, c.y * scaleY - 1, 3, 3);
+      }
+
+      // Draw Enemies
+      miniCtx.fillStyle = '#ef4444';
+      for (const en of enemies) {
+        miniCtx.fillRect(en.x * scaleX - 1, en.y * scaleY - 1, en.isBoss ? 4 : 2, en.isBoss ? 4 : 2);
+      }
+
+      // Draw Player Position
+      miniCtx.fillStyle = '#38bdf8';
+      miniCtx.beginPath();
+      miniCtx.arc(player.x * scaleX, player.y * scaleY, 3.5, 0, Math.PI * 2);
+      miniCtx.fill();
     }
 
     function gameLoop() {
@@ -809,7 +1323,5 @@
     updateHud();
     requestAnimationFrame(gameLoop);
   </script>
-  <script src="js/app.js"></script>
 </body>
 </html>
-

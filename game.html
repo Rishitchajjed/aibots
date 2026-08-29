@@ -2,13 +2,13 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <meta name="google-site-verification" content="ndzq-U-NLijgza_QqgQdcc2U3oMRoud_BT2ZZiwFREM">
   <meta name="google-site-verification" content="-Yb6Nx74gbZ3wRN5uP-Y8KKwDWlt1DPpxs4nA3PkE6M">
   <meta name="robots" content="index, follow">
   <title>Realm of Bots 4.0: Master RPG — AI Bots</title>
-  <meta name="description" content="Play Realm of Bots 4.0, an open-world RPG with Cyber Hoverbikes, Skill Talent Trees, Dungeon Portals, Boss Phases, Companion Drones, and Ore Mining!">
-  <meta name="keywords" content="open world game, browser rpg, free online game, 2d open world rpg, hoverbike mount, skill tree, realm of bots 4.0, ai bots">
+  <meta name="description" content="Play Realm of Bots 4.0, a mobile-compatible open-world RPG with Cyber Hoverbikes, Skill Talent Trees, Dungeon Portals, Boss Phases, and Companion Drones!">
+  <meta name="keywords" content="open world game, browser rpg, mobile rpg, free online game, 2d open world rpg, hoverbike mount, skill tree, realm of bots 4.0, ai bots">
   <meta name="author" content="Rishit Chajjed">
   <link rel="icon" href="logo.png" type="image/png">
   <link rel="canonical" href="https://www.aibots.co.in/game.html">
@@ -30,8 +30,8 @@
   <style>
     .game-page-container {
       max-width: 1260px;
-      margin: 14px auto 60px;
-      padding: 0 16px;
+      margin: 12px auto 50px;
+      padding: 0 12px;
     }
     .game-header {
       display: flex;
@@ -42,7 +42,7 @@
       margin-bottom: 12px;
     }
     .game-title {
-      font-size: 1.85rem;
+      font-size: 1.8rem;
       font-weight: 800;
       margin: 0;
       background: linear-gradient(135deg, #38bdf8, #818cf8, #ec4899, #facc15);
@@ -72,34 +72,34 @@
       image-rendering: pixelated;
     }
 
-    /* Modern Glassmorphic HUD */
+    /* Glassmorphic Top-Left HUD */
     .game-hud-top-left {
       position: absolute;
-      top: 12px;
-      left: 12px;
+      top: 10px;
+      left: 10px;
       display: flex;
       flex-direction: column;
-      gap: 6px;
+      gap: 5px;
       pointer-events: none;
       z-index: 15;
     }
     .hud-stat-bar {
       display: flex;
       align-items: center;
-      gap: 8px;
-      background: rgba(15, 23, 42, 0.9);
-      backdrop-filter: blur(10px);
-      padding: 5px 12px;
+      gap: 6px;
+      background: rgba(15, 23, 42, 0.75);
+      backdrop-filter: blur(8px);
+      padding: 4px 10px;
       border-radius: 999px;
       border: 1px solid rgba(255, 255, 255, 0.15);
-      font-size: 0.78rem;
+      font-size: 0.75rem;
       font-weight: 700;
       color: #f8fafc;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+      box-shadow: 0 4px 10px rgba(0,0,0,0.4);
     }
     .bar-fill-wrap {
-      width: 115px;
-      height: 10px;
+      width: 110px;
+      height: 9px;
       background: rgba(0,0,0,0.7);
       border-radius: 6px;
       overflow: hidden;
@@ -110,50 +110,51 @@
     .bar-mp { background: linear-gradient(90deg, #3b82f6, #60a5fa); }
     .bar-xp { background: linear-gradient(90deg, #eab308, #facc15); }
 
+    /* Top-Right HUD & Minimap */
     .game-hud-top-right {
       position: absolute;
-      top: 12px;
-      right: 12px;
+      top: 10px;
+      right: 10px;
       display: flex;
       flex-direction: column;
       align-items: flex-end;
-      gap: 8px;
+      gap: 6px;
       z-index: 15;
       pointer-events: auto;
     }
     .hud-badge-row {
       display: flex;
-      gap: 8px;
+      gap: 6px;
     }
     .hud-badge {
-      background: rgba(15, 23, 42, 0.9);
-      backdrop-filter: blur(10px);
-      padding: 6px 12px;
+      background: rgba(15, 23, 42, 0.75);
+      backdrop-filter: blur(8px);
+      padding: 4px 10px;
       border-radius: 999px;
       border: 1px solid rgba(255, 255, 255, 0.15);
-      font-size: 0.82rem;
+      font-size: 0.78rem;
       font-weight: 700;
       color: #fbbf24;
       display: flex;
       align-items: center;
-      gap: 6px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+      gap: 5px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.4);
     }
     .combo-badge {
-      background: rgba(236, 72, 153, 0.2);
+      background: rgba(236, 72, 153, 0.25);
       border-color: #ec4899;
       color: #f472b6;
       display: none;
       font-weight: 800;
     }
     .minimap-wrapper {
-      width: 110px;
-      height: 110px;
+      width: 95px;
+      height: 95px;
       border-radius: 50%;
-      border: 2px solid rgba(129, 140, 248, 0.7);
-      background: rgba(15, 23, 42, 0.92);
+      border: 2px solid rgba(129, 140, 248, 0.6);
+      background: rgba(15, 23, 42, 0.85);
       overflow: hidden;
-      box-shadow: 0 4px 16px rgba(0,0,0,0.7);
+      box-shadow: 0 4px 14px rgba(0,0,0,0.6);
       position: relative;
     }
     #minimapCanvas {
@@ -163,69 +164,69 @@
 
     .quest-tracker {
       position: absolute;
-      top: 128px;
-      left: 12px;
-      background: rgba(15, 23, 42, 0.92);
-      backdrop-filter: blur(10px);
-      padding: 9px 14px;
+      top: 110px;
+      left: 10px;
+      background: rgba(15, 23, 42, 0.8);
+      backdrop-filter: blur(8px);
+      padding: 7px 12px;
       border-radius: var(--radius-md);
       border: 1px solid rgba(168, 85, 247, 0.4);
-      max-width: 240px;
-      font-size: 0.76rem;
+      max-width: 220px;
+      font-size: 0.74rem;
       z-index: 15;
       pointer-events: none;
-      box-shadow: 0 4px 14px rgba(0,0,0,0.5);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.4);
     }
-    .quest-title { font-weight: 800; color: #c084fc; margin-bottom: 4px; display: flex; align-items: center; gap: 6px; }
+    .quest-title { font-weight: 800; color: #c084fc; margin-bottom: 3px; display: flex; align-items: center; gap: 5px; }
 
     /* Boss Banner */
     .boss-health-bar {
       position: absolute;
-      top: 16px;
+      top: 14px;
       left: 50%;
       transform: translateX(-50%);
-      width: min(90%, 460px);
-      background: rgba(15, 23, 42, 0.95);
+      width: min(88%, 440px);
+      background: rgba(15, 23, 42, 0.92);
       border: 2px solid #ef4444;
       border-radius: 999px;
-      padding: 6px 16px;
+      padding: 5px 14px;
       display: none;
       flex-direction: column;
       align-items: center;
-      gap: 4px;
+      gap: 3px;
       z-index: 20;
-      box-shadow: 0 0 35px rgba(239, 68, 68, 0.5);
+      box-shadow: 0 0 30px rgba(239, 68, 68, 0.5);
     }
-    .boss-name { font-size: 0.88rem; font-weight: 800; color: #f87171; text-transform: uppercase; letter-spacing: 1px; }
+    .boss-name { font-size: 0.82rem; font-weight: 800; color: #f87171; text-transform: uppercase; letter-spacing: 1px; }
 
     /* Bottom Hotbar */
     .hotbar-container {
       position: absolute;
-      bottom: 12px;
+      bottom: 10px;
       left: 50%;
       transform: translateX(-50%);
       display: flex;
-      gap: 8px;
-      background: rgba(15, 23, 42, 0.9);
-      backdrop-filter: blur(10px);
-      padding: 6px 12px;
+      gap: 6px;
+      background: rgba(15, 23, 42, 0.8);
+      backdrop-filter: blur(8px);
+      padding: 5px 10px;
       border-radius: var(--radius-lg);
       border: 1px solid rgba(255, 255, 255, 0.15);
       z-index: 15;
       pointer-events: auto;
     }
     .hotbar-slot {
-      width: 44px;
-      height: 44px;
+      width: 40px;
+      height: 40px;
       border-radius: var(--radius-md);
-      background: rgba(30, 41, 59, 0.8);
+      background: rgba(30, 41, 59, 0.75);
       border: 1px solid rgba(255, 255, 255, 0.15);
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
       color: #fff;
-      font-size: 1.05rem;
+      font-size: 0.95rem;
       position: relative;
       cursor: pointer;
       transition: var(--transition);
@@ -243,88 +244,136 @@
     .hotbar-key {
       position: absolute;
       bottom: 2px;
-      right: 4px;
-      font-size: 0.65rem;
-      color: rgba(255,255,255,0.65);
+      right: 3px;
+      font-size: 0.6rem;
+      color: rgba(255,255,255,0.6);
       font-family: var(--font-mono);
       font-weight: 700;
     }
     .hotbar-count {
       position: absolute;
       top: 2px;
-      left: 4px;
-      font-size: 0.7rem;
+      left: 3px;
+      font-size: 0.65rem;
       color: #fbbf24;
       font-weight: 800;
     }
 
-    /* Mobile Controls */
+    /* Mobile Transparent Ergonomic Controls */
     .mobile-controls {
       display: none;
       position: absolute;
-      bottom: 12px;
+      bottom: 10px;
       left: 0;
       right: 0;
-      padding: 0 16px;
+      padding: 0 10px;
       justify-content: space-between;
       align-items: flex-end;
       z-index: 20;
       pointer-events: none;
     }
-    @media (max-width: 900px) {
-      .mobile-controls { display: flex; }
-      .game-canvas-wrapper { aspect-ratio: 4 / 3; }
-      .hotbar-container { bottom: 88px; }
-      .quest-tracker { display: none; }
-    }
-    .d-pad { width: 120px; height: 120px; position: relative; pointer-events: auto; }
+    .d-pad { width: 110px; height: 110px; position: relative; pointer-events: auto; }
     .d-btn {
       position: absolute;
-      width: 40px;
-      height: 40px;
-      background: rgba(30, 41, 59, 0.85);
-      border: 1px solid rgba(255, 255, 255, 0.2);
+      width: 36px;
+      height: 36px;
+      background: rgba(15, 23, 42, 0.6);
+      backdrop-filter: blur(4px);
+      border: 1.5px solid rgba(255, 255, 255, 0.25);
       border-radius: 10px;
       color: white;
-      font-size: 1.1rem;
+      font-size: 1rem;
       display: flex;
       align-items: center;
       justify-content: center;
       user-select: none;
-      touch-action: manipulation;
+      touch-action: none;
     }
-    .d-btn:active { background: #6366f1; }
-    .d-up { top: 0; left: 40px; }
-    .d-down { bottom: 0; left: 40px; }
-    .d-left { top: 40px; left: 0; }
-    .d-right { top: 40px; right: 0; }
-    .action-buttons { display: flex; gap: 8px; pointer-events: auto; flex-wrap: wrap; max-width: 140px; justify-content: flex-end; }
+    .d-btn:active { background: rgba(99, 102, 241, 0.85); border-color: #818cf8; transform: scale(0.92); }
+    .d-up { top: 0; left: 37px; }
+    .d-down { bottom: 0; left: 37px; }
+    .d-left { top: 37px; left: 0; }
+    .d-right { top: 37px; right: 0; }
+    
+    .action-buttons { display: flex; gap: 8px; pointer-events: auto; flex-wrap: wrap; max-width: 125px; justify-content: flex-end; }
     .act-btn {
-      width: 48px;
-      height: 48px;
+      width: 44px;
+      height: 44px;
       border-radius: 50%;
-      background: rgba(30, 41, 59, 0.85);
-      border: 2px solid rgba(255, 255, 255, 0.2);
+      background: rgba(15, 23, 42, 0.65);
+      backdrop-filter: blur(4px);
+      border: 2px solid rgba(255, 255, 255, 0.25);
       color: white;
-      font-size: 1.1rem;
+      font-size: 1.05rem;
       display: flex;
       align-items: center;
       justify-content: center;
       user-select: none;
-      touch-action: manipulation;
-      box-shadow: 0 4px 14px rgba(0,0,0,0.5);
+      touch-action: none;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.4);
     }
-    .act-btn:active { transform: scale(0.92); }
-    .act-attack { background: rgba(239, 68, 68, 0.85); border-color: #f87171; }
-    .act-magic { background: rgba(59, 130, 246, 0.85); border-color: #60a5fa; }
-    .act-dash { background: rgba(16, 185, 129, 0.85); border-color: #34d399; }
-    .act-mount { background: rgba(251, 191, 36, 0.85); border-color: #fde047; color: #0f172a; }
-    .act-interact { background: rgba(168, 85, 247, 0.85); border-color: #c084fc; }
+    .act-btn:active { transform: scale(0.88); }
+    .act-attack { background: rgba(239, 68, 68, 0.75); border-color: #f87171; }
+    .act-magic { background: rgba(59, 130, 246, 0.75); border-color: #60a5fa; }
+    .act-dash { background: rgba(16, 185, 129, 0.75); border-color: #34d399; }
+    .act-mount { background: rgba(251, 191, 36, 0.75); border-color: #fde047; color: #0f172a; }
+    .act-interact { background: rgba(168, 85, 247, 0.75); border-color: #c084fc; }
+
+    /* Mobile Responsive Overrides */
+    @media (max-width: 860px) {
+      .mobile-controls { display: flex; }
+      .game-canvas-wrapper {
+        aspect-ratio: auto;
+        height: 60vh;
+        min-height: 380px;
+        max-height: 520px;
+      }
+      .hotbar-container {
+        bottom: 80px;
+        gap: 5px;
+        padding: 4px 8px;
+      }
+      .hotbar-slot {
+        width: 34px;
+        height: 34px;
+        font-size: 0.85rem;
+      }
+      .hotbar-key { display: none; }
+      .quest-tracker {
+        max-width: 170px;
+        top: 95px;
+        padding: 5px 8px;
+        font-size: 0.68rem;
+        opacity: 0.85;
+      }
+      .minimap-wrapper {
+        width: 72px;
+        height: 72px;
+      }
+      .bar-fill-wrap {
+        width: 70px;
+        height: 8px;
+      }
+      .hud-stat-bar {
+        padding: 3px 7px;
+        font-size: 0.68rem;
+      }
+      .hud-badge {
+        padding: 3px 8px;
+        font-size: 0.72rem;
+      }
+      .game-header {
+        margin-bottom: 8px;
+      }
+      .game-title {
+        font-size: 1.4rem;
+      }
+    }
 
     /* Modals & Grids */
     .hero-class-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
       gap: 10px;
       margin: 14px 0;
     }
@@ -332,7 +381,7 @@
       background: var(--bg-tertiary);
       border: 1px solid var(--border-color);
       border-radius: var(--radius-lg);
-      padding: 12px;
+      padding: 10px;
       text-align: center;
       cursor: pointer;
       transition: var(--transition);
@@ -342,69 +391,69 @@
       background: rgba(99, 102, 241, 0.15);
       transform: translateY(-2px);
     }
-    .hero-class-card i { font-size: 1.6rem; margin-bottom: 6px; }
-    .hero-class-name { font-size: 0.85rem; font-weight: 700; color: var(--text-primary); }
+    .hero-class-card i { font-size: 1.5rem; margin-bottom: 4px; }
+    .hero-class-name { font-size: 0.82rem; font-weight: 700; color: var(--text-primary); }
 
     /* Talents Grid */
     .talent-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-      gap: 12px;
-      margin: 16px 0;
+      grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+      gap: 10px;
+      margin: 14px 0;
     }
     .talent-card {
       background: var(--bg-tertiary);
       border: 1px solid var(--border-color);
       border-radius: var(--radius-lg);
-      padding: 12px;
+      padding: 10px;
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 6px;
+      gap: 5px;
       text-align: center;
     }
-    .talent-card i { font-size: 1.6rem; margin-bottom: 4px; }
-    .talent-title { font-size: 0.85rem; font-weight: 700; color: var(--text-primary); }
-    .talent-desc { font-size: 0.72rem; color: var(--text-secondary); line-height: 1.3; }
+    .talent-card i { font-size: 1.5rem; margin-bottom: 3px; }
+    .talent-title { font-size: 0.82rem; font-weight: 700; color: var(--text-primary); }
+    .talent-desc { font-size: 0.7rem; color: var(--text-secondary); line-height: 1.3; }
 
     /* Shop Item Grid */
     .shop-item-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-      gap: 12px;
-      margin: 16px 0;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 10px;
+      margin: 14px 0;
     }
     .shop-item {
       background: var(--bg-tertiary);
       border: 1px solid var(--border-color);
       border-radius: var(--radius-lg);
-      padding: 12px;
+      padding: 10px;
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 6px;
+      gap: 5px;
       text-align: center;
     }
-    .shop-item i { font-size: 1.8rem; margin-bottom: 4px; }
-    .shop-item-name { font-size: 0.85rem; font-weight: 700; color: var(--text-primary); }
-    .shop-item-desc { font-size: 0.75rem; color: var(--text-secondary); line-height: 1.3; }
+    .shop-item i { font-size: 1.6rem; margin-bottom: 3px; }
+    .shop-item-name { font-size: 0.82rem; font-weight: 700; color: var(--text-primary); }
+    .shop-item-desc { font-size: 0.72rem; color: var(--text-secondary); line-height: 1.3; }
 
     .game-info-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
       gap: 16px;
-      margin-top: 24px;
+      margin-top: 20px;
     }
     .info-card {
       background: var(--bg-secondary);
       border: 1px solid var(--border-color);
       border-radius: var(--radius-xl);
-      padding: 20px;
+      padding: 18px;
       box-shadow: var(--shadow-sm);
     }
     .info-card h4 {
-      margin: 0 0 12px;
-      font-size: 1rem;
+      margin: 0 0 10px;
+      font-size: 0.95rem;
       color: #38bdf8;
       display: flex;
       align-items: center;
@@ -417,7 +466,7 @@
       border-radius: 6px;
       padding: 2px 7px;
       font-family: var(--font-mono);
-      font-size: 0.8rem;
+      font-size: 0.78rem;
       font-weight: 700;
       color: #e2e8f0;
       margin: 2px;
@@ -438,6 +487,7 @@
         </a>
 
         <div class="nav-actions">
+          <button class="btn btn-secondary btn-sm" onclick="toggleFullscreen()" title="Toggle Fullscreen"><i class="fas fa-expand"></i></button>
           <a href="index.html" class="btn btn-secondary btn-sm"><i class="fas fa-house"></i> Hub</a>
           <button class="icon-btn theme-toggle-btn" title="Toggle Dark/Light Mode"><i class="fas fa-moon"></i></button>
         </div>
@@ -449,16 +499,16 @@
     <div class="game-header">
       <div>
         <h1 class="game-title"><i class="fas fa-gamepad" style="color: #818cf8;"></i> Realm of Bots 4.0</h1>
-        <p style="margin: 4px 0 0; color: var(--text-secondary); font-size: 0.9rem;">
-          Hoverbikes, skill trees, dungeon portals, companion drone pets, 4 biomes, ore mining, and Titan boss battles!
+        <p style="margin: 3px 0 0; color: var(--text-secondary); font-size: 0.85rem;">
+          Hoverbikes, skill trees, dungeon portals, companion drone pets, and Titan boss battles!
         </p>
       </div>
-      <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+      <div style="display: flex; gap: 6px; flex-wrap: wrap;">
         <button class="btn btn-secondary btn-sm" onclick="openTalentsModal()"><i class="fas fa-tree"></i> Talents (<span id="talentPtsText">0</span>)</button>
-        <button class="btn btn-secondary btn-sm" onclick="openHeroModal()"><i class="fas fa-user-astronaut"></i> Hero Skin</button>
+        <button class="btn btn-secondary btn-sm" onclick="openHeroModal()"><i class="fas fa-user-astronaut"></i> Skin</button>
         <button class="btn btn-secondary btn-sm" onclick="openShopModal()"><i class="fas fa-store"></i> Shop</button>
-        <button class="btn btn-secondary btn-sm" onclick="toggleMute()" id="muteBtn"><i class="fas fa-volume-up"></i> Sound</button>
-        <button class="btn btn-secondary btn-sm" onclick="restartGame()"><i class="fas fa-rotate-right"></i> Reset</button>
+        <button class="btn btn-secondary btn-sm" onclick="toggleMute()" id="muteBtn"><i class="fas fa-volume-up"></i></button>
+        <button class="btn btn-secondary btn-sm" onclick="restartGame()"><i class="fas fa-rotate-right"></i></button>
       </div>
     </div>
 
@@ -469,7 +519,7 @@
       <!-- Boss Banner -->
       <div class="boss-health-bar" id="bossBar">
         <div class="boss-name" id="bossName">Mecha Dragon Titan</div>
-        <div class="bar-fill-wrap" style="width: 100%; height: 12px;">
+        <div class="bar-fill-wrap" style="width: 100%; height: 10px;">
           <div class="bar-fill bar-hp" id="bossHpFill" style="width: 100%;"></div>
         </div>
       </div>
@@ -477,19 +527,19 @@
       <!-- Game HUD (Top-Left) -->
       <div class="game-hud-top-left">
         <div class="hud-stat-bar">
-          <span style="color: #ef4444; width: 18px;"><i class="fas fa-heart"></i></span>
+          <span style="color: #ef4444; width: 14px;"><i class="fas fa-heart"></i></span>
           <div class="bar-fill-wrap"><div class="bar-fill bar-hp" id="hpFill" style="width: 100%;"></div></div>
-          <span id="hpText" style="min-width: 50px;">100/100</span>
+          <span id="hpText" style="min-width: 45px;">100/100</span>
         </div>
         <div class="hud-stat-bar">
-          <span style="color: #3b82f6; width: 18px;"><i class="fas fa-bolt"></i></span>
+          <span style="color: #3b82f6; width: 14px;"><i class="fas fa-bolt"></i></span>
           <div class="bar-fill-wrap"><div class="bar-fill bar-mp" id="mpFill" style="width: 100%;"></div></div>
-          <span id="mpText" style="min-width: 50px;">60/60</span>
+          <span id="mpText" style="min-width: 45px;">60/60</span>
         </div>
         <div class="hud-stat-bar">
-          <span style="color: #eab308; width: 18px;"><i class="fas fa-star"></i></span>
+          <span style="color: #eab308; width: 14px;"><i class="fas fa-star"></i></span>
           <div class="bar-fill-wrap"><div class="bar-fill bar-xp" id="xpFill" style="width: 0%;"></div></div>
-          <span id="lvlText" style="min-width: 50px;">Lv. 1</span>
+          <span id="lvlText" style="min-width: 45px;">Lv. 1</span>
         </div>
       </div>
 
@@ -508,7 +558,7 @@
       <!-- Active Quest Tracker -->
       <div class="quest-tracker" id="questTracker">
         <div class="quest-title"><i class="fas fa-scroll"></i> Active Quest</div>
-        <div id="questDesc" style="color: #e2e8f0; line-height: 1.4;">Defeat 3 Slimes in the Forest (0/3)</div>
+        <div id="questDesc" style="color: #e2e8f0; line-height: 1.3;">Defeat 3 Slimes in the Forest (0/3)</div>
       </div>
 
       <!-- Bottom Hotbar -->
@@ -573,19 +623,19 @@
           <div class="talent-card">
             <i class="fas fa-hand-fist" style="color: #ef4444;"></i>
             <div class="talent-title">Berserker Force</div>
-            <div class="talent-desc">+10 Base Sword Damage (Rank <span id="tDmgRank">0</span>/5)</div>
+            <div class="talent-desc">+10 Sword Dmg (Rank <span id="tDmgRank">0</span>/5)</div>
             <button class="btn btn-primary btn-sm" onclick="upgradeTalent('dmg')">Upgrade</button>
           </div>
           <div class="talent-card">
             <i class="fas fa-shield-heart" style="color: #38bdf8;"></i>
             <div class="talent-title">Titan Armor</div>
-            <div class="talent-desc">+30 Max Health & Regen (Rank <span id="tHpRank">0</span>/5)</div>
+            <div class="talent-desc">+30 Max HP & Regen (Rank <span id="tHpRank">0</span>/5)</div>
             <button class="btn btn-primary btn-sm" onclick="upgradeTalent('hp')">Upgrade</button>
           </div>
           <div class="talent-card">
             <i class="fas fa-bolt" style="color: #c084fc;"></i>
             <div class="talent-title">Archmage Surge</div>
-            <div class="talent-desc">+20 Max Mana & Spell Power (Rank <span id="tMpRank">0</span>/5)</div>
+            <div class="talent-desc">+20 Max Mana (Rank <span id="tMpRank">0</span>/5)</div>
             <button class="btn btn-primary btn-sm" onclick="upgradeTalent('mp')">Upgrade</button>
           </div>
         </div>
@@ -681,12 +731,12 @@
     <!-- Controls Guide & Features -->
     <div class="game-info-grid">
       <div class="info-card">
-        <h4><i class="fas fa-keyboard"></i> Desktop Controls & Masteries</h4>
+        <h4><i class="fas fa-keyboard"></i> Controls & Masteries</h4>
         <div style="font-size: 0.85rem; color: var(--text-secondary); line-height: 1.8;">
           <div><span class="key-badge">W</span> <span class="key-badge">A</span> <span class="key-badge">S</span> <span class="key-badge">D</span> / <span class="key-badge">Arrows</span>: Move Hero</div>
           <div><span class="key-badge">Space</span> / <span class="key-badge">J</span>: Sword Slash & Mine Ore</div>
-          <div><span class="key-badge">V</span>: Mount / Dismount Cyber Hoverbike (2.5x Speed)</div>
-          <div><span class="key-badge">T</span>: Open Skill Tree & Allocate Points</div>
+          <div><span class="key-badge">V</span>: Mount / Dismount Hoverbike (2.5x Speed)</div>
+          <div><span class="key-badge">T</span>: Skill Talents & Masteries</div>
           <div><span class="key-badge">K</span> / <span class="key-badge">F</span>: Fireball Spell (10 MP)</div>
           <div><span class="key-badge">Q</span> / <span class="key-badge">3</span>: Thunderstorm Ultimate (50 MP)</div>
           <div><span class="key-badge">Shift</span>: Dash Roll (with I-Frames)</div>
@@ -701,7 +751,7 @@
           <div>🏜️ <strong>Golden Desert:</strong> Sand Scorpions & Gold Ores</div>
           <div>❄️ <strong>Frost Peaks:</strong> Ice Yeti King Boss & Crystal Ores</div>
           <div>🌋 <strong>Volcanic Nether:</strong> Mecha Dragon Titan Boss!</div>
-          <div>🌀 <strong>Dungeon Portals:</strong> Step into purple vortices to fast-travel!</div>
+          <div>🌀 <strong>Dungeon Portals:</strong> Fast-travel between biomes!</div>
         </div>
       </div>
     </div>
@@ -756,7 +806,16 @@
     function toggleMute() {
       AudioEngine.init();
       AudioEngine.muted = !AudioEngine.muted;
-      document.getElementById('muteBtn').innerHTML = AudioEngine.muted ? '<i class="fas fa-volume-xmark"></i> Muted' : '<i class="fas fa-volume-up"></i> Sound';
+      document.getElementById('muteBtn').innerHTML = AudioEngine.muted ? '<i class="fas fa-volume-xmark"></i>' : '<i class="fas fa-volume-up"></i>';
+    }
+
+    function toggleFullscreen() {
+      const elem = document.getElementById('canvasWrapper');
+      if (!document.fullscreenElement) {
+        elem.requestFullscreen().catch(err => {});
+      } else {
+        document.exitFullscreen();
+      }
     }
 
     const canvas = document.getElementById('gameCanvas');
@@ -814,19 +873,19 @@
       ores.length = 0;
       portals.length = 0;
 
-      // Forest (Top-Left)
+      // Forest
       for (let i = 0; i < 45; i++) {
         scenery.push({ x: Math.random() * 1500, y: Math.random() * 1100, type: 'tree', size: 24 + Math.random() * 14 });
       }
-      // Desert (Top-Right)
+      // Desert
       for (let i = 0; i < 30; i++) {
         scenery.push({ x: 1650 + Math.random() * 1500, y: Math.random() * 1100, type: 'cactus', size: 18 + Math.random() * 8 });
       }
-      // Frost (Bottom-Left)
+      // Frost
       for (let i = 0; i < 35; i++) {
         scenery.push({ x: Math.random() * 1500, y: 1250 + Math.random() * 1100, type: 'crystal', size: 16 + Math.random() * 12 });
       }
-      // Volcanic (Bottom-Right)
+      // Volcanic
       for (let i = 0; i < 30; i++) {
         scenery.push({ x: 1650 + Math.random() * 1500, y: 1250 + Math.random() * 1100, type: 'volcano_rock', size: 20 + Math.random() * 15 });
       }
@@ -841,7 +900,7 @@
         });
       }
 
-      // Teleportation Portals between Biomes
+      // Portals
       portals.push({ x: 400, y: 300, targetX: 2800, targetY: 2100, name: 'Nether Portal' });
       portals.push({ x: 2800, y: 2100, targetX: 400, targetY: 300, name: 'Forest Portal' });
       portals.push({ x: 2800, y: 300, targetX: 400, targetY: 2100, name: 'Frost Portal' });
@@ -909,7 +968,7 @@
       });
     }
 
-    // Keyboard & Controls
+    // Keyboard & Mobile Touch Listeners (Pointer Events for Multi-Touch Support)
     window.addEventListener('keydown', e => {
       keys[e.key.toLowerCase()] = true;
       AudioEngine.init();
@@ -927,22 +986,28 @@
 
     window.addEventListener('keyup', e => { keys[e.key.toLowerCase()] = false; });
 
-    function bindTouch(id, keyName) {
+    function bindPointerBtn(id, keyName) {
       const el = document.getElementById(id);
       if (!el) return;
-      el.addEventListener('touchstart', (e) => { e.preventDefault(); AudioEngine.init(); keys[keyName] = true; });
-      el.addEventListener('touchend', (e) => { e.preventDefault(); keys[keyName] = false; });
+      el.addEventListener('pointerdown', (e) => {
+        e.preventDefault();
+        AudioEngine.init();
+        keys[keyName] = true;
+        el.setPointerCapture(e.pointerId);
+      });
+      el.addEventListener('pointerup', (e) => { e.preventDefault(); keys[keyName] = false; });
+      el.addEventListener('pointercancel', (e) => { e.preventDefault(); keys[keyName] = false; });
     }
-    bindTouch('btnUp', 'w');
-    bindTouch('btnDown', 's');
-    bindTouch('btnLeft', 'a');
-    bindTouch('btnRight', 'd');
+    bindPointerBtn('btnUp', 'w');
+    bindPointerBtn('btnDown', 's');
+    bindPointerBtn('btnLeft', 'a');
+    bindPointerBtn('btnRight', 'd');
 
-    document.getElementById('btnAttack')?.addEventListener('touchstart', (e) => { e.preventDefault(); AudioEngine.init(); performAttack(); });
-    document.getElementById('btnMagic')?.addEventListener('touchstart', (e) => { e.preventDefault(); AudioEngine.init(); castMagic(); });
-    document.getElementById('btnDash')?.addEventListener('touchstart', (e) => { e.preventDefault(); AudioEngine.init(); performDash(); });
-    document.getElementById('btnMount')?.addEventListener('touchstart', (e) => { e.preventDefault(); AudioEngine.init(); toggleMount(); });
-    document.getElementById('btnInteract')?.addEventListener('touchstart', (e) => { e.preventDefault(); AudioEngine.init(); handleInteract(); });
+    document.getElementById('btnAttack')?.addEventListener('pointerdown', (e) => { e.preventDefault(); AudioEngine.init(); performAttack(); });
+    document.getElementById('btnMagic')?.addEventListener('pointerdown', (e) => { e.preventDefault(); AudioEngine.init(); castMagic(); });
+    document.getElementById('btnDash')?.addEventListener('pointerdown', (e) => { e.preventDefault(); AudioEngine.init(); performDash(); });
+    document.getElementById('btnMount')?.addEventListener('pointerdown', (e) => { e.preventDefault(); AudioEngine.init(); toggleMount(); });
+    document.getElementById('btnInteract')?.addEventListener('pointerdown', (e) => { e.preventDefault(); AudioEngine.init(); handleInteract(); });
 
     // Combat & Mounting
     function toggleMount() {
@@ -955,7 +1020,7 @@
       const slot = document.getElementById('mountSlot');
       if (player.isMounted) {
         slot.classList.add('active-mount');
-        showToast("Hoverbike Mounted! (2.5x Speed Boost)", "success");
+        showToast("Hoverbike Mounted! (2.5x Speed)", "success");
       } else {
         slot.classList.remove('active-mount');
         showToast("Hoverbike Dismounted.", "info");
@@ -1681,7 +1746,7 @@
         }
       }
 
-      // Draw Dungeon Teleportation Portals
+      // Draw Dungeon Portals
       for (const p of portals) {
         ctx.fillStyle = 'rgba(168, 85, 247, 0.4)';
         ctx.beginPath(); ctx.arc(p.x, p.y, 28, 0, Math.PI * 2); ctx.fill();

@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Offline Mode — AI Bots</title>
+  <link rel="icon" href="logo.png" type="image/png">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="css/theme.css">
+  <style>
+    body {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      font-family: var(--font-sans);
+    }
+    .offline-wrapper {
+      max-width: 680px;
+      margin: 60px auto;
+      padding: 32px 24px;
+      text-align: center;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-xl);
+      box-shadow: var(--shadow-xl);
+    }
+    .offline-icon {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      background: rgba(99, 102, 241, 0.15);
+      color: var(--primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2.4rem;
+      margin: 0 auto 20px;
+    }
+    .offline-title {
+      font-size: 1.8rem;
+      font-weight: 800;
+      margin-bottom: 10px;
+    }
+    .offline-desc {
+      color: var(--text-secondary);
+      font-size: 1rem;
+      line-height: 1.6;
+      margin-bottom: 24px;
+    }
+    .offline-tools-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+      gap: 12px;
+      margin: 24px 0;
+      text-align: left;
+    }
+    .offline-tool-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 12px;
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      text-decoration: none;
+      color: var(--text-primary);
+      font-size: 0.88rem;
+      font-weight: 600;
+      transition: var(--transition);
+    }
+    .offline-tool-item:hover {
+      border-color: var(--primary);
+      transform: translateY(-2px);
+    }
+    .offline-tool-item i {
+      color: var(--primary);
+      font-size: 1.1rem;
+    }
+  </style>
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#6366f1">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="AI Bots">
+  <link rel="apple-touch-icon" href="logo.png">
+</head>
+<body>
+  <div class="offline-wrapper">
+    <div class="offline-icon">
+      <i class="fas fa-wifi-slash"></i>
+    </div>
+    <h1 class="offline-title">You're Currently Offline</h1>
+    <p class="offline-desc">
+      No internet connection detected. Don't worry! AI Bots is a Progressive Web App (PWA) — many client-side tools work 100% offline in your browser:
+    </p>
+
+    <div class="offline-tools-grid">
+      <a href="cricketscore.html" class="offline-tool-item">
+        <i class="fas fa-baseball-bat-ball"></i>
+        <span>Cricket Scorer</span>
+      </a>
+      <a href="calculator.html" class="offline-tool-item">
+        <i class="fas fa-calculator"></i>
+        <span>Calculator</span>
+      </a>
+      <a href="cropphoto.html" class="offline-tool-item">
+        <i class="fas fa-crop-simple"></i>
+        <span>Crop Photo</span>
+      </a>
+      <a href="password.html" class="offline-tool-item">
+        <i class="fas fa-key"></i>
+        <span>Password Gen</span>
+      </a>
+      <a href="unitconverter.html" class="offline-tool-item">
+        <i class="fas fa-ruler-combined"></i>
+        <span>Unit Converter</span>
+      </a>
+      <a href="game.html" class="offline-tool-item">
+        <i class="fas fa-gamepad"></i>
+        <span>Realm of Bots</span>
+      </a>
+      <a href="wordcounter.html" class="offline-tool-item">
+        <i class="fas fa-spell-check"></i>
+        <span>Word Counter</span>
+      </a>
+      <a href="timer.html" class="offline-tool-item">
+        <i class="fas fa-stopwatch"></i>
+        <span>Stopwatch</span>
+      </a>
+    </div>
+
+    <button onclick="window.location.reload()" class="btn btn-primary btn-lg" style="margin-top: 10px;">
+      <i class="fas fa-rotate-right"></i> Try Reconnecting
+    </button>
+  </div>
+</body>
+</html>

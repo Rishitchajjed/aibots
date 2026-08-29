@@ -39,7 +39,12 @@
   <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
   <link rel="canonical" href="https://www.aibots.co.in/">
   <link rel="manifest" href="manifest.json">
-  <meta name="theme-color" content="#4f46e5">
+  <meta name="theme-color" content="#6366f1">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="AI Bots">
+  <link rel="apple-touch-icon" href="logo.png">
 
   <title>AI Bots (aibots.co.in) — Free All-In-One Creative Studio & Browser Tools</title>
   <meta name="description" content="AI Bots is a 100% free all-in-one browser platform with 28+ tools: live cricket scorer, background remover, QR code generator, PDF maker, password generator, unit converter, and more.">
@@ -1964,6 +1969,10 @@ body {
           <button class="icon-btn sound-toggle-btn" title="Toggle Sound FX"><i class="fas fa-volume-high"></i></button>
           <button onclick="toggleShortcutsModal()" class="icon-btn hide-on-mobile" title="Keyboard Shortcuts (?)"><i class="fas fa-keyboard"></i></button>
           
+          <button id="pwaInstallNavBtn" onclick="installAIbotsPWA()" class="btn btn-sm btn-primary pwa-install-btn" style="display: none; align-items: center; gap: 6px; font-weight: 700; border-radius: var(--radius-full); padding: 5px 12px; font-size: 0.82rem; background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);" title="Install AI Bots App to Phone / PC">
+            <i class="fas fa-download"></i> <span class="hide-on-mobile">Install App</span>
+          </button>
+
           <button class="search-trigger-btn" id="search-trigger-btn" title="Quick Search (Ctrl + K)">
             <i class="fas fa-magnifying-glass search-icon"></i>
             <span>Search Tools</span>

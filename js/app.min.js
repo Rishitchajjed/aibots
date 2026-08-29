@@ -1188,6 +1188,84 @@ window.updateDonationQR = function(amt) {
   }
 })();
 
+// ==========================================================================
+// Progressive Web App (PWA) — Service Worker & Install Prompt Manager
+// ==========================================================================
+(function initPWA() {
+  let deferredInstallPrompt = null;
+
+  // 1. Register Service Worker
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('./sw.js')
+        .then((reg) => {
+          console.log('[PWA] Service Worker registered with scope:', reg.scope);
+        })
+        .catch((err) => {
+          console.warn('[PWA] Service Worker registration failed:', err);
+        });
+    });
+  }
+
+  // 2. Capture 'beforeinstallprompt' for Android/Chrome/Edge/Windows/Mac
+  window.addEventListener('beforeinstallprompt', (e) => {
+    e.preventDefault();
+    deferredInstallPrompt = e;
+    window.deferredInstallPrompt = e;
+
+    // Show Install App buttons if present on page
+    const installBtns = document.querySelectorAll('.pwa-install-btn, #pwaInstallNavBtn, #pwaFloatingInstall');
+    installBtns.forEach(btn => {
+      btn.style.display = 'inline-flex';
+    });
+  });
+
+  // 3. Global Install Trigger Function
+  window.installAIbotsPWA = function() {
+    if (deferredInstallPrompt) {
+      deferredInstallPrompt.prompt();
+      deferredInstallPrompt.userChoice.then((choiceResult) => {
+        if (choiceResult.outcome === 'accepted') {
+          if (typeof showToast === 'function') {
+            showToast('🎉 AI Bots installed successfully! Check your home screen/apps.', 'success');
+          }
+          const installBtns = document.querySelectorAll('.pwa-install-btn, #pwaInstallNavBtn, #pwaFloatingInstall');
+          installBtns.forEach(btn => btn.style.display = 'none');
+        }
+        deferredInstallPrompt = null;
+      });
+    } else {
+      // Check if iOS Safari
+      const isIos = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+      const isStandalone = window.navigator.standalone || window.matchMedia('(display-mode: standalone)').matches;
+
+      if (isStandalone) {
+        if (typeof showToast === 'function') {
+          showToast('✨ AI Bots is already installed and running as an app!', 'info');
+        }
+      } else if (isIos) {
+        if (typeof showToast === 'function') {
+          showToast('📲 To install on iPhone: Tap "Share" (⬆) at the bottom, then select "Add to Home Screen" (➕)!', 'info', 7000);
+        } else {
+          alert('📲 To install on iPhone/iPad:\n1. Tap the Share button (square with arrow up)\n2. Scroll down and tap "Add to Home Screen"');
+        }
+      } else {
+        if (typeof showToast === 'function') {
+          showToast('📲 Tap the install icon (⬇) in your browser address bar to install AI Bots!', 'info', 5000);
+        }
+      }
+    }
+  };
+
+  // 4. Log successful appinstalled event
+  window.addEventListener('appinstalled', () => {
+    console.log('[PWA] AI Bots was installed to the device home screen/apps!');
+    const installBtns = document.querySelectorAll('.pwa-install-btn, #pwaInstallNavBtn, #pwaFloatingInstall');
+    installBtns.forEach(btn => btn.style.display = 'none');
+  });
+})();
+
+
 
 
 

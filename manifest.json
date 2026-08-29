@@ -1,23 +1,58 @@
 {
-  "name": "AI Bots — Creative Studio & Browser Tools",
+  "$schema": "https://json.schemastore.org/web-manifest-combined.json",
+  "name": "AI Bots — Creative Studio & Productivity Tools",
   "short_name": "AI Bots",
-  "start_url": "/",
+  "id": "ai-bots-creative-studio",
+  "description": "Free all-in-one web-based creative powerhouse and 28+ private browser tools by Rishit Chajjed.",
+  "start_url": "./index.html",
+  "scope": "./",
   "display": "standalone",
-  "background_color": "#090d16",
-  "theme_color": "#4f46e5",
-  "description": "Free all-in-one creative studio and 28+ browser tools platform by Rishit Chajjed.",
+  "orientation": "any",
+  "background_color": "#0a0f1d",
+  "theme_color": "#6366f1",
+  "categories": ["productivity", "utilities", "photo", "games"],
   "icons": [
     {
-      "src": "https://i.ibb.co/G2NFYHG/logo.png",
+      "src": "logo.png",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "any maskable"
     },
     {
-      "src": "https://i.ibb.co/G2NFYHG/logo.png",
+      "src": "logo.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Live Cricket Scorer",
+      "short_name": "Cricket Scorer",
+      "description": "Count balls, runs, extras, and overs live in-browser",
+      "url": "./cricketscore.html",
+      "icons": [{ "src": "logo.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Background Remover",
+      "short_name": "BG Remover",
+      "description": "1-click AI photo background eraser",
+      "url": "./backremover.html",
+      "icons": [{ "src": "logo.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Precision Photo Crop",
+      "short_name": "Crop Studio",
+      "description": "8-handle precision rule-of-thirds photo cropper",
+      "url": "./cropphoto.html",
+      "icons": [{ "src": "logo.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Realm of Bots RPG",
+      "short_name": "Open World Game",
+      "description": "Epic 4-biome top-down open world action adventure",
+      "url": "./game.html",
+      "icons": [{ "src": "logo.png", "sizes": "192x192" }]
     }
   ]
 }

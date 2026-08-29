@@ -2,188 +2,98 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://www.aibots.co.in/</loc>
-    <lastmod>2026-08-28</lastmod>
+    <lastmod>2026-08-29</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
   </url>
   <url>
-    <loc>https://www.aibots.co.in/about</loc>
-    <lastmod>2026-08-28</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.98</priority>
+    <loc>https://www.aibots.co.in/about.html</loc>
+    <lastmod>2026-08-29</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>1.0</priority>
   </url>
   <url>
-    <loc>https://www.aibots.co.in/donate</loc>
-    <lastmod>2026-08-28</lastmod>
+    <loc>https://www.aibots.co.in/cricketscore.html</loc>
+    <lastmod>2026-08-29</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.95</priority>
   </url>
   <url>
-    <loc>https://www.aibots.co.in/qrcode</loc>
-    <lastmod>2026-08-28</lastmod>
+    <loc>https://www.aibots.co.in/game.html</loc>
+    <lastmod>2026-08-29</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.95</priority>
   </url>
   <url>
-    <loc>https://www.aibots.co.in/cricketscore</loc>
-    <lastmod>2026-08-28</lastmod>
+    <loc>https://www.aibots.co.in/backremover.html</loc>
+    <lastmod>2026-08-29</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.95</priority>
   </url>
   <url>
-    <loc>https://www.aibots.co.in/backremover</loc>
-    <lastmod>2026-08-28</lastmod>
+    <loc>https://www.aibots.co.in/cropphoto.html</loc>
+    <lastmod>2026-08-29</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.95</priority>
   </url>
   <url>
-    <loc>https://www.aibots.co.in/invoice</loc>
-    <lastmod>2026-08-28</lastmod>
+    <loc>https://www.aibots.co.in/logomaker.html</loc>
+    <lastmod>2026-08-29</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.95</priority>
   </url>
   <url>
-    <loc>https://www.aibots.co.in/pdfmaker</loc>
-    <lastmod>2026-08-28</lastmod>
+    <loc>https://www.aibots.co.in/qrcode.html</loc>
+    <lastmod>2026-08-29</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.95</priority>
   </url>
   <url>
-    <loc>https://www.aibots.co.in/print</loc>
-    <lastmod>2026-08-28</lastmod>
+    <loc>https://www.aibots.co.in/pdfmaker.html</loc>
+    <lastmod>2026-08-29</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.95</priority>
   </url>
   <url>
-    <loc>https://www.aibots.co.in/resizeimage</loc>
-    <lastmod>2026-08-28</lastmod>
+    <loc>https://www.aibots.co.in/invoice.html</loc>
+    <lastmod>2026-08-29</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.95</priority>
+  </url>
+  <url>
+    <loc>https://www.aibots.co.in/currency.html</loc>
+    <lastmod>2026-08-29</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.90</priority>
   </url>
   <url>
-    <loc>https://www.aibots.co.in/password</loc>
-    <lastmod>2026-08-28</lastmod>
+    <loc>https://www.aibots.co.in/password.html</loc>
+    <lastmod>2026-08-29</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.90</priority>
   </url>
   <url>
-    <loc>https://www.aibots.co.in/unitconverter</loc>
-    <lastmod>2026-08-28</lastmod>
+    <loc>https://www.aibots.co.in/unitconverter.html</loc>
+    <lastmod>2026-08-29</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.90</priority>
   </url>
   <url>
-    <loc>https://www.aibots.co.in/wordcounter</loc>
-    <lastmod>2026-08-28</lastmod>
+    <loc>https://www.aibots.co.in/wordcounter.html</loc>
+    <lastmod>2026-08-29</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.90</priority>
   </url>
   <url>
-    <loc>https://www.aibots.co.in/currency</loc>
-    <lastmod>2026-08-28</lastmod>
+    <loc>https://www.aibots.co.in/chatbot.html</loc>
+    <lastmod>2026-08-29</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.90</priority>
   </url>
   <url>
-    <loc>https://www.aibots.co.in/weather</loc>
-    <lastmod>2026-08-28</lastmod>
+    <loc>https://www.aibots.co.in/donate.html</loc>
+    <lastmod>2026-08-29</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.90</priority>
-  </url>
-  <url>
-    <loc>https://www.aibots.co.in/game</loc>
-    <lastmod>2026-08-28</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.90</priority>
-  </url>
-  <url>
-    <loc>https://www.aibots.co.in/typingpractice</loc>
-    <lastmod>2026-08-28</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.85</priority>
-  </url>
-  <url>
-    <loc>https://www.aibots.co.in/emojis</loc>
-    <lastmod>2026-08-28</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.85</priority>
-  </url>
-  <url>
-    <loc>https://www.aibots.co.in/endchanger</loc>
-    <lastmod>2026-08-28</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.85</priority>
-  </url>
-  <url>
-    <loc>https://www.aibots.co.in/videoplayer</loc>
-    <lastmod>2026-08-28</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.85</priority>
-  </url>
-  <url>
-    <loc>https://www.aibots.co.in/timer</loc>
-    <lastmod>2026-08-28</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.85</priority>
-  </url>
-  <url>
-    <loc>https://www.aibots.co.in/calculator</loc>
-    <lastmod>2026-08-28</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.85</priority>
-  </url>
-  <url>
-    <loc>https://www.aibots.co.in/chatbot</loc>
-    <lastmod>2026-08-28</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.85</priority>
-  </url>
-  <url>
-    <loc>https://www.aibots.co.in/buisnesscard</loc>
-    <lastmod>2026-08-28</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.85</priority>
-  </url>
-  <url>
-    <loc>https://www.aibots.co.in/cropphoto</loc>
-    <lastmod>2026-08-28</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.85</priority>
-  </url>
-  <url>
-    <loc>https://www.aibots.co.in/imagecombiner</loc>
-    <lastmod>2026-08-28</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.80</priority>
-  </url>
-  <url>
-    <loc>https://www.aibots.co.in/imagelink</loc>
-    <lastmod>2026-08-28</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.80</priority>
-  </url>
-  <url>
-    <loc>https://www.aibots.co.in/logomaker</loc>
-    <lastmod>2026-08-28</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.80</priority>
-  </url>
-  <url>
-    <loc>https://www.aibots.co.in/pdfviewer</loc>
-    <lastmod>2026-08-28</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.80</priority>
-  </url>
-  <url>
-    <loc>https://www.aibots.co.in/photogenerator</loc>
-    <lastmod>2026-08-28</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.80</priority>
-  </url>
-  <url>
-    <loc>https://www.aibots.co.in/cricket</loc>
-    <lastmod>2026-08-28</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.80</priority>
   </url>
 </urlset>

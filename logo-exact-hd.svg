@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1080 1080" width="1080" height="1080">
+  <!-- Exact Match Official AI Bots Logo -->
+  <!-- Bright Red Circle -->
+  <circle cx="540" cy="540" r="480" fill="#ff0000"/>
+
+  <!-- Bold Black Typography: AI BOTS -->
+  <text x="540" y="580" 
+        text-anchor="middle" 
+        fill="#000000" 
+        font-family="'Arial Black', 'Impact', 'Plus Jakarta Sans', -apple-system, sans-serif" 
+        font-size="140" 
+        font-weight="900" 
+        letter-spacing="6">AI BOTS</text>
+</svg>

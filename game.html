@@ -6,9 +6,9 @@
   <meta name="google-site-verification" content="ndzq-U-NLijgza_QqgQdcc2U3oMRoud_BT2ZZiwFREM">
   <meta name="google-site-verification" content="-Yb6Nx74gbZ3wRN5uP-Y8KKwDWlt1DPpxs4nA3PkE6M">
   <meta name="robots" content="index, follow">
-  <title>Realm of Bots 4.0: Master RPG — AI Bots</title>
-  <meta name="description" content="Play Realm of Bots 4.0, a mobile-compatible open-world RPG with Cyber Hoverbikes, Skill Talent Trees, Dungeon Portals, Boss Phases, and Companion Drones!">
-  <meta name="keywords" content="open world game, browser rpg, mobile rpg, free online game, 2d open world rpg, hoverbike mount, skill tree, realm of bots 4.0, ai bots">
+  <title>Realm of Bots 4.0: HD Graphics RPG — AI Bots</title>
+  <meta name="description" content="Play Realm of Bots with Enhanced HD Graphics: dynamic radial lighting, weather particle systems, animated boss wings, glowing neon circuitry, and fluid combat!">
+  <meta name="keywords" content="open world game, browser rpg, hd graphics rpg, 2d open world rpg, dynamic lighting, weather effects, realm of bots, ai bots">
   <meta name="author" content="Rishit Chajjed">
   <link rel="icon" href="logo.png" type="image/png">
   <link rel="canonical" href="https://www.aibots.co.in/game.html">
@@ -16,8 +16,8 @@
   <!-- Open Graph / Social Cards -->
   <meta property="og:type" content="game">
   <meta property="og:url" content="https://www.aibots.co.in/game.html">
-  <meta property="og:title" content="Realm of Bots 4.0: Master RPG — AI Bots">
-  <meta property="og:description" content="Cyber Hoverbikes, Skill Trees, Dungeon Portals, Yeti Boss, Companion Drones, and endless open-world adventure!">
+  <meta property="og:title" content="Realm of Bots: HD Graphics Edition — AI Bots">
+  <meta property="og:description" content="Enhanced HD Graphics, dynamic lighting engine, weather particles, animated dragon wings, and cyber hoverbikes!">
   <meta property="og:image" content="https://www.aibots.co.in/logo.png">
 
   <!-- Fonts & Icons -->
@@ -60,8 +60,8 @@
       background: #020617;
       border-radius: var(--radius-xl);
       overflow: hidden;
-      border: 2px solid rgba(129, 140, 248, 0.4);
-      box-shadow: 0 14px 50px rgba(0, 0, 0, 0.9), 0 0 35px rgba(99, 102, 241, 0.3);
+      border: 2px solid rgba(129, 140, 248, 0.5);
+      box-shadow: 0 14px 50px rgba(0, 0, 0, 0.95), 0 0 45px rgba(99, 102, 241, 0.35);
       user-select: none;
       touch-action: none;
     }
@@ -69,7 +69,7 @@
       width: 100%;
       height: 100%;
       display: block;
-      image-rendering: pixelated;
+      image-rendering: auto;
     }
 
     /* Glassmorphic Top-Left HUD */
@@ -91,16 +91,16 @@
       backdrop-filter: blur(8px);
       padding: 4px 10px;
       border-radius: 999px;
-      border: 1px solid rgba(255, 255, 255, 0.15);
+      border: 1px solid rgba(255, 255, 255, 0.18);
       font-size: 0.75rem;
       font-weight: 700;
       color: #f8fafc;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.4);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.5);
     }
     .bar-fill-wrap {
       width: 110px;
       height: 9px;
-      background: rgba(0,0,0,0.7);
+      background: rgba(0,0,0,0.75);
       border-radius: 6px;
       overflow: hidden;
       border: 1px solid rgba(255,255,255,0.15);
@@ -131,14 +131,14 @@
       backdrop-filter: blur(8px);
       padding: 4px 10px;
       border-radius: 999px;
-      border: 1px solid rgba(255, 255, 255, 0.15);
+      border: 1px solid rgba(255, 255, 255, 0.18);
       font-size: 0.78rem;
       font-weight: 700;
       color: #fbbf24;
       display: flex;
       align-items: center;
       gap: 5px;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.4);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.5);
     }
     .combo-badge {
       background: rgba(236, 72, 153, 0.25);
@@ -154,7 +154,7 @@
       border: 2px solid rgba(129, 140, 248, 0.6);
       background: rgba(15, 23, 42, 0.85);
       overflow: hidden;
-      box-shadow: 0 4px 14px rgba(0,0,0,0.6);
+      box-shadow: 0 4px 16px rgba(0,0,0,0.7);
       position: relative;
     }
     #minimapCanvas {
@@ -195,7 +195,7 @@
       align-items: center;
       gap: 3px;
       z-index: 20;
-      box-shadow: 0 0 30px rgba(239, 68, 68, 0.5);
+      box-shadow: 0 0 35px rgba(239, 68, 68, 0.6);
     }
     .boss-name { font-size: 0.82rem; font-weight: 800; color: #f87171; text-transform: uppercase; letter-spacing: 1px; }
 
@@ -211,7 +211,7 @@
       backdrop-filter: blur(8px);
       padding: 5px 10px;
       border-radius: var(--radius-lg);
-      border: 1px solid rgba(255, 255, 255, 0.15);
+      border: 1px solid rgba(255, 255, 255, 0.18);
       z-index: 15;
       pointer-events: auto;
     }
@@ -239,7 +239,8 @@
     }
     .hotbar-slot.active-mount {
       border-color: #fbbf24;
-      background: rgba(251, 191, 36, 0.2);
+      background: rgba(251, 191, 36, 0.25);
+      box-shadow: 0 0 14px rgba(251, 191, 36, 0.4);
     }
     .hotbar-key {
       position: absolute;
@@ -483,7 +484,7 @@
         <a href="index.html" class="brand-link">
           <img src="logo.png" alt="AI Bots Logo" class="brand-logo-img" width="32" height="32" style="width: 32px; height: 32px; object-fit: contain; aspect-ratio: 1/1;">
           <span>AI Bots</span>
-          <span class="brand-badge">RPG Master 4.0</span>
+          <span class="brand-badge">HD Graphics 4.0</span>
         </a>
 
         <div class="nav-actions">
@@ -498,9 +499,9 @@
   <main class="app-container game-page-container">
     <div class="game-header">
       <div>
-        <h1 class="game-title"><i class="fas fa-gamepad" style="color: #818cf8;"></i> Realm of Bots 4.0</h1>
+        <h1 class="game-title"><i class="fas fa-wand-magic-sparkles" style="color: #818cf8;"></i> Realm of Bots HD</h1>
         <p style="margin: 3px 0 0; color: var(--text-secondary); font-size: 0.85rem;">
-          Hoverbikes, skill trees, dungeon portals, companion drone pets, and Titan boss battles!
+          Enhanced lighting shaders, weather particle systems, animated boss wings, and cyber hoverbikes!
         </p>
       </div>
       <div style="display: flex; gap: 6px; flex-wrap: wrap;">
@@ -747,10 +748,10 @@
       <div class="info-card">
         <h4><i class="fas fa-map-location-dot"></i> Biomes, Dungeons & Titans</h4>
         <div style="font-size: 0.85rem; color: var(--text-secondary); line-height: 1.7;">
-          <div>🌲 <strong>Emerald Forest:</strong> Slimes, Goblins & Ancient Trees</div>
-          <div>🏜️ <strong>Golden Desert:</strong> Sand Scorpions & Gold Ores</div>
-          <div>❄️ <strong>Frost Peaks:</strong> Ice Yeti King Boss & Crystal Ores</div>
-          <div>🌋 <strong>Volcanic Nether:</strong> Mecha Dragon Titan Boss!</div>
+          <div>🌲 <strong>Emerald Forest:</strong> Fireflies, Slimes & Ancient Oaks</div>
+          <div>🏜️ <strong>Golden Desert:</strong> Desert Wind, Sand Scorpions & Gold Ores</div>
+          <div>❄️ <strong>Frost Peaks:</strong> Falling Snow, Yeti King & Ice Crystals</div>
+          <div>🌋 <strong>Volcanic Nether:</strong> Magma Embers & Animated Dragon Boss!</div>
           <div>🌀 <strong>Dungeon Portals:</strong> Fast-travel between biomes!</div>
         </div>
       </div>
@@ -853,12 +854,14 @@
     let lootOrbs = [];
     let projectiles = [];
     let particles = [];
+    let weatherParticles = [];
     let npcs = [];
     let chests = [];
     let floatingTexts = [];
     let dialog = null;
     let timeOfDay = 0;
     let screenShake = 0;
+    let globalTicks = 0;
 
     let quest = {
       id: 1, target: 'slime', needed: 3, current: 0,
@@ -872,22 +875,45 @@
       scenery.length = 0;
       ores.length = 0;
       portals.length = 0;
+      weatherParticles.length = 0;
+
+      // Weather Particles (Snow in Frost, Embers in Nether, Fireflies in Forest)
+      for (let i = 0; i < 70; i++) {
+        // Snow in Frost (0..1600, 1200..2400)
+        weatherParticles.push({
+          x: Math.random() * 1600, y: 1200 + Math.random() * 1200,
+          vx: (Math.random() - 0.5) * 0.8, vy: 0.8 + Math.random() * 1.4,
+          type: 'snow', radius: 1.5 + Math.random() * 2, color: 'rgba(255,255,255,0.75)'
+        });
+        // Embers in Nether (1600..3200, 1200..2400)
+        weatherParticles.push({
+          x: 1600 + Math.random() * 1600, y: 1200 + Math.random() * 1200,
+          vx: (Math.random() - 0.5) * 1.2, vy: -(0.8 + Math.random() * 1.6),
+          type: 'ember', radius: 1.5 + Math.random() * 2.5, color: '#f97316'
+        });
+        // Fireflies in Forest (0..1600, 0..1200)
+        weatherParticles.push({
+          x: Math.random() * 1600, y: Math.random() * 1200,
+          vx: (Math.random() - 0.5) * 0.6, vy: (Math.random() - 0.5) * 0.6,
+          type: 'firefly', radius: 2, color: '#a7f3d0'
+        });
+      }
 
       // Forest
       for (let i = 0; i < 45; i++) {
-        scenery.push({ x: Math.random() * 1500, y: Math.random() * 1100, type: 'tree', size: 24 + Math.random() * 14 });
+        scenery.push({ x: Math.random() * 1500, y: Math.random() * 1100, type: 'tree', size: 26 + Math.random() * 16 });
       }
       // Desert
       for (let i = 0; i < 30; i++) {
-        scenery.push({ x: 1650 + Math.random() * 1500, y: Math.random() * 1100, type: 'cactus', size: 18 + Math.random() * 8 });
+        scenery.push({ x: 1650 + Math.random() * 1500, y: Math.random() * 1100, type: 'cactus', size: 20 + Math.random() * 10 });
       }
       // Frost
       for (let i = 0; i < 35; i++) {
-        scenery.push({ x: Math.random() * 1500, y: 1250 + Math.random() * 1100, type: 'crystal', size: 16 + Math.random() * 12 });
+        scenery.push({ x: Math.random() * 1500, y: 1250 + Math.random() * 1100, type: 'crystal', size: 18 + Math.random() * 14 });
       }
       // Volcanic
       for (let i = 0; i < 30; i++) {
-        scenery.push({ x: 1650 + Math.random() * 1500, y: 1250 + Math.random() * 1100, type: 'volcano_rock', size: 20 + Math.random() * 15 });
+        scenery.push({ x: 1650 + Math.random() * 1500, y: 1250 + Math.random() * 1100, type: 'volcano_rock', size: 22 + Math.random() * 16 });
       }
 
       // Mineable Gold & Crystal Ores
@@ -938,7 +964,7 @@
         x: 2500, y: 1900,
         hp: 700, maxHp: 700, speed: 1.7,
         color: '#dc2626', radius: 48, xp: 500, coins: 300, atk: 28,
-        isBoss: true, attackTimer: 0
+        isBoss: true, attackTimer: 0, wingAngle: 0
       });
     }
 
@@ -947,28 +973,29 @@
         type: 'yeti_boss', name: 'Frost Yeti King',
         x: 600, y: 1900,
         hp: 350, maxHp: 350, speed: 1.5,
-        color: '#38bdf8', radius: 32, xp: 200, coins: 120, atk: 20,
+        color: '#38bdf8', radius: 34, xp: 200, coins: 120, atk: 20,
         isBoss: true, attackTimer: 0
       });
     }
 
     function spawnEnemy() {
       const biomeTypes = [
-        { type: 'slime', hp: 35, maxHp: 35, speed: 1.8, color: '#22c55e', radius: 15, xp: 25, coins: 8, atk: 8, xMin: 0, xMax: 1500, yMin: 0, yMax: 1100 },
-        { type: 'scorpion', hp: 55, maxHp: 55, speed: 2.2, color: '#f59e0b', radius: 16, xp: 45, coins: 15, atk: 14, xMin: 1600, xMax: 3100, yMin: 0, yMax: 1100 },
-        { type: 'ice_golem', hp: 85, maxHp: 85, speed: 1.5, color: '#38bdf8', radius: 20, xp: 75, coins: 25, atk: 18, xMin: 0, xMax: 1500, yMin: 1200, yMax: 2300 },
-        { type: 'fire_demon', hp: 110, maxHp: 110, speed: 2.0, color: '#f43f5e', radius: 19, xp: 100, coins: 35, atk: 22, xMin: 1600, xMax: 3100, yMin: 1200, yMax: 2300 }
+        { type: 'slime', hp: 35, maxHp: 35, speed: 1.8, color: '#22c55e', radius: 16, xp: 25, coins: 8, atk: 8, xMin: 0, xMax: 1500, yMin: 0, yMax: 1100 },
+        { type: 'scorpion', hp: 55, maxHp: 55, speed: 2.2, color: '#f59e0b', radius: 17, xp: 45, coins: 15, atk: 14, xMin: 1600, xMax: 3100, yMin: 0, yMax: 1100 },
+        { type: 'ice_golem', hp: 85, maxHp: 85, speed: 1.5, color: '#38bdf8', radius: 21, xp: 75, coins: 25, atk: 18, xMin: 0, xMax: 1500, yMin: 1200, yMax: 2300 },
+        { type: 'fire_demon', hp: 110, maxHp: 110, speed: 2.0, color: '#f43f5e', radius: 20, xp: 100, coins: 35, atk: 22, xMin: 1600, xMax: 3100, yMin: 1200, yMax: 2300 }
       ];
       
       const t = biomeTypes[Math.floor(Math.random() * biomeTypes.length)];
       enemies.push({
         ...t,
         x: t.xMin + Math.random() * (t.xMax - t.xMin),
-        y: t.yMin + Math.random() * (t.yMax - t.yMin)
+        y: t.yMin + Math.random() * (t.yMax - t.yMin),
+        animTick: Math.random() * 10
       });
     }
 
-    // Keyboard & Mobile Touch Listeners (Pointer Events for Multi-Touch Support)
+    // Keyboard & Mobile Touch Listeners (Pointer Events)
     window.addEventListener('keydown', e => {
       keys[e.key.toLowerCase()] = true;
       AudioEngine.init();
@@ -1102,7 +1129,7 @@
 
       projectiles.push({
         x: player.x, y: player.y, vx, vy,
-        radius: 10, life: 65, isPlayer: true,
+        radius: 11, life: 65, isPlayer: true,
         dmg: 42 + player.lvl * 9 + (player.talents.mp * 5),
         color: player.skin === 'arcane_mage' ? '#c084fc' : '#38bdf8'
       });
@@ -1123,7 +1150,7 @@
         projectiles.push({
           x: player.x, y: player.y,
           vx: Math.cos(ang) * 11, vy: Math.sin(ang) * 11,
-          radius: 12, life: 70, isPlayer: true,
+          radius: 13, life: 70, isPlayer: true,
           dmg: 85 + player.lvl * 16, color: '#facc15'
         });
       }
@@ -1392,6 +1419,7 @@
     }
 
     function update() {
+      globalTicks++;
       timeOfDay = (timeOfDay + 0.0003) % 1;
       if (screenShake > 0) screenShake *= 0.88;
 
@@ -1434,6 +1462,17 @@
       if (player.attackTimer > 0) player.attackTimer--;
       if (player.invulnerable > 0) player.invulnerable--;
       if (player.dashCooldown > 0) player.dashCooldown--;
+
+      // Weather Particles Update
+      for (const wp of weatherParticles) {
+        wp.x += wp.vx; wp.y += wp.vy;
+        if (wp.type === 'snow' && wp.y > 2400) { wp.y = 1200; wp.x = Math.random() * 1600; }
+        if (wp.type === 'ember' && wp.y < 1200) { wp.y = 2400; wp.x = 1600 + Math.random() * 1600; }
+        if (wp.type === 'firefly') {
+          if (wp.x < 0 || wp.x > 1600) wp.vx *= -1;
+          if (wp.y < 0 || wp.y > 1200) wp.vy *= -1;
+        }
+      }
 
       // Magnetic Loot Orbs Attract
       for (let i = lootOrbs.length - 1; i >= 0; i--) {
@@ -1485,7 +1524,12 @@
       // Enemy AI & Boss Logic
       let activeBoss = null;
       for (const en of enemies) {
-        if (en.isBoss) activeBoss = en;
+        if (en.isBoss) {
+          activeBoss = en;
+          if (en.wingAngle !== undefined) en.wingAngle += 0.15;
+        }
+        if (en.animTick !== undefined) en.animTick += 0.1;
+
         const dist = Math.hypot(player.x - en.x, player.y - en.y);
         if (dist < 380 && dist > 10) {
           const angle = Math.atan2(player.y - en.y, player.x - en.x);
@@ -1558,7 +1602,7 @@
       else dialog = null;
     }
 
-    // High-Resolution Character Sprite Renderer with Hoverbike Mount
+    // High-Resolution Character Sprite Renderer
     function drawPlayerSprite(ctx) {
       ctx.save();
       ctx.translate(player.x, player.y);
@@ -1571,6 +1615,12 @@
         'mecha_paladin': { body: '#b45309', armor: '#fbbf24', visor: '#f43f5e', blade: '#eab308' }
       };
       const theme = skinThemes[player.skin] || skinThemes['cyber_knight'];
+
+      // Drop Shadow
+      ctx.fillStyle = 'rgba(0, 0, 0, 0.35)';
+      ctx.beginPath();
+      ctx.ellipse(0, 18, 16, 7, 0, 0, Math.PI * 2);
+      ctx.fill();
 
       // Draw Cyber Hoverbike if Mounted
       if (player.isMounted) {
@@ -1689,28 +1739,75 @@
       ctx.save();
       ctx.translate(-camX, -camY);
 
-      // Draw 4 Biomes
-      ctx.fillStyle = '#064e3b'; ctx.fillRect(0, 0, 1600, 1200); // Forest
-      ctx.fillStyle = '#78350f'; ctx.fillRect(1600, 0, 1600, 1200); // Desert
-      ctx.fillStyle = '#0c4a6e'; ctx.fillRect(0, 1200, 1600, 1200); // Frost
-      ctx.fillStyle = '#450a0a'; ctx.fillRect(1600, 1200, 1600, 1200); // Volcanic
+      // HD Biome Quadrants
+      // 1. Emerald Forest (Top-Left)
+      const gradForest = ctx.createLinearGradient(0, 0, 1600, 1200);
+      gradForest.addColorStop(0, '#064e3b');
+      gradForest.addColorStop(1, '#065f46');
+      ctx.fillStyle = gradForest;
+      ctx.fillRect(0, 0, 1600, 1200);
 
-      // Cyber Citadel Cobblestone
+      // 2. Golden Desert (Top-Right)
+      const gradDesert = ctx.createLinearGradient(1600, 0, 3200, 1200);
+      gradDesert.addColorStop(0, '#78350f');
+      gradDesert.addColorStop(1, '#92400e');
+      ctx.fillStyle = gradDesert;
+      ctx.fillRect(1600, 0, 1600, 1200);
+
+      // 3. Frost Peaks (Bottom-Left)
+      const gradFrost = ctx.createLinearGradient(0, 1200, 1600, 2400);
+      gradFrost.addColorStop(0, '#0c4a6e');
+      gradFrost.addColorStop(1, '#075985');
+      ctx.fillStyle = gradFrost;
+      ctx.fillRect(0, 1200, 1600, 1200);
+
+      // 4. Volcanic Nether (Bottom-Right)
+      const gradVolcano = ctx.createLinearGradient(1600, 1200, 3200, 2400);
+      gradVolcano.addColorStop(0, '#450a0a');
+      gradVolcano.addColorStop(1, '#7f1d1d');
+      ctx.fillStyle = gradVolcano;
+      ctx.fillRect(1600, 1200, 1600, 1200);
+
+      // Animated Lava Cracks in Volcanic Nether
+      ctx.strokeStyle = '#f97316';
+      ctx.lineWidth = 2.5;
+      for (let i = 0; i < 8; i++) {
+        const lx = 1800 + (i * 170);
+        const ly = 1400 + (i * 110);
+        ctx.beginPath();
+        ctx.moveTo(lx, ly);
+        ctx.lineTo(lx + 40, ly + 25 + Math.sin(globalTicks * 0.05 + i) * 6);
+        ctx.lineTo(lx + 80, ly + 10);
+        ctx.stroke();
+      }
+
+      // Cyber Citadel Plaza with Neon Circuit Lines
       ctx.fillStyle = '#1e293b';
       ctx.fillRect(1450, 1050, 300, 300);
       ctx.strokeStyle = '#6366f1';
       ctx.lineWidth = 3;
       ctx.strokeRect(1450, 1050, 300, 300);
 
-      // Healing Fountain at (1600, 1200)
-      ctx.fillStyle = 'rgba(56, 189, 248, 0.3)';
+      // Circuit lines
+      ctx.strokeStyle = 'rgba(56, 189, 248, 0.4)';
+      ctx.lineWidth = 1.5;
+      ctx.strokeRect(1480, 1080, 240, 240);
+
+      // Healing Fountain with Radial Glow Shaders
+      const fountainGlow = ctx.createRadialGradient(1600, 1200, 10, 1600, 1200, 60);
+      fountainGlow.addColorStop(0, 'rgba(56, 189, 248, 0.6)');
+      fountainGlow.addColorStop(1, 'rgba(56, 189, 248, 0)');
+      ctx.fillStyle = fountainGlow;
+      ctx.beginPath(); ctx.arc(1600, 1200, 60, 0, Math.PI * 2); ctx.fill();
+
+      ctx.fillStyle = 'rgba(56, 189, 248, 0.35)';
       ctx.beginPath(); ctx.arc(1600, 1200, 48, 0, Math.PI * 2); ctx.fill();
       ctx.strokeStyle = '#38bdf8'; ctx.lineWidth = 2; ctx.stroke();
-      ctx.fillStyle = '#fff'; ctx.font = '10px sans-serif'; ctx.textAlign = 'center';
+      ctx.fillStyle = '#fff'; ctx.font = 'bold 10px sans-serif'; ctx.textAlign = 'center';
       ctx.fillText('Healing Fountain', 1600, 1204);
 
       // Grid
-      ctx.strokeStyle = 'rgba(255, 255, 255, 0.04)';
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.035)';
       ctx.lineWidth = 1;
       for (let x = 0; x < WORLD.width; x += 100) {
         ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, WORLD.height); ctx.stroke();
@@ -1721,6 +1818,10 @@
 
       // Draw Scenery
       for (const s of scenery) {
+        // Drop shadow for trees and rocks
+        ctx.fillStyle = 'rgba(0, 0, 0, 0.25)';
+        ctx.beginPath(); ctx.ellipse(s.x, s.y + s.size * 0.7, s.size * 0.8, s.size * 0.35, 0, 0, Math.PI * 2); ctx.fill();
+
         if (s.type === 'tree') {
           ctx.fillStyle = '#047857';
           ctx.beginPath(); ctx.arc(s.x, s.y, s.size, 0, Math.PI * 2); ctx.fill();
@@ -1746,17 +1847,32 @@
         }
       }
 
-      // Draw Dungeon Portals
+      // Draw Weather Particles
+      for (const wp of weatherParticles) {
+        ctx.fillStyle = wp.color;
+        ctx.beginPath(); ctx.arc(wp.x, wp.y, wp.radius, 0, Math.PI * 2); ctx.fill();
+      }
+
+      // Draw Dungeon Portals with Swirl Glow
       for (const p of portals) {
-        ctx.fillStyle = 'rgba(168, 85, 247, 0.4)';
+        const portalGlow = ctx.createRadialGradient(p.x, p.y, 5, p.x, p.y, 45);
+        portalGlow.addColorStop(0, 'rgba(192, 132, 252, 0.8)');
+        portalGlow.addColorStop(1, 'rgba(168, 85, 247, 0)');
+        ctx.fillStyle = portalGlow;
+        ctx.beginPath(); ctx.arc(p.x, p.y, 45, 0, Math.PI * 2); ctx.fill();
+
+        ctx.fillStyle = 'rgba(168, 85, 247, 0.5)';
         ctx.beginPath(); ctx.arc(p.x, p.y, 28, 0, Math.PI * 2); ctx.fill();
         ctx.strokeStyle = '#c084fc'; ctx.lineWidth = 3; ctx.stroke();
         ctx.fillStyle = '#f8fafc'; ctx.font = 'bold 11px sans-serif'; ctx.textAlign = 'center';
         ctx.fillText(p.name, p.x, p.y - 34);
       }
 
-      // Draw Mineable Ores
+      // Draw Mineable Ores with Crystal Glow
       for (const ore of ores) {
+        ctx.fillStyle = 'rgba(0, 0, 0, 0.3)';
+        ctx.beginPath(); ctx.ellipse(ore.x, ore.y + 12, 14, 6, 0, 0, Math.PI * 2); ctx.fill();
+
         ctx.fillStyle = ore.type === 'gold' ? '#f59e0b' : '#38bdf8';
         ctx.beginPath(); ctx.arc(ore.x, ore.y, 14, 0, Math.PI * 2); ctx.fill();
         ctx.fillStyle = '#fff'; ctx.beginPath(); ctx.arc(ore.x - 3, ore.y - 3, 4, 0, Math.PI * 2); ctx.fill();
@@ -1764,13 +1880,16 @@
 
       // Draw Chests
       for (const c of chests) {
+        ctx.fillStyle = 'rgba(0, 0, 0, 0.3)';
+        ctx.beginPath(); ctx.ellipse(c.x, c.y + 12, 16, 6, 0, 0, Math.PI * 2); ctx.fill();
+
         ctx.fillStyle = c.opened ? '#64748b' : '#f59e0b';
         ctx.fillRect(c.x - 14, c.y - 12, 28, 24);
         ctx.fillStyle = '#fbbf24';
         ctx.fillRect(c.x - 4, c.y - 4, 8, 8);
       }
 
-      // Draw Loot Orbs
+      // Draw Loot Orbs with Pulsing Glow
       for (const orb of lootOrbs) {
         ctx.fillStyle = orb.color;
         ctx.beginPath(); ctx.arc(orb.x, orb.y, orb.radius, 0, Math.PI * 2); ctx.fill();
@@ -1779,6 +1898,9 @@
 
       // Draw NPCs
       for (const npc of npcs) {
+        ctx.fillStyle = 'rgba(0, 0, 0, 0.3)';
+        ctx.beginPath(); ctx.ellipse(npc.x, npc.y + 16, 16, 6, 0, 0, Math.PI * 2); ctx.fill();
+
         ctx.fillStyle = '#a855f7';
         ctx.beginPath(); ctx.arc(npc.x, npc.y, 18, 0, Math.PI * 2); ctx.fill();
         ctx.fillStyle = '#fff'; ctx.font = 'bold 12px sans-serif'; ctx.textAlign = 'center';
@@ -1787,12 +1909,41 @@
 
       // Draw Enemies & Bosses
       for (const en of enemies) {
+        ctx.fillStyle = 'rgba(0, 0, 0, 0.3)';
+        ctx.beginPath(); ctx.ellipse(en.x, en.y + en.radius * 0.8, en.radius, en.radius * 0.35, 0, 0, Math.PI * 2); ctx.fill();
+
+        if (en.type === 'boss') {
+          // Dragon Wings Flapping Animation
+          const wingSpan = 38;
+          const wingYOffset = Math.sin(en.wingAngle || 0) * 14;
+
+          ctx.fillStyle = '#991b1b';
+          // Left Wing
+          ctx.beginPath();
+          ctx.moveTo(en.x - 20, en.y);
+          ctx.lineTo(en.x - 20 - wingSpan, en.y - 30 + wingYOffset);
+          ctx.lineTo(en.x - 10, en.y + 10);
+          ctx.closePath();
+          ctx.fill();
+
+          // Right Wing
+          ctx.beginPath();
+          ctx.moveTo(en.x + 20, en.y);
+          ctx.lineTo(en.x + 20 + wingSpan, en.y - 30 + wingYOffset);
+          ctx.lineTo(en.x + 10, en.y + 10);
+          ctx.closePath();
+          ctx.fill();
+        }
+
+        // Monster Body with Squash Bounce Physics
+        const bounce = en.animTick ? Math.sin(en.animTick) * 2 : 0;
         ctx.fillStyle = en.color;
-        ctx.beginPath(); ctx.arc(en.x, en.y, en.radius, 0, Math.PI * 2); ctx.fill();
+        ctx.beginPath(); ctx.arc(en.x, en.y + bounce, en.radius, 0, Math.PI * 2); ctx.fill();
         
+        // Eyes
         ctx.fillStyle = '#0f172a';
-        ctx.beginPath(); ctx.arc(en.x - en.radius * 0.3, en.y - en.radius * 0.2, 3, 0, Math.PI * 2); ctx.fill();
-        ctx.beginPath(); ctx.arc(en.x + en.radius * 0.3, en.y - en.radius * 0.2, 3, 0, Math.PI * 2); ctx.fill();
+        ctx.beginPath(); ctx.arc(en.x - en.radius * 0.3, en.y + bounce - en.radius * 0.2, 3, 0, Math.PI * 2); ctx.fill();
+        ctx.beginPath(); ctx.arc(en.x + en.radius * 0.3, en.y + bounce - en.radius * 0.2, 3, 0, Math.PI * 2); ctx.fill();
 
         if (en.hp < en.maxHp && !en.isBoss) {
           ctx.fillStyle = 'rgba(0,0,0,0.7)';
@@ -1833,11 +1984,24 @@
 
       ctx.restore();
 
-      // Day / Night Ambient Filter
-      const nightIntensity = Math.sin(timeOfDay * Math.PI * 2) * 0.45;
+      // Dynamic Radial Player Headlamp Lighting & Day/Night Cycle
+      const nightIntensity = Math.sin(timeOfDay * Math.PI * 2) * 0.52;
       if (nightIntensity > 0) {
-        ctx.fillStyle = `rgba(3, 7, 18, ${nightIntensity})`;
+        // Darkness Overlay
+        ctx.save();
+        ctx.fillStyle = `rgba(2, 6, 23, ${nightIntensity})`;
         ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        // Player Torch Light
+        const torch = ctx.createRadialGradient(canvas.width / 2, canvas.height / 2, 20, canvas.width / 2, canvas.height / 2, 170);
+        torch.addColorStop(0, 'rgba(255, 255, 255, 0.45)');
+        torch.addColorStop(1, 'rgba(255, 255, 255, 0)');
+        ctx.globalCompositeOperation = 'destination-out';
+        ctx.fillStyle = torch;
+        ctx.beginPath();
+        ctx.arc(canvas.width / 2, canvas.height / 2, 170, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.restore();
       }
 
       // Dialog Popup

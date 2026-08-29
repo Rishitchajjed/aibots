@@ -6,9 +6,9 @@
   <meta name="google-site-verification" content="ndzq-U-NLijgza_QqgQdcc2U3oMRoud_BT2ZZiwFREM">
   <meta name="google-site-verification" content="-Yb6Nx74gbZ3wRN5uP-Y8KKwDWlt1DPpxs4nA3PkE6M">
   <meta name="robots" content="index, follow">
-  <title>Realm of Bots: Open World RPG 2.0 — AI Bots</title>
-  <meta name="description" content="Play Realm of Bots 2.0, a massive open-world 2D RPG browser game with 4 biomes, boss battles, shop system, day/night cycle, class spells, and quests!">
-  <meta name="keywords" content="open world game, browser rpg, free online game, 2d open world rpg, realm of bots, boss fight, browser game ai bots">
+  <title>Realm of Bots 3.0: Open World RPG — AI Bots</title>
+  <meta name="description" content="Play Realm of Bots 3.0, an open-world RPG with custom hero characters, companion battle drones, 4 biomes, boss battles, skill trees, and ore mining!">
+  <meta name="keywords" content="open world game, browser rpg, free online game, 2d open world rpg, realm of bots, character customization, battle pet, ai bots">
   <meta name="author" content="Rishit Chajjed">
   <link rel="icon" href="logo.png" type="image/png">
   <link rel="canonical" href="https://www.aibots.co.in/game.html">
@@ -16,11 +16,11 @@
   <!-- Open Graph / Social Cards -->
   <meta property="og:type" content="game">
   <meta property="og:url" content="https://www.aibots.co.in/game.html">
-  <meta property="og:title" content="Realm of Bots: Open World RPG 2.0 — AI Bots">
-  <meta property="og:description" content="Explore a massive open world with 4 biomes, day/night cycle, boss battles, shopkeeper, classes, and spells!">
+  <meta property="og:title" content="Realm of Bots 3.0: Open World RPG — AI Bots">
+  <meta property="og:description" content="Custom hero sprites, companion pet drones, 4 huge biomes, skill upgrades, ore mining, and Titan boss fights!">
   <meta property="og:image" content="https://www.aibots.co.in/logo.png">
 
-  <!-- High-Priority Resource Preconnects -->
+  <!-- Fonts & Icons -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap">
@@ -29,8 +29,8 @@
 
   <style>
     .game-page-container {
-      max-width: 1200px;
-      margin: 20px auto 60px;
+      max-width: 1240px;
+      margin: 16px auto 60px;
       padding: 0 16px;
     }
     .game-header {
@@ -39,13 +39,13 @@
       align-items: center;
       flex-wrap: wrap;
       gap: 12px;
-      margin-bottom: 16px;
+      margin-bottom: 14px;
     }
     .game-title {
-      font-size: 1.8rem;
+      font-size: 1.85rem;
       font-weight: 800;
       margin: 0;
-      background: linear-gradient(135deg, #38bdf8, #818cf8, #ec4899);
+      background: linear-gradient(135deg, #38bdf8, #818cf8, #ec4899, #facc15);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       display: flex;
@@ -56,12 +56,12 @@
       position: relative;
       width: 100%;
       aspect-ratio: 16 / 9;
-      max-height: 72vh;
+      max-height: 74vh;
       background: #020617;
       border-radius: var(--radius-xl);
       overflow: hidden;
       border: 2px solid rgba(129, 140, 248, 0.4);
-      box-shadow: 0 12px 48px rgba(0, 0, 0, 0.9), 0 0 35px rgba(99, 102, 241, 0.25);
+      box-shadow: 0 14px 50px rgba(0, 0, 0, 0.9), 0 0 35px rgba(99, 102, 241, 0.3);
       user-select: none;
       touch-action: none;
     }
@@ -79,7 +79,7 @@
       left: 12px;
       display: flex;
       flex-direction: column;
-      gap: 8px;
+      gap: 7px;
       pointer-events: none;
       z-index: 15;
     }
@@ -87,7 +87,7 @@
       display: flex;
       align-items: center;
       gap: 8px;
-      background: rgba(15, 23, 42, 0.85);
+      background: rgba(15, 23, 42, 0.88);
       backdrop-filter: blur(10px);
       padding: 5px 12px;
       border-radius: 999px;
@@ -98,9 +98,9 @@
       box-shadow: 0 4px 12px rgba(0,0,0,0.5);
     }
     .bar-fill-wrap {
-      width: 110px;
+      width: 115px;
       height: 10px;
-      background: rgba(0,0,0,0.65);
+      background: rgba(0,0,0,0.7);
       border-radius: 6px;
       overflow: hidden;
       border: 1px solid rgba(255,255,255,0.15);
@@ -126,7 +126,7 @@
       gap: 8px;
     }
     .hud-badge {
-      background: rgba(15, 23, 42, 0.85);
+      background: rgba(15, 23, 42, 0.88);
       backdrop-filter: blur(10px);
       padding: 6px 12px;
       border-radius: 999px;
@@ -140,13 +140,13 @@
       box-shadow: 0 4px 12px rgba(0,0,0,0.5);
     }
     .minimap-wrapper {
-      width: 105px;
-      height: 105px;
+      width: 110px;
+      height: 110px;
       border-radius: 50%;
-      border: 2px solid rgba(129, 140, 248, 0.6);
-      background: rgba(15, 23, 42, 0.9);
+      border: 2px solid rgba(129, 140, 248, 0.7);
+      background: rgba(15, 23, 42, 0.92);
       overflow: hidden;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.6);
+      box-shadow: 0 4px 16px rgba(0,0,0,0.7);
       position: relative;
     }
     #minimapCanvas {
@@ -158,12 +158,12 @@
       position: absolute;
       top: 128px;
       left: 12px;
-      background: rgba(15, 23, 42, 0.88);
+      background: rgba(15, 23, 42, 0.9);
       backdrop-filter: blur(10px);
       padding: 9px 14px;
       border-radius: var(--radius-md);
       border: 1px solid rgba(168, 85, 247, 0.4);
-      max-width: 230px;
+      max-width: 240px;
       font-size: 0.76rem;
       z-index: 15;
       pointer-events: none;
@@ -177,19 +177,19 @@
       top: 16px;
       left: 50%;
       transform: translateX(-50%);
-      width: min(90%, 420px);
-      background: rgba(15, 23, 42, 0.92);
+      width: min(90%, 450px);
+      background: rgba(15, 23, 42, 0.94);
       border: 2px solid #ef4444;
       border-radius: 999px;
-      padding: 6px 14px;
+      padding: 6px 16px;
       display: none;
       flex-direction: column;
       align-items: center;
       gap: 4px;
       z-index: 20;
-      box-shadow: 0 0 25px rgba(239, 68, 68, 0.4);
+      box-shadow: 0 0 30px rgba(239, 68, 68, 0.5);
     }
-    .boss-name { font-size: 0.85rem; font-weight: 800; color: #f87171; text-transform: uppercase; letter-spacing: 1px; }
+    .boss-name { font-size: 0.88rem; font-weight: 800; color: #f87171; text-transform: uppercase; letter-spacing: 1px; }
 
     /* Bottom Hotbar */
     .hotbar-container {
@@ -199,17 +199,17 @@
       transform: translateX(-50%);
       display: flex;
       gap: 8px;
-      background: rgba(15, 23, 42, 0.88);
+      background: rgba(15, 23, 42, 0.9);
       backdrop-filter: blur(10px);
-      padding: 6px 10px;
+      padding: 6px 12px;
       border-radius: var(--radius-lg);
       border: 1px solid rgba(255, 255, 255, 0.15);
       z-index: 15;
       pointer-events: auto;
     }
     .hotbar-slot {
-      width: 42px;
-      height: 42px;
+      width: 44px;
+      height: 44px;
       border-radius: var(--radius-md);
       background: rgba(30, 41, 59, 0.8);
       border: 1px solid rgba(255, 255, 255, 0.15);
@@ -218,7 +218,7 @@
       align-items: center;
       justify-content: center;
       color: #fff;
-      font-size: 1rem;
+      font-size: 1.05rem;
       position: relative;
       cursor: pointer;
       transition: var(--transition);
@@ -227,14 +227,14 @@
     .hotbar-slot:hover, .hotbar-slot:active {
       border-color: #38bdf8;
       transform: translateY(-2px);
-      background: rgba(56, 189, 248, 0.2);
+      background: rgba(56, 189, 248, 0.25);
     }
     .hotbar-key {
       position: absolute;
       bottom: 2px;
       right: 4px;
       font-size: 0.65rem;
-      color: rgba(255,255,255,0.6);
+      color: rgba(255,255,255,0.65);
       font-family: var(--font-mono);
       font-weight: 700;
     }
@@ -263,7 +263,7 @@
     @media (max-width: 900px) {
       .mobile-controls { display: flex; }
       .game-canvas-wrapper { aspect-ratio: 4 / 3; }
-      .hotbar-container { bottom: 85px; }
+      .hotbar-container { bottom: 88px; }
       .quest-tracker { display: none; }
     }
     .d-pad { width: 120px; height: 120px; position: relative; pointer-events: auto; }
@@ -287,7 +287,7 @@
     .d-down { bottom: 0; left: 40px; }
     .d-left { top: 40px; left: 0; }
     .d-right { top: 40px; right: 0; }
-    .action-buttons { display: flex; gap: 8px; pointer-events: auto; flex-wrap: wrap; max-width: 130px; justify-content: flex-end; }
+    .action-buttons { display: flex; gap: 8px; pointer-events: auto; flex-wrap: wrap; max-width: 140px; justify-content: flex-end; }
     .act-btn {
       width: 48px;
       height: 48px;
@@ -309,10 +309,31 @@
     .act-dash { background: rgba(16, 185, 129, 0.85); border-color: #34d399; }
     .act-interact { background: rgba(168, 85, 247, 0.85); border-color: #c084fc; }
 
-    /* Shop Modal & Dialogs */
-    .shop-modal-card {
-      max-width: 600px;
+    /* Hero Customizer Grid */
+    .hero-class-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+      gap: 10px;
+      margin: 14px 0;
     }
+    .hero-class-card {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      padding: 12px;
+      text-align: center;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+    .hero-class-card.active, .hero-class-card:hover {
+      border-color: var(--primary);
+      background: rgba(99, 102, 241, 0.15);
+      transform: translateY(-2px);
+    }
+    .hero-class-card i { font-size: 1.6rem; margin-bottom: 6px; }
+    .hero-class-name { font-size: 0.85rem; font-weight: 700; color: var(--text-primary); }
+
+    /* Shop Item Grid */
     .shop-item-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
@@ -379,7 +400,7 @@
         <a href="index.html" class="brand-link">
           <img src="logo.png" alt="AI Bots Logo" class="brand-logo-img" width="32" height="32" style="width: 32px; height: 32px; object-fit: contain; aspect-ratio: 1/1;">
           <span>AI Bots</span>
-          <span class="brand-badge">RPG Studio 2.0</span>
+          <span class="brand-badge">RPG Studio 3.0</span>
         </a>
 
         <div class="nav-actions">
@@ -393,12 +414,13 @@
   <main class="app-container game-page-container">
     <div class="game-header">
       <div>
-        <h1 class="game-title"><i class="fas fa-gamepad" style="color: #818cf8;"></i> Realm of Bots 2.0</h1>
+        <h1 class="game-title"><i class="fas fa-gamepad" style="color: #818cf8;"></i> Realm of Bots 3.0</h1>
         <p style="margin: 4px 0 0; color: var(--text-secondary); font-size: 0.9rem;">
-          Explore 4 boundless biomes, defeat monsters, slay world bosses, buy epic gear, and complete legendary quests!
+          Upgraded cyber hero sprites, weapon swings, battle pet companion drone, 4 biomes, ore mining, and skill trees!
         </p>
       </div>
       <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+        <button class="btn btn-secondary btn-sm" onclick="openHeroModal()"><i class="fas fa-user-astronaut"></i> Hero Skin</button>
         <button class="btn btn-secondary btn-sm" onclick="openShopModal()"><i class="fas fa-store"></i> Shop</button>
         <button class="btn btn-secondary btn-sm" onclick="toggleMute()" id="muteBtn"><i class="fas fa-volume-up"></i> Sound</button>
         <button class="btn btn-secondary btn-sm" onclick="restartGame()"><i class="fas fa-rotate-right"></i> Reset</button>
@@ -427,7 +449,7 @@
         <div class="hud-stat-bar">
           <span style="color: #3b82f6; width: 18px;"><i class="fas fa-bolt"></i></span>
           <div class="bar-fill-wrap"><div class="bar-fill bar-mp" id="mpFill" style="width: 100%;"></div></div>
-          <span id="mpText" style="min-width: 50px;">50/50</span>
+          <span id="mpText" style="min-width: 50px;">60/60</span>
         </div>
         <div class="hud-stat-bar">
           <span style="color: #eab308; width: 18px;"><i class="fas fa-star"></i></span>
@@ -439,7 +461,7 @@
       <!-- Minimap & Coins (Top-Right) -->
       <div class="game-hud-top-right">
         <div class="minimap-wrapper">
-          <canvas id="minimapCanvas" width="105" height="105"></canvas>
+          <canvas id="minimapCanvas" width="110" height="110"></canvas>
         </div>
         <div class="hud-badge-row">
           <div class="hud-badge"><i class="fas fa-coins"></i> <span id="coinText">0</span></div>
@@ -492,12 +514,43 @@
       </div>
     </div>
 
+    <!-- Hero Skin & Class Modal -->
+    <div class="modal-backdrop" id="heroModal">
+      <div class="modal-card" style="max-width: 500px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); padding-bottom: 12px;">
+          <h3 style="margin: 0; font-size: 1.2rem; color: #38bdf8;">
+            <i class="fas fa-user-astronaut"></i> Select Hero Class & Skin
+          </h3>
+          <button onclick="closeModal('heroModal')" class="btn btn-secondary btn-sm">✕ Close</button>
+        </div>
+
+        <div class="hero-class-grid">
+          <div class="hero-class-card active" id="skinCyberKnight" onclick="setHeroSkin('cyber_knight')">
+            <i class="fas fa-robot" style="color: #38bdf8;"></i>
+            <div class="hero-class-name">Cyber Knight</div>
+          </div>
+          <div class="hero-class-card" id="skinArcaneMage" onclick="setHeroSkin('arcane_mage')">
+            <i class="fas fa-wand-magic-sparkles" style="color: #c084fc;"></i>
+            <div class="hero-class-name">Arcane Mage</div>
+          </div>
+          <div class="hero-class-card" id="skinNeonRanger" onclick="setHeroSkin('neon_ranger')">
+            <i class="fas fa-crosshairs" style="color: #34d399;"></i>
+            <div class="hero-class-name">Neon Ranger</div>
+          </div>
+          <div class="hero-class-card" id="skinMechaPaladin" onclick="setHeroSkin('mecha_paladin')">
+            <i class="fas fa-shield-halved" style="color: #fbbf24;"></i>
+            <div class="hero-class-name">Mecha Paladin</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <!-- Shop Modal -->
     <div class="modal-backdrop" id="shopModal">
-      <div class="modal-card shop-modal-card">
+      <div class="modal-card" style="max-width: 600px;">
         <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); padding-bottom: 12px;">
           <h3 style="margin: 0; font-size: 1.2rem; color: #fbbf24;">
-            <i class="fas fa-store"></i> Cyber Realm Armory & Shop
+            <i class="fas fa-store"></i> Cyber Realm Armory & Pets
           </h3>
           <button onclick="closeModal('shopModal')" class="btn btn-secondary btn-sm">✕ Close</button>
         </div>
@@ -520,16 +573,22 @@
             <button class="btn btn-primary btn-sm" onclick="buyItem('mpPot', 20)">Buy (20 Gold)</button>
           </div>
           <div class="shop-item">
-            <i class="fas fa-wand-magic-sparkles" style="color: #c084fc;"></i>
+            <i class="fas fa-wand-magic-sparkles" style="color: #ec4899;"></i>
             <div class="shop-item-name">Laser Blade</div>
-            <div class="shop-item-desc">+15 Sword Damage boost.</div>
+            <div class="shop-item-desc">+20 Sword Damage boost.</div>
             <button class="btn btn-primary btn-sm" id="buySwordBtn" onclick="buyItem('sword', 100)">Buy (100 Gold)</button>
           </div>
           <div class="shop-item">
             <i class="fas fa-shield-halved" style="color: #38bdf8;"></i>
             <div class="shop-item-name">Aegis Shield</div>
-            <div class="shop-item-desc">+50 Max HP & Armor.</div>
+            <div class="shop-item-desc">+60 Max HP & Armor.</div>
             <button class="btn btn-primary btn-sm" id="buyArmorBtn" onclick="buyItem('armor', 150)">Buy (150 Gold)</button>
+          </div>
+          <div class="shop-item">
+            <i class="fas fa-satellite" style="color: #22c55e;"></i>
+            <div class="shop-item-name">Companion Drone</div>
+            <div class="shop-item-desc">Follows & automatically shoots lasers!</div>
+            <button class="btn btn-primary btn-sm" id="buyPetBtn" onclick="buyItem('pet', 180)">Buy (180 Gold)</button>
           </div>
         </div>
       </div>
@@ -541,10 +600,10 @@
         <h4><i class="fas fa-keyboard"></i> Desktop Controls & Abilities</h4>
         <div style="font-size: 0.85rem; color: var(--text-secondary); line-height: 1.8;">
           <div><span class="key-badge">W</span> <span class="key-badge">A</span> <span class="key-badge">S</span> <span class="key-badge">D</span> / <span class="key-badge">Arrows</span>: Move Player</div>
-          <div><span class="key-badge">Space</span> / <span class="key-badge">J</span>: Sword Slash Attack</div>
+          <div><span class="key-badge">Space</span> / <span class="key-badge">J</span>: Sword Slash Attack & Mine Ore</div>
           <div><span class="key-badge">K</span> / <span class="key-badge">F</span>: Fireball Spell (10 MP)</div>
           <div><span class="key-badge">Q</span> / <span class="key-badge">3</span>: Thunderstorm Ultimate (50 MP)</div>
-          <div><span class="key-badge">Shift</span>: Dash / Dodge Roll (with I-Frames)</div>
+          <div><span class="key-badge">Shift</span>: Dash Roll (with I-Frames)</div>
           <div><span class="key-badge">E</span>: Talk to NPCs / Open Chests / Shop</div>
           <div><span class="key-badge">1/H</span> & <span class="key-badge">2/M</span>: Use Health / Mana Potions</div>
         </div>
@@ -554,10 +613,10 @@
         <h4><i class="fas fa-map-location-dot"></i> Open World Biomes & Bosses</h4>
         <div style="font-size: 0.85rem; color: var(--text-secondary); line-height: 1.7;">
           <div>🌲 <strong>Emerald Forest (Top-Left):</strong> Slimes, Goblins & Ancient Trees</div>
-          <div>🏜️ <strong>Golden Desert (Top-Right):</strong> Sand Scorpions & Pyramids</div>
-          <div>❄️ <strong>Frost Peaks (Bottom-Left):</strong> Ice Golems & Snowstorms</div>
-          <div>🌋 <strong>Volcanic Crater (Bottom-Right):</strong> Mecha Dragon World Boss!</div>
-          <div>🏛️ <strong>Cyber Citadel (Center):</strong> Shopkeeper, Quest Master & Safe Zone</div>
+          <div>🏜️ <strong>Golden Desert (Top-Right):</strong> Sand Scorpions & Gold Ores</div>
+          <div>❄️ <strong>Frost Peaks (Bottom-Left):</strong> Ice Golems & Crystal Ores</div>
+          <div>🌋 <strong>Volcanic Nether (Bottom-Right):</strong> Mecha Dragon World Boss!</div>
+          <div>🏛️ <strong>Cyber Citadel (Center):</strong> Healing Fountain & Safe Zone</div>
         </div>
       </div>
     </div>
@@ -603,6 +662,7 @@
       coin() { this.playTone(987, 'sine', 0.1, 0.15); setTimeout(() => this.playTone(1318, 'sine', 0.2, 0.15), 70); },
       hit() { this.playTone(110, 'square', 0.12, 0.2); },
       potion() { this.playTone(440, 'sine', 0.15, 0.15); setTimeout(() => this.playTone(660, 'sine', 0.15, 0.15), 80); },
+      laser() { this.playTone(800, 'sawtooth', 0.08, 0.12); },
       levelUp() { [523, 659, 783, 1046, 1318].forEach((f, i) => { setTimeout(() => this.playTone(f, 'triangle', 0.22, 0.2), i * 80); }); }
     };
 
@@ -619,25 +679,34 @@
 
     const WORLD = { width: 3200, height: 2400 };
 
-    // Player State
+    // Player State & Custom Sprite Properties
     let player = {
-      x: 1600, y: 1200, speed: 4.5, radius: 18,
+      x: 1600, y: 1200, speed: 4.8, radius: 20,
       hp: 100, maxHp: 100, mp: 60, maxMp: 60,
-      lvl: 1, xp: 0, nextXp: 100, coins: 50, score: 0,
+      lvl: 1, xp: 0, nextXp: 100, coins: 60, score: 0,
+      skin: 'cyber_knight', // cyber_knight, arcane_mage, neon_ranger, mecha_paladin
+      hasPet: false,
       potions: { hp: 2, mp: 2 },
       equipment: { swordDmgBonus: 0, hasArmor: false },
       facing: 'down', attacking: false, attackTimer: 0,
-      invulnerable: 0, dashTimer: 0, dashCooldown: 0
+      invulnerable: 0, dashTimer: 0, dashCooldown: 0,
+      walkCycle: 0, isMoving: false
+    };
+
+    // Companion Drone Pet State
+    let pet = {
+      x: 1560, y: 1180, attackCooldown: 0
     };
 
     let enemies = [];
+    let ores = [];
     let projectiles = [];
     let particles = [];
     let npcs = [];
     let chests = [];
     let floatingTexts = [];
     let dialog = null;
-    let timeOfDay = 0; // 0 to 1 for day/night cycle
+    let timeOfDay = 0;
     let screenShake = 0;
 
     let quest = {
@@ -647,10 +716,12 @@
 
     const keys = {};
 
-    // Generate Biome World Elements
+    // Generate Biome World Elements & Mineable Ores
     const scenery = [];
     function generateWorldScenery() {
       scenery.length = 0;
+      ores.length = 0;
+
       // Forest (Top-Left 0..1600, 0..1200)
       for (let i = 0; i < 45; i++) {
         scenery.push({ x: Math.random() * 1500, y: Math.random() * 1100, type: 'tree', size: 24 + Math.random() * 14 });
@@ -667,6 +738,16 @@
       for (let i = 0; i < 30; i++) {
         scenery.push({ x: 1650 + Math.random() * 1500, y: 1250 + Math.random() * 1100, type: 'volcano_rock', size: 20 + Math.random() * 15 });
       }
+
+      // Mineable Gold & Crystal Ores across map
+      for (let i = 0; i < 14; i++) {
+        ores.push({
+          x: 200 + Math.random() * (WORLD.width - 400),
+          y: 200 + Math.random() * (WORLD.height - 400),
+          hp: 40, maxHp: 40,
+          type: Math.random() > 0.5 ? 'gold' : 'crystal'
+        });
+      }
     }
 
     function initWorld() {
@@ -674,8 +755,8 @@
       generateWorldScenery();
 
       // NPCs at Center Citadel
-      npcs.push({ x: 1600, y: 1100, name: 'Cyber Merchant', role: 'shop', dialog: "Welcome to the Cyber Realm Armory! Press [E] or tap Shop to buy weapons & potions." });
-      npcs.push({ x: 1520, y: 1180, name: 'Elder Bot Sage', role: 'quest', dialog: "The 4 Biomes are infested! Slime in the Forest, Scorpions in the Desert, and the Mecha Dragon in the Volcano!" });
+      npcs.push({ x: 1600, y: 1080, name: 'Cyber Merchant', role: 'shop', dialog: "Welcome to the Cyber Armory! You can purchase Laser Blades, Aegis Shields, and Companion Drones!" });
+      npcs.push({ x: 1520, y: 1160, name: 'Elder Bot Sage', role: 'quest', dialog: "Mine glowing ores with your blade and defeat the Mecha Titan in the Volcanic Nether!" });
 
       // Spawn Chests across all biomes
       for (let i = 0; i < 16; i++) {
@@ -686,7 +767,7 @@
         });
       }
 
-      // Initial Enemies in 4 Biomes
+      // Initial Enemies
       for (let i = 0; i < 18; i++) spawnEnemy();
       
       // Spawn Titan Boss in Volcanic Nether
@@ -697,8 +778,8 @@
       enemies.push({
         type: 'boss', name: 'Mecha Dragon Titan',
         x: 2500, y: 1900,
-        hp: 600, maxHp: 600, speed: 1.6,
-        color: '#dc2626', radius: 45, xp: 400, coins: 200, atk: 28,
+        hp: 650, maxHp: 650, speed: 1.7,
+        color: '#dc2626', radius: 48, xp: 450, coins: 250, atk: 28,
         isBoss: true, attackTimer: 0
       });
     }
@@ -719,7 +800,7 @@
       });
     }
 
-    // Keyboard & Controls Listeners
+    // Keyboard & Controls
     window.addEventListener('keydown', e => {
       keys[e.key.toLowerCase()] = true;
       AudioEngine.init();
@@ -758,29 +839,52 @@
       player.attackTimer = 16;
       AudioEngine.sword();
 
-      const reach = 48;
+      const reach = 50;
       let hitX = player.x; let hitY = player.y;
       if (player.facing === 'up') hitY -= reach;
       if (player.facing === 'down') hitY += reach;
       if (player.facing === 'left') hitX -= reach;
       if (player.facing === 'right') hitX += reach;
 
+      // Attack Enemies
       for (let i = enemies.length - 1; i >= 0; i--) {
         const en = enemies[i];
         const dist = Math.hypot(en.x - hitX, en.y - hitY);
-        if (dist < en.radius + 28) {
-          const dmg = 22 + player.lvl * 6 + player.equipment.swordDmgBonus;
+        if (dist < en.radius + 30) {
+          const isCrit = Math.random() < 0.25;
+          const baseDmg = 24 + player.lvl * 6 + player.equipment.swordDmgBonus;
+          const dmg = isCrit ? Math.round(baseDmg * 1.8) : baseDmg;
+          
           en.hp -= dmg;
-          addFloatingText(`-${dmg}`, en.x, en.y - 12, '#ef4444');
+          addFloatingText(isCrit ? `CRIT -${dmg}!` : `-${dmg}`, en.x, en.y - 14, isCrit ? '#facc15' : '#ef4444');
           addSlashParticles(en.x, en.y, '#f87171');
           AudioEngine.hit();
-          screenShake = 6;
+          screenShake = isCrit ? 10 : 5;
 
           const angle = Math.atan2(en.y - player.y, en.x - player.x);
           en.x += Math.cos(angle) * (en.isBoss ? 8 : 28);
           en.y += Math.sin(angle) * (en.isBoss ? 8 : 28);
 
           if (en.hp <= 0) defeatEnemy(en, i);
+        }
+      }
+
+      // Mine Ore Rocks
+      for (let i = ores.length - 1; i >= 0; i--) {
+        const ore = ores[i];
+        if (Math.hypot(ore.x - hitX, ore.y - hitY) < 36) {
+          ore.hp -= 20;
+          addSlashParticles(ore.x, ore.y, ore.type === 'gold' ? '#fbbf24' : '#38bdf8');
+          AudioEngine.hit();
+          if (ore.hp <= 0) {
+            const reward = ore.type === 'gold' ? 35 : 50;
+            player.coins += reward;
+            player.score += reward * 2;
+            addFloatingText(`+${reward} ${ore.type.toUpperCase()}!`, ore.x, ore.y - 20, ore.type === 'gold' ? '#fbbf24' : '#38bdf8');
+            AudioEngine.coin();
+            ores.splice(i, 1);
+            updateHud();
+          }
         }
       }
     }
@@ -795,16 +899,16 @@
       AudioEngine.magic();
 
       let vx = 0, vy = 0;
-      if (player.facing === 'up') vy = -9;
-      if (player.facing === 'down') vy = 9;
-      if (player.facing === 'left') vx = -9;
-      if (player.facing === 'right') vx = 9;
-      if (vx === 0 && vy === 0) vy = 9;
+      if (player.facing === 'up') vy = -9.5;
+      if (player.facing === 'down') vy = 9.5;
+      if (player.facing === 'left') vx = -9.5;
+      if (player.facing === 'right') vx = 9.5;
+      if (vx === 0 && vy === 0) vy = 9.5;
 
       projectiles.push({
         x: player.x, y: player.y, vx, vy,
-        radius: 9, life: 65, isPlayer: true,
-        dmg: 40 + player.lvl * 9, color: '#38bdf8'
+        radius: 10, life: 65, isPlayer: true,
+        dmg: 42 + player.lvl * 9, color: player.skin === 'arcane_mage' ? '#c084fc' : '#38bdf8'
       });
     }
 
@@ -825,17 +929,17 @@
           x: player.x, y: player.y,
           vx: Math.cos(ang) * 11, vy: Math.sin(ang) * 11,
           radius: 12, life: 70, isPlayer: true,
-          dmg: 75 + player.lvl * 15, color: '#facc15'
+          dmg: 80 + player.lvl * 16, color: '#facc15'
         });
       }
       addFloatingText("THUNDERSTORM!", player.x, player.y - 30, '#facc15');
-      launchConfetti(20);
+      launchConfetti(25);
     }
 
     function performDash() {
       if (player.dashCooldown > 0) return;
       player.dashTimer = 14;
-      player.dashCooldown = 60;
+      player.dashCooldown = 55;
       player.invulnerable = 16;
       AudioEngine.dash();
 
@@ -845,8 +949,8 @@
       if (player.facing === 'left') dx = -1;
       if (player.facing === 'right') dx = 1;
 
-      player.x = Math.max(player.radius, Math.min(WORLD.width - player.radius, player.x + dx * 80));
-      player.y = Math.max(player.radius, Math.min(WORLD.height - player.radius, player.y + dy * 80));
+      player.x = Math.max(player.radius, Math.min(WORLD.width - player.radius, player.x + dx * 85));
+      player.y = Math.max(player.radius, Math.min(WORLD.height - player.radius, player.y + dy * 85));
       addSlashParticles(player.x, player.y, '#34d399');
     }
 
@@ -934,6 +1038,25 @@
       if (!en.isBoss) setTimeout(spawnEnemy, 4000);
     }
 
+    // Hero Skin Customizer
+    function openHeroModal() {
+      document.getElementById('heroModal').classList.add('active');
+    }
+
+    function setHeroSkin(skin) {
+      player.skin = skin;
+      document.querySelectorAll('.hero-class-card').forEach(c => c.classList.remove('active'));
+      const cardMap = {
+        'cyber_knight': 'skinCyberKnight',
+        'arcane_mage': 'skinArcaneMage',
+        'neon_ranger': 'skinNeonRanger',
+        'mecha_paladin': 'skinMechaPaladin'
+      };
+      if (cardMap[skin]) document.getElementById(cardMap[skin]).classList.add('active');
+      showToast(`Switched to ${skin.replace('_', ' ').toUpperCase()}!`, 'success');
+      closeModal('heroModal');
+    }
+
     // Shop System
     function openShopModal() {
       document.getElementById('shopGoldText').textContent = player.coins;
@@ -949,14 +1072,18 @@
       if (item === 'hpPot') player.potions.hp++;
       if (item === 'mpPot') player.potions.mp++;
       if (item === 'sword') {
-        player.equipment.swordDmgBonus += 15;
+        player.equipment.swordDmgBonus += 20;
         document.getElementById('buySwordBtn').textContent = "Upgraded!";
       }
       if (item === 'armor') {
-        player.maxHp += 50;
-        player.hp += 50;
+        player.maxHp += 60;
+        player.hp += 60;
         player.equipment.hasArmor = true;
         document.getElementById('buyArmorBtn').textContent = "Equipped!";
+      }
+      if (item === 'pet') {
+        player.hasPet = true;
+        document.getElementById('buyPetBtn').textContent = "Active!";
       }
       AudioEngine.coin();
       updateHud();
@@ -995,10 +1122,11 @@
     }
 
     function restartGame() {
-      player.hp = 100; player.maxHp = 100; player.mp = 60; player.coins = 50; player.score = 0;
+      player.hp = 100; player.maxHp = 100; player.mp = 60; player.coins = 60; player.score = 0;
       player.lvl = 1; player.xp = 0; player.nextXp = 100; player.x = 1600; player.y = 1200;
       player.potions = { hp: 2, mp: 2 };
       player.equipment = { swordDmgBonus: 0, hasArmor: false };
+      player.hasPet = false;
       initWorld(); updateHud();
     }
 
@@ -1006,7 +1134,12 @@
       timeOfDay = (timeOfDay + 0.0003) % 1;
       if (screenShake > 0) screenShake *= 0.88;
 
-      if (player.mp < player.maxMp) {
+      // Healing Fountain at Cyber Citadel (1550..1650, 1150..1250)
+      if (Math.hypot(player.x - 1600, player.y - 1200) < 65) {
+        if (player.hp < player.maxHp) player.hp = Math.min(player.maxHp, player.hp + 0.3);
+        if (player.mp < player.maxMp) player.mp = Math.min(player.maxMp, player.mp + 0.3);
+        updateHud();
+      } else if (player.mp < player.maxMp) {
         player.mp = Math.min(player.maxMp, player.mp + 0.06);
         document.getElementById('mpFill').style.width = `${(player.mp / player.maxMp) * 100}%`;
         document.getElementById('mpText').textContent = `${Math.floor(player.mp)}/${player.maxMp}`;
@@ -1018,6 +1151,11 @@
       if (keys['a'] || keys['arrowleft']) { moveX -= 1; player.facing = 'left'; }
       if (keys['d'] || keys['arrowright']) { moveX += 1; player.facing = 'right'; }
 
+      player.isMoving = moveX !== 0 || moveY !== 0;
+      if (player.isMoving) {
+        player.walkCycle += 0.22;
+      }
+
       if (moveX !== 0 && moveY !== 0) { moveX *= 0.7071; moveY *= 0.7071; }
 
       player.x = Math.max(player.radius, Math.min(WORLD.width - player.radius, player.x + moveX * player.speed));
@@ -1026,6 +1164,36 @@
       if (player.attackTimer > 0) player.attackTimer--;
       if (player.invulnerable > 0) player.invulnerable--;
       if (player.dashCooldown > 0) player.dashCooldown--;
+
+      // Companion Drone Follow & Auto Attack
+      if (player.hasPet) {
+        const petTargetX = player.x + (player.facing === 'left' ? 32 : -32);
+        const petTargetY = player.y - 28;
+        pet.x += (petTargetX - pet.x) * 0.1;
+        pet.y += (petTargetY - pet.y) * 0.1;
+
+        if (pet.attackCooldown > 0) {
+          pet.attackCooldown--;
+        } else {
+          // Find closest enemy within 220px
+          let closest = null, minD = 220;
+          for (const en of enemies) {
+            const d = Math.hypot(en.x - pet.x, en.y - pet.y);
+            if (d < minD) { minD = d; closest = en; }
+          }
+          if (closest) {
+            pet.attackCooldown = 50;
+            const ang = Math.atan2(closest.y - pet.y, closest.x - pet.x);
+            projectiles.push({
+              x: pet.x, y: pet.y,
+              vx: Math.cos(ang) * 10, vy: Math.sin(ang) * 10,
+              radius: 6, life: 50, isPlayer: true,
+              dmg: 25 + player.lvl * 4, color: '#22c55e'
+            });
+            AudioEngine.laser();
+          }
+        }
+      }
 
       // Enemy AI & Boss Logic
       let activeBoss = null;
@@ -1101,6 +1269,112 @@
       else dialog = null;
     }
 
+    // High-Resolution Character Sprite Renderer
+    function drawPlayerSprite(ctx) {
+      ctx.save();
+      ctx.translate(player.x, player.y);
+      if (player.invulnerable % 4 > 2) ctx.globalAlpha = 0.5;
+
+      const skinThemes = {
+        'cyber_knight': { body: '#0284c7', armor: '#38bdf8', visor: '#facc15', blade: '#ec4899' },
+        'arcane_mage': { body: '#7e22ce', armor: '#c084fc', visor: '#38bdf8', blade: '#a855f7' },
+        'neon_ranger': { body: '#047857', armor: '#34d399', visor: '#fbbf24', blade: '#10b981' },
+        'mecha_paladin': { body: '#b45309', armor: '#fbbf24', visor: '#f43f5e', blade: '#eab308' }
+      };
+      const theme = skinThemes[player.skin] || skinThemes['cyber_knight'];
+
+      // Animated Hover Thrusters / Feet
+      const legOffset = player.isMoving ? Math.sin(player.walkCycle) * 6 : 0;
+      ctx.fillStyle = '#1e293b';
+      ctx.fillRect(-10, 10 + legOffset, 7, 9);
+      ctx.fillRect(3, 10 - legOffset, 7, 9);
+
+      // Jet Thruster Particles when sprinting
+      if (player.isMoving) {
+        ctx.fillStyle = theme.armor;
+        ctx.beginPath();
+        ctx.arc(-7, 21 + legOffset, 2.5, 0, Math.PI * 2);
+        ctx.arc(6, 21 - legOffset, 2.5, 0, Math.PI * 2);
+        ctx.fill();
+      }
+
+      // Cape / Scarf trailing behind
+      ctx.fillStyle = theme.blade;
+      ctx.beginPath();
+      let capeX = player.facing === 'right' ? -14 : (player.facing === 'left' ? 14 : 0);
+      let capeY = player.facing === 'up' ? 8 : -8;
+      ctx.ellipse(capeX, capeY, 8, 14, 0, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Main Torso / Armor Body
+      ctx.fillStyle = theme.body;
+      ctx.beginPath();
+      ctx.roundRect(-14, -12, 28, 26, 6);
+      ctx.fill();
+
+      // Chestplate Core Glow
+      ctx.fillStyle = theme.armor;
+      ctx.beginPath();
+      ctx.arc(0, 1, 5, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Helmet / Head
+      ctx.fillStyle = '#0f172a';
+      ctx.beginPath();
+      ctx.roundRect(-12, -26, 24, 16, 5);
+      ctx.fill();
+
+      // Glowing Cyber Visor
+      ctx.fillStyle = theme.visor;
+      let visorX = 0, visorY = -18;
+      if (player.facing === 'up') { visorY = -22; }
+      else if (player.facing === 'down') { visorY = -16; }
+      else if (player.facing === 'left') { visorX = -5; visorY = -18; }
+      else if (player.facing === 'right') { visorX = 5; visorY = -18; }
+      
+      ctx.beginPath();
+      ctx.roundRect(visorX - 8, visorY - 3, 16, 6, 2);
+      ctx.fill();
+
+      // Aegis Shield Matrix Aura
+      if (player.equipment.hasArmor) {
+        ctx.strokeStyle = '#38bdf8';
+        ctx.lineWidth = 2.5;
+        ctx.beginPath();
+        ctx.arc(0, 0, player.radius + 8, 0, Math.PI * 2);
+        ctx.stroke();
+      }
+
+      // Dynamic Animated Weapon in Hand
+      const weaponAngle = player.facing === 'right' ? 0.3 : (player.facing === 'left' ? -2.8 : (player.facing === 'up' ? -1.3 : 1.3));
+      ctx.save();
+      ctx.translate(player.facing === 'left' ? -14 : 14, 0);
+      ctx.rotate(weaponAngle + (player.attackTimer > 0 ? (16 - player.attackTimer) * 0.2 : 0));
+      
+      // Laser Sword Blade
+      ctx.fillStyle = '#64748b';
+      ctx.fillRect(-2, -6, 4, 12); // Hilt
+      ctx.fillStyle = theme.blade;
+      ctx.fillRect(-1.5, -28, 3, 22); // Energy Blade
+      ctx.restore();
+
+      // Sword Slash Trail
+      if (player.attackTimer > 0) {
+        ctx.strokeStyle = theme.blade;
+        ctx.lineWidth = 6;
+        ctx.beginPath();
+        let angle = 0;
+        if (player.facing === 'down') angle = Math.PI / 2;
+        if (player.facing === 'up') angle = -Math.PI / 2;
+        if (player.facing === 'left') angle = Math.PI;
+        if (player.facing === 'right') angle = 0;
+        ctx.arc(0, 0, 44, angle - 0.85, angle + 0.85);
+        ctx.stroke();
+      }
+
+      ctx.restore();
+    }
+
     function draw() {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       const camX = player.x - canvas.width / 2 + (screenShake > 0.5 ? (Math.random() - 0.5) * screenShake : 0);
@@ -1130,6 +1404,13 @@
       ctx.lineWidth = 3;
       ctx.strokeRect(1450, 1050, 300, 300);
 
+      // Healing Fountain at Center (1600, 1200)
+      ctx.fillStyle = 'rgba(56, 189, 248, 0.3)';
+      ctx.beginPath(); ctx.arc(1600, 1200, 48, 0, Math.PI * 2); ctx.fill();
+      ctx.strokeStyle = '#38bdf8'; ctx.lineWidth = 2; ctx.stroke();
+      ctx.fillStyle = '#fff'; ctx.font = '10px sans-serif'; ctx.textAlign = 'center';
+      ctx.fillText('Healing Fountain', 1600, 1204);
+
       // Grid Pattern
       ctx.strokeStyle = 'rgba(255, 255, 255, 0.04)';
       ctx.lineWidth = 1;
@@ -1140,7 +1421,7 @@
         ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(WORLD.width, y); ctx.stroke();
       }
 
-      // Draw Scenery Elements
+      // Draw Scenery
       for (const s of scenery) {
         if (s.type === 'tree') {
           ctx.fillStyle = '#047857';
@@ -1167,6 +1448,13 @@
         }
       }
 
+      // Draw Mineable Ores
+      for (const ore of ores) {
+        ctx.fillStyle = ore.type === 'gold' ? '#f59e0b' : '#38bdf8';
+        ctx.beginPath(); ctx.arc(ore.x, ore.y, 14, 0, Math.PI * 2); ctx.fill();
+        ctx.fillStyle = '#fff'; ctx.beginPath(); ctx.arc(ore.x - 3, ore.y - 3, 4, 0, Math.PI * 2); ctx.fill();
+      }
+
       // Draw Chests
       for (const c of chests) {
         ctx.fillStyle = c.opened ? '#64748b' : '#f59e0b';
@@ -1188,12 +1476,10 @@
         ctx.fillStyle = en.color;
         ctx.beginPath(); ctx.arc(en.x, en.y, en.radius, 0, Math.PI * 2); ctx.fill();
         
-        // Enemy Eyes
         ctx.fillStyle = '#0f172a';
         ctx.beginPath(); ctx.arc(en.x - en.radius * 0.3, en.y - en.radius * 0.2, 3, 0, Math.PI * 2); ctx.fill();
         ctx.beginPath(); ctx.arc(en.x + en.radius * 0.3, en.y - en.radius * 0.2, 3, 0, Math.PI * 2); ctx.fill();
 
-        // Mini Health Bar
         if (en.hp < en.maxHp && !en.isBoss) {
           ctx.fillStyle = 'rgba(0,0,0,0.7)';
           ctx.fillRect(en.x - 18, en.y - en.radius - 10, 36, 5);
@@ -1202,50 +1488,22 @@
         }
       }
 
+      // Draw Companion Drone
+      if (player.hasPet) {
+        ctx.fillStyle = '#22c55e';
+        ctx.beginPath(); ctx.arc(pet.x, pet.y, 8, 0, Math.PI * 2); ctx.fill();
+        ctx.fillStyle = '#38bdf8';
+        ctx.beginPath(); ctx.arc(pet.x, pet.y, 4, 0, Math.PI * 2); ctx.fill();
+      }
+
       // Draw Projectiles
       for (const p of projectiles) {
         ctx.fillStyle = p.color;
         ctx.beginPath(); ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2); ctx.fill();
       }
 
-      // Draw Player
-      ctx.save();
-      ctx.translate(player.x, player.y);
-      if (player.invulnerable % 4 > 2) ctx.globalAlpha = 0.5;
-
-      // Aura / Shield
-      if (player.equipment.hasArmor) {
-        ctx.strokeStyle = '#38bdf8';
-        ctx.lineWidth = 2;
-        ctx.beginPath(); ctx.arc(0, 0, player.radius + 6, 0, Math.PI * 2); ctx.stroke();
-      }
-
-      ctx.fillStyle = player.equipment.hasArmor ? '#0284c7' : '#38bdf8';
-      ctx.beginPath(); ctx.arc(0, 0, player.radius, 0, Math.PI * 2); ctx.fill();
-
-      // Eyes
-      ctx.fillStyle = '#0f172a';
-      let eyeX = 0, eyeY = 0;
-      if (player.facing === 'up') eyeY = -6;
-      if (player.facing === 'down') eyeY = 6;
-      if (player.facing === 'left') eyeX = -6;
-      if (player.facing === 'right') eyeX = 6;
-      ctx.beginPath(); ctx.arc(eyeX, eyeY, 4, 0, Math.PI * 2); ctx.fill();
-
-      // Sword Attack Arc
-      if (player.attackTimer > 0) {
-        ctx.strokeStyle = player.equipment.swordDmgBonus > 0 ? '#ec4899' : '#facc15';
-        ctx.lineWidth = 5;
-        ctx.beginPath();
-        let angle = 0;
-        if (player.facing === 'down') angle = Math.PI / 2;
-        if (player.facing === 'up') angle = -Math.PI / 2;
-        if (player.facing === 'left') angle = Math.PI;
-        if (player.facing === 'right') angle = 0;
-        ctx.arc(0, 0, 42, angle - 0.8, angle + 0.8);
-        ctx.stroke();
-      }
-      ctx.restore();
+      // Draw Upgraded Player Sprite
+      drawPlayerSprite(ctx);
 
       // Particles
       for (const part of particles) {
@@ -1294,7 +1552,7 @@
       miniCtx.fillStyle = '#0c4a6e'; miniCtx.fillRect(0, miniCanvas.height/2, miniCanvas.width/2, miniCanvas.height/2);
       miniCtx.fillStyle = '#450a0a'; miniCtx.fillRect(miniCanvas.width/2, miniCanvas.height/2, miniCanvas.width/2, miniCanvas.height/2);
 
-      // Draw Chests
+      // Draw Chests & Ores
       miniCtx.fillStyle = '#fbbf24';
       for (const c of chests) {
         if (!c.opened) miniCtx.fillRect(c.x * scaleX - 1, c.y * scaleY - 1, 3, 3);

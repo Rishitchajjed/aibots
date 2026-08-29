@@ -382,6 +382,21 @@ body {
   min-height: 1.2em;
 }
 
+.typing-cursor {
+  display: inline-block;
+  width: 3px;
+  height: 0.9em;
+  background: #6366f1;
+  margin-left: 4px;
+  vertical-align: -0.05em;
+  animation: blinkCursor 0.9s infinite;
+}
+
+@keyframes blinkCursor {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
 .hero-subtitle {
   font-size: 1.15rem;
   color: var(--text-secondary);

@@ -583,6 +583,21 @@ body {
   min-height: 1.2em;
 }
 
+.typing-cursor {
+  display: inline-block;
+  width: 3px;
+  height: 0.9em;
+  background: #6366f1;
+  margin-left: 4px;
+  vertical-align: -0.05em;
+  animation: blinkCursor 0.9s infinite;
+}
+
+@keyframes blinkCursor {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
 .hero-subtitle {
   font-size: 1.15rem;
   color: var(--text-secondary);
@@ -1980,7 +1995,7 @@ body {
 
       <h1 class="hero-title">
         The All-In-One Platform to <br>
-        <span class="gradient-text">Create, Design & Score Live</span>
+        <span class="gradient-text" id="dynamicTypingText">Remove Backgrounds</span><span class="typing-cursor"></span>
       </h1>
 
       <p class="hero-subtitle">
@@ -2553,7 +2568,7 @@ body {
         </div>
       </div>
 
-      <div style="padding-top: 24px; border-top: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;">
+          <div style="padding-top: 24px; border-top: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;">
         <p class="footer-text" style="margin: 0;">&copy; 2026 AI Bots. All rights reserved.</p>
         <div style="display: flex; gap: 12px; align-items: center;">
           <button onclick="openDonationModal()" class="btn btn-secondary btn-sm" style="color: #9d174d; background: #fdf2f8; font-weight: 700; border-color: #f472b6;">
@@ -2568,6 +2583,49 @@ body {
   <script src="js/app.min.js" defer></script>
   <script src="js/effects.js" defer></script>
   <script>
+    // 1. Dynamic Typing Moving Text Animation in Hero
+    const phrases = [
+      "Remove Backgrounds",
+      "Count Cricket Scores",
+      "Play Open World RPG",
+      "Design Vector Logos",
+      "Convert Images to PDF",
+      "Crop Photos Pixel-Perfect",
+      "Resize to 33+ Formats",
+      "Generate Instant Image Links",
+      "Create, Design & Score Live"
+    ];
+    let phraseIndex = 0;
+    let charIndex = phrases[0].length;
+    let isDeleting = true;
+    const typingElement = document.getElementById("dynamicTypingText");
+
+    function typeEffect() {
+      if (!typingElement) return;
+      const currentPhrase = phrases[phraseIndex];
+      if (isDeleting) {
+        typingElement.textContent = currentPhrase.substring(0, charIndex - 1);
+        charIndex--;
+      } else {
+        typingElement.textContent = currentPhrase.substring(0, charIndex + 1);
+        charIndex++;
+      }
+
+      let speed = isDeleting ? 30 : 65;
+
+      if (!isDeleting && charIndex === currentPhrase.length) {
+        speed = 2200; // Pause at end of phrase
+        isDeleting = true;
+      } else if (isDeleting && charIndex === 0) {
+        isDeleting = false;
+        phraseIndex = (phraseIndex + 1) % phrases.length;
+        speed = 350;
+      }
+
+      setTimeout(typeEffect, speed);
+    }
+    setTimeout(typeEffect, 1800);
+
     // 2. Category Filtering Logic
     const filterButtons = document.querySelectorAll('.filter-btn');
     const toolCards = document.querySelectorAll('.tool-card');

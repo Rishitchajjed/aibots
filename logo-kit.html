@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Bots — Official HD Social Media Logo Kit</title>
+  <link rel="icon" href="logo.png" type="image/png">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="css/theme.css">
+  <style>
+    body {
+      background: #090d16;
+      color: #f8fafc;
+      font-family: var(--font-sans);
+      min-height: 100vh;
+      padding: 40px 20px;
+    }
+    .kit-container {
+      max-width: 1080px;
+      margin: 0 auto;
+    }
+    .kit-header {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+    .kit-title {
+      font-size: 2.4rem;
+      font-weight: 900;
+      margin-bottom: 8px;
+      background: linear-gradient(135deg, #ff4b6e, #6366f1);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .kit-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 24px;
+      margin-bottom: 40px;
+    }
+    .asset-card {
+      background: #131b2e;
+      border: 1px solid #1e293b;
+      border-radius: 16px;
+      padding: 24px;
+      text-align: center;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+    .asset-preview-wrap {
+      width: 100%;
+      height: 280px;
+      background: #0a0f1d;
+      border-radius: 12px;
+      border: 1px solid #334155;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 20px;
+      overflow: hidden;
+      position: relative;
+    }
+    .asset-preview-wrap img, .asset-preview-wrap canvas {
+      max-width: 90%;
+      max-height: 90%;
+      object-fit: contain;
+    }
+    .btn-download {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 12px 20px;
+      border-radius: 10px;
+      background: linear-gradient(135deg, #e11d48, #be123c);
+      color: #ffffff;
+      font-weight: 700;
+      text-decoration: none;
+      border: none;
+      cursor: pointer;
+      font-size: 0.95rem;
+      transition: all 0.2s;
+      width: 100%;
+    }
+    .btn-download:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(225, 29, 72, 0.4);
+    }
+  </style>
+</head>
+<body>
+  <div class="kit-container">
+    <div class="kit-header">
+      <h1 class="kit-title">Official AI Bots Brand Assets</h1>
+      <p style="color: #94a3b8; font-size: 1.05rem;">
+        Ultra High-Definition logos and social media banners ready for <strong>Instagram</strong>, <strong>Facebook</strong>, <strong>WhatsApp</strong>, and <strong>Twitter / X</strong>.
+      </p>
+    </div>
+
+    <div class="kit-grid">
+      
+      <!-- Asset 1: 3D Studio Edition (Instagram / Facebook Avatar) -->
+      <div class="asset-card">
+        <div>
+          <div class="asset-preview-wrap">
+            <img src="logo-3d-hd.jpg" alt="3D Cyber Edition Logo">
+          </div>
+          <h3 style="font-size: 1.2rem; font-weight: 800; margin-bottom: 6px;">3D Cyber Edition (1080×1080)</h3>
+          <p style="color: #94a3b8; font-size: 0.85rem; margin-bottom: 16px;">
+            High-tech 3D glassmorphic metallic crimson avatar. Perfect for Instagram & Facebook profile pictures.
+          </p>
+        </div>
+        <a href="logo-3d-hd.jpg" download="AI-Bots-3D-Logo-1080x1080.jpg" class="btn-download">
+          <i class="fas fa-download"></i> Download 1080×1080 JPG
+        </a>
+      </div>
+
+      <!-- Asset 2: Official Minimal Red Badge (HD Vector / PNG) -->
+      <div class="asset-card">
+        <div>
+          <div class="asset-preview-wrap" style="background: radial-gradient(circle, #1e293b 0%, #0f172a 100%);">
+            <img src="logo-hd.svg" alt="Official Red Badge Vector Logo">
+          </div>
+          <h3 style="font-size: 1.2rem; font-weight: 800; margin-bottom: 6px;">Signature Red Badge (Vector & PNG)</h3>
+          <p style="color: #94a3b8; font-size: 0.85rem; margin-bottom: 16px;">
+            The official clean circular emblem of AI Bots. Infinite vector resolution with specular glass gloss.
+          </p>
+        </div>
+        <div style="display: flex; gap: 8px;">
+          <a href="logo-hd.svg" download="AI-Bots-Official-Logo.svg" class="btn-download" style="background: #4f46e5;">
+            <i class="fas fa-file-code"></i> SVG
+          </a>
+          <button onclick="downloadSvgAsPng(1080)" class="btn-download">
+            <i class="fas fa-image"></i> 1080p PNG
+          </button>
+          <button onclick="downloadSvgAsPng(2048)" class="btn-download" style="background: #059669;">
+            <i class="fas fa-sparkles"></i> 2K PNG
+          </button>
+        </div>
+      </div>
+
+      <!-- Asset 3: Facebook / Social Cover Banner (1200x630) -->
+      <div class="asset-card">
+        <div>
+          <div class="asset-preview-wrap">
+            <canvas id="bannerCanvas" width="1200" height="630" style="width: 100%; height: auto;"></canvas>
+          </div>
+          <h3 style="font-size: 1.2rem; font-weight: 800; margin-bottom: 6px;">Facebook & Web Banner (1200×630)</h3>
+          <p style="color: #94a3b8; font-size: 0.85rem; margin-bottom: 16px;">
+            Landscape social share banner with tagline and domain. Ideal for Facebook Cover and Link Previews.
+          </p>
+        </div>
+        <button onclick="downloadBanner()" class="btn-download">
+          <i class="fas fa-download"></i> Download 1200×630 Banner
+        </button>
+      </div>
+
+    </div>
+
+    <div style="text-align: center;">
+      <a href="index.html" class="btn btn-secondary" style="background: #1e293b; color: white; border: 1px solid #334155; padding: 10px 20px; border-radius: 8px; text-decoration: none; font-weight: 700;">
+        <i class="fas fa-arrow-left"></i> Back to AI Bots Studio Hub
+      </a>
+    </div>
+  </div>
+
+  <script>
+    // Draw 1200x630 Facebook Banner on Canvas
+    function initBanner() {
+      const cvs = document.getElementById('bannerCanvas');
+      const ctx = cvs.getContext('2d');
+
+      // Dark background gradient
+      const bg = ctx.createLinearGradient(0, 0, 1200, 630);
+      bg.addColorStop(0, '#090d16');
+      bg.addColorStop(0.5, '#13122b');
+      bg.addColorStop(1, '#090d16');
+      ctx.fillStyle = bg;
+      ctx.fillRect(0, 0, 1200, 630);
+
+      // Ambient glows
+      ctx.save();
+      const r1 = ctx.createRadialGradient(250, 315, 10, 250, 315, 300);
+      r1.addColorStop(0, 'rgba(225, 29, 72, 0.4)');
+      r1.addColorStop(1, 'rgba(225, 29, 72, 0)');
+      ctx.fillStyle = r1;
+      ctx.fillRect(0, 0, 1200, 630);
+      ctx.restore();
+
+      // Draw Badge Circle
+      ctx.save();
+      ctx.shadowColor = 'rgba(0,0,0,0.6)';
+      ctx.shadowBlur = 40;
+      ctx.shadowOffsetY = 15;
+      
+      const badge = ctx.createLinearGradient(120, 150, 380, 480);
+      badge.addColorStop(0, '#ff2e4d');
+      badge.addColorStop(0.5, '#e11d48');
+      badge.addColorStop(1, '#991b1b');
+      ctx.fillStyle = badge;
+      ctx.beginPath();
+      ctx.arc(250, 315, 160, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Text in badge
+      ctx.shadowColor = 'rgba(0,0,0,0.3)';
+      ctx.shadowBlur = 10;
+      ctx.fillStyle = '#ffffff';
+      ctx.textAlign = 'center';
+      ctx.font = '900 62px sans-serif';
+      ctx.fillText('AI', 250, 295);
+      ctx.font = '900 56px sans-serif';
+      ctx.fillText('BOTS', 250, 365);
+      ctx.restore();
+
+      // Title & Tagline
+      ctx.fillStyle = '#ffffff';
+      ctx.textAlign = 'left';
+      ctx.font = '900 68px sans-serif';
+      ctx.fillText('AI BOTS', 470, 240);
+
+      ctx.fillStyle = '#94a3b8';
+      ctx.font = '700 30px sans-serif';
+      ctx.fillText('Free Creative Studio & 28+ Browser Tools', 470, 310);
+
+      // Pill tags
+      ctx.fillStyle = '#6366f1';
+      ctx.font = '700 24px monospace';
+      ctx.fillText('• 100% Private  • Zero Sign-ups  • Client-Side', 470, 370);
+
+      // Domain
+      ctx.fillStyle = '#38bdf8';
+      ctx.font = '800 32px sans-serif';
+      ctx.fillText('www.aibots.co.in', 470, 440);
+    }
+
+    function downloadBanner() {
+      const cvs = document.getElementById('bannerCanvas');
+      const link = document.createElement('a');
+      link.download = 'AI-Bots-Facebook-Cover-1200x630.png';
+      link.href = cvs.toDataURL('image/png');
+      link.click();
+    }
+
+    function downloadSvgAsPng(size) {
+      const img = new Image();
+      img.src = 'logo-hd.svg';
+      img.onload = () => {
+        const cvs = document.createElement('canvas');
+        cvs.width = size;
+        cvs.height = size;
+        const ctx = cvs.getContext('2d');
+        ctx.drawImage(img, 0, 0, size, size);
+        const link = document.createElement('a');
+        link.download = `AI-Bots-Logo-${size}x${size}.png`;
+        link.href = cvs.toDataURL('image/png');
+        link.click();
+      };
+    }
+
+    window.onload = initBanner;
+  </script>
+</body>
+</html>

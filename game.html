@@ -562,6 +562,108 @@
       color: #e2e8f0;
       margin: 2px;
     }
+  
+    /* In-Canvas Floating Menu HUD for Fullscreen & Mobile */
+    .in-canvas-top-bar {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      display: flex;
+      gap: 6px;
+      z-index: 35;
+      pointer-events: auto;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+    .hud-btn {
+      padding: 6px 12px;
+      border-radius: 10px;
+      background: rgba(15, 23, 42, 0.85);
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(255, 255, 255, 0.22);
+      color: #ffffff;
+      font-size: 0.8rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.15s;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+      user-select: none;
+      touch-action: manipulation;
+    }
+    .hud-btn:hover {
+      background: rgba(99, 102, 241, 0.95);
+      border-color: #818cf8;
+      transform: translateY(-2px);
+    }
+    .hud-btn:active {
+      transform: scale(0.94);
+    }
+    .hud-btn-primary {
+      background: linear-gradient(135deg, rgba(99, 102, 241, 0.95), rgba(168, 85, 247, 0.95));
+      border-color: #a855f7;
+    }
+    .hud-btn-fullscreen {
+      background: rgba(16, 185, 129, 0.85);
+      border-color: #34d399;
+    }
+    .hud-btn-exit-fullscreen {
+      background: linear-gradient(135deg, #ef4444, #dc2626) !important;
+      border-color: #f87171 !important;
+      color: #ffffff !important;
+      box-shadow: 0 0 15px rgba(239, 68, 68, 0.6) !important;
+    }
+
+    /* In-Canvas Modal Overlay Rules (Works in Fullscreen & Windowed) */
+    .game-canvas-wrapper .modal-backdrop {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(5, 8, 18, 0.85);
+      backdrop-filter: blur(10px);
+      z-index: 100;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      pointer-events: auto;
+    }
+    .game-canvas-wrapper .modal-backdrop.active {
+      display: flex;
+      animation: modalFadeIn 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .game-canvas-wrapper .modal-card {
+      background: #0f172a;
+      border: 1.5px solid rgba(99, 102, 241, 0.5);
+      border-radius: 20px;
+      box-shadow: 0 25px 60px rgba(0, 0, 0, 0.9), 0 0 35px rgba(99, 102, 241, 0.25);
+      width: 100%;
+      max-width: 600px;
+      max-height: 88%;
+      overflow-y: auto;
+      padding: 20px;
+      color: #f8fafc;
+    }
+
+    @media (max-width: 768px) {
+      .in-canvas-top-bar {
+        top: 6px;
+        right: 6px;
+        gap: 4px;
+        max-width: 82%;
+      }
+      .hud-btn {
+        padding: 6px 8px;
+        font-size: 0.72rem;
+      }
+      .hud-btn span.hud-btn-label {
+        display: none; /* Icon only on small mobile screens */
+      }
+    }
+
   </style>
   <link rel="manifest" href="manifest.json">
   <meta name="theme-color" content="#6366f1">
@@ -694,6 +796,229 @@
         </div>
       </div>
 
+      
+      <!-- In-Canvas Floating Menu Bar (Always Accessible in Fullscreen & Mobile) -->
+      <div class="in-canvas-top-bar" id="inCanvasTopBar">
+        <button class="hud-btn hud-btn-primary" onclick="openQuestModal()" title="Quest Log [Q]">
+          <i class="fas fa-scroll"></i> <span class="hud-btn-label">Quests</span> <span id="inCanvasQuestBadge" style="background:#fbbf24; color:#0f172a; padding:1px 6px; border-radius:999px; font-size:0.68rem; font-weight:800;">1/5</span>
+        </button>
+        <button class="hud-btn" onclick="openInventoryModal()" title="Equipment & Gear [I]">
+          <i class="fas fa-shield-halved"></i> <span class="hud-btn-label">Gear</span>
+        </button>
+        <button class="hud-btn" onclick="openTalentsModal()" title="Skill Talents [T]">
+          <i class="fas fa-tree"></i> <span class="hud-btn-label">Talents</span> (<span id="inCanvasTalentPts">0</span>)
+        </button>
+        <button class="hud-btn" onclick="openHeroModal()" title="Hero Skins & Classes">
+          <i class="fas fa-user-astronaut"></i> <span class="hud-btn-label">Skin</span>
+        </button>
+        <button class="hud-btn" onclick="openShopModal()" title="Armory & Mount Shop">
+          <i class="fas fa-store"></i> <span class="hud-btn-label">Shop</span>
+        </button>
+        <button class="hud-btn" onclick="toggleMute()" id="inCanvasMuteBtn" title="Toggle Sound FX">
+          <i class="fas fa-volume-up" id="inCanvasMuteIcon"></i>
+        </button>
+        <button class="hud-btn" onclick="restartGame()" title="Restart Game">
+          <i class="fas fa-rotate-right"></i>
+        </button>
+        <button class="hud-btn hud-btn-fullscreen" onclick="toggleFullscreen()" id="inCanvasFullscreenBtn" title="Toggle Fullscreen">
+          <i class="fas fa-expand" id="inCanvasFsIcon"></i> <span class="hud-btn-label" id="inCanvasFsText">Fullscreen</span>
+        </button>
+      </div>
+
+      <!-- Talent Skill Tree Modal (Inside Fullscreen Canvas) -->
+      <div class="modal-backdrop" id="talentsModal">
+        <div class="modal-card" style="max-width: 540px;">
+          <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); padding-bottom: 12px;">
+            <h3 style="margin: 0; font-size: 1.2rem; color: #facc15;">
+              <i class="fas fa-tree"></i> Skill Talents & Masteries
+            </h3>
+            <button onclick="closeModal('talentsModal')" class="btn btn-secondary btn-sm">✕ Close</button>
+          </div>
+
+          <div style="margin: 12px 0; font-weight: 700; color: var(--text-secondary); font-size: 0.9rem;">
+            Available Skill Points: <span id="modalTalentPts" style="color: #facc15; font-size: 1.1rem;">0</span>
+          </div>
+
+          <div class="talent-grid">
+            <div class="talent-card">
+              <i class="fas fa-hand-fist" style="color: #ef4444;"></i>
+              <div class="talent-title">Berserker Force</div>
+              <div class="talent-desc">+10 Sword Dmg (Rank <span id="tDmgRank">0</span>/5)</div>
+              <button class="btn btn-primary btn-sm" onclick="upgradeTalent('dmg')">Upgrade</button>
+            </div>
+            <div class="talent-card">
+              <i class="fas fa-shield-heart" style="color: #38bdf8;"></i>
+              <div class="talent-title">Titan Armor</div>
+              <div class="talent-desc">+30 Max HP & Regen (Rank <span id="tHpRank">0</span>/5)</div>
+              <button class="btn btn-primary btn-sm" onclick="upgradeTalent('hp')">Upgrade</button>
+            </div>
+            <div class="talent-card">
+              <i class="fas fa-bolt" style="color: #c084fc;"></i>
+              <div class="talent-title">Archmage Surge</div>
+              <div class="talent-desc">+20 Max Mana (Rank <span id="tMpRank">0</span>/5)</div>
+              <button class="btn btn-primary btn-sm" onclick="upgradeTalent('mp')">Upgrade</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Hero Skin & Class Modal (Inside Fullscreen Canvas) -->
+      <div class="modal-backdrop" id="heroModal">
+        <div class="modal-card" style="max-width: 500px;">
+          <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); padding-bottom: 12px;">
+            <h3 style="margin: 0; font-size: 1.2rem; color: #38bdf8;">
+              <i class="fas fa-user-astronaut"></i> Select Hero Class & Skin
+            </h3>
+            <button onclick="closeModal('heroModal')" class="btn btn-secondary btn-sm">✕ Close</button>
+          </div>
+
+          <div class="hero-class-grid">
+            <div class="hero-class-card active" id="skinCyberKnight" onclick="setHeroSkin('cyber_knight')">
+              <i class="fas fa-robot" style="color: #38bdf8;"></i>
+              <div class="hero-class-name">Cyber Knight</div>
+            </div>
+            <div class="hero-class-card" id="skinArcaneMage" onclick="setHeroSkin('arcane_mage')">
+              <i class="fas fa-wand-magic-sparkles" style="color: #c084fc;"></i>
+              <div class="hero-class-name">Arcane Mage</div>
+            </div>
+            <div class="hero-class-card" id="skinNeonRanger" onclick="setHeroSkin('neon_ranger')">
+              <i class="fas fa-crosshairs" style="color: #34d399;"></i>
+              <div class="hero-class-name">Neon Ranger</div>
+            </div>
+            <div class="hero-class-card" id="skinMechaPaladin" onclick="setHeroSkin('mecha_paladin')">
+              <i class="fas fa-shield-halved" style="color: #fbbf24;"></i>
+              <div class="hero-class-name">Mecha Paladin</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Shop Modal (Inside Fullscreen Canvas) -->
+      <div class="modal-backdrop" id="shopModal">
+        <div class="modal-card" style="max-width: 620px;">
+          <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); padding-bottom: 12px;">
+            <h3 style="margin: 0; font-size: 1.2rem; color: #fbbf24;">
+              <i class="fas fa-store"></i> Cyber Realm Armory & Mounts
+            </h3>
+            <button onclick="closeModal('shopModal')" class="btn btn-secondary btn-sm">✕ Close</button>
+          </div>
+
+          <div style="margin: 12px 0; font-weight: 700; color: var(--text-secondary); font-size: 0.9rem;">
+            Your Gold: <span id="shopGoldText" style="color: #fbbf24;">0</span> <i class="fas fa-coins"></i>
+          </div>
+
+          <div class="shop-item-grid">
+            <div class="shop-item">
+              <i class="fas fa-flask" style="color: #ef4444;"></i>
+              <div class="shop-item-name">Health Potion</div>
+              <div class="shop-item-desc">Restores 50 HP.</div>
+              <button class="btn btn-primary btn-sm" onclick="buyItem('hpPot', 20)">Buy (20 G)</button>
+            </div>
+            <div class="shop-item">
+              <i class="fas fa-flask" style="color: #3b82f6;"></i>
+              <div class="shop-item-name">Mana Elixir</div>
+              <div class="shop-item-desc">Restores 50 MP.</div>
+              <button class="btn btn-primary btn-sm" onclick="buyItem('mpPot', 20)">Buy (20 G)</button>
+            </div>
+            <div class="shop-item">
+              <i class="fas fa-wand-magic-sparkles" style="color: #ec4899;"></i>
+              <div class="shop-item-name">Laser Blade</div>
+              <div class="shop-item-desc">+25 Sword Dmg boost.</div>
+              <button class="btn btn-primary btn-sm" id="buySwordBtn" onclick="buyItem('sword', 100)">Buy (100 G)</button>
+            </div>
+            <div class="shop-item">
+              <i class="fas fa-shield-halved" style="color: #38bdf8;"></i>
+              <div class="shop-item-name">Aegis Shield</div>
+              <div class="shop-item-desc">+60 Max HP & Aura.</div>
+              <button class="btn btn-primary btn-sm" id="buyArmorBtn" onclick="buyItem('armor', 150)">Buy (150 G)</button>
+            </div>
+            <div class="shop-item">
+              <i class="fas fa-satellite" style="color: #22c55e;"></i>
+              <div class="shop-item-name">Companion Drone</div>
+              <div class="shop-item-desc">Auto laser support!</div>
+              <button class="btn btn-primary btn-sm" id="buyPetBtn" onclick="buyItem('pet', 180)">Buy (180 G)</button>
+            </div>
+            <div class="shop-item">
+              <i class="fas fa-motorcycle" style="color: #fbbf24;"></i>
+              <div class="shop-item-name">Cyber Hoverbike</div>
+              <div class="shop-item-desc">2.5x Speed Mount [V].</div>
+              <button class="btn btn-primary btn-sm" id="buyMountBtn" onclick="buyItem('mount', 220)">Buy (220 G)</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quest Master & Story Log Modal (Inside Fullscreen Canvas) -->
+      <div class="modal-backdrop" id="questModal">
+        <div class="modal-card" style="max-width: 620px; max-height: 85vh; overflow-y: auto;">
+          <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); padding-bottom: 12px;">
+            <h3 style="margin: 0; font-size: 1.25rem; color: #fbbf24;">
+              <i class="fas fa-scroll"></i> Realm Quest Log & Bounties
+            </h3>
+            <button onclick="closeModal('questModal')" class="btn btn-secondary btn-sm">✕ Close</button>
+          </div>
+
+          <div style="margin: 14px 0 10px; font-size: 0.88rem; color: var(--text-secondary);">
+            Complete realm quests to earn massive XP, Gold, Talent Points, and Legendary Equipment!
+          </div>
+
+          <!-- Quest List -->
+          <div id="questListContainer" style="display: flex; flex-direction: column; gap: 10px;">
+            <!-- Injected dynamically via JS -->
+          </div>
+        </div>
+      </div>
+
+      <!-- Equipment & Gear Inventory Modal (Inside Fullscreen Canvas) -->
+      <div class="modal-backdrop" id="inventoryModal">
+        <div class="modal-card" style="max-width: 580px;">
+          <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); padding-bottom: 12px;">
+            <h3 style="margin: 0; font-size: 1.25rem; color: #38bdf8;">
+              <i class="fas fa-shield-halved"></i> Hero Equipment & Artifacts
+            </h3>
+            <button onclick="closeModal('inventoryModal')" class="btn btn-secondary btn-sm">✕ Close</button>
+          </div>
+
+          <!-- Equipped Gear Slots Grid -->
+          <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin: 18px 0; text-align: center;">
+            <div class="shop-item" style="padding: 12px;">
+              <i class="fas fa-wand-magic-sparkles" style="color: #ec4899; font-size: 1.6rem;"></i>
+              <div style="font-size: 0.72rem; color: #94a3b8; margin-top: 4px;">WEAPON</div>
+              <div id="gearWeaponName" style="font-weight: 800; font-size: 0.82rem; color: #fff;">Laser Katana</div>
+              <div id="gearWeaponStat" style="font-size: 0.72rem; color: #34d399;">+25 ATK</div>
+            </div>
+            <div class="shop-item" style="padding: 12px;">
+              <i class="fas fa-shield-heart" style="color: #38bdf8; font-size: 1.6rem;"></i>
+              <div style="font-size: 0.72rem; color: #94a3b8; margin-top: 4px;">SHIELD</div>
+              <div id="gearShieldName" style="font-weight: 800; font-size: 0.82rem; color: #fff;">Energy Aegis</div>
+              <div id="gearShieldStat" style="font-size: 0.72rem; color: #38bdf8;">+60 HP</div>
+            </div>
+            <div class="shop-item" style="padding: 12px;">
+              <i class="fas fa-shoe-prints" style="color: #fbbf24; font-size: 1.6rem;"></i>
+              <div style="font-size: 0.72rem; color: #94a3b8; margin-top: 4px;">BOOTS</div>
+              <div id="gearBootsName" style="font-weight: 800; font-size: 0.82rem; color: #fff;">Swift Striders</div>
+              <div id="gearBootsStat" style="font-size: 0.72rem; color: #fbbf24;">+30% Speed</div>
+            </div>
+            <div class="shop-item" style="padding: 12px;">
+              <i class="fas fa-ring" style="color: #a855f7; font-size: 1.6rem;"></i>
+              <div style="font-size: 0.72rem; color: #94a3b8; margin-top: 4px;">RING</div>
+              <div id="gearRingName" style="font-weight: 800; font-size: 0.82rem; color: #fff;">Archmage Ring</div>
+              <div id="gearRingStat" style="font-size: 0.72rem; color: #c084fc;">+40 MP & Regen</div>
+            </div>
+          </div>
+
+          <div style="background: var(--bg-tertiary); border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 14px;">
+            <h4 style="margin: 0 0 8px; font-size: 0.9rem; color: var(--text-primary);"><i class="fas fa-sparkles" style="color: #fbbf24;"></i> Total Stat Modifiers</h4>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; font-size: 0.82rem; color: var(--text-secondary);">
+              <div>⚔️ Total Attack Power: <strong id="totalAtkStat" style="color: #fff;">35</strong></div>
+              <div>🛡️ Total Armor/HP: <strong id="totalDefStat" style="color: #fff;">160</strong></div>
+              <div>⚡ Movement Speed: <strong id="totalSpdStat" style="color: #fff;">+30%</strong></div>
+              <div>🎯 Critical Strike Rate: <strong id="totalCritStat" style="color: #fff;">25%</strong></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <!-- Mobile Touch Controls -->
       <div class="mobile-controls">
         <div class="d-pad">
@@ -709,129 +1034,6 @@
           <div class="act-btn act-dash" id="btnDash" title="Dash [Shift]"><i class="fas fa-wind"></i></div>
           <div class="act-btn act-mount" id="btnMount" title="Hoverbike [V]"><i class="fas fa-motorcycle"></i></div>
           <div class="act-btn act-quest" id="btnQuestMobile" title="Quests [Q]"><i class="fas fa-scroll"></i></div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Talent Skill Tree Modal -->
-    <div class="modal-backdrop" id="talentsModal">
-      <div class="modal-card" style="max-width: 540px;">
-        <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); padding-bottom: 12px;">
-          <h3 style="margin: 0; font-size: 1.2rem; color: #facc15;">
-            <i class="fas fa-tree"></i> Skill Talents & Masteries
-          </h3>
-          <button onclick="closeModal('talentsModal')" class="btn btn-secondary btn-sm">✕ Close</button>
-        </div>
-
-        <div style="margin: 12px 0; font-weight: 700; color: var(--text-secondary); font-size: 0.9rem;">
-          Available Skill Points: <span id="modalTalentPts" style="color: #facc15; font-size: 1.1rem;">0</span>
-        </div>
-
-        <div class="talent-grid">
-          <div class="talent-card">
-            <i class="fas fa-hand-fist" style="color: #ef4444;"></i>
-            <div class="talent-title">Berserker Force</div>
-            <div class="talent-desc">+10 Sword Dmg (Rank <span id="tDmgRank">0</span>/5)</div>
-            <button class="btn btn-primary btn-sm" onclick="upgradeTalent('dmg')">Upgrade</button>
-          </div>
-          <div class="talent-card">
-            <i class="fas fa-shield-heart" style="color: #38bdf8;"></i>
-            <div class="talent-title">Titan Armor</div>
-            <div class="talent-desc">+30 Max HP & Regen (Rank <span id="tHpRank">0</span>/5)</div>
-            <button class="btn btn-primary btn-sm" onclick="upgradeTalent('hp')">Upgrade</button>
-          </div>
-          <div class="talent-card">
-            <i class="fas fa-bolt" style="color: #c084fc;"></i>
-            <div class="talent-title">Archmage Surge</div>
-            <div class="talent-desc">+20 Max Mana (Rank <span id="tMpRank">0</span>/5)</div>
-            <button class="btn btn-primary btn-sm" onclick="upgradeTalent('mp')">Upgrade</button>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Hero Skin & Class Modal -->
-    <div class="modal-backdrop" id="heroModal">
-      <div class="modal-card" style="max-width: 500px;">
-        <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); padding-bottom: 12px;">
-          <h3 style="margin: 0; font-size: 1.2rem; color: #38bdf8;">
-            <i class="fas fa-user-astronaut"></i> Select Hero Class & Skin
-          </h3>
-          <button onclick="closeModal('heroModal')" class="btn btn-secondary btn-sm">✕ Close</button>
-        </div>
-
-        <div class="hero-class-grid">
-          <div class="hero-class-card active" id="skinCyberKnight" onclick="setHeroSkin('cyber_knight')">
-            <i class="fas fa-robot" style="color: #38bdf8;"></i>
-            <div class="hero-class-name">Cyber Knight</div>
-          </div>
-          <div class="hero-class-card" id="skinArcaneMage" onclick="setHeroSkin('arcane_mage')">
-            <i class="fas fa-wand-magic-sparkles" style="color: #c084fc;"></i>
-            <div class="hero-class-name">Arcane Mage</div>
-          </div>
-          <div class="hero-class-card" id="skinNeonRanger" onclick="setHeroSkin('neon_ranger')">
-            <i class="fas fa-crosshairs" style="color: #34d399;"></i>
-            <div class="hero-class-name">Neon Ranger</div>
-          </div>
-          <div class="hero-class-card" id="skinMechaPaladin" onclick="setHeroSkin('mecha_paladin')">
-            <i class="fas fa-shield-halved" style="color: #fbbf24;"></i>
-            <div class="hero-class-name">Mecha Paladin</div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Shop Modal -->
-    <div class="modal-backdrop" id="shopModal">
-      <div class="modal-card" style="max-width: 620px;">
-        <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); padding-bottom: 12px;">
-          <h3 style="margin: 0; font-size: 1.2rem; color: #fbbf24;">
-            <i class="fas fa-store"></i> Cyber Realm Armory & Mounts
-          </h3>
-          <button onclick="closeModal('shopModal')" class="btn btn-secondary btn-sm">✕ Close</button>
-        </div>
-
-        <div style="margin: 12px 0; font-weight: 700; color: var(--text-secondary); font-size: 0.9rem;">
-          Your Gold: <span id="shopGoldText" style="color: #fbbf24;">0</span> <i class="fas fa-coins"></i>
-        </div>
-
-        <div class="shop-item-grid">
-          <div class="shop-item">
-            <i class="fas fa-flask" style="color: #ef4444;"></i>
-            <div class="shop-item-name">Health Potion</div>
-            <div class="shop-item-desc">Restores 50 HP.</div>
-            <button class="btn btn-primary btn-sm" onclick="buyItem('hpPot', 20)">Buy (20 G)</button>
-          </div>
-          <div class="shop-item">
-            <i class="fas fa-flask" style="color: #3b82f6;"></i>
-            <div class="shop-item-name">Mana Elixir</div>
-            <div class="shop-item-desc">Restores 50 MP.</div>
-            <button class="btn btn-primary btn-sm" onclick="buyItem('mpPot', 20)">Buy (20 G)</button>
-          </div>
-          <div class="shop-item">
-            <i class="fas fa-wand-magic-sparkles" style="color: #ec4899;"></i>
-            <div class="shop-item-name">Laser Blade</div>
-            <div class="shop-item-desc">+25 Sword Dmg boost.</div>
-            <button class="btn btn-primary btn-sm" id="buySwordBtn" onclick="buyItem('sword', 100)">Buy (100 G)</button>
-          </div>
-          <div class="shop-item">
-            <i class="fas fa-shield-halved" style="color: #38bdf8;"></i>
-            <div class="shop-item-name">Aegis Shield</div>
-            <div class="shop-item-desc">+60 Max HP & Aura.</div>
-            <button class="btn btn-primary btn-sm" id="buyArmorBtn" onclick="buyItem('armor', 150)">Buy (150 G)</button>
-          </div>
-          <div class="shop-item">
-            <i class="fas fa-satellite" style="color: #22c55e;"></i>
-            <div class="shop-item-name">Companion Drone</div>
-            <div class="shop-item-desc">Auto laser support!</div>
-            <button class="btn btn-primary btn-sm" id="buyPetBtn" onclick="buyItem('pet', 180)">Buy (180 G)</button>
-          </div>
-          <div class="shop-item">
-            <i class="fas fa-motorcycle" style="color: #fbbf24;"></i>
-            <div class="shop-item-name">Cyber Hoverbike</div>
-            <div class="shop-item-desc">2.5x Speed Mount [V].</div>
-            <button class="btn btn-primary btn-sm" id="buyMountBtn" onclick="buyItem('mount', 220)">Buy (220 G)</button>
-          </div>
         </div>
       </div>
     </div>
@@ -864,78 +1066,7 @@
       </div>
     </div>
   
-    <!-- Quest Master & Story Log Modal -->
-    <div class="modal-backdrop" id="questModal">
-      <div class="modal-card" style="max-width: 620px; max-height: 85vh; overflow-y: auto;">
-        <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); padding-bottom: 12px;">
-          <h3 style="margin: 0; font-size: 1.25rem; color: #fbbf24;">
-            <i class="fas fa-scroll"></i> Realm Quest Log & Bounties
-          </h3>
-          <button onclick="closeModal('questModal')" class="btn btn-secondary btn-sm">✕ Close</button>
-        </div>
-
-        <div style="margin: 14px 0 10px; font-size: 0.88rem; color: var(--text-secondary);">
-          Complete realm quests to earn massive XP, Gold, Talent Points, and Legendary Equipment!
-        </div>
-
-        <!-- Quest List -->
-        <div id="questListContainer" style="display: flex; flex-direction: column; gap: 10px;">
-          <!-- Injected dynamically via JS -->
-        </div>
-      </div>
-    </div>
-
-    <!-- Equipment & Gear Inventory Modal -->
-    <div class="modal-backdrop" id="inventoryModal">
-      <div class="modal-card" style="max-width: 580px;">
-        <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); padding-bottom: 12px;">
-          <h3 style="margin: 0; font-size: 1.25rem; color: #38bdf8;">
-            <i class="fas fa-shield-halved"></i> Hero Equipment & Artifacts
-          </h3>
-          <button onclick="closeModal('inventoryModal')" class="btn btn-secondary btn-sm">✕ Close</button>
-        </div>
-
-        <!-- Equipped Gear Slots Grid -->
-        <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin: 18px 0; text-align: center;">
-          <div class="shop-item" style="padding: 12px;">
-            <i class="fas fa-wand-magic-sparkles" style="color: #ec4899; font-size: 1.6rem;"></i>
-            <div style="font-size: 0.72rem; color: #94a3b8; margin-top: 4px;">WEAPON</div>
-            <div id="gearWeaponName" style="font-weight: 800; font-size: 0.82rem; color: #fff;">Laser Katana</div>
-            <div id="gearWeaponStat" style="font-size: 0.72rem; color: #34d399;">+25 ATK</div>
-          </div>
-          <div class="shop-item" style="padding: 12px;">
-            <i class="fas fa-shield-heart" style="color: #38bdf8; font-size: 1.6rem;"></i>
-            <div style="font-size: 0.72rem; color: #94a3b8; margin-top: 4px;">SHIELD</div>
-            <div id="gearShieldName" style="font-weight: 800; font-size: 0.82rem; color: #fff;">Energy Aegis</div>
-            <div id="gearShieldStat" style="font-size: 0.72rem; color: #38bdf8;">+60 HP</div>
-          </div>
-          <div class="shop-item" style="padding: 12px;">
-            <i class="fas fa-shoe-prints" style="color: #fbbf24; font-size: 1.6rem;"></i>
-            <div style="font-size: 0.72rem; color: #94a3b8; margin-top: 4px;">BOOTS</div>
-            <div id="gearBootsName" style="font-weight: 800; font-size: 0.82rem; color: #fff;">Swift Striders</div>
-            <div id="gearBootsStat" style="font-size: 0.72rem; color: #fbbf24;">+30% Speed</div>
-          </div>
-          <div class="shop-item" style="padding: 12px;">
-            <i class="fas fa-ring" style="color: #a855f7; font-size: 1.6rem;"></i>
-            <div style="font-size: 0.72rem; color: #94a3b8; margin-top: 4px;">RING</div>
-            <div id="gearRingName" style="font-weight: 800; font-size: 0.82rem; color: #fff;">Archmage Ring</div>
-            <div id="gearRingStat" style="font-size: 0.72rem; color: #c084fc;">+40 MP & Regen</div>
-          </div>
-        </div>
-
-        <div style="background: var(--bg-tertiary); border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 14px;">
-          <h4 style="margin: 0 0 8px; font-size: 0.9rem; color: var(--text-primary);"><i class="fas fa-sparkles" style="color: #fbbf24;"></i> Total Stat Modifiers</h4>
-          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; font-size: 0.82rem; color: var(--text-secondary);">
-            <div>⚔️ Total Attack Power: <strong id="totalAtkStat" style="color: #fff;">35</strong></div>
-            <div>🛡️ Total Armor/HP: <strong id="totalDefStat" style="color: #fff;">160</strong></div>
-            <div>⚡ Movement Speed: <strong id="totalSpdStat" style="color: #fff;">+30%</strong></div>
-            <div>🎯 Critical Strike Rate: <strong id="totalCritStat" style="color: #fff;">25%</strong></div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-  </main>
+    </main>
 
   <footer class="app-footer">
     <div class="app-container">
@@ -983,16 +1114,78 @@
       levelUp() { [523, 659, 783, 1046, 1318].forEach((f, i) => { setTimeout(() => this.playTone(f, 'triangle', 0.22, 0.2), i * 80); }); }
     };
 
+    
     function toggleMute() {
-      AudioEngine.init();
-      AudioEngine.muted = !AudioEngine.muted;
-      document.getElementById('muteBtn').innerHTML = AudioEngine.muted ? '<i class="fas fa-volume-xmark"></i>' : '<i class="fas fa-volume-up"></i>';
+      isMuted = !isMuted;
+      const mIcon = document.getElementById('inCanvasMuteIcon');
+      const muteBtn = document.getElementById('muteBtn');
+      if (isMuted) {
+        if (mIcon) mIcon.className = 'fas fa-volume-xmark';
+        if (muteBtn) muteBtn.innerHTML = '<i class="fas fa-volume-xmark"></i>';
+        showToast("Audio Muted", "info");
+      } else {
+        if (mIcon) mIcon.className = 'fas fa-volume-up';
+        if (muteBtn) muteBtn.innerHTML = '<i class="fas fa-volume-up"></i>';
+        showToast("Audio Enabled", "success");
+      }
+    }
+
+
+    
+    // Fullscreen synchronization for laptop & mobile
+    function updateFullscreenState() {
+      const isFs = !!(document.fullscreenElement || document.webkitFullscreenElement || document.mozFullScreenElement || document.msFullscreenElement);
+      const btn = document.getElementById('inCanvasFullscreenBtn');
+      const icon = document.getElementById('inCanvasFsIcon');
+      const text = document.getElementById('inCanvasFsText');
+
+      if (isFs) {
+        if (btn) {
+          btn.classList.add('hud-btn-exit-fullscreen');
+          btn.title = "Exit Fullscreen (Esc or Tap)";
+        }
+        if (icon) icon.className = 'fas fa-compress';
+        if (text) text.textContent = 'Exit';
+      } else {
+        if (btn) {
+          btn.classList.remove('hud-btn-exit-fullscreen');
+          btn.title = "Enter Fullscreen Mode";
+        }
+        if (icon) icon.className = 'fas fa-expand';
+        if (text) text.textContent = 'Fullscreen';
+      }
     }
 
     function toggleFullscreen() {
-      const elem = document.getElementById('canvasWrapper');
-      if (!document.fullscreenElement) {
-        elem.requestFullscreen().catch(err => {});
+      const isFs = !!(document.fullscreenElement || document.webkitFullscreenElement || document.mozFullScreenElement || document.msFullscreenElement);
+      if (!isFs) {
+        const elem = document.getElementById('canvasWrapper') || document.documentElement;
+        if (elem.requestFullscreen) {
+          elem.requestFullscreen().catch(err => {
+            console.warn(err);
+            document.documentElement.requestFullscreen();
+          });
+        } else if (elem.webkitRequestFullscreen) {
+          elem.webkitRequestFullscreen();
+        } else if (elem.msRequestFullscreen) {
+          elem.msRequestFullscreen();
+        }
+      } else {
+        if (document.exitFullscreen) {
+          document.exitFullscreen();
+        } else if (document.webkitExitFullscreen) {
+          document.webkitExitFullscreen();
+        } else if (document.msExitFullscreen) {
+          document.msExitFullscreen();
+        }
+      }
+    }
+
+    document.addEventListener('fullscreenchange', updateFullscreenState);
+    document.addEventListener('webkitfullscreenchange', updateFullscreenState);
+    document.addEventListener('mozfullscreenchange', updateFullscreenState);
+    document.addEventListener('MSFullscreenChange', updateFullscreenState);
+);
       } else {
         document.exitFullscreen();
       }
@@ -1393,7 +1586,14 @@
       }
     }
 
+    
+    // Prevent game actions if any modal is active
+    function isAnyModalOpen() {
+      return !!document.querySelector('.modal-backdrop.active');
+    }
+
     function performAttack() {
+      if (isAnyModalOpen()) return;
       if (player.attackTimer > 0) return;
       player.attacking = true;
       player.attackTimer = 16;
@@ -1451,6 +1651,7 @@
     }
 
     function castMagic() {
+      if (isAnyModalOpen()) return;
       if (player.mp < 10) {
         addFloatingText("No Mana!", player.x, player.y - 20, '#60a5fa');
         return;
@@ -1741,6 +1942,7 @@
       document.getElementById('hpPotCount').textContent = player.potions.hp;
       document.getElementById('mpPotCount').textContent = player.potions.mp;
       document.getElementById('talentPtsText').textContent = player.talentPoints;
+      const inCanvasPts = document.getElementById('inCanvasTalentPts'); if (inCanvasPts) inCanvasPts.textContent = player.talentPoints;
     }
 
     function restartGame() {

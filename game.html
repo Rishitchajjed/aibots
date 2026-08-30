@@ -278,12 +278,13 @@
     #joystickZone {
       position: absolute;
       left: 0;
-      top: 0;
       bottom: 0;
-      width: 50%;
-      z-index: 25;
+      width: 35%;
+      height: 60%;
+      z-index: 10;
       touch-action: none;
       user-select: none;
+      pointer-events: auto;
     }
     .virtual-joystick-base {
       position: absolute;
@@ -420,14 +421,20 @@
         max-height: 520px;
       }
       .hotbar-container {
-        bottom: 80px;
-        gap: 5px;
+        bottom: 75px;
+        left: 50%;
+        transform: translateX(-50%);
+        gap: 6px;
         padding: 4px 8px;
+        z-index: 50;
+        pointer-events: auto;
       }
       .hotbar-slot {
-        width: 34px;
-        height: 34px;
-        font-size: 0.85rem;
+        width: 36px;
+        height: 36px;
+        font-size: 0.88rem;
+        pointer-events: auto;
+        touch-action: manipulation;
       }
       .hotbar-key { display: none; }
       .quest-tracker {
@@ -1516,20 +1523,26 @@
 
     // Tap-to-Move on Canvas
     canvas.addEventListener('pointerdown', (e) => {
-      // If clicking right side of canvas (not joystick zone)
+      if (typeof isAnyModalOpen === 'function' && isAnyModalOpen()) return;
       const rect = canvas.getBoundingClientRect();
-      const clickX = (e.clientX - rect.left) * (canvas.width / rect.width);
-      const clickY = (e.clientY - rect.top) * (canvas.height / rect.height);
+      const touchX = e.clientX - rect.left;
+      const touchY = e.clientY - rect.top;
 
-      if (e.clientX - rect.left > rect.width * 0.45) {
+      // Ignore tap if touching top HUD bar or bottom hotbar zone
+      if (touchY < 65 || (touchY > rect.height - 120 && touchX > rect.width * 0.22 && touchX < rect.width * 0.78)) {
+        return;
+      }
+
+      // Tap-to-move in right active play zone
+      if (touchX > rect.width * 0.35) {
         AudioEngine.init();
-        // Convert screen coordinate to world coordinate
+        const clickX = touchX * (canvas.width / rect.width);
+        const clickY = touchY * (canvas.height / rect.height);
         const worldX = clickX + camera.x;
         const worldY = clickY + camera.y;
 
         targetWaypoint = { x: worldX, y: worldY };
 
-        // Position on-screen reticle
         if (tapReticle && canvasWrapper) {
           tapReticle.style.left = (e.clientX - canvasWrapper.getBoundingClientRect().left) + 'px';
           tapReticle.style.top = (e.clientY - canvasWrapper.getBoundingClientRect().top) + 'px';
@@ -1582,6 +1595,14 @@
     document.getElementById('btnDash')?.addEventListener('pointerdown', (e) => { e.preventDefault(); AudioEngine.init(); performDash(); });
     document.getElementById('btnMount')?.addEventListener('pointerdown', (e) => { e.preventDefault(); AudioEngine.init(); toggleMount(); });
     document.getElementById('btnInteract')?.addEventListener('pointerdown', (e) => { e.preventDefault(); AudioEngine.init(); handleInteract(); });
+
+    
+    // Mobile instant touch triggers for hotbar slots
+    document.querySelectorAll('.hotbar-slot').forEach(slot => {
+      slot.addEventListener('pointerdown', (e) => {
+        e.stopPropagation();
+      });
+    });
 
     // Combat & Mounting
     function toggleMount() {

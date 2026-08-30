@@ -28,13 +28,657 @@
   <link rel="stylesheet" href="css/theme.css">
 
   <style>
+    .game-page-container {
+      max-width: 1260px;
+      margin: 12px auto 50px;
+      padding: 0 12px;
+    }
+    .game-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+    .game-title {
+      font-size: 1.8rem;
+      font-weight: 800;
+      margin: 0;
+      background: linear-gradient(135deg, #38bdf8, #818cf8, #ec4899, #facc15);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .game-canvas-wrapper {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      max-height: 75vh;
+      background: #020617;
+      border-radius: var(--radius-xl);
+      overflow: hidden;
+      border: 2px solid rgba(129, 140, 248, 0.5);
+      box-shadow: 0 14px 50px rgba(0, 0, 0, 0.95), 0 0 45px rgba(99, 102, 241, 0.35);
+      user-select: none;
+      touch-action: none;
+    }
+    #gameCanvas {
+      width: 100%;
+      height: 100%;
+      display: block;
+      image-rendering: auto;
+    }
+
+    /* Glassmorphic Top-Left HUD */
+    .game-hud-top-left {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      pointer-events: none;
+      z-index: 15;
+    }
+    .hud-stat-bar {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(15, 23, 42, 0.75);
+      backdrop-filter: blur(8px);
+      padding: 4px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: #f8fafc;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+    }
+    .bar-fill-wrap {
+      width: 110px;
+      height: 9px;
+      background: rgba(0,0,0,0.75);
+      border-radius: 6px;
+      overflow: hidden;
+      border: 1px solid rgba(255,255,255,0.15);
+    }
+    .bar-fill { height: 100%; transition: width 0.15s ease-out; }
+    .bar-hp { background: linear-gradient(90deg, #ef4444, #f87171); }
+    .bar-mp { background: linear-gradient(90deg, #3b82f6, #60a5fa); }
+    .bar-xp { background: linear-gradient(90deg, #eab308, #facc15); }
+
+    /* Top-Right HUD & Minimap */
+    .game-hud-top-right {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 6px;
+      z-index: 15;
+      pointer-events: auto;
+    }
+    .hud-badge-row {
+      display: flex;
+      gap: 6px;
+    }
+    .hud-badge {
+      background: rgba(15, 23, 42, 0.75);
+      backdrop-filter: blur(8px);
+      padding: 4px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: #fbbf24;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+    }
+    .combo-badge {
+      background: rgba(236, 72, 153, 0.25);
+      border-color: #ec4899;
+      color: #f472b6;
+      display: none;
+      font-weight: 800;
+    }
+    .minimap-wrapper {
+      width: 95px;
+      height: 95px;
+      border-radius: 50%;
+      border: 2px solid rgba(129, 140, 248, 0.6);
+      background: rgba(15, 23, 42, 0.85);
+      overflow: hidden;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.7);
+      position: relative;
+    }
+    #minimapCanvas {
+      width: 100%;
+      height: 100%;
+    }
+
+    .quest-tracker {
+      position: absolute;
+      top: 110px;
+      left: 10px;
+      background: rgba(15, 23, 42, 0.8);
+      backdrop-filter: blur(8px);
+      padding: 7px 12px;
+      border-radius: var(--radius-md);
+      border: 1px solid rgba(168, 85, 247, 0.4);
+      max-width: 220px;
+      font-size: 0.74rem;
+      z-index: 15;
+      pointer-events: none;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+    }
+    .quest-title { font-weight: 800; color: #c084fc; margin-bottom: 3px; display: flex; align-items: center; gap: 5px; }
+
+    /* Boss Banner */
+    .boss-health-bar {
+      position: absolute;
+      top: 14px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: min(88%, 440px);
+      background: rgba(15, 23, 42, 0.92);
+      border: 2px solid #ef4444;
+      border-radius: 999px;
+      padding: 5px 14px;
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      gap: 3px;
+      z-index: 20;
+      box-shadow: 0 0 35px rgba(239, 68, 68, 0.6);
+    }
+    .boss-name { font-size: 0.82rem; font-weight: 800; color: #f87171; text-transform: uppercase; letter-spacing: 1px; }
+
+    /* Bottom Hotbar */
+    .hotbar-container {
+      position: absolute;
+      bottom: 10px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 6px;
+      background: rgba(15, 23, 42, 0.8);
+      backdrop-filter: blur(8px);
+      padding: 5px 10px;
+      border-radius: var(--radius-lg);
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      z-index: 15;
+      pointer-events: auto;
+    }
+    .hotbar-slot {
+      width: 40px;
+      height: 40px;
+      border-radius: var(--radius-md);
+      background: rgba(30, 41, 59, 0.75);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      font-size: 0.95rem;
+      position: relative;
+      cursor: pointer;
+      transition: var(--transition);
+      user-select: none;
+    }
+    .hotbar-slot:hover, .hotbar-slot:active {
+      border-color: #38bdf8;
+      transform: translateY(-2px);
+      background: rgba(56, 189, 248, 0.25);
+    }
+    .hotbar-slot.active-mount {
+      border-color: #fbbf24;
+      background: rgba(251, 191, 36, 0.25);
+      box-shadow: 0 0 14px rgba(251, 191, 36, 0.4);
+    }
+    .hotbar-key {
+      position: absolute;
+      bottom: 2px;
+      right: 3px;
+      font-size: 0.6rem;
+      color: rgba(255,255,255,0.6);
+      font-family: var(--font-mono);
+      font-weight: 700;
+    }
+    .hotbar-count {
+      position: absolute;
+      top: 2px;
+      left: 3px;
+      font-size: 0.65rem;
+      color: #fbbf24;
+      font-weight: 800;
+    }
+
+    /* Mobile Transparent Ergonomic Controls */
+    .mobile-controls {
+      display: none;
+      position: absolute;
+      bottom: 10px;
+      left: 0;
+      right: 0;
+      padding: 0 10px;
+      justify-content: space-between;
+      align-items: flex-end;
+      z-index: 20;
+      pointer-events: none;
+    }
+    
+    /* Mobile Dynamic Virtual Joystick & Cyber Cursor Reticle */
+    #joystickZone {
+      position: absolute;
+      left: 0;
+      bottom: 0;
+      width: 35%;
+      height: 60%;
+      z-index: 10;
+      touch-action: none;
+      user-select: none;
+      pointer-events: auto;
+    }
+    .virtual-joystick-base {
+      position: absolute;
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(99, 102, 241, 0.25) 0%, rgba(15, 23, 42, 0.6) 70%);
+      border: 2px solid rgba(99, 102, 241, 0.6);
+      box-shadow: 0 0 25px rgba(99, 102, 241, 0.4), inset 0 0 15px rgba(99, 102, 241, 0.3);
+      backdrop-filter: blur(8px);
+      transform: translate(-50%, -50%);
+      pointer-events: none;
+      display: none;
+      z-index: 26;
+    }
+    .virtual-joystick-knob {
+      position: absolute;
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      background: radial-gradient(circle, #38bdf8 0%, #6366f1 100%);
+      border: 2px solid #ffffff;
+      box-shadow: 0 0 15px rgba(56, 189, 248, 0.8);
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      pointer-events: none;
+      transition: transform 0.05s ease-out;
+    }
+
+    /* Floating Tap-to-Move Target Reticle */
+    .tap-target-reticle {
+      position: absolute;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      border: 2px dashed #38bdf8;
+      box-shadow: 0 0 15px #38bdf8;
+      transform: translate(-50%, -50%);
+      pointer-events: none;
+      animation: tapPulse 1s infinite alternate ease-in-out;
+      display: none;
+      z-index: 15;
+    }
+    @keyframes tapPulse {
+      0% { transform: translate(-50%, -50%) scale(0.85); opacity: 0.9; }
+      100% { transform: translate(-50%, -50%) scale(1.25); opacity: 0.4; }
+    }
+
+    /* Enhanced Mobile Touch Button Clusters */
+    .action-buttons {
+      display: flex;
+      gap: 10px;
+      pointer-events: auto;
+      flex-wrap: wrap;
+      max-width: 170px;
+      justify-content: flex-end;
+    }
+    .act-btn {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      background: rgba(15, 23, 42, 0.75);
+      backdrop-filter: blur(6px);
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      color: white;
+      font-size: 1.15rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      user-select: none;
+      touch-action: none;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+      transition: transform 0.1s, border-color 0.1s;
+    }
+    .act-btn:active { transform: scale(0.86); }
+    .act-ult { background: rgba(168, 85, 247, 0.85); border-color: #c084fc; box-shadow: 0 0 15px rgba(168, 85, 247, 0.6); }
+    .act-quest { background: rgba(245, 158, 11, 0.85); border-color: #fbbf24; }
+
+    .d-pad { width: 110px; height: 110px; position: relative; pointer-events: auto; }
+    .d-btn {
+      position: absolute;
+      width: 36px;
+      height: 36px;
+      background: rgba(15, 23, 42, 0.6);
+      backdrop-filter: blur(4px);
+      border: 1.5px solid rgba(255, 255, 255, 0.25);
+      border-radius: 10px;
+      color: white;
+      font-size: 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      user-select: none;
+      touch-action: none;
+    }
+    .d-btn:active { background: rgba(99, 102, 241, 0.85); border-color: #818cf8; transform: scale(0.92); }
+    .d-up { top: 0; left: 37px; }
+    .d-down { bottom: 0; left: 37px; }
+    .d-left { top: 37px; left: 0; }
+    .d-right { top: 37px; right: 0; }
+    
+    .action-buttons { display: flex; gap: 8px; pointer-events: auto; flex-wrap: wrap; max-width: 125px; justify-content: flex-end; }
+    .act-btn {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: rgba(15, 23, 42, 0.65);
+      backdrop-filter: blur(4px);
+      border: 2px solid rgba(255, 255, 255, 0.25);
+      color: white;
+      font-size: 1.05rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      user-select: none;
+      touch-action: none;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.4);
+    }
+    .act-btn:active { transform: scale(0.88); }
+    .act-attack { background: rgba(239, 68, 68, 0.75); border-color: #f87171; }
+    .act-magic { background: rgba(59, 130, 246, 0.75); border-color: #60a5fa; }
+    .act-dash { background: rgba(16, 185, 129, 0.75); border-color: #34d399; }
+    .act-mount { background: rgba(251, 191, 36, 0.75); border-color: #fde047; color: #0f172a; }
+    .act-interact { background: rgba(168, 85, 247, 0.75); border-color: #c084fc; }
+
+    /* Mobile Responsive Overrides */
+    @media (max-width: 860px) {
+      .mobile-controls { display: flex; }
+      .game-canvas-wrapper {
+        aspect-ratio: auto;
+        height: 60vh;
+        min-height: 380px;
+        max-height: 520px;
+      }
+      .hotbar-container {
+        bottom: 75px;
+        left: 50%;
+        transform: translateX(-50%);
+        gap: 6px;
+        padding: 4px 8px;
+        z-index: 50;
+        pointer-events: auto;
+      }
+      .hotbar-slot {
+        width: 36px;
+        height: 36px;
+        font-size: 0.88rem;
+        pointer-events: auto;
+        touch-action: manipulation;
+      }
+      .hotbar-key { display: none; }
+      .quest-tracker {
+        max-width: 170px;
+        top: 95px;
+        padding: 5px 8px;
+        font-size: 0.68rem;
+        opacity: 0.85;
+      }
+      .minimap-wrapper {
+        width: 72px;
+        height: 72px;
+      }
+      .bar-fill-wrap {
+        width: 70px;
+        height: 8px;
+      }
+      .hud-stat-bar {
+        padding: 3px 7px;
+        font-size: 0.68rem;
+      }
+      .hud-badge {
+        padding: 3px 8px;
+        font-size: 0.72rem;
+      }
+      .game-header {
+        margin-bottom: 8px;
+      }
+      .game-title {
+        font-size: 1.4rem;
+      }
+    }
+
+    /* Modals & Grids */
+    .hero-class-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+      gap: 10px;
+      margin: 14px 0;
+    }
+    .hero-class-card {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      padding: 10px;
+      text-align: center;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+    .hero-class-card.active, .hero-class-card:hover {
+      border-color: var(--primary);
+      background: rgba(99, 102, 241, 0.15);
+      transform: translateY(-2px);
+    }
+    .hero-class-card i { font-size: 1.5rem; margin-bottom: 4px; }
+    .hero-class-name { font-size: 0.82rem; font-weight: 700; color: var(--text-primary); }
+
+    /* Talents Grid */
+    .talent-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+      gap: 10px;
+      margin: 14px 0;
+    }
+    .talent-card {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      padding: 10px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 5px;
+      text-align: center;
+    }
+    .talent-card i { font-size: 1.5rem; margin-bottom: 3px; }
+    .talent-title { font-size: 0.82rem; font-weight: 700; color: var(--text-primary); }
+    .talent-desc { font-size: 0.7rem; color: var(--text-secondary); line-height: 1.3; }
+
+    /* Shop Item Grid */
+    .shop-item-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 10px;
+      margin: 14px 0;
+    }
+    .shop-item {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      padding: 10px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 5px;
+      text-align: center;
+    }
+    .shop-item i { font-size: 1.6rem; margin-bottom: 3px; }
+    .shop-item-name { font-size: 0.82rem; font-weight: 700; color: var(--text-primary); }
+    .shop-item-desc { font-size: 0.72rem; color: var(--text-secondary); line-height: 1.3; }
+
+    .game-info-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 16px;
+      margin-top: 20px;
+    }
+    .info-card {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-xl);
+      padding: 18px;
+      box-shadow: var(--shadow-sm);
+    }
+    .info-card h4 {
+      margin: 0 0 10px;
+      font-size: 0.95rem;
+      color: #38bdf8;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .key-badge {
+      display: inline-block;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.18);
+      border-radius: 6px;
+      padding: 2px 7px;
+      font-family: var(--font-mono);
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: #e2e8f0;
+      margin: 2px;
+    }
+  
+    /* In-Canvas Floating Menu HUD for Fullscreen & Mobile */
+    .in-canvas-top-bar {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      display: flex;
+      gap: 6px;
+      z-index: 35;
+      pointer-events: auto;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+    .hud-btn {
+      padding: 6px 12px;
+      border-radius: 10px;
+      background: rgba(15, 23, 42, 0.85);
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(255, 255, 255, 0.22);
+      color: #ffffff;
+      font-size: 0.8rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.15s;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+      user-select: none;
+      touch-action: manipulation;
+    }
+    .hud-btn:hover {
+      background: rgba(99, 102, 241, 0.95);
+      border-color: #818cf8;
+      transform: translateY(-2px);
+    }
+    .hud-btn:active {
+      transform: scale(0.94);
+    }
+    .hud-btn-primary {
+      background: linear-gradient(135deg, rgba(99, 102, 241, 0.95), rgba(168, 85, 247, 0.95));
+      border-color: #a855f7;
+    }
+    .hud-btn-fullscreen {
+      background: rgba(16, 185, 129, 0.85);
+      border-color: #34d399;
+    }
+    .hud-btn-exit-fullscreen {
+      background: linear-gradient(135deg, #ef4444, #dc2626) !important;
+      border-color: #f87171 !important;
+      color: #ffffff !important;
+      box-shadow: 0 0 15px rgba(239, 68, 68, 0.6) !important;
+    }
+
+    /* In-Canvas Modal Overlay Rules (Works in Fullscreen & Windowed) */
+    .game-canvas-wrapper .modal-backdrop {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(5, 8, 18, 0.85);
+      backdrop-filter: blur(10px);
+      z-index: 100;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      pointer-events: auto;
+    }
+    .game-canvas-wrapper .modal-backdrop.active {
+      display: flex;
+      animation: modalFadeIn 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .game-canvas-wrapper .modal-card {
+      background: #0f172a;
+      border: 1.5px solid rgba(99, 102, 241, 0.5);
+      border-radius: 20px;
+      box-shadow: 0 25px 60px rgba(0, 0, 0, 0.9), 0 0 35px rgba(99, 102, 241, 0.25);
+      width: 100%;
+      max-width: 600px;
+      max-height: 88%;
+      overflow-y: auto;
+      padding: 20px;
+      color: #f8fafc;
+    }
+
+    @media (max-width: 768px) {
+      .in-canvas-top-bar {
+        top: 6px;
+        right: 6px;
+        gap: 4px;
+        max-width: 82%;
+      }
+      .hud-btn {
+        padding: 6px 8px;
+        font-size: 0.72rem;
+      }
+      .hud-btn span.hud-btn-label {
+        display: none; /* Icon only on small mobile screens */
+      }
+    }
+
+  
     :root {
       --cyber-cyan: #06b6d4;
       --cyber-pink: #ec4899;
       --cyber-purple: #8b5cf6;
       --cyber-gold: #f59e0b;
       --cyber-red: #ef4444;
-      --cyber-glass: rgba(10, 15, 30, 0.82);
+      --cyber-glass: rgba(10, 15, 30, 0.85);
       --cyber-border: rgba(255, 255, 255, 0.16);
     }
 
@@ -45,7 +689,6 @@
       position: relative;
     }
 
-    /* Futuristic Header */
     .game-header {
       display: flex;
       justify-content: space-between;
@@ -68,7 +711,6 @@
       letter-spacing: -0.02em;
     }
 
-    /* Cybernetic Canvas Viewport Frame */
     .game-canvas-wrapper {
       position: relative;
       width: 100%;
@@ -89,453 +731,7 @@
       image-rendering: auto;
     }
 
-    /* ==========================================
-       HOLOGRAPHIC CYBER HUD: TOP-LEFT STATS
-       ========================================== */
-    .game-hud-top-left {
-      position: absolute;
-      top: 14px;
-      left: 14px;
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-      pointer-events: none;
-      z-index: 15;
-    }
-    .hud-stat-bar {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      background: rgba(10, 15, 30, 0.85);
-      backdrop-filter: blur(14px) saturate(180%);
-      -webkit-backdrop-filter: blur(14px) saturate(180%);
-      padding: 5px 12px;
-      border-radius: 999px;
-      border: 1px solid rgba(255, 255, 255, 0.18);
-      font-size: 0.76rem;
-      font-weight: 800;
-      color: #ffffff;
-      box-shadow: 0 8px 20px rgba(0,0,0,0.6), 0 0 15px rgba(99, 102, 241, 0.2);
-    }
-    .bar-fill-wrap {
-      width: 115px;
-      height: 9px;
-      background: rgba(0,0,0,0.85);
-      border-radius: 999px;
-      overflow: hidden;
-      border: 1px solid rgba(255,255,255,0.18);
-      position: relative;
-    }
-    .bar-fill {
-      height: 100%;
-      transition: width 0.15s ease-out;
-      position: relative;
-    }
-    .bar-fill::after {
-      content: '';
-      position: absolute;
-      top: 0; left: 0; right: 0; bottom: 0;
-      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
-      animation: barShimmer 2s infinite linear;
-    }
-    @keyframes barShimmer { 0% { transform: translateX(-100%); } 100% { transform: translateX(100%); } }
-
-    .bar-hp { background: linear-gradient(90deg, #ef4444, #f43f5e); box-shadow: 0 0 10px #ef4444; }
-    .bar-mp { background: linear-gradient(90deg, #3b82f6, #06b6d4); box-shadow: 0 0 10px #06b6d4; }
-    .bar-xp { background: linear-gradient(90deg, #eab308, #facc15); box-shadow: 0 0 10px #facc15; }
-
-    /* ==========================================
-       HOLOGRAPHIC TOP-RIGHT HUD & RADAR MINIMAP
-       ========================================== */
-    .game-hud-top-right {
-      position: absolute;
-      top: 14px;
-      right: 14px;
-      display: flex;
-      flex-direction: column;
-      align-items: flex-end;
-      gap: 8px;
-      z-index: 15;
-      pointer-events: auto;
-    }
-    .hud-badge-row {
-      display: flex;
-      gap: 8px;
-    }
-    .hud-badge {
-      background: rgba(10, 15, 30, 0.85);
-      backdrop-filter: blur(14px);
-      padding: 5px 12px;
-      border-radius: 999px;
-      border: 1px solid rgba(251, 191, 36, 0.4);
-      font-size: 0.8rem;
-      font-weight: 800;
-      color: #fbbf24;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      box-shadow: 0 8px 20px rgba(0,0,0,0.6), 0 0 15px rgba(251, 191, 36, 0.25);
-    }
-    .combo-badge {
-      background: rgba(236, 72, 153, 0.25);
-      border-color: #ec4899;
-      color: #f472b6;
-      display: none;
-      font-weight: 900;
-      box-shadow: 0 0 20px rgba(236, 72, 153, 0.6);
-      animation: pulseBadge 0.6s infinite alternate;
-    }
-
-    /* Holographic Radar Minimap */
-    .minimap-wrapper {
-      width: 105px;
-      height: 105px;
-      border-radius: 50%;
-      border: 2px solid rgba(6, 182, 212, 0.7);
-      background: radial-gradient(circle, rgba(6, 182, 212, 0.15) 0%, rgba(10, 15, 30, 0.92) 80%);
-      overflow: hidden;
-      box-shadow: 0 10px 25px rgba(0,0,0,0.8), 0 0 25px rgba(6, 182, 212, 0.4);
-      position: relative;
-    }
-    .minimap-wrapper::after {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: conic-gradient(from 0deg, transparent 70%, rgba(6, 182, 212, 0.3) 100%);
-      animation: radarSweep 4s linear infinite;
-      pointer-events: none;
-    }
-    @keyframes radarSweep { 100% { transform: rotate(360deg); } }
-
-    #minimapCanvas {
-      width: 100%;
-      height: 100%;
-    }
-
-    /* Cyber Quest Tracker */
-    .quest-tracker {
-      position: absolute;
-      top: 120px;
-      left: 14px;
-      background: rgba(10, 15, 30, 0.85);
-      backdrop-filter: blur(14px);
-      padding: 10px 14px;
-      border-radius: var(--radius-lg);
-      border: 1px solid rgba(168, 85, 247, 0.5);
-      max-width: 240px;
-      font-size: 0.76rem;
-      z-index: 15;
-      pointer-events: none;
-      box-shadow: 0 8px 25px rgba(0,0,0,0.6), 0 0 20px rgba(168, 85, 247, 0.3);
-    }
-    .quest-title {
-      font-weight: 900;
-      color: #c084fc;
-      margin-bottom: 4px;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-    }
-
-    /* Epic Boss Health Bar */
-    .boss-health-bar {
-      position: absolute;
-      top: 16px;
-      left: 50%;
-      transform: translateX(-50%);
-      width: min(88%, 480px);
-      background: rgba(10, 15, 30, 0.95);
-      border: 2px solid #ef4444;
-      border-radius: 999px;
-      padding: 6px 18px;
-      display: none;
-      flex-direction: column;
-      align-items: center;
-      gap: 4px;
-      z-index: 20;
-      box-shadow: 0 0 40px rgba(239, 68, 68, 0.8), inset 0 0 15px rgba(239, 68, 68, 0.4);
-    }
-    .boss-name {
-      font-size: 0.88rem;
-      font-weight: 900;
-      color: #f87171;
-      text-transform: uppercase;
-      letter-spacing: 2px;
-      filter: drop-shadow(0 0 10px #ef4444);
-    }
-
-    /* ==========================================
-       CYBERNETIC BOTTOM ACTION HOTBAR
-       ========================================== */
-    .hotbar-container {
-      position: absolute;
-      bottom: 14px;
-      left: 50%;
-      transform: translateX(-50%);
-      display: flex;
-      gap: 8px;
-      background: rgba(10, 15, 30, 0.85);
-      backdrop-filter: blur(18px);
-      padding: 6px 12px;
-      border-radius: 20px;
-      border: 1px solid rgba(255, 255, 255, 0.18);
-      z-index: 15;
-      pointer-events: auto;
-      box-shadow: 0 15px 40px rgba(0,0,0,0.8), 0 0 25px rgba(99, 102, 241, 0.3);
-    }
-    .hotbar-slot {
-      width: 44px;
-      height: 44px;
-      border-radius: var(--radius-md);
-      background: rgba(30, 41, 59, 0.85);
-      border: 1px solid rgba(255, 255, 255, 0.16);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      color: #ffffff;
-      font-size: 1.05rem;
-      position: relative;
-      cursor: pointer;
-      transition: all 0.18s cubic-bezier(0.16, 1, 0.3, 1);
-      user-select: none;
-    }
-    .hotbar-slot:hover, .hotbar-slot:active {
-      border-color: #38bdf8;
-      transform: translateY(-4px) scale(1.08);
-      background: rgba(56, 189, 248, 0.3);
-      box-shadow: 0 0 20px #38bdf8;
-    }
-    .hotbar-slot.active-mount {
-      border-color: #fbbf24;
-      background: rgba(251, 191, 36, 0.3);
-      box-shadow: 0 0 20px rgba(251, 191, 36, 0.6);
-    }
-    .hotbar-key {
-      position: absolute;
-      bottom: 2px;
-      right: 3px;
-      font-size: 0.62rem;
-      color: rgba(255,255,255,0.7);
-      font-family: var(--font-mono);
-      font-weight: 800;
-    }
-    .hotbar-count {
-      position: absolute;
-      top: 2px;
-      left: 3px;
-      font-size: 0.68rem;
-      color: #fbbf24;
-      font-weight: 900;
-    }
-
-    /* Mobile Controls */
-    .mobile-controls {
-      display: none;
-      position: absolute;
-      bottom: 12px;
-      left: 0;
-      right: 0;
-      padding: 0 14px;
-      justify-content: space-between;
-      align-items: flex-end;
-      z-index: 20;
-      pointer-events: none;
-    }
-    
-    #joystickZone {
-      position: absolute;
-      left: 0;
-      bottom: 0;
-      width: 35%;
-      height: 60%;
-      z-index: 10;
-      touch-action: none;
-      user-select: none;
-      pointer-events: auto;
-    }
-    .virtual-joystick-base {
-      position: absolute;
-      width: 125px;
-      height: 125px;
-      border-radius: 50%;
-      background: radial-gradient(circle, rgba(99, 102, 241, 0.28) 0%, rgba(10, 15, 30, 0.7) 70%);
-      border: 2px solid rgba(99, 102, 241, 0.7);
-      box-shadow: 0 0 30px rgba(99, 102, 241, 0.5), inset 0 0 15px rgba(99, 102, 241, 0.3);
-      backdrop-filter: blur(10px);
-      transform: translate(-50%, -50%);
-      pointer-events: none;
-      display: none;
-      z-index: 26;
-    }
-    .virtual-joystick-knob {
-      position: absolute;
-      width: 52px;
-      height: 52px;
-      border-radius: 50%;
-      background: radial-gradient(circle, #38bdf8 0%, #6366f1 100%);
-      border: 2px solid #ffffff;
-      box-shadow: 0 0 20px rgba(56, 189, 248, 0.9);
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      pointer-events: none;
-      transition: transform 0.05s ease-out;
-    }
-
-    .tap-target-reticle {
-      position: absolute;
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
-      border: 2px dashed #38bdf8;
-      box-shadow: 0 0 20px #38bdf8;
-      transform: translate(-50%, -50%);
-      pointer-events: none;
-      animation: tapPulse 1s infinite alternate ease-in-out;
-      display: none;
-      z-index: 15;
-    }
-    @keyframes tapPulse {
-      0% { transform: translate(-50%, -50%) scale(0.85); opacity: 0.9; }
-      100% { transform: translate(-50%, -50%) scale(1.3); opacity: 0.35; }
-    }
-
-    .action-buttons {
-      display: flex;
-      gap: 10px;
-      pointer-events: auto;
-      flex-wrap: wrap;
-      max-width: 140px;
-      justify-content: flex-end;
-    }
-    .act-btn {
-      width: 48px;
-      height: 48px;
-      border-radius: 50%;
-      background: rgba(10, 15, 30, 0.8);
-      backdrop-filter: blur(10px);
-      border: 2px solid rgba(255, 255, 255, 0.28);
-      color: white;
-      font-size: 1.15rem;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      user-select: none;
-      touch-action: none;
-      box-shadow: 0 6px 16px rgba(0,0,0,0.6);
-      transition: transform 0.12s, box-shadow 0.12s;
-    }
-    .act-btn:active { transform: scale(0.88); }
-    .act-attack { background: rgba(239, 68, 68, 0.8); border-color: #f87171; box-shadow: 0 0 20px rgba(239,68,68,0.5); }
-    .act-magic { background: rgba(59, 130, 246, 0.8); border-color: #60a5fa; box-shadow: 0 0 20px rgba(59,130,246,0.5); }
-    .act-dash { background: rgba(16, 185, 129, 0.8); border-color: #34d399; box-shadow: 0 0 20px rgba(16,185,129,0.5); }
-    .act-mount { background: rgba(251, 191, 36, 0.8); border-color: #fde047; color: #0f172a; box-shadow: 0 0 20px rgba(251,191,36,0.5); }
-
-    /* Mobile Responsive Overrides */
-    @media (max-width: 860px) {
-      .mobile-controls { display: flex; }
-      .game-canvas-wrapper {
-        aspect-ratio: auto;
-        height: 60vh;
-        min-height: 380px;
-        max-height: 520px;
-        border-radius: 16px;
-      }
-      .hotbar-container {
-        bottom: 75px;
-        left: 50%;
-        transform: translateX(-50%);
-        gap: 6px;
-        padding: 4px 8px;
-        z-index: 50;
-        pointer-events: auto;
-      }
-      .hotbar-slot {
-        width: 36px;
-        height: 36px;
-        font-size: 0.88rem;
-        pointer-events: auto;
-      }
-      .hotbar-key { display: none; }
-      .quest-tracker {
-        max-width: 170px;
-        top: 95px;
-        padding: 6px 10px;
-        font-size: 0.68rem;
-        opacity: 0.88;
-      }
-      .minimap-wrapper {
-        width: 76px;
-        height: 76px;
-      }
-      .bar-fill-wrap {
-        width: 75px;
-        height: 8px;
-      }
-      .hud-stat-bar {
-        padding: 3px 8px;
-        font-size: 0.68rem;
-      }
-      .hud-badge {
-        padding: 3px 8px;
-        font-size: 0.72rem;
-      }
-      .game-title {
-        font-size: 1.5rem;
-      }
-    }
-
-    /* Holographic Cyber Dialog Modals */
-    .hero-class-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
-      gap: 12px;
-      margin: 16px 0;
-    }
-    .hero-class-card {
-      background: rgba(255, 255, 255, 0.04);
-      border: 1px solid rgba(255, 255, 255, 0.12);
-      border-radius: var(--radius-xl);
-      padding: 14px;
-      text-align: center;
-      cursor: pointer;
-      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
-    }
-    .hero-class-card.active, .hero-class-card:hover {
-      border-color: #ec4899;
-      background: linear-gradient(135deg, rgba(99,102,241,0.2), rgba(236,72,153,0.2));
-      transform: translateY(-3px);
-      box-shadow: 0 10px 25px rgba(236, 72, 153, 0.35);
-    }
-    .hero-class-card i { font-size: 1.6rem; margin-bottom: 6px; }
-    .hero-class-name { font-size: 0.88rem; font-weight: 800; color: #ffffff; }
-
-    .talent-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-      gap: 12px;
-      margin: 16px 0;
-    }
-    .talent-card {
-      background: rgba(255, 255, 255, 0.04);
-      border: 1px solid rgba(255, 255, 255, 0.12);
-      border-radius: var(--radius-lg);
-      padding: 12px;
-      cursor: pointer;
-      transition: all 0.2s;
-    }
-    .talent-card.unlocked {
-      border-color: #10b981;
-      background: rgba(16, 185, 129, 0.15);
-      box-shadow: 0 0 15px rgba(16, 185, 129, 0.3);
-    }
-    
-    /* ==========================================
-       IN-CANVAS FLOATING COMMAND BAR (ALWAYS ACCESSIBLE IN FULLSCREEN)
-       ========================================== */
+    /* In-Canvas Floating Command Bar */
     .in-canvas-top-bar {
       position: absolute;
       top: 14px;
@@ -609,11 +805,7 @@
       box-shadow: 0 0 18px rgba(6, 182, 212, 0.6);
     }
 
-    .talent-card:hover {
-      border-color: #38bdf8;
-      transform: translateY(-2px);
-    }
-  
+    /* Modal Backdrop Inside Canvas / Fullscreen */
     .modal-backdrop {
       position: absolute;
       top: 0;
@@ -653,8 +845,7 @@
       0% { opacity: 0; transform: scale(0.92) translateY(15px); }
       100% { opacity: 1; transform: scale(1) translateY(0); }
     }
-
-  </style>
+</style>
   <link rel="manifest" href="manifest.json">
   <meta name="theme-color" content="#6366f1">
   <meta name="mobile-web-app-capable" content="yes">
@@ -1068,7 +1259,7 @@
 
   <script src="js/app.min.js">
     // ==========================================
-    // IN-CANVAS MODAL & CONTROLS HANDLERS
+    // IN-CANVAS CONTROLS & MODAL HANDLERS
     // ==========================================
     const questData = [
       { id: 1, title: "1. Slime Exterminator", desc: "Defeat 5 Forest Slimes", target: 5, reward: "50 XP, 30 Gold", type: "slime" },
@@ -1122,7 +1313,7 @@
 
     function openTalentsModal() {
       const modal = document.getElementById('talentsModal');
-      if (document.getElementById('modalTalentPts') && window.player) {
+      if (document.getElementById('modalTalentPts') && typeof player !== 'undefined') {
         document.getElementById('modalTalentPts').textContent = player.talentPoints || 0;
         if (document.getElementById('tDmgRank')) document.getElementById('tDmgRank').textContent = player.talents ? player.talents.dmg : 0;
         if (document.getElementById('tHpRank')) document.getElementById('tHpRank').textContent = player.talents ? player.talents.hp : 0;
@@ -1138,7 +1329,7 @@
 
     function openShopModal() {
       const modal = document.getElementById('shopModal');
-      if (document.getElementById('shopGoldText') && window.player) {
+      if (document.getElementById('shopGoldText') && typeof player !== 'undefined') {
         document.getElementById('shopGoldText').textContent = player.coins || 0;
       }
       if (modal) modal.classList.add('active');
@@ -1153,7 +1344,6 @@
       }
     }
 
-    // Close on escape key
     window.addEventListener('keydown', (e) => {
       if (e.key === 'Escape') {
         closeModal();
@@ -1300,45 +1490,19 @@
       }
     }
 
-    
     function toggleFullscreen() {
-      const wrapper = document.getElementById('canvasWrapper') || document.documentElement;
-      if (!document.fullscreenElement && !document.webkitFullscreenElement) {
-        if (wrapper.rerequestFullscreen) {
-          wrapper.rerequestFullscreen();
-        } else if (wrapper.webkitRerequestFullscreen) {
-          wrapper.webkitRerequestFullscreen();
-        }
-      } else {
-        if (document.exitFullscreen) {
-          document.exitFullscreen();
-        } else if (document.webkitExitFullscreen) {
-          document.webkitExitFullscreen();
-        }
-      }
-      setTimeout(updateFullscreenButtons, 100);
-    }
-
-    function updateFullscreenButtons() {
-      const isFs = !!(document.fullscreenElement || document.webkitFullscreenElement);
-      const icon = document.getElementById('inCanvasFsIcon');
-      const text = document.getElementById('inCanvasFsText');
-      const btn = document.getElementById('inCanvasFullscreenBtn');
-      if (icon) icon.className = isFs ? 'fas fa-compress' : 'fas fa-expand';
-      if (text) text.textContent = isFs ? 'Exit Fullscreen' : 'Fullscreen';
-      if (btn) {
-        btn.style.color = isFs ? '#ec4899' : '#38bdf8';
-        btn.style.borderColor = isFs ? 'rgba(236,72,153,0.6)' : 'rgba(6,182,212,0.6)';
-      }
-    }
-
-    document.addEventListener('fullscreenchange', updateFullscreenButtons);
-    document.addEventListener('webkitfullscreenchange', updateFullscreenButtons);
-);
-        } else if (elem.webkitRerequestFullscreen) {
-          elem.webkitRerequestFullscreen();
-        } else if (elem.msRerequestFullscreen) {
-          elem.msRerequestFullscreen();
+      const isFs = !!(document.fullscreenElement || document.webkitFullscreenElement || document.mozFullScreenElement || document.msFullscreenElement);
+      if (!isFs) {
+        const elem = document.getElementById('canvasWrapper') || document.documentElement;
+        if (elem.requestFullscreen) {
+          elem.requestFullscreen().catch(err => {
+            console.warn(err);
+            document.documentElement.requestFullscreen();
+          });
+        } else if (elem.webkitRequestFullscreen) {
+          elem.webkitRequestFullscreen();
+        } else if (elem.msRequestFullscreen) {
+          elem.msRequestFullscreen();
         }
       } else {
         if (document.exitFullscreen) {
@@ -3070,7 +3234,7 @@
       } catch (err) {
         console.error("Game loop error:", err);
       }
-      rerequestAnimationFrame(gameLoop);
+      requestAnimationFrame(gameLoop);
     }
 
     function startGame() {
@@ -3078,7 +3242,7 @@
         initWorld();
         updateHud();
         if (typeof updateQuestHUD === 'function') updateQuestHUD();
-        rerequestAnimationFrame(gameLoop);
+        requestAnimationFrame(gameLoop);
       } catch (e) {
         console.error("Game start error:", e);
       }
@@ -3089,6 +3253,2553 @@
     } else {
       startGame();
     }
+  
+    // ==========================================
+    // IN-CANVAS CONTROLS & MODAL HANDLERS
+    // ==========================================
+    const questData = [
+      { id: 1, title: "1. Slime Exterminator", desc: "Defeat 5 Forest Slimes", target: 5, reward: "50 XP, 30 Gold", type: "slime" },
+      { id: 2, title: "2. Lava Drake Slayer", desc: "Slay 3 Lava Drakes in Volcano Realm", target: 3, reward: "120 XP, 60 Gold, 1 Talent Pt", type: "drake" },
+      { id: 3, title: "3. Ice Titan Challenge", desc: "Conquer 3 Frost Golems in Glacial Peak", target: 3, reward: "180 XP, 100 Gold", type: "golem" },
+      { id: 4, title: "4. Desert Scavenger", desc: "Collect 100 Gold from Sand Dunes", target: 100, reward: "250 XP, 150 Gold", type: "coins" },
+      { id: 5, title: "5. Realm Sovereign", desc: "Defeat the Mecha Dragon Titan Boss", target: 1, reward: "500 XP, 300 Gold, Master Title", type: "boss" }
+    ];
+
+    let activeQuestIndex = 0;
+    let questProgress = 0;
+
+    function openQuestModal() {
+      const container = document.getElementById('questListContainer');
+      if (container) {
+        container.innerHTML = questData.map((q, idx) => {
+          const isDone = idx < activeQuestIndex;
+          const isCurrent = idx === activeQuestIndex;
+          const statusBadge = isDone 
+            ? '<span style="color:#10b981; font-weight:800;"><i class="fas fa-check-circle"></i> COMPLETED</span>'
+            : (isCurrent ? `<span style="color:#fbbf24; font-weight:800;"><i class="fas fa-spinner fa-spin"></i> ACTIVE (${questProgress}/${q.target})</span>` : '<span style="color:#94a3b8;"><i class="fas fa-lock"></i> LOCKED</span>');
+
+          return `
+            <div style="background: rgba(255,255,255,0.04); border: 1px solid ${isCurrent ? '#fbbf24' : 'rgba(255,255,255,0.1)'}; border-radius: var(--radius-lg); padding: 12px; display: flex; justify-content: space-between; align-items: center; ${isCurrent ? 'box-shadow: 0 0 15px rgba(251,191,36,0.3);' : ''}">
+              <div>
+                <div style="font-weight: 800; font-size: 0.92rem; color: ${isCurrent ? '#facc15' : '#f8fafc'};">${q.title}</div>
+                <div style="font-size: 0.78rem; color: #94a3b8; margin: 2px 0;">${q.desc}</div>
+                <div style="font-size: 0.72rem; color: #38bdf8;"><i class="fas fa-gift"></i> Reward: ${q.reward}</div>
+              </div>
+              <div style="font-size: 0.78rem;">
+                ${statusBadge}
+              </div>
+            </div>
+          `;
+        }).join('');
+      }
+
+      const qBadge = document.getElementById('inCanvasQuestBadge');
+      if (qBadge) qBadge.textContent = `${activeQuestIndex + 1}/${questData.length}`;
+      const topQBadge = document.getElementById('questCountBadge');
+      if (topQBadge) topQBadge.textContent = `${activeQuestIndex + 1}/${questData.length}`;
+
+      const modal = document.getElementById('questModal');
+      if (modal) modal.classList.add('active');
+    }
+
+    function openInventoryModal() {
+      const modal = document.getElementById('inventoryModal');
+      if (modal) modal.classList.add('active');
+    }
+
+    function openTalentsModal() {
+      const modal = document.getElementById('talentsModal');
+      if (document.getElementById('modalTalentPts') && typeof player !== 'undefined') {
+        document.getElementById('modalTalentPts').textContent = player.talentPoints || 0;
+        if (document.getElementById('tDmgRank')) document.getElementById('tDmgRank').textContent = player.talents ? player.talents.dmg : 0;
+        if (document.getElementById('tHpRank')) document.getElementById('tHpRank').textContent = player.talents ? player.talents.hp : 0;
+        if (document.getElementById('tMpRank')) document.getElementById('tMpRank').textContent = player.talents ? player.talents.mp : 0;
+      }
+      if (modal) modal.classList.add('active');
+    }
+
+    function openHeroModal() {
+      const modal = document.getElementById('heroModal');
+      if (modal) modal.classList.add('active');
+    }
+
+    function openShopModal() {
+      const modal = document.getElementById('shopModal');
+      if (document.getElementById('shopGoldText') && typeof player !== 'undefined') {
+        document.getElementById('shopGoldText').textContent = player.coins || 0;
+      }
+      if (modal) modal.classList.add('active');
+    }
+
+    function closeModal(id) {
+      if (id) {
+        const modal = document.getElementById(id);
+        if (modal) modal.classList.remove('active');
+      } else {
+        document.querySelectorAll('.modal-backdrop').forEach(m => m.classList.remove('active'));
+      }
+    }
+
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        closeModal();
+      } else if (e.key === 'q' || e.key === 'Q') {
+        if (!document.querySelector('input:focus')) openQuestModal();
+      } else if (e.key === 'i' || e.key === 'I') {
+        if (!document.querySelector('input:focus')) openInventoryModal();
+      } else if (e.key === 't' || e.key === 'T') {
+        if (!document.querySelector('input:focus')) openTalentsModal();
+      }
+    });
+
+    function toggleFullscreen() {
+      const wrapper = document.getElementById('canvasWrapper') || document.documentElement;
+      const isFs = !!(document.fullscreenElement || document.webkitFullscreenElement);
+      if (!isFs) {
+        if (wrapper.requestFullscreen) {
+          wrapper.requestFullscreen().catch(() => {});
+        } else if (wrapper.webkitRequestFullscreen) {
+          wrapper.webkitRequestFullscreen();
+        }
+      } else {
+        if (document.exitFullscreen) {
+          document.exitFullscreen().catch(() => {});
+        } else if (document.webkitExitFullscreen) {
+          document.webkitExitFullscreen();
+        }
+      }
+      setTimeout(updateFullscreenButtons, 120);
+    }
+
+    function updateFullscreenButtons() {
+      const isFs = !!(document.fullscreenElement || document.webkitFullscreenElement);
+      const icon = document.getElementById('inCanvasFsIcon');
+      const text = document.getElementById('inCanvasFsText');
+      const btn = document.getElementById('inCanvasFullscreenBtn');
+      if (icon) icon.className = isFs ? 'fas fa-compress' : 'fas fa-expand';
+      if (text) text.textContent = isFs ? 'Exit Fullscreen' : 'Fullscreen';
+      if (btn) {
+        btn.style.color = isFs ? '#ec4899' : '#38bdf8';
+        btn.style.borderColor = isFs ? 'rgba(236,72,153,0.7)' : 'rgba(6,182,212,0.7)';
+      }
+    }
+
+    document.addEventListener('fullscreenchange', updateFullscreenButtons);
+    document.addEventListener('webkitfullscreenchange', updateFullscreenButtons);
+
+  </script>
+</body>
+</html>
+      <!-- In-Canvas Floating Menu Bar (Always Accessible in Fullscreen & Mobile) -->
+      <div class="in-canvas-top-bar" id="inCanvasTopBar">
+        <button class="hud-btn hud-btn-primary" onclick="openQuestModal()" title="Quest Log [Q]">
+          <i class="fas fa-scroll"></i> <span class="hud-btn-label">Quests</span> <span id="inCanvasQuestBadge" style="background:#fbbf24; color:#0f172a; padding:1px 6px; border-radius:999px; font-size:0.68rem; font-weight:800;">1/5</span>
+        </button>
+        <button class="hud-btn" onclick="openInventoryModal()" title="Equipment & Gear [I]">
+          <i class="fas fa-shield-halved"></i> <span class="hud-btn-label">Gear</span>
+        </button>
+        <button class="hud-btn" onclick="openTalentsModal()" title="Skill Talents [T]">
+          <i class="fas fa-tree"></i> <span class="hud-btn-label">Talents</span> (<span id="inCanvasTalentPts">0</span>)
+        </button>
+        <button class="hud-btn" onclick="openHeroModal()" title="Hero Skins & Classes">
+          <i class="fas fa-user-astronaut"></i> <span class="hud-btn-label">Skin</span>
+        </button>
+        <button class="hud-btn" onclick="openShopModal()" title="Armory & Mount Shop">
+          <i class="fas fa-store"></i> <span class="hud-btn-label">Shop</span>
+        </button>
+        <button class="hud-btn" onclick="toggleMute()" id="inCanvasMuteBtn" title="Toggle Sound FX">
+          <i class="fas fa-volume-up" id="inCanvasMuteIcon"></i>
+        </button>
+        <button class="hud-btn" onclick="restartGame()" title="Restart Game">
+          <i class="fas fa-rotate-right"></i>
+        </button>
+        <button class="hud-btn hud-btn-fullscreen" onclick="toggleFullscreen()" id="inCanvasFullscreenBtn" title="Toggle Fullscreen">
+          <i class="fas fa-expand" id="inCanvasFsIcon"></i> <span class="hud-btn-label" id="inCanvasFsText">Fullscreen</span>
+        </button>
+      </div>
+
+<div class="modal-backdrop" id="talentsModal">
+        <div class="modal-card" style="max-width: 540px;">
+          <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); padding-bottom: 12px;">
+            <h3 style="margin: 0; font-size: 1.2rem; color: #facc15;">
+              <i class="fas fa-tree"></i> Skill Talents & Masteries
+            </h3>
+            <button onclick="closeModal('talentsModal')" class="btn btn-secondary btn-sm">✕ Close</button>
+          </div>
+
+          <div style="margin: 12px 0; font-weight: 700; color: var(--text-secondary); font-size: 0.9rem;">
+            Available Skill Points: <span id="modalTalentPts" style="color: #facc15; font-size: 1.1rem;">0</span>
+          </div>
+
+          <div class="talent-grid">
+            <div class="talent-card">
+              <i class="fas fa-hand-fist" style="color: #ef4444;"></i>
+              <div class="talent-title">Berserker Force</div>
+              <div class="talent-desc">+10 Sword Dmg (Rank <span id="tDmgRank">0</span>/5)</div>
+              <button class="btn btn-primary btn-sm" onclick="upgradeTalent('dmg')">Upgrade</button>
+            </div>
+            <div class="talent-card">
+              <i class="fas fa-shield-heart" style="color: #38bdf8;"></i>
+              <div class="talent-title">Titan Armor</div>
+              <div class="talent-desc">+30 Max HP & Regen (Rank <span id="tHpRank">0</span>/5)</div>
+              <button class="btn btn-primary btn-sm" onclick="upgradeTalent('hp')">Upgrade</button>
+            </div>
+            <div class="talent-card">
+              <i class="fas fa-bolt" style="color: #c084fc;"></i>
+              <div class="talent-title">Archmage Surge</div>
+              <div class="talent-desc">+20 Max Mana (Rank <span id="tMpRank">0</span>/5)</div>
+              <button class="btn btn-primary btn-sm" onclick="upgradeTalent('mp')">Upgrade</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Hero Skin & Class Modal (Inside Fullscreen Canvas) -->
+      <div class="modal-backdrop" id="heroModal">
+        <div class="modal-card" style="max-width: 500px;">
+          <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); padding-bottom: 12px;">
+            <h3 style="margin: 0; font-size: 1.2rem; color: #38bdf8;">
+              <i class="fas fa-user-astronaut"></i> Select Hero Class & Skin
+            </h3>
+            <button onclick="closeModal('heroModal')" class="btn btn-secondary btn-sm">✕ Close</button>
+          </div>
+
+          <div class="hero-class-grid">
+            <div class="hero-class-card active" id="skinCyberKnight" onclick="setHeroSkin('cyber_knight')">
+              <i class="fas fa-robot" style="color: #38bdf8;"></i>
+              <div class="hero-class-name">Cyber Knight</div>
+            </div>
+            <div class="hero-class-card" id="skinArcaneMage" onclick="setHeroSkin('arcane_mage')">
+              <i class="fas fa-wand-magic-sparkles" style="color: #c084fc;"></i>
+              <div class="hero-class-name">Arcane Mage</div>
+            </div>
+            <div class="hero-class-card" id="skinNeonRanger" onclick="setHeroSkin('neon_ranger')">
+              <i class="fas fa-crosshairs" style="color: #34d399;"></i>
+              <div class="hero-class-name">Neon Ranger</div>
+            </div>
+            <div class="hero-class-card" id="skinMechaPaladin" onclick="setHeroSkin('mecha_paladin')">
+              <i class="fas fa-shield-halved" style="color: #fbbf24;"></i>
+              <div class="hero-class-name">Mecha Paladin</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Shop Modal (Inside Fullscreen Canvas) -->
+      <div class="modal-backdrop" id="shopModal">
+        <div class="modal-card" style="max-width: 620px;">
+          <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); padding-bottom: 12px;">
+            <h3 style="margin: 0; font-size: 1.2rem; color: #fbbf24;">
+              <i class="fas fa-store"></i> Cyber Realm Armory & Mounts
+            </h3>
+            <button onclick="closeModal('shopModal')" class="btn btn-secondary btn-sm">✕ Close</button>
+          </div>
+
+          <div style="margin: 12px 0; font-weight: 700; color: var(--text-secondary); font-size: 0.9rem;">
+            Your Gold: <span id="shopGoldText" style="color: #fbbf24;">0</span> <i class="fas fa-coins"></i>
+          </div>
+
+          <div class="shop-item-grid">
+            <div class="shop-item">
+              <i class="fas fa-flask" style="color: #ef4444;"></i>
+              <div class="shop-item-name">Health Potion</div>
+              <div class="shop-item-desc">Restores 50 HP.</div>
+              <button class="btn btn-primary btn-sm" onclick="buyItem('hpPot', 20)">Buy (20 G)</button>
+            </div>
+            <div class="shop-item">
+              <i class="fas fa-flask" style="color: #3b82f6;"></i>
+              <div class="shop-item-name">Mana Elixir</div>
+              <div class="shop-item-desc">Restores 50 MP.</div>
+              <button class="btn btn-primary btn-sm" onclick="buyItem('mpPot', 20)">Buy (20 G)</button>
+            </div>
+            <div class="shop-item">
+              <i class="fas fa-wand-magic-sparkles" style="color: #ec4899;"></i>
+              <div class="shop-item-name">Laser Blade</div>
+              <div class="shop-item-desc">+25 Sword Dmg boost.</div>
+              <button class="btn btn-primary btn-sm" id="buySwordBtn" onclick="buyItem('sword', 100)">Buy (100 G)</button>
+            </div>
+            <div class="shop-item">
+              <i class="fas fa-shield-halved" style="color: #38bdf8;"></i>
+              <div class="shop-item-name">Aegis Shield</div>
+              <div class="shop-item-desc">+60 Max HP & Aura.</div>
+              <button class="btn btn-primary btn-sm" id="buyArmorBtn" onclick="buyItem('armor', 150)">Buy (150 G)</button>
+            </div>
+            <div class="shop-item">
+              <i class="fas fa-satellite" style="color: #22c55e;"></i>
+              <div class="shop-item-name">Companion Drone</div>
+              <div class="shop-item-desc">Auto laser support!</div>
+              <button class="btn btn-primary btn-sm" id="buyPetBtn" onclick="buyItem('pet', 180)">Buy (180 G)</button>
+            </div>
+            <div class="shop-item">
+              <i class="fas fa-motorcycle" style="color: #fbbf24;"></i>
+              <div class="shop-item-name">Cyber Hoverbike</div>
+              <div class="shop-item-desc">2.5x Speed Mount [V].</div>
+              <button class="btn btn-primary btn-sm" id="buyMountBtn" onclick="buyItem('mount', 220)">Buy (220 G)</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quest Master & Story Log Modal (Inside Fullscreen Canvas) -->
+      <div class="modal-backdrop" id="questModal">
+        <div class="modal-card" style="max-width: 620px; max-height: 85vh; overflow-y: auto;">
+          <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); padding-bottom: 12px;">
+            <h3 style="margin: 0; font-size: 1.25rem; color: #fbbf24;">
+              <i class="fas fa-scroll"></i> Realm Quest Log & Bounties
+            </h3>
+            <button onclick="closeModal('questModal')" class="btn btn-secondary btn-sm">✕ Close</button>
+          </div>
+
+          <div style="margin: 14px 0 10px; font-size: 0.88rem; color: var(--text-secondary);">
+            Complete realm quests to earn massive XP, Gold, Talent Points, and Legendary Equipment!
+          </div>
+
+          <!-- Quest List -->
+          <div id="questListContainer" style="display: flex; flex-direction: column; gap: 10px;">
+            <!-- Injected dynamically via JS -->
+          </div>
+        </div>
+      </div>
+
+      <!-- Equipment & Gear Inventory Modal (Inside Fullscreen Canvas) -->
+      <div class="modal-backdrop" id="inventoryModal">
+        <div class="modal-card" style="max-width: 580px;">
+          <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); padding-bottom: 12px;">
+            <h3 style="margin: 0; font-size: 1.25rem; color: #38bdf8;">
+              <i class="fas fa-shield-halved"></i> Hero Equipment & Artifacts
+            </h3>
+            <button onclick="closeModal('inventoryModal')" class="btn btn-secondary btn-sm">✕ Close</button>
+          </div>
+
+          <!-- Equipped Gear Slots Grid -->
+          <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin: 18px 0; text-align: center;">
+            <div class="shop-item" style="padding: 12px;">
+              <i class="fas fa-wand-magic-sparkles" style="color: #ec4899; font-size: 1.6rem;"></i>
+              <div style="font-size: 0.72rem; color: #94a3b8; margin-top: 4px;">WEAPON</div>
+              <div id="gearWeaponName" style="font-weight: 800; font-size: 0.82rem; color: #fff;">Laser Katana</div>
+              <div id="gearWeaponStat" style="font-size: 0.72rem; color: #34d399;">+25 ATK</div>
+            </div>
+            <div class="shop-item" style="padding: 12px;">
+              <i class="fas fa-shield-heart" style="color: #38bdf8; font-size: 1.6rem;"></i>
+              <div style="font-size: 0.72rem; color: #94a3b8; margin-top: 4px;">SHIELD</div>
+              <div id="gearShieldName" style="font-weight: 800; font-size: 0.82rem; color: #fff;">Energy Aegis</div>
+              <div id="gearShieldStat" style="font-size: 0.72rem; color: #38bdf8;">+60 HP</div>
+            </div>
+            <div class="shop-item" style="padding: 12px;">
+              <i class="fas fa-shoe-prints" style="color: #fbbf24; font-size: 1.6rem;"></i>
+              <div style="font-size: 0.72rem; color: #94a3b8; margin-top: 4px;">BOOTS</div>
+              <div id="gearBootsName" style="font-weight: 800; font-size: 0.82rem; color: #fff;">Swift Striders</div>
+              <div id="gearBootsStat" style="font-size: 0.72rem; color: #fbbf24;">+30% Speed</div>
+            </div>
+            <div class="shop-item" style="padding: 12px;">
+              <i class="fas fa-ring" style="color: #a855f7; font-size: 1.6rem;"></i>
+              <div style="font-size: 0.72rem; color: #94a3b8; margin-top: 4px;">RING</div>
+              <div id="gearRingName" style="font-weight: 800; font-size: 0.82rem; color: #fff;">Archmage Ring</div>
+              <div id="gearRingStat" style="font-size: 0.72rem; color: #c084fc;">+40 MP & Regen</div>
+            </div>
+          </div>
+
+          <div style="background: var(--bg-tertiary); border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 14px;">
+            <h4 style="margin: 0 0 8px; font-size: 0.9rem; color: var(--text-primary);"><i class="fas fa-sparkles" style="color: #fbbf24;"></i> Total Stat Modifiers</h4>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; font-size: 0.82rem; color: var(--text-secondary);">
+              <div>⚔️ Total Attack Power: <strong id="totalAtkStat" style="color: #fff;">35</strong></div>
+              <div>🛡️ Total Armor/HP: <strong id="totalDefStat" style="color: #fff;">160</strong></div>
+              <div>⚡ Movement Speed: <strong id="totalSpdStat" style="color: #fff;">+30%</strong></div>
+              <div>🎯 Critical Strike Rate: <strong id="totalCritStat" style="color: #fff;">25%</strong></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Mobile Touch Controls -->
+      <div class="mobile-controls">
+        <div class="d-pad">
+          <div class="d-btn d-up" id="btnUp"><i class="fas fa-arrow-up"></i></div>
+          <div class="d-btn d-left" id="btnLeft"><i class="fas fa-arrow-left"></i></div>
+          <div class="d-btn d-right" id="btnRight"><i class="fas fa-arrow-right"></i></div>
+          <div class="d-btn d-down" id="btnDown"><i class="fas fa-arrow-down"></i></div>
+        </div>
+        <div class="action-buttons">
+          <div class="act-btn act-ult" id="btnUlt" title="Class Ultimate [R]"><i class="fas fa-bolt-lightning"></i></div>
+          <div class="act-btn act-magic" id="btnMagic" title="Fireball [F]"><i class="fas fa-fire"></i></div>
+          <div class="act-btn act-attack" id="btnAttack" title="Sword Slash [Space]"><i class="fas fa-hand-fist"></i></div>
+          <div class="act-btn act-dash" id="btnDash" title="Dash [Shift]"><i class="fas fa-wind"></i></div>
+          <div class="act-btn act-mount" id="btnMount" title="Hoverbike [V]"><i class="fas fa-motorcycle"></i></div>
+          <div class="act-btn act-interact" id="btnInteract" title="Interact / Talk / Open [E]"><i class="fas fa-comment-dots"></i></div>
+          <div class="act-btn act-quest" id="btnQuestMobile" title="Quests [Q]"><i class="fas fa-scroll"></i></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Controls Guide & Features -->
+    <div class="game-info-grid">
+      <div class="info-card">
+        <h4><i class="fas fa-keyboard"></i> Controls & Masteries</h4>
+        <div style="font-size: 0.85rem; color: var(--text-secondary); line-height: 1.8;">
+          <div><span class="key-badge">W</span> <span class="key-badge">A</span> <span class="key-badge">S</span> <span class="key-badge">D</span> / <span class="key-badge">Arrows</span>: Move Hero</div>
+          <div><span class="key-badge">Space</span> / <span class="key-badge">J</span>: Sword Slash & Mine Ore</div>
+          <div><span class="key-badge">V</span>: Mount / Dismount Hoverbike (2.5x Speed)</div>
+          <div><span class="key-badge">T</span>: Skill Talents & Masteries</div>
+          <div><span class="key-badge">K</span> / <span class="key-badge">F</span>: Fireball Spell (10 MP)</div>
+          <div><span class="key-badge">Q</span> / <span class="key-badge">3</span>: Thunderstorm Ultimate (50 MP)</div>
+          <div><span class="key-badge">Shift</span>: Dash Roll (with I-Frames)</div>
+          <div><span class="key-badge">E</span>: Talk to NPCs / Enter Portals / Open Chests</div>
+        </div>
+      </div>
+
+      <div class="info-card">
+        <h4><i class="fas fa-map-location-dot"></i> Biomes, Dungeons & Titans</h4>
+        <div style="font-size: 0.85rem; color: var(--text-secondary); line-height: 1.7;">
+          <div>🌲 <strong>Emerald Forest:</strong> Wildflower patches, fireflies, moss & slimes</div>
+          <div>🏜️ <strong>Golden Desert:</strong> Wind ripples, sand dunes, scorpions & gold ores</div>
+          <div>❄️ <strong>Frost Peaks:</strong> Glacial hexagons, frozen lakes, snow footprints & Yeti King</div>
+          <div>🌋 <strong>Volcanic Nether:</strong> Magma pools, obsidian rock & Dragon Boss</div>
+          <div>🏛️ <strong>Cyber Citadel:</strong> Stone pathway roads & healing fountain</div>
+        </div>
+      </div>
+    </div>
+  
+    </main>
+
+  <footer class="app-footer">
+    <div class="app-container">
+      <p class="footer-text">&copy; 2026 AI Bots. All rights reserved.</p>
+      <p class="footer-credits">Website designed & engineered by <strong>Rishit Chajjed</strong>.</p>
+    </div>
+  </footer>
+
+  <script src="js/app.min.js">
+    // ==========================================
+    // IN-CANVAS CONTROLS & MODAL HANDLERS
+    // ==========================================
+    const questData = [
+      { id: 1, title: "1. Slime Exterminator", desc: "Defeat 5 Forest Slimes", target: 5, reward: "50 XP, 30 Gold", type: "slime" },
+      { id: 2, title: "2. Lava Drake Slayer", desc: "Slay 3 Lava Drakes in Volcano Realm", target: 3, reward: "120 XP, 60 Gold, 1 Talent Pt", type: "drake" },
+      { id: 3, title: "3. Ice Titan Challenge", desc: "Conquer 3 Frost Golems in Glacial Peak", target: 3, reward: "180 XP, 100 Gold", type: "golem" },
+      { id: 4, title: "4. Desert Scavenger", desc: "Collect 100 Gold from Sand Dunes", target: 100, reward: "250 XP, 150 Gold", type: "coins" },
+      { id: 5, title: "5. Realm Sovereign", desc: "Defeat the Mecha Dragon Titan Boss", target: 1, reward: "500 XP, 300 Gold, Master Title", type: "boss" }
+    ];
+
+    let activeQuestIndex = 0;
+    let questProgress = 0;
+
+    function openQuestModal() {
+      const container = document.getElementById('questListContainer');
+      if (container) {
+        container.innerHTML = questData.map((q, idx) => {
+          const isDone = idx < activeQuestIndex;
+          const isCurrent = idx === activeQuestIndex;
+          const statusBadge = isDone 
+            ? '<span style="color:#10b981; font-weight:800;"><i class="fas fa-check-circle"></i> COMPLETED</span>'
+            : (isCurrent ? `<span style="color:#fbbf24; font-weight:800;"><i class="fas fa-spinner fa-spin"></i> ACTIVE (${questProgress}/${q.target})</span>` : '<span style="color:#94a3b8;"><i class="fas fa-lock"></i> LOCKED</span>');
+
+          return `
+            <div style="background: rgba(255,255,255,0.04); border: 1px solid ${isCurrent ? '#fbbf24' : 'rgba(255,255,255,0.1)'}; border-radius: var(--radius-lg); padding: 12px; display: flex; justify-content: space-between; align-items: center; ${isCurrent ? 'box-shadow: 0 0 15px rgba(251,191,36,0.3);' : ''}">
+              <div>
+                <div style="font-weight: 800; font-size: 0.92rem; color: ${isCurrent ? '#facc15' : '#f8fafc'};">${q.title}</div>
+                <div style="font-size: 0.78rem; color: #94a3b8; margin: 2px 0;">${q.desc}</div>
+                <div style="font-size: 0.72rem; color: #38bdf8;"><i class="fas fa-gift"></i> Reward: ${q.reward}</div>
+              </div>
+              <div style="font-size: 0.78rem;">
+                ${statusBadge}
+              </div>
+            </div>
+          `;
+        }).join('');
+      }
+
+      const qBadge = document.getElementById('inCanvasQuestBadge');
+      if (qBadge) qBadge.textContent = `${activeQuestIndex + 1}/${questData.length}`;
+      const topQBadge = document.getElementById('questCountBadge');
+      if (topQBadge) topQBadge.textContent = `${activeQuestIndex + 1}/${questData.length}`;
+
+      const modal = document.getElementById('questModal');
+      if (modal) modal.classList.add('active');
+    }
+
+    function openInventoryModal() {
+      const modal = document.getElementById('inventoryModal');
+      if (modal) modal.classList.add('active');
+    }
+
+    function openTalentsModal() {
+      const modal = document.getElementById('talentsModal');
+      if (document.getElementById('modalTalentPts') && typeof player !== 'undefined') {
+        document.getElementById('modalTalentPts').textContent = player.talentPoints || 0;
+        if (document.getElementById('tDmgRank')) document.getElementById('tDmgRank').textContent = player.talents ? player.talents.dmg : 0;
+        if (document.getElementById('tHpRank')) document.getElementById('tHpRank').textContent = player.talents ? player.talents.hp : 0;
+        if (document.getElementById('tMpRank')) document.getElementById('tMpRank').textContent = player.talents ? player.talents.mp : 0;
+      }
+      if (modal) modal.classList.add('active');
+    }
+
+    function openHeroModal() {
+      const modal = document.getElementById('heroModal');
+      if (modal) modal.classList.add('active');
+    }
+
+    function openShopModal() {
+      const modal = document.getElementById('shopModal');
+      if (document.getElementById('shopGoldText') && typeof player !== 'undefined') {
+        document.getElementById('shopGoldText').textContent = player.coins || 0;
+      }
+      if (modal) modal.classList.add('active');
+    }
+
+    function closeModal(id) {
+      if (id) {
+        const modal = document.getElementById(id);
+        if (modal) modal.classList.remove('active');
+      } else {
+        document.querySelectorAll('.modal-backdrop').forEach(m => m.classList.remove('active'));
+      }
+    }
+
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        closeModal();
+      } else if (e.key === 'q' || e.key === 'Q') {
+        if (!document.querySelector('input:focus')) openQuestModal();
+      } else if (e.key === 'i' || e.key === 'I') {
+        if (!document.querySelector('input:focus')) openInventoryModal();
+      } else if (e.key === 't' || e.key === 'T') {
+        if (!document.querySelector('input:focus')) openTalentsModal();
+      }
+    });
+
+    function toggleFullscreen() {
+      const wrapper = document.getElementById('canvasWrapper') || document.documentElement;
+      const isFs = !!(document.fullscreenElement || document.webkitFullscreenElement);
+      if (!isFs) {
+        if (wrapper.requestFullscreen) {
+          wrapper.requestFullscreen().catch(() => {});
+        } else if (wrapper.webkitRequestFullscreen) {
+          wrapper.webkitRequestFullscreen();
+        }
+      } else {
+        if (document.exitFullscreen) {
+          document.exitFullscreen().catch(() => {});
+        } else if (document.webkitExitFullscreen) {
+          document.webkitExitFullscreen();
+        }
+      }
+      setTimeout(updateFullscreenButtons, 120);
+    }
+
+    function updateFullscreenButtons() {
+      const isFs = !!(document.fullscreenElement || document.webkitFullscreenElement);
+      const icon = document.getElementById('inCanvasFsIcon');
+      const text = document.getElementById('inCanvasFsText');
+      const btn = document.getElementById('inCanvasFullscreenBtn');
+      if (icon) icon.className = isFs ? 'fas fa-compress' : 'fas fa-expand';
+      if (text) text.textContent = isFs ? 'Exit Fullscreen' : 'Fullscreen';
+      if (btn) {
+        btn.style.color = isFs ? '#ec4899' : '#38bdf8';
+        btn.style.borderColor = isFs ? 'rgba(236,72,153,0.7)' : 'rgba(6,182,212,0.7)';
+      }
+    }
+
+    document.addEventListener('fullscreenchange', updateFullscreenButtons);
+    document.addEventListener('webkitfullscreenchange', updateFullscreenButtons);
+
+  </script>
+  
+    </div>
+<script>
+
+    // Universal Canvas roundRect Polyfill (Chrome, Safari, iOS WebKit, Firefox)
+    if (!CanvasRenderingContext2D.prototype.roundRect) {
+      CanvasRenderingContext2D.prototype.roundRect = function (x, y, w, h, radii) {
+        if (!radii) radii = 0;
+        if (typeof radii === 'number') radii = [radii, radii, radii, radii];
+        const r = radii[0] || 0;
+        this.beginPath();
+        this.moveTo(x + r, y);
+        this.arcTo(x + w, y, x + w, y + h, r);
+        this.arcTo(x + w, y + h, x, y + h, r);
+        this.arcTo(x, y + h, x, y, r);
+        this.arcTo(x, y, x + w, y, r);
+        this.closePath();
+        return this;
+      };
+    }
+
+    // Audio Synthesizer Engine
+    const AudioEngine = {
+      ctx: null, muted: false,
+      init() {
+        if (!this.ctx) {
+          const AudioContext = window.AudioContext || window.webkitAudioContext;
+          if (AudioContext) this.ctx = new AudioContext();
+        }
+      },
+      playTone(freq, type, duration, gain = 0.1) {
+        if (this.muted || !this.ctx) return;
+        try {
+          const osc = this.ctx.createOscillator();
+          const g = this.ctx.createGain();
+          osc.type = type;
+          osc.frequency.setValueAtTime(freq, this.ctx.currentTime);
+          g.gain.setValueAtTime(gain, this.ctx.currentTime);
+          g.gain.exponentialRampToValueAtTime(0.0001, this.ctx.currentTime + duration);
+          osc.connect(g);
+          g.connect(this.ctx.destination);
+          osc.start();
+          osc.stop(this.ctx.currentTime + duration);
+        } catch(e) {}
+      },
+      sword() { this.playTone(220, 'sawtooth', 0.1, 0.15); setTimeout(() => this.playTone(440, 'triangle', 0.1, 0.1), 40); },
+      magic() { this.playTone(587, 'sine', 0.25, 0.2); setTimeout(() => this.playTone(880, 'sine', 0.2, 0.15), 60); },
+      thunder() { [150, 110, 80, 50].forEach((f, i) => { setTimeout(() => this.playTone(f, 'sawtooth', 0.3, 0.25), i * 60); }); },
+      dash() { this.playTone(300, 'triangle', 0.12, 0.15); setTimeout(() => this.playTone(600, 'sine', 0.1, 0.1), 30); },
+      coin() { this.playTone(987, 'sine', 0.1, 0.15); setTimeout(() => this.playTone(1318, 'sine', 0.2, 0.15), 70); },
+      hit() { this.playTone(110, 'square', 0.12, 0.2); },
+      potion() { this.playTone(440, 'sine', 0.15, 0.15); setTimeout(() => this.playTone(660, 'sine', 0.15, 0.15), 80); },
+      laser() { this.playTone(800, 'sawtooth', 0.08, 0.12); },
+      portal() { [400, 600, 800, 1200].forEach((f, i) => { setTimeout(() => this.playTone(f, 'sine', 0.15, 0.15), i * 60); }); },
+      mount() { this.playTone(200, 'triangle', 0.2, 0.2); setTimeout(() => this.playTone(400, 'sawtooth', 0.2, 0.15), 80); },
+      levelUp() { [523, 659, 783, 1046, 1318].forEach((f, i) => { setTimeout(() => this.playTone(f, 'triangle', 0.22, 0.2), i * 80); }); }
+    };
+
+    
+    function toggleMute() {
+      isMuted = !isMuted;
+      const mIcon = document.getElementById('inCanvasMuteIcon');
+      const muteBtn = document.getElementById('muteBtn');
+      if (isMuted) {
+        if (mIcon) mIcon.className = 'fas fa-volume-xmark';
+        if (muteBtn) muteBtn.innerHTML = '<i class="fas fa-volume-xmark"></i>';
+        showToast("Audio Muted", "info");
+      } else {
+        if (mIcon) mIcon.className = 'fas fa-volume-up';
+        if (muteBtn) muteBtn.innerHTML = '<i class="fas fa-volume-up"></i>';
+        showToast("Audio Enabled", "success");
+      }
+    }
+
+
+    
+    // Fullscreen synchronization for laptop & mobile
+    function updateFullscreenState() {
+      const isFs = !!(document.fullscreenElement || document.webkitFullscreenElement || document.mozFullScreenElement || document.msFullscreenElement);
+      const btn = document.getElementById('inCanvasFullscreenBtn');
+      const icon = document.getElementById('inCanvasFsIcon');
+      const text = document.getElementById('inCanvasFsText');
+
+      if (isFs) {
+        if (btn) {
+          btn.classList.add('hud-btn-exit-fullscreen');
+          btn.title = "Exit Fullscreen (Esc or Tap)";
+        }
+        if (icon) icon.className = 'fas fa-compress';
+        if (text) text.textContent = 'Exit';
+      } else {
+        if (btn) {
+          btn.classList.remove('hud-btn-exit-fullscreen');
+          btn.title = "Enter Fullscreen Mode";
+        }
+        if (icon) icon.className = 'fas fa-expand';
+        if (text) text.textContent = 'Fullscreen';
+      }
+    }
+
+    function toggleFullscreen() {
+      const isFs = !!(document.fullscreenElement || document.webkitFullscreenElement || document.mozFullScreenElement || document.msFullscreenElement);
+      if (!isFs) {
+        const elem = document.getElementById('canvasWrapper') || document.documentElement;
+        if (elem.requestFullscreen) {
+          elem.requestFullscreen().catch(err => {
+            console.warn(err);
+            document.documentElement.requestFullscreen();
+          });
+        } else if (elem.webkitRequestFullscreen) {
+          elem.webkitRequestFullscreen();
+        } else if (elem.msRequestFullscreen) {
+          elem.msRequestFullscreen();
+        }
+      } else {
+        if (document.exitFullscreen) {
+          document.exitFullscreen();
+        } else if (document.webkitExitFullscreen) {
+          document.webkitExitFullscreen();
+        } else if (document.msExitFullscreen) {
+          document.msExitFullscreen();
+        }
+      }
+    }
+
+    document.addEventListener('fullscreenchange', updateFullscreenState);
+    document.addEventListener('webkitfullscreenchange', updateFullscreenState);
+    document.addEventListener('mozfullscreenchange', updateFullscreenState);
+    document.addEventListener('MSFullscreenChange', updateFullscreenState);
+
+    const canvasWrapper = document.getElementById('canvasWrapper');
+    const canvas = document.getElementById('gameCanvas');
+    const ctx = canvas.getContext('2d');
+    const miniCanvas = document.getElementById('minimapCanvas');
+    const miniCtx = miniCanvas.getContext('2d');
+
+    const WORLD = { width: 3200, height: 2400 };
+    const camera = { x: 0, y: 0 };
+
+    // Player State
+    let player = {
+      x: 1600, y: 1200, speed: 4.8, radius: 20,
+      hp: 100, maxHp: 100, mp: 60, maxMp: 60,
+      lvl: 1, xp: 0, nextXp: 100, coins: 80, score: 0,
+      talentPoints: 0,
+      talents: { dmg: 0, hp: 0, mp: 0 },
+      skin: 'cyber_knight',
+      hasPet: false,
+      hasMount: false,
+      isMounted: false,
+      combo: 0, comboTimer: 0,
+      potions: { hp: 2, mp: 2 },
+      equipment: { swordDmgBonus: 0, hasArmor: false },
+      facing: 'down', attacking: false, attackTimer: 0,
+      invulnerable: 0, dashTimer: 0, dashCooldown: 0,
+      walkCycle: 0, isMoving: false
+    };
+
+    // Companion Drone Pet
+    let pet = { x: 1560, y: 1180, attackCooldown: 0 };
+
+    let enemies = [];
+    let ores = [];
+    let portals = [];
+    let lootOrbs = [];
+    let projectiles = [];
+    let particles = [];
+    let weatherParticles = [];
+    let groundDetails = [];
+    let footprints = [];
+    let npcs = [];
+    let chests = [];
+    let floatingTexts = [];
+    let dialog = null;
+    let timeOfDay = 0;
+    let screenShake = 0;
+    let globalTicks = 0;
+
+    let quest = {
+      id: 1, target: 'slime', needed: 3, current: 0,
+      desc: 'Defeat 3 Forest Slimes', rewardCoins: 50, rewardXp: 80
+    };
+
+    const keys = {};
+    const scenery = [];
+
+    // Generate Ground Texture Elements
+    function generateWorldGroundDetails() {
+      groundDetails = [];
+      
+      // 1. Forest Wildflowers & Moss (0..1600, 0..1200)
+      for (let i = 0; i < 90; i++) {
+        groundDetails.push({
+          x: Math.random() * 1550, y: Math.random() * 1150,
+          type: Math.random() > 0.4 ? 'flower' : 'moss',
+          color: ['#facc15', '#f472b6', '#ffffff', '#38bdf8'][Math.floor(Math.random() * 4)],
+          size: 3 + Math.random() * 3
+        });
+      }
+
+      // 2. Desert Pebbles & Sand Ripples (1600..3200, 0..1200)
+      for (let i = 0; i < 75; i++) {
+        groundDetails.push({
+          x: 1650 + Math.random() * 1500, y: Math.random() * 1150,
+          type: Math.random() > 0.5 ? 'sand_ripple' : 'pebble',
+          color: '#b45309',
+          size: 4 + Math.random() * 8
+        });
+      }
+
+      // 3. Frost Glacial Cracks & Ice Tiles (0..1600, 1200..2400)
+      for (let i = 0; i < 70; i++) {
+        groundDetails.push({
+          x: Math.random() * 1550, y: 1250 + Math.random() * 1100,
+          type: 'ice_tile',
+          color: 'rgba(255, 255, 255, 0.25)',
+          size: 8 + Math.random() * 16
+        });
+      }
+
+      // 4. Volcanic Magma Pools & Bedrock Fissures (1600..3200, 1200..2400)
+      for (let i = 0; i < 55; i++) {
+        groundDetails.push({
+          x: 1650 + Math.random() * 1500, y: 1250 + Math.random() * 1100,
+          type: 'magma_pool',
+          color: '#ea580c',
+          size: 14 + Math.random() * 22
+        });
+      }
+    }
+
+    function generateWorldScenery() {
+      scenery.length = 0;
+      ores.length = 0;
+      portals.length = 0;
+      weatherParticles.length = 0;
+      generateWorldGroundDetails();
+
+      // Weather Particles
+      for (let i = 0; i < 70; i++) {
+        weatherParticles.push({
+          x: Math.random() * 1600, y: 1200 + Math.random() * 1200,
+          vx: (Math.random() - 0.5) * 0.8, vy: 0.8 + Math.random() * 1.4,
+          type: 'snow', radius: 1.5 + Math.random() * 2, color: 'rgba(255,255,255,0.75)'
+        });
+        weatherParticles.push({
+          x: 1600 + Math.random() * 1600, y: 1200 + Math.random() * 1200,
+          vx: (Math.random() - 0.5) * 1.2, vy: -(0.8 + Math.random() * 1.6),
+          type: 'ember', radius: 1.5 + Math.random() * 2.5, color: '#f97316'
+        });
+        weatherParticles.push({
+          x: Math.random() * 1600, y: Math.random() * 1200,
+          vx: (Math.random() - 0.5) * 0.6, vy: (Math.random() - 0.5) * 0.6,
+          type: 'firefly', radius: 2, color: '#a7f3d0'
+        });
+      }
+
+      // Forest
+      for (let i = 0; i < 45; i++) {
+        scenery.push({ x: Math.random() * 1500, y: Math.random() * 1100, type: 'tree', size: 26 + Math.random() * 16 });
+      }
+      // Desert
+      for (let i = 0; i < 30; i++) {
+        scenery.push({ x: 1650 + Math.random() * 1500, y: Math.random() * 1100, type: 'cactus', size: 20 + Math.random() * 10 });
+      }
+      // Frost
+      for (let i = 0; i < 35; i++) {
+        scenery.push({ x: Math.random() * 1500, y: 1250 + Math.random() * 1100, type: 'crystal', size: 18 + Math.random() * 14 });
+      }
+      // Volcanic
+      for (let i = 0; i < 30; i++) {
+        scenery.push({ x: 1650 + Math.random() * 1500, y: 1250 + Math.random() * 1100, type: 'volcano_rock', size: 22 + Math.random() * 16 });
+      }
+
+      // Mineable Gold & Crystal Ores
+      for (let i = 0; i < 16; i++) {
+        ores.push({
+          x: 200 + Math.random() * (WORLD.width - 400),
+          y: 200 + Math.random() * (WORLD.height - 400),
+          hp: 40, maxHp: 40,
+          type: Math.random() > 0.5 ? 'gold' : 'crystal'
+        });
+      }
+
+      // Portals
+      portals.push({ x: 400, y: 300, targetX: 2800, targetY: 2100, name: 'Nether Portal' });
+      portals.push({ x: 2800, y: 2100, targetX: 400, targetY: 300, name: 'Forest Portal' });
+      portals.push({ x: 2800, y: 300, targetX: 400, targetY: 2100, name: 'Frost Portal' });
+      portals.push({ x: 400, y: 2100, targetX: 2800, targetY: 300, name: 'Desert Portal' });
+    }
+
+    function initWorld() {
+      enemies = []; projectiles = []; particles = []; chests = []; npcs = []; lootOrbs = []; footprints = [];
+      generateWorldScenery();
+
+      // NPCs at Citadel
+      npcs.push({ x: 1600, y: 1080, name: 'Cyber Merchant', role: 'shop', dialog: "Welcome to the Cyber Armory! You can purchase Hoverbikes, Shields, and Drone Pets!" });
+      npcs.push({ x: 1520, y: 1160, name: 'Elder Bot Sage', role: 'quest', dialog: "Mount your Hoverbike with [V], allocate talents with [T], and slay the Nether Titan!" });
+
+      // Starter Chests & Ores at Cyber Citadel (1600, 1200)
+      chests.push({ x: 1530, y: 1220, opened: false, coins: 60 });
+      chests.push({ x: 1670, y: 1220, opened: false, coins: 75 });
+      ores.push({ x: 1500, y: 1140, type: 'crystal' });
+      ores.push({ x: 1700, y: 1140, type: 'gold' });
+      portals.push({ x: 1600, y: 1330, targetX: 2500, targetY: 1900, name: 'Nether Titan Portal' });
+
+      // Distributed Realm Chests
+      for (let i = 0; i < 20; i++) {
+        chests.push({
+          x: 200 + Math.random() * (WORLD.width - 400),
+          y: 200 + Math.random() * (WORLD.height - 400),
+          opened: false, coins: 35 + Math.floor(Math.random() * 50)
+        });
+      }
+
+      // Initial Enemies
+      for (let i = 0; i < 18; i++) spawnEnemy();
+      
+      // Bosses
+      spawnBoss();
+      spawnYetiMiniBoss();
+    }
+
+    function spawnBoss() {
+      enemies.push({
+        type: 'boss', name: 'Mecha Dragon Titan',
+        x: 2500, y: 1900,
+        hp: 700, maxHp: 700, speed: 1.7,
+        color: '#dc2626', radius: 48, xp: 500, coins: 300, atk: 28,
+        isBoss: true, attackTimer: 0, wingAngle: 0
+      });
+    }
+
+    function spawnYetiMiniBoss() {
+      enemies.push({
+        type: 'yeti_boss', name: 'Frost Yeti King',
+        x: 600, y: 1900,
+        hp: 350, maxHp: 350, speed: 1.5,
+        color: '#38bdf8', radius: 34, xp: 200, coins: 120, atk: 20,
+        isBoss: true, attackTimer: 0
+      });
+    }
+
+    function spawnEnemy() {
+      const biomeTypes = [
+        { type: 'slime', hp: 35, maxHp: 35, speed: 1.8, color: '#22c55e', radius: 16, xp: 25, coins: 8, atk: 8, xMin: 0, xMax: 1500, yMin: 0, yMax: 1100 },
+        { type: 'scorpion', hp: 55, maxHp: 55, speed: 2.2, color: '#f59e0b', radius: 17, xp: 45, coins: 15, atk: 14, xMin: 1600, xMax: 3100, yMin: 0, yMax: 1100 },
+        { type: 'ice_golem', hp: 85, maxHp: 85, speed: 1.5, color: '#38bdf8', radius: 21, xp: 75, coins: 25, atk: 18, xMin: 0, xMax: 1500, yMin: 1200, yMax: 2300 },
+        { type: 'fire_demon', hp: 110, maxHp: 110, speed: 2.0, color: '#f43f5e', radius: 20, xp: 100, coins: 35, atk: 22, xMin: 1600, xMax: 3100, yMin: 1200, yMax: 2300 }
+      ];
+      
+      const t = biomeTypes[Math.floor(Math.random() * biomeTypes.length)];
+      enemies.push({
+        ...t,
+        x: t.xMin + Math.random() * (t.xMax - t.xMin),
+        y: t.yMin + Math.random() * (t.yMax - t.yMin),
+        animTick: Math.random() * 10
+      });
+    }
+
+    
+    // ==========================================================================
+    // 360-Degree Floating Virtual Joystick & Mobile Tap Cursor Engine
+    // ==========================================================================
+    const joystickState = {
+      active: false,
+      pointerId: null,
+      startX: 0,
+      startY: 0,
+      currentX: 0,
+      currentY: 0,
+      maxRadius: 45,
+      vx: 0,
+      vy: 0
+    };
+
+    let targetWaypoint = null; // { x, y } in world coordinates
+
+    const jZone = document.getElementById('joystickZone');
+    const jBase = document.getElementById('joystickBase');
+    const jKnob = document.getElementById('joystickKnob');
+    const tapReticle = document.getElementById('tapReticle');
+
+    if (jZone) {
+      jZone.addEventListener('pointerdown', (e) => {
+        e.preventDefault();
+        AudioEngine.init();
+        const rect = canvasWrapper.getBoundingClientRect();
+        const touchX = e.clientX - rect.left;
+        const touchY = e.clientY - rect.top;
+
+        joystickState.active = true;
+        joystickState.pointerId = e.pointerId;
+        joystickState.startX = touchX;
+        joystickState.startY = touchY;
+        joystickState.currentX = touchX;
+        joystickState.currentY = touchY;
+        joystickState.vx = 0;
+        joystickState.vy = 0;
+
+        jBase.style.left = touchX + 'px';
+        jBase.style.top = touchY + 'px';
+        jBase.style.display = 'block';
+        jKnob.style.transform = 'translate(-50%, -50%)';
+
+        targetWaypoint = null; // Cancel tap waypoint if using joystick
+        if (tapReticle) tapReticle.style.display = 'none';
+
+        jZone.setPointerCapture(e.pointerId);
+      });
+
+      jZone.addEventListener('pointermove', (e) => {
+        if (!joystickState.active || e.pointerId !== joystickState.pointerId) return;
+        const rect = canvasWrapper.getBoundingClientRect();
+        const touchX = e.clientX - rect.left;
+        const touchY = e.clientY - rect.top;
+
+        const dx = touchX - joystickState.startX;
+        const dy = touchY - joystickState.startY;
+        const dist = Math.hypot(dx, dy);
+
+        const angle = Math.atan2(dy, dx);
+        const cappedDist = Math.min(dist, joystickState.maxRadius);
+
+        const knobX = Math.cos(angle) * cappedDist;
+        const knobY = Math.sin(angle) * cappedDist;
+
+        jKnob.style.transform = `translate(calc(-50% + ${knobX}px), calc(-50% + ${knobY}px))`;
+
+        // Normalize vector for analog movement
+        joystickState.vx = Math.cos(angle) * (cappedDist / joystickState.maxRadius);
+        joystickState.vy = Math.sin(angle) * (cappedDist / joystickState.maxRadius);
+      });
+
+      const endJoystick = (e) => {
+        if (e.pointerId !== joystickState.pointerId) return;
+        joystickState.active = false;
+        joystickState.pointerId = null;
+        joystickState.vx = 0;
+        joystickState.vy = 0;
+        jBase.style.display = 'none';
+      };
+
+      jZone.addEventListener('pointerup', endJoystick);
+      jZone.addEventListener('pointercancel', endJoystick);
+    }
+
+    // Tap-to-Move on Canvas
+    canvas.addEventListener('pointerdown', (e) => {
+      if (typeof isAnyModalOpen === 'function' && isAnyModalOpen()) return;
+      const rect = canvas.getBoundingClientRect();
+      const touchX = e.clientX - rect.left;
+      const touchY = e.clientY - rect.top;
+
+      // Ignore tap if touching top HUD bar or bottom hotbar zone
+      if (touchY < 65 || (touchY > rect.height - 120 && touchX > rect.width * 0.22 && touchX < rect.width * 0.78)) {
+        return;
+      }
+
+      // Tap-to-move in right active play zone
+      if (touchX > rect.width * 0.35) {
+        AudioEngine.init();
+        const clickX = touchX * (canvas.width / rect.width);
+        const clickY = touchY * (canvas.height / rect.height);
+        const worldX = clickX + camera.x;
+        const worldY = clickY + camera.y;
+
+        targetWaypoint = { x: worldX, y: worldY };
+
+        if (tapReticle && canvasWrapper) {
+          tapReticle.style.left = (e.clientX - canvasWrapper.getBoundingClientRect().left) + 'px';
+          tapReticle.style.top = (e.clientY - canvasWrapper.getBoundingClientRect().top) + 'px';
+          tapReticle.style.display = 'block';
+        }
+      }
+    });
+
+    // Mobile Ultimate & Quest button bindings
+    document.getElementById('btnUlt')?.addEventListener('pointerdown', (e) => { e.preventDefault(); AudioEngine.init(); castClassUltimate(); });
+    document.getElementById('btnQuestMobile')?.addEventListener('pointerdown', (e) => { e.preventDefault(); AudioEngine.init(); openQuestModal(); });
+
+    // Keyboard & Mobile Touch Listeners (Pointer Events)
+    window.addEventListener('keydown', e => {
+      keys[e.key.toLowerCase()] = true;
+      AudioEngine.init();
+      if ([' ', 'arrowup', 'arrowdown', 'arrowleft', 'arrowright'].includes(e.key.toLowerCase())) e.preventDefault();
+      if (e.key === ' ' || e.key.toLowerCase() === 'j') performAttack();
+      if (e.key.toLowerCase() === 'k' || e.key.toLowerCase() === 'f') castMagic();
+      if (e.key.toLowerCase() === 'q' || e.key === '3') castUltimate();
+      if (e.key.toLowerCase() === 'v') toggleMount();
+      if (e.key.toLowerCase() === 't') openTalentsModal();
+      if (e.key.toLowerCase() === 'e') handleInteract();
+      if (e.key === 'Shift') performDash();
+      if (e.key === '1' || e.key.toLowerCase() === 'h') usePotion('hp');
+      if (e.key === '2' || e.key.toLowerCase() === 'm') usePotion('mp');
+    });
+
+    window.addEventListener('keyup', e => { keys[e.key.toLowerCase()] = false; });
+
+    function bindPointerBtn(id, keyName) {
+      const el = document.getElementById(id);
+      if (!el) return;
+      el.addEventListener('pointerdown', (e) => {
+        e.preventDefault();
+        AudioEngine.init();
+        keys[keyName] = true;
+        el.setPointerCapture(e.pointerId);
+      });
+      el.addEventListener('pointerup', (e) => { e.preventDefault(); keys[keyName] = false; });
+      el.addEventListener('pointercancel', (e) => { e.preventDefault(); keys[keyName] = false; });
+    }
+    bindPointerBtn('btnUp', 'w');
+    bindPointerBtn('btnDown', 's');
+    bindPointerBtn('btnLeft', 'a');
+    bindPointerBtn('btnRight', 'd');
+
+    document.getElementById('btnAttack')?.addEventListener('pointerdown', (e) => { e.preventDefault(); AudioEngine.init(); performAttack(); });
+    document.getElementById('btnMagic')?.addEventListener('pointerdown', (e) => { e.preventDefault(); AudioEngine.init(); castMagic(); });
+    document.getElementById('btnDash')?.addEventListener('pointerdown', (e) => { e.preventDefault(); AudioEngine.init(); performDash(); });
+    document.getElementById('btnMount')?.addEventListener('pointerdown', (e) => { e.preventDefault(); AudioEngine.init(); toggleMount(); });
+    document.getElementById('btnInteract')?.addEventListener('pointerdown', (e) => { e.preventDefault(); AudioEngine.init(); handleInteract(); });
+
+    
+    // Mobile instant touch triggers for hotbar slots
+    document.querySelectorAll('.hotbar-slot').forEach(slot => {
+      slot.addEventListener('pointerdown', (e) => {
+        e.stopPropagation();
+      });
+    });
+
+    // Combat & Mounting
+    function toggleMount() {
+      if (!player.hasMount) {
+        showToast("Buy the Cyber Hoverbike in the Shop first!", "error");
+        return;
+      }
+      player.isMounted = !player.isMounted;
+      AudioEngine.mount();
+      const slot = document.getElementById('mountSlot');
+      if (player.isMounted) {
+        slot.classList.add('active-mount');
+        showToast("Hoverbike Mounted! (2.5x Speed)", "success");
+      } else {
+        slot.classList.remove('active-mount');
+        showToast("Hoverbike Dismounted.", "info");
+      }
+    }
+
+    
+    // Prevent game actions if any modal is active
+    function isAnyModalOpen() {
+      return !!document.querySelector('.modal-backdrop.active');
+    }
+
+    function performAttack() {
+      if (isAnyModalOpen()) return;
+      if (player.attackTimer > 0) return;
+      player.attacking = true;
+      player.attackTimer = 16;
+      AudioEngine.sword();
+
+      const reach = 52;
+      let hitX = player.x; let hitY = player.y;
+      if (player.facing === 'up') hitY -= reach;
+      if (player.facing === 'down') hitY += reach;
+      if (player.facing === 'left') hitX -= reach;
+      if (player.facing === 'right') hitX += reach;
+
+      
+      // Sword breaks nearby chests and ores
+      for (const c of chests) {
+        if (!c.opened && Math.hypot(c.x - hitX, c.y - hitY) < 65) {
+          c.opened = true;
+          player.coins += c.coins;
+          player.score += c.coins * 3;
+          spawnLootOrb(c.x, c.y, c.coins, '#fbbf24');
+          addFloatingText(`+${c.coins} Gold Chest!`, c.x, c.y - 25, '#fbbf24');
+          showToast(`Slashed Chest! (+${c.coins} Gold) 💰`, 'success');
+          AudioEngine.coin();
+          if (typeof checkQuestProgress === 'function') checkQuestProgress('mine', 1);
+          updateHud();
+        }
+      }
+      for (let i = ores.length - 1; i >= 0; i--) {
+        const ore = ores[i];
+        if (Math.hypot(ore.x - hitX, ore.y - hitY) < 65) {
+          const reward = ore.type === 'gold' ? 40 : 30;
+          player.coins += reward;
+          player.score += reward * 2;
+          spawnLootOrb(ore.x, ore.y, reward, ore.type === 'gold' ? '#f59e0b' : '#38bdf8');
+          addFloatingText(`Mined +${reward} ${ore.type.toUpperCase()}!`, ore.x, ore.y - 20, '#38bdf8');
+          showToast(`Mined ${ore.type.toUpperCase()} Ore! ⛏️`, 'success');
+          ores.splice(i, 1);
+          AudioEngine.coin();
+          if (typeof checkQuestProgress === 'function') checkQuestProgress('mine', 1);
+          updateHud();
+        }
+      }
+
+      // Attack Enemies
+      for (let i = enemies.length - 1; i >= 0; i--) {
+        const en = enemies[i];
+        const dist = Math.hypot(en.x - hitX, en.y - hitY);
+        if (dist < en.radius + 32) {
+          const isCrit = Math.random() < 0.25;
+          const baseDmg = 24 + player.lvl * 6 + player.equipment.swordDmgBonus + (player.talents.dmg * 10);
+          const dmg = isCrit ? Math.round(baseDmg * 1.8) : baseDmg;
+          
+          en.hp -= dmg;
+          addFloatingText(isCrit ? `CRIT -${dmg}!` : `-${dmg}`, en.x, en.y - 14, isCrit ? '#facc15' : '#ef4444');
+          addSlashParticles(en.x, en.y, '#f87171');
+          AudioEngine.hit();
+          screenShake = isCrit ? 10 : 5;
+
+          // Combo Multiplier
+          player.combo++;
+          player.comboTimer = 120;
+          updateComboHUD();
+
+          const angle = Math.atan2(en.y - player.y, en.x - player.x);
+          en.x += Math.cos(angle) * (en.isBoss ? 8 : 28);
+          en.y += Math.sin(angle) * (en.isBoss ? 8 : 28);
+
+          if (en.hp <= 0) defeatEnemy(en, i);
+        }
+      }
+
+      // Mine Ore Rocks
+      for (let i = ores.length - 1; i >= 0; i--) {
+        const ore = ores[i];
+        if (Math.hypot(ore.x - hitX, ore.y - hitY) < 38) {
+          ore.hp -= 20;
+          addSlashParticles(ore.x, ore.y, ore.type === 'gold' ? '#fbbf24' : '#38bdf8');
+          AudioEngine.hit();
+          if (ore.hp <= 0) {
+            const reward = ore.type === 'gold' ? 35 : 50;
+            spawnLootOrb(ore.x, ore.y, reward, ore.type === 'gold' ? '#fbbf24' : '#38bdf8');
+            ores.splice(i, 1);
+          }
+        }
+      }
+    }
+
+    function castMagic() {
+      if (isAnyModalOpen()) return;
+      if (player.mp < 10) {
+        addFloatingText("No Mana!", player.x, player.y - 20, '#60a5fa');
+        return;
+      }
+      player.mp -= 10;
+      updateHud();
+      AudioEngine.magic();
+
+      let vx = 0, vy = 0;
+      if (player.facing === 'up') vy = -9.5;
+      if (player.facing === 'down') vy = 9.5;
+      if (player.facing === 'left') vx = -9.5;
+      if (player.facing === 'right') vx = 9.5;
+      if (vx === 0 && vy === 0) vy = 9.5;
+
+      projectiles.push({
+        x: player.x, y: player.y, vx, vy,
+        radius: 11, life: 65, isPlayer: true,
+        dmg: 42 + player.lvl * 9 + (player.talents.mp * 5),
+        color: player.skin === 'arcane_mage' ? '#c084fc' : '#38bdf8'
+      });
+    }
+
+    function castUltimate() {
+      if (player.mp < 50) {
+        addFloatingText("Need 50 MP!", player.x, player.y - 20, '#fbbf24');
+        return;
+      }
+      player.mp -= 50;
+      updateHud();
+      AudioEngine.thunder();
+      screenShake = 18;
+
+      for (let i = 0; i < 8; i++) {
+        const ang = (i * Math.PI) / 4;
+        projectiles.push({
+          x: player.x, y: player.y,
+          vx: Math.cos(ang) * 11, vy: Math.sin(ang) * 11,
+          radius: 13, life: 70, isPlayer: true,
+          dmg: 85 + player.lvl * 16, color: '#facc15'
+        });
+      }
+      addFloatingText("THUNDERSTORM!", player.x, player.y - 30, '#facc15');
+      launchConfetti(25);
+    }
+
+    function performDash() {
+      if (player.dashCooldown > 0) return;
+      player.dashTimer = 14;
+      player.dashCooldown = 50;
+      player.invulnerable = 16;
+      AudioEngine.dash();
+
+      let dx = 0, dy = 0;
+      if (player.facing === 'up') dy = -1;
+      if (player.facing === 'down') dy = 1;
+      if (player.facing === 'left') dx = -1;
+      if (player.facing === 'right') dx = 1;
+
+      const dist = player.isMounted ? 130 : 85;
+      player.x = Math.max(player.radius, Math.min(WORLD.width - player.radius, player.x + dx * dist));
+      player.y = Math.max(player.radius, Math.min(WORLD.height - player.radius, player.y + dy * dist));
+      addSlashParticles(player.x, player.y, '#34d399');
+    }
+
+    function usePotion(type) {
+      if (type === 'hp') {
+        if (player.potions.hp <= 0) { addFloatingText("No Health Potions!", player.x, player.y - 20, '#ef4444'); return; }
+        player.potions.hp--;
+        player.hp = Math.min(player.maxHp, player.hp + 50);
+        AudioEngine.potion();
+        addFloatingText("+50 HP!", player.x, player.y - 25, '#22c55e');
+      } else if (type === 'mp') {
+        if (player.potions.mp <= 0) { addFloatingText("No Mana Elixirs!", player.x, player.y - 20, '#3b82f6'); return; }
+        player.potions.mp--;
+        player.mp = Math.min(player.maxMp, player.mp + 50);
+        AudioEngine.potion();
+        addFloatingText("+50 MP!", player.x, player.y - 25, '#38bdf8');
+      }
+      updateHud();
+    }
+
+            function handleInteract() {
+      AudioEngine.init();
+      let interacted = false;
+
+      // 1. Check Chests (120px reach)
+      for (const c of chests) {
+        if (!c.opened && Math.hypot(c.x - player.x, c.y - player.y) < 110) {
+          c.opened = true;
+          player.coins += c.coins;
+          player.score += c.coins * 3;
+          spawnLootOrb(c.x, c.y, c.coins, '#fbbf24');
+          addFloatingText(`+${c.coins} Gold Chest!`, c.x, c.y - 25, '#fbbf24');
+          showToast(`Opened Chest! Found +${c.coins} Gold 💰`, 'success');
+          AudioEngine.coin();
+          if (typeof checkQuestProgress === 'function') checkQuestProgress('mine', 1);
+          updateHud();
+          interacted = true;
+          break;
+        }
+      }
+
+      // 2. Check Ores (110px reach)
+      if (!interacted) {
+        for (let i = ores.length - 1; i >= 0; i--) {
+          const ore = ores[i];
+          if (Math.hypot(ore.x - player.x, ore.y - player.y) < 105) {
+            const reward = ore.type === 'gold' ? 40 : 30;
+            player.coins += reward;
+            player.score += reward * 2;
+            spawnLootOrb(ore.x, ore.y, reward, ore.type === 'gold' ? '#f59e0b' : '#38bdf8');
+            addFloatingText(`Mined +${reward} ${ore.type.toUpperCase()}!`, ore.x, ore.y - 20, '#38bdf8');
+            showToast(`Mined ${ore.type.toUpperCase()} Ore! (+${reward} Gold) ⛏️`, 'success');
+            ores.splice(i, 1);
+            AudioEngine.coin();
+            if (typeof checkQuestProgress === 'function') checkQuestProgress('mine', 1);
+            updateHud();
+            interacted = true;
+            break;
+          }
+        }
+      }
+
+      // 3. Check NPCs (120px reach)
+      if (!interacted) {
+        for (const npc of npcs) {
+          if (Math.hypot(npc.x - player.x, npc.y - player.y) < 120) {
+            if (npc.role === 'shop') {
+              openShopModal();
+              showToast("Opening Cyber Armory...", "info");
+              return;
+            } else if (npc.role === 'quest') {
+              openQuestModal();
+              showToast("Opening Quest Log...", "info");
+              return;
+            }
+            dialog = { text: `${npc.name}: "${npc.dialog}"`, timer: 350 };
+            addFloatingText(`Talking to ${npc.name}...`, player.x, player.y - 30, '#38bdf8');
+            showToast(`${npc.name}: "${npc.dialog}"`, "info", 5000);
+            AudioEngine.coin();
+            interacted = true;
+            break;
+          }
+        }
+      }
+
+      // 4. Check Portals (110px reach)
+      if (!interacted) {
+        for (const p of portals) {
+          if (Math.hypot(p.x - player.x, p.y - player.y) < 100) {
+            player.x = p.targetX;
+            player.y = p.targetY;
+            AudioEngine.portal();
+            screenShake = 14;
+            addFloatingText(`Warped via ${p.name}!`, player.x, player.y - 30, '#c084fc');
+            showToast(`Warped through ${p.name}! 🌀`, 'success');
+            if (typeof checkQuestProgress === 'function') checkQuestProgress('nether', 1);
+            interacted = true;
+            break;
+          }
+        }
+      }
+
+      if (!interacted) {
+        showToast("Walk closer to a Chest, Ore, NPC, or Portal to interact! (Press [E] or tap [💬])", "info");
+      }
+    }
+
+    function spawnLootOrb(x, y, value, color) {
+      lootOrbs.push({ x, y, value, color, radius: 8 });
+      AudioEngine.coin();
+    }
+
+    function defeatEnemy(en, idx) {
+      enemies.splice(idx, 1);
+      spawnLootOrb(en.x, en.y, en.coins, '#fbbf24');
+      player.xp += en.xp;
+      player.score += en.xp * 2;
+      addFloatingText(`+${en.xp} XP`, en.x, en.y - 18, '#facc15');
+
+      if (en.isBoss) {
+        addFloatingText(`${en.name} DEFEATED!`, player.x, player.y - 45, '#ec4899');
+        launchConfetti(60);
+        document.getElementById('bossBar').style.display = 'none';
+        setTimeout(en.type === 'boss' ? spawnBoss : spawnYetiMiniBoss, 45000);
+      }
+
+      if (quest.target === en.type || quest.target === 'any') {
+        quest.current++;
+        if (quest.current >= quest.needed) {
+          player.coins += quest.rewardCoins;
+          player.xp += quest.rewardXp;
+          addFloatingText("Quest Complete!", player.x, player.y - 30, '#c084fc');
+          AudioEngine.levelUp();
+          quest.id++; quest.needed += 2; quest.current = 0;
+          quest.desc = `Defeat ${quest.needed} Monsters in Realm`;
+          quest.target = 'any';
+        }
+        document.getElementById('questDesc').textContent = `${quest.desc} (${quest.current}/${quest.needed})`;
+      }
+
+      if (player.xp >= player.nextXp) {
+        player.lvl++;
+        player.talentPoints++;
+        player.xp -= player.nextXp;
+        player.nextXp = Math.floor(player.nextXp * 1.5);
+        player.maxHp += 25;
+        player.hp = player.maxHp;
+        player.maxMp += 15;
+        player.mp = player.maxMp;
+        addFloatingText("LEVEL UP! +1 Skill Point", player.x, player.y - 40, '#38bdf8');
+        AudioEngine.levelUp();
+      }
+
+      updateHud();
+      if (!en.isBoss) setTimeout(spawnEnemy, 4000);
+    }
+
+    function updateComboHUD() {
+      const badge = document.getElementById('comboBadge');
+      if (player.combo > 1) {
+        badge.style.display = 'flex';
+        document.getElementById('comboText').textContent = `${player.combo}x COMBO!`;
+      } else {
+        badge.style.display = 'none';
+      }
+    }
+
+    // Talents System
+    function openTalentsModal() {
+      document.getElementById('modalTalentPts').textContent = player.talentPoints;
+      document.getElementById('tDmgRank').textContent = player.talents.dmg;
+      document.getElementById('tHpRank').textContent = player.talents.hp;
+      document.getElementById('tMpRank').textContent = player.talents.mp;
+      document.getElementById('talentsModal').classList.add('active');
+    }
+
+    function upgradeTalent(type) {
+      if (player.talentPoints <= 0) {
+        showToast("No Skill Points available! Level up to earn more.", "error");
+        return;
+      }
+      if (player.talents[type] >= 5) {
+        showToast("Talent already maxed out!", "info");
+        return;
+      }
+      player.talentPoints--;
+      player.talents[type]++;
+      if (type === 'hp') { player.maxHp += 30; player.hp += 30; }
+      if (type === 'mp') { player.maxMp += 20; player.mp += 20; }
+      AudioEngine.levelUp();
+      updateHud();
+      openTalentsModal();
+      showToast("Talent upgraded successfully!", "success");
+    }
+
+    // Hero Skin Customizer
+    function openHeroModal() {
+      document.getElementById('heroModal').classList.add('active');
+    }
+
+    function setHeroSkin(skin) {
+      player.skin = skin;
+      document.querySelectorAll('.hero-class-card').forEach(c => c.classList.remove('active'));
+      const cardMap = {
+        'cyber_knight': 'skinCyberKnight',
+        'arcane_mage': 'skinArcaneMage',
+        'neon_ranger': 'skinNeonRanger',
+        'mecha_paladin': 'skinMechaPaladin'
+      };
+      if (cardMap[skin]) document.getElementById(cardMap[skin]).classList.add('active');
+      showToast(`Switched to ${skin.replace('_', ' ').toUpperCase()}!`, 'success');
+      closeModal('heroModal');
+    }
+
+    // Shop System
+    function openShopModal() {
+      document.getElementById('shopGoldText').textContent = player.coins;
+      document.getElementById('shopModal').classList.add('active');
+    }
+
+    function buyItem(item, cost) {
+      if (player.coins < cost) {
+        showToast("Not enough Gold!", "error");
+        return;
+      }
+      player.coins -= cost;
+      if (item === 'hpPot') player.potions.hp++;
+      if (item === 'mpPot') player.potions.mp++;
+      if (item === 'sword') {
+        player.equipment.swordDmgBonus += 25;
+        document.getElementById('buySwordBtn').textContent = "Upgraded!";
+      }
+      if (item === 'armor') {
+        player.maxHp += 60;
+        player.hp += 60;
+        player.equipment.hasArmor = true;
+        document.getElementById('buyArmorBtn').textContent = "Equipped!";
+      }
+      if (item === 'pet') {
+        player.hasPet = true;
+        document.getElementById('buyPetBtn').textContent = "Active!";
+      }
+      if (item === 'mount') {
+        player.hasMount = true;
+        document.getElementById('buyMountBtn').textContent = "Unlocked!";
+        showToast("Cyber Hoverbike Unlocked! Press [V] to mount anytime.", "success");
+      }
+      AudioEngine.coin();
+      updateHud();
+      document.getElementById('shopGoldText').textContent = player.coins;
+      showToast("Item purchased successfully!", "success");
+    }
+
+    function closeModal(id) {
+      document.getElementById(id).classList.remove('active');
+    }
+
+    function addFloatingText(text, x, y, color) { floatingTexts.push({ text, x, y, color, life: 45 }); }
+    function addSlashParticles(x, y, color) {
+      for (let i = 0; i < 9; i++) {
+        particles.push({
+          x, y,
+          vx: (Math.random() - 0.5) * 7,
+          vy: (Math.random() - 0.5) * 7,
+          radius: 3 + Math.random() * 3,
+          color, life: 22
+        });
+      }
+    }
+
+    function updateHud() {
+      document.getElementById('hpFill').style.width = `${(player.hp / player.maxHp) * 100}%`;
+      document.getElementById('hpText').textContent = `${Math.max(0, Math.floor(player.hp))}/${player.maxHp}`;
+      document.getElementById('mpFill').style.width = `${(player.mp / player.maxMp) * 100}%`;
+      document.getElementById('mpText').textContent = `${Math.floor(player.mp)}/${player.maxMp}`;
+      document.getElementById('xpFill').style.width = `${(player.xp / player.nextXp) * 100}%`;
+      document.getElementById('lvlText').textContent = `Lv. ${player.lvl}`;
+      document.getElementById('coinText').textContent = player.coins;
+      document.getElementById('scoreText').textContent = player.score;
+      document.getElementById('hpPotCount').textContent = player.potions.hp;
+      document.getElementById('mpPotCount').textContent = player.potions.mp;
+      document.getElementById('talentPtsText').textContent = player.talentPoints;
+      const inCanvasPts = document.getElementById('inCanvasTalentPts'); if (inCanvasPts) inCanvasPts.textContent = player.talentPoints;
+    }
+
+    function restartGame() {
+      player.hp = 100; player.maxHp = 100; player.mp = 60; player.coins = 80; player.score = 0;
+      player.lvl = 1; player.xp = 0; player.nextXp = 100; player.x = 1600; player.y = 1200;
+      player.talentPoints = 0;
+      player.talents = { dmg: 0, hp: 0, mp: 0 };
+      player.potions = { hp: 2, mp: 2 };
+      player.equipment = { swordDmgBonus: 0, hasArmor: false };
+      player.hasPet = false;
+      player.hasMount = false;
+      player.isMounted = false;
+      player.combo = 0;
+      footprints = [];
+      initWorld(); updateHud();
+    }
+
+    function update() {
+      globalTicks++;
+      timeOfDay = (timeOfDay + 0.0003) % 1;
+      if (screenShake > 0) screenShake *= 0.88;
+
+      if (player.comboTimer > 0) {
+        player.comboTimer--;
+        if (player.comboTimer <= 0) {
+          player.combo = 0;
+          updateComboHUD();
+        }
+      }
+
+      // Healing Fountain at Cyber Citadel
+      if (Math.hypot(player.x - 1600, player.y - 1200) < 65) {
+        if (player.hp < player.maxHp) player.hp = Math.min(player.maxHp, player.hp + 0.35);
+        if (player.mp < player.maxMp) player.mp = Math.min(player.maxMp, player.mp + 0.35);
+        updateHud();
+      } else if (player.mp < player.maxMp) {
+        player.mp = Math.min(player.maxMp, player.mp + 0.06);
+        document.getElementById('mpFill').style.width = `${(player.mp / player.maxMp) * 100}%`;
+        document.getElementById('mpText').textContent = `${Math.floor(player.mp)}/${player.maxMp}`;
+      }
+
+      let moveX = 0, moveY = 0;
+      if (keys['w'] || keys['arrowup']) { moveY -= 1; player.facing = 'up'; }
+      if (keys['s'] || keys['arrowdown']) { moveY += 1; player.facing = 'down'; }
+      if (keys['a'] || keys['arrowleft']) { moveX -= 1; player.facing = 'left'; }
+      if (keys['d'] || keys['arrowright']) { moveX += 1; player.facing = 'right'; }
+
+      // 360-degree analog mobile virtual joystick
+      if (typeof joystickState !== 'undefined' && joystickState.active) {
+        moveX += joystickState.vx;
+        moveY += joystickState.vy;
+        if (Math.abs(joystickState.vx) > Math.abs(joystickState.vy)) {
+          player.facing = joystickState.vx > 0 ? 'right' : 'left';
+        } else if (Math.abs(joystickState.vy) > 0.1) {
+          player.facing = joystickState.vy > 0 ? 'down' : 'up';
+        }
+        targetWaypoint = null;
+        if (tapReticle) tapReticle.style.display = 'none';
+      } else if (typeof targetWaypoint !== 'undefined' && targetWaypoint) {
+        // Tap-to-move pathfinding
+        const tdx = targetWaypoint.x - player.x;
+        const tdy = targetWaypoint.y - player.y;
+        const tdist = Math.hypot(tdx, tdy);
+        if (tdist > 15) {
+          moveX += tdx / tdist;
+          moveY += tdy / tdist;
+          if (Math.abs(tdx) > Math.abs(tdy)) {
+            player.facing = tdx > 0 ? 'right' : 'left';
+          } else {
+            player.facing = tdy > 0 ? 'down' : 'up';
+          }
+          if (tapReticle && canvasWrapper) {
+            const screenX = (targetWaypoint.x - camera.x) * (canvas.clientWidth / canvas.width);
+            const screenY = (targetWaypoint.y - camera.y) * (canvas.clientHeight / canvas.height);
+            tapReticle.style.left = screenX + 'px';
+            tapReticle.style.top = screenY + 'px';
+          }
+        } else {
+          targetWaypoint = null;
+          if (tapReticle) tapReticle.style.display = 'none';
+        }
+      }
+
+      player.isMoving = moveX !== 0 || moveY !== 0;
+      if (player.isMoving) {
+        player.walkCycle += player.isMounted ? 0.35 : 0.22;
+
+        // Add Dynamic Footprints / Hover Tracks
+        if (globalTicks % 8 === 0) {
+          footprints.push({
+            x: player.x, y: player.y + (player.isMounted ? 10 : 14),
+            isMounted: player.isMounted, life: 60
+          });
+          if (footprints.length > 50) footprints.shift();
+        }
+      }
+
+      // Update Footprints Life
+      for (let i = footprints.length - 1; i >= 0; i--) {
+        footprints[i].life--;
+        if (footprints[i].life <= 0) footprints.splice(i, 1);
+      }
+
+      if (moveX !== 0 && moveY !== 0) { moveX *= 0.7071; moveY *= 0.7071; }
+
+      const currentSpeed = player.isMounted ? player.speed * 2.2 : player.speed;
+      player.x = Math.max(player.radius, Math.min(WORLD.width - player.radius, player.x + moveX * currentSpeed));
+      player.y = Math.max(player.radius, Math.min(WORLD.height - player.radius, player.y + moveY * currentSpeed));
+
+      if (player.attackTimer > 0) player.attackTimer--;
+      if (player.invulnerable > 0) player.invulnerable--;
+      if (player.dashCooldown > 0) player.dashCooldown--;
+
+      // Weather Particles Update
+      for (const wp of weatherParticles) {
+        wp.x += wp.vx; wp.y += wp.vy;
+        if (wp.type === 'snow' && wp.y > 2400) { wp.y = 1200; wp.x = Math.random() * 1600; }
+        if (wp.type === 'ember' && wp.y < 1200) { wp.y = 2400; wp.x = 1600 + Math.random() * 1600; }
+        if (wp.type === 'firefly') {
+          if (wp.x < 0 || wp.x > 1600) wp.vx *= -1;
+          if (wp.y < 0 || wp.y > 1200) wp.vy *= -1;
+        }
+      }
+
+      
+      // Auto-Open Chests on Proximity Contact
+      for (const c of chests) {
+        if (!c.opened && Math.hypot(c.x - player.x, c.y - player.y) < 45) {
+          c.opened = true;
+          spawnLootOrb(c.x, c.y, c.coins, '#fbbf24');
+          addFloatingText(`+${c.coins} Gold!`, c.x, c.y - 25, '#fbbf24');
+          if (typeof checkQuestProgress === 'function') checkQuestProgress('mine', 1);
+        }
+      }
+
+      // Auto-Mine Ores on Proximity Contact
+      for (let i = ores.length - 1; i >= 0; i--) {
+        const ore = ores[i];
+        if (Math.hypot(ore.x - player.x, ore.y - player.y) < 40) {
+          const reward = ore.type === 'gold' ? 35 : 25;
+          spawnLootOrb(ore.x, ore.y, reward, ore.type === 'gold' ? '#f59e0b' : '#38bdf8');
+          addFloatingText(`Mined +${reward} ${ore.type.toUpperCase()}!`, ore.x, ore.y - 20, '#38bdf8');
+          ores.splice(i, 1);
+          if (typeof checkQuestProgress === 'function') checkQuestProgress('mine', 1);
+        }
+      }
+
+      // Auto-Portal Proximity Warp (with cooldown)
+      for (const p of portals) {
+        if (p.cooldown === undefined) p.cooldown = 0;
+        if (p.cooldown > 0) p.cooldown--;
+        if (Math.hypot(p.x - player.x, p.y - player.y) < 45 && p.cooldown <= 0) {
+          player.x = p.targetX;
+          player.y = p.targetY;
+          p.cooldown = 90;
+          AudioEngine.portal();
+          screenShake = 12;
+          addFloatingText(`Warped via ${p.name}!`, player.x, player.y - 30, '#c084fc');
+          if (typeof checkQuestProgress === 'function') checkQuestProgress('nether', 1);
+        }
+      }
+
+      // Auto-NPC Greeting
+      for (const npc of npcs) {
+        if (Math.hypot(npc.x - player.x, npc.y - player.y) < 50) {
+          if (!dialog) {
+            dialog = { text: `${npc.name}: "${npc.dialog}"`, timer: 200 };
+            AudioEngine.coin();
+          }
+        }
+      }
+
+      // Magnetic Loot Orbs Attract
+      for (let i = lootOrbs.length - 1; i >= 0; i--) {
+        const orb = lootOrbs[i];
+        const d = Math.hypot(player.x - orb.x, player.y - orb.y);
+        if (d < 160) {
+          orb.x += (player.x - orb.x) * 0.15;
+          orb.y += (player.y - orb.y) * 0.15;
+          if (d < 24) {
+            player.coins += orb.value;
+            player.score += orb.value * 3;
+            addFloatingText(`+${orb.value} Gold!`, player.x, player.y - 20, '#fbbf24');
+            AudioEngine.coin();
+            lootOrbs.splice(i, 1);
+            updateHud();
+          }
+        }
+      }
+
+      // Companion Drone Auto-Target
+      if (player.hasPet) {
+        const petTargetX = player.x + (player.facing === 'left' ? 32 : -32);
+        const petTargetY = player.y - 28;
+        pet.x += (petTargetX - pet.x) * 0.1;
+        pet.y += (petTargetY - pet.y) * 0.1;
+
+        if (pet.attackCooldown > 0) {
+          pet.attackCooldown--;
+        } else {
+          let closest = null, minD = 230;
+          for (const en of enemies) {
+            const d = Math.hypot(en.x - pet.x, en.y - pet.y);
+            if (d < minD) { minD = d; closest = en; }
+          }
+          if (closest) {
+            pet.attackCooldown = 48;
+            const ang = Math.atan2(closest.y - pet.y, closest.x - pet.x);
+            projectiles.push({
+              x: pet.x, y: pet.y,
+              vx: Math.cos(ang) * 10, vy: Math.sin(ang) * 10,
+              radius: 6, life: 50, isPlayer: true,
+              dmg: 28 + player.lvl * 4, color: '#22c55e'
+            });
+            AudioEngine.laser();
+          }
+        }
+      }
+
+      // Enemy AI & Boss Logic
+      let activeBoss = null;
+      for (const en of enemies) {
+        if (en.isBoss) {
+          activeBoss = en;
+          if (en.wingAngle !== undefined) en.wingAngle += 0.15;
+        }
+        if (en.animTick !== undefined) en.animTick += 0.1;
+
+        const dist = Math.hypot(player.x - en.x, player.y - en.y);
+        if (dist < 380 && dist > 10) {
+          const angle = Math.atan2(player.y - en.y, player.x - en.x);
+          en.x += Math.cos(angle) * en.speed;
+          en.y += Math.sin(angle) * en.speed;
+
+          if (dist < en.radius + player.radius && player.invulnerable <= 0) {
+            player.hp -= en.atk;
+            player.invulnerable = 32;
+            player.combo = 0;
+            updateComboHUD();
+            screenShake = 8;
+            addFloatingText(`-${en.atk}`, player.x, player.y - 18, '#ef4444');
+            AudioEngine.hit();
+            updateHud();
+            if (player.hp <= 0) {
+              alert(`Realm of Bots Game Over!\nFinal Score: ${player.score}\nLevel: ${player.lvl}\nRespawning at Cyber Citadel...`);
+              restartGame();
+            }
+          }
+        }
+      }
+
+      // Boss Bar HUD
+      const bossBar = document.getElementById('bossBar');
+      if (activeBoss && Math.hypot(player.x - activeBoss.x, player.y - activeBoss.y) < 600) {
+        bossBar.style.display = 'flex';
+        document.getElementById('bossName').textContent = activeBoss.name;
+        document.getElementById('bossHpFill').style.width = `${(activeBoss.hp / activeBoss.maxHp) * 100}%`;
+      } else {
+        bossBar.style.display = 'none';
+      }
+
+      // Projectiles
+      for (let i = projectiles.length - 1; i >= 0; i--) {
+        const p = projectiles[i];
+        p.x += p.vx; p.y += p.vy; p.life--;
+        if (p.isPlayer) {
+          for (let j = enemies.length - 1; j >= 0; j--) {
+            const en = enemies[j];
+            if (Math.hypot(en.x - p.x, en.y - p.y) < en.radius + p.radius) {
+              en.hp -= p.dmg;
+              addFloatingText(`-${p.dmg}`, en.x, en.y - 12, p.color);
+              addSlashParticles(en.x, en.y, p.color);
+              AudioEngine.hit();
+              p.life = 0;
+              if (en.hp <= 0) defeatEnemy(en, j);
+              break;
+            }
+          }
+        }
+        if (p.life <= 0) projectiles.splice(i, 1);
+      }
+
+      // Particles
+      for (let i = particles.length - 1; i >= 0; i--) {
+        const part = particles[i];
+        part.x += part.vx; part.y += part.vy; part.life--;
+        if (part.life <= 0) particles.splice(i, 1);
+      }
+
+      // Floating Texts
+      for (let i = floatingTexts.length - 1; i >= 0; i--) {
+        const ft = floatingTexts[i];
+        ft.y -= 0.6; ft.life--;
+        if (ft.life <= 0) floatingTexts.splice(i, 1);
+      }
+
+      if (dialog && dialog.timer > 0) dialog.timer--;
+      else dialog = null;
+    }
+
+    // High-Resolution Character Sprite Renderer
+    function drawPlayerSprite(ctx) {
+      ctx.save();
+      ctx.translate(player.x, player.y);
+      if (player.invulnerable % 4 > 2) ctx.globalAlpha = 0.5;
+
+      const skinThemes = {
+        'cyber_knight': { body: '#0284c7', armor: '#38bdf8', visor: '#facc15', blade: '#ec4899' },
+        'arcane_mage': { body: '#7e22ce', armor: '#c084fc', visor: '#38bdf8', blade: '#a855f7' },
+        'neon_ranger': { body: '#047857', armor: '#34d399', visor: '#fbbf24', blade: '#10b981' },
+        'mecha_paladin': { body: '#b45309', armor: '#fbbf24', visor: '#f43f5e', blade: '#eab308' }
+      };
+      const theme = skinThemes[player.skin] || skinThemes['cyber_knight'];
+
+      // Drop Shadow
+      ctx.fillStyle = 'rgba(0, 0, 0, 0.35)';
+      ctx.beginPath();
+      ctx.ellipse(0, 18, 16, 7, 0, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Draw Cyber Hoverbike if Mounted
+      if (player.isMounted) {
+        ctx.fillStyle = '#0f172a';
+        ctx.beginPath();
+        ctx.roundRect(-22, 2, 44, 18, 8);
+        ctx.fill();
+        ctx.strokeStyle = '#fbbf24';
+        ctx.lineWidth = 2.5;
+        ctx.stroke();
+
+        // Neon Thruster Glow
+        ctx.fillStyle = '#38bdf8';
+        ctx.beginPath();
+        ctx.arc(-16, 11, 4, 0, Math.PI * 2);
+        ctx.arc(16, 11, 4, 0, Math.PI * 2);
+        ctx.fill();
+      } else {
+        // Legs when walking on foot
+        const legOffset = player.isMoving ? Math.sin(player.walkCycle) * 6 : 0;
+        ctx.fillStyle = '#1e293b';
+        ctx.fillRect(-10, 10 + legOffset, 7, 9);
+        ctx.fillRect(3, 10 - legOffset, 7, 9);
+      }
+
+      // Jet Thruster Particles
+      if (player.isMoving) {
+        ctx.fillStyle = theme.armor;
+        ctx.beginPath();
+        ctx.arc(-8, 22, 2.5, 0, Math.PI * 2);
+        ctx.arc(8, 22, 2.5, 0, Math.PI * 2);
+        ctx.fill();
+      }
+
+      // Cape / Scarf trailing
+      ctx.fillStyle = theme.blade;
+      ctx.beginPath();
+      let capeX = player.facing === 'right' ? -14 : (player.facing === 'left' ? 14 : 0);
+      let capeY = player.facing === 'up' ? 8 : -8;
+      ctx.ellipse(capeX, capeY, 8, 14, 0, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Main Torso Armor Body
+      ctx.fillStyle = theme.body;
+      ctx.beginPath();
+      ctx.roundRect(-14, -12, 28, 26, 6);
+      ctx.fill();
+
+      // Chestplate Core Glow
+      ctx.fillStyle = theme.armor;
+      ctx.beginPath();
+      ctx.arc(0, 1, 5, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Helmet
+      ctx.fillStyle = '#0f172a';
+      ctx.beginPath();
+      ctx.roundRect(-12, -26, 24, 16, 5);
+      ctx.fill();
+
+      // Glowing Cyber Visor
+      ctx.fillStyle = theme.visor;
+      let visorX = 0, visorY = -18;
+      if (player.facing === 'up') { visorY = -22; }
+      else if (player.facing === 'down') { visorY = -16; }
+      else if (player.facing === 'left') { visorX = -5; visorY = -18; }
+      else if (player.facing === 'right') { visorX = 5; visorY = -18; }
+      
+      ctx.beginPath();
+      ctx.roundRect(visorX - 8, visorY - 3, 16, 6, 2);
+      ctx.fill();
+
+      // Aegis Shield Matrix Aura
+      if (player.equipment.hasArmor) {
+        ctx.strokeStyle = '#38bdf8';
+        ctx.lineWidth = 2.5;
+        ctx.beginPath();
+        ctx.arc(0, 0, player.radius + 8, 0, Math.PI * 2);
+        ctx.stroke();
+      }
+
+      // In-Hand Laser Blade
+      const weaponAngle = player.facing === 'right' ? 0.3 : (player.facing === 'left' ? -2.8 : (player.facing === 'up' ? -1.3 : 1.3));
+      ctx.save();
+      ctx.translate(player.facing === 'left' ? -14 : 14, 0);
+      ctx.rotate(weaponAngle + (player.attackTimer > 0 ? (16 - player.attackTimer) * 0.2 : 0));
+      
+      ctx.fillStyle = '#64748b';
+      ctx.fillRect(-2, -6, 4, 12);
+      ctx.fillStyle = theme.blade;
+      ctx.fillRect(-1.5, -28, 3, 22);
+      ctx.restore();
+
+      // Sword Slash Arc Trail
+      if (player.attackTimer > 0) {
+        ctx.strokeStyle = theme.blade;
+        ctx.lineWidth = 6;
+        ctx.beginPath();
+        let angle = 0;
+        if (player.facing === 'down') angle = Math.PI / 2;
+        if (player.facing === 'up') angle = -Math.PI / 2;
+        if (player.facing === 'left') angle = Math.PI;
+        if (player.facing === 'right') angle = 0;
+        ctx.arc(0, 0, 46, angle - 0.85, angle + 0.85);
+        ctx.stroke();
+      }
+
+      ctx.restore();
+    }
+
+    function draw() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      camera.x = player.x - canvas.width / 2 + (screenShake > 0.5 ? (Math.random() - 0.5) * screenShake : 0);
+      camera.y = player.y - canvas.height / 2 + (screenShake > 0.5 ? (Math.random() - 0.5) * screenShake : 0);
+      const camX = camera.x;
+      const camY = camera.y;
+
+      ctx.save();
+      ctx.translate(-camX, -camY);
+
+      // ============================================
+      // ULTRA HD PROCEDURAL GROUND & TERRAIN ENGINE
+      // ============================================
+
+      // 1. Emerald Forest (Top-Left: 0..1600, 0..1200)
+      const gradForest = ctx.createRadialGradient(800, 600, 100, 800, 600, 900);
+      gradForest.addColorStop(0, '#065f46');
+      gradForest.addColorStop(1, '#022c22');
+      ctx.fillStyle = gradForest;
+      ctx.fillRect(0, 0, 1600, 1200);
+
+      // 2. Golden Desert (Top-Right: 1600..3200, 0..1200)
+      const gradDesert = ctx.createRadialGradient(2400, 600, 100, 2400, 600, 900);
+      gradDesert.addColorStop(0, '#92400e');
+      gradDesert.addColorStop(1, '#451a03');
+      ctx.fillStyle = gradDesert;
+      ctx.fillRect(1600, 0, 1600, 1200);
+
+      // Desert Sand Dune Ridges
+      ctx.strokeStyle = 'rgba(217, 119, 6, 0.25)';
+      ctx.lineWidth = 14;
+      for (let i = 0; i < 6; i++) {
+        ctx.beginPath();
+        ctx.moveTo(1650, 180 + i * 160);
+        ctx.bezierCurveTo(2000, 120 + i * 160, 2600, 240 + i * 160, 3150, 180 + i * 160);
+        ctx.stroke();
+      }
+
+      // 3. Frost Peaks (Bottom-Left: 0..1600, 1200..2400)
+      const gradFrost = ctx.createRadialGradient(800, 1800, 100, 800, 1800, 900);
+      gradFrost.addColorStop(0, '#075985');
+      gradFrost.addColorStop(1, '#082f49');
+      ctx.fillStyle = gradFrost;
+      ctx.fillRect(0, 1200, 1600, 1200);
+
+      // 4. Volcanic Nether (Bottom-Right: 1600..3200, 1200..2400)
+      const gradVolcano = ctx.createRadialGradient(2400, 1800, 100, 2400, 1800, 900);
+      gradVolcano.addColorStop(0, '#7f1d1d');
+      gradVolcano.addColorStop(1, '#1c0505');
+      ctx.fillStyle = gradVolcano;
+      ctx.fillRect(1600, 1200, 1600, 1200);
+
+      // ============================================
+      // STONE HIGHWAYS & PATHWAY ROADS
+      // ============================================
+      ctx.fillStyle = 'rgba(51, 65, 85, 0.7)';
+      // Horizontal Road (Left to Right)
+      ctx.fillRect(0, 1165, WORLD.width, 70);
+      // Vertical Road (Top to Bottom)
+      ctx.fillRect(1565, 0, 70, WORLD.height);
+
+      // Cobblestone Edges & Road Markings
+      ctx.strokeStyle = 'rgba(148, 163, 184, 0.3)';
+      ctx.lineWidth = 2;
+      ctx.strokeRect(0, 1165, WORLD.width, 70);
+      ctx.strokeRect(1565, 0, 70, WORLD.height);
+
+      // ============================================
+      // PROCEDURAL GROUND DETAILS & WILDFLOWERS
+      // ============================================
+      for (const gd of groundDetails) {
+        if (gd.type === 'flower') {
+          // 4-petal wildflower
+          ctx.fillStyle = gd.color;
+          ctx.beginPath();
+          ctx.arc(gd.x - 2, gd.y, gd.size * 0.7, 0, Math.PI * 2);
+          ctx.arc(gd.x + 2, gd.y, gd.size * 0.7, 0, Math.PI * 2);
+          ctx.arc(gd.x, gd.y - 2, gd.size * 0.7, 0, Math.PI * 2);
+          ctx.arc(gd.x, gd.y + 2, gd.size * 0.7, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.fillStyle = '#ffffff';
+          ctx.beginPath(); ctx.arc(gd.x, gd.y, gd.size * 0.4, 0, Math.PI * 2); ctx.fill();
+        } else if (gd.type === 'moss') {
+          ctx.fillStyle = 'rgba(16, 185, 129, 0.25)';
+          ctx.beginPath();
+          ctx.ellipse(gd.x, gd.y, gd.size * 2, gd.size, 0, 0, Math.PI * 2);
+          ctx.fill();
+        } else if (gd.type === 'sand_ripple') {
+          ctx.strokeStyle = 'rgba(251, 191, 36, 0.18)';
+          ctx.lineWidth = 2;
+          ctx.beginPath();
+          ctx.arc(gd.x, gd.y, gd.size, 0, Math.PI * 0.8);
+          ctx.stroke();
+        } else if (gd.type === 'pebble') {
+          ctx.fillStyle = '#78350f';
+          ctx.beginPath(); ctx.ellipse(gd.x, gd.y, gd.size, gd.size * 0.6, 0, 0, Math.PI * 2); ctx.fill();
+        } else if (gd.type === 'ice_tile') {
+          ctx.strokeStyle = 'rgba(56, 189, 248, 0.25)';
+          ctx.lineWidth = 1.5;
+          ctx.beginPath();
+          ctx.moveTo(gd.x, gd.y);
+          ctx.lineTo(gd.x + gd.size, gd.y - gd.size * 0.5);
+          ctx.lineTo(gd.x + gd.size * 2, gd.y);
+          ctx.lineTo(gd.x + gd.size, gd.y + gd.size * 0.5);
+          ctx.closePath();
+          ctx.stroke();
+        } else if (gd.type === 'magma_pool') {
+          const pulse = Math.sin(globalTicks * 0.05 + gd.x) * 3;
+          const magGrad = ctx.createRadialGradient(gd.x, gd.y, 2, gd.x, gd.y, gd.size + pulse);
+          magGrad.addColorStop(0, '#fef08a');
+          magGrad.addColorStop(0.4, '#f97316');
+          magGrad.addColorStop(1, 'rgba(127, 29, 29, 0)');
+          ctx.fillStyle = magGrad;
+          ctx.beginPath();
+          ctx.ellipse(gd.x, gd.y, gd.size + pulse, (gd.size + pulse) * 0.6, 0, 0, Math.PI * 2);
+          ctx.fill();
+        }
+      }
+
+      // ============================================
+      // DYNAMIC FOOTPRINTS & TRACKS
+      // ============================================
+      for (const fp of footprints) {
+        ctx.fillStyle = fp.isMounted ? `rgba(251, 191, 36, ${fp.life / 90})` : `rgba(15, 23, 42, ${fp.life / 100})`;
+        ctx.beginPath();
+        ctx.ellipse(fp.x, fp.y, fp.isMounted ? 5 : 3.5, 2, 0, 0, Math.PI * 2);
+        ctx.fill();
+      }
+
+      // ============================================
+      // CYBER CITADEL HIGH-TECH PLAZA (CENTER)
+      // ============================================
+      ctx.fillStyle = '#0f172a';
+      ctx.fillRect(1440, 1040, 320, 320);
+      ctx.strokeStyle = '#6366f1';
+      ctx.lineWidth = 3.5;
+      ctx.strokeRect(1440, 1040, 320, 320);
+
+      // High-Tech Cyber Circuit Traces
+      ctx.strokeStyle = 'rgba(56, 189, 248, 0.45)';
+      ctx.lineWidth = 1.5;
+      ctx.strokeRect(1470, 1070, 260, 260);
+      ctx.strokeRect(1510, 1110, 180, 180);
+
+      // Runway Corner Neon Beacons
+      const beacons = [
+        { x: 1445, y: 1045 }, { x: 1755, y: 1045 },
+        { x: 1445, y: 1355 }, { x: 1755, y: 1355 }
+      ];
+      for (const b of beacons) {
+        ctx.fillStyle = '#38bdf8';
+        ctx.beginPath(); ctx.arc(b.x, b.y, 4, 0, Math.PI * 2); ctx.fill();
+      }
+
+      // Healing Fountain with Animated Ripple Glow
+      const fountainRipple = Math.sin(globalTicks * 0.08) * 5;
+      const fountainGlow = ctx.createRadialGradient(1600, 1200, 10, 1600, 1200, 65 + fountainRipple);
+      fountainGlow.addColorStop(0, 'rgba(56, 189, 248, 0.7)');
+      fountainGlow.addColorStop(0.7, 'rgba(56, 189, 248, 0.2)');
+      fountainGlow.addColorStop(1, 'rgba(56, 189, 248, 0)');
+      ctx.fillStyle = fountainGlow;
+      ctx.beginPath(); ctx.arc(1600, 1200, 65 + fountainRipple, 0, Math.PI * 2); ctx.fill();
+
+      ctx.fillStyle = 'rgba(56, 189, 248, 0.4)';
+      ctx.beginPath(); ctx.arc(1600, 1200, 48, 0, Math.PI * 2); ctx.fill();
+      ctx.strokeStyle = '#38bdf8'; ctx.lineWidth = 2.5; ctx.stroke();
+      ctx.fillStyle = '#fff'; ctx.font = 'bold 10px sans-serif'; ctx.textAlign = 'center';
+      ctx.fillText('Healing Fountain', 1600, 1204);
+
+      // Grid
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.035)';
+      ctx.lineWidth = 1;
+      for (let x = 0; x < WORLD.width; x += 100) {
+        ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, WORLD.height); ctx.stroke();
+      }
+      for (let y = 0; y < WORLD.height; y += 100) {
+        ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(WORLD.width, y); ctx.stroke();
+      }
+
+      // Draw Scenery
+      for (const s of scenery) {
+        // Drop shadow for trees and rocks
+        ctx.fillStyle = 'rgba(0, 0, 0, 0.3)';
+        ctx.beginPath(); ctx.ellipse(s.x, s.y + s.size * 0.7, s.size * 0.8, s.size * 0.35, 0, 0, Math.PI * 2); ctx.fill();
+
+        if (s.type === 'tree') {
+          ctx.fillStyle = '#047857';
+          ctx.beginPath(); ctx.arc(s.x, s.y, s.size, 0, Math.PI * 2); ctx.fill();
+          ctx.fillStyle = '#10b981';
+          ctx.beginPath(); ctx.arc(s.x, s.y, s.size * 0.65, 0, Math.PI * 2); ctx.fill();
+        } else if (s.type === 'cactus') {
+          ctx.fillStyle = '#d97706';
+          ctx.fillRect(s.x - 4, s.y - s.size, 8, s.size * 2);
+          ctx.fillRect(s.x - 12, s.y - s.size * 0.4, 24, 6);
+        } else if (s.type === 'crystal') {
+          ctx.fillStyle = '#38bdf8';
+          ctx.beginPath();
+          ctx.moveTo(s.x, s.y - s.size);
+          ctx.lineTo(s.x + s.size * 0.6, s.y + s.size * 0.6);
+          ctx.lineTo(s.x - s.size * 0.6, s.y + s.size * 0.6);
+          ctx.closePath();
+          ctx.fill();
+        } else if (s.type === 'volcano_rock') {
+          ctx.fillStyle = '#7f1d1d';
+          ctx.beginPath(); ctx.arc(s.x, s.y, s.size, 0, Math.PI * 2); ctx.fill();
+          ctx.fillStyle = '#f97316';
+          ctx.beginPath(); ctx.arc(s.x, s.y, s.size * 0.4, 0, Math.PI * 2); ctx.fill();
+        }
+      }
+
+      // Draw Weather Particles
+      for (const wp of weatherParticles) {
+        ctx.fillStyle = wp.color;
+        ctx.beginPath(); ctx.arc(wp.x, wp.y, wp.radius, 0, Math.PI * 2); ctx.fill();
+      }
+
+      // Draw Dungeon Portals with Swirl Glow
+      for (const p of portals) {
+        const portalGlow = ctx.createRadialGradient(p.x, p.y, 5, p.x, p.y, 45);
+        portalGlow.addColorStop(0, 'rgba(192, 132, 252, 0.8)');
+        portalGlow.addColorStop(1, 'rgba(168, 85, 247, 0)');
+        ctx.fillStyle = portalGlow;
+        ctx.beginPath(); ctx.arc(p.x, p.y, 45, 0, Math.PI * 2); ctx.fill();
+
+        ctx.fillStyle = 'rgba(168, 85, 247, 0.5)';
+        ctx.beginPath(); ctx.arc(p.x, p.y, 28, 0, Math.PI * 2); ctx.fill();
+        ctx.strokeStyle = '#c084fc'; ctx.lineWidth = 3; ctx.stroke();
+        ctx.fillStyle = '#f8fafc'; ctx.font = 'bold 11px sans-serif'; ctx.textAlign = 'center';
+        ctx.fillText(p.name, p.x, p.y - 34);
+      }
+
+      // Draw Mineable Ores with Crystal Glow
+      for (const ore of ores) {
+        ctx.fillStyle = 'rgba(0, 0, 0, 0.3)';
+        ctx.beginPath(); ctx.ellipse(ore.x, ore.y + 12, 14, 6, 0, 0, Math.PI * 2); ctx.fill();
+
+        ctx.fillStyle = ore.type === 'gold' ? '#f59e0b' : '#38bdf8';
+        ctx.beginPath(); ctx.arc(ore.x, ore.y, 14, 0, Math.PI * 2); ctx.fill();
+        ctx.fillStyle = '#fff'; ctx.beginPath(); ctx.arc(ore.x - 3, ore.y - 3, 4, 0, Math.PI * 2); ctx.fill();
+      }
+
+      // Draw Chests
+      for (const c of chests) {
+        ctx.fillStyle = 'rgba(0, 0, 0, 0.3)';
+        ctx.beginPath(); ctx.ellipse(c.x, c.y + 12, 16, 6, 0, 0, Math.PI * 2); ctx.fill();
+
+        ctx.fillStyle = c.opened ? '#64748b' : '#f59e0b';
+        ctx.fillRect(c.x - 14, c.y - 12, 28, 24);
+        ctx.fillStyle = '#fbbf24';
+        ctx.fillRect(c.x - 4, c.y - 4, 8, 8);
+      }
+
+      // Draw Loot Orbs with Pulsing Glow
+      for (const orb of lootOrbs) {
+        ctx.fillStyle = orb.color;
+        ctx.beginPath(); ctx.arc(orb.x, orb.y, orb.radius, 0, Math.PI * 2); ctx.fill();
+        ctx.strokeStyle = '#fff'; ctx.lineWidth = 1.5; ctx.stroke();
+      }
+
+      // Draw NPCs
+      for (const npc of npcs) {
+        ctx.fillStyle = 'rgba(0, 0, 0, 0.3)';
+        ctx.beginPath(); ctx.ellipse(npc.x, npc.y + 16, 16, 6, 0, 0, Math.PI * 2); ctx.fill();
+
+        ctx.fillStyle = '#a855f7';
+        ctx.beginPath(); ctx.arc(npc.x, npc.y, 18, 0, Math.PI * 2); ctx.fill();
+        ctx.fillStyle = '#fff'; ctx.font = 'bold 12px sans-serif'; ctx.textAlign = 'center';
+        ctx.fillText(npc.name, npc.x, npc.y - 24);
+      }
+
+      // Draw Enemies & Bosses
+      for (const en of enemies) {
+        ctx.fillStyle = 'rgba(0, 0, 0, 0.3)';
+        ctx.beginPath(); ctx.ellipse(en.x, en.y + en.radius * 0.8, en.radius, en.radius * 0.35, 0, 0, Math.PI * 2); ctx.fill();
+
+        if (en.type === 'boss') {
+          // Dragon Wings Flapping Animation
+          const wingSpan = 38;
+          const wingYOffset = Math.sin(en.wingAngle || 0) * 14;
+
+          ctx.fillStyle = '#991b1b';
+          ctx.beginPath();
+          ctx.moveTo(en.x - 20, en.y);
+          ctx.lineTo(en.x - 20 - wingSpan, en.y - 30 + wingYOffset);
+          ctx.lineTo(en.x - 10, en.y + 10);
+          ctx.closePath();
+          ctx.fill();
+
+          ctx.beginPath();
+          ctx.moveTo(en.x + 20, en.y);
+          ctx.lineTo(en.x + 20 + wingSpan, en.y - 30 + wingYOffset);
+          ctx.lineTo(en.x + 10, en.y + 10);
+          ctx.closePath();
+          ctx.fill();
+        }
+
+        // Monster Body with Squash Bounce Physics
+        const bounce = en.animTick ? Math.sin(en.animTick) * 2 : 0;
+        ctx.fillStyle = en.color;
+        ctx.beginPath(); ctx.arc(en.x, en.y + bounce, en.radius, 0, Math.PI * 2); ctx.fill();
+        
+        ctx.fillStyle = '#0f172a';
+        ctx.beginPath(); ctx.arc(en.x - en.radius * 0.3, en.y + bounce - en.radius * 0.2, 3, 0, Math.PI * 2); ctx.fill();
+        ctx.beginPath(); ctx.arc(en.x + en.radius * 0.3, en.y + bounce - en.radius * 0.2, 3, 0, Math.PI * 2); ctx.fill();
+
+        if (en.hp < en.maxHp && !en.isBoss) {
+          ctx.fillStyle = 'rgba(0,0,0,0.7)';
+          ctx.fillRect(en.x - 18, en.y - en.radius - 10, 36, 5);
+          ctx.fillStyle = '#ef4444';
+          ctx.fillRect(en.x - 18, en.y - en.radius - 10, 36 * (en.hp / en.maxHp), 5);
+        }
+      }
+
+      // Draw Companion Drone
+      if (player.hasPet) {
+        ctx.fillStyle = '#22c55e';
+        ctx.beginPath(); ctx.arc(pet.x, pet.y, 8, 0, Math.PI * 2); ctx.fill();
+        ctx.fillStyle = '#38bdf8';
+        ctx.beginPath(); ctx.arc(pet.x, pet.y, 4, 0, Math.PI * 2); ctx.fill();
+      }
+
+      // Draw Projectiles
+      for (const p of projectiles) {
+        ctx.fillStyle = p.color;
+        ctx.beginPath(); ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2); ctx.fill();
+      }
+
+      // Draw Player
+      drawPlayerSprite(ctx);
+
+      // Particles
+      for (const part of particles) {
+        ctx.fillStyle = part.color;
+        ctx.beginPath(); ctx.arc(part.x, part.y, part.radius, 0, Math.PI * 2); ctx.fill();
+      }
+
+      // Floating Combat Numbers
+      for (const ft of floatingTexts) {
+        ctx.fillStyle = ft.color; ctx.font = 'bold 13px sans-serif'; ctx.textAlign = 'center';
+        ctx.fillText(ft.text, ft.x, ft.y);
+      }
+
+      ctx.restore();
+
+      // Dynamic Radial Player Headlamp Lighting & Day/Night Cycle
+      const nightIntensity = Math.sin(timeOfDay * Math.PI * 2) * 0.52;
+      if (nightIntensity > 0) {
+        ctx.save();
+        ctx.fillStyle = `rgba(2, 6, 23, ${nightIntensity})`;
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        const torch = ctx.createRadialGradient(canvas.width / 2, canvas.height / 2, 20, canvas.width / 2, canvas.height / 2, 170);
+        torch.addColorStop(0, 'rgba(255, 255, 255, 0.45)');
+        torch.addColorStop(1, 'rgba(255, 255, 255, 0)');
+        ctx.globalCompositeOperation = 'destination-out';
+        ctx.fillStyle = torch;
+        ctx.beginPath();
+        ctx.arc(canvas.width / 2, canvas.height / 2, 170, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.restore();
+      }
+
+      // Dialog Popup
+      if (dialog) {
+        ctx.fillStyle = 'rgba(15, 23, 42, 0.95)';
+        ctx.strokeStyle = '#a855f7';
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.roundRect(40, canvas.height - 90, canvas.width - 80, 65, 12);
+        ctx.fill(); ctx.stroke();
+        ctx.fillStyle = '#f8fafc'; ctx.font = '14px sans-serif'; ctx.textAlign = 'left';
+        ctx.fillText(dialog.text, 58, canvas.height - 52);
+      }
+
+      drawMinimap();
+    }
+
+    function drawMinimap() {
+      miniCtx.clearRect(0, 0, miniCanvas.width, miniCanvas.height);
+      const scaleX = miniCanvas.width / WORLD.width;
+      const scaleY = miniCanvas.height / WORLD.height;
+
+      // Draw 4 Biomes
+      miniCtx.fillStyle = '#064e3b'; miniCtx.fillRect(0, 0, miniCanvas.width/2, miniCanvas.height/2);
+      miniCtx.fillStyle = '#78350f'; miniCtx.fillRect(miniCanvas.width/2, 0, miniCanvas.width/2, miniCanvas.height/2);
+      miniCtx.fillStyle = '#0c4a6e'; miniCtx.fillRect(0, 1200 * scaleY, miniCanvas.width/2, miniCanvas.height/2);
+      miniCtx.fillStyle = '#450a0a'; miniCtx.fillRect(miniCanvas.width/2, 1200 * scaleY, miniCanvas.width/2, miniCanvas.height/2);
+
+      // Roads on Minimap
+      miniCtx.fillStyle = '#475569';
+      miniCtx.fillRect(0, 1165 * scaleY, miniCanvas.width, 70 * scaleY);
+      miniCtx.fillRect(1565 * scaleX, 0, 70 * scaleX, miniCanvas.height);
+
+      // Draw Portals
+      miniCtx.fillStyle = '#c084fc';
+      for (const p of portals) {
+        miniCtx.fillRect(p.x * scaleX - 1.5, p.y * scaleY - 1.5, 3.5, 3.5);
+      }
+
+      // Draw Chests & Ores
+      miniCtx.fillStyle = '#fbbf24';
+      for (const c of chests) {
+        if (!c.opened) miniCtx.fillRect(c.x * scaleX - 1, c.y * scaleY - 1, 3, 3);
+      }
+
+      // Draw Enemies
+      miniCtx.fillStyle = '#ef4444';
+      for (const en of enemies) {
+        miniCtx.fillRect(en.x * scaleX - 1, en.y * scaleY - 1, en.isBoss ? 4 : 2, en.isBoss ? 4 : 2);
+      }
+
+      // Draw Player Position
+      miniCtx.fillStyle = '#38bdf8';
+      miniCtx.beginPath();
+      miniCtx.arc(player.x * scaleX, player.y * scaleY, 3.5, 0, Math.PI * 2);
+      miniCtx.fill();
+    }
+
+    function gameLoop() {
+      try {
+        update();
+        draw();
+      } catch (err) {
+        console.error("Game loop error:", err);
+      }
+      requestAnimationFrame(gameLoop);
+    }
+
+    function startGame() {
+      try {
+        initWorld();
+        updateHud();
+        if (typeof updateQuestHUD === 'function') updateQuestHUD();
+        requestAnimationFrame(gameLoop);
+      } catch (e) {
+        console.error("Game start error:", e);
+      }
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', startGame);
+    } else {
+      startGame();
+    }
+  
+    // ==========================================
+    // IN-CANVAS CONTROLS & MODAL HANDLERS
+    // ==========================================
+    const questData = [
+      { id: 1, title: "1. Slime Exterminator", desc: "Defeat 5 Forest Slimes", target: 5, reward: "50 XP, 30 Gold", type: "slime" },
+      { id: 2, title: "2. Lava Drake Slayer", desc: "Slay 3 Lava Drakes in Volcano Realm", target: 3, reward: "120 XP, 60 Gold, 1 Talent Pt", type: "drake" },
+      { id: 3, title: "3. Ice Titan Challenge", desc: "Conquer 3 Frost Golems in Glacial Peak", target: 3, reward: "180 XP, 100 Gold", type: "golem" },
+      { id: 4, title: "4. Desert Scavenger", desc: "Collect 100 Gold from Sand Dunes", target: 100, reward: "250 XP, 150 Gold", type: "coins" },
+      { id: 5, title: "5. Realm Sovereign", desc: "Defeat the Mecha Dragon Titan Boss", target: 1, reward: "500 XP, 300 Gold, Master Title", type: "boss" }
+    ];
+
+    let activeQuestIndex = 0;
+    let questProgress = 0;
+
+    function openQuestModal() {
+      const container = document.getElementById('questListContainer');
+      if (container) {
+        container.innerHTML = questData.map((q, idx) => {
+          const isDone = idx < activeQuestIndex;
+          const isCurrent = idx === activeQuestIndex;
+          const statusBadge = isDone 
+            ? '<span style="color:#10b981; font-weight:800;"><i class="fas fa-check-circle"></i> COMPLETED</span>'
+            : (isCurrent ? `<span style="color:#fbbf24; font-weight:800;"><i class="fas fa-spinner fa-spin"></i> ACTIVE (${questProgress}/${q.target})</span>` : '<span style="color:#94a3b8;"><i class="fas fa-lock"></i> LOCKED</span>');
+
+          return `
+            <div style="background: rgba(255,255,255,0.04); border: 1px solid ${isCurrent ? '#fbbf24' : 'rgba(255,255,255,0.1)'}; border-radius: var(--radius-lg); padding: 12px; display: flex; justify-content: space-between; align-items: center; ${isCurrent ? 'box-shadow: 0 0 15px rgba(251,191,36,0.3);' : ''}">
+              <div>
+                <div style="font-weight: 800; font-size: 0.92rem; color: ${isCurrent ? '#facc15' : '#f8fafc'};">${q.title}</div>
+                <div style="font-size: 0.78rem; color: #94a3b8; margin: 2px 0;">${q.desc}</div>
+                <div style="font-size: 0.72rem; color: #38bdf8;"><i class="fas fa-gift"></i> Reward: ${q.reward}</div>
+              </div>
+              <div style="font-size: 0.78rem;">
+                ${statusBadge}
+              </div>
+            </div>
+          `;
+        }).join('');
+      }
+
+      const qBadge = document.getElementById('inCanvasQuestBadge');
+      if (qBadge) qBadge.textContent = `${activeQuestIndex + 1}/${questData.length}`;
+      const topQBadge = document.getElementById('questCountBadge');
+      if (topQBadge) topQBadge.textContent = `${activeQuestIndex + 1}/${questData.length}`;
+
+      const modal = document.getElementById('questModal');
+      if (modal) modal.classList.add('active');
+    }
+
+    function openInventoryModal() {
+      const modal = document.getElementById('inventoryModal');
+      if (modal) modal.classList.add('active');
+    }
+
+    function openTalentsModal() {
+      const modal = document.getElementById('talentsModal');
+      if (document.getElementById('modalTalentPts') && typeof player !== 'undefined') {
+        document.getElementById('modalTalentPts').textContent = player.talentPoints || 0;
+        if (document.getElementById('tDmgRank')) document.getElementById('tDmgRank').textContent = player.talents ? player.talents.dmg : 0;
+        if (document.getElementById('tHpRank')) document.getElementById('tHpRank').textContent = player.talents ? player.talents.hp : 0;
+        if (document.getElementById('tMpRank')) document.getElementById('tMpRank').textContent = player.talents ? player.talents.mp : 0;
+      }
+      if (modal) modal.classList.add('active');
+    }
+
+    function openHeroModal() {
+      const modal = document.getElementById('heroModal');
+      if (modal) modal.classList.add('active');
+    }
+
+    function openShopModal() {
+      const modal = document.getElementById('shopModal');
+      if (document.getElementById('shopGoldText') && typeof player !== 'undefined') {
+        document.getElementById('shopGoldText').textContent = player.coins || 0;
+      }
+      if (modal) modal.classList.add('active');
+    }
+
+    function closeModal(id) {
+      if (id) {
+        const modal = document.getElementById(id);
+        if (modal) modal.classList.remove('active');
+      } else {
+        document.querySelectorAll('.modal-backdrop').forEach(m => m.classList.remove('active'));
+      }
+    }
+
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        closeModal();
+      } else if (e.key === 'q' || e.key === 'Q') {
+        if (!document.querySelector('input:focus')) openQuestModal();
+      } else if (e.key === 'i' || e.key === 'I') {
+        if (!document.querySelector('input:focus')) openInventoryModal();
+      } else if (e.key === 't' || e.key === 'T') {
+        if (!document.querySelector('input:focus')) openTalentsModal();
+      }
+    });
+
+    function toggleFullscreen() {
+      const wrapper = document.getElementById('canvasWrapper') || document.documentElement;
+      const isFs = !!(document.fullscreenElement || document.webkitFullscreenElement);
+      if (!isFs) {
+        if (wrapper.requestFullscreen) {
+          wrapper.requestFullscreen().catch(() => {});
+        } else if (wrapper.webkitRequestFullscreen) {
+          wrapper.webkitRequestFullscreen();
+        }
+      } else {
+        if (document.exitFullscreen) {
+          document.exitFullscreen().catch(() => {});
+        } else if (document.webkitExitFullscreen) {
+          document.webkitExitFullscreen();
+        }
+      }
+      setTimeout(updateFullscreenButtons, 120);
+    }
+
+    function updateFullscreenButtons() {
+      const isFs = !!(document.fullscreenElement || document.webkitFullscreenElement);
+      const icon = document.getElementById('inCanvasFsIcon');
+      const text = document.getElementById('inCanvasFsText');
+      const btn = document.getElementById('inCanvasFullscreenBtn');
+      if (icon) icon.className = isFs ? 'fas fa-compress' : 'fas fa-expand';
+      if (text) text.textContent = isFs ? 'Exit Fullscreen' : 'Fullscreen';
+      if (btn) {
+        btn.style.color = isFs ? '#ec4899' : '#38bdf8';
+        btn.style.borderColor = isFs ? 'rgba(236,72,153,0.7)' : 'rgba(6,182,212,0.7)';
+      }
+    }
+
+    document.addEventListener('fullscreenchange', updateFullscreenButtons);
+    document.addEventListener('webkitfullscreenchange', updateFullscreenButtons);
+
   </script>
 </body>
 </html>

@@ -500,6 +500,43 @@
       display: block;
     }
 
+    
+    /* Mobile-First Touch & Accessibility Enhancements */
+    @media (max-width: 768px) {
+      .video-screen-wrapper {
+        height: 260px !important;
+      }
+      .player-controls-bar {
+        gap: 8px;
+      }
+      .time-badge {
+        font-size: 0.75rem;
+        padding: 4px 8px;
+      }
+      .active-clip-focus-box {
+        padding: 10px;
+      }
+      .focus-trim-handle {
+        width: 32px !important;
+      }
+      .clip-trim-handle {
+        width: 24px !important;
+      }
+      .multitrack-timeline-card {
+        padding: 12px;
+      }
+      .chip-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      .range-dual-row {
+        gap: 6px;
+      }
+      .trim-input {
+        width: 70px;
+        font-size: 0.75rem;
+      }
+    }
+
     /* Sidebar controls */
     .sidebar-panel {
       display: flex;
@@ -1001,29 +1038,7 @@
             <input type="range" min="30" max="220" value="80" class="range-slider" id="sliderLogoScale" oninput="updateLogoScale()">
           </div>
 
-          <!-- Color Grading & Cinematic Filters -->
-          <div class="tool-box">
-            <div class="tool-box-title"><i class="fas fa-sliders" style="color: #a855f7;"></i> Cinematic Color Filters</div>
-            <div class="chip-grid" style="margin-bottom: 14px;">
-              <div class="chip-btn active" onclick="applyPresetFilter('none', this)">Normal</div>
-              <div class="chip-btn" onclick="applyPresetFilter('cyberpunk', this)">Cyberpunk</div>
-              <div class="chip-btn" onclick="applyPresetFilter('vintage', this)">Vintage B&W</div>
-              <div class="chip-btn" onclick="applyPresetFilter('warm', this)">Warm Gold</div>
-              <div class="chip-btn" onclick="applyPresetFilter('vivid', this)">Vivid Boost</div>
-              <div class="chip-btn" onclick="applyPresetFilter('emerald', this)">Emerald Film</div>
-            </div>
 
-            <div style="display: flex; flex-direction: column; gap: 8px; font-size: 0.82rem;">
-              <div style="display: flex; justify-content: space-between;"><span>Brightness</span><span id="valBrightness">100%</span></div>
-              <input type="range" min="30" max="200" value="100" class="range-slider" id="sliderBrightness" oninput="updateCustomFilters()">
-
-              <div style="display: flex; justify-content: space-between;"><span>Contrast</span><span id="valContrast">100%</span></div>
-              <input type="range" min="30" max="200" value="100" class="range-slider" id="sliderContrast" oninput="updateCustomFilters()">
-
-              <div style="display: flex; justify-content: space-between;"><span>Saturation</span><span id="valSaturation">100%</span></div>
-              <input type="range" min="0" max="250" value="100" class="range-slider" id="sliderSaturation" oninput="updateCustomFilters()">
-            </div>
-          </div>
 
         </div>
       </div>

@@ -6,9 +6,9 @@
   <meta name="google-site-verification" content="ndzq-U-NLijgza_QqgQdcc2U3oMRoud_BT2ZZiwFREM">
   <meta name="google-site-verification" content="-Yb6Nx74gbZ3wRN5uP-Y8KKwDWlt1DPpxs4nA3PkE6M">
   <meta name="robots" content="index, follow">
-  <title>Video Studio Pro — Unified Multi-Clip Sequence & Audio Timeline | AI Bots</title>
-  <meta name="description" content="Professional unified timeline video editor: Edit joined multi-clip video/photo sequences with individual trim handles, visual audio track scrubber, auto-zoom, and synchronized HD export.">
-  <meta name="keywords" content="multi clip video timeline, unified video scrubber, edit joined clips online, visual audio scrubber, capcut alternative online, ai bots video studio">
+  <title>Video Studio Pro — Precision Multi-Clip Timeline & Audio Scrubber | AI Bots</title>
+  <meta name="description" content="Professional non-destructive timeline video editor: Smooth draggable playhead needle, individual trim handles per clip, direct audio waveform slip & endpoint trimmer, and synchronized HD export.">
+  <meta name="keywords" content="video editor online, draggable playhead video editor, multi clip timeline scrubber, trim music video online, ai bots video studio">
   <link rel="icon" href="logo.png" type="image/png">
   <link rel="canonical" href="https://www.aibots.co.in/videoeditor.html">
   <link rel="manifest" href="manifest.json">
@@ -224,7 +224,7 @@
       color: var(--primary);
     }
 
-    /* Timeline Scroll & Zoom Bar */
+    /* Timeline Tools Bar */
     .timeline-tools-bar {
       display: flex;
       align-items: center;
@@ -240,8 +240,10 @@
       border-radius: var(--radius-lg);
       overflow-x: auto;
       overflow-y: hidden;
-      padding: 16px 14px;
+      padding: 18px 14px 14px;
       box-shadow: inset 0 2px 10px rgba(0,0,0,0.5);
+      cursor: crosshair;
+      user-select: none;
     }
     .timeline-lanes-scroll-wrapper::-webkit-scrollbar {
       height: 6px;
@@ -256,36 +258,43 @@
       min-width: 100%;
       display: flex;
       flex-direction: column;
-      gap: 12px;
+      gap: 14px;
       user-select: none;
       transition: width 0.1s ease;
     }
 
-    /* Master Playhead Needle across sequence */
+    /* DRAGGABLE MASTER PLAYHEAD NEEDLE */
     .master-playhead {
       position: absolute;
       top: 0;
       bottom: 0;
       left: 0px;
-      width: 3px;
+      width: 4px;
       background: #ef4444;
-      box-shadow: 0 0 12px #ef4444;
-      pointer-events: none;
+      box-shadow: 0 0 14px #ef4444;
       z-index: 100;
-      transition: left 0.04s linear;
+      cursor: ew-resize;
+      touch-action: none;
     }
     .master-playhead-cap {
       position: absolute;
-      top: -8px;
-      left: -6px;
-      width: 15px;
-      height: 15px;
+      top: -10px;
+      left: -7px;
+      width: 18px;
+      height: 18px;
       background: #ef4444;
       border-radius: 50%;
-      box-shadow: 0 0 8px #ef4444;
+      box-shadow: 0 0 10px #ef4444;
+      cursor: grab;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 0.55rem;
     }
+    .master-playhead-cap:active { cursor: grabbing; }
 
-    /* UNIFIED SEQUENCE TRACK LANE (Joined Clips) */
+    /* UNIFIED SEQUENCE TRACK LANE */
     .sequence-track-lane {
       position: relative;
       height: 72px;
@@ -313,7 +322,7 @@
     }
     .joined-clip-block.active {
       border-color: #ffffff !important;
-      box-shadow: 0 0 14px rgba(255, 255, 255, 0.4);
+      box-shadow: 0 0 14px rgba(255, 255, 255, 0.5);
       z-index: 15;
     }
     .joined-clip-content {
@@ -322,7 +331,7 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 0 10px;
+      padding: 0 16px;
       pointer-events: none;
       font-size: 0.75rem;
       font-weight: 800;
@@ -330,34 +339,26 @@
       text-shadow: 0 1px 4px rgba(0,0,0,0.8);
       z-index: 5;
     }
-    .joined-clip-canvas {
-      position: absolute;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      opacity: 0.55;
-    }
 
     /* Clip Drag Handles */
     .clip-trim-handle {
       position: absolute;
       top: 0;
       bottom: 0;
-      width: 16px;
+      width: 18px;
       cursor: ew-resize;
       z-index: 30;
       display: flex;
       align-items: center;
       justify-content: center;
       touch-action: none;
-      background: rgba(255, 255, 255, 0.9);
-      box-shadow: 0 0 8px rgba(0,0,0,0.8);
+      background: #ffffff;
+      box-shadow: 0 0 10px rgba(0,0,0,0.8);
     }
     .clip-trim-handle::after {
       content: '';
-      width: 3px;
-      height: 22px;
+      width: 4px;
+      height: 24px;
       background: #0f172a;
       border-radius: 2px;
     }
@@ -375,12 +376,12 @@
     /* AUDIO TRACK LANE WITH DIRECT VISUAL SCRUBBER */
     .audio-track-lane {
       position: relative;
-      height: 64px;
+      height: 68px;
       background: rgba(30, 41, 59, 0.6);
       border: 1px solid var(--border-color);
       border-radius: var(--radius-md);
       overflow: hidden;
-      cursor: pointer;
+      cursor: crosshair;
     }
     .audio-lane-tag {
       position: absolute;
@@ -417,20 +418,20 @@
       bottom: 0;
       left: 0%;
       width: 100%;
-      background: linear-gradient(135deg, rgba(236, 72, 153, 0.45), rgba(244, 63, 94, 0.45));
+      background: linear-gradient(135deg, rgba(236, 72, 153, 0.5), rgba(244, 63, 94, 0.5));
       border: 2px solid #ec4899;
       border-radius: var(--radius-sm);
       cursor: grab;
       z-index: 10;
       display: none;
-      box-shadow: 0 0 18px rgba(236, 72, 153, 0.4);
+      box-shadow: 0 0 18px rgba(236, 72, 153, 0.5);
     }
     .audio-active-block:active { cursor: grabbing; }
 
-    /* Live Floating Drag Tooltip */
+    /* Drag Tooltips */
     .drag-tooltip {
       position: absolute;
-      top: -32px;
+      top: -34px;
       left: 50%;
       transform: translateX(-50%);
       background: #0f172a;
@@ -444,10 +445,10 @@
       pointer-events: none;
       white-space: nowrap;
       display: none;
-      z-index: 110;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+      z-index: 120;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.6);
     }
-    .clip-trim-handle:hover .drag-tooltip, .clip-trim-handle:active .drag-tooltip, .audio-active-block:active .drag-tooltip {
+    .clip-trim-handle:hover .drag-tooltip, .clip-trim-handle:active .drag-tooltip, .audio-active-block:active .drag-tooltip, .master-playhead:active .drag-tooltip {
       display: block;
     }
 
@@ -589,7 +590,7 @@
         <a href="index.html" class="brand-link">
           <img src="logo.png" alt="AI Bots Logo" class="brand-logo-img">
           <span>AI Bots</span>
-          <span class="brand-badge" style="background: linear-gradient(135deg, #ec4899, #8b5cf6); color: white;">TIMELINE STUDIO 4.0</span>
+          <span class="brand-badge" style="background: linear-gradient(135deg, #ec4899, #8b5cf6); color: white;">TIMELINE PRO</span>
         </a>
 
         <div class="nav-actions">
@@ -602,9 +603,9 @@
 
   <main class="app-container tool-page-wrapper">
     <div class="tool-header">
-      <span class="tool-header-badge"><i class="fas fa-clapperboard"></i> Unified Multi-Clip Sequence & Audio Scrubber</span>
+      <span class="tool-header-badge"><i class="fas fa-clapperboard"></i> Smooth Multi-Clip Sequence & Audio Scrubber</span>
       <h1 class="tool-title">Video Studio Pro</h1>
-      <p class="tool-desc">Edit joined multi-clip sequences with individual trim cursors in a single timeline, direct audio track scrubbing, and seamless synchronized HD export.</p>
+      <p class="tool-desc">Drag the master playhead needle, trim individual clip endpoints in a shared timeline, scrub music audio with live auditioning, and render HD videos.</p>
     </div>
 
     <!-- Dropzone / Empty State -->
@@ -708,30 +709,31 @@
             </div>
 
             <!-- Timeline Lanes Container with Scroll Wrapper -->
-            <div class="timeline-lanes-scroll-wrapper" id="timelineScrollWrap">
+            <div class="timeline-lanes-scroll-wrapper" id="timelineScrollWrap" onpointerdown="handleTimelineContainerDown(event)">
               <div class="timeline-lanes-container" id="timelineLanes">
                 
-                <!-- Master Playhead Needle across joined sequence -->
-                <div class="master-playhead" id="masterPlayhead">
-                  <div class="master-playhead-cap"></div>
+                <!-- DRAGGABLE MASTER PLAYHEAD NEEDLE -->
+                <div class="master-playhead" id="masterPlayhead" onpointerdown="handlePlayheadDown(event)">
+                  <div class="master-playhead-cap"><i class="fas fa-play" style="font-size: 0.45rem; transform: rotate(90deg);"></i></div>
+                  <div class="drag-tooltip" id="needleTooltip">00:00.0</div>
                 </div>
 
                 <!-- TRACK 1: UNIFIED JOINED SEQUENCE TRACK -->
-                <div class="sequence-track-lane" id="sequenceTrackLane" onclick="handleSequenceTrackClick(event)">
+                <div class="sequence-track-lane" id="sequenceTrackLane">
                   <!-- Joined Clip Blocks Rendered Dynamically -->
                 </div>
 
                 <!-- TRACK 2: AUDIO / MUSIC TRACK WITH DIRECT SCRUBBING -->
-                <div class="audio-track-lane" id="audioTrackLane" onclick="handleAudioTrackClick(event)">
-                  <div class="audio-lane-tag" id="audioLaneLabel"><i class="fas fa-music"></i> Audio Track (Click/drag to adjust music position)</div>
+                <div class="audio-track-lane" id="audioTrackLane">
+                  <div class="audio-lane-tag" id="audioLaneLabel"><i class="fas fa-music"></i> Audio Track (Drag endpoints to trim / middle to slide)</div>
                   <canvas class="audio-waveform-full" id="audioWaveformCanvas"></canvas>
                   
-                  <div class="audio-active-block" id="audioSlice">
+                  <div class="audio-active-block" id="audioSlice" onpointerdown="handleAudioSliceDown(event)">
                     <div class="drag-tooltip" id="audioSliceTooltip">Music Start: 00:00.0</div>
-                    <div class="clip-trim-handle clip-trim-left" id="audioHandleLeft" title="Drag to slip music start" style="background:#ec4899;">
+                    <div class="clip-trim-handle clip-trim-left" id="audioHandleLeft" onpointerdown="handleAudioLeftDown(event)" title="Drag to slip music start" style="background:#ec4899;">
                       <div class="drag-tooltip" id="audioHandleTooltip">00:00.0</div>
                     </div>
-                    <div class="clip-trim-handle clip-trim-right" id="audioHandleRight" title="Drag to trim music end" style="background:#ec4899;">
+                    <div class="clip-trim-handle clip-trim-right" id="audioHandleRight" onpointerdown="handleAudioRightDown(event)" title="Drag to trim music end" style="background:#ec4899;">
                       <div class="drag-tooltip" id="audioHandleRightTooltip">00:00.0</div>
                     </div>
                   </div>
@@ -953,6 +955,7 @@
 
     let bgmStartOffset = 0;
     let bgmAudioDuration = 0;
+    let bgmCutDuration = 0;
     let decodedAudioBuffer = null;
     let playbackSpeed = 1.0;
     let rotationAngle = 0;
@@ -1006,7 +1009,7 @@
     }
 
     function getTotalSequenceDuration() {
-      return mediaClips.reduce((sum, c) => sum + (c.trimEnd - c.trimStart), 0);
+      return mediaClips.reduce((sum, c) => sum + Math.max(0.1, c.trimEnd - c.trimStart), 0);
     }
 
     // ==========================================
@@ -1087,7 +1090,7 @@
     }
 
     // ===================================================
-    // UNIFIED JOINED TIMELINE SCRUBBER RENDERING
+    // UNIFIED JOINED TIMELINE RENDERING
     // ===================================================
     function renderUnifiedSequenceTimeline() {
       const track = document.getElementById('sequenceTrackLane');
@@ -1097,13 +1100,14 @@
       document.getElementById('totalSeqTimeText').textContent = formatTime(totalDur, true);
 
       mediaClips.forEach((clip, idx) => {
-        const clipDur = clip.trimEnd - clip.trimStart;
+        const clipDur = Math.max(0.1, clip.trimEnd - clip.trimStart);
         const widthPct = totalDur > 0 ? (clipDur / totalDur) * 100 : 100;
 
         const block = document.createElement('div');
+        block.id = `clip_block_${idx}`;
         block.className = `joined-clip-block ${idx === activeClipIndex ? 'active' : ''}`;
         block.style.width = `${widthPct}%`;
-        block.style.background = `linear-gradient(135deg, ${clip.color}88, ${clip.color}44)`;
+        block.style.background = `linear-gradient(135deg, ${clip.color}99, ${clip.color}44)`;
         block.style.borderColor = clip.color;
         block.onclick = (e) => {
           e.stopPropagation();
@@ -1113,20 +1117,19 @@
         block.innerHTML = `
           <div class="joined-clip-content">
             <span>${clip.type === 'video' ? '🎥' : '📷'} Clip ${idx + 1}</span>
-            <span>${formatTime(clipDur, true)}</span>
+            <span id="clip_dur_text_${idx}">${formatTime(clipDur, true)}</span>
           </div>
-          <div class="clip-trim-handle clip-trim-left" id="handle_left_${idx}" title="Drag to trim start">
-            <div class="drag-tooltip">${formatTime(clip.trimStart, true)}</div>
+          <div class="clip-trim-handle clip-trim-left" onpointerdown="handleClipLeftDown(event, ${idx})" title="Drag to trim start">
+            <div class="drag-tooltip" id="clip_left_tip_${idx}">${formatTime(clip.trimStart, true)}</div>
           </div>
-          <div class="clip-trim-handle clip-trim-right" id="handle_right_${idx}" title="Drag to trim end">
-            <div class="drag-tooltip">${formatTime(clip.trimEnd, true)}</div>
+          <div class="clip-trim-handle clip-trim-right" onpointerdown="handleClipRightDown(event, ${idx})" title="Drag to trim end">
+            <div class="drag-tooltip" id="clip_right_tip_${idx}">${formatTime(clip.trimEnd, true)}</div>
           </div>
         `;
 
         track.appendChild(block);
       });
 
-      initClipHandleDrags();
       updateAudioTrimDisplay();
       updatePlayheadPosition();
     }
@@ -1137,7 +1140,11 @@
       const clip = mediaClips[idx];
 
       renderMediaBinStrip();
-      renderUnifiedSequenceTimeline();
+      
+      // Update active highlight classes without recreating entire DOM
+      document.querySelectorAll('.joined-clip-block').forEach((b, i) => {
+        b.classList.toggle('active', i === idx);
+      });
 
       const photoBox = document.getElementById('photoDurationBox');
       if (clip.type === 'video') {
@@ -1186,138 +1193,159 @@
     }
 
     // ===================================================
-    // DUAL DRAGGABLE HANDLES FOR EACH JOINED CLIP
+    // BULLETPROOF NON-DESTRUCTIVE TIMELINE DRAG CONTROLLER
     // ===================================================
-    function initClipHandleDrags() {
-      mediaClips.forEach((clip, idx) => {
-        const leftH = document.getElementById(`handle_left_${idx}`);
-        const rightH = document.getElementById(`handle_right_${idx}`);
-        if (!leftH || !rightH) return;
+    let activeDrag = null; // { type, idx, startX, startTrim, totalDur, startOffset }
 
-        let activeDrag = null;
-        let startX = 0;
-        let initTrimStart = 0;
-        let initTrimEnd = 0;
-
-        leftH.addEventListener('pointerdown', (e) => {
-          e.stopPropagation();
-          selectClip(idx);
-          activeDrag = 'left';
-          startX = e.clientX;
-          initTrimStart = clip.trimStart;
-          leftH.setPointerCapture(e.pointerId);
-        });
-
-        rightH.addEventListener('pointerdown', (e) => {
-          e.stopPropagation();
-          selectClip(idx);
-          activeDrag = 'right';
-          startX = e.clientX;
-          initTrimEnd = clip.trimEnd;
-          rightH.setPointerCapture(e.pointerId);
-        });
-
-        window.addEventListener('pointermove', (e) => {
-          if (!activeDrag || activeClipIndex !== idx) return;
-          const trackLane = document.getElementById('sequenceTrackLane');
-          const totalDur = getTotalSequenceDuration();
-          const deltaX = e.clientX - startX;
-          const deltaSec = (deltaX / trackLane.clientWidth) * totalDur;
-
-          if (activeDrag === 'left') {
-            clip.trimStart = Math.max(0, Math.min(clip.trimEnd - 0.5, initTrimStart + deltaSec));
-            document.getElementById('trimStartInput').value = formatTime(clip.trimStart, true);
-            if (clip.type === 'video') video.currentTime = clip.trimStart;
-          } else if (activeDrag === 'right') {
-            clip.trimEnd = Math.min(clip.duration, Math.max(clip.trimStart + 0.5, initTrimEnd + deltaSec));
-            document.getElementById('trimEndInput').value = formatTime(clip.trimEnd, true);
-            if (clip.type === 'video') video.currentTime = clip.trimEnd;
-          }
-          renderUnifiedSequenceTimeline();
-        });
-
-        window.addEventListener('pointerup', () => {
-          if (activeDrag) {
-            renderMediaBinStrip();
-            renderUnifiedSequenceTimeline();
-          }
-          activeDrag = null;
-        });
-      });
-
-      // Audio Track Lane Drag Handles
-      const aLeft = document.getElementById('audioHandleLeft');
-      const aRight = document.getElementById('audioHandleRight');
-      const aSlice = document.getElementById('audioSlice');
-      let activeAudioDrag = null;
-      let aStartX = 0;
-      let initBgmOffset = 0;
-
-      if (aLeft && aRight && aSlice) {
-        aLeft.addEventListener('pointerdown', (e) => {
-          e.stopPropagation();
-          activeAudioDrag = 'a-left';
-          aStartX = e.clientX;
-          initBgmOffset = bgmStartOffset;
-          aLeft.setPointerCapture(e.pointerId);
-        });
-
-        aRight.addEventListener('pointerdown', (e) => {
-          e.stopPropagation();
-          activeAudioDrag = 'a-right';
-          aStartX = e.clientX;
-          initBgmOffset = bgmStartOffset;
-          aRight.setPointerCapture(e.pointerId);
-        });
-
-        aSlice.addEventListener('pointerdown', (e) => {
-          if (e.target === aLeft || e.target === aRight) return;
-          e.stopPropagation();
-          activeAudioDrag = 'a-slide';
-          aStartX = e.clientX;
-          initBgmOffset = bgmStartOffset;
-          aSlice.setPointerCapture(e.pointerId);
-        });
-
-        window.addEventListener('pointermove', (e) => {
-          if (!activeAudioDrag || !bgmAudioDuration) return;
-          const aLane = document.getElementById('audioTrackLane');
-          const deltaX = e.clientX - aStartX;
-          const deltaSec = (deltaX / aLane.clientWidth) * bgmAudioDuration;
-
-          bgmStartOffset = Math.max(0, Math.min(bgmAudioDuration - 1, initBgmOffset + deltaSec));
-          updateAudioTrimDisplay();
-        });
-
-        window.addEventListener('pointerup', () => {
-          activeAudioDrag = null;
-        });
-      }
+    function handlePlayheadDown(e) {
+      e.stopPropagation();
+      activeDrag = {
+        type: 'playhead',
+        startX: e.clientX,
+        startSeqTime: sequenceCurrentTime
+      };
+      pauseSequencePlayback();
     }
 
-    function handleSequenceTrackClick(e) {
-      if (e.target.classList.contains('clip-trim-handle')) return;
+    function handleTimelineContainerDown(e) {
+      if (e.target.classList.contains('clip-trim-handle') || e.target.classList.contains('master-playhead-cap')) return;
       const rect = document.getElementById('sequenceTrackLane').getBoundingClientRect();
       const clickX = e.clientX - rect.left;
       const pct = Math.max(0, Math.min(1, clickX / rect.width));
       const targetSeqTime = pct * getTotalSequenceDuration();
       seekSequenceTo(targetSeqTime);
+
+      activeDrag = {
+        type: 'playhead',
+        startX: e.clientX,
+        startSeqTime: targetSeqTime
+      };
     }
 
-    function handleAudioTrackClick(e) {
-      if (e.target.classList.contains('clip-trim-handle') || e.target.classList.contains('audio-active-block')) return;
-      const rect = document.getElementById('audioTrackLane').getBoundingClientRect();
-      const clickX = e.clientX - rect.left;
-      const pct = Math.max(0, Math.min(1, clickX / rect.width));
-      if (bgmAudioDuration) {
-        bgmStartOffset = pct * bgmAudioDuration;
-        updateAudioTrimDisplay();
-        if (bgmLoaded) {
-          bgmAudio.currentTime = bgmStartOffset;
-          bgmAudio.play();
-          setTimeout(() => { if (!isPlayingSequence) bgmAudio.pause(); }, 1000);
-        }
+    function handleClipLeftDown(e, idx) {
+      e.stopPropagation();
+      selectClip(idx);
+      activeDrag = {
+        type: 'clip-left',
+        idx: idx,
+        startX: e.clientX,
+        initTrimStart: mediaClips[idx].trimStart,
+        initTrimEnd: mediaClips[idx].trimEnd
+      };
+    }
+
+    function handleClipRightDown(e, idx) {
+      e.stopPropagation();
+      selectClip(idx);
+      activeDrag = {
+        type: 'clip-right',
+        idx: idx,
+        startX: e.clientX,
+        initTrimStart: mediaClips[idx].trimStart,
+        initTrimEnd: mediaClips[idx].trimEnd
+      };
+    }
+
+    function handleAudioLeftDown(e) {
+      e.stopPropagation();
+      activeDrag = {
+        type: 'audio-left',
+        startX: e.clientX,
+        initOffset: bgmStartOffset
+      };
+    }
+
+    function handleAudioRightDown(e) {
+      e.stopPropagation();
+      activeDrag = {
+        type: 'audio-right',
+        startX: e.clientX,
+        initOffset: bgmStartOffset,
+        initCutDur: bgmCutDuration || (getTotalSequenceDuration())
+      };
+    }
+
+    function handleAudioSliceDown(e) {
+      if (e.target.id === 'audioHandleLeft' || e.target.id === 'audioHandleRight') return;
+      e.stopPropagation();
+      activeDrag = {
+        type: 'audio-slide',
+        startX: e.clientX,
+        initOffset: bgmStartOffset
+      };
+    }
+
+    window.addEventListener('pointermove', (e) => {
+      if (!activeDrag) return;
+
+      const track = document.getElementById('sequenceTrackLane');
+      const trackW = track.clientWidth || 800;
+      const totalDur = getTotalSequenceDuration();
+      const deltaX = e.clientX - activeDrag.startX;
+
+      if (activeDrag.type === 'playhead') {
+        const deltaSec = (deltaX / trackW) * totalDur;
+        seekSequenceTo(activeDrag.startSeqTime + deltaSec);
+      } 
+      else if (activeDrag.type === 'clip-left') {
+        const clip = mediaClips[activeDrag.idx];
+        const deltaSec = (deltaX / trackW) * totalDur;
+        clip.trimStart = Math.max(0, Math.min(clip.trimEnd - 0.2, activeDrag.initTrimStart + deltaSec));
+        
+        // Update DOM elements in place
+        document.getElementById(`clip_left_tip_${activeDrag.idx}`).textContent = formatTime(clip.trimStart, true);
+        document.getElementById('trimStartInput').value = formatTime(clip.trimStart, true);
+        if (clip.type === 'video') video.currentTime = clip.trimStart;
+        updateClipBlockWidths();
       }
+      else if (activeDrag.type === 'clip-right') {
+        const clip = mediaClips[activeDrag.idx];
+        const deltaSec = (deltaX / trackW) * totalDur;
+        clip.trimEnd = Math.min(clip.duration, Math.max(clip.trimStart + 0.2, activeDrag.initTrimEnd + deltaSec));
+
+        document.getElementById(`clip_right_tip_${activeDrag.idx}`).textContent = formatTime(clip.trimEnd, true);
+        document.getElementById('trimEndInput').value = formatTime(clip.trimEnd, true);
+        if (clip.type === 'video') video.currentTime = clip.trimEnd;
+        updateClipBlockWidths();
+      }
+      else if (activeDrag.type === 'audio-left' || activeDrag.type === 'audio-slide') {
+        if (!bgmAudioDuration) return;
+        const deltaSec = (deltaX / trackW) * bgmAudioDuration;
+        bgmStartOffset = Math.max(0, Math.min(bgmAudioDuration - 0.5, activeDrag.initOffset + deltaSec));
+        updateAudioTrimDisplay();
+      }
+      else if (activeDrag.type === 'audio-right') {
+        if (!bgmAudioDuration) return;
+        const deltaSec = (deltaX / trackW) * bgmAudioDuration;
+        bgmCutDuration = Math.max(0.5, Math.min(bgmAudioDuration - bgmStartOffset, activeDrag.initCutDur + deltaSec));
+        updateAudioTrimDisplay();
+      }
+    });
+
+    window.addEventListener('pointerup', () => {
+      if (activeDrag) {
+        if (activeDrag.type === 'clip-left' || activeDrag.type === 'clip-right') {
+          renderMediaBinStrip();
+          renderUnifiedSequenceTimeline();
+        }
+        activeDrag = null;
+      }
+    });
+
+    function updateClipBlockWidths() {
+      const totalDur = getTotalSequenceDuration();
+      document.getElementById('totalSeqTimeText').textContent = formatTime(totalDur, true);
+
+      mediaClips.forEach((clip, idx) => {
+        const clipDur = Math.max(0.1, clip.trimEnd - clip.trimStart);
+        const widthPct = (clipDur / totalDur) * 100;
+        const block = document.getElementById(`clip_block_${idx}`);
+        const durText = document.getElementById(`clip_dur_text_${idx}`);
+        if (block) block.style.width = `${widthPct}%`;
+        if (durText) durText.textContent = formatTime(clipDur, true);
+      });
+      updatePlayheadPosition();
+      updateAudioTrimDisplay();
     }
 
     // ===================================================
@@ -1327,13 +1355,13 @@
       const totalDur = getTotalSequenceDuration();
       sequenceCurrentTime = Math.max(0, Math.min(totalDur, targetTime));
       document.getElementById('seqTimeText').textContent = formatTime(sequenceCurrentTime, true);
+      document.getElementById('needleTooltip').textContent = formatTime(sequenceCurrentTime, true);
       updatePlayheadPosition();
 
-      // Find which clip maps to sequenceCurrentTime
       let accumulated = 0;
       for (let i = 0; i < mediaClips.length; i++) {
         const clip = mediaClips[i];
-        const clipDur = clip.trimEnd - clip.trimStart;
+        const clipDur = Math.max(0.1, clip.trimEnd - clip.trimStart);
         if (sequenceCurrentTime <= accumulated + clipDur || i === mediaClips.length - 1) {
           if (activeClipIndex !== i) selectClip(i);
           const clipLocalTime = clip.trimStart + (sequenceCurrentTime - accumulated);
@@ -1397,12 +1425,13 @@
         }
 
         document.getElementById('seqTimeText').textContent = formatTime(sequenceCurrentTime, true);
+        document.getElementById('needleTooltip').textContent = formatTime(sequenceCurrentTime, true);
         updatePlayheadPosition();
 
         let accumulated = 0;
         for (let i = 0; i < mediaClips.length; i++) {
           const clip = mediaClips[i];
-          const clipDur = clip.trimEnd - clip.trimStart;
+          const clipDur = Math.max(0.1, clip.trimEnd - clip.trimStart);
           if (sequenceCurrentTime <= accumulated + clipDur || i === mediaClips.length - 1) {
             if (activeClipIndex !== i) selectClip(i);
             const clipLocalTime = clip.trimStart + (sequenceCurrentTime - accumulated);
@@ -1461,6 +1490,7 @@
       bgmAudio.onloadedmetadata = () => {
         bgmAudioDuration = bgmAudio.duration;
         bgmStartOffset = 0;
+        bgmCutDuration = getTotalSequenceDuration();
         document.getElementById('bgmStartInput').value = formatTime(0, true);
         document.getElementById('sliderBgmStart').max = Math.max(1, bgmAudioDuration - 1);
         document.getElementById('bgmTotalDurText').textContent = formatTime(bgmAudioDuration);
@@ -1483,7 +1513,7 @@
       const c = document.getElementById('audioWaveformCanvas');
       const cx = c.getContext('2d');
       c.width = c.parentElement.clientWidth || 800;
-      c.height = 64;
+      c.height = 68;
       cx.clearRect(0, 0, c.width, c.height);
 
       const data = buffer.getChannelData(0);
@@ -1508,7 +1538,7 @@
       const c = document.getElementById('audioWaveformCanvas');
       const cx = c.getContext('2d');
       c.width = c.parentElement.clientWidth || 800;
-      c.height = 64;
+      c.height = 68;
       cx.clearRect(0, 0, c.width, c.height);
       cx.fillStyle = '#ec4899';
       for (let x = 0; x < c.width; x += 4) {

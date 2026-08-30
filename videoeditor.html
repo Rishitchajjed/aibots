@@ -857,9 +857,8 @@
             <button onclick="startVideoExport()" class="btn btn-primary" style="width: 100%; padding: 13px; font-size: 1rem; font-weight: 800; background: linear-gradient(135deg, #6366f1, #ec4899); border: none; margin-bottom: 8px; box-shadow: 0 4px 14px rgba(99, 102, 241, 0.35);">
               <i class="fas fa-bolt"></i> Render & Export Video
             </button>
-            <div style="display: flex; align-items: center; justify-content: center; gap: 6px; font-size: 0.76rem; font-weight: 700; color: #ec4899; margin-bottom: 8px;">
-              <input type="checkbox" id="chkStopAtSongEnd" checked style="cursor: pointer; accent-color: #ec4899;">
-              <label for="chkStopAtSongEnd" style="cursor: pointer;">Stop render when music ends</label>
+            <div style="display: flex; align-items: center; justify-content: center; gap: 6px; font-size: 0.76rem; font-weight: 700; color: #10b981; margin-bottom: 8px;">
+              <i class="fas fa-check-circle"></i> Merging all sequence clips + synchronized background music
             </div>
             <div style="font-size: 0.75rem; color: var(--text-secondary); text-align: center;" id="exportSpeedSubtext">
               1080p Ultra HD • 12 Mbps Lossless Quality
@@ -2177,17 +2176,19 @@
         if (bgmLoaded) bgmAudio.pause();
       };
 
-      const chkStop = document.getElementById('chkStopAtSongEnd');
-      const shouldStopAtMusic = chkStop && chkStop.checked && bgmLoaded && bgmAudioDuration > 0;
-      const rawSeqDuration = getTotalSequenceDuration();
-      const totalSeqDuration = shouldStopAtMusic ? Math.min(rawSeqDuration, bgmAudioDuration - bgmStartOffset) : rawSeqDuration;
+      const totalSeqDuration = getTotalSequenceDuration();
       let renderedDurationSoFar = 0;
       const exportStartTime = performance.now();
 
       if (bgmLoaded) {
         bgmAudio.currentTime = bgmStartOffset;
         bgmAudio.playbackRate = 1.0;
-        bgmAudio.play();
+        bgmAudio.loop = true;
+        try {
+          await bgmAudio.play();
+        } catch(e) {
+          console.warn("BGM Play Notice:", e);
+        }
       }
 
       mediaRecorder.start();

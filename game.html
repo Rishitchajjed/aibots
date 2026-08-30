@@ -532,6 +532,83 @@
       background: rgba(16, 185, 129, 0.15);
       box-shadow: 0 0 15px rgba(16, 185, 129, 0.3);
     }
+    
+    /* ==========================================
+       IN-CANVAS FLOATING COMMAND BAR (ALWAYS ACCESSIBLE IN FULLSCREEN)
+       ========================================== */
+    .in-canvas-top-bar {
+      position: absolute;
+      top: 14px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 6px;
+      background: rgba(10, 15, 30, 0.88);
+      backdrop-filter: blur(18px) saturate(180%);
+      -webkit-backdrop-filter: blur(18px) saturate(180%);
+      padding: 6px 14px;
+      border-radius: 999px;
+      border: 1px solid rgba(255, 255, 255, 0.22);
+      z-index: 50;
+      pointer-events: auto;
+      box-shadow: 0 12px 35px rgba(0,0,0,0.8), 0 0 25px rgba(99, 102, 241, 0.35);
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+    @media (max-width: 860px) {
+      .in-canvas-top-bar {
+        top: 10px;
+        padding: 4px 8px;
+        gap: 4px;
+        max-width: 95%;
+      }
+      .hud-btn-label {
+        display: none;
+      }
+      .hud-btn {
+        padding: 4px 8px !important;
+        font-size: 0.72rem !important;
+      }
+    }
+    .hud-btn {
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      color: #f8fafc;
+      padding: 5px 12px;
+      border-radius: 999px;
+      font-size: 0.78rem;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+      transition: all 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+      user-select: none;
+    }
+    .hud-btn:hover {
+      background: linear-gradient(135deg, rgba(99,102,241,0.45), rgba(236,72,153,0.45));
+      border-color: #ec4899;
+      transform: translateY(-2px) scale(1.04);
+      box-shadow: 0 0 18px rgba(236, 72, 153, 0.6);
+      color: #ffffff;
+    }
+    .hud-btn-primary {
+      background: linear-gradient(135deg, #6366f1, #ec4899);
+      border-color: rgba(255, 255, 255, 0.3);
+      color: #ffffff;
+      box-shadow: 0 0 15px rgba(236, 72, 153, 0.4);
+    }
+    .hud-btn-fullscreen {
+      background: rgba(6, 182, 212, 0.22);
+      border-color: rgba(6, 182, 212, 0.6);
+      color: #38bdf8;
+    }
+    .hud-btn-fullscreen:hover {
+      background: rgba(6, 182, 212, 0.4);
+      border-color: #38bdf8;
+      box-shadow: 0 0 18px rgba(6, 182, 212, 0.6);
+    }
+
     .talent-card:hover {
       border-color: #38bdf8;
       transform: translateY(-2px);
@@ -1047,15 +1124,41 @@
       }
     }
 
+    
     function toggleFullscreen() {
-      const isFs = !!(document.fullscreenElement || document.webkitFullscreenElement || document.mozFullScreenElement || document.msFullscreenElement);
-      if (!isFs) {
-        const elem = document.getElementById('canvasWrapper') || document.documentElement;
-        if (elem.requestFullscreen) {
-          elem.requestFullscreen().catch(err => {
-            console.warn(err);
-            document.documentElement.requestFullscreen();
-          });
+      const wrapper = document.getElementById('canvasWrapper') || document.documentElement;
+      if (!document.fullscreenElement && !document.webkitFullscreenElement) {
+        if (wrapper.requestFullscreen) {
+          wrapper.requestFullscreen();
+        } else if (wrapper.webkitRequestFullscreen) {
+          wrapper.webkitRequestFullscreen();
+        }
+      } else {
+        if (document.exitFullscreen) {
+          document.exitFullscreen();
+        } else if (document.webkitExitFullscreen) {
+          document.webkitExitFullscreen();
+        }
+      }
+      setTimeout(updateFullscreenButtons, 100);
+    }
+
+    function updateFullscreenButtons() {
+      const isFs = !!(document.fullscreenElement || document.webkitFullscreenElement);
+      const icon = document.getElementById('inCanvasFsIcon');
+      const text = document.getElementById('inCanvasFsText');
+      const btn = document.getElementById('inCanvasFullscreenBtn');
+      if (icon) icon.className = isFs ? 'fas fa-compress' : 'fas fa-expand';
+      if (text) text.textContent = isFs ? 'Exit Fullscreen' : 'Fullscreen';
+      if (btn) {
+        btn.style.color = isFs ? '#ec4899' : '#38bdf8';
+        btn.style.borderColor = isFs ? 'rgba(236,72,153,0.6)' : 'rgba(6,182,212,0.6)';
+      }
+    }
+
+    document.addEventListener('fullscreenchange', updateFullscreenButtons);
+    document.addEventListener('webkitfullscreenchange', updateFullscreenButtons);
+);
         } else if (elem.webkitRequestFullscreen) {
           elem.webkitRequestFullscreen();
         } else if (elem.msRequestFullscreen) {

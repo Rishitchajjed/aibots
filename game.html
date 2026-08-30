@@ -992,7 +992,7 @@
         <button class="hud-btn" onclick="openHeroModal()" title="Hero Skins & Classes">
           <i class="fas fa-user-astronaut"></i> <span class="hud-btn-label">Skin</span>
         </button>
-        <button class="hud-btn" onclick="openTeleportModal()" title="Dimensional Waypoints [T]" style="color:#38bdf8; border-color:rgba(6,182,212,0.4);"><i class="fas fa-wormhole"></i> <span class="hud-btn-label">Warp</span></button>
+        <button class="hud-btn" onclick="openTeleportModal()" title="Dimensional Waypoints [P]" style="color:#38bdf8; border-color:rgba(6,182,212,0.4);"><i class="fas fa-wormhole"></i> <span class="hud-btn-label">Warp</span></button>
         <button class="hud-btn" onclick="collectNearbyLoot()" title="Collect Nearby Loot [E]" style="color:#fbbf24; border-color:rgba(251,191,36,0.4);"><i class="fas fa-hand"></i> <span class="hud-btn-label">Collect [E]</span></button>
         <button class="hud-btn" onclick="openShopModal()" title="Armory & Mount Shop">
           <i class="fas fa-store"></i> <span class="hud-btn-label">Shop</span>
@@ -1372,18 +1372,6 @@
       }
     }
 
-    window.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape') {
-        closeModal();
-      } else if (e.key === 'q' || e.key === 'Q') {
-        if (!document.querySelector('input:focus')) openQuestModal();
-      } else if (e.key === 'i' || e.key === 'I') {
-        if (!document.querySelector('input:focus')) openInventoryModal();
-      } else if (e.key === 't' || e.key === 'T') {
-        if (!document.querySelector('input:focus')) openTalentsModal();
-      }
-    });
-
     function toggleFullscreen() {
       const wrapper = document.getElementById('canvasWrapper') || document.documentElement;
       const isFs = !!(document.fullscreenElement || document.webkitFullscreenElement);
@@ -1546,16 +1534,7 @@
     }
 
     // Key listener for Manual Collect (E) and Blink (T)
-    window.addEventListener('keydown', (e) => {
-      if (e.target.tagName === 'INPUT') return;
-      if (e.key === 'e' || e.key === 'E') {
-        collectNearbyLoot();
-      } else if (e.key === 't' || e.key === 'T') {
-        openTeleportModal();
-      }
-    });
-
-  </script>
+    </script>
   <script>
 
     // Universal Canvas roundRect Polyfill (Chrome, Safari, iOS WebKit, Firefox)
@@ -2036,19 +2015,50 @@
     document.getElementById('btnQuestMobile')?.addEventListener('pointerdown', (e) => { e.preventDefault(); AudioEngine.init(); openQuestModal(); });
 
     // Keyboard & Mobile Touch Listeners (Pointer Events)
-    window.addEventListener('keydown', e => {
-      keys[e.key.toLowerCase()] = true;
-      AudioEngine.init();
-      if ([' ', 'arrowup', 'arrowdown', 'arrowleft', 'arrowright'].includes(e.key.toLowerCase())) e.preventDefault();
-      if (e.key === ' ' || e.key.toLowerCase() === 'j') performAttack();
-      if (e.key.toLowerCase() === 'k' || e.key.toLowerCase() === 'f') castMagic();
-      if (e.key.toLowerCase() === 'q' || e.key === '3') castUltimate();
-      if (e.key.toLowerCase() === 'v') toggleMount();
-      if (e.key.toLowerCase() === 't') openTalentsModal();
-      if (e.key.toLowerCase() === 'e') handleInteract();
-      if (e.key === 'Shift') performDash();
-      if (e.key === '1' || e.key.toLowerCase() === 'h') usePotion('hp');
-      if (e.key === '2' || e.key.toLowerCase() === 'm') usePotion('mp');
+    // ==========================================
+    // UNIFIED CONFLICT-FREE KEYBOARD SHORTCUTS
+    // ==========================================
+    window.addEventListener('keydown', (e) => {
+      const target = e.target;
+      if (target && (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA' || target.tagName === 'SELECT')) return;
+
+      const k = e.key.toLowerCase();
+      keys[k] = true;
+      if (typeof AudioEngine !== 'undefined') AudioEngine.init();
+
+      // Prevent page scrolling on gaming keys
+      if ([' ', 'arrowup', 'arrowdown', 'arrowleft', 'arrowright'].includes(k)) {
+        e.preventDefault();
+      }
+
+      // Escape: Close all open modals
+      if (e.key === 'Escape') {
+        closeModal();
+        return;
+      }
+
+      // Don't trigger gameplay abilities if a modal is open
+      const isModalOpen = !!document.querySelector('.modal-backdrop.active');
+      if (isModalOpen) return;
+
+      // Combat & Movement Abilities
+      if (e.key === ' ' || k === 'j') performAttack();
+      else if (k === 'k' || k === 'f') castMagic();
+      else if (k === 'q' || e.key === '3') castUltimate();
+      else if (e.key === 'Shift') performDash();
+      else if (k === 'v') toggleMount();
+
+      // Interact / Collect Loot / Talk / Chests
+      else if (k === 'e') handleInteract();
+
+      // Potions
+      else if (e.key === '1' || k === 'h') usePotion('hp');
+      else if (e.key === '2' || k === 'm') usePotion('mp');
+
+      // Modals & Panels
+      else if (k === 'i') openInventoryModal();
+      else if (k === 't') openTalentsModal();
+      else if (k === 'p') openTeleportModal();
     });
 
     window.addEventListener('keyup', e => { keys[e.key.toLowerCase()] = false; });
@@ -3527,18 +3537,6 @@
       }
     }
 
-    window.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape') {
-        closeModal();
-      } else if (e.key === 'q' || e.key === 'Q') {
-        if (!document.querySelector('input:focus')) openQuestModal();
-      } else if (e.key === 'i' || e.key === 'I') {
-        if (!document.querySelector('input:focus')) openInventoryModal();
-      } else if (e.key === 't' || e.key === 'T') {
-        if (!document.querySelector('input:focus')) openTalentsModal();
-      }
-    });
-
     function toggleFullscreen() {
       const wrapper = document.getElementById('canvasWrapper') || document.documentElement;
       const isFs = !!(document.fullscreenElement || document.webkitFullscreenElement);
@@ -3701,15 +3699,6 @@
     }
 
     // Key listener for Manual Collect (E) and Blink (T)
-    window.addEventListener('keydown', (e) => {
-      if (e.target.tagName === 'INPUT') return;
-      if (e.key === 'e' || e.key === 'E') {
-        collectNearbyLoot();
-      } else if (e.key === 't' || e.key === 'T') {
-        openTeleportModal();
-      }
-    });
-
-  </script>
+    </script>
 </body>
 </html>

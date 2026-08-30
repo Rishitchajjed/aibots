@@ -7,8 +7,8 @@
   <meta name="google-site-verification" content="-Yb6Nx74gbZ3wRN5uP-Y8KKwDWlt1DPpxs4nA3PkE6M">
   <meta name="robots" content="index, follow">
   <title>Video Studio Pro — High-Speed Lossless HD Video Editor | AI Bots</title>
-  <meta name="description" content="Professional high-speed in-browser video editor: Lossless 1080p HD export, live ETA countdown, multi-clip timeline trimming, edge-to-edge preview, and synchronized audio mixing.">
-  <meta name="keywords" content="fast video editor online, 1080p video render, render long videos fast, trim audio online, ai bots video studio">
+  <meta name="description" content="Professional video editor: Dedicated active clip precision trimmer, instant audio mixing, fast HD export with live ETA, multi-clip timeline, and edge-to-edge preview.">
+  <meta name="keywords" content="fast video editor online, 1080p video render, instant clip trimmer, fast audio render, ai bots video studio">
   <link rel="icon" href="logo.png" type="image/png">
   <link rel="canonical" href="https://www.aibots.co.in/videoeditor.html">
   <link rel="manifest" href="manifest.json">
@@ -130,14 +130,6 @@
       margin-top: 18px;
       box-shadow: var(--shadow-sm);
     }
-    .timeline-top-bar {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 12px;
-      flex-wrap: wrap;
-      gap: 10px;
-    }
 
     /* Media Bin Strip */
     .media-bin-strip {
@@ -227,6 +219,68 @@
       color: var(--primary);
     }
 
+    /* DEDICATED ACTIVE CLIP PRECISION TRIMMER (FULL-WIDTH ACCURACY) */
+    .active-clip-focus-box {
+      background: rgba(15, 23, 42, 0.85);
+      border: 1px solid var(--primary);
+      border-radius: var(--radius-lg);
+      padding: 12px 14px;
+      margin-bottom: 16px;
+      box-shadow: 0 4px 14px rgba(99, 102, 241, 0.15);
+    }
+    .active-clip-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+      font-size: 0.82rem;
+      font-weight: 800;
+      color: var(--text-primary);
+    }
+    .clip-focus-track {
+      position: relative;
+      height: 52px;
+      background: rgba(30, 41, 59, 0.8);
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      border: 1px solid var(--border-color);
+      cursor: crosshair;
+      user-select: none;
+    }
+    .clip-focus-active-window {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 0%;
+      width: 100%;
+      background: linear-gradient(135deg, rgba(99, 102, 241, 0.4), rgba(236, 72, 153, 0.4));
+      border: 2px solid var(--primary);
+      border-radius: var(--radius-sm);
+    }
+    .focus-trim-handle {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      width: 22px;
+      background: #ffffff;
+      box-shadow: 0 0 10px rgba(0,0,0,0.8);
+      cursor: ew-resize;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 50;
+      touch-action: none;
+    }
+    .focus-trim-handle::after {
+      content: '';
+      width: 4px;
+      height: 22px;
+      background: #0f172a;
+      border-radius: 2px;
+    }
+    .focus-trim-left { left: 0; border-top-left-radius: var(--radius-sm); border-bottom-left-radius: var(--radius-sm); }
+    .focus-trim-right { right: 0; border-top-right-radius: var(--radius-sm); border-bottom-right-radius: var(--radius-sm); }
+
     /* Timeline Tools Bar */
     .timeline-tools-bar {
       display: flex;
@@ -248,13 +302,8 @@
       cursor: crosshair;
       user-select: none;
     }
-    .timeline-lanes-scroll-wrapper::-webkit-scrollbar {
-      height: 6px;
-    }
-    .timeline-lanes-scroll-wrapper::-webkit-scrollbar-thumb {
-      background: var(--border-color);
-      border-radius: 3px;
-    }
+    .timeline-lanes-scroll-wrapper::-webkit-scrollbar { height: 6px; }
+    .timeline-lanes-scroll-wrapper::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 3px; }
 
     .timeline-lanes-container {
       position: relative;
@@ -300,7 +349,7 @@
     /* UNIFIED SEQUENCE TRACK LANE */
     .sequence-track-lane {
       position: relative;
-      height: 72px;
+      height: 68px;
       background: rgba(30, 41, 59, 0.6);
       border: 1px solid var(--border-color);
       border-radius: var(--radius-md);
@@ -321,6 +370,7 @@
       border: 2px solid transparent;
       transition: border-color 0.15s, box-shadow 0.15s;
       flex-shrink: 0;
+      min-width: 60px; /* Protected minimum width so short clips never vanish */
       box-sizing: border-box;
     }
     .joined-clip-block.active {
@@ -334,9 +384,9 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 0 16px;
+      padding: 0 10px;
       pointer-events: none;
-      font-size: 0.75rem;
+      font-size: 0.72rem;
       font-weight: 800;
       color: #ffffff;
       text-shadow: 0 1px 4px rgba(0,0,0,0.8);
@@ -348,7 +398,7 @@
       position: absolute;
       top: 0;
       bottom: 0;
-      width: 18px;
+      width: 16px;
       cursor: ew-resize;
       z-index: 30;
       display: flex;
@@ -360,26 +410,18 @@
     }
     .clip-trim-handle::after {
       content: '';
-      width: 4px;
-      height: 24px;
+      width: 3px;
+      height: 20px;
       background: #0f172a;
       border-radius: 2px;
     }
-    .clip-trim-left {
-      left: 0;
-      border-top-left-radius: var(--radius-sm);
-      border-bottom-left-radius: var(--radius-sm);
-    }
-    .clip-trim-right {
-      right: 0;
-      border-top-right-radius: var(--radius-sm);
-      border-bottom-right-radius: var(--radius-sm);
-    }
+    .clip-trim-left { left: 0; border-top-left-radius: var(--radius-sm); border-bottom-left-radius: var(--radius-sm); }
+    .clip-trim-right { right: 0; border-top-right-radius: var(--radius-sm); border-bottom-right-radius: var(--radius-sm); }
 
     /* AUDIO TRACK LANE WITH DIRECT VISUAL SCRUBBER */
     .audio-track-lane {
       position: relative;
-      height: 68px;
+      height: 64px;
       background: rgba(30, 41, 59, 0.6);
       border: 1px solid var(--border-color);
       border-radius: var(--radius-md);
@@ -451,7 +493,7 @@
       z-index: 120;
       box-shadow: 0 4px 10px rgba(0,0,0,0.6);
     }
-    .clip-trim-handle:hover .drag-tooltip, .clip-trim-handle:active .drag-tooltip, .audio-active-block:active .drag-tooltip, .master-playhead:active .drag-tooltip {
+    .clip-trim-handle:hover .drag-tooltip, .clip-trim-handle:active .drag-tooltip, .focus-trim-handle:hover .drag-tooltip, .focus-trim-handle:active .drag-tooltip, .audio-active-block:active .drag-tooltip, .master-playhead:active .drag-tooltip {
       display: block;
     }
 
@@ -608,7 +650,7 @@
     <div class="tool-header">
       <span class="tool-header-badge"><i class="fas fa-bolt"></i> High-Speed Lossless 1080p/4K Video Studio</span>
       <h1 class="tool-title">Video Studio Pro</h1>
-      <p class="tool-desc">Fast video rendering with live ETA, lossless HD export, multi-clip sequence timeline, and synchronized background music.</p>
+      <p class="tool-desc">Dedicated active clip precision trimmer, instant audio mixing, fast HD export with live ETA, and multi-clip sequence timeline.</p>
     </div>
 
     <!-- Dropzone / Empty State -->
@@ -642,10 +684,10 @@
               
               <div style="display: flex; justify-content: space-between; width: 100%; max-width: 360px; font-family: var(--font-mono); font-size: 0.88rem; font-weight: 700; color: #38bdf8;">
                 <span id="exportPercentText">0%</span>
-                <span id="exportEtaText">Est. Time Remaining: Calculating...</span>
+                <span id="exportEtaText">Est. Time: Calculating...</span>
               </div>
 
-              <div style="font-size: 0.75rem; color: #94a3b8; margin-top: 10px;">Hardware Acceleration Active • Please keep this tab active</div>
+              <div style="font-size: 0.75rem; color: #94a3b8; margin-top: 10px;">Hardware Accelerated Encoding • Please keep this tab active</div>
               <button onclick="cancelExport()" class="btn btn-secondary btn-sm" style="margin-top: 16px; color: #ef4444; border-color: rgba(239,68,68,0.4);">Cancel Render</button>
             </div>
 
@@ -691,6 +733,24 @@
               <button class="add-media-btn" onclick="document.getElementById('mediaAddFileInput').click()">
                 <i class="fas fa-plus"></i> Add Clip
               </button>
+            </div>
+
+            <!-- DEDICATED ACTIVE CLIP PRECISION TRIMMER (FULL WIDTH ACCURACY) -->
+            <div class="active-clip-focus-box">
+              <div class="active-clip-header">
+                <span><i class="fas fa-crop-simple" style="color: var(--primary);"></i> Selected Clip Precision Trimmer (<span id="focusClipTitle">Clip 1</span>)</span>
+                <span style="color: var(--text-secondary); font-family: var(--font-mono);" id="focusClipDurBadge">00:00.0 / 00:00.0</span>
+              </div>
+              <div class="clip-focus-track" id="clipFocusTrack" onpointerdown="handleFocusTrackDown(event)">
+                <div class="clip-focus-active-window" id="focusActiveWindow">
+                  <div class="focus-trim-handle focus-trim-left" id="focusHandleLeft" onpointerdown="handleFocusLeftDown(event)" title="Drag to trim start">
+                    <div class="drag-tooltip" id="focusLeftTooltip">00:00.0</div>
+                  </div>
+                  <div class="focus-trim-handle focus-trim-right" id="focusHandleRight" onpointerdown="handleFocusRightDown(event)" title="Drag to trim end">
+                    <div class="drag-tooltip" id="focusRightTooltip">00:00.0</div>
+                  </div>
+                </div>
+              </div>
             </div>
 
             <!-- Timeline Tools Bar -->
@@ -782,7 +842,6 @@
           <div class="tool-box" style="background: linear-gradient(135deg, rgba(99,102,241,0.12), rgba(236,72,153,0.12)); border-color: var(--primary);">
             <div class="tool-box-title" style="color: var(--primary);"><i class="fas fa-download"></i> High-Speed HD Export</div>
             
-            <!-- Quality / Speed Presets -->
             <div style="font-size: 0.78rem; font-weight: 700; color: var(--text-secondary); margin-bottom: 6px;">Export Resolution:</div>
             <div class="chip-grid" style="margin-bottom: 12px;">
               <div class="chip-btn active" onclick="setExportQuality('1080p', this)">1080p FHD</div>
@@ -1139,7 +1198,7 @@
         const block = document.createElement('div');
         block.id = `clip_block_${idx}`;
         block.className = `joined-clip-block ${idx === activeClipIndex ? 'active' : ''}`;
-        block.style.width = `${widthPct}%`;
+        block.style.width = `${Math.max(6, widthPct)}%`;
         block.style.background = `linear-gradient(135deg, ${clip.color}99, ${clip.color}44)`;
         block.style.borderColor = clip.color;
         block.onclick = (e) => {
@@ -1163,6 +1222,7 @@
         track.appendChild(block);
       });
 
+      updateFocusTrimmerDisplay();
       updateAudioTrimDisplay();
       updatePlayheadPosition();
     }
@@ -1177,6 +1237,8 @@
       document.querySelectorAll('.joined-clip-block').forEach((b, i) => {
         b.classList.toggle('active', i === idx);
       });
+
+      document.getElementById('focusClipTitle').textContent = `${clip.type === 'video' ? '🎥' : '📷'} Clip ${idx + 1}`;
 
       const photoBox = document.getElementById('photoDurationBox');
       if (clip.type === 'video') {
@@ -1198,6 +1260,28 @@
         document.getElementById('trimStartInput').value = formatTime(0, true);
         document.getElementById('trimEndInput').value = formatTime(clip.duration, true);
       }
+
+      updateFocusTrimmerDisplay();
+    }
+
+    function updateFocusTrimmerDisplay() {
+      const clip = mediaClips[activeClipIndex];
+      if (!clip) return;
+
+      const dur = Math.max(0.1, clip.duration);
+      const startPct = (clip.trimStart / dur) * 100;
+      const widthPct = ((clip.trimEnd - clip.trimStart) / dur) * 100;
+
+      const win = document.getElementById('focusActiveWindow');
+      win.style.left = `${startPct}%`;
+      win.style.width = `${Math.max(3, widthPct)}%`;
+
+      document.getElementById('focusLeftTooltip').textContent = formatTime(clip.trimStart, true);
+      document.getElementById('focusRightTooltip').textContent = formatTime(clip.trimEnd, true);
+      document.getElementById('focusClipDurBadge').textContent = `${formatTime(clip.trimEnd - clip.trimStart, true)} / ${formatTime(clip.duration, true)}`;
+      
+      document.getElementById('trimStartInput').value = formatTime(clip.trimStart, true);
+      document.getElementById('trimEndInput').value = formatTime(clip.trimEnd, true);
     }
 
     function deleteClip(e, idx) {
@@ -1254,15 +1338,48 @@
       };
     }
 
+    function handleFocusLeftDown(e) {
+      e.stopPropagation();
+      const clip = mediaClips[activeClipIndex];
+      activeDrag = {
+        type: 'focus-left',
+        startX: e.clientX,
+        initTrimStart: clip.trimStart,
+        clipDuration: clip.duration
+      };
+    }
+
+    function handleFocusRightDown(e) {
+      e.stopPropagation();
+      const clip = mediaClips[activeClipIndex];
+      activeDrag = {
+        type: 'focus-right',
+        startX: e.clientX,
+        initTrimEnd: clip.trimEnd,
+        clipDuration: clip.duration
+      };
+    }
+
+    function handleFocusTrackDown(e) {
+      if (e.target.classList.contains('focus-trim-handle')) return;
+      const clip = mediaClips[activeClipIndex];
+      if (!clip) return;
+      const rect = document.getElementById('clipFocusTrack').getBoundingClientRect();
+      const clickX = e.clientX - rect.left;
+      const pct = Math.max(0, Math.min(1, clickX / rect.width));
+      const clickSec = pct * clip.duration;
+
+      if (clip.type === 'video') video.currentTime = clickSec;
+    }
+
     function handleClipLeftDown(e, idx) {
       e.stopPropagation();
       selectClip(idx);
       activeDrag = {
-        type: 'clip-left',
-        idx: idx,
+        type: 'focus-left',
         startX: e.clientX,
         initTrimStart: mediaClips[idx].trimStart,
-        initTrimEnd: mediaClips[idx].trimEnd
+        clipDuration: mediaClips[idx].duration
       };
     }
 
@@ -1270,11 +1387,10 @@
       e.stopPropagation();
       selectClip(idx);
       activeDrag = {
-        type: 'clip-right',
-        idx: idx,
+        type: 'focus-right',
         startX: e.clientX,
-        initTrimStart: mediaClips[idx].trimStart,
-        initTrimEnd: mediaClips[idx].trimEnd
+        initTrimEnd: mediaClips[idx].trimEnd,
+        clipDuration: mediaClips[idx].duration
       };
     }
 
@@ -1314,6 +1430,8 @@
 
       const track = document.getElementById('sequenceTrackLane');
       const trackW = track.clientWidth || 800;
+      const focusTrack = document.getElementById('clipFocusTrack');
+      const focusW = focusTrack ? focusTrack.clientWidth : 800;
       const totalDur = getTotalSequenceDuration();
       const deltaX = e.clientX - activeDrag.startX;
 
@@ -1321,24 +1439,22 @@
         const deltaSec = (deltaX / trackW) * totalDur;
         seekSequenceTo(activeDrag.startSeqTime + deltaSec);
       } 
-      else if (activeDrag.type === 'clip-left') {
-        const clip = mediaClips[activeDrag.idx];
-        const deltaSec = (deltaX / trackW) * totalDur;
+      else if (activeDrag.type === 'focus-left') {
+        const clip = mediaClips[activeClipIndex];
+        const deltaSec = (deltaX / focusW) * activeDrag.clipDuration;
         clip.trimStart = Math.max(0, Math.min(clip.trimEnd - 0.2, activeDrag.initTrimStart + deltaSec));
         
-        document.getElementById(`clip_left_tip_${activeDrag.idx}`).textContent = formatTime(clip.trimStart, true);
-        document.getElementById('trimStartInput').value = formatTime(clip.trimStart, true);
         if (clip.type === 'video') video.currentTime = clip.trimStart;
+        updateFocusTrimmerDisplay();
         updateClipBlockWidths();
       }
-      else if (activeDrag.type === 'clip-right') {
-        const clip = mediaClips[activeDrag.idx];
-        const deltaSec = (deltaX / trackW) * totalDur;
+      else if (activeDrag.type === 'focus-right') {
+        const clip = mediaClips[activeClipIndex];
+        const deltaSec = (deltaX / focusW) * activeDrag.clipDuration;
         clip.trimEnd = Math.min(clip.duration, Math.max(clip.trimStart + 0.2, activeDrag.initTrimEnd + deltaSec));
 
-        document.getElementById(`clip_right_tip_${activeDrag.idx}`).textContent = formatTime(clip.trimEnd, true);
-        document.getElementById('trimEndInput').value = formatTime(clip.trimEnd, true);
         if (clip.type === 'video') video.currentTime = clip.trimEnd;
+        updateFocusTrimmerDisplay();
         updateClipBlockWidths();
       }
       else if (activeDrag.type === 'audio-left' || activeDrag.type === 'audio-slide') {
@@ -1357,7 +1473,7 @@
 
     window.addEventListener('pointerup', () => {
       if (activeDrag) {
-        if (activeDrag.type === 'clip-left' || activeDrag.type === 'clip-right') {
+        if (activeDrag.type === 'focus-left' || activeDrag.type === 'focus-right') {
           renderMediaBinStrip();
           renderUnifiedSequenceTimeline();
         }
@@ -1374,7 +1490,7 @@
         const widthPct = (clipDur / totalDur) * 100;
         const block = document.getElementById(`clip_block_${idx}`);
         const durText = document.getElementById(`clip_dur_text_${idx}`);
-        if (block) block.style.width = `${widthPct}%`;
+        if (block) block.style.width = `${Math.max(6, widthPct)}%`;
         if (durText) durText.textContent = formatTime(clipDur, true);
       });
       updatePlayheadPosition();
@@ -1727,6 +1843,7 @@
         clip.trimEnd = Math.max(cur, clip.trimStart + 0.5);
         document.getElementById('trimEndInput').value = formatTime(clip.trimEnd, true);
       }
+      updateFocusTrimmerDisplay();
       renderUnifiedSequenceTimeline();
       renderMediaBinStrip();
     }
@@ -1738,6 +1855,7 @@
       clip.trimEnd = clip.duration;
       document.getElementById('trimStartInput').value = formatTime(0, true);
       document.getElementById('trimEndInput').value = formatTime(clip.duration, true);
+      updateFocusTrimmerDisplay();
       renderUnifiedSequenceTimeline();
       renderMediaBinStrip();
     }
@@ -1750,6 +1868,7 @@
       if (s >= 0 && e > s && e <= clip.duration) {
         clip.trimStart = s;
         clip.trimEnd = e;
+        updateFocusTrimmerDisplay();
         renderUnifiedSequenceTimeline();
         renderMediaBinStrip();
       }
@@ -2096,7 +2215,6 @@
               document.getElementById('exportProgressBar').style.width = `${pct}%`;
               document.getElementById('exportPercentText').textContent = `${pct}%`;
 
-              // Calculate dynamic real-time ETA
               const wallElapsedSec = (performance.now() - exportStartTime) / 1000;
               if (totalElapsed > 1 && wallElapsedSec > 1) {
                 const speedRate = totalElapsed / wallElapsedSec;

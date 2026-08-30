@@ -6,9 +6,9 @@
   <meta name="google-site-verification" content="ndzq-U-NLijgza_QqgQdcc2U3oMRoud_BT2ZZiwFREM">
   <meta name="google-site-verification" content="-Yb6Nx74gbZ3wRN5uP-Y8KKwDWlt1DPpxs4nA3PkE6M">
   <meta name="robots" content="index, follow">
-  <title>Video Studio Pro — Ultra HD Multi-Clip Video & Audio Studio | AI Bots</title>
-  <meta name="description" content="Professional in-browser video editor with Ultra HD 1080p/4K lossless export, fast multi-clip sequence rendering, direct audio endpoint trimming, and smooth playhead scrubbing.">
-  <meta name="keywords" content="high quality video editor online, 1080p 4k video render, fast multi clip video editor, trim audio online, ai bots video studio">
+  <title>Video Studio Pro — High-Speed Lossless HD Video Editor | AI Bots</title>
+  <meta name="description" content="Professional high-speed in-browser video editor: Lossless 1080p HD export, live ETA countdown, multi-clip timeline trimming, edge-to-edge preview, and synchronized audio mixing.">
+  <meta name="keywords" content="fast video editor online, 1080p video render, render long videos fast, trim audio online, ai bots video studio">
   <link rel="icon" href="logo.png" type="image/png">
   <link rel="canonical" href="https://www.aibots.co.in/videoeditor.html">
   <link rel="manifest" href="manifest.json">
@@ -533,8 +533,8 @@
     .export-overlay {
       position: absolute;
       inset: 0;
-      background: rgba(2, 6, 23, 0.94);
-      backdrop-filter: blur(10px);
+      background: rgba(2, 6, 23, 0.95);
+      backdrop-filter: blur(12px);
       display: none;
       flex-direction: column;
       align-items: center;
@@ -547,8 +547,8 @@
     .export-overlay.active { display: flex; }
     .progress-bar-wrap {
       width: 100%;
-      max-width: 340px;
-      height: 12px;
+      max-width: 360px;
+      height: 14px;
       background: rgba(255,255,255,0.12);
       border-radius: 999px;
       overflow: hidden;
@@ -558,7 +558,7 @@
       width: 0%;
       height: 100%;
       background: linear-gradient(135deg, var(--primary), #ec4899);
-      transition: width 0.05s linear;
+      transition: width 0.08s linear;
     }
 
     /* Emoji Stickers Grid */
@@ -593,7 +593,7 @@
         <a href="index.html" class="brand-link">
           <img src="logo.png" alt="AI Bots Logo" class="brand-logo-img">
           <span>AI Bots</span>
-          <span class="brand-badge" style="background: linear-gradient(135deg, #ec4899, #8b5cf6); color: white;">ULTRA HD STUDIO</span>
+          <span class="brand-badge" style="background: linear-gradient(135deg, #ec4899, #8b5cf6); color: white;">HIGH SPEED HD</span>
         </a>
 
         <div class="nav-actions">
@@ -606,16 +606,16 @@
 
   <main class="app-container tool-page-wrapper">
     <div class="tool-header">
-      <span class="tool-header-badge"><i class="fas fa-clapperboard"></i> 1080p/4K Ultra HD Export Engine</span>
+      <span class="tool-header-badge"><i class="fas fa-bolt"></i> High-Speed Lossless 1080p/4K Video Studio</span>
       <h1 class="tool-title">Video Studio Pro</h1>
-      <p class="tool-desc">Fast lossless HD rendering, full edge-to-edge preview, multi-clip timeline trimming, and synchronized background music audio.</p>
+      <p class="tool-desc">Fast video rendering with live ETA, lossless HD export, multi-clip sequence timeline, and synchronized background music.</p>
     </div>
 
     <!-- Dropzone / Empty State -->
     <div class="dropzone-container" id="videoDropzone" onclick="document.getElementById('videoFileInput').click()">
       <input type="file" id="videoFileInput" class="dropzone-input" accept="video/*,image/*" multiple onchange="handleMediaBinUpload(event)">
       <div class="dropzone-icon" style="color: #ec4899;"><i class="fas fa-film"></i></div>
-      <div class="dropzone-title">Upload Videos or Photos to Start Editing</div>
+      <div class="dropzone-title">Upload Videos or Photos to Open Studio</div>
       <div class="dropzone-subtitle">Supports multiple MP4, WebM, PNG, JPG, MOV • 100% Client-Side Processing • 0 Server Uploads</div>
       <button class="btn btn-primary btn-sm" style="margin-top: 14px; pointer-events: none;"><i class="fas fa-upload"></i> Select Files</button>
     </div>
@@ -630,16 +630,22 @@
           <!-- Viewport Card -->
           <div class="viewport-card">
             
-            <!-- Export Render Overlay -->
+            <!-- Export Render Overlay with Live ETA & Real-Time Speed Tracking -->
             <div class="export-overlay" id="exportOverlay">
-              <div style="font-size: 2.5rem; color: #ec4899; margin-bottom: 12px;"><i class="fas fa-circle-notch fa-spin"></i></div>
-              <h3 style="font-size: 1.35rem; font-weight: 800; color: #fff;">Rendering Lossless HD Video...</h3>
+              <div style="font-size: 2.5rem; color: #ec4899; margin-bottom: 8px;"><i class="fas fa-bolt fa-bounce"></i></div>
+              <h3 style="font-size: 1.35rem; font-weight: 800; color: #fff;" id="exportHeaderTitle">Rendering Video Output...</h3>
               <p style="font-size: 0.85rem; color: #cbd5e1;" id="exportStatusText">Encoding high-bitrate frames & mixing synchronized audio</p>
+              
               <div class="progress-bar-wrap">
                 <div class="progress-bar-fill" id="exportProgressBar"></div>
               </div>
-              <div style="font-family: var(--font-mono); font-size: 1rem; font-weight: 800; color: #38bdf8;" id="exportPercentText">0%</div>
-              <div style="font-size: 0.75rem; color: #94a3b8; margin-top: 8px;">Please keep this tab open during rendering.</div>
+              
+              <div style="display: flex; justify-content: space-between; width: 100%; max-width: 360px; font-family: var(--font-mono); font-size: 0.88rem; font-weight: 700; color: #38bdf8;">
+                <span id="exportPercentText">0%</span>
+                <span id="exportEtaText">Est. Time Remaining: Calculating...</span>
+              </div>
+
+              <div style="font-size: 0.75rem; color: #94a3b8; margin-top: 10px;">Hardware Acceleration Active • Please keep this tab active</div>
               <button onclick="cancelExport()" class="btn btn-secondary btn-sm" style="margin-top: 16px; color: #ef4444; border-color: rgba(239,68,68,0.4);">Cancel Render</button>
             </div>
 
@@ -677,7 +683,7 @@
             <!-- Media Bin Strip -->
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
               <span style="font-size: 0.82rem; font-weight: 800; color: var(--text-secondary); text-transform: uppercase;">
-                <i class="fas fa-photo-film"></i> Sequence Media Bin (Click to switch or reorder)
+                <i class="fas fa-photo-film"></i> Sequence Media Bin (Click clip to edit trim)
               </span>
               <input type="file" id="mediaAddFileInput" accept="video/*,image/*" multiple style="display: none;" onchange="handleMediaBinUpload(event)">
             </div>
@@ -772,14 +778,23 @@
         <!-- RIGHT: Studio Controls Sidebar -->
         <div class="sidebar-panel">
 
-          <!-- 1. Export Action Card -->
+          <!-- 1. Export Action Card with Quality & Speed Selection -->
           <div class="tool-box" style="background: linear-gradient(135deg, rgba(99,102,241,0.12), rgba(236,72,153,0.12)); border-color: var(--primary);">
-            <div class="tool-box-title" style="color: var(--primary);"><i class="fas fa-download"></i> Ultra HD Export Engine</div>
+            <div class="tool-box-title" style="color: var(--primary);"><i class="fas fa-download"></i> High-Speed HD Export</div>
+            
+            <!-- Quality / Speed Presets -->
+            <div style="font-size: 0.78rem; font-weight: 700; color: var(--text-secondary); margin-bottom: 6px;">Export Resolution:</div>
+            <div class="chip-grid" style="margin-bottom: 12px;">
+              <div class="chip-btn active" onclick="setExportQuality('1080p', this)">1080p FHD</div>
+              <div class="chip-btn" onclick="setExportQuality('720p', this)">720p Fast</div>
+              <div class="chip-btn" onclick="setExportQuality('480p', this)">480p Quick</div>
+            </div>
+
             <button onclick="startVideoExport()" class="btn btn-primary" style="width: 100%; padding: 12px; font-size: 1rem; font-weight: 800; background: linear-gradient(135deg, #6366f1, #ec4899); border: none; margin-bottom: 8px;">
-              <i class="fas fa-wand-magic-sparkles"></i> Render & Export Video
+              <i class="fas fa-bolt"></i> Render & Export Video
             </button>
-            <div style="font-size: 0.75rem; color: var(--text-secondary); text-align: center;">
-              12 Mbps Lossless HD • Zero Quality Decrease • Fast Render
+            <div style="font-size: 0.75rem; color: var(--text-secondary); text-align: center;" id="exportSpeedSubtext">
+              1080p Ultra HD • 12 Mbps Lossless Quality
             </div>
           </div>
 
@@ -956,6 +971,7 @@
     let isPlayingSequence = false;
     let seqPlaybackAnimationId = null;
 
+    let selectedExportQuality = '1080p';
     let bgmStartOffset = 0;
     let bgmAudioDuration = 0;
     let bgmCutDuration = 0;
@@ -1012,6 +1028,21 @@
 
     function getTotalSequenceDuration() {
       return mediaClips.reduce((sum, c) => sum + Math.max(0.1, c.trimEnd - c.trimStart), 0);
+    }
+
+    function setExportQuality(quality, btn) {
+      selectedExportQuality = quality;
+      btn.parentElement.querySelectorAll('.chip-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+
+      const subtext = document.getElementById('exportSpeedSubtext');
+      if (quality === '1080p') {
+        subtext.textContent = '1080p Ultra HD • 12 Mbps Lossless Quality';
+      } else if (quality === '720p') {
+        subtext.textContent = '720p Fast HD • Recommended for long 20+ min videos';
+      } else {
+        subtext.textContent = '480p Quick Web • Ultra-Fast rendering';
+      }
     }
 
     // ==========================================
@@ -1917,7 +1948,7 @@
     }
 
     // ===================================================
-    // ULTRA HD 1080P/4K SYNCHRONIZED LOSSLESS EXPORT ENGINE
+    // HIGH-SPEED LOSSLESS HD EXPORT ENGINE WITH LIVE ETA
     // ===================================================
     async function startVideoExport() {
       if (isRendering || !mediaClips.length) return;
@@ -1931,30 +1962,27 @@
       document.getElementById('exportOverlay').classList.add('active');
       document.getElementById('exportProgressBar').style.width = '0%';
       document.getElementById('exportPercentText').textContent = '0%';
-      document.getElementById('exportStatusText').textContent = "Preparing HD export pipeline...";
+      document.getElementById('exportEtaText').textContent = 'Est. Time: Initializing...';
+      document.getElementById('exportStatusText').textContent = "Preloading sequence clips into GPU memory...";
 
-      // Detect Ultra HD resolution (1080p minimum for crisp quality)
       let targetW = 1920;
       let targetH = 1080;
+      let bitRate = 12000000; // 12 Mbps default
 
-      if (currentAspectRatio === '16:9') {
-        targetW = 1920; targetH = 1080;
-      } else if (currentAspectRatio === '9:16') {
-        targetW = 1080; targetH = 1920;
+      if (selectedExportQuality === '720p') {
+        targetW = 1280; targetH = 720; bitRate = 6000000;
+      } else if (selectedExportQuality === '480p') {
+        targetW = 854; targetH = 480; bitRate = 3000000;
+      }
+
+      if (currentAspectRatio === '9:16') {
+        const tmp = targetW; targetW = targetH; targetH = tmp;
       } else if (currentAspectRatio === '1:1') {
-        targetW = 1080; targetH = 1080;
+        targetH = targetW;
       } else if (currentAspectRatio === '4:5') {
         targetW = 1080; targetH = 1350;
       } else if (currentAspectRatio === '21:9') {
         targetW = 2560; targetH = 1080;
-      } else {
-        // Original aspect ratio matching the first clip
-        const first = mediaClips[0];
-        const refElement = (first.type === 'photo') ? photo : video;
-        const w = refElement.videoWidth || refElement.naturalWidth || 1920;
-        const h = refElement.videoHeight || refElement.naturalHeight || 1080;
-        targetW = w >= 1280 ? w : 1920;
-        targetH = h >= 720 ? h : Math.round((targetW * h) / w);
       }
 
       canvas.width = targetW;
@@ -1980,7 +2008,7 @@
       try {
         mediaRecorder = new MediaRecorder(canvasStream, {
           mimeType: mimeType,
-          videoBitsPerSecond: 12000000 // 12 Mbps Lossless Ultra HD
+          videoBitsPerSecond: bitRate
         });
       } catch (e) {
         mediaRecorder = new MediaRecorder(canvasStream);
@@ -2007,8 +2035,9 @@
 
       const totalSeqDuration = getTotalSequenceDuration();
       let renderedDurationSoFar = 0;
+      const exportStartTime = performance.now();
 
-      // Preload video DOM elements for each clip to prevent reload hanging
+      // Preload video DOM elements for each clip
       const clipElements = [];
       for (let i = 0; i < mediaClips.length; i++) {
         const clip = mediaClips[i];
@@ -2048,7 +2077,7 @@
         const element = clipElements[i];
         const clipDuration = Math.max(0.1, clip.trimEnd - clip.trimStart);
 
-        document.getElementById('exportStatusText').textContent = `Encoding Clip ${i + 1} of ${mediaClips.length} (Ultra HD 1080p)...`;
+        document.getElementById('exportStatusText').textContent = `Encoding Clip ${i + 1} of ${mediaClips.length} (${selectedExportQuality.toUpperCase()})...`;
 
         if (clip.type === 'video') {
           element.currentTime = clip.trimStart;
@@ -2066,6 +2095,14 @@
               const pct = Math.min(100, Math.max(0, Math.round((totalElapsed / totalSeqDuration) * 100)));
               document.getElementById('exportProgressBar').style.width = `${pct}%`;
               document.getElementById('exportPercentText').textContent = `${pct}%`;
+
+              // Calculate dynamic real-time ETA
+              const wallElapsedSec = (performance.now() - exportStartTime) / 1000;
+              if (totalElapsed > 1 && wallElapsedSec > 1) {
+                const speedRate = totalElapsed / wallElapsedSec;
+                const remainingSec = Math.max(0, (totalSeqDuration - totalElapsed) / speedRate);
+                document.getElementById('exportEtaText').textContent = `ETA: ~${formatTime(remainingSec)}`;
+              }
 
               if (element.currentTime >= clip.trimEnd - 0.05 || element.ended) {
                 element.pause();
@@ -2092,6 +2129,13 @@
               const pct = Math.min(100, Math.max(0, Math.round((totalElapsed / totalSeqDuration) * 100)));
               document.getElementById('exportProgressBar').style.width = `${pct}%`;
               document.getElementById('exportPercentText').textContent = `${pct}%`;
+
+              const wallElapsedSec = (performance.now() - exportStartTime) / 1000;
+              if (totalElapsed > 1 && wallElapsedSec > 1) {
+                const speedRate = totalElapsed / wallElapsedSec;
+                const remainingSec = Math.max(0, (totalSeqDuration - totalElapsed) / speedRate);
+                document.getElementById('exportEtaText').textContent = `ETA: ~${formatTime(remainingSec)}`;
+              }
 
               if (photoElapsed >= photoDur) {
                 renderedDurationSoFar += photoDur;

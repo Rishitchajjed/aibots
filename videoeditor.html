@@ -6,9 +6,9 @@
   <meta name="google-site-verification" content="ndzq-U-NLijgza_QqgQdcc2U3oMRoud_BT2ZZiwFREM">
   <meta name="google-site-verification" content="-Yb6Nx74gbZ3wRN5uP-Y8KKwDWlt1DPpxs4nA3PkE6M">
   <meta name="robots" content="index, follow">
-  <title>Video Studio Pro — Multi-Track Video & Audio Timeline Editor | AI Bots</title>
-  <meta name="description" content="Professional in-browser multi-track video and audio editor: Visual dual-handle scrubber, cut & slip music tracks, crop aspect ratios, add text & stickers, and export HD videos.">
-  <meta name="keywords" content="video editor online, multi track timeline video editor, visual scrubber video trim, add cut music to video, crop video for reels, ai bots video studio">
+  <title>Video Studio Pro — Advanced Multi-Track Timeline Video Editor | AI Bots</title>
+  <meta name="description" content="Professional in-browser video editor with real filmstrip timeline, decoded audio waveforms, dual draggable trim handles, music slip sync, zoom controls, and instant HD export.">
+  <meta name="keywords" content="video editor online, multi track timeline video editor, filmstrip video scrubber, waveform audio slip, crop video for reels, ai bots video studio">
   <link rel="icon" href="logo.png" type="image/png">
   <link rel="canonical" href="https://www.aibots.co.in/videoeditor.html">
   <link rel="manifest" href="manifest.json">
@@ -127,21 +127,51 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 16px;
+      margin-bottom: 14px;
       flex-wrap: wrap;
       gap: 10px;
     }
 
-    .timeline-lanes-container {
+    /* Timeline Zoom & Quick Actions Bar */
+    .timeline-tools-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 12px;
+      flex-wrap: wrap;
+    }
+    .timeline-btn-group {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .timeline-lanes-scroll-wrapper {
       position: relative;
       background: var(--bg-primary);
       border: 1px solid var(--border-color);
       border-radius: var(--radius-lg);
+      overflow-x: auto;
+      overflow-y: hidden;
       padding: 14px;
+    }
+    .timeline-lanes-scroll-wrapper::-webkit-scrollbar {
+      height: 6px;
+    }
+    .timeline-lanes-scroll-wrapper::-webkit-scrollbar-thumb {
+      background: var(--border-color);
+      border-radius: 3px;
+    }
+
+    .timeline-lanes-container {
+      position: relative;
+      min-width: 100%;
       display: flex;
       flex-direction: column;
       gap: 14px;
       user-select: none;
+      transition: width 0.15s ease;
     }
 
     /* Master Playhead Needle across both tracks */
@@ -149,13 +179,12 @@
       position: absolute;
       top: 0;
       bottom: 0;
-      left: 14px;
+      left: 0px;
       width: 3px;
       background: #ef4444;
       box-shadow: 0 0 12px #ef4444;
       pointer-events: none;
       z-index: 50;
-      transition: left 0.04s linear;
     }
     .master-playhead-cap {
       position: absolute;
@@ -171,14 +200,14 @@
     /* Individual Track Lane */
     .track-lane {
       position: relative;
-      height: 56px;
+      height: 64px;
       background: var(--bg-tertiary);
       border: 1px solid var(--border-color);
       border-radius: var(--radius-md);
       overflow: hidden;
       cursor: pointer;
     }
-    .track-lane-label {
+    .track-lane-header {
       position: absolute;
       left: 10px;
       top: 6px;
@@ -192,9 +221,20 @@
       display: flex;
       align-items: center;
       gap: 6px;
-      background: rgba(15, 23, 42, 0.75);
-      padding: 2px 8px;
+      background: rgba(15, 23, 42, 0.85);
+      padding: 3px 8px;
       border-radius: var(--radius-sm);
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+
+    /* Filmstrip Canvas inside Video Track */
+    .filmstrip-canvas {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      opacity: 0.45;
     }
 
     /* Video Visual Slice Box */
@@ -204,11 +244,12 @@
       bottom: 0;
       left: 0%;
       width: 100%;
-      background: linear-gradient(135deg, rgba(99, 102, 241, 0.35), rgba(139, 92, 246, 0.35));
-      border-top: 2px solid var(--primary);
-      border-bottom: 2px solid var(--primary);
+      background: linear-gradient(135deg, rgba(99, 102, 241, 0.4), rgba(139, 92, 246, 0.4));
+      border: 2px solid var(--primary);
+      border-radius: var(--radius-sm);
       cursor: grab;
       z-index: 10;
+      box-shadow: 0 0 15px rgba(99, 102, 241, 0.3);
     }
     .video-slice-box:active { cursor: grabbing; }
 
@@ -219,12 +260,13 @@
       bottom: 0;
       left: 0%;
       width: 100%;
-      background: linear-gradient(135deg, rgba(236, 72, 153, 0.35), rgba(244, 63, 94, 0.35));
-      border-top: 2px solid #ec4899;
-      border-bottom: 2px solid #ec4899;
+      background: linear-gradient(135deg, rgba(236, 72, 153, 0.4), rgba(244, 63, 94, 0.4));
+      border: 2px solid #ec4899;
+      border-radius: var(--radius-sm);
       cursor: grab;
       z-index: 10;
       display: none;
+      box-shadow: 0 0 15px rgba(236, 72, 153, 0.3);
     }
     .audio-slice-box:active { cursor: grabbing; }
 
@@ -235,7 +277,7 @@
       width: 100%;
       height: 100%;
       pointer-events: none;
-      opacity: 0.5;
+      opacity: 0.8;
     }
 
     /* Draggable Handles */
@@ -243,24 +285,25 @@
       position: absolute;
       top: 0;
       bottom: 0;
-      width: 14px;
+      width: 18px;
       background: var(--primary);
       cursor: ew-resize;
       z-index: 30;
       display: flex;
       align-items: center;
       justify-content: center;
-      box-shadow: 0 0 10px rgba(0,0,0,0.5);
+      box-shadow: 0 0 10px rgba(0,0,0,0.6);
+      touch-action: none;
     }
     .drag-handle-audio {
       background: #ec4899 !important;
     }
     .drag-handle::after {
       content: '';
-      width: 2px;
-      height: 16px;
+      width: 3px;
+      height: 20px;
       background: #ffffff;
-      border-radius: 1px;
+      border-radius: 2px;
     }
     .drag-handle-left {
       left: 0;
@@ -271,6 +314,29 @@
       right: 0;
       border-top-right-radius: var(--radius-sm);
       border-bottom-right-radius: var(--radius-sm);
+    }
+
+    /* Live Floating Timestamp Tooltip on Drag */
+    .drag-tooltip {
+      position: absolute;
+      top: -30px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #0f172a;
+      border: 1px solid var(--primary);
+      color: #ffffff;
+      font-size: 0.72rem;
+      font-family: var(--font-mono);
+      font-weight: 800;
+      padding: 2px 6px;
+      border-radius: var(--radius-sm);
+      pointer-events: none;
+      white-space: nowrap;
+      display: none;
+      z-index: 60;
+    }
+    .drag-handle:hover .drag-tooltip, .drag-handle:active .drag-tooltip, .video-slice-box:active .drag-tooltip {
+      display: block;
     }
 
     /* Sidebar controls */
@@ -411,7 +477,7 @@
         <a href="index.html" class="brand-link">
           <img src="logo.png" alt="AI Bots Logo" class="brand-logo-img">
           <span>AI Bots</span>
-          <span class="brand-badge" style="background: linear-gradient(135deg, #ec4899, #8b5cf6); color: white;">TIMELINE STUDIO</span>
+          <span class="brand-badge" style="background: linear-gradient(135deg, #ec4899, #8b5cf6); color: white;">TIMELINE STUDIO PRO</span>
         </a>
 
         <div class="nav-actions">
@@ -424,9 +490,9 @@
 
   <main class="app-container tool-page-wrapper">
     <div class="tool-header">
-      <span class="tool-header-badge"><i class="fas fa-clapperboard"></i> Multi-Track Timeline & Audio Slip</span>
+      <span class="tool-header-badge"><i class="fas fa-clapperboard"></i> Multi-Track Timeline & Audio Waveform Engine</span>
       <h1 class="tool-title">Video Studio Pro</h1>
-      <p class="tool-desc">Drag handles to cut video in-between, align & slip background music tracks, crop aspect ratios, add text & stickers, and export HD videos.</p>
+      <p class="tool-desc">Trim clips with visual filmstrip thumbnails, decoded audio waveform slip alignment, aspect ratio cropping, and guaranteed HD rendering.</p>
     </div>
 
     <!-- Dropzone / Empty State -->
@@ -495,39 +561,72 @@
                 <i class="fas fa-layer-group" style="color: var(--primary); margin-right: 6px;"></i> Visual Multi-Track Timeline
               </div>
               <div style="font-size: 0.82rem; color: var(--text-secondary);">
-                Selected Output Duration: <strong id="clipLengthText" style="color: var(--primary);">00:00.0</strong>
+                Selected Duration: <strong id="clipLengthText" style="color: var(--primary);">00:00.0</strong>
               </div>
             </div>
 
-            <!-- Timeline Lanes Container -->
-            <div class="timeline-lanes-container" id="timelineLanes" onclick="handleTimelineLaneClick(event)">
-              
-              <!-- Master Playhead Needle -->
-              <div class="master-playhead" id="masterPlayhead">
-                <div class="master-playhead-cap"></div>
+            <!-- Timeline Quick Tools Bar -->
+            <div class="timeline-tools-bar">
+              <div class="timeline-btn-group">
+                <button onclick="splitVideoAtPlayhead('start')" class="btn btn-secondary btn-sm" style="padding: 4px 10px; font-size: 0.76rem;" title="Set Trim Start to Current Time">
+                  <i class="fas fa-scissors"></i> Set Start [ [ ]
+                </button>
+                <button onclick="splitVideoAtPlayhead('end')" class="btn btn-secondary btn-sm" style="padding: 4px 10px; font-size: 0.76rem;" title="Set Trim End to Current Time">
+                  <i class="fas fa-scissors"></i> Set End [ ] ]
+                </button>
+                <button onclick="syncAudioToPlayhead()" class="btn btn-secondary btn-sm" style="padding: 4px 10px; font-size: 0.76rem; color: #ec4899;" title="Sync Music Beat to Playhead">
+                  <i class="fas fa-arrows-to-dot"></i> Sync Beat Here
+                </button>
               </div>
 
-              <!-- TRACK 1: Video Track Lane -->
-              <div class="track-lane" id="videoTrackLane">
-                <div class="track-lane-label"><i class="fas fa-video"></i> Video Track (Drag edges to trim / Drag middle to slide)</div>
+              <!-- Timeline Zoom Controller -->
+              <div class="timeline-btn-group" style="font-size: 0.78rem; font-weight: 700; color: var(--text-secondary);">
+                <span><i class="fas fa-magnifying-glass"></i> Zoom:</span>
+                <button class="chip-btn active" onclick="setTimelineZoom(1.0, this)">1x</button>
+                <button class="chip-btn" onclick="setTimelineZoom(1.5, this)">1.5x</button>
+                <button class="chip-btn" onclick="setTimelineZoom(2.5, this)">2.5x</button>
+              </div>
+            </div>
+
+            <!-- Timeline Lanes Container with Scroll Wrapper -->
+            <div class="timeline-lanes-scroll-wrapper" id="timelineScrollWrap">
+              <div class="timeline-lanes-container" id="timelineLanes" onclick="handleTimelineLaneClick(event)">
                 
-                <div class="video-slice-box" id="videoSlice">
-                  <div class="drag-handle drag-handle-left" id="videoHandleLeft" title="Drag to adjust video start"></div>
-                  <div class="drag-handle drag-handle-right" id="videoHandleRight" title="Drag to adjust video end"></div>
+                <!-- Master Playhead Needle -->
+                <div class="master-playhead" id="masterPlayhead">
+                  <div class="master-playhead-cap"></div>
                 </div>
-              </div>
 
-              <!-- TRACK 2: Audio / BGM Track Lane -->
-              <div class="track-lane" id="audioTrackLane">
-                <div class="track-lane-label" id="audioLaneLabel"><i class="fas fa-music"></i> Audio Track (Click 'Add Music' in sidebar to upload track)</div>
-                <canvas class="audio-waveform-canvas" id="audioWaveformCanvas"></canvas>
-                
-                <div class="audio-slice-box" id="audioSlice">
-                  <div class="drag-handle drag-handle-left drag-handle-audio" id="audioHandleLeft" title="Drag to slip music start"></div>
-                  <div class="drag-handle drag-handle-right drag-handle-audio" id="audioHandleRight" title="Drag to trim music end"></div>
+                <!-- TRACK 1: Video Track Lane with Filmstrip Thumbnails -->
+                <div class="track-lane" id="videoTrackLane">
+                  <div class="track-lane-header"><i class="fas fa-video"></i> Video Track (Drag handles to trim / middle to slip)</div>
+                  <canvas class="filmstrip-canvas" id="filmstripCanvas"></canvas>
+                  
+                  <div class="video-slice-box" id="videoSlice">
+                    <div class="drag-tooltip" id="videoSliceTooltip">00:00.0 - 00:00.0</div>
+                    <div class="drag-handle drag-handle-left" id="videoHandleLeft" title="Drag to adjust video start">
+                      <div class="drag-tooltip" id="leftHandleTooltip">00:00.0</div>
+                    </div>
+                    <div class="drag-handle drag-handle-right" id="videoHandleRight" title="Drag to adjust video end">
+                      <div class="drag-tooltip" id="rightHandleTooltip">00:00.0</div>
+                    </div>
+                  </div>
                 </div>
-              </div>
 
+                <!-- TRACK 2: Audio / BGM Track Lane with Decoded Peak Waveform -->
+                <div class="track-lane" id="audioTrackLane">
+                  <div class="track-lane-header" id="audioLaneLabel"><i class="fas fa-music"></i> Audio Track (Click 'Upload Audio' to add music)</div>
+                  <canvas class="audio-waveform-canvas" id="audioWaveformCanvas"></canvas>
+                  
+                  <div class="audio-slice-box" id="audioSlice">
+                    <div class="drag-tooltip" id="audioSliceTooltip">Music Start: 00:00.0</div>
+                    <div class="drag-handle drag-handle-left drag-handle-audio" id="audioHandleLeft" title="Drag to slip music start">
+                      <div class="drag-tooltip" id="audioHandleTooltip">00:00.0</div>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
             </div>
 
             <!-- Precision Range Millisecond Inputs -->
@@ -712,8 +811,8 @@
     let trimStart = 0;
     let trimEnd = 0;
 
-    // Audio Track Timestamps
-    let bgmStartOffset = 0; // In seconds into the song
+    // Audio Track Timestamps & State
+    let bgmStartOffset = 0;
     let bgmAudioDuration = 0;
     let playbackSpeed = 1.0;
     let rotationAngle = 0;
@@ -725,6 +824,7 @@
     let mediaRecorder = null;
     let recordedChunks = [];
     let exportTimer = null;
+    let currentZoom = 1.0;
 
     // Web Audio Routing Nodes
     let audioCtx = null;
@@ -794,18 +894,43 @@
         updateTrimDisplay();
         updateTimelinePlayhead();
         initInteractiveTimelineHandles();
+        generateFilmstripThumbnails();
       };
     }
 
-    // Background Music Upload & Waveform Generation
-    function handleBgmUpload(e) {
+    // Generate Real Visual Filmstrip Thumbnails
+    async function generateFilmstripThumbnails() {
+      const fCanvas = document.getElementById('filmstripCanvas');
+      const fCtx = fCanvas.getContext('2d');
+      fCanvas.width = fCanvas.parentElement.clientWidth || 800;
+      fCanvas.height = 64;
+
+      const tempVideo = document.createElement('video');
+      tempVideo.src = video.src;
+      tempVideo.muted = true;
+
+      await new Promise(r => tempVideo.onloadedmetadata = r);
+
+      const numThumbs = Math.max(5, Math.floor(fCanvas.width / 80));
+      const thumbW = fCanvas.width / numThumbs;
+
+      for (let i = 0; i < numThumbs; i++) {
+        const time = (i / numThumbs) * videoDuration;
+        tempVideo.currentTime = time;
+        await new Promise(r => tempVideo.onseeked = r);
+        fCtx.drawImage(tempVideo, i * thumbW, 0, thumbW, fCanvas.height);
+      }
+    }
+
+    // Background Music Upload & Waveform Decoding
+    async function handleBgmUpload(e) {
       const file = e.target.files[0];
       if (!file) return;
       initAudioGraph();
       bgmAudio.src = URL.createObjectURL(file);
       bgmLoaded = true;
       document.getElementById('bgmBtnText').textContent = `🎵 ${file.name.substring(0, 18)}...`;
-      document.getElementById('audioLaneLabel').innerHTML = `<i class="fas fa-music"></i> ${file.name.substring(0, 26)} (Drag handles to slip audio segment)`;
+      document.getElementById('audioLaneLabel').innerHTML = `<i class="fas fa-music"></i> ${file.name.substring(0, 26)}`;
       document.getElementById('audioSlice').style.display = 'block';
       document.getElementById('audioTrimInputsRow').style.display = 'flex';
 
@@ -814,19 +939,53 @@
         bgmStartOffset = 0;
         document.getElementById('bgmStartInput').value = formatTime(0, true);
         updateAudioTrimDisplay();
-        drawDummyWaveform();
       };
+
+      // Decode real peak waveform from file
+      try {
+        const actx = new (window.AudioContext || window.webkitAudioContext)();
+        const arrayBuffer = await file.arrayBuffer();
+        const audioBuffer = await actx.decodeAudioData(arrayBuffer);
+        drawDecodedWaveform(audioBuffer);
+      } catch (err) {
+        drawFallbackWaveform();
+      }
+
       updateAudioMixer();
     }
 
-    function drawDummyWaveform() {
+    function drawDecodedWaveform(buffer) {
       const c = document.getElementById('audioWaveformCanvas');
       const cx = c.getContext('2d');
-      c.width = c.parentElement.clientWidth || 600;
-      c.height = 56;
+      c.width = c.parentElement.clientWidth || 800;
+      c.height = 64;
+      cx.clearRect(0, 0, c.width, c.height);
+
+      const data = buffer.getChannelData(0);
+      const step = Math.ceil(data.length / c.width);
+      const amp = c.height / 2;
+
+      cx.fillStyle = '#ec4899';
+      for (let i = 0; i < c.width; i++) {
+        let min = 1.0;
+        let max = -1.0;
+        for (let j = 0; j < step; j++) {
+          const datum = data[(i * step) + j];
+          if (datum < min) min = datum;
+          if (datum > max) max = datum;
+        }
+        const barH = Math.max(2, (max - min) * amp * 0.9);
+        cx.fillRect(i, (c.height - barH) / 2, 1.5, barH);
+      }
+    }
+
+    function drawFallbackWaveform() {
+      const c = document.getElementById('audioWaveformCanvas');
+      const cx = c.getContext('2d');
+      c.width = c.parentElement.clientWidth || 800;
+      c.height = 64;
       cx.clearRect(0, 0, c.width, c.height);
       cx.fillStyle = '#ec4899';
-
       for (let x = 0; x < c.width; x += 4) {
         const barH = 10 + Math.sin(x * 0.05) * 15 + Math.random() * 15;
         cx.fillRect(x, (c.height - barH) / 2, 2.5, barH);
@@ -930,15 +1089,50 @@
     }
 
     // ===================================================
+    // TIMELINE ZOOM & SPLIT TOOLS
+    // ===================================================
+    function setTimelineZoom(zoom, btn) {
+      currentZoom = zoom;
+      btn.parentElement.querySelectorAll('.chip-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+
+      const container = document.getElementById('timelineLanes');
+      container.style.width = `${zoom * 100}%`;
+      updateTrimDisplay();
+      updateAudioTrimDisplay();
+      updateTimelinePlayhead();
+      generateFilmstripThumbnails();
+    }
+
+    function splitVideoAtPlayhead(point) {
+      if (!videoDuration) return;
+      const cur = video.currentTime;
+      if (point === 'start') {
+        trimStart = Math.min(cur, trimEnd - 0.5);
+        document.getElementById('trimStartInput').value = formatTime(trimStart, true);
+      } else {
+        trimEnd = Math.max(cur, trimStart + 0.5);
+        document.getElementById('trimEndInput').value = formatTime(trimEnd, true);
+      }
+      updateTrimDisplay();
+    }
+
+    function syncAudioToPlayhead() {
+      if (!bgmLoaded || !bgmAudioDuration) return;
+      bgmStartOffset = Math.min(video.currentTime, bgmAudioDuration - 1);
+      document.getElementById('bgmStartInput').value = formatTime(bgmStartOffset, true);
+      updateAudioTrimDisplay();
+    }
+
+    // ===================================================
     // MULTI-TRACK INTERACTIVE DRAG & SLIP SCRUBBER
     // ===================================================
     function updateTimelinePlayhead() {
       if (!videoDuration) return;
       const pct = (video.currentTime / videoDuration) * 100;
-      const lanes = document.getElementById('timelineLanes');
-      if (lanes) {
-        const laneW = lanes.clientWidth - 28;
-        const leftPx = 14 + (pct / 100) * laneW;
+      const lane = document.getElementById('videoTrackLane');
+      if (lane) {
+        const leftPx = (pct / 100) * lane.clientWidth;
         document.getElementById('masterPlayhead').style.left = `${leftPx}px`;
       }
     }
@@ -953,6 +1147,9 @@
       slice.style.width = `${widthPct}%`;
 
       document.getElementById('clipLengthText').textContent = formatTime(trimEnd - trimStart, true);
+      document.getElementById('videoSliceTooltip').textContent = `${formatTime(trimStart, true)} - ${formatTime(trimEnd, true)}`;
+      document.getElementById('leftHandleTooltip').textContent = formatTime(trimStart, true);
+      document.getElementById('rightHandleTooltip').textContent = formatTime(trimEnd, true);
     }
 
     function updateAudioTrimDisplay() {
@@ -965,6 +1162,8 @@
       slice.style.left = `${leftPct}%`;
       slice.style.width = `${Math.max(5, widthPct)}%`;
       document.getElementById('bgmStartInput').value = formatTime(bgmStartOffset, true);
+      document.getElementById('audioSliceTooltip').textContent = `Music Start: ${formatTime(bgmStartOffset, true)}`;
+      document.getElementById('audioHandleTooltip').textContent = formatTime(bgmStartOffset, true);
     }
 
     function handleTimelineLaneClick(e) {
@@ -988,15 +1187,13 @@
       const aLane = document.getElementById('audioTrackLane');
       const aSlice = document.getElementById('audioSlice');
       const aLeft = document.getElementById('audioHandleLeft');
-      const aRight = document.getElementById('audioHandleRight');
 
-      let activeDrag = null; // 'v-left', 'v-right', 'v-slide', 'a-left', 'a-slide'
+      let activeDrag = null;
       let dragStartX = 0;
       let initialTrimStart = 0;
       let initialTrimEnd = 0;
       let initialBgmOffset = 0;
 
-      // Video Left Handle Drag
       vLeft.addEventListener('pointerdown', (e) => {
         e.stopPropagation();
         activeDrag = 'v-left';
@@ -1005,7 +1202,6 @@
         vLeft.setPointerCapture(e.pointerId);
       });
 
-      // Video Right Handle Drag
       vRight.addEventListener('pointerdown', (e) => {
         e.stopPropagation();
         activeDrag = 'v-right';
@@ -1014,7 +1210,6 @@
         vRight.setPointerCapture(e.pointerId);
       });
 
-      // Video Slice Middle Slide
       vSlice.addEventListener('pointerdown', (e) => {
         if (e.target === vLeft || e.target === vRight) return;
         e.stopPropagation();
@@ -1025,7 +1220,6 @@
         vSlice.setPointerCapture(e.pointerId);
       });
 
-      // Audio Left Handle / Slide Drag
       aSlice.addEventListener('pointerdown', (e) => {
         e.stopPropagation();
         activeDrag = 'a-slide';

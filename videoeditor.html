@@ -219,12 +219,12 @@
       color: var(--primary);
     }
 
-    /* DEDICATED ACTIVE CLIP PRECISION TRIMMER (FULL-WIDTH ACCURACY) */
+    /* DEDICATED ACTIVE CLIP PRECISION TRIMMER */
     .active-clip-focus-box {
       background: rgba(15, 23, 42, 0.85);
       border: 1px solid var(--primary);
       border-radius: var(--radius-lg);
-      padding: 12px 14px;
+      padding: 14px 16px;
       margin-bottom: 16px;
       box-shadow: 0 4px 14px rgba(99, 102, 241, 0.15);
     }
@@ -232,20 +232,23 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 8px;
-      font-size: 0.82rem;
+      margin-bottom: 10px;
+      font-size: 0.84rem;
       font-weight: 800;
       color: var(--text-primary);
+      flex-wrap: wrap;
+      gap: 8px;
     }
     .clip-focus-track {
       position: relative;
-      height: 52px;
+      height: 56px;
       background: rgba(30, 41, 59, 0.8);
       border-radius: var(--radius-md);
       overflow: hidden;
       border: 1px solid var(--border-color);
       cursor: crosshair;
       user-select: none;
+      touch-action: none;
     }
     .clip-focus-active-window {
       position: absolute;
@@ -253,7 +256,7 @@
       bottom: 0;
       left: 0%;
       width: 100%;
-      background: linear-gradient(135deg, rgba(99, 102, 241, 0.4), rgba(236, 72, 153, 0.4));
+      background: linear-gradient(135deg, rgba(99, 102, 241, 0.45), rgba(236, 72, 153, 0.45));
       border: 2px solid var(--primary);
       border-radius: var(--radius-sm);
     }
@@ -261,9 +264,9 @@
       position: absolute;
       top: 0;
       bottom: 0;
-      width: 22px;
+      width: 24px;
       background: #ffffff;
-      box-shadow: 0 0 10px rgba(0,0,0,0.8);
+      box-shadow: 0 0 12px rgba(0,0,0,0.8);
       cursor: ew-resize;
       display: flex;
       align-items: center;
@@ -274,7 +277,7 @@
     .focus-trim-handle::after {
       content: '';
       width: 4px;
-      height: 22px;
+      height: 24px;
       background: #0f172a;
       border-radius: 2px;
     }
@@ -370,7 +373,7 @@
       border: 2px solid transparent;
       transition: border-color 0.15s, box-shadow 0.15s;
       flex-shrink: 0;
-      min-width: 60px; /* Protected minimum width so short clips never vanish */
+      min-width: 60px;
       box-sizing: border-box;
     }
     .joined-clip-block.active {
@@ -739,7 +742,15 @@
             <div class="active-clip-focus-box">
               <div class="active-clip-header">
                 <span><i class="fas fa-crop-simple" style="color: var(--primary);"></i> Selected Clip Precision Trimmer (<span id="focusClipTitle">Clip 1</span>)</span>
-                <span style="color: var(--text-secondary); font-family: var(--font-mono);" id="focusClipDurBadge">00:00.0 / 00:00.0</span>
+                <div style="display: flex; gap: 8px; align-items: center;">
+                  <button onclick="splitActiveClipAtPlayhead('start')" class="btn btn-secondary btn-sm" style="padding: 2px 8px; font-size: 0.72rem;" title="Set Start point to current time [ [ ]">
+                    <i class="fas fa-scissors"></i> Set Start [
+                  </button>
+                  <button onclick="splitActiveClipAtPlayhead('end')" class="btn btn-secondary btn-sm" style="padding: 2px 8px; font-size: 0.72rem;" title="Set End point to current time [ ] ]">
+                    <i class="fas fa-scissors"></i> Set End ]
+                  </button>
+                  <span style="color: var(--primary); font-family: var(--font-mono); font-weight: 800;" id="focusClipDurBadge">00:00.0 / 00:00.0</span>
+                </div>
               </div>
               <div class="clip-focus-track" id="clipFocusTrack" onpointerdown="handleFocusTrackDown(event)">
                 <div class="clip-focus-active-window" id="focusActiveWindow">
@@ -756,12 +767,6 @@
             <!-- Timeline Tools Bar -->
             <div class="timeline-tools-bar">
               <div class="timeline-btn-group">
-                <button onclick="splitActiveClipAtPlayhead('start')" class="btn btn-secondary btn-sm" style="padding: 4px 10px; font-size: 0.76rem;" title="Set Active Clip Start to Current Time">
-                  <i class="fas fa-scissors"></i> Trim Start [ [ ]
-                </button>
-                <button onclick="splitActiveClipAtPlayhead('end')" class="btn btn-secondary btn-sm" style="padding: 4px 10px; font-size: 0.76rem;" title="Set Active Clip End to Current Time">
-                  <i class="fas fa-scissors"></i> Trim End [ ] ]
-                </button>
                 <button onclick="previewAudioSolo()" class="btn btn-secondary btn-sm" id="soloAudioBtn" style="padding: 4px 10px; font-size: 0.76rem; color: #ec4899;" title="Solo Preview Audio / Music at Beat">
                   <i class="fas fa-headphones"></i> Solo Audio Preview
                 </button>
@@ -1214,10 +1219,10 @@
             <span>${clip.type === 'video' ? '🎥' : '📷'} Clip ${idx + 1}</span>
             <span id="clip_dur_text_${idx}">${formatTime(clipDur, true)}</span>
           </div>
-          <div class="clip-trim-handle clip-trim-left" onpointerdown="handleClipLeftDown(event, ${idx})" title="Drag to trim start">
+          <div class="clip-trim-handle clip-trim-left" onpointerdown="handleFocusLeftDown(event)" title="Drag to trim start">
             <div class="drag-tooltip" id="clip_left_tip_${idx}">${formatTime(clip.trimStart, true)}</div>
           </div>
-          <div class="clip-trim-handle clip-trim-right" onpointerdown="handleClipRightDown(event, ${idx})" title="Drag to trim end">
+          <div class="clip-trim-handle clip-trim-right" onpointerdown="handleFocusRightDown(event)" title="Drag to trim end">
             <div class="drag-tooltip" id="clip_right_tip_${idx}">${formatTime(clip.trimEnd, true)}</div>
           </div>
         `;
@@ -1277,7 +1282,7 @@
 
       const win = document.getElementById('focusActiveWindow');
       win.style.left = `${startPct}%`;
-      win.style.width = `${Math.max(3, widthPct)}%`;
+      win.style.width = `${Math.max(4, widthPct)}%`;
 
       document.getElementById('focusLeftTooltip').textContent = formatTime(clip.trimStart, true);
       document.getElementById('focusRightTooltip').textContent = formatTime(clip.trimEnd, true);
@@ -1373,28 +1378,6 @@
       const clickSec = pct * clip.duration;
 
       if (clip.type === 'video') video.currentTime = clickSec;
-    }
-
-    function handleClipLeftDown(e, idx) {
-      e.stopPropagation();
-      selectClip(idx);
-      activeDrag = {
-        type: 'focus-left',
-        startX: e.clientX,
-        initTrimStart: mediaClips[idx].trimStart,
-        clipDuration: mediaClips[idx].duration
-      };
-    }
-
-    function handleClipRightDown(e, idx) {
-      e.stopPropagation();
-      selectClip(idx);
-      activeDrag = {
-        type: 'focus-right',
-        startX: e.clientX,
-        initTrimEnd: mediaClips[idx].trimEnd,
-        clipDuration: mediaClips[idx].duration
-      };
     }
 
     function handleAudioLeftDown(e) {
@@ -1526,7 +1509,7 @@
       }
 
       if (bgmLoaded) {
-        bgmAudio.currentTime = Math.max(0, bgmStartOffset + sequenceCurrentTime);
+        bgmAudio.currentTime = Math.max(0, bgmStartOffset + (sequenceCurrentTime % (bgmAudioDuration || 1)));
       }
     }
 
@@ -1838,8 +1821,8 @@
 
     function splitActiveClipAtPlayhead(point) {
       const clip = mediaClips[activeClipIndex];
-      if (!clip || clip.type !== 'video') return;
-      const cur = video.currentTime;
+      if (!clip) return;
+      const cur = (clip.type === 'video') ? video.currentTime : 0;
       if (point === 'start') {
         clip.trimStart = Math.min(cur, clip.trimEnd - 0.5);
         document.getElementById('trimStartInput').value = formatTime(clip.trimStart, true);
@@ -2090,7 +2073,7 @@
 
       let targetW = 1920;
       let targetH = 1080;
-      let bitRate = 12000000; // 12 Mbps default
+      let bitRate = 12000000;
 
       if (selectedExportQuality === '720p') {
         targetW = 1280; targetH = 720; bitRate = 6000000;
@@ -2370,6 +2353,12 @@
       } else if (e.key === 'ArrowRight') {
         e.preventDefault();
         seekSequenceRelative(1);
+      } else if (e.key === '[') {
+        e.preventDefault();
+        splitActiveClipAtPlayhead('start');
+      } else if (e.key === ']') {
+        e.preventDefault();
+        splitActiveClipAtPlayhead('end');
       }
     });
   </script>

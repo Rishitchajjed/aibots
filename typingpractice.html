@@ -1,16 +1,20 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
   <meta name="google-site-verification" content="ndzq-U-NLijgza_QqgQdcc2U3oMRoud_BT2ZZiwFREM">
   <meta name="google-site-verification" content="-Yb6Nx74gbZ3wRN5uP-Y8KKwDWlt1DPpxs4nA3PkE6M">
   <meta name="robots" content="index, follow">
-  <title>Typing Speed Test & Shooter Game — AI Bots</title>
-  <meta name="description" content="Test and train your typing speed (WPM), accuracy, and reflexes with paragraph tests and an interactive word shooter arcade game.">
-  <meta name="keywords" content="typing speed test, wpm test online, typing practice, typing game, improve typing speed, ai bots typing">
+  <title>Typing Speed Test Pro & Arcade Game — AI Bots</title>
+  <meta name="description" content="Test and train your typing speed (WPM), accuracy, and reflexes with Monkeytype-style real-time feedback, coding tests, custom time limits, and space shooter game.">
+  <meta name="keywords" content="typing speed test, wpm test online, typing practice, monkeytype style, typing test 60 seconds, typing game, coding typing test, ai bots typing">
   <link rel="icon" href="logo.png" type="image/png">
   <link rel="canonical" href="https://www.aibots.co.in/typingpractice.html">
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#6366f1">
+  <meta name="author" content="Rishit Chajjed">
+
   <!-- Google Analytics -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-2L87FMQS3W"></script>
   <script>
@@ -19,73 +23,248 @@
     gtag('js', new Date());
     gtag('config', 'G-2L87FMQS3W');
   </script>
+
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link rel="stylesheet" href="css/theme.css">
+
   <style>
-    .type-container { max-width: 840px; margin: 0 auto; }
-    .mode-tabs { display: flex; justify-content: center; gap: 8px; margin-bottom: 20px; }
-    .mode-tab {
-      background: var(--bg-secondary); border: 1px solid var(--border-color);
-      border-radius: 999px; padding: 8px 20px; font-size: 0.88rem; font-weight: 700;
-      color: var(--text-secondary); cursor: pointer; transition: all 0.15s;
+    .type-container {
+      max-width: 920px;
+      margin: 0 auto;
     }
-    .mode-tab.active {
-      background: color-mix(in srgb, var(--primary) 12%, transparent);
-      border-color: var(--primary); color: var(--primary);
+
+    /* Top Mode & Duration Configuration Bar */
+    .config-bar {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 16px;
+      flex-wrap: wrap;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-xl);
+      padding: 10px 18px;
+      margin-bottom: 24px;
+      box-shadow: var(--shadow-sm);
     }
+    .config-group {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .config-label {
+      font-size: 0.75rem;
+      font-weight: 800;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-right: 4px;
+    }
+    .config-btn {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border-color);
+      border-radius: 999px;
+      padding: 6px 14px;
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: all 0.15s ease;
+      user-select: none;
+    }
+    .config-btn:hover {
+      color: var(--text-primary);
+      border-color: var(--primary);
+    }
+    .config-btn.active {
+      background: var(--primary);
+      color: #ffffff !important;
+      border-color: var(--primary);
+      box-shadow: 0 2px 8px var(--primary-glow);
+    }
+
+    /* Live Stat HUD */
     .stats-bar {
-      display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px;
-      margin-bottom: 20px;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 14px;
+      margin-bottom: 24px;
+    }
+    @media (max-width: 600px) {
+      .stats-bar { grid-template-columns: repeat(2, 1fr); }
     }
     .stat-card {
-      background: var(--bg-secondary); border: 1px solid var(--border-color);
-      border-radius: var(--radius-md); padding: 14px; text-align: center;
-    }
-    .stat-num { font-size: 1.8rem; font-weight: 800; font-family: monospace; color: var(--primary); }
-    .stat-label { font-size: 0.72rem; font-weight: 700; color: var(--text-secondary); text-transform: uppercase; }
-
-    .prompt-box {
       background: var(--bg-secondary);
       border: 1px solid var(--border-color);
       border-radius: var(--radius-lg);
-      padding: 24px;
-      font-size: 1.25rem;
-      line-height: 1.7;
-      font-family: var(--font-sans);
+      padding: 16px;
+      text-align: center;
+      box-shadow: var(--shadow-sm);
+      position: relative;
+      overflow: hidden;
+    }
+    .stat-num {
+      font-size: 2.2rem;
+      font-weight: 900;
+      font-family: var(--font-mono);
+      color: var(--primary);
+      line-height: 1.1;
+    }
+    .stat-label {
+      font-size: 0.72rem;
+      font-weight: 800;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-top: 4px;
+    }
+
+    /* Interactive Monkeytype-Style Prompt Display */
+    .typing-box-wrapper {
+      position: relative;
+      background: var(--bg-secondary);
+      border: 2px solid var(--border-color);
+      border-radius: var(--radius-xl);
+      padding: 28px;
       margin-bottom: 20px;
-      min-height: 120px;
+      box-shadow: var(--shadow-md);
+      transition: border-color 0.2s, box-shadow 0.2s;
+      cursor: text;
+    }
+    .typing-box-wrapper.focused {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 4px var(--primary-glow);
+    }
+
+    .prompt-text-flow {
+      font-family: 'JetBrains Mono', monospace, sans-serif;
+      font-size: 1.45rem;
+      line-height: 1.85;
+      color: var(--text-muted);
       user-select: none;
-      letter-spacing: 0.02em;
+      word-break: break-word;
+      min-height: 150px;
+      max-height: 280px;
+      overflow-y: hidden;
+      letter-spacing: 0.04em;
     }
-    .char-correct { color: #10b981; }
-    .char-wrong { color: #ef4444; background: rgba(239, 68, 68, 0.2); border-radius: 2px; }
-    .char-current { background: var(--primary); color: white; border-radius: 2px; }
+    @media (max-width: 768px) {
+      .prompt-text-flow { font-size: 1.15rem; line-height: 1.7; }
+    }
 
-    .type-input {
-      width: 100%; padding: 14px 18px; font-size: 1.15rem;
-      border-radius: var(--radius-md); border: 2px solid var(--border-color);
-      background: var(--bg-secondary); color: var(--text-primary); outline: none;
-      box-sizing: border-box; transition: border-color 0.2s;
+    .char {
+      position: relative;
+      transition: color 0.08s;
     }
-    .type-input:focus { border-color: var(--primary); }
+    .char.correct { color: #10b981; }
+    .char.wrong { color: #ef4444; background: rgba(239, 68, 68, 0.2); border-radius: 2px; }
+    .char.extra { color: #f43f5e; }
+    
+    /* Smooth Caret Cursor */
+    .caret {
+      display: inline-block;
+      width: 2.5px;
+      height: 1.25em;
+      background: var(--primary);
+      position: absolute;
+      left: 0;
+      top: 0;
+      border-radius: 2px;
+      transition: left 0.08s ease, top 0.08s ease;
+      animation: caretPulse 1s infinite alternate ease-in-out;
+      pointer-events: none;
+      z-index: 10;
+    }
+    @keyframes caretPulse {
+      0% { opacity: 1; }
+      100% { opacity: 0.3; }
+    }
 
-    /* Shooter Canvas */
-    .shooter-wrapper {
-      position: relative; width: 100%; aspect-ratio: 16/9; max-height: 500px;
-      background: #090d16; border-radius: var(--radius-lg); overflow: hidden;
-      border: 2px solid var(--border-color); margin-bottom: 16px;
+    /* Hidden Real Input */
+    .hidden-type-input {
+      position: absolute;
+      top: -9999px;
+      left: -9999px;
+      opacity: 0;
+      pointer-events: none;
     }
-    #shooterCanvas { width: 100%; height: 100%; display: block; }
+
+    /* Action Control Row */
+    .type-actions-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    /* Sound Switcher */
+    .sound-toggle-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: 999px;
+      padding: 6px 14px;
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .sound-toggle-badge:hover {
+      border-color: var(--primary);
+      color: var(--text-primary);
+    }
+    .sound-toggle-badge.active {
+      color: #10b981;
+      border-color: #10b981;
+      background: rgba(16, 185, 129, 0.1);
+    }
+
+    /* Results Modal */
+    .results-card {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-xl);
+      padding: 32px;
+      max-width: 580px;
+      width: 100%;
+      text-align: center;
+      box-shadow: var(--shadow-xl);
+    }
+    .rank-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 18px;
+      border-radius: 999px;
+      font-size: 0.95rem;
+      font-weight: 800;
+      margin-bottom: 20px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+    }
+    .rank-godspeed { background: linear-gradient(135deg, #f59e0b, #ea580c); color: white; }
+    .rank-pro { background: linear-gradient(135deg, #10b981, #059669); color: white; }
+    .rank-speedster { background: linear-gradient(135deg, #6366f1, #8b5cf6); color: white; }
+    .rank-runner { background: linear-gradient(135deg, #38bdf8, #0284c7); color: white; }
+    .rank-turtle { background: linear-gradient(135deg, #64748b, #334155); color: white; }
+
+    /* Space Word Shooter 2.0 */
+    .arcade-wrapper {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      background: #020617;
+      border-radius: var(--radius-xl);
+      overflow: hidden;
+      border: 2px solid var(--border-color);
+      box-shadow: 0 20px 40px rgba(0,0,0,0.6);
+      margin-bottom: 16px;
+    }
+    #arcadeCanvas { width: 100%; height: 100%; display: block; }
   </style>
-  <link rel="manifest" href="manifest.json">
-  <meta name="theme-color" content="#6366f1">
-  <meta name="mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="apple-mobile-web-app-title" content="AI Bots">
-  <link rel="apple-touch-icon" href="logo.png">
-  <meta name="author" content="Rishit Chajjed">
-  <meta name="creator" content="Rishit Chajjed">
 </head>
 <body>
   <div class="bg-mesh"></div>
@@ -97,7 +276,7 @@
         <a href="index.html" class="brand-link">
           <img src="logo.png" alt="AI Bots Logo" class="brand-logo-img">
           <span>AI Bots</span>
-          <span class="brand-badge">Typing Speed</span>
+          <span class="brand-badge" style="background: linear-gradient(135deg, #6366f1, #10b981); color: white;">PRO 2.0</span>
         </a>
 
         <div class="nav-actions">
@@ -110,236 +289,654 @@
 
   <main class="app-container tool-page-wrapper">
     <div class="tool-header">
-      <span class="tool-header-badge"><i class="fas fa-keyboard"></i> Speed & Reflexes</span>
-      <h1 class="tool-title">Typing Speed Test</h1>
-      <p class="tool-desc">Test your typing speed (WPM) and accuracy with real-time feedback and arcade mode.</p>
+      <span class="tool-header-badge"><i class="fas fa-keyboard"></i> Pro Typing Suite</span>
+      <h1 class="tool-title">Typing Speed Master Pro</h1>
+      <p class="tool-desc">Test your words per minute (WPM), accuracy, and muscle memory with live feedback and space shooter mode.</p>
     </div>
 
     <div class="type-container">
-      <div class="mode-tabs">
-        <button class="mode-tab active" id="tabTest" onclick="switchMode('test')"><i class="fas fa-file-lines"></i> Paragraph Test</button>
-        <button class="mode-tab" id="tabGame" onclick="switchMode('game')"><i class="fas fa-gamepad"></i> Space Word Shooter</button>
+      
+      <!-- Top Mode Switcher Tabs -->
+      <div style="display: flex; justify-content: center; gap: 10px; margin-bottom: 20px;">
+        <button class="config-btn active" id="tabTest" onclick="switchMainTab('test')"><i class="fas fa-file-lines"></i> Speed Test Mode</button>
+        <button class="config-btn" id="tabArcade" onclick="switchMainTab('arcade')"><i class="fas fa-gamepad"></i> Space Word Shooter</button>
       </div>
 
-      <!-- Live Stats -->
-      <div class="stats-bar">
-        <div class="stat-card"><div class="stat-num" id="wpmVal">0</div><div class="stat-label">WPM (Speed)</div></div>
-        <div class="stat-card"><div class="stat-num" id="accVal">100%</div><div class="stat-label">Accuracy</div></div>
-        <div class="stat-card"><div class="stat-num" id="errVal">0</div><div class="stat-label">Errors</div></div>
-        <div class="stat-card"><div class="stat-num" id="timeVal">60s</div><div class="stat-label">Time Left</div></div>
-      </div>
+      <!-- SPEED TEST INTERFACE -->
+      <div id="speedTestSection">
+        <!-- Configuration Bar -->
+        <div class="config-bar">
+          <div class="config-group">
+            <span class="config-label"><i class="fas fa-clock"></i> Time:</span>
+            <button class="config-btn" onclick="setTimeLimit(15, this)">15s</button>
+            <button class="config-btn" onclick="setTimeLimit(30, this)">30s</button>
+            <button class="config-btn active" onclick="setTimeLimit(60, this)">60s</button>
+            <button class="config-btn" onclick="setTimeLimit(120, this)">120s</button>
+          </div>
 
-      <!-- Test Mode -->
-      <div id="testArea">
-        <div class="prompt-box" id="promptDisplay">Loading test prompt...</div>
-        <input type="text" id="typeInput" class="type-input" placeholder="Start typing here to begin the speed test..." autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
-        <div style="margin-top: 16px; display: flex; justify-content: space-between;">
-          <button class="btn btn-secondary btn-sm" onclick="initTest()"><i class="fas fa-rotate"></i> New Prompt</button>
-          <span style="font-size:0.85rem; color:var(--text-secondary); display:flex; align-items:center;">Best Score: <strong id="bestWpm" style="margin-left:4px; color:var(--primary);">0 WPM</strong></span>
+          <div class="config-group">
+            <span class="config-label"><i class="fas fa-layer-group"></i> Mode:</span>
+            <button class="config-btn active" onclick="setTestCategory('words', this)">Words</button>
+            <button class="config-btn" onclick="setTestCategory('quote', this)">Quotes</button>
+            <button class="config-btn" onclick="setTestCategory('code', this)">Code (JS/Py)</button>
+            <button class="config-btn" onclick="setTestCategory('numbers', this)">Numbers & Symbols</button>
+          </div>
+        </div>
+
+        <!-- Live Real-Time Stat HUD -->
+        <div class="stats-bar">
+          <div class="stat-card">
+            <div class="stat-num" id="liveWpmVal">0</div>
+            <div class="stat-label">WPM (Speed)</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-num" id="liveAccVal" style="color: #10b981;">100%</div>
+            <div class="stat-label">Accuracy</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-num" id="liveCpmVal" style="color: #38bdf8;">0</div>
+            <div class="stat-label">CPM (Chars/Min)</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-num" id="liveTimerVal" style="color: #f59e0b;">60s</div>
+            <div class="stat-label">Time Remaining</div>
+          </div>
+        </div>
+
+        <!-- Real-Time Monkeytype Prompt Box -->
+        <div class="typing-box-wrapper focused" id="typingBox" onclick="focusTypingInput()">
+          <div class="caret" id="smoothCaret"></div>
+          <div class="prompt-text-flow" id="promptFlow">Loading prompt words...</div>
+          <input type="text" id="masterTypeInput" class="hidden-type-input" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
+        </div>
+
+        <!-- Action Row -->
+        <div class="type-actions-row">
+          <div style="display: flex; gap: 10px; align-items: center;">
+            <button onclick="resetSpeedTest()" class="btn btn-primary btn-sm"><i class="fas fa-rotate-right"></i> Restart Test [Tab + Enter]</button>
+            <button class="sound-toggle-badge active" id="keySoundToggle" onclick="toggleKeyboardSound()">
+              <i class="fas fa-volume-high" id="keySoundIcon"></i> Mechanical Click: <strong id="soundStateText" style="margin-left:4px;">ON</strong>
+            </button>
+          </div>
+          <div style="font-size: 0.88rem; color: var(--text-secondary);">
+            🏆 Personal Best: <strong id="bestWpmDisplay" style="color: var(--primary); font-size: 1.05rem;">0 WPM</strong>
+          </div>
         </div>
       </div>
 
-      <!-- Game Mode -->
-      <div id="gameArea" style="display: none;">
-        <div class="shooter-wrapper">
-          <canvas id="shooterCanvas" width="800" height="450"></canvas>
+      <!-- ARCADE SHOOTER INTERFACE -->
+      <div id="arcadeSection" style="display: none;">
+        <div class="arcade-wrapper">
+          <canvas id="arcadeCanvas" width="880" height="480"></canvas>
         </div>
-        <input type="text" id="gameInput" class="type-input" placeholder="Type falling words and press Enter to shoot!" autocomplete="off">
-        <div style="margin-top: 12px; display: flex; justify-content: space-between;">
-          <button class="btn btn-primary btn-sm" id="gameStartBtn" onclick="toggleGame()"><i class="fas fa-play"></i> Start Game</button>
-          <span style="font-size:0.85rem; color:var(--text-secondary); display:flex; align-items:center;">Arcade Score: <strong id="gameScoreVal" style="margin-left:4px; color:var(--primary);">0</strong></span>
+        <div style="display: flex; gap: 12px; align-items: center;">
+          <input type="text" id="arcadeInput" class="type-input" placeholder="Type falling words and press Space/Enter to vaporize!" autocomplete="off" style="font-size: 1.15rem; padding: 14px 18px; border-radius: var(--radius-lg); background: var(--bg-secondary); border: 2px solid var(--border-color); color: var(--text-primary); flex-grow: 1;">
+          <button class="btn btn-primary" id="arcadeStartBtn" onclick="toggleArcadeGame()" style="white-space: nowrap; padding: 14px 22px; font-weight: 800;">
+            <i class="fas fa-play"></i> Start Arcade
+          </button>
+        </div>
+        <div style="margin-top: 14px; display: flex; justify-content: space-between; font-weight: 700; color: var(--text-secondary); font-size: 0.9rem;">
+          <div>Score: <span id="arcadeScoreVal" style="color: var(--primary); font-size: 1.2rem;">0</span></div>
+          <div>Streak: <span id="arcadeStreakVal" style="color: #f59e0b; font-size: 1.2rem;">0x</span></div>
+          <div>High Score: <span id="arcadeHighScoreVal" style="color: #10b981; font-size: 1.2rem;">0</span></div>
         </div>
       </div>
+
     </div>
   </main>
 
+  <!-- TEST COMPLETION RESULTS MODAL -->
+  <div class="modal-backdrop" id="resultsModal">
+    <div class="results-card">
+      <div id="rankBadgeSlot"></div>
+      <h2 style="font-size: 1.6rem; font-weight: 900; margin-bottom: 6px; color: var(--text-primary);">Test Complete!</h2>
+      <p style="font-size: 0.88rem; color: var(--text-secondary); margin-bottom: 24px;">Here is your complete typing efficiency & speed breakdown:</p>
+
+      <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 24px;">
+        <div style="background: var(--bg-tertiary); border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 14px;">
+          <div style="font-size: 2rem; font-weight: 900; color: var(--primary);" id="finalWpm">0</div>
+          <div style="font-size: 0.75rem; font-weight: 700; color: var(--text-secondary);">NET WPM</div>
+        </div>
+        <div style="background: var(--bg-tertiary); border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 14px;">
+          <div style="font-size: 2rem; font-weight: 900; color: #10b981;" id="finalAcc">100%</div>
+          <div style="font-size: 0.75rem; font-weight: 700; color: var(--text-secondary);">ACCURACY</div>
+        </div>
+        <div style="background: var(--bg-tertiary); border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 14px;">
+          <div style="font-size: 2rem; font-weight: 900; color: #38bdf8;" id="finalRaw">0</div>
+          <div style="font-size: 0.75rem; font-weight: 700; color: var(--text-secondary);">RAW WPM</div>
+        </div>
+      </div>
+
+      <div style="display: flex; justify-content: center; gap: 12px; flex-wrap: wrap;">
+        <button onclick="closeResultsAndRestart()" class="btn btn-primary"><i class="fas fa-rotate-right"></i> Try Again</button>
+        <button onclick="shareResultsCard()" class="btn btn-secondary"><i class="fas fa-share-nodes"></i> Share Score</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Audio Synthesizer for Mechanical Keyboard Clacks -->
   <script>
-    const PROMPTS = [
-      "Artificial intelligence and creative tools empower people around the world to build beautiful web apps and designs faster than ever before.",
-      "The quick brown fox jumps over the lazy dog while the autumn wind rustles the golden leaves across the quiet mountain trail.",
-      "Writing clean and maintainable code is an essential craft that bridges human creativity with computational problem solving.",
-      "Innovation distinguishes between a leader and a follower. Great software is built with curiosity, persistence, and attention to detail.",
-      "Success in typing requires rhythmic muscle memory, proper finger placement, and consistent daily practice to build speed."
-    ];
+    const AudioEngine = {
+      ctx: null,
+      enabled: true,
+      init() {
+        if (!this.ctx) {
+          const AudioContext = window.AudioContext || window.webkitAudioContext;
+          if (AudioContext) this.ctx = new AudioContext();
+        }
+        if (this.ctx && this.ctx.state === 'suspended') this.ctx.resume();
+      },
+      click(isError = false) {
+        if (!this.enabled) return;
+        this.init();
+        if (!this.ctx) return;
+        const now = this.ctx.currentTime;
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
 
-    let currentPrompt = '';
-    let testStarted = false;
-    let testTimeLeft = 60;
-    let timer = null;
-    let totalCharsTyped = 0;
-    let errorCount = 0;
-    let bestScore = parseInt(localStorage.getItem('aibots_best_wpm') || '0');
-    document.getElementById('bestWpm').textContent = `${bestScore} WPM`;
+        osc.type = isError ? 'sawtooth' : 'triangle';
+        osc.frequency.setValueAtTime(isError ? 120 : (400 + Math.random() * 80), now);
+        osc.frequency.exponentialRampToValueAtTime(80, now + 0.04);
 
-    function initTest() {
-      clearInterval(timer);
-      testStarted = false;
-      testTimeLeft = 60;
-      totalCharsTyped = 0;
-      errorCount = 0;
+        gain.gain.setValueAtTime(0.25, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.04);
 
-      document.getElementById('wpmVal').textContent = '0';
-      document.getElementById('accVal').textContent = '100%';
-      document.getElementById('errVal').textContent = '0';
-      document.getElementById('timeVal').textContent = '60s';
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+        osc.start(now);
+        osc.stop(now + 0.04);
+      },
+      laser() {
+        if (!this.enabled) return;
+        this.init();
+        if (!this.ctx) return;
+        const now = this.ctx.currentTime;
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(880, now);
+        osc.frequency.exponentialRampToValueAtTime(220, now + 0.12);
+        gain.gain.setValueAtTime(0.3, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.12);
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+        osc.start(now);
+        osc.stop(now + 0.12);
+      },
+      explode() {
+        if (!this.enabled) return;
+        this.init();
+        if (!this.ctx) return;
+        const now = this.ctx.currentTime;
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(140, now);
+        osc.frequency.linearRampToValueAtTime(40, now + 0.18);
+        gain.gain.setValueAtTime(0.4, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.18);
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+        osc.start(now);
+        osc.stop(now + 0.18);
+      }
+    };
 
-      currentPrompt = PROMPTS[Math.floor(Math.random() * PROMPTS.length)];
-      renderPromptText(0);
-
-      const input = document.getElementById('typeInput');
-      input.value = '';
-      input.disabled = false;
-      input.focus();
+    function toggleKeyboardSound() {
+      AudioEngine.enabled = !AudioEngine.enabled;
+      const btn = document.getElementById('keySoundToggle');
+      const text = document.getElementById('soundStateText');
+      const icon = document.getElementById('keySoundIcon');
+      if (AudioEngine.enabled) {
+        btn.classList.add('active');
+        text.textContent = 'ON';
+        icon.className = 'fas fa-volume-high';
+      } else {
+        btn.classList.remove('active');
+        text.textContent = 'OFF';
+        icon.className = 'fas fa-volume-xmark';
+      }
     }
 
-    function renderPromptText(currIndex) {
-      const display = document.getElementById('promptDisplay');
-      display.innerHTML = currentPrompt.split('').map((char, i) => {
-        let cls = '';
-        if (i < currIndex) cls = 'char-correct';
-        else if (i === currIndex) cls = 'char-current';
-        return `<span class="${cls}">${char}</span>`;
-      }).join('');
+    // ==========================================
+    // WORD DATASETS & PROMPT ENGINE
+    // ==========================================
+    const DATASETS = {
+      words: [
+        "the", "be", "of", "and", "a", "to", "in", "he", "have", "it", "that", "for", "they", "with", "as", "not",
+        "on", "she", "at", "by", "this", "we", "you", "do", "but", "his", "from", "they", "say", "her", "she", "or",
+        "an", "will", "my", "one", "all", "would", "there", "their", "what", "so", "up", "out", "if", "about", "who",
+        "get", "which", "go", "me", "when", "make", "can", "like", "time", "no", "just", "him", "know", "take", "people",
+        "into", "year", "your", "good", "some", "could", "them", "see", "other", "than", "then", "now", "look", "only",
+        "come", "its", "over", "think", "also", "back", "after", "use", "two", "how", "our", "work", "first", "well",
+        "way", "even", "new", "want", "because", "any", "these", "give", "day", "most", "us", "create", "future", "system"
+      ],
+      quote: [
+        "Innovation distinguishes between a leader and a follower. Great software is built with curiosity and precision.",
+        "The only way to do great work is to love what you do. Stay hungry, stay foolish, and never stop building.",
+        "Simplicity is prerequisite for reliability. Clean code always looks like it was written by someone who cares.",
+        "Creativity is intelligence having fun. Technology empowers dreamers to turn bold visions into real products."
+      ],
+      code: [
+        "const calculateWpm = (chars, time) => Math.round((chars / 5) / (time / 60));",
+        "async function fetchUserData(id) { const res = await fetch(`/api/user/${id}`); return res.json(); }",
+        "document.querySelectorAll('.btn').forEach(button => button.addEventListener('click', handler));",
+        "def quick_sort(arr): return arr if len(arr) <= 1 else quick_sort([x for x in arr[1:] if x < arr[0]]) + [arr[0]]"
+      ],
+      numbers: [
+        "In 2026, AI Bots scaled to 30+ tools serving 48.2K visitors with 99.9% uptime at $0 cost!",
+        "Coordinates: 37.7749° N, 122.4194° W. Server Latency: 14ms (Ping #108). Hash: #A1B2-C3D4-E5F6.",
+        "Calculate: (150 * 4) / 2 + 75 = 375. Speed test target: 120 WPM with 100% accuracy @ 60s."
+      ]
+    };
+
+    // State Variables
+    let selectedDuration = 60;
+    let selectedCategory = 'words';
+    let fullPromptText = '';
+    let isTestRunning = false;
+    let timerInterval = null;
+    let secondsLeft = 60;
+    let totalKeystrokes = 0;
+    let errorKeystrokes = 0;
+    let bestWpm = parseInt(localStorage.getItem('aibots_best_wpm') || '0');
+
+    document.getElementById('bestWpmDisplay').textContent = `${bestWpm} WPM`;
+
+    function generatePromptText() {
+      if (selectedCategory === 'words') {
+        const shuffled = [...DATASETS.words].sort(() => 0.5 - Math.random());
+        return shuffled.slice(0, 70).join(' ');
+      } else {
+        const arr = DATASETS[selectedCategory];
+        return arr[Math.floor(Math.random() * arr.length)];
+      }
     }
 
-    document.getElementById('typeInput').addEventListener('input', (e) => {
-      if (!testStarted) {
-        testStarted = true;
-        timer = setInterval(testTick, 1000);
+    function initPromptDisplay() {
+      fullPromptText = generatePromptText();
+      const container = document.getElementById('promptFlow');
+      container.innerHTML = '';
+
+      // Wrap every character in a span
+      for (let i = 0; i < fullPromptText.length; i++) {
+        const span = document.createElement('span');
+        span.className = 'char';
+        span.textContent = fullPromptText[i];
+        span.id = `char-${i}`;
+        container.appendChild(span);
       }
 
-      const val = e.target.value;
-      let mistakes = 0;
+      updateCaretPosition(0);
+    }
 
-      const spans = document.getElementById('promptDisplay').querySelectorAll('span');
-      spans.forEach((span, i) => {
-        if (i < val.length) {
-          if (val[i] === currentPrompt[i]) {
-            span.className = 'char-correct';
-          } else {
-            span.className = 'char-wrong';
-            mistakes++;
-          }
-        } else if (i === val.length) {
-          span.className = 'char-current';
+    function updateCaretPosition(charIndex) {
+      const caret = document.getElementById('smoothCaret');
+      const targetChar = document.getElementById(`char-${charIndex}`);
+      const flow = document.getElementById('promptFlow');
+
+      if (targetChar) {
+        const offsetLeft = targetChar.offsetLeft;
+        const offsetTop = targetChar.offsetTop;
+        caret.style.left = offsetLeft + 'px';
+        caret.style.top = offsetTop + 'px';
+
+        // Auto-scroll flow if moving to next lines
+        if (offsetTop > 60) {
+          flow.scrollTop = offsetTop - 30;
         } else {
-          span.className = '';
+          flow.scrollTop = 0;
         }
-      });
+      }
+    }
 
-      errorCount = mistakes;
-      totalCharsTyped = val.length;
+    function setTimeLimit(secs, btn) {
+      if (isTestRunning) return;
+      selectedDuration = secs;
+      secondsLeft = secs;
+      document.getElementById('liveTimerVal').textContent = `${secs}s`;
+      btn.parentElement.querySelectorAll('.config-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      resetSpeedTest();
+    }
 
-      const elapsedMins = (60 - testTimeLeft) / 60 || 0.01;
-      const words = (val.length / 5);
-      const wpm = Math.max(0, Math.round((words - mistakes) / elapsedMins));
-      const accuracy = totalCharsTyped > 0 ? Math.max(0, Math.round(((totalCharsTyped - mistakes) / totalCharsTyped) * 100)) : 100;
+    function setTestCategory(cat, btn) {
+      if (isTestRunning) return;
+      selectedCategory = cat;
+      btn.parentElement.querySelectorAll('.config-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      resetSpeedTest();
+    }
 
-      document.getElementById('wpmVal').textContent = wpm;
-      document.getElementById('accVal').textContent = `${accuracy}%`;
-      document.getElementById('errVal').textContent = mistakes;
+    function resetSpeedTest() {
+      clearInterval(timerInterval);
+      isTestRunning = false;
+      secondsLeft = selectedDuration;
+      totalKeystrokes = 0;
+      errorKeystrokes = 0;
 
-      if (val === currentPrompt) {
-        clearInterval(timer);
-        if (wpm > bestScore) {
-          bestScore = wpm;
-          localStorage.setItem('aibots_best_wpm', bestScore);
-          document.getElementById('bestWpm').textContent = `${bestScore} WPM`;
+      document.getElementById('liveWpmVal').textContent = '0';
+      document.getElementById('liveAccVal').textContent = '100%';
+      document.getElementById('liveCpmVal').textContent = '0';
+      document.getElementById('liveTimerVal').textContent = `${secondsLeft}s`;
+
+      const input = document.getElementById('masterTypeInput');
+      input.value = '';
+      input.disabled = false;
+
+      initPromptDisplay();
+      focusTypingInput();
+    }
+
+    function focusTypingInput() {
+      const input = document.getElementById('masterTypeInput');
+      input.focus();
+      document.getElementById('typingBox').classList.add('focused');
+    }
+
+    document.getElementById('masterTypeInput').addEventListener('blur', () => {
+      document.getElementById('typingBox').classList.remove('focused');
+    });
+
+    document.getElementById('masterTypeInput').addEventListener('input', (e) => {
+      const val = e.target.value;
+
+      if (!isTestRunning && val.length > 0) {
+        isTestRunning = true;
+        AudioEngine.init();
+        timerInterval = setInterval(testTick, 1000);
+      }
+
+      totalKeystrokes++;
+      let errors = 0;
+
+      for (let i = 0; i < fullPromptText.length; i++) {
+        const charSpan = document.getElementById(`char-${i}`);
+        if (!charSpan) continue;
+
+        if (i < val.length) {
+          if (val[i] === fullPromptText[i]) {
+            charSpan.className = 'char correct';
+          } else {
+            charSpan.className = 'char wrong';
+            errors++;
+          }
+        } else {
+          charSpan.className = 'char';
         }
-        alert(`🎉 Test Complete! Speed: ${wpm} WPM | Accuracy: ${accuracy}%`);
+      }
+
+      errorKeystrokes = errors;
+
+      // Play Key Sound
+      const isLastCorrect = val.length > 0 && val[val.length - 1] === fullPromptText[val.length - 1];
+      AudioEngine.click(!isLastCorrect);
+
+      // Caret positioning
+      updateCaretPosition(val.length);
+
+      // Live Stats Calculation
+      const timeElapsed = Math.max(1, selectedDuration - secondsLeft);
+      const minutesElapsed = timeElapsed / 60;
+      const rawWpm = Math.round((val.length / 5) / minutesElapsed);
+      const netWpm = Math.max(0, Math.round(((val.length - errors) / 5) / minutesElapsed));
+      const accuracy = val.length > 0 ? Math.max(0, Math.round(((val.length - errors) / val.length) * 100)) : 100;
+      const cpm = Math.round(val.length / minutesElapsed);
+
+      document.getElementById('liveWpmVal').textContent = netWpm;
+      document.getElementById('liveAccVal').textContent = `${accuracy}%`;
+      document.getElementById('liveCpmVal').textContent = cpm;
+
+      // Check Completion
+      if (val.length >= fullPromptText.length) {
+        completeSpeedTest(netWpm, accuracy, rawWpm);
       }
     });
 
     function testTick() {
-      testTimeLeft--;
-      document.getElementById('timeVal').textContent = `${testTimeLeft}s`;
-      if (testTimeLeft <= 0) {
-        clearInterval(timer);
-        document.getElementById('typeInput').disabled = true;
-        alert(`⏰ Time's up! Your final typing speed: ${document.getElementById('wpmVal').textContent} WPM`);
+      secondsLeft--;
+      document.getElementById('liveTimerVal').textContent = `${secondsLeft}s`;
+
+      if (secondsLeft <= 0) {
+        const val = document.getElementById('masterTypeInput').value;
+        const timeElapsed = selectedDuration;
+        const minutesElapsed = timeElapsed / 60;
+        const rawWpm = Math.round((val.length / 5) / minutesElapsed);
+        const netWpm = Math.max(0, Math.round(((val.length - errorKeystrokes) / 5) / minutesElapsed));
+        const accuracy = val.length > 0 ? Math.max(0, Math.round(((val.length - errorKeystrokes) / val.length) * 100)) : 100;
+        completeSpeedTest(netWpm, accuracy, rawWpm);
       }
     }
 
-    function switchMode(m) {
-      document.getElementById('tabTest').classList.toggle('active', m === 'test');
-      document.getElementById('tabGame').classList.toggle('active', m === 'game');
-      document.getElementById('testArea').style.display = m === 'test' ? 'block' : 'none';
-      document.getElementById('gameArea').style.display = m === 'game' ? 'block' : 'none';
-      if (m === 'test') initTest();
-    }
+    function completeSpeedTest(netWpm, accuracy, rawWpm) {
+      clearInterval(timerInterval);
+      isTestRunning = false;
+      document.getElementById('masterTypeInput').disabled = true;
 
-    // ── Space Shooter Game ──
-    const gCanvas = document.getElementById('shooterCanvas');
-    const gCtx = gCanvas.getContext('2d');
-    const WORD_BANK = ['robot','cyber','planet','galaxy','speed','matrix','future','laser','spark','vector','shield','orbit','quantum','pixel','code'];
-    let gameActive = false;
-    let gameScore = 0;
-    let fallingWords = [];
-    let gameInterval = null;
-
-    function toggleGame() {
-      if (gameActive) {
-        gameActive = false;
-        clearInterval(gameInterval);
-        document.getElementById('gameStartBtn').innerHTML = '<i class="fas fa-play"></i> Start Game';
-      } else {
-        gameActive = true;
-        gameScore = 0;
-        fallingWords = [];
-        document.getElementById('gameScoreVal').textContent = '0';
-        document.getElementById('gameStartBtn').innerHTML = '<i class="fas fa-stop"></i> End Game';
-        document.getElementById('gameInput').focus();
-        gameInterval = setInterval(spawnWord, 2200);
-        requestAnimationFrame(gameLoop);
+      // Save Best Score
+      if (netWpm > bestWpm) {
+        bestWpm = netWpm;
+        localStorage.setItem('aibots_best_wpm', bestWpm);
+        document.getElementById('bestWpmDisplay').textContent = `${bestWpm} WPM`;
       }
+
+      // Display Modal Results
+      document.getElementById('finalWpm').textContent = netWpm;
+      document.getElementById('finalAcc').textContent = `${accuracy}%`;
+      document.getElementById('finalRaw').textContent = rawWpm;
+
+      const rankSlot = document.getElementById('rankBadgeSlot');
+      if (netWpm >= 110) rankSlot.innerHTML = '<span class="rank-badge rank-godspeed">⚡ GODSPEED MASTER (Top 1%)</span>';
+      else if (netWpm >= 80) rankSlot.innerHTML = '<span class="rank-badge rank-pro">🚀 PRO TYPIST (Top 5%)</span>';
+      else if (netWpm >= 55) rankSlot.innerHTML = '<span class="rank-badge rank-speedster">🏎️ SPEEDSTER (Above Average)</span>';
+      else if (netWpm >= 35) rankSlot.innerHTML = '<span class="rank-badge rank-runner">🏃 FAST RUNNER (Good)</span>';
+      else rankSlot.innerHTML = '<span class="rank-badge rank-turtle">🐢 TURTLE TYPIST (Keep Practicing!)</span>';
+
+      document.getElementById('resultsModal').classList.add('active');
     }
 
-    function spawnWord() {
-      const w = WORD_BANK[Math.floor(Math.random() * WORD_BANK.length)];
-      fallingWords.push({
-        text: w,
-        x: 50 + Math.random() * (gCanvas.width - 150),
-        y: 20,
-        speed: 1 + Math.random() * 0.8
+    function closeResultsAndRestart() {
+      document.getElementById('resultsModal').classList.remove('active');
+      resetSpeedTest();
+    }
+
+    function shareResultsCard() {
+      const wpm = document.getElementById('finalWpm').textContent;
+      const acc = document.getElementById('finalAcc').textContent;
+      const text = `⚡ My Typing Speed on AI Bots: ${wpm} WPM with ${acc} accuracy! Try it free: https://www.aibots.co.in/typingpractice.html`;
+      navigator.clipboard.writeText(text).then(() => {
+        alert("📋 Score card copied to clipboard! Share on WhatsApp or LinkedIn.");
       });
     }
 
-    document.getElementById('gameInput').addEventListener('keydown', (e) => {
-      if (e.key === 'Enter') {
+    // ==========================================
+    // ARCADE SPACE WORD SHOOTER 2.0
+    // ==========================================
+    const aCanvas = document.getElementById('arcadeCanvas');
+    const aCtx = aCanvas.getContext('2d');
+    const ARCADE_WORDS = [
+      'robot','cyber','matrix','galaxy','future','speed','quantum','laser','vector','shield','orbit','pixel',
+      'spark','engine','hyper','nexus','falcon','apex','titan','pulse','blade','storm','alpha','omega','bot'
+    ];
+
+    let arcadeActive = false;
+    let arcadeScore = 0;
+    let arcadeStreak = 0;
+    let arcadeHighScore = parseInt(localStorage.getItem('aibots_arcade_high') || '0');
+    let fallingTargets = [];
+    let laserBeams = [];
+    let explosions = [];
+    let arcadeInterval = null;
+
+    document.getElementById('arcadeHighScoreVal').textContent = arcadeHighScore;
+
+    function toggleArcadeGame() {
+      if (arcadeActive) {
+        arcadeActive = false;
+        clearInterval(arcadeInterval);
+        document.getElementById('arcadeStartBtn').innerHTML = '<i class="fas fa-play"></i> Start Arcade';
+      } else {
+        arcadeActive = true;
+        arcadeScore = 0;
+        arcadeStreak = 0;
+        fallingTargets = [];
+        laserBeams = [];
+        explosions = [];
+        document.getElementById('arcadeScoreVal').textContent = '0';
+        document.getElementById('arcadeStreakVal').textContent = '0x';
+        document.getElementById('arcadeStartBtn').innerHTML = '<i class="fas fa-stop"></i> End Game';
+        document.getElementById('arcadeInput').focus();
+        arcadeInterval = setInterval(spawnArcadeTarget, 1600);
+        requestAnimationFrame(arcadeLoop);
+      }
+    }
+
+    function spawnArcadeTarget() {
+      if (!arcadeActive) return;
+      const word = ARCADE_WORDS[Math.floor(Math.random() * ARCADE_WORDS.length)];
+      fallingTargets.push({
+        text: word,
+        x: 60 + Math.random() * (aCanvas.width - 160),
+        y: 20,
+        speed: 0.9 + Math.random() * 0.9,
+        color: ['#38bdf8', '#a855f7', '#f43f5e', '#facc15'][Math.floor(Math.random() * 4)]
+      });
+    }
+
+    document.getElementById('arcadeInput').addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
         const val = e.target.value.toLowerCase().trim();
         e.target.value = '';
-        const idx = fallingWords.findIndex(w => w.text.toLowerCase() === val);
+        if (!val) return;
+
+        const idx = fallingTargets.findIndex(t => t.text.toLowerCase() === val);
         if (idx !== -1) {
-          fallingWords.splice(idx, 1);
-          gameScore += 10;
-          document.getElementById('gameScoreVal').textContent = gameScore;
+          const hit = fallingTargets[idx];
+          // Laser beam
+          laserBeams.push({
+            startX: aCanvas.width / 2, startY: aCanvas.height - 20,
+            endX: hit.x + 20, endY: hit.y, life: 12
+          });
+          // Explosion particles
+          for (let p = 0; p < 12; p++) {
+            explosions.push({
+              x: hit.x + 20, y: hit.y,
+              vx: (Math.random() - 0.5) * 6, vy: (Math.random() - 0.5) * 6,
+              color: hit.color, life: 20
+            });
+          }
+          AudioEngine.laser();
+          AudioEngine.explode();
+          fallingTargets.splice(idx, 1);
+          arcadeStreak++;
+          const pts = 10 * Math.min(5, arcadeStreak);
+          arcadeScore += pts;
+          document.getElementById('arcadeScoreVal').textContent = arcadeScore;
+          document.getElementById('arcadeStreakVal').textContent = `${arcadeStreak}x`;
+
+          if (arcadeScore > arcadeHighScore) {
+            arcadeHighScore = arcadeScore;
+            localStorage.setItem('aibots_arcade_high', arcadeHighScore);
+            document.getElementById('arcadeHighScoreVal').textContent = arcadeHighScore;
+          }
+        } else {
+          arcadeStreak = 0;
+          document.getElementById('arcadeStreakVal').textContent = '0x';
+          AudioEngine.click(true);
         }
       }
     });
 
-    function gameLoop() {
-      if (!gameActive) return;
-      gCtx.fillStyle = '#090d16';
-      gCtx.fillRect(0, 0, gCanvas.width, gCanvas.height);
+    function arcadeLoop() {
+      if (!arcadeActive) return;
+      aCtx.fillStyle = '#020617';
+      aCtx.fillRect(0, 0, aCanvas.width, aCanvas.height);
 
-      gCtx.fillStyle = '#38bdf8';
-      gCtx.font = 'bold 18px monospace';
+      // Draw Grid Lines
+      aCtx.strokeStyle = 'rgba(99, 102, 241, 0.1)';
+      aCtx.lineWidth = 1;
+      for (let x = 0; x < aCanvas.width; x += 40) {
+        aCtx.beginPath(); aCtx.moveTo(x, 0); aCtx.lineTo(x, aCanvas.height); aCtx.stroke();
+      }
 
-      for (let i = fallingWords.length - 1; i >= 0; i--) {
-        const fw = fallingWords[i];
+      // Draw Player Ship at bottom
+      aCtx.fillStyle = '#6366f1';
+      aCtx.beginPath();
+      aCtx.moveTo(aCanvas.width / 2, aCanvas.height - 40);
+      aCtx.lineTo(aCanvas.width / 2 - 20, aCanvas.height - 10);
+      aCtx.lineTo(aCanvas.width / 2 + 20, aCanvas.height - 10);
+      aCtx.closePath();
+      aCtx.fill();
+
+      // Lasers
+      for (let i = laserBeams.length - 1; i >= 0; i--) {
+        const beam = laserBeams[i];
+        aCtx.strokeStyle = '#38bdf8';
+        aCtx.lineWidth = 3;
+        aCtx.beginPath();
+        aCtx.moveTo(beam.startX, beam.startY);
+        aCtx.lineTo(beam.endX, beam.endY);
+        aCtx.stroke();
+        beam.life--;
+        if (beam.life <= 0) laserBeams.splice(i, 1);
+      }
+
+      // Explosions
+      for (let i = explosions.length - 1; i >= 0; i--) {
+        const exp = explosions[i];
+        exp.x += exp.vx; exp.y += exp.vy; exp.life--;
+        aCtx.fillStyle = exp.color;
+        aCtx.beginPath(); aCtx.arc(exp.x, exp.y, 3, 0, Math.PI * 2); aCtx.fill();
+        if (exp.life <= 0) explosions.splice(i, 1);
+      }
+
+      // Falling Words
+      aCtx.font = 'bold 20px "JetBrains Mono", monospace';
+      for (let i = fallingTargets.length - 1; i >= 0; i--) {
+        const fw = fallingTargets[i];
         fw.y += fw.speed;
-        gCtx.fillText(fw.text, fw.x, fw.y);
 
-        if (fw.y > gCanvas.height - 20) {
-          fallingWords.splice(i, 1);
+        // Word card pill
+        aCtx.fillStyle = 'rgba(15, 23, 42, 0.85)';
+        aCtx.strokeStyle = fw.color;
+        aCtx.lineWidth = 1.5;
+        const textWidth = aCtx.measureText(fw.text).width;
+        aCtx.strokeRect(fw.x - 8, fw.y - 20, textWidth + 16, 28);
+        aCtx.fillRect(fw.x - 8, fw.y - 20, textWidth + 16, 28);
+
+        aCtx.fillStyle = '#ffffff';
+        aCtx.fillText(fw.text, fw.x, fw.y);
+
+        if (fw.y > aCanvas.height - 30) {
+          fallingTargets.splice(i, 1);
+          arcadeStreak = 0;
+          document.getElementById('arcadeStreakVal').textContent = '0x';
         }
       }
-      requestAnimationFrame(gameLoop);
+
+      requestAnimationFrame(arcadeLoop);
     }
 
-    initTest();
+    function switchMainTab(tab) {
+      document.getElementById('tabTest').classList.toggle('active', tab === 'test');
+      document.getElementById('tabArcade').classList.toggle('active', tab === 'arcade');
+      document.getElementById('speedTestSection').style.display = tab === 'test' ? 'block' : 'none';
+      document.getElementById('arcadeSection').style.display = tab === 'arcade' ? 'block' : 'none';
+      if (tab === 'test') resetSpeedTest();
+    }
+
+    // Keyboard Shortcuts: Tab + Enter to restart
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'Tab') {
+        e.preventDefault();
+        resetSpeedTest();
+      }
+    });
+
+    // Initialize
+    initPromptDisplay();
   </script>
   <script src="js/app.js"></script>
 </body>
 </html>
-

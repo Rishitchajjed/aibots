@@ -1077,6 +1077,24 @@
 
   <script src="js/app.min.js"></script>
   <script>
+
+    // Universal Canvas roundRect Polyfill (Chrome, Safari, iOS WebKit, Firefox)
+    if (!CanvasRenderingContext2D.prototype.roundRect) {
+      CanvasRenderingContext2D.prototype.roundRect = function (x, y, w, h, radii) {
+        if (!radii) radii = 0;
+        if (typeof radii === 'number') radii = [radii, radii, radii, radii];
+        const r = radii[0] || 0;
+        this.beginPath();
+        this.moveTo(x + r, y);
+        this.arcTo(x + w, y, x + w, y + h, r);
+        this.arcTo(x + w, y + h, x, y + h, r);
+        this.arcTo(x, y + h, x, y, r);
+        this.arcTo(x, y, x + w, y, r);
+        this.closePath();
+        return this;
+      };
+    }
+
     // Audio Synthesizer Engine
     const AudioEngine = {
       ctx: null, muted: false,
@@ -2745,14 +2763,31 @@
     }
 
     function gameLoop() {
-      update();
-      draw();
+      try {
+        update();
+        draw();
+      } catch (err) {
+        console.error("Game loop error:", err);
+      }
       requestAnimationFrame(gameLoop);
     }
 
-    initWorld();
-    updateHud();
-    requestAnimationFrame(gameLoop);
+    function startGame() {
+      try {
+        initWorld();
+        updateHud();
+        if (typeof updateQuestHUD === 'function') updateQuestHUD();
+        requestAnimationFrame(gameLoop);
+      } catch (e) {
+        console.error("Game start error:", e);
+      }
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', startGame);
+    } else {
+      startGame();
+    }
   </script>
 </body>
 </html>

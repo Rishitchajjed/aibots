@@ -1381,12 +1381,19 @@
       npcs.push({ x: 1600, y: 1080, name: 'Cyber Merchant', role: 'shop', dialog: "Welcome to the Cyber Armory! You can purchase Hoverbikes, Shields, and Drone Pets!" });
       npcs.push({ x: 1520, y: 1160, name: 'Elder Bot Sage', role: 'quest', dialog: "Mount your Hoverbike with [V], allocate talents with [T], and slay the Nether Titan!" });
 
-      // Chests
-      for (let i = 0; i < 16; i++) {
+      // Starter Chests & Ores at Cyber Citadel (1600, 1200)
+      chests.push({ x: 1530, y: 1220, opened: false, coins: 60 });
+      chests.push({ x: 1670, y: 1220, opened: false, coins: 75 });
+      ores.push({ x: 1500, y: 1140, type: 'crystal' });
+      ores.push({ x: 1700, y: 1140, type: 'gold' });
+      portals.push({ x: 1600, y: 1330, targetX: 2500, targetY: 1900, name: 'Nether Titan Portal' });
+
+      // Distributed Realm Chests
+      for (let i = 0; i < 20; i++) {
         chests.push({
           x: 200 + Math.random() * (WORLD.width - 400),
           y: 200 + Math.random() * (WORLD.height - 400),
-          opened: false, coins: 25 + Math.floor(Math.random() * 40)
+          opened: false, coins: 35 + Math.floor(Math.random() * 50)
         });
       }
 
@@ -1643,6 +1650,37 @@
       if (player.facing === 'left') hitX -= reach;
       if (player.facing === 'right') hitX += reach;
 
+      
+      // Sword breaks nearby chests and ores
+      for (const c of chests) {
+        if (!c.opened && Math.hypot(c.x - hitX, c.y - hitY) < 65) {
+          c.opened = true;
+          player.coins += c.coins;
+          player.score += c.coins * 3;
+          spawnLootOrb(c.x, c.y, c.coins, '#fbbf24');
+          addFloatingText(`+${c.coins} Gold Chest!`, c.x, c.y - 25, '#fbbf24');
+          showToast(`Slashed Chest! (+${c.coins} Gold) 💰`, 'success');
+          AudioEngine.coin();
+          if (typeof checkQuestProgress === 'function') checkQuestProgress('mine', 1);
+          updateHud();
+        }
+      }
+      for (let i = ores.length - 1; i >= 0; i--) {
+        const ore = ores[i];
+        if (Math.hypot(ore.x - hitX, ore.y - hitY) < 65) {
+          const reward = ore.type === 'gold' ? 40 : 30;
+          player.coins += reward;
+          player.score += reward * 2;
+          spawnLootOrb(ore.x, ore.y, reward, ore.type === 'gold' ? '#f59e0b' : '#38bdf8');
+          addFloatingText(`Mined +${reward} ${ore.type.toUpperCase()}!`, ore.x, ore.y - 20, '#38bdf8');
+          showToast(`Mined ${ore.type.toUpperCase()} Ore! ⛏️`, 'success');
+          ores.splice(i, 1);
+          AudioEngine.coin();
+          if (typeof checkQuestProgress === 'function') checkQuestProgress('mine', 1);
+          updateHud();
+        }
+      }
+
       // Attack Enemies
       for (let i = enemies.length - 1; i >= 0; i--) {
         const en = enemies[i];
@@ -1771,58 +1809,91 @@
       updateHud();
     }
 
-        function handleInteract() {
-      // Check Portals
-      for (const p of portals) {
-        if (Math.hypot(p.x - player.x, p.y - player.y) < 65) {
-          player.x = p.targetX;
-          player.y = p.targetY;
-          AudioEngine.portal();
-          screenShake = 12;
-          addFloatingText(`Warped via ${p.name}!`, player.x, player.y - 30, '#c084fc');
-          if (typeof checkQuestProgress === 'function') checkQuestProgress('nether', 1);
-          return;
-        }
-      }
+            function handleInteract() {
+      AudioEngine.init();
+      let interacted = false;
 
-      // Check NPCs
-      for (const npc of npcs) {
-        if (Math.hypot(npc.x - player.x, npc.y - player.y) < 80) {
-          if (npc.role === 'shop') { openShopModal(); return; }
-          dialog = { text: `${npc.name}: "${npc.dialog}"`, timer: 300 };
-          AudioEngine.coin();
-          addFloatingText(`Talking to ${npc.name}...`, player.x, player.y - 30, '#38bdf8');
-          return;
-        }
-      }
-
-      // Check Chests
-      let foundChest = false;
+      // 1. Check Chests (120px reach)
       for (const c of chests) {
-        if (!c.opened && Math.hypot(c.x - player.x, c.y - player.y) < 75) {
+        if (!c.opened && Math.hypot(c.x - player.x, c.y - player.y) < 110) {
           c.opened = true;
+          player.coins += c.coins;
+          player.score += c.coins * 3;
           spawnLootOrb(c.x, c.y, c.coins, '#fbbf24');
           addFloatingText(`+${c.coins} Gold Chest!`, c.x, c.y - 25, '#fbbf24');
+          showToast(`Opened Chest! Found +${c.coins} Gold 💰`, 'success');
+          AudioEngine.coin();
           if (typeof checkQuestProgress === 'function') checkQuestProgress('mine', 1);
-          foundChest = true;
-        }
-      }
-      if (foundChest) return;
-
-      // Check Ores
-      for (let i = ores.length - 1; i >= 0; i--) {
-        const ore = ores[i];
-        if (Math.hypot(ore.x - player.x, ore.y - player.y) < 65) {
-          const reward = ore.type === 'gold' ? 35 : 25;
-          spawnLootOrb(ore.x, ore.y, reward, ore.type === 'gold' ? '#f59e0b' : '#38bdf8');
-          addFloatingText(`Mined +${reward} ${ore.type.toUpperCase()}!`, ore.x, ore.y - 20, '#38bdf8');
-          ores.splice(i, 1);
-          if (typeof checkQuestProgress === 'function') checkQuestProgress('mine', 1);
-          return;
+          updateHud();
+          interacted = true;
+          break;
         }
       }
 
-      showToast("Walk closer to Chests, NPCs, or Portals to interact!", "info");
+      // 2. Check Ores (110px reach)
+      if (!interacted) {
+        for (let i = ores.length - 1; i >= 0; i--) {
+          const ore = ores[i];
+          if (Math.hypot(ore.x - player.x, ore.y - player.y) < 105) {
+            const reward = ore.type === 'gold' ? 40 : 30;
+            player.coins += reward;
+            player.score += reward * 2;
+            spawnLootOrb(ore.x, ore.y, reward, ore.type === 'gold' ? '#f59e0b' : '#38bdf8');
+            addFloatingText(`Mined +${reward} ${ore.type.toUpperCase()}!`, ore.x, ore.y - 20, '#38bdf8');
+            showToast(`Mined ${ore.type.toUpperCase()} Ore! (+${reward} Gold) ⛏️`, 'success');
+            ores.splice(i, 1);
+            AudioEngine.coin();
+            if (typeof checkQuestProgress === 'function') checkQuestProgress('mine', 1);
+            updateHud();
+            interacted = true;
+            break;
+          }
+        }
+      }
+
+      // 3. Check NPCs (120px reach)
+      if (!interacted) {
+        for (const npc of npcs) {
+          if (Math.hypot(npc.x - player.x, npc.y - player.y) < 120) {
+            if (npc.role === 'shop') {
+              openShopModal();
+              showToast("Opening Cyber Armory...", "info");
+              return;
+            } else if (npc.role === 'quest') {
+              openQuestModal();
+              showToast("Opening Quest Log...", "info");
+              return;
+            }
+            dialog = { text: `${npc.name}: "${npc.dialog}"`, timer: 350 };
+            addFloatingText(`Talking to ${npc.name}...`, player.x, player.y - 30, '#38bdf8');
+            showToast(`${npc.name}: "${npc.dialog}"`, "info", 5000);
+            AudioEngine.coin();
+            interacted = true;
+            break;
+          }
+        }
+      }
+
+      // 4. Check Portals (110px reach)
+      if (!interacted) {
+        for (const p of portals) {
+          if (Math.hypot(p.x - player.x, p.y - player.y) < 100) {
+            player.x = p.targetX;
+            player.y = p.targetY;
+            AudioEngine.portal();
+            screenShake = 14;
+            addFloatingText(`Warped via ${p.name}!`, player.x, player.y - 30, '#c084fc');
+            showToast(`Warped through ${p.name}! 🌀`, 'success');
+            if (typeof checkQuestProgress === 'function') checkQuestProgress('nether', 1);
+            interacted = true;
+            break;
+          }
+        }
+      }
+
+      if (!interacted) {
+        showToast("Walk closer to a Chest, Ore, NPC, or Portal to interact! (Press [E] or tap [💬])", "info");
+      }
     }
 
     function spawnLootOrb(x, y, value, color) {

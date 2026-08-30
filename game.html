@@ -1040,6 +1040,7 @@
           <div class="act-btn act-attack" id="btnAttack" title="Sword Slash [Space]"><i class="fas fa-hand-fist"></i></div>
           <div class="act-btn act-dash" id="btnDash" title="Dash [Shift]"><i class="fas fa-wind"></i></div>
           <div class="act-btn act-mount" id="btnMount" title="Hoverbike [V]"><i class="fas fa-motorcycle"></i></div>
+          <div class="act-btn act-interact" id="btnInteract" title="Interact / Talk / Open [E]"><i class="fas fa-comment-dots"></i></div>
           <div class="act-btn act-quest" id="btnQuestMobile" title="Quests [Q]"><i class="fas fa-scroll"></i></div>
         </div>
       </div>
@@ -1770,37 +1771,58 @@
       updateHud();
     }
 
-    function handleInteract() {
+        function handleInteract() {
       // Check Portals
       for (const p of portals) {
-        if (Math.hypot(p.x - player.x, p.y - player.y) < 55) {
+        if (Math.hypot(p.x - player.x, p.y - player.y) < 65) {
           player.x = p.targetX;
           player.y = p.targetY;
           AudioEngine.portal();
           screenShake = 12;
           addFloatingText(`Warped via ${p.name}!`, player.x, player.y - 30, '#c084fc');
+          if (typeof checkQuestProgress === 'function') checkQuestProgress('nether', 1);
           return;
         }
       }
 
       // Check NPCs
       for (const npc of npcs) {
-        if (Math.hypot(npc.x - player.x, npc.y - player.y) < 70) {
+        if (Math.hypot(npc.x - player.x, npc.y - player.y) < 80) {
           if (npc.role === 'shop') { openShopModal(); return; }
-          dialog = { text: `${npc.name}: "${npc.dialog}"`, timer: 250 };
+          dialog = { text: `${npc.name}: "${npc.dialog}"`, timer: 300 };
           AudioEngine.coin();
+          addFloatingText(`Talking to ${npc.name}...`, player.x, player.y - 30, '#38bdf8');
           return;
         }
       }
 
       // Check Chests
+      let foundChest = false;
       for (const c of chests) {
-        if (!c.opened && Math.hypot(c.x - player.x, c.y - player.y) < 60) {
+        if (!c.opened && Math.hypot(c.x - player.x, c.y - player.y) < 75) {
           c.opened = true;
           spawnLootOrb(c.x, c.y, c.coins, '#fbbf24');
+          addFloatingText(`+${c.coins} Gold Chest!`, c.x, c.y - 25, '#fbbf24');
+          if (typeof checkQuestProgress === 'function') checkQuestProgress('mine', 1);
+          foundChest = true;
+        }
+      }
+      if (foundChest) return;
+
+      // Check Ores
+      for (let i = ores.length - 1; i >= 0; i--) {
+        const ore = ores[i];
+        if (Math.hypot(ore.x - player.x, ore.y - player.y) < 65) {
+          const reward = ore.type === 'gold' ? 35 : 25;
+          spawnLootOrb(ore.x, ore.y, reward, ore.type === 'gold' ? '#f59e0b' : '#38bdf8');
+          addFloatingText(`Mined +${reward} ${ore.type.toUpperCase()}!`, ore.x, ore.y - 20, '#38bdf8');
+          ores.splice(i, 1);
+          if (typeof checkQuestProgress === 'function') checkQuestProgress('mine', 1);
           return;
         }
       }
+
+      showToast("Walk closer to Chests, NPCs, or Portals to interact!", "info");
     }
 
     function spawnLootOrb(x, y, value, color) {
@@ -2100,6 +2122,54 @@
         if (wp.type === 'firefly') {
           if (wp.x < 0 || wp.x > 1600) wp.vx *= -1;
           if (wp.y < 0 || wp.y > 1200) wp.vy *= -1;
+        }
+      }
+
+      
+      // Auto-Open Chests on Proximity Contact
+      for (const c of chests) {
+        if (!c.opened && Math.hypot(c.x - player.x, c.y - player.y) < 45) {
+          c.opened = true;
+          spawnLootOrb(c.x, c.y, c.coins, '#fbbf24');
+          addFloatingText(`+${c.coins} Gold!`, c.x, c.y - 25, '#fbbf24');
+          if (typeof checkQuestProgress === 'function') checkQuestProgress('mine', 1);
+        }
+      }
+
+      // Auto-Mine Ores on Proximity Contact
+      for (let i = ores.length - 1; i >= 0; i--) {
+        const ore = ores[i];
+        if (Math.hypot(ore.x - player.x, ore.y - player.y) < 40) {
+          const reward = ore.type === 'gold' ? 35 : 25;
+          spawnLootOrb(ore.x, ore.y, reward, ore.type === 'gold' ? '#f59e0b' : '#38bdf8');
+          addFloatingText(`Mined +${reward} ${ore.type.toUpperCase()}!`, ore.x, ore.y - 20, '#38bdf8');
+          ores.splice(i, 1);
+          if (typeof checkQuestProgress === 'function') checkQuestProgress('mine', 1);
+        }
+      }
+
+      // Auto-Portal Proximity Warp (with cooldown)
+      for (const p of portals) {
+        if (p.cooldown === undefined) p.cooldown = 0;
+        if (p.cooldown > 0) p.cooldown--;
+        if (Math.hypot(p.x - player.x, p.y - player.y) < 45 && p.cooldown <= 0) {
+          player.x = p.targetX;
+          player.y = p.targetY;
+          p.cooldown = 90;
+          AudioEngine.portal();
+          screenShake = 12;
+          addFloatingText(`Warped via ${p.name}!`, player.x, player.y - 30, '#c084fc');
+          if (typeof checkQuestProgress === 'function') checkQuestProgress('nether', 1);
+        }
+      }
+
+      // Auto-NPC Greeting
+      for (const npc of npcs) {
+        if (Math.hypot(npc.x - player.x, npc.y - player.y) < 50) {
+          if (!dialog) {
+            dialog = { text: `${npc.name}: "${npc.dialog}"`, timer: 200 };
+            AudioEngine.coin();
+          }
         }
       }
 

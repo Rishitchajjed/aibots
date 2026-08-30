@@ -1203,11 +1203,6 @@
     document.addEventListener('webkitfullscreenchange', updateFullscreenState);
     document.addEventListener('mozfullscreenchange', updateFullscreenState);
     document.addEventListener('MSFullscreenChange', updateFullscreenState);
-);
-      } else {
-        document.exitFullscreen();
-      }
-    }
 
     const canvasWrapper = document.getElementById('canvasWrapper');
     const canvas = document.getElementById('gameCanvas');

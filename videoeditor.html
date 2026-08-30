@@ -1638,15 +1638,8 @@
         document.getElementById('sliderBgmStart').max = Math.max(1, bgmAudioDuration - 1);
         document.getElementById('bgmTotalDurText').textContent = formatTime(bgmAudioDuration);
         
-        // Auto-trim video clip to match song duration automatically
-        const clip = mediaClips[activeClipIndex];
-        if (clip && clip.type === 'video') {
-          clip.trimStart = 0;
-          clip.trimEnd = Math.min(clip.duration, bgmAudioDuration);
-          updateFocusTrimmerDisplay();
-          renderUnifiedSequenceTimeline();
-          renderMediaBinStrip();
-        }
+        // Auto-trim ALL clips in sequence proportionally to match song duration
+        autoTrimVideoToSong();
         updateAudioTrimDisplay();
       };
 
@@ -1743,16 +1736,29 @@
         alert("Please upload a song first.");
         return;
       }
-      const clip = mediaClips[activeClipIndex];
-      if (!clip) return;
-      clip.trimStart = 0;
-      clip.trimEnd = Math.min(clip.duration, bgmAudioDuration);
-      
+      if (!mediaClips.length) return;
+
+      const targetTotal = bgmAudioDuration;
+      const totalRaw = mediaClips.reduce((sum, c) => sum + (c.duration || 3), 0);
+
+      mediaClips.forEach((clip) => {
+        const ratio = totalRaw > 0 ? (clip.duration / totalRaw) : (1 / mediaClips.length);
+        const allocatedDur = Math.max(0.5, targetTotal * ratio);
+
+        clip.trimStart = 0;
+        if (clip.type === 'video') {
+          clip.trimEnd = Math.min(clip.duration, allocatedDur);
+        } else {
+          clip.duration = Math.round(allocatedDur * 10) / 10;
+          clip.trimEnd = clip.duration;
+        }
+      });
+
       updateFocusTrimmerDisplay();
       renderUnifiedSequenceTimeline();
       renderMediaBinStrip();
       seekSequenceTo(0);
-      alert(`⚡ Video trimmed to match song duration (${formatTime(clip.trimEnd)}). Render time reduced to ${formatTime(clip.trimEnd)}!`);
+      alert(`⚡ All ${mediaClips.length} clips trimmed proportionally to match song duration (${formatTime(targetTotal)})!`);
     }
 
     function autoFitMusicToVideo() {
@@ -1854,10 +1860,23 @@
     }
 
         function setQuickDuration(seconds) {
-      const clip = mediaClips[activeClipIndex];
-      if (!clip) return;
-      clip.trimStart = 0;
-      clip.trimEnd = Math.min(clip.duration, seconds);
+      if (!mediaClips.length) return;
+
+      const totalRaw = mediaClips.reduce((sum, c) => sum + (c.duration || 3), 0);
+
+      mediaClips.forEach((clip) => {
+        const ratio = totalRaw > 0 ? (clip.duration / totalRaw) : (1 / mediaClips.length);
+        const allocatedDur = Math.max(0.5, seconds * ratio);
+
+        clip.trimStart = 0;
+        if (clip.type === 'video') {
+          clip.trimEnd = Math.min(clip.duration, allocatedDur);
+        } else {
+          clip.duration = Math.round(allocatedDur * 10) / 10;
+          clip.trimEnd = clip.duration;
+        }
+      });
+
       updateFocusTrimmerDisplay();
       renderUnifiedSequenceTimeline();
       renderMediaBinStrip();

@@ -2127,8 +2127,6 @@
       for (const c of chests) {
         if (!c.opened && Math.hypot(c.x - hitX, c.y - hitY) < 65) {
           c.opened = true;
-          player.coins += c.coins;
-          player.score += c.coins * 3;
           spawnLootOrb(c.x, c.y, c.coins, '#fbbf24');
           addFloatingText(`+${c.coins} Gold Chest!`, c.x, c.y - 25, '#fbbf24');
           showToast(`Slashed Chest! (+${c.coins} Gold) 💰`, 'success');
@@ -2141,8 +2139,7 @@
         const ore = ores[i];
         if (Math.hypot(ore.x - hitX, ore.y - hitY) < 65) {
           const reward = ore.type === 'gold' ? 40 : 30;
-          player.coins += reward;
-          player.score += reward * 2;
+          
           spawnLootOrb(ore.x, ore.y, reward, ore.type === 'gold' ? '#f59e0b' : '#38bdf8');
           addFloatingText(`Mined +${reward} ${ore.type.toUpperCase()}!`, ore.x, ore.y - 20, '#38bdf8');
           showToast(`Mined ${ore.type.toUpperCase()} Ore! ⛏️`, 'success');
@@ -2282,15 +2279,37 @@
     }
 
             function handleInteract() {
-      AudioEngine.init();
+      if (typeof AudioEngine !== 'undefined') AudioEngine.init();
       let interacted = false;
+
+      // 1. Collect Nearby Ground Loot Orbs
+      let collected = 0;
+      let totalVal = 0;
+      for (let i = lootOrbs.length - 1; i >= 0; i--) {
+        const orb = lootOrbs[i];
+        const d = Math.hypot(player.x - orb.x, player.y - orb.y);
+        if (d < 85) {
+          player.coins += orb.value;
+          player.score += orb.value * 3;
+          totalVal += orb.value;
+          collected++;
+          lootOrbs.splice(i, 1);
+          createRiftParticles(orb.x, orb.y, '#fbbf24');
+        }
+      }
+
+      if (collected > 0) {
+        addFloatingText(`+${totalVal} Gold Collected! 💰`, player.x, player.y - 28, '#fbbf24');
+        if (typeof AudioEngine !== 'undefined') AudioEngine.coin();
+        updateHud();
+        interacted = true;
+        return;
+      }
 
       // 1. Check Chests (120px reach)
       for (const c of chests) {
         if (!c.opened && Math.hypot(c.x - player.x, c.y - player.y) < 110) {
           c.opened = true;
-          player.coins += c.coins;
-          player.score += c.coins * 3;
           spawnLootOrb(c.x, c.y, c.coins, '#fbbf24');
           addFloatingText(`+${c.coins} Gold Chest!`, c.x, c.y - 25, '#fbbf24');
           showToast(`Opened Chest! Found +${c.coins} Gold 💰`, 'success');
@@ -2308,8 +2327,7 @@
           const ore = ores[i];
           if (Math.hypot(ore.x - player.x, ore.y - player.y) < 105) {
             const reward = ore.type === 'gold' ? 40 : 30;
-            player.coins += reward;
-            player.score += reward * 2;
+            
             spawnLootOrb(ore.x, ore.y, reward, ore.type === 'gold' ? '#f59e0b' : '#38bdf8');
             addFloatingText(`Mined +${reward} ${ore.type.toUpperCase()}!`, ore.x, ore.y - 20, '#38bdf8');
             showToast(`Mined ${ore.type.toUpperCase()} Ore! (+${reward} Gold) ⛏️`, 'success');
@@ -2716,15 +2734,26 @@
         }
       }
 
-      // Manual Loot Detection (Nearby Loot Prompt)
+      // Manual Loot Detection (Prompt update)
       nearbyLootCount = 0;
       nearbyLootValue = 0;
       for (let i = 0; i < lootOrbs.length; i++) {
         const orb = lootOrbs[i];
         const d = Math.hypot(player.x - orb.x, player.y - orb.y);
-        if (d < 70) {
+        if (d < 85) {
           nearbyLootCount++;
           nearbyLootValue += orb.value;
+        }
+      }
+
+      const promptEl = document.getElementById('manualCollectPrompt');
+      const promptText = document.getElementById('manualCollectText');
+      if (promptEl && promptText) {
+        if (nearbyLootCount > 0) {
+          promptEl.style.display = 'flex';
+          promptText.textContent = `[E / Tap] Collect Loot (+${nearbyLootValue} Gold)`;
+        } else {
+          promptEl.style.display = 'none';
         }
       }
 

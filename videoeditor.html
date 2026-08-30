@@ -742,14 +742,13 @@
             <div class="active-clip-focus-box">
               <div class="active-clip-header">
                 <span><i class="fas fa-crop-simple" style="color: var(--primary);"></i> Selected Clip Precision Trimmer (<span id="focusClipTitle">Clip 1</span>)</span>
-                <div style="display: flex; gap: 8px; align-items: center;">
-                  <button onclick="splitActiveClipAtPlayhead('start')" class="btn btn-secondary btn-sm" style="padding: 2px 8px; font-size: 0.72rem;" title="Set Start point to current time [ [ ]">
-                    <i class="fas fa-scissors"></i> Set Start [
-                  </button>
-                  <button onclick="splitActiveClipAtPlayhead('end')" class="btn btn-secondary btn-sm" style="padding: 2px 8px; font-size: 0.72rem;" title="Set End point to current time [ ] ]">
-                    <i class="fas fa-scissors"></i> Set End ]
-                  </button>
-                  <span style="color: var(--primary); font-family: var(--font-mono); font-weight: 800;" id="focusClipDurBadge">00:00.0 / 00:00.0</span>
+                <div style="display: flex; gap: 6px; align-items: center; flex-wrap: wrap;">
+                  <button onclick="setQuickDuration(15)" class="btn btn-secondary btn-sm" style="padding: 2px 6px; font-size: 0.7rem;" title="Trim to 15s Story">15s Story</button>
+                  <button onclick="setQuickDuration(30)" class="btn btn-secondary btn-sm" style="padding: 2px 6px; font-size: 0.7rem;" title="Trim to 30s Reel">30s Reel</button>
+                  <button onclick="setQuickDuration(60)" class="btn btn-secondary btn-sm" style="padding: 2px 6px; font-size: 0.7rem;" title="Trim to 60s Short">60s Short</button>
+                  <button onclick="splitActiveClipAtPlayhead('start')" class="btn btn-secondary btn-sm" style="padding: 2px 6px; font-size: 0.7rem;" title="Set Start point [">Set [</button>
+                  <button onclick="splitActiveClipAtPlayhead('end')" class="btn btn-secondary btn-sm" style="padding: 2px 6px; font-size: 0.7rem;" title="Set End point ]">Set ]</button>
+                  <span style="color: var(--primary); font-family: var(--font-mono); font-weight: 800; font-size: 0.75rem;" id="focusClipDurBadge">00:00.0 / 00:00.0</span>
                 </div>
               </div>
               <div class="clip-focus-track" id="clipFocusTrack" onpointerdown="handleFocusTrackDown(event)">
@@ -1852,6 +1851,17 @@
       container.style.width = `${zoom * 100}%`;
       renderUnifiedSequenceTimeline();
       if (decodedAudioBuffer) drawDecodedWaveform(decodedAudioBuffer);
+    }
+
+        function setQuickDuration(seconds) {
+      const clip = mediaClips[activeClipIndex];
+      if (!clip) return;
+      clip.trimStart = 0;
+      clip.trimEnd = Math.min(clip.duration, seconds);
+      updateFocusTrimmerDisplay();
+      renderUnifiedSequenceTimeline();
+      renderMediaBinStrip();
+      seekSequenceTo(0);
     }
 
     function splitActiveClipAtPlayhead(point) {

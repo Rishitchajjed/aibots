@@ -491,7 +491,7 @@
         <a href="index.html" class="brand-link">
           <img src="logo.png" alt="AI Bots Logo" class="brand-logo-img" width="32" height="32" style="width: 32px; height: 32px; object-fit: contain; aspect-ratio: 1/1;">
           <span>AI Bots</span>
-          <span class="brand-badge">Terrain HD 4.0</span>
+          <span class="brand-badge">RPG Pro 5.0</span>
         </a>
 
         <div class="nav-actions">
@@ -506,12 +506,14 @@
   <main class="app-container game-page-container">
     <div class="game-header">
       <div>
-        <h1 class="game-title"><i class="fas fa-mountain-sun" style="color: #38bdf8;"></i> Realm of Bots HD</h1>
+        <h1 class="game-title"><i class="fas fa-dragon" style="color: #f59e0b;"></i> Realm of Bots 5.0 — Quest Master</h1>
         <p style="margin: 3px 0 0; color: var(--text-secondary); font-size: 0.85rem;">
           Ultra HD procedural terrain, wildflowers, sand dunes, stone pathways, dynamic footprints, and cyber hoverbikes!
         </p>
       </div>
       <div style="display: flex; gap: 6px; flex-wrap: wrap;">
+        <button class="btn btn-primary btn-sm" onclick="openQuestModal()"><i class="fas fa-scroll"></i> Quests (<span id="questCountBadge">1/5</span>)</button>
+        <button class="btn btn-secondary btn-sm" onclick="openInventoryModal()"><i class="fas fa-shield-halved"></i> Gear [I]</button>
         <button class="btn btn-secondary btn-sm" onclick="openTalentsModal()"><i class="fas fa-tree"></i> Talents (<span id="talentPtsText">0</span>)</button>
         <button class="btn btn-secondary btn-sm" onclick="openHeroModal()"><i class="fas fa-user-astronaut"></i> Skin</button>
         <button class="btn btn-secondary btn-sm" onclick="openShopModal()"><i class="fas fa-store"></i> Shop</button>
@@ -763,6 +765,78 @@
         </div>
       </div>
     </div>
+  
+    <!-- Quest Master & Story Log Modal -->
+    <div class="modal-backdrop" id="questModal">
+      <div class="modal-card" style="max-width: 620px; max-height: 85vh; overflow-y: auto;">
+        <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); padding-bottom: 12px;">
+          <h3 style="margin: 0; font-size: 1.25rem; color: #fbbf24;">
+            <i class="fas fa-scroll"></i> Realm Quest Log & Bounties
+          </h3>
+          <button onclick="closeModal('questModal')" class="btn btn-secondary btn-sm">✕ Close</button>
+        </div>
+
+        <div style="margin: 14px 0 10px; font-size: 0.88rem; color: var(--text-secondary);">
+          Complete realm quests to earn massive XP, Gold, Talent Points, and Legendary Equipment!
+        </div>
+
+        <!-- Quest List -->
+        <div id="questListContainer" style="display: flex; flex-direction: column; gap: 10px;">
+          <!-- Injected dynamically via JS -->
+        </div>
+      </div>
+    </div>
+
+    <!-- Equipment & Gear Inventory Modal -->
+    <div class="modal-backdrop" id="inventoryModal">
+      <div class="modal-card" style="max-width: 580px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); padding-bottom: 12px;">
+          <h3 style="margin: 0; font-size: 1.25rem; color: #38bdf8;">
+            <i class="fas fa-shield-halved"></i> Hero Equipment & Artifacts
+          </h3>
+          <button onclick="closeModal('inventoryModal')" class="btn btn-secondary btn-sm">✕ Close</button>
+        </div>
+
+        <!-- Equipped Gear Slots Grid -->
+        <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin: 18px 0; text-align: center;">
+          <div class="shop-item" style="padding: 12px;">
+            <i class="fas fa-wand-magic-sparkles" style="color: #ec4899; font-size: 1.6rem;"></i>
+            <div style="font-size: 0.72rem; color: #94a3b8; margin-top: 4px;">WEAPON</div>
+            <div id="gearWeaponName" style="font-weight: 800; font-size: 0.82rem; color: #fff;">Laser Katana</div>
+            <div id="gearWeaponStat" style="font-size: 0.72rem; color: #34d399;">+25 ATK</div>
+          </div>
+          <div class="shop-item" style="padding: 12px;">
+            <i class="fas fa-shield-heart" style="color: #38bdf8; font-size: 1.6rem;"></i>
+            <div style="font-size: 0.72rem; color: #94a3b8; margin-top: 4px;">SHIELD</div>
+            <div id="gearShieldName" style="font-weight: 800; font-size: 0.82rem; color: #fff;">Energy Aegis</div>
+            <div id="gearShieldStat" style="font-size: 0.72rem; color: #38bdf8;">+60 HP</div>
+          </div>
+          <div class="shop-item" style="padding: 12px;">
+            <i class="fas fa-shoe-prints" style="color: #fbbf24; font-size: 1.6rem;"></i>
+            <div style="font-size: 0.72rem; color: #94a3b8; margin-top: 4px;">BOOTS</div>
+            <div id="gearBootsName" style="font-weight: 800; font-size: 0.82rem; color: #fff;">Swift Striders</div>
+            <div id="gearBootsStat" style="font-size: 0.72rem; color: #fbbf24;">+30% Speed</div>
+          </div>
+          <div class="shop-item" style="padding: 12px;">
+            <i class="fas fa-ring" style="color: #a855f7; font-size: 1.6rem;"></i>
+            <div style="font-size: 0.72rem; color: #94a3b8; margin-top: 4px;">RING</div>
+            <div id="gearRingName" style="font-weight: 800; font-size: 0.82rem; color: #fff;">Archmage Ring</div>
+            <div id="gearRingStat" style="font-size: 0.72rem; color: #c084fc;">+40 MP & Regen</div>
+          </div>
+        </div>
+
+        <div style="background: var(--bg-tertiary); border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 14px;">
+          <h4 style="margin: 0 0 8px; font-size: 0.9rem; color: var(--text-primary);"><i class="fas fa-sparkles" style="color: #fbbf24;"></i> Total Stat Modifiers</h4>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; font-size: 0.82rem; color: var(--text-secondary);">
+            <div>⚔️ Total Attack Power: <strong id="totalAtkStat" style="color: #fff;">35</strong></div>
+            <div>🛡️ Total Armor/HP: <strong id="totalDefStat" style="color: #fff;">160</strong></div>
+            <div>⚡ Movement Speed: <strong id="totalSpdStat" style="color: #fff;">+30%</strong></div>
+            <div>🎯 Critical Strike Rate: <strong id="totalCritStat" style="color: #fff;">25%</strong></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
   </main>
 
   <footer class="app-footer">

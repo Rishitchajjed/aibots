@@ -1791,6 +1791,43 @@ body {
       border-color: var(--primary);
     }
 
+    
+    /* Flagship Showcase Grid */
+    .flagship-showcase-section {
+      margin: 40px 0 60px;
+    }
+    .flagship-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 20px;
+    }
+    .flagship-card {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-xl);
+      padding: 24px;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      text-decoration: none;
+      color: var(--text-primary);
+      transition: var(--transition);
+      box-shadow: var(--shadow-md);
+    }
+    .flagship-card:hover {
+      transform: translateY(-5px);
+      box-shadow: var(--shadow-xl);
+      border-color: var(--card-glow, var(--primary));
+    }
+    .flagship-card::after {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0; height: 4px;
+      background: var(--card-accent);
+    }
+
     /* Tool Card Badges */
     .tool-badge-pill {
       position: absolute;
@@ -1960,7 +1997,7 @@ body {
         <a href="index.html" class="brand-link">
           <img src="logo.png" alt="AI Bots Logo" class="brand-logo-img" width="32" height="32" title="AI Bots Logo" style="width: 32px; height: 32px; object-fit: contain; aspect-ratio: 1/1;">
           <span>AI Bots</span>
-          <span class="brand-badge">Studio Hub v2.0</span>
+          <span class="brand-badge" style="background: linear-gradient(135deg, #6366f1, #ec4899); color: white; font-weight: 800;">Studio Hub v3.0</span>
         </a>
 
         <div class="nav-actions">
@@ -2000,7 +2037,7 @@ body {
 
       <div class="hero-badge">
         <i class="fas fa-sparkles" style="color: #f59e0b;"></i>
-        <span>13+ Free Creative & Productivity Tools &bull; 100% Private In-Browser</span>
+        <span>30+ Free Creative & Productivity Tools &bull; 100% Private In-Browser</span>
       </div>
 
       <h1 class="hero-title">
@@ -2049,20 +2086,20 @@ body {
     <!-- Live Metrics Bar -->
     <section class="metrics-bar">
       <div class="metric-item">
-        <div class="metric-val">23+</div>
-        <div class="metric-label">Free Creative Tools</div>
+        <div class="metric-val" style="color: #6366f1;">30+</div>
+        <div class="metric-label">Free Creative & Utility Tools</div>
       </div>
       <div class="metric-item">
-        <div class="metric-val">100%</div>
-        <div class="metric-label">Free Forever & No Ads</div>
+        <div class="metric-val" style="color: #10b981;">100%</div>
+        <div class="metric-label">Client-Side & Zero Ads</div>
       </div>
       <div class="metric-item">
-        <div class="metric-val">0 KB</div>
-        <div class="metric-label">Server Storage (Private)</div>
+        <div class="metric-val" style="color: #ec4899;">0 KB</div>
+        <div class="metric-label">Server Uploads (100% Private)</div>
       </div>
       <div class="metric-item">
-        <div class="metric-val">⚡ Fast</div>
-        <div class="metric-label">Client-Side Speed</div>
+        <div class="metric-val" style="color: #f59e0b;">★ 4.9</div>
+        <div class="metric-label">Global Creator Rating</div>
       </div>
     </section>
 
@@ -2087,6 +2124,124 @@ body {
       </div>
     </section>
 
+    
+    <!-- Flagship Spotlight Showcase -->
+    <section class="flagship-showcase-section">
+      <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 24px; flex-wrap: wrap; gap: 12px;">
+        <div>
+          <span style="font-size: 0.82rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.1em; color: var(--primary);">★ Flagship Innovations</span>
+          <h2 style="font-size: 1.8rem; font-weight: 800; color: var(--text-primary); margin: 4px 0 0;">Featured Creative Powerhouses</h2>
+        </div>
+        <span style="font-size: 0.85rem; color: var(--text-secondary);">Engineered for speed, precision & privacy</span>
+      </div>
+
+      <div class="flagship-grid">
+        
+        <!-- Flagship 1: Cricket Scorer Pro 2.0 -->
+        <a href="cricketscore.html" class="flagship-card" style="--card-accent: linear-gradient(135deg, #10b981, #059669); --card-glow: #10b981;">
+          <div>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px;">
+              <div style="width: 48px; height: 48px; border-radius: 12px; background: rgba(16, 185, 129, 0.15); color: #10b981; display: flex; align-items: center; justify-content: center; font-size: 1.3rem;">
+                <i class="fas fa-baseball-bat-ball"></i>
+              </div>
+              <span style="background: rgba(16, 185, 129, 0.15); color: #10b981; font-size: 0.72rem; font-weight: 800; padding: 3px 8px; border-radius: 999px;">PRO 2.0</span>
+            </div>
+            <h3 style="font-size: 1.2rem; font-weight: 800; margin-bottom: 6px;">Cricket Scorer Pro</h3>
+            <p style="font-size: 0.88rem; color: var(--text-secondary); line-height: 1.5; margin-bottom: 16px;">
+              League tournaments, Net Run Rate (NRR) calculator, full 11-player scorecards, and live AI voice commentary.
+            </p>
+          </div>
+          <div style="display: flex; align-items: center; justify-content: space-between; font-weight: 700; color: #10b981; font-size: 0.88rem; border-top: 1px solid var(--border-color); padding-top: 12px;">
+            <span>Score Match Now</span>
+            <i class="fas fa-arrow-right"></i>
+          </div>
+        </a>
+
+        <!-- Flagship 2: Realm of Bots 5.0 RPG -->
+        <a href="game.html" class="flagship-card" style="--card-accent: linear-gradient(135deg, #7c3aed, #ec4899); --card-glow: #7c3aed;">
+          <div>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px;">
+              <div style="width: 48px; height: 48px; border-radius: 12px; background: rgba(124, 58, 237, 0.15); color: #7c3aed; display: flex; align-items: center; justify-content: center; font-size: 1.3rem;">
+                <i class="fas fa-gamepad"></i>
+              </div>
+              <span style="background: rgba(124, 58, 237, 0.15); color: #c084fc; font-size: 0.72rem; font-weight: 800; padding: 3px 8px; border-radius: 999px;">RPG 5.0</span>
+            </div>
+            <h3 style="font-size: 1.2rem; font-weight: 800; margin-bottom: 6px;">Realm of Bots RPG</h3>
+            <p style="font-size: 0.88rem; color: var(--text-secondary); line-height: 1.5; margin-bottom: 16px;">
+              360° virtual joystick, open world biomes, storyline quests, gear inventory, in-screen shop & Nether Titans.
+            </p>
+          </div>
+          <div style="display: flex; align-items: center; justify-content: space-between; font-weight: 700; color: #7c3aed; font-size: 0.88rem; border-top: 1px solid var(--border-color); padding-top: 12px;">
+            <span>Play Adventure</span>
+            <i class="fas fa-arrow-right"></i>
+          </div>
+        </a>
+
+        <!-- Flagship 3: AI Background Remover -->
+        <a href="backremover.html" class="flagship-card" style="--card-accent: linear-gradient(135deg, #ec4899, #f43f5e); --card-glow: #ec4899;">
+          <div>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px;">
+              <div style="width: 48px; height: 48px; border-radius: 12px; background: rgba(236, 72, 153, 0.15); color: #ec4899; display: flex; align-items: center; justify-content: center; font-size: 1.3rem;">
+                <i class="fas fa-wand-magic-sparkles"></i>
+              </div>
+              <span style="background: rgba(236, 72, 153, 0.15); color: #ec4899; font-size: 0.72rem; font-weight: 800; padding: 3px 8px; border-radius: 999px;">1-CLICK AI</span>
+            </div>
+            <h3 style="font-size: 1.2rem; font-weight: 800; margin-bottom: 6px;">AI Background Remover</h3>
+            <p style="font-size: 0.88rem; color: var(--text-secondary); line-height: 1.5; margin-bottom: 16px;">
+              Instant client-side background cutout with pixel-perfect transparency, side-by-side comparison, and HD PNG export.
+            </p>
+          </div>
+          <div style="display: flex; align-items: center; justify-content: space-between; font-weight: 700; color: #ec4899; font-size: 0.88rem; border-top: 1px solid var(--border-color); padding-top: 12px;">
+            <span>Cutout Photo</span>
+            <i class="fas fa-arrow-right"></i>
+          </div>
+        </a>
+
+        <!-- Flagship 4: Image Crop Studio Pro -->
+        <a href="cropphoto.html" class="flagship-card" style="--card-accent: linear-gradient(135deg, #f59e0b, #ea580c); --card-glow: #f59e0b;">
+          <div>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px;">
+              <div style="width: 48px; height: 48px; border-radius: 12px; background: rgba(245, 158, 11, 0.15); color: #f59e0b; display: flex; align-items: center; justify-content: center; font-size: 1.3rem;">
+                <i class="fas fa-crop"></i>
+              </div>
+              <span style="background: rgba(245, 158, 11, 0.15); color: #f59e0b; font-size: 0.72rem; font-weight: 800; padding: 3px 8px; border-radius: 999px;">STUDIO PRO</span>
+            </div>
+            <h3 style="font-size: 1.2rem; font-weight: 800; margin-bottom: 6px;">Image Crop Studio</h3>
+            <p style="font-size: 0.88rem; color: var(--text-secondary); line-height: 1.5; margin-bottom: 16px;">
+              Precision 8-handle crop box with circular avatars, fixed aspect ratios (1:1, 4:5, 16:9, 9:16), and lossless export.
+            </p>
+          </div>
+          <div style="display: flex; align-items: center; justify-content: space-between; font-weight: 700; color: #f59e0b; font-size: 0.88rem; border-top: 1px solid var(--border-color); padding-top: 12px;">
+            <span>Crop Image</span>
+            <i class="fas fa-arrow-right"></i>
+          </div>
+        </a>
+
+        <!-- Tool 29: Official HD Vector Logo Kit -->
+        <a href="logo-kit.html" class="tool-card" data-category="creative image" data-tool="logokit" style="--card-accent: linear-gradient(135deg, #ef4444, #dc2626);">
+          <span class="tool-badge-pill badge-hot">OFFICIAL</span>
+          <div class="tool-card-icon" style="background: rgba(239, 68, 68, 0.15); color: #ef4444;">
+            <i class="fas fa-circle-dot"></i>
+          </div>
+          <h3 class="tool-card-title">HD Brand & Logo Kit</h3>
+          <p class="tool-card-desc">Download the official AI Bots circular emblem in pure lossless SVG and 1080×1080 HD transparent PNG.</p>
+          <div class="tool-card-footer"><span>Open Brand Kit</span><i class="fas fa-arrow-right"></i></div>
+        </a>
+
+        <!-- Tool 30: Master Admin Control Center -->
+        <a href="admin.html" class="tool-card" data-category="utility" data-tool="admin" style="--card-accent: linear-gradient(135deg, #6366f1, #a855f7);">
+          <span class="tool-badge-pill badge-pro">ADMIN</span>
+          <div class="tool-card-icon" style="background: rgba(99, 102, 241, 0.15); color: #6366f1;">
+            <i class="fas fa-sliders"></i>
+          </div>
+          <h3 class="tool-card-title">Master Control Center</h3>
+          <p class="tool-card-desc">Platform diagnostics, tool switches, Gemini AI manager, festive decorator, and monetization.</p>
+          <div class="tool-card-footer"><span>Admin Login</span><i class="fas fa-arrow-right"></i></div>
+        </a>
+
+      </div>
+    </section>
+
     <!-- Tools Discovery & Filtering Section -->
     <section id="tools-section" style="scroll-margin-top: 100px;">
       <h2 class="section-title" style="margin-bottom: 24px;">Explore All Creative Tools & Utilities</h2>
@@ -2099,14 +2254,13 @@ body {
 
       <!-- Category Filter Pills -->
       <div class="filter-nav">
-        <button class="filter-btn active" data-filter="all"><i class="fas fa-grid-2"></i> All Tools (23)</button>
-        <button class="filter-btn" data-filter="image"><i class="fas fa-image"></i> Image (5)</button>
-        <button class="filter-btn" data-filter="sports"><i class="fas fa-baseball-bat-ball"></i> Sports & Games (3)</button>
-        <button class="filter-btn" data-filter="pdf"><i class="fas fa-file-pdf"></i> PDF & Print (3)</button>
-        <button class="filter-btn" data-filter="creative"><i class="fas fa-palette"></i> Creative (3)</button>
-        <button class="filter-btn" data-filter="utility"><i class="fas fa-sliders"></i> Utilities (5)</button>
-        <button class="filter-btn" data-filter="finance"><i class="fas fa-coins"></i> Finance (2)</button>
-        <button class="filter-btn" data-filter="ai"><i class="fas fa-robot"></i> AI & Media (4)</button>
+        <button class="filter-btn active" data-filter="all"><i class="fas fa-border-all"></i> All Tools (30)</button>
+        <button class="filter-btn" data-filter="image"><i class="fas fa-image"></i> Image & Design (6)</button>
+        <button class="filter-btn" data-filter="sports"><i class="fas fa-gamepad"></i> Sports & Games (4)</button>
+        <button class="filter-btn" data-filter="pdf"><i class="fas fa-file-pdf"></i> PDF & Documents (3)</button>
+        <button class="filter-btn" data-filter="utility"><i class="fas fa-screwdriver-wrench"></i> Utilities (9)</button>
+        <button class="filter-btn" data-filter="finance"><i class="fas fa-coins"></i> Finance & Invoices (2)</button>
+        <button class="filter-btn" data-filter="ai"><i class="fas fa-robot"></i> AI & Creative (6)</button>
       </div>
 
       <!-- Tools Grid (28 Complete Tools) -->
@@ -2417,6 +2571,28 @@ body {
           <h3 class="tool-card-title">Live Cricket Scores</h3>
           <p class="tool-card-desc">Follow live match scores, recent results, and team scoreboards in real time.</p>
           <div class="tool-card-footer"><span>Launch Tool</span><i class="fas fa-arrow-right"></i></div>
+        </a>
+
+        <!-- Tool 29: Official HD Vector Logo Kit -->
+        <a href="logo-kit.html" class="tool-card" data-category="creative image" data-tool="logokit" style="--card-accent: linear-gradient(135deg, #ef4444, #dc2626);">
+          <span class="tool-badge-pill badge-hot">OFFICIAL</span>
+          <div class="tool-card-icon" style="background: rgba(239, 68, 68, 0.15); color: #ef4444;">
+            <i class="fas fa-circle-dot"></i>
+          </div>
+          <h3 class="tool-card-title">HD Brand & Logo Kit</h3>
+          <p class="tool-card-desc">Download the official AI Bots circular emblem in pure lossless SVG and 1080×1080 HD transparent PNG.</p>
+          <div class="tool-card-footer"><span>Open Brand Kit</span><i class="fas fa-arrow-right"></i></div>
+        </a>
+
+        <!-- Tool 30: Master Admin Control Center -->
+        <a href="admin.html" class="tool-card" data-category="utility" data-tool="admin" style="--card-accent: linear-gradient(135deg, #6366f1, #a855f7);">
+          <span class="tool-badge-pill badge-pro">ADMIN</span>
+          <div class="tool-card-icon" style="background: rgba(99, 102, 241, 0.15); color: #6366f1;">
+            <i class="fas fa-sliders"></i>
+          </div>
+          <h3 class="tool-card-title">Master Control Center</h3>
+          <p class="tool-card-desc">Platform diagnostics, tool switches, Gemini AI manager, festive decorator, and monetization.</p>
+          <div class="tool-card-footer"><span>Admin Login</span><i class="fas fa-arrow-right"></i></div>
         </a>
 
       </div>

@@ -6,9 +6,9 @@
   <meta name="google-site-verification" content="ndzq-U-NLijgza_QqgQdcc2U3oMRoud_BT2ZZiwFREM">
   <meta name="google-site-verification" content="-Yb6Nx74gbZ3wRN5uP-Y8KKwDWlt1DPpxs4nA3PkE6M">
   <meta name="robots" content="index, follow">
-  <title>Video Studio Pro — Precision Multi-Clip Timeline & Audio Scrubber | AI Bots</title>
-  <meta name="description" content="Professional non-destructive timeline video editor: Smooth draggable playhead needle, individual trim handles per clip, direct audio waveform slip & endpoint trimmer, and synchronized HD export.">
-  <meta name="keywords" content="video editor online, draggable playhead video editor, multi clip timeline scrubber, trim music video online, ai bots video studio">
+  <title>Video Studio Pro — Advanced Multi-Clip Timeline & Audio Editor | AI Bots</title>
+  <meta name="description" content="Professional in-browser video editor: Full-viewport preview, draggable playhead needle, movable audio endpoint cursors, fast multi-clip sequence rendering, and HD export.">
+  <meta name="keywords" content="video editor online, full screen video preview, adjust audio endpoints, fast video render online, multi clip sequence timeline, ai bots video studio">
   <link rel="icon" href="logo.png" type="image/png">
   <link rel="canonical" href="https://www.aibots.co.in/videoeditor.html">
   <link rel="manifest" href="manifest.json">
@@ -38,7 +38,7 @@
       .editor-layout { grid-template-columns: 1fr; }
     }
 
-    /* Video Player Viewport Container */
+    /* Video Player Viewport Container - Edge-to-Edge Responsive Fitting */
     .viewport-card {
       background: var(--bg-secondary);
       border: 1px solid var(--border-color);
@@ -50,26 +50,29 @@
     .video-screen-wrapper {
       position: relative;
       width: 100%;
+      height: 480px;
       background: #020617;
       border-radius: var(--radius-lg);
       overflow: hidden;
       display: flex;
       align-items: center;
       justify-content: center;
-      min-height: 320px;
-      max-height: 520px;
       box-shadow: inset 0 0 30px rgba(0,0,0,0.8);
+      border: 1px solid var(--border-color);
+    }
+    @media (max-width: 768px) {
+      .video-screen-wrapper { height: 300px; }
     }
     #previewVideo, #previewPhoto {
-      max-width: 100%;
-      max-height: 500px;
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
       display: block;
       border-radius: var(--radius-md);
       transition: transform 0.2s ease, filter 0.2s ease;
     }
     #previewPhoto {
       display: none;
-      object-fit: contain;
     }
     #exportCanvas {
       display: none;
@@ -148,8 +151,8 @@
     }
     .media-clip-item {
       position: relative;
-      width: 105px;
-      height: 62px;
+      width: 110px;
+      height: 64px;
       border-radius: var(--radius-md);
       border: 2px solid var(--border-color);
       background: var(--bg-tertiary);
@@ -181,7 +184,7 @@
       font-weight: 800;
       background: rgba(15, 23, 42, 0.85);
       color: #ffffff;
-      padding: 1px 4px;
+      padding: 1px 5px;
       border-radius: 3px;
       align-self: flex-start;
     }
@@ -202,8 +205,8 @@
       cursor: pointer;
     }
     .add-media-btn {
-      width: 105px;
-      height: 62px;
+      width: 110px;
+      height: 64px;
       border-radius: var(--radius-md);
       border: 2px dashed var(--border-color);
       background: var(--bg-primary);
@@ -603,9 +606,9 @@
 
   <main class="app-container tool-page-wrapper">
     <div class="tool-header">
-      <span class="tool-header-badge"><i class="fas fa-clapperboard"></i> Smooth Multi-Clip Sequence & Audio Scrubber</span>
+      <span class="tool-header-badge"><i class="fas fa-clapperboard"></i> Full-Viewport Multi-Clip Sequence Studio</span>
       <h1 class="tool-title">Video Studio Pro</h1>
-      <p class="tool-desc">Drag the master playhead needle, trim individual clip endpoints in a shared timeline, scrub music audio with live auditioning, and render HD videos.</p>
+      <p class="tool-desc">Edge-to-edge video preview, draggable playhead needle, movable audio endpoint cursors, and fast synchronized HD export.</p>
     </div>
 
     <!-- Dropzone / Empty State -->
@@ -640,7 +643,7 @@
               <button onclick="cancelExport()" class="btn btn-secondary btn-sm" style="margin-top: 16px; color: #ef4444; border-color: rgba(239,68,68,0.4);">Cancel Render</button>
             </div>
 
-            <!-- Video Screen -->
+            <!-- Video Screen (Edge to Edge Fitting) -->
             <div class="video-screen-wrapper" id="screenWrapper">
               <video id="previewVideo" playsinline></video>
               <img id="previewPhoto" alt="Preview Photo Slide">
@@ -729,7 +732,7 @@
                   <canvas class="audio-waveform-full" id="audioWaveformCanvas"></canvas>
                   
                   <div class="audio-active-block" id="audioSlice" onpointerdown="handleAudioSliceDown(event)">
-                    <div class="drag-tooltip" id="audioSliceTooltip">Music Start: 00:00.0</div>
+                    <div class="drag-tooltip" id="audioSliceTooltip">Music: 00:00.0</div>
                     <div class="clip-trim-handle clip-trim-left" id="audioHandleLeft" onpointerdown="handleAudioLeftDown(event)" title="Drag to slip music start" style="background:#ec4899;">
                       <div class="drag-tooltip" id="audioHandleTooltip">00:00.0</div>
                     </div>
@@ -776,7 +779,7 @@
               <i class="fas fa-wand-magic-sparkles"></i> Render & Export Video
             </button>
             <div style="font-size: 0.75rem; color: var(--text-secondary); text-align: center;">
-              Exact audio-sync • Multi-clip sequence • HD WebM/MP4
+              Fast multi-clip sequence • HD WebM/MP4 • Synced Audio
             </div>
           </div>
 
@@ -947,7 +950,7 @@
     const canvas = document.getElementById('exportCanvas');
     const ctx = canvas.getContext('2d');
 
-    let mediaClips = []; // [{ id, type, file, url, duration, trimStart, trimEnd, color }]
+    let mediaClips = [];
     let activeClipIndex = 0;
     let sequenceCurrentTime = 0;
     let isPlayingSequence = false;
@@ -971,7 +974,6 @@
 
     const clipColors = ['#6366f1', '#06b6d4', '#10b981', '#f59e0b', '#8b5cf6', '#3b82f6'];
 
-    // Web Audio Routing Nodes
     let audioCtx = null;
     let videoAudioSource = null;
     let bgmAudioSource = null;
@@ -1141,7 +1143,6 @@
 
       renderMediaBinStrip();
       
-      // Update active highlight classes without recreating entire DOM
       document.querySelectorAll('.joined-clip-block').forEach((b, i) => {
         b.classList.toggle('active', i === idx);
       });
@@ -1195,7 +1196,7 @@
     // ===================================================
     // BULLETPROOF NON-DESTRUCTIVE TIMELINE DRAG CONTROLLER
     // ===================================================
-    let activeDrag = null; // { type, idx, startX, startTrim, totalDur, startOffset }
+    let activeDrag = null;
 
     function handlePlayheadDown(e) {
       e.stopPropagation();
@@ -1251,7 +1252,8 @@
       activeDrag = {
         type: 'audio-left',
         startX: e.clientX,
-        initOffset: bgmStartOffset
+        initOffset: bgmStartOffset,
+        initCutDur: bgmCutDuration > 0 ? bgmCutDuration : getTotalSequenceDuration()
       };
     }
 
@@ -1261,7 +1263,7 @@
         type: 'audio-right',
         startX: e.clientX,
         initOffset: bgmStartOffset,
-        initCutDur: bgmCutDuration || (getTotalSequenceDuration())
+        initCutDur: bgmCutDuration > 0 ? bgmCutDuration : Math.min(getTotalSequenceDuration(), bgmAudioDuration - bgmStartOffset)
       };
     }
 
@@ -1271,7 +1273,8 @@
       activeDrag = {
         type: 'audio-slide',
         startX: e.clientX,
-        initOffset: bgmStartOffset
+        initOffset: bgmStartOffset,
+        initCutDur: bgmCutDuration > 0 ? bgmCutDuration : getTotalSequenceDuration()
       };
     }
 
@@ -1292,7 +1295,6 @@
         const deltaSec = (deltaX / trackW) * totalDur;
         clip.trimStart = Math.max(0, Math.min(clip.trimEnd - 0.2, activeDrag.initTrimStart + deltaSec));
         
-        // Update DOM elements in place
         document.getElementById(`clip_left_tip_${activeDrag.idx}`).textContent = formatTime(clip.trimStart, true);
         document.getElementById('trimStartInput').value = formatTime(clip.trimStart, true);
         if (clip.type === 'video') video.currentTime = clip.trimStart;
@@ -1550,21 +1552,22 @@
     function updateAudioTrimDisplay() {
       if (!bgmAudioDuration) return;
       const totalDur = getTotalSequenceDuration();
+      const activeDuration = bgmCutDuration > 0 ? Math.min(bgmCutDuration, bgmAudioDuration - bgmStartOffset) : Math.min(totalDur, bgmAudioDuration - bgmStartOffset);
+
       const leftPct = (bgmStartOffset / bgmAudioDuration) * 100;
-      const duration = Math.min(totalDur, bgmAudioDuration - bgmStartOffset);
-      const widthPct = (duration / bgmAudioDuration) * 100;
+      const widthPct = (activeDuration / bgmAudioDuration) * 100;
 
       const slice = document.getElementById('audioSlice');
       slice.style.left = `${leftPct}%`;
-      slice.style.width = `${Math.max(5, widthPct)}%`;
+      slice.style.width = `${Math.max(4, widthPct)}%`;
 
       document.getElementById('bgmStartInput').value = formatTime(bgmStartOffset, true);
       document.getElementById('sliderBgmStart').value = bgmStartOffset;
       document.getElementById('valBgmStart').textContent = formatTime(bgmStartOffset, true);
 
-      document.getElementById('audioSliceTooltip').textContent = `Music Start: ${formatTime(bgmStartOffset, true)}`;
+      document.getElementById('audioSliceTooltip').textContent = `Music: ${formatTime(bgmStartOffset, true)} - ${formatTime(bgmStartOffset + activeDuration, true)}`;
       document.getElementById('audioHandleTooltip').textContent = formatTime(bgmStartOffset, true);
-      document.getElementById('audioHandleRightTooltip').textContent = formatTime(bgmStartOffset + duration, true);
+      document.getElementById('audioHandleRightTooltip').textContent = formatTime(bgmStartOffset + activeDuration, true);
     }
 
     function handleBgmSliderChange(val) {
@@ -1587,6 +1590,7 @@
     function autoFitMusicToVideo() {
       if (!bgmLoaded) return;
       bgmStartOffset = 0;
+      bgmCutDuration = getTotalSequenceDuration();
       document.getElementById('sliderBgmStart').value = 0;
       document.getElementById('valBgmStart').textContent = "00:00.0";
       document.getElementById('bgmStartInput').value = "00:00.0";
@@ -1911,7 +1915,7 @@
     }
 
     // ===================================================
-    // SYNCHRONIZED SEQUENTIAL HD EXPORT
+    // SYNCHRONIZED SEQUENTIAL HD EXPORT (FAST & RELIABLE)
     // ===================================================
     async function startVideoExport() {
       if (isRendering || !mediaClips.length) return;
@@ -1926,8 +1930,8 @@
       document.getElementById('exportProgressBar').style.width = '0%';
       document.getElementById('exportPercentText').textContent = '0%';
 
-      let targetW = 1920;
-      let targetH = 1080;
+      let targetW = 1280;
+      let targetH = 720;
 
       if (currentAspectRatio === '16:9') {
         targetW = 1920; targetH = 1080;
@@ -1961,7 +1965,7 @@
       try {
         mediaRecorder = new MediaRecorder(canvasStream, {
           mimeType: mimeType,
-          videoBitsPerSecond: 6000000
+          videoBitsPerSecond: 5000000
         });
       } catch (e) {
         mediaRecorder = new MediaRecorder(canvasStream);
@@ -2000,6 +2004,7 @@
       for (let i = 0; i < mediaClips.length; i++) {
         if (!isRendering) break;
         const clip = mediaClips[i];
+        const clipDuration = Math.max(0.1, clip.trimEnd - clip.trimStart);
         document.getElementById('exportStatusText').textContent = `Rendering Clip ${i + 1} of ${mediaClips.length}...`;
 
         if (clip.type === 'video') {
@@ -2012,9 +2017,9 @@
             function renderVideoClip() {
               if (!isRendering) return resolve();
 
-              drawFrameToCanvas(video, video.videoWidth, video.videoHeight);
+              drawFrameToCanvas(video, video.videoWidth || 1280, video.videoHeight || 720);
 
-              const clipElapsed = video.currentTime - clip.trimStart;
+              const clipElapsed = Math.max(0, video.currentTime - clip.trimStart);
               const totalElapsed = renderedDurationSoFar + clipElapsed;
               const pct = Math.min(100, Math.max(0, Math.round((totalElapsed / totalSeqDuration) * 100)));
               document.getElementById('exportProgressBar').style.width = `${pct}%`;
@@ -2022,7 +2027,7 @@
 
               if (video.currentTime >= clip.trimEnd - 0.05 || video.ended) {
                 video.pause();
-                renderedDurationSoFar += (clip.trimEnd - clip.trimStart);
+                renderedDurationSoFar += clipDuration;
                 resolve();
               } else {
                 requestAnimationFrame(renderVideoClip);
@@ -2042,7 +2047,7 @@
             function renderPhotoClip(now) {
               if (!isRendering) return resolve();
 
-              drawFrameToCanvas(img, img.naturalWidth, img.naturalHeight);
+              drawFrameToCanvas(img, img.naturalWidth || 1280, img.naturalHeight || 720);
 
               const photoElapsed = (now - startT) / 1000;
               const totalElapsed = renderedDurationSoFar + photoElapsed;

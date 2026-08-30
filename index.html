@@ -2697,7 +2697,7 @@ body {
         </div>
 
         <div style="display: flex; justify-content: center; align-items: center; gap: 12px; flex-wrap: wrap;">
-          <button onclick="openUpiModal()" class="btn btn-primary btn-sm" style="background: linear-gradient(135deg, #ec4899, #f43f5e); border: none; font-weight: 700; box-shadow: 0 4px 14px rgba(236, 72, 153, 0.35);">
+          <button onclick="openDonationModal()" class="btn btn-primary btn-sm" style="background: linear-gradient(135deg, #ec4899, #f43f5e); border: none; font-weight: 700; box-shadow: 0 4px 14px rgba(236, 72, 153, 0.35);">
             <i class="fas fa-heart"></i> Support AI Bots & Get Featured Here
           </button>
         </div>
@@ -2908,6 +2908,7 @@ body {
     // ===================================================
     // 🏆 Live Supporter & Donor Wall of Fame Renderer
     // ===================================================
+    window.openUpiModal = function() { if (typeof openDonationModal === "function") openDonationModal(); };
     function renderHomeDonorsList() {
       const grid = document.getElementById('homeDonorsGrid');
       if (!grid) return;

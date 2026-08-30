@@ -717,6 +717,7 @@ window.closeDonationModal = function() {
   }
 };
 
+window.openUpiModal = function() { window.openDonationModal(); };
 window.openDonationModal = function() {
   let modal = document.getElementById('donation-modal');
   if (!modal) {

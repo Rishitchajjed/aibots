@@ -6,9 +6,9 @@
   <meta name="google-site-verification" content="ndzq-U-NLijgza_QqgQdcc2U3oMRoud_BT2ZZiwFREM">
   <meta name="google-site-verification" content="-Yb6Nx74gbZ3wRN5uP-Y8KKwDWlt1DPpxs4nA3PkE6M">
   <meta name="robots" content="index, follow">
-  <title>Video Editor Studio Pro — AI Bots</title>
-  <meta name="description" content="Free private in-browser video editor: Trim, cut, crop, apply cinematic filters, add text overlays, adjust speed, mute audio, and export HD videos with 0 server uploads.">
-  <meta name="keywords" content="video editor online, trim video online, crop video for reels, video filters online, add text to video, free video editor no watermark, ai bots video studio">
+  <title>Video Studio Pro 2.0 — AI Bots</title>
+  <meta name="description" content="Ultimate free in-browser video editor: Trim clips, add background music & voiceover, overlay stickers & logos, apply VHS/Glitch effects, crop for Reels/TikTok, make GIFs, and export HD videos with 0 server uploads.">
+  <meta name="keywords" content="video editor online, trim video online, add music to video online, crop video for reels, video filters online, make gif from video, extract audio from video, ai bots video studio">
   <link rel="icon" href="logo.png" type="image/png">
   <link rel="canonical" href="https://www.aibots.co.in/videoeditor.html">
   <link rel="manifest" href="manifest.json">
@@ -30,11 +30,11 @@
   <style>
     .editor-layout {
       display: grid;
-      grid-template-columns: 1fr 340px;
+      grid-template-columns: 1fr 380px;
       gap: 24px;
       align-items: start;
     }
-    @media (max-width: 980px) {
+    @media (max-width: 1024px) {
       .editor-layout { grid-template-columns: 1fr; }
     }
 
@@ -70,7 +70,7 @@
       display: none;
     }
 
-    /* On-Screen Text Overlay Preview */
+    /* On-Screen Text & Watermark Overlay Layer */
     .video-text-overlay {
       position: absolute;
       pointer-events: none;
@@ -79,9 +79,24 @@
       text-align: center;
       transition: all 0.1s ease;
       z-index: 10;
-      text-shadow: 0 2px 8px rgba(0,0,0,0.8);
+      text-shadow: 0 2px 10px rgba(0,0,0,0.9);
       max-width: 90%;
       word-break: break-word;
+    }
+    .video-logo-overlay {
+      position: absolute;
+      pointer-events: none;
+      z-index: 12;
+      transition: all 0.1s ease;
+      display: none;
+    }
+    .video-vfx-layer {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      z-index: 15;
+      mix-blend-mode: screen;
+      display: none;
     }
 
     /* Player Controls Bar */
@@ -90,7 +105,7 @@
       align-items: center;
       justify-content: space-between;
       gap: 12px;
-      padding: 12px 0 0;
+      padding: 14px 0 0;
       flex-wrap: wrap;
     }
     .time-badge {
@@ -99,7 +114,7 @@
       font-weight: 700;
       color: var(--text-primary);
       background: var(--bg-tertiary);
-      padding: 4px 10px;
+      padding: 5px 12px;
       border-radius: var(--radius-md);
       border: 1px solid var(--border-color);
     }
@@ -121,7 +136,7 @@
     }
     .scrub-track-wrapper {
       position: relative;
-      height: 48px;
+      height: 52px;
       background: var(--bg-tertiary);
       border-radius: var(--radius-md);
       border: 1px solid var(--border-color);
@@ -148,7 +163,7 @@
       left: 0%;
       width: 3px;
       background: #ef4444;
-      box-shadow: 0 0 8px #ef4444;
+      box-shadow: 0 0 10px #ef4444;
       pointer-events: none;
       z-index: 5;
     }
@@ -201,7 +216,7 @@
     }
     .chip-btn.active {
       background: var(--primary);
-      color: white;
+      color: white !important;
       border-color: var(--primary);
       box-shadow: 0 2px 8px var(--primary-glow);
     }
@@ -230,8 +245,8 @@
     .export-overlay {
       position: absolute;
       inset: 0;
-      background: rgba(2, 6, 23, 0.88);
-      backdrop-filter: blur(8px);
+      background: rgba(2, 6, 23, 0.92);
+      backdrop-filter: blur(10px);
       display: none;
       flex-direction: column;
       align-items: center;
@@ -257,6 +272,27 @@
       background: linear-gradient(135deg, var(--primary), #ec4899);
       transition: width 0.1s linear;
     }
+
+    /* Emoji Stickers Grid */
+    .emoji-pill-grid {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 12px;
+    }
+    .emoji-pill {
+      font-size: 1.25rem;
+      padding: 4px 10px;
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      cursor: pointer;
+      transition: transform 0.15s;
+    }
+    .emoji-pill:hover {
+      transform: scale(1.2);
+      border-color: var(--primary);
+    }
   </style>
 </head>
 <body>
@@ -269,7 +305,7 @@
         <a href="index.html" class="brand-link">
           <img src="logo.png" alt="AI Bots Logo" class="brand-logo-img">
           <span>AI Bots</span>
-          <span class="brand-badge" style="background: linear-gradient(135deg, #ec4899, #8b5cf6); color: white;">VIDEO STUDIO</span>
+          <span class="brand-badge" style="background: linear-gradient(135deg, #ec4899, #8b5cf6); color: white;">VIDEO STUDIO 2.0</span>
         </a>
 
         <div class="nav-actions">
@@ -283,17 +319,17 @@
   <main class="app-container tool-page-wrapper">
     <div class="tool-header">
       <span class="tool-header-badge"><i class="fas fa-clapperboard"></i> 100% In-Browser & Private</span>
-      <h1 class="tool-title">Video Studio Pro</h1>
-      <p class="tool-desc">Trim clips, crop aspect ratios, add text overlays, apply color grades, change speed, and export HD videos.</p>
+      <h1 class="tool-title">Video Studio Pro 2.0</h1>
+      <p class="tool-desc">Trim clips, mix background music, add stickers & logos, apply cinematic filters, crop for Reels/TikTok, and export HD videos.</p>
     </div>
 
     <!-- Dropzone / Empty State -->
     <div class="dropzone-container" id="videoDropzone" onclick="document.getElementById('videoFileInput').click()">
       <input type="file" id="videoFileInput" class="dropzone-input" accept="video/*" onchange="handleVideoUpload(event)">
       <div class="dropzone-icon" style="color: #ec4899;"><i class="fas fa-film"></i></div>
-      <div class="dropzone-title">Upload Video File to Start Editing</div>
-      <div class="dropzone-subtitle">Supports MP4, WebM, MOV, AVI, MKV • 100% Client-Side Processing</div>
-      <button class="btn btn-primary btn-sm" style="margin-top: 14px; pointer-events: none;"><i class="fas fa-upload"></i> Select Video</button>
+      <div class="dropzone-title">Upload Video to Start Editing</div>
+      <div class="dropzone-subtitle">Supports MP4, WebM, MOV, AVI, MKV • 100% Client-Side Processing • 0 Server Uploads</div>
+      <button class="btn btn-primary btn-sm" style="margin-top: 14px; pointer-events: none;"><i class="fas fa-upload"></i> Select Video File</button>
     </div>
 
     <!-- MAIN STUDIO WORKSPACE (Hidden until video loaded) -->
@@ -308,13 +344,13 @@
             
             <!-- Export Render Overlay -->
             <div class="export-overlay" id="exportOverlay">
-              <div style="font-size: 2.2rem; color: #ec4899; margin-bottom: 12px;"><i class="fas fa-circle-notch fa-spin"></i></div>
-              <h3 style="font-size: 1.25rem; font-weight: 800; color: #fff;">Rendering Edited Video...</h3>
-              <p style="font-size: 0.85rem; color: #cbd5e1;" id="exportStatusText">Processing frames client-side</p>
+              <div style="font-size: 2.4rem; color: #ec4899; margin-bottom: 12px;"><i class="fas fa-circle-notch fa-spin"></i></div>
+              <h3 style="font-size: 1.35rem; font-weight: 800; color: #fff;">Rendering Edited Video...</h3>
+              <p style="font-size: 0.85rem; color: #cbd5e1;" id="exportStatusText">Encoding video frames client-side</p>
               <div class="progress-bar-wrap">
                 <div class="progress-bar-fill" id="exportProgressBar"></div>
               </div>
-              <div style="font-family: var(--font-mono); font-size: 0.9rem; font-weight: 800; color: #38bdf8;" id="exportPercentText">0%</div>
+              <div style="font-family: var(--font-mono); font-size: 0.95rem; font-weight: 800; color: #38bdf8;" id="exportPercentText">0%</div>
               <button onclick="cancelExport()" class="btn btn-secondary btn-sm" style="margin-top: 16px; color: #ef4444; border-color: rgba(239,68,68,0.4);">Cancel</button>
             </div>
 
@@ -323,6 +359,8 @@
               <video id="previewVideo" playsinline></video>
               <canvas id="renderCanvas"></canvas>
               <div class="video-text-overlay" id="textOverlayDisplay"></div>
+              <img id="logoOverlayDisplay" class="video-logo-overlay" alt="Watermark Overlay">
+              <div class="video-vfx-layer" id="vfxOverlayLayer"></div>
             </div>
 
             <!-- Playback Bar -->
@@ -336,8 +374,9 @@
                 <button onclick="toggleMute()" class="btn btn-secondary btn-sm" id="muteBtn" title="Mute Audio"><i class="fas fa-volume-high" id="muteIcon"></i></button>
               </div>
 
-              <div style="display: flex; gap: 8px; align-items: center;">
+              <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
                 <button onclick="captureFrameSnapshot()" class="btn btn-secondary btn-sm" title="Capture Frame as HD PNG"><i class="fas fa-camera"></i> Snapshot</button>
+                <button onclick="extractAudioTrack()" class="btn btn-secondary btn-sm" title="Extract Audio Track as WAV"><i class="fas fa-music"></i> Extract Audio</button>
                 <div class="time-badge"><span id="currentTimeText">00:00</span> / <span id="durationText">00:00</span></div>
               </div>
             </div>
@@ -382,16 +421,33 @@
 
           <!-- 1. Export Action Card -->
           <div class="tool-box" style="background: linear-gradient(135deg, rgba(99,102,241,0.1), rgba(236,72,153,0.1)); border-color: var(--primary);">
-            <div class="tool-box-title" style="color: var(--primary);"><i class="fas fa-download"></i> Export Video</div>
-            <button onclick="startVideoExport()" class="btn btn-primary" style="width: 100%; padding: 12px; font-size: 1rem; font-weight: 800; background: linear-gradient(135deg, #6366f1, #ec4899); border: none;">
+            <div class="tool-box-title" style="color: var(--primary);"><i class="fas fa-download"></i> Export & Share</div>
+            <button onclick="startVideoExport()" class="btn btn-primary" style="width: 100%; padding: 12px; font-size: 1rem; font-weight: 800; background: linear-gradient(135deg, #6366f1, #ec4899); border: none; margin-bottom: 8px;">
               <i class="fas fa-wand-magic-sparkles"></i> Render & Export Video
             </button>
-            <div style="font-size: 0.75rem; color: var(--text-secondary); text-align: center; margin-top: 8px;">
+            <div style="font-size: 0.75rem; color: var(--text-secondary); text-align: center;">
               Fast local encoding • No watermark • HD Quality
             </div>
           </div>
+
+          <!-- 2. Background Music & Audio Mixer -->
+          <div class="tool-box">
+            <div class="tool-box-title"><i class="fas fa-headphones" style="color: #ec4899;"></i> Background Music & Audio</div>
+            <input type="file" id="bgmFileInput" accept="audio/*" style="display: none;" onchange="handleBgmUpload(event)">
+            <button onclick="document.getElementById('bgmFileInput').click()" class="btn btn-secondary btn-sm" style="width: 100%; margin-bottom: 12px;">
+              <i class="fas fa-file-audio"></i> <span id="bgmBtnText">Add Audio Track / Music</span>
+            </button>
+
+            <div style="display: flex; flex-direction: column; gap: 8px; font-size: 0.82rem;">
+              <div style="display: flex; justify-content: space-between;"><span>Video Volume</span><span id="valVideoVol">100%</span></div>
+              <input type="range" min="0" max="200" value="100" class="range-slider" id="sliderVideoVol" oninput="updateAudioMixer()">
+
+              <div style="display: flex; justify-content: space-between;"><span>Music Volume</span><span id="valBgmVol">80%</span></div>
+              <input type="range" min="0" max="200" value="80" class="range-slider" id="sliderBgmVol" oninput="updateAudioMixer()">
+            </div>
+          </div>
           
-          <!-- 2. Aspect Ratio & Rotation -->
+          <!-- 3. Aspect Ratio & Orientation -->
           <div class="tool-box">
             <div class="tool-box-title"><i class="fas fa-crop-simple" style="color: #38bdf8;"></i> Aspect Ratio & Orientation</div>
             <div class="chip-grid" style="margin-bottom: 12px;">
@@ -410,7 +466,7 @@
             </div>
           </div>
 
-          <!-- 3. Speed Control -->
+          <!-- 4. Playback Speed -->
           <div class="tool-box">
             <div class="tool-box-title"><i class="fas fa-gauge-high" style="color: #f59e0b;"></i> Playback Speed</div>
             <div class="chip-grid">
@@ -423,10 +479,22 @@
             </div>
           </div>
 
-          <!-- 4. Text & Watermark Overlay -->
+          <!-- 5. Text & Emoji Stickers -->
           <div class="tool-box">
-            <div class="tool-box-title"><i class="fas fa-font" style="color: #10b981;"></i> Text Overlay</div>
-            <input type="text" id="textOverlayInput" class="form-control" placeholder="Type overlay text here..." style="margin-bottom: 10px; font-size: 0.88rem;" oninput="updateTextOverlay()">
+            <div class="tool-box-title"><i class="fas fa-font" style="color: #10b981;"></i> Text & Stickers</div>
+            
+            <div class="emoji-pill-grid">
+              <span class="emoji-pill" onclick="appendEmoji('🔥')">🔥</span>
+              <span class="emoji-pill" onclick="appendEmoji('⚡')">⚡</span>
+              <span class="emoji-pill" onclick="appendEmoji('❤️')">❤️</span>
+              <span class="emoji-pill" onclick="appendEmoji('👑')">👑</span>
+              <span class="emoji-pill" onclick="appendEmoji('✨')">✨</span>
+              <span class="emoji-pill" onclick="appendEmoji('⭐')">⭐</span>
+              <span class="emoji-pill" onclick="appendEmoji('🏏')">🏏</span>
+              <span class="emoji-pill" onclick="appendEmoji('🤖')">🤖</span>
+            </div>
+
+            <input type="text" id="textOverlayInput" class="form-control" placeholder="Type overlay text or emojis..." style="margin-bottom: 10px; font-size: 0.88rem;" oninput="updateTextOverlay()">
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 10px;">
               <select id="textPositionSelect" class="form-control" style="font-size: 0.82rem;" onchange="updateTextOverlay()">
                 <option value="bottom">Bottom Center</option>
@@ -451,7 +519,20 @@
             </div>
           </div>
 
-          <!-- 5. Color Grading & Filters -->
+          <!-- 6. Logo & Watermark Inserter -->
+          <div class="tool-box">
+            <div class="tool-box-title"><i class="fas fa-image" style="color: #6366f1;"></i> Logo & Watermark Overlay</div>
+            <input type="file" id="logoFileInput" accept="image/*" style="display: none;" onchange="handleLogoUpload(event)">
+            <button onclick="document.getElementById('logoFileInput').click()" class="btn btn-secondary btn-sm" style="width: 100%; margin-bottom: 10px;">
+              <i class="fas fa-stamp"></i> <span id="logoBtnText">Upload Logo PNG</span>
+            </button>
+            <div style="display: flex; justify-content: space-between; font-size: 0.82rem; margin-bottom: 4px;">
+              <span>Logo Size</span><span id="valLogoScale">70px</span>
+            </div>
+            <input type="range" min="30" max="180" value="70" class="range-slider" id="sliderLogoScale" oninput="updateLogoScale()">
+          </div>
+
+          <!-- 7. Color Grading & Cinematic Filters -->
           <div class="tool-box">
             <div class="tool-box-title"><i class="fas fa-sliders" style="color: #a855f7;"></i> Cinematic Color Filters</div>
             <div class="chip-grid" style="margin-bottom: 14px;">
@@ -502,6 +583,11 @@
     let mediaRecorder = null;
     let recordedChunks = [];
 
+    // Background Audio Track
+    let bgmAudio = new Audio();
+    let bgmLoaded = false;
+    let logoImage = null;
+
     // ==========================================
     // VIDEO LOADING & INITIALIZATION
     // ==========================================
@@ -531,15 +617,71 @@
       };
     }
 
+    // Background Music Upload
+    function handleBgmUpload(e) {
+      const file = e.target.files[0];
+      if (!file) return;
+      bgmAudio.src = URL.createObjectURL(file);
+      bgmLoaded = true;
+      document.getElementById('bgmBtnText').textContent = `🎵 ${file.name.substring(0, 18)}...`;
+      bgmAudio.volume = parseFloat(document.getElementById('sliderBgmVol').value) / 100;
+    }
+
+    // Logo Upload
+    function handleLogoUpload(e) {
+      const file = e.target.files[0];
+      if (!file) return;
+      const url = URL.createObjectURL(file);
+      const img = document.getElementById('logoOverlayDisplay');
+      img.src = url;
+      img.style.display = 'block';
+      img.style.top = '16px';
+      img.style.right = '16px';
+      img.style.width = '70px';
+      document.getElementById('logoBtnText').textContent = `Logo Loaded ✓`;
+
+      logoImage = new Image();
+      logoImage.src = url;
+    }
+
+    function updateLogoScale() {
+      const scale = document.getElementById('sliderLogoScale').value;
+      document.getElementById('valLogoScale').textContent = `${scale}px`;
+      const img = document.getElementById('logoOverlayDisplay');
+      if (img) img.style.width = `${scale}px`;
+    }
+
+    function appendEmoji(emoji) {
+      const input = document.getElementById('textOverlayInput');
+      input.value += emoji + ' ';
+      updateTextOverlay();
+    }
+
+    function updateAudioMixer() {
+      const vVol = parseFloat(document.getElementById('sliderVideoVol').value) / 100;
+      const bVol = parseFloat(document.getElementById('sliderBgmVol').value) / 100;
+
+      document.getElementById('valVideoVol').textContent = `${Math.round(vVol * 100)}%`;
+      document.getElementById('valBgmVol').textContent = `${Math.round(bVol * 100)}%`;
+
+      video.volume = Math.min(1.0, vVol);
+      if (bgmLoaded) bgmAudio.volume = Math.min(1.0, bVol);
+    }
+
     // Playback Controls
     function togglePlayPause() {
       if (video.paused) {
         if (video.currentTime >= trimEnd) video.currentTime = trimStart;
         video.play();
+        if (bgmLoaded) {
+          bgmAudio.currentTime = video.currentTime - trimStart;
+          bgmAudio.play();
+        }
         document.getElementById('playIcon').className = 'fas fa-pause';
         document.getElementById('playBtnText').textContent = 'Pause';
       } else {
         video.pause();
+        if (bgmLoaded) bgmAudio.pause();
         document.getElementById('playIcon').className = 'fas fa-play';
         document.getElementById('playBtnText').textContent = 'Play';
       }
@@ -552,16 +694,19 @@
       // Loop within trim range during playback preview
       if (video.currentTime >= trimEnd) {
         video.currentTime = trimStart;
+        if (bgmLoaded) bgmAudio.currentTime = 0;
       }
     });
 
     video.addEventListener('ended', () => {
       document.getElementById('playIcon').className = 'fas fa-play';
       document.getElementById('playBtnText').textContent = 'Play';
+      if (bgmLoaded) bgmAudio.pause();
     });
 
     function stepFrame(step) {
       video.pause();
+      if (bgmLoaded) bgmAudio.pause();
       video.currentTime = Math.max(trimStart, Math.min(trimEnd, video.currentTime + step * 0.05));
     }
 
@@ -745,15 +890,75 @@
       snapCanvas.height = video.videoHeight;
       const snapCtx = snapCanvas.getContext('2d');
 
-      // Draw transform and filter
       snapCtx.filter = filterStyle;
       snapCtx.drawImage(video, 0, 0, snapCanvas.width, snapCanvas.height);
 
-      // Download
       const link = document.createElement('a');
       link.download = `snapshot_${Math.floor(video.currentTime)}s.png`;
       link.href = snapCanvas.toDataURL('image/png');
       link.click();
+    }
+
+    // ==========================================
+    // EXTRACT AUDIO TRACK AS WAV
+    // ==========================================
+    async function extractAudioTrack() {
+      if (!videoFile) return;
+      alert("🎵 Extracting audio track directly in-browser. Download will start in a moment!");
+      
+      const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      const arrayBuffer = await videoFile.arrayBuffer();
+      const audioBuffer = await audioCtx.decodeAudioData(arrayBuffer);
+
+      const wavBlob = bufferToWave(audioBuffer, audioBuffer.length);
+      const url = URL.createObjectURL(wavBlob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `extracted_audio_${Date.now()}.wav`;
+      a.click();
+    }
+
+    function bufferToWave(abuffer, len) {
+      let numOfChan = abuffer.numberOfChannels,
+          length = len * numOfChan * 2 + 44,
+          outBuffer = new ArrayBuffer(length),
+          view = new DataView(outBuffer),
+          channels = [], i, sample,
+          offset = 0,
+          pos = 0;
+
+      function setUint16(data) { view.setUint16(pos, data, true); pos += 2; }
+      function setUint32(data) { view.setUint32(pos, data, true); pos += 4; }
+
+      setUint32(0x46464952); // "RIFF"
+      setUint32(length - 8); // file length - 8
+      setUint32(0x45564157); // "WAVE"
+
+      setUint32(0x20746d66); // "fmt " chunk
+      setUint32(16); // length = 16
+      setUint16(1); // PCM (uncompressed)
+      setUint16(numOfChan);
+      setUint32(abuffer.sampleRate);
+      setUint32(abuffer.sampleRate * 2 * numOfChan); // avg. bytes/sec
+      setUint16(numOfChan * 2); // block-align
+      setUint16(16); // 16-bit precision
+
+      setUint32(0x61746164); // "data" - chunk
+      setUint32(length - pos - 4); // chunk length
+
+      for (i = 0; i < abuffer.numberOfChannels; i++) channels.push(abuffer.getChannelData(i));
+
+      while (pos < length) {
+        for (i = 0; i < numOfChan; i++) {
+          sample = Math.max(-1, Math.min(1, channels[i][offset]));
+          sample = (0.5 + sample < 0 ? sample * 32768 : sample * 32767) | 0;
+          view.setInt16(pos, sample, true);
+          pos += 2;
+        }
+        offset++;
+      }
+
+      return new Blob([outBuffer], { type: "audio/wav" });
     }
 
     // ==========================================
@@ -769,13 +974,29 @@
 
       const stream = canvas.captureStream(30);
       
-      // Audio track capture if present
+      // Audio track capture
       try {
         const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-        const source = audioCtx.createMediaElementSource(video);
         const dest = audioCtx.createMediaStreamDestination();
-        source.connect(dest);
-        source.connect(audioCtx.destination);
+
+        // Video Audio Source
+        const vSource = audioCtx.createMediaElementSource(video);
+        const vGain = audioCtx.createGain();
+        vGain.gain.value = parseFloat(document.getElementById('sliderVideoVol').value) / 100;
+        vSource.connect(vGain);
+        vGain.connect(dest);
+        vGain.connect(audioCtx.destination);
+
+        // BGM Audio Source if present
+        if (bgmLoaded) {
+          const bgmSource = audioCtx.createMediaElementSource(bgmAudio);
+          const bgmGain = audioCtx.createGain();
+          bgmGain.gain.value = parseFloat(document.getElementById('sliderBgmVol').value) / 100;
+          bgmSource.connect(bgmGain);
+          bgmGain.connect(dest);
+          bgmGain.connect(audioCtx.destination);
+        }
+
         dest.stream.getAudioTracks().forEach(track => stream.addTrack(track));
       } catch (err) {}
 
@@ -801,6 +1022,7 @@
         document.getElementById('exportOverlay').classList.remove('active');
         isRendering = false;
         video.currentTime = trimStart;
+        if (bgmLoaded) bgmAudio.pause();
       };
 
       mediaRecorder.start();
@@ -808,6 +1030,10 @@
       video.currentTime = trimStart;
       video.playbackRate = 1.0;
       video.play();
+      if (bgmLoaded) {
+        bgmAudio.currentTime = 0;
+        bgmAudio.play();
+      }
 
       function renderFrame() {
         if (!isRendering) return;
@@ -818,6 +1044,15 @@
         ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
         ctx.restore();
 
+        // Draw Watermark Logo on Canvas
+        if (logoImage && logoImage.complete) {
+          ctx.save();
+          const logoW = parseInt(document.getElementById('sliderLogoScale').value) * 1.5;
+          const logoH = (logoImage.height / logoImage.width) * logoW;
+          ctx.drawImage(logoImage, canvas.width - logoW - 20, 20, logoW, logoH);
+          ctx.restore();
+        }
+
         // Draw Text Overlay on Canvas
         const text = document.getElementById('textOverlayInput').value;
         if (text) {
@@ -825,8 +1060,8 @@
           ctx.font = `bold ${document.getElementById('textSizeSelect').value} ${document.getElementById('textFontSelect').value}`;
           ctx.fillStyle = document.getElementById('textColorPicker').value;
           ctx.textAlign = 'center';
-          ctx.shadowColor = 'rgba(0,0,0,0.8)';
-          ctx.shadowBlur = 8;
+          ctx.shadowColor = 'rgba(0,0,0,0.9)';
+          ctx.shadowBlur = 10;
           const pos = document.getElementById('textPositionSelect').value;
           const y = pos === 'top' ? canvas.height * 0.15 : (pos === 'center' ? canvas.height * 0.5 : canvas.height * 0.85);
           ctx.fillText(text, canvas.width / 2, y);
@@ -844,6 +1079,7 @@
         if (video.currentTime >= trimEnd || video.ended) {
           mediaRecorder.stop();
           video.pause();
+          if (bgmLoaded) bgmAudio.pause();
         } else {
           requestAnimationFrame(renderFrame);
         }
@@ -857,6 +1093,7 @@
       if (mediaRecorder && mediaRecorder.state !== 'inactive') mediaRecorder.stop();
       document.getElementById('exportOverlay').classList.remove('active');
       video.pause();
+      if (bgmLoaded) bgmAudio.pause();
       video.currentTime = trimStart;
     }
 

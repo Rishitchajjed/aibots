@@ -1191,12 +1191,14 @@
       }
     }
 
+    const canvasWrapper = document.getElementById('canvasWrapper');
     const canvas = document.getElementById('gameCanvas');
     const ctx = canvas.getContext('2d');
     const miniCanvas = document.getElementById('minimapCanvas');
     const miniCtx = miniCanvas.getContext('2d');
 
     const WORLD = { width: 3200, height: 2400 };
+    const camera = { x: 0, y: 0 };
 
     // Player State
     let player = {
@@ -1515,7 +1517,7 @@
         targetWaypoint = { x: worldX, y: worldY };
 
         // Position on-screen reticle
-        if (tapReticle) {
+        if (tapReticle && canvasWrapper) {
           tapReticle.style.left = (e.clientX - canvasWrapper.getBoundingClientRect().left) + 'px';
           tapReticle.style.top = (e.clientY - canvasWrapper.getBoundingClientRect().top) + 'px';
           tapReticle.style.display = 'block';
@@ -1990,6 +1992,42 @@
       if (keys['a'] || keys['arrowleft']) { moveX -= 1; player.facing = 'left'; }
       if (keys['d'] || keys['arrowright']) { moveX += 1; player.facing = 'right'; }
 
+      // 360-degree analog mobile virtual joystick
+      if (typeof joystickState !== 'undefined' && joystickState.active) {
+        moveX += joystickState.vx;
+        moveY += joystickState.vy;
+        if (Math.abs(joystickState.vx) > Math.abs(joystickState.vy)) {
+          player.facing = joystickState.vx > 0 ? 'right' : 'left';
+        } else if (Math.abs(joystickState.vy) > 0.1) {
+          player.facing = joystickState.vy > 0 ? 'down' : 'up';
+        }
+        targetWaypoint = null;
+        if (tapReticle) tapReticle.style.display = 'none';
+      } else if (typeof targetWaypoint !== 'undefined' && targetWaypoint) {
+        // Tap-to-move pathfinding
+        const tdx = targetWaypoint.x - player.x;
+        const tdy = targetWaypoint.y - player.y;
+        const tdist = Math.hypot(tdx, tdy);
+        if (tdist > 15) {
+          moveX += tdx / tdist;
+          moveY += tdy / tdist;
+          if (Math.abs(tdx) > Math.abs(tdy)) {
+            player.facing = tdx > 0 ? 'right' : 'left';
+          } else {
+            player.facing = tdy > 0 ? 'down' : 'up';
+          }
+          if (tapReticle && canvasWrapper) {
+            const screenX = (targetWaypoint.x - camera.x) * (canvas.clientWidth / canvas.width);
+            const screenY = (targetWaypoint.y - camera.y) * (canvas.clientHeight / canvas.height);
+            tapReticle.style.left = screenX + 'px';
+            tapReticle.style.top = screenY + 'px';
+          }
+        } else {
+          targetWaypoint = null;
+          if (tapReticle) tapReticle.style.display = 'none';
+        }
+      }
+
       player.isMoving = moveX !== 0 || moveY !== 0;
       if (player.isMoving) {
         player.walkCycle += player.isMounted ? 0.35 : 0.22;
@@ -2290,8 +2328,10 @@
 
     function draw() {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
-      const camX = player.x - canvas.width / 2 + (screenShake > 0.5 ? (Math.random() - 0.5) * screenShake : 0);
-      const camY = player.y - canvas.height / 2 + (screenShake > 0.5 ? (Math.random() - 0.5) * screenShake : 0);
+      camera.x = player.x - canvas.width / 2 + (screenShake > 0.5 ? (Math.random() - 0.5) * screenShake : 0);
+      camera.y = player.y - canvas.height / 2 + (screenShake > 0.5 ? (Math.random() - 0.5) * screenShake : 0);
+      const camX = camera.x;
+      const camY = camera.y;
 
       ctx.save();
       ctx.translate(-camX, -camY);

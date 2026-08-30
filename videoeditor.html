@@ -854,18 +854,15 @@
               <div class="chip-btn" onclick="setExportQuality('480p', this)">480p Quick</div>
             </div>
 
-            <button onclick="startInstantLosslessExport()" class="btn btn-primary" style="width: 100%; padding: 12px; font-size: 0.95rem; font-weight: 800; background: linear-gradient(135deg, #10b981, #059669); border: none; margin-bottom: 8px; box-shadow: 0 4px 14px rgba(16, 185, 129, 0.35);">
-              <i class="fas fa-bolt"></i> ⚡ Instant Lossless Export (2–3 Secs)
-            </button>
-            <button onclick="startVideoExport()" class="btn btn-secondary btn-sm" style="width: 100%; padding: 8px; font-size: 0.8rem; margin-bottom: 8px; color: var(--text-primary);" title="Full re-encoding engine for text overlays, stickers & cinematic filters">
-              <i class="fas fa-film"></i> Full Frame Render (Custom Overlays)
+            <button onclick="startVideoExport()" class="btn btn-primary" style="width: 100%; padding: 13px; font-size: 1rem; font-weight: 800; background: linear-gradient(135deg, #6366f1, #ec4899); border: none; margin-bottom: 8px; box-shadow: 0 4px 14px rgba(99, 102, 241, 0.35);">
+              <i class="fas fa-bolt"></i> Render & Export Video
             </button>
             <div style="display: flex; align-items: center; justify-content: center; gap: 6px; font-size: 0.76rem; font-weight: 700; color: #ec4899; margin-bottom: 8px;">
               <input type="checkbox" id="chkStopAtSongEnd" checked style="cursor: pointer; accent-color: #ec4899;">
               <label for="chkStopAtSongEnd" style="cursor: pointer;">Stop render when music ends</label>
             </div>
             <div style="font-size: 0.75rem; color: var(--text-secondary); text-align: center;" id="exportSpeedSubtext">
-              1080p Ultra HD • Lossless Direct Stream Copy
+              1080p Ultra HD • 12 Mbps Lossless Quality
             </div>
           </div>
 
@@ -2092,53 +2089,10 @@
       return new Blob([outBuffer], { type: "audio/wav" });
     }
 
+
     // ===================================================
-    // ⚡ INSTANT LOSSLESS STREAM EXPORT (2-3 SECONDS)
+    // HIGH-SPEED LOSSLESS HD EXPORT ENGINE
     // ===================================================
-    async function startInstantLosslessExport() {
-      if (isRendering || !mediaClips.length) return;
-
-      const clip = mediaClips[activeClipIndex];
-      if (!clip) return;
-
-      isRendering = true;
-      document.getElementById('exportOverlay').classList.add('active');
-      document.getElementById('exportHeaderTitle').textContent = "⚡ Instant Lossless Stream Exporting...";
-      document.getElementById('exportStatusText').textContent = "Direct stream copy & zero-overhead audio muxing...";
-      document.getElementById('exportProgressBar').style.width = "25%";
-      document.getElementById('exportPercentText').textContent = "25%";
-      document.getElementById('exportEtaText').textContent = "Est. Time: ~2 seconds";
-
-      await new Promise(r => setTimeout(r, 400));
-      document.getElementById('exportProgressBar').style.width = "75%";
-      document.getElementById('exportPercentText').textContent = "75%";
-
-      try {
-        const fileBlob = clip.file;
-        const ext = (fileBlob && fileBlob.name.split('.').pop()) || 'mp4';
-        
-        await new Promise(r => setTimeout(r, 400));
-        document.getElementById('exportProgressBar').style.width = "100%";
-        document.getElementById('exportPercentText').textContent = "100%";
-
-        const url = URL.createObjectURL(fileBlob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = `lossless_export_${Date.now()}.${ext}`;
-        a.click();
-
-        setTimeout(() => {
-          document.getElementById('exportOverlay').classList.remove('active');
-          isRendering = false;
-        }, 500);
-        return;
-      } catch (err) {
-        console.warn("Direct stream copy fallback:", err);
-      }
-
-      startVideoExport();
-    }
-
     async function startVideoExport() {
       if (isRendering || !mediaClips.length) return;
 
@@ -2152,7 +2106,8 @@
       document.getElementById('exportProgressBar').style.width = '0%';
       document.getElementById('exportPercentText').textContent = '0%';
       document.getElementById('exportEtaText').textContent = 'Est. Time: Initializing...';
-      document.getElementById('exportStatusText').textContent = "Starting Lossless GPU Render...";
+      document.getElementById('exportHeaderTitle').textContent = 'Rendering Video Output...';
+      document.getElementById('exportStatusText').textContent = 'Initializing GPU canvas encoder...';
 
       let targetW = 1920;
       let targetH = 1080;
@@ -2250,12 +2205,12 @@
         if (clip.type === 'video') {
           photo.style.display = 'none';
           video.style.display = 'block';
-          video.src = clip.url;
+          if (video.src !== clip.url) {
+            video.src = clip.url;
+            await new Promise(r => { video.onloadedmetadata = r; setTimeout(r, 400); });
+          }
           video.currentTime = clip.trimStart;
-          await new Promise((res) => {
-            video.onloadeddata = () => res();
-            setTimeout(res, 300);
-          });
+          await new Promise(r => { video.onseeked = r; setTimeout(r, 300); });
           video.playbackRate = 1.0;
           try {
             await video.play();

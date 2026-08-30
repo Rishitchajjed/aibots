@@ -860,6 +860,9 @@
           <!-- DEDICATED MUSIC SLIP & WAVEFORM ADJUSTER BOX -->
           <div class="tool-box" id="musicAdjusterBox" style="background: linear-gradient(135deg, rgba(236,72,153,0.08), rgba(99,102,241,0.08)); border-color: #ec4899;">
             <div class="tool-box-title" style="color: #ec4899;"><i class="fas fa-sliders"></i> Music Track Adjuster & Waveform</div>
+            <div style="background: rgba(236, 72, 153, 0.1); border: 1px solid rgba(236, 72, 153, 0.3); border-radius: var(--radius-md); padding: 6px 10px; font-size: 0.74rem; color: #f43f5e; font-weight: 700; margin-bottom: 10px; display: flex; align-items: center; gap: 6px;">
+              <i class="fas fa-shield-halved"></i> Auto-Synced: 0s extra render time (Music strictly matches video duration)
+            </div>
             
             <input type="file" id="bgmFileInput" accept="audio/*" style="display: none;" onchange="handleBgmUpload(event)">
             <button onclick="document.getElementById('bgmFileInput').click()" class="btn btn-secondary btn-sm" style="width: 100%; margin-bottom: 12px; border-color: #ec4899; color: #ec4899;">
@@ -1553,7 +1556,8 @@
       document.getElementById('playBtnText').textContent = 'Pause';
 
       if (bgmLoaded) {
-        bgmAudio.currentTime = Math.max(0, bgmStartOffset + sequenceCurrentTime);
+        bgmAudio.currentTime = Math.max(0, bgmStartOffset + (sequenceCurrentTime % (bgmAudioDuration || 1)));
+        bgmAudio.loop = true;
         bgmAudio.play();
       }
 

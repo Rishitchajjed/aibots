@@ -857,6 +857,10 @@
             <button onclick="startVideoExport()" class="btn btn-primary" style="width: 100%; padding: 12px; font-size: 1rem; font-weight: 800; background: linear-gradient(135deg, #6366f1, #ec4899); border: none; margin-bottom: 8px;">
               <i class="fas fa-bolt"></i> Render & Export Video
             </button>
+            <div style="display: flex; align-items: center; justify-content: center; gap: 6px; font-size: 0.76rem; font-weight: 700; color: #ec4899; margin-bottom: 8px;">
+              <input type="checkbox" id="chkStopAtSongEnd" checked style="cursor: pointer; accent-color: #ec4899;">
+              <label for="chkStopAtSongEnd" style="cursor: pointer;">Stop render when music ends (Fast Render)</label>
+            </div>
             <div style="font-size: 0.75rem; color: var(--text-secondary); text-align: center;" id="exportSpeedSubtext">
               1080p Ultra HD • 12 Mbps Lossless Quality
             </div>
@@ -882,12 +886,17 @@
               </div>
               <input type="range" min="0" max="100" step="0.1" value="0" class="range-slider" id="sliderBgmStart" oninput="handleBgmSliderChange(this.value)">
 
-              <div style="display: flex; justify-content: space-between; font-size: 0.76rem; color: var(--text-secondary); margin-top: 4px; margin-bottom: 12px;">
+              <div style="display: flex; justify-content: space-between; font-size: 0.76rem; color: var(--text-secondary); margin-top: 4px; margin-bottom: 10px;">
                 <span>0s (Intro)</span>
-                <button onclick="autoFitMusicToVideo()" class="btn btn-secondary btn-sm" style="padding: 2px 8px; font-size: 0.72rem; color: #ec4899;">
-                  <i class="fas fa-wand-magic-sparkles"></i> Auto-Fit to Sequence
-                </button>
                 <span id="bgmTotalDurText">00:00</span>
+              </div>
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-bottom: 12px;">
+                <button onclick="autoTrimVideoToSong()" class="btn btn-primary btn-sm" style="padding: 6px 4px; font-size: 0.72rem; background: linear-gradient(135deg, #ec4899, #6366f1); border: none; font-weight: 800;" title="Instantly trims video length to match your song">
+                  <i class="fas fa-bolt"></i> Trim Video to Song
+                </button>
+                <button onclick="autoFitMusicToVideo()" class="btn btn-secondary btn-sm" style="padding: 6px 4px; font-size: 0.72rem; color: #ec4899;" title="Aligns music to start of video">
+                  <i class="fas fa-arrows-rotate"></i> Reset Music Fit
+                </button>
               </div>
 
               <div style="display: flex; flex-direction: column; gap: 8px; font-size: 0.82rem; border-top: 1px solid var(--border-color); padding-top: 10px;">
@@ -1721,6 +1730,23 @@
       }
     }
 
+        function autoTrimVideoToSong() {
+      if (!bgmLoaded || !bgmAudioDuration) {
+        alert("Please upload a song first.");
+        return;
+      }
+      const clip = mediaClips[activeClipIndex];
+      if (!clip) return;
+      clip.trimStart = 0;
+      clip.trimEnd = Math.min(clip.duration, bgmAudioDuration);
+      
+      updateFocusTrimmerDisplay();
+      renderUnifiedSequenceTimeline();
+      renderMediaBinStrip();
+      seekSequenceTo(0);
+      alert(`⚡ Video trimmed to match song duration (${formatTime(clip.trimEnd)}). Render time reduced to ${formatTime(clip.trimEnd)}!`);
+    }
+
     function autoFitMusicToVideo() {
       if (!bgmLoaded) return;
       bgmStartOffset = 0;
@@ -2139,7 +2165,10 @@
         if (bgmLoaded) bgmAudio.pause();
       };
 
-      const totalSeqDuration = getTotalSequenceDuration();
+      const chkStop = document.getElementById('chkStopAtSongEnd');
+      const shouldStopAtMusic = chkStop && chkStop.checked && bgmLoaded && bgmAudioDuration > 0;
+      const rawSeqDuration = getTotalSequenceDuration();
+      const totalSeqDuration = shouldStopAtMusic ? Math.min(rawSeqDuration, bgmAudioDuration - bgmStartOffset) : rawSeqDuration;
       let renderedDurationSoFar = 0;
       const exportStartTime = performance.now();
 
@@ -2209,7 +2238,7 @@
                 document.getElementById('exportEtaText').textContent = `ETA: ~${formatTime(remainingSec)}`;
               }
 
-              if (element.currentTime >= clip.trimEnd - 0.05 || element.ended) {
+              if (element.currentTime >= clip.trimEnd - 0.05 || element.ended || (renderedDurationSoFar + clipElapsed) >= totalSeqDuration) {
                 element.pause();
                 renderedDurationSoFar += clipDuration;
                 resolve();

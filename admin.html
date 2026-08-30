@@ -1520,6 +1520,135 @@
     // ==========================================
     // MODULE 8: Live Online Cloud Sync Engine (Google Drive Cloud Backend)
     // ==========================================
+    
+    // ==========================================
+    // MODULE: Donors & Wall of Fame Manager
+    // ==========================================
+    let donorsList = [];
+
+    function initDonorsSettings() {
+      const stored = localStorage.getItem('aibots_donors_list');
+      if (stored) {
+        try {
+          donorsList = JSON.parse(stored);
+        } catch(e) {
+          donorsList = [];
+        }
+      } else {
+        donorsList = [
+          {
+            id: 'donor_1',
+            name: 'Rishit Chajjed',
+            amount: 'Creator & Founder',
+            tier: '👑 Founder',
+            message: 'Building high-performance, private, and free creative web tools for creators worldwide!',
+            date: 'Aug 2026'
+          },
+          {
+            id: 'donor_2',
+            name: 'AI Bots Community',
+            amount: 'Generous Supporters',
+            tier: '🌟 Community Heroes',
+            message: 'Special thanks to all early adopters, feedback contributors, and generous donors!',
+            date: 'Aug 2026'
+          }
+        ];
+        localStorage.setItem('aibots_donors_list', JSON.stringify(donorsList));
+      }
+      renderDonorsList();
+    }
+
+    function renderDonorsList() {
+      const container = document.getElementById('donorsListContainer');
+      const countEl = document.getElementById('donorCountText');
+      if (countEl) countEl.textContent = donorsList.length;
+      if (!container) return;
+
+      if (donorsList.length === 0) {
+        container.innerHTML = '<div style="font-size: 0.85rem; color: var(--text-secondary); text-align: center; padding: 18px; border: 1px dashed var(--border-color); border-radius: var(--radius-md);">No donors added yet. Add your first supporter above!</div>';
+        return;
+      }
+
+      container.innerHTML = donorsList.map((donor, idx) => `
+        <div style="display: flex; align-items: center; justify-content: space-between; background: var(--bg-primary); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 12px 16px; gap: 12px; flex-wrap: wrap;">
+          <div style="display: flex; align-items: center; gap: 12px;">
+            <div style="width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, #f59e0b, #ec4899); color: white; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 1.1rem;">
+              ${donor.name.charAt(0).toUpperCase()}
+            </div>
+            <div>
+              <div style="font-weight: 800; font-size: 0.95rem; color: var(--text-primary); display: flex; align-items: center; gap: 8px;">
+                ${donor.name}
+                <span style="font-size: 0.72rem; padding: 2px 8px; border-radius: 999px; background: rgba(245, 158, 11, 0.15); color: #f59e0b; border: 1px solid rgba(245, 158, 11, 0.3); font-weight: 700;">
+                  ${donor.tier || '🌟 Supporter'}
+                </span>
+                ${donor.amount ? `<span style="font-size: 0.75rem; color: #10b981; font-weight: 700;">${donor.amount}</span>` : ''}
+              </div>
+              ${donor.message ? `<div style="font-size: 0.82rem; color: var(--text-secondary); margin-top: 3px;">"${donor.message}"</div>` : ''}
+              ${donor.date ? `<div style="font-size: 0.72rem; color: var(--text-muted); margin-top: 2px;">${donor.date}</div>` : ''}
+            </div>
+          </div>
+
+          <button onclick="deleteDonorEntry(${idx})" class="btn btn-secondary btn-sm" style="color: #ef4444; border-color: rgba(239,68,68,0.3); padding: 4px 10px;" title="Remove from wall">
+            <i class="fas fa-trash"></i> Remove
+          </button>
+        </div>
+      `).join('');
+    }
+
+    function addDonorEntry() {
+      const name = document.getElementById('donorNameInput').value.trim();
+      const amount = document.getElementById('donorAmountInput').value.trim();
+      const tier = document.getElementById('donorTierInput').value;
+      const message = document.getElementById('donorMessageInput').value.trim();
+      let date = document.getElementById('donorDateInput').value.trim();
+
+      if (!name) {
+        showToast('Please enter a supporter name.', 'warning');
+        return;
+      }
+
+      if (!date) {
+        const now = new Date();
+        const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+        date = `${months[now.getMonth()]} ${now.getFullYear()}`;
+      }
+
+      const newDonor = {
+        id: 'donor_' + Date.now(),
+        name,
+        amount,
+        tier,
+        message,
+        date
+      };
+
+      donorsList.unshift(newDonor);
+      localStorage.setItem('aibots_donors_list', JSON.stringify(donorsList));
+      renderDonorsList();
+
+      document.getElementById('donorNameInput').value = '';
+      document.getElementById('donorAmountInput').value = '';
+      document.getElementById('donorMessageInput').value = '';
+      document.getElementById('donorDateInput').value = '';
+
+      showToast(`Added ${name} to the Wall of Fame!`, 'success');
+      syncConfigToCloudOnline();
+    }
+
+    function deleteDonorEntry(idx) {
+      if (confirm(`Remove ${donorsList[idx].name} from the Wall of Fame?`)) {
+        donorsList.splice(idx, 1);
+        localStorage.setItem('aibots_donors_list', JSON.stringify(donorsList));
+        renderDonorsList();
+        showToast('Supporter removed from list.', 'info');
+        syncConfigToCloudOnline();
+      }
+    }
+
+    async function syncDonorsToCloudNow() {
+      await syncConfigToCloudOnline(true);
+    }
+
     const GOOGLE_DRIVE_CLOUD_API = 'https://script.google.com/macros/s/AKfycbwXmAujjr_UEo1keKOfC0yWuUHoIzmP1OL7pR7HelrasdaDtCYyC0BMyh6mI5731XPrvQ/exec';
 
     async function syncConfigToCloudOnline(showFeedback = false, overrideHash = null) {
@@ -1544,6 +1673,7 @@
         welcome_modal: JSON.parse(localStorage.getItem('aibots_welcome_modal_config') || '{}'),
         festive_effects: JSON.parse(localStorage.getItem('aibots_festive_effects') || '{}'),
         upi_config: JSON.parse(localStorage.getItem('aibots_custom_upi_config') || '{"id":"9384361008@mbk","name":"Rishit Chajjed"}'),
+        donors_list: JSON.parse(localStorage.getItem('aibots_donors_list') || '[]'),
         analytics_clicks: JSON.parse(localStorage.getItem('aibots_tool_click_analytics') || '{}'),
         analytics_searches: JSON.parse(localStorage.getItem('aibots_search_query_log') || '[]'),
         updated_at: new Date().toISOString()
@@ -1613,6 +1743,9 @@
               }
               if (cloud.upi_config) {
                 localStorage.setItem('aibots_custom_upi_config', JSON.stringify(cloud.upi_config));
+              }
+              if (cloud.donors_list) {
+                localStorage.setItem('aibots_donors_list', JSON.stringify(cloud.donors_list));
               }
               if (cloud.analytics_clicks) {
                 localStorage.setItem('aibots_tool_click_analytics', JSON.stringify(cloud.analytics_clicks));
@@ -1692,6 +1825,7 @@
       initAnnouncementSettings();
       initFestiveSettings();
       initUpiSettings();
+      initDonorsSettings();
       initCustomCloudSettings();
       renderAnalytics();
       fetchCloudConfig();

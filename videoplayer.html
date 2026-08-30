@@ -6,9 +6,9 @@
   <meta name="google-site-verification" content="ndzq-U-NLijgza_QqgQdcc2U3oMRoud_BT2ZZiwFREM">
   <meta name="google-site-verification" content="-Yb6Nx74gbZ3wRN5uP-Y8KKwDWlt1DPpxs4nA3PkE6M">
   <meta name="robots" content="index, follow">
-  <title>Masterpiece Cinema HD Video Player & Visual FX — AI Bots</title>
-  <meta name="description" content="Ultimate cinema video player: Live Audio Spectrum Visualizer, 6 Visual FX Shaders, Ambient Glow, Hold-to-2X Speed, A-B Loop Markers, Timeline Bookmarks, and 4K Frame Grabber.">
-  <meta name="keywords" content="audio visualizer video player, cinema fx player, ambient light video, hold to 2x speed, bookmark timeline player, ai bots video">
+  <title>YouTube-Style HD Video Player with Playlist & FX — AI Bots</title>
+  <meta name="description" content="Ultimate video player: Multi-video playlist queue, animated 5s skip, play/pause bounce effects, volume ripple, ambient glow, and HD snapshot grabber.">
+  <meta name="keywords" content="video player playlist, youtube animations video player, 5s skip animation, play pause animation, ai bots video">
   <link rel="icon" href="logo.png" type="image/png">
   <link rel="canonical" href="https://www.aibots.co.in/videoplayer.html">
   <link rel="manifest" href="manifest.json">
@@ -57,7 +57,7 @@
     .vp-dropzone i { font-size: 3.2rem; color: var(--primary); margin-bottom: 12px; display: block; }
     .vp-dropzone input[type="file"] { position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%; }
 
-    /* Ambient Glow Canvas Backdrop */
+    /* Ambient Glow Backdrop */
     .yt-ambient-glow {
       position: absolute;
       top: -30px;
@@ -74,20 +74,35 @@
     .yt-ambient-glow.disabled { opacity: 0 !important; }
 
     /* ==========================================
-       YOUTUBE-GRADE CUSTOM VIDEO PLAYER CONTAINER
+       MAIN VIDEO PLAYER WRAPPER & GRID
        ========================================== */
+    .player-layout-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 20px;
+      margin-top: 20px;
+      position: relative;
+      z-index: 5;
+    }
+    .player-layout-grid.with-playlist {
+      grid-template-columns: 1fr 320px;
+    }
+    @media (max-width: 900px) {
+      .player-layout-grid.with-playlist {
+        grid-template-columns: 1fr;
+      }
+    }
+
     .yt-player-container {
       position: relative;
       width: 100%;
-      height: 590px;
+      height: 580px;
       background: #000000;
       border-radius: var(--radius-xl);
       overflow: hidden;
       box-shadow: 0 25px 60px rgba(0,0,0,0.85);
       user-select: none;
       -webkit-user-select: none;
-      margin-top: 20px;
-      z-index: 5;
     }
     @media (max-width: 768px) {
       .yt-player-container { height: 260px; border-radius: var(--radius-lg); }
@@ -102,21 +117,127 @@
       transition: filter 0.3s ease;
     }
 
-    /* Live Audio Visualizer Canvas Overlay */
-    .yt-visualizer-canvas {
+    /* ==========================================
+       RICH ON-SCREEN ANIMATIONS & FX OVERLAYS
+       ========================================== */
+    /* 1. Play / Pause Center Pulse */
+    .anim-pulse-center {
       position: absolute;
-      bottom: 60px;
-      left: 0;
-      width: 100%;
-      height: 70px;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) scale(0.6);
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      background: rgba(15, 23, 42, 0.85);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2.2rem;
       pointer-events: none;
-      z-index: 12;
-      opacity: 0.85;
-      transition: opacity 0.3s ease;
+      opacity: 0;
+      transition: all 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      z-index: 25;
+      box-shadow: 0 0 30px rgba(236,72,153,0.6);
     }
-    .yt-visualizer-canvas.disabled { opacity: 0; }
+    .anim-pulse-center.show {
+      opacity: 1;
+      transform: translate(-50%, -50%) scale(1.1);
+    }
 
-    /* 2X Speed Indicator Badge (YouTube Press & Hold) */
+    /* 2. 5s / 10s Rewind & Fast-Forward Flying Ripple Animation */
+    .anim-skip-indicator {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      width: 40%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      color: #ffffff;
+      opacity: 0;
+      pointer-events: none;
+      z-index: 22;
+      transition: opacity 0.2s ease;
+    }
+    .anim-skip-indicator.left {
+      left: 0;
+      background: radial-gradient(circle at left center, rgba(236,72,153,0.35) 0%, transparent 70%);
+    }
+    .anim-skip-indicator.right {
+      right: 0;
+      background: radial-gradient(circle at right center, rgba(236,72,153,0.35) 0%, transparent 70%);
+    }
+    .anim-skip-indicator.show {
+      opacity: 1;
+    }
+    .anim-skip-icon-box {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      background: rgba(0,0,0,0.6);
+      backdrop-filter: blur(8px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.4rem;
+      margin-bottom: 6px;
+      animation: skipSpin 0.4s ease;
+    }
+    @keyframes skipSpin {
+      0% { transform: scale(0.6) rotate(-20deg); }
+      50% { transform: scale(1.2) rotate(10deg); }
+      100% { transform: scale(1) rotate(0deg); }
+    }
+
+    /* 3. Floating HUD Toast (Volume, Speed, Snapshot feedback) */
+    .yt-hud-toast {
+      position: absolute;
+      top: 24px;
+      left: 50%;
+      transform: translateX(-50%) translateY(-10px);
+      background: rgba(15, 23, 42, 0.88);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      color: #ffffff;
+      padding: 6px 18px;
+      border-radius: 999px;
+      font-size: 0.88rem;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      z-index: 30;
+      pointer-events: none;
+      opacity: 0;
+      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+      box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+    }
+    .yt-hud-toast.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+
+    /* 4. Camera Shutter Flash Animation */
+    .yt-shutter-flash {
+      position: absolute;
+      inset: 0;
+      background: #ffffff;
+      opacity: 0;
+      pointer-events: none;
+      z-index: 35;
+      transition: opacity 0.15s ease-out;
+    }
+    .yt-shutter-flash.flash {
+      opacity: 0.85;
+    }
+
+    /* 5. 2X Hold Badge */
     .yt-speed-hold-badge {
       position: absolute;
       top: 24px;
@@ -140,54 +261,6 @@
     }
     @keyframes pulseBadge { from { opacity: 0.85; } to { opacity: 1; } }
 
-    /* Big Center Play/Pause Pulse Icon */
-    .yt-center-play-pulse {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%) scale(0.7);
-      width: 76px;
-      height: 76px;
-      border-radius: 50%;
-      background: rgba(0,0,0,0.68);
-      backdrop-filter: blur(8px);
-      color: #ffffff;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 2rem;
-      pointer-events: none;
-      opacity: 0;
-      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-      z-index: 20;
-    }
-    .yt-center-play-pulse.show {
-      opacity: 1;
-      transform: translate(-50%, -50%) scale(1);
-    }
-
-    /* Mobile Double-Tap Skip Overlays */
-    .gesture-ripple {
-      position: absolute;
-      top: 0;
-      bottom: 0;
-      width: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: rgba(255,255,255,0.95);
-      font-size: 1.6rem;
-      font-weight: 800;
-      background: rgba(255,255,255,0.14);
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity 0.25s ease;
-      z-index: 15;
-    }
-    .gesture-ripple.left { left: 0; border-radius: 0 50% 50% 0; }
-    .gesture-ripple.right { right: 0; border-radius: 50% 0 0 50%; }
-    .gesture-ripple.active { opacity: 1; }
-
     /* YouTube Controls Overlay */
     .yt-controls-overlay {
       position: absolute;
@@ -210,7 +283,7 @@
       pointer-events: none;
     }
 
-    /* YouTube Scrub Bar (Timeline Progress) */
+    /* Scrubber Timeline Bar */
     .yt-scrubber-wrapper {
       position: relative;
       width: 100%;
@@ -239,7 +312,6 @@
       background: #ec4899;
       border-radius: 4px;
     }
-    /* A-B Loop Range Highlight */
     .yt-loop-range {
       position: absolute;
       top: 0;
@@ -265,8 +337,6 @@
     .yt-scrubber-wrapper:hover .yt-scrubber-thumb {
       transform: translate(-50%, -50%) scale(1);
     }
-
-    /* Scrubber Hover Tooltip */
     .yt-scrub-tooltip {
       position: absolute;
       bottom: 24px;
@@ -317,7 +387,6 @@
       color: #10b981;
     }
 
-    /* Volume Slider within player */
     .yt-volume-wrap {
       display: flex;
       align-items: center;
@@ -327,13 +396,11 @@
       width: 60px;
       cursor: pointer;
       accent-color: #ec4899;
-      transition: width 0.2s ease;
     }
     @media (max-width: 768px) {
       .yt-volume-slider { display: none; }
     }
 
-    /* Time Badge */
     .yt-time-text {
       color: #ffffff;
       font-size: 0.82rem;
@@ -342,7 +409,7 @@
       margin-left: 4px;
     }
 
-    /* YouTube Settings Menu Popup */
+    /* Settings Menu Popup */
     .yt-settings-menu {
       position: absolute;
       bottom: 56px;
@@ -372,55 +439,80 @@
       color: #cbd5e1;
     }
 
-    /* Stats for Nerds Panel */
-    .yt-nerd-stats {
-      position: absolute;
-      top: 16px;
-      left: 16px;
-      background: rgba(15,23,42,0.92);
-      backdrop-filter: blur(12px);
-      border: 1px solid rgba(255,255,255,0.15);
-      border-radius: var(--radius-md);
-      padding: 12px 16px;
-      font-family: var(--font-mono);
-      font-size: 0.72rem;
-      color: #38bdf8;
-      display: none;
-      flex-direction: column;
-      gap: 4px;
-      z-index: 40;
-      line-height: 1.4;
-    }
-    .yt-nerd-stats.open { display: flex; }
-
-    /* Timeline Bookmarks Strip */
-    .yt-bookmarks-bar {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      margin-top: 14px;
-      overflow-x: auto;
-      padding-bottom: 6px;
-    }
-    .yt-bookmark-chip {
+    /* ==========================================
+       SIDEBAR: MULTI-VIDEO PLAYLIST QUEUE
+       ========================================== */
+    .yt-playlist-sidebar {
       background: var(--bg-secondary);
       border: 1px solid var(--border-color);
-      border-radius: 999px;
-      padding: 4px 12px;
-      font-size: 0.76rem;
+      border-radius: var(--radius-xl);
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      height: 580px;
+      box-shadow: var(--shadow-md);
+    }
+    @media (max-width: 768px) {
+      .yt-playlist-sidebar { height: 320px; }
+    }
+    .playlist-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--border-color);
+      margin-bottom: 12px;
+    }
+    .playlist-items-scroll {
+      flex: 1;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .playlist-item-card {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: var(--bg-primary);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      padding: 8px 10px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    .playlist-item-card:hover {
+      border-color: #ec4899;
+      background: color-mix(in srgb, #ec4899 6%, var(--bg-primary));
+    }
+    .playlist-item-card.active {
+      border-color: #ec4899;
+      background: rgba(236,72,153,0.12);
+    }
+    .playlist-item-index {
+      font-size: 0.78rem;
+      font-weight: 800;
+      color: var(--text-muted);
+      width: 18px;
+    }
+    .playlist-item-card.active .playlist-item-index {
+      color: #ec4899;
+    }
+    .playlist-item-info {
+      flex: 1;
+      overflow: hidden;
+    }
+    .playlist-item-title {
+      font-size: 0.82rem;
       font-weight: 700;
       color: var(--text-primary);
-      cursor: pointer;
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
       white-space: nowrap;
-      transition: all 0.15s;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
-    .yt-bookmark-chip:hover {
-      border-color: #ec4899;
-      color: #ec4899;
-      background: rgba(236,72,153,0.1);
+    .playlist-item-meta {
+      font-size: 0.72rem;
+      color: var(--text-muted);
     }
 
     /* Theater Mode */
@@ -443,7 +535,7 @@
         <a href="index.html" class="brand-link">
           <img src="logo.png" alt="AI Bots Logo" class="brand-logo-img">
           <span>AI Bots</span>
-          <span class="brand-badge" style="background: linear-gradient(135deg, #6366f1, #ec4899); color: white;">CINEMA FX</span>
+          <span class="brand-badge" style="background: linear-gradient(135deg, #6366f1, #ec4899); color: white;">PLAYLIST PRO</span>
         </a>
 
         <div class="nav-actions">
@@ -457,219 +549,203 @@
 
   <main class="app-container tool-page-wrapper">
     <div class="tool-header">
-      <span class="tool-header-badge"><i class="fas fa-wand-magic-sparkles"></i> Cinema FX & Visualizer</span>
+      <span class="tool-header-badge"><i class="fas fa-play"></i> Cinema & Playlist Player</span>
       <h1 class="tool-title">HD Video Player</h1>
-      <p class="tool-desc">Live Audio Visualizer, 6 Visual FX Filters, Ambient Glow, Hold-to-2X Speed, A-B Loop, and Timeline Bookmarks.</p>
+      <p class="tool-desc">Multi-video queue playlist, animated 5s skip, play/pause bounce FX, volume ripple HUD, and 4K frame snapshots.</p>
     </div>
 
     <div class="vp-card" id="vpMainCard">
       <!-- Ambient Glow Canvas -->
       <canvas class="yt-ambient-glow" id="ambientCanvas"></canvas>
 
-      <!-- File Dropzone -->
+      <!-- Multi-File Dropzone -->
       <div class="vp-dropzone" id="dropzone" onclick="document.getElementById('fileInput').click()">
-        <input type="file" id="fileInput" accept="video/*" onchange="handleVideo(event)">
+        <input type="file" id="fileInput" accept="video/*" multiple onchange="handleVideoUpload(event)">
         <i class="fas fa-clapperboard"></i>
-        <h3 style="margin:0 0 6px; font-weight:800;">Choose or Drop Video File</h3>
-        <p style="margin:0; color:var(--text-secondary); font-size:0.85rem;">Supports MP4, WebM, MOV, MKV, AVI, OGG • 100% Private In-Browser</p>
+        <h3 style="margin:0 0 6px; font-weight:800;">Choose or Drop Video Files (Supports Multi-File Playlist)</h3>
+        <p style="margin:0; color:var(--text-secondary); font-size:0.85rem;">Select 1 or multiple MP4, WebM, MOV, MKV files to create an instant playlist • 100% Private</p>
       </div>
 
-      <!-- YouTube Custom Player Container -->
-      <div class="yt-player-container" id="playerWrap" style="display: none;">
+      <!-- Player & Playlist Layout Grid -->
+      <div class="player-layout-grid" id="playerGrid" style="display: none;">
         
-        <!-- Video Element -->
-        <video id="videoEl" playsinline webkit-playsinline></video>
-
-        <!-- Live Audio Spectrum Visualizer Canvas -->
-        <canvas class="yt-visualizer-canvas" id="visualizerCanvas"></canvas>
-
-        <!-- Hold-to-2X Speed Badge -->
-        <div class="yt-speed-hold-badge" id="speedHoldBadge"><i class="fas fa-forward"></i> 2X SPEED</div>
-
-        <!-- Stats for Nerds Overlay -->
-        <div class="yt-nerd-stats" id="nerdStats">
-          <div style="font-weight: 800; color: #ffffff; margin-bottom: 4px; display: flex; justify-content: space-between;">
-            <span>STATS FOR NERDS</span>
-            <span style="cursor: pointer; color: #ef4444;" onclick="document.getElementById('nerdStats').classList.remove('open')">&times;</span>
-          </div>
-          <div id="statRes">Resolution: --</div>
-          <div id="statViewport">Viewport: --</div>
-          <div id="statFps">Render FPS: 60 fps</div>
-          <div id="statBitrate">Buffer: Healthy</div>
-          <div id="statAudio">Audio Engine: Web Audio Analyser Active</div>
-        </div>
-
-        <!-- Big Center Play/Pause Ripple Indicator -->
-        <div class="yt-center-play-pulse" id="centerPulse"><i class="fas fa-play" id="centerPulseIcon"></i></div>
-
-        <!-- Mobile Double Tap Overlays -->
-        <div class="gesture-ripple left" id="rippleLeft"><i class="fas fa-rotate-left"></i> &nbsp;-10s</div>
-        <div class="gesture-ripple right" id="rippleRight">+10s &nbsp;<i class="fas fa-rotate-right"></i></div>
-
-        <!-- YouTube Settings Floating Menu -->
-        <div class="yt-settings-menu" id="settingsMenu">
-          <div style="font-weight: 800; font-size: 0.9rem; color: #ffffff; border-bottom: 1px solid rgba(255,255,255,0.15); padding-bottom: 6px;">
-            <i class="fas fa-gear" style="color: #ec4899;"></i> FX & Cinema Settings
-          </div>
+        <!-- Video Player Box -->
+        <div class="yt-player-container" id="playerWrap">
           
-          <div class="yt-menu-item">
-            <span>Audio Visualizer</span>
-            <button class="btn btn-secondary btn-sm" id="btnVizToggle" style="padding: 2px 8px; font-size: 0.72rem; color:#10b981;" onclick="toggleVisualizer()">ON</button>
+          <video id="videoEl" playsinline webkit-playsinline></video>
+
+          <!-- 1. Play / Pause Center Pulse Animation -->
+          <div class="anim-pulse-center" id="centerPulse"><i class="fas fa-play" id="centerPulseIcon"></i></div>
+
+          <!-- 2. 5s Skip Left & Right Flying Animations -->
+          <div class="anim-skip-indicator left" id="animSkipLeft">
+            <div class="anim-skip-icon-box"><i class="fas fa-rotate-left"></i></div>
+            <div style="font-weight: 800; font-size: 0.9rem;">-5 SEC</div>
+          </div>
+          <div class="anim-skip-indicator right" id="animSkipRight">
+            <div class="anim-skip-icon-box"><i class="fas fa-rotate-right"></i></div>
+            <div style="font-weight: 800; font-size: 0.9rem;">+5 SEC</div>
           </div>
 
-          <div class="yt-menu-item">
-            <span>Ambient Glow</span>
-            <button class="btn btn-secondary btn-sm" id="btnAmbientToggle" style="padding: 2px 8px; font-size: 0.72rem; color:#10b981;" onclick="toggleAmbientGlow()">ON</button>
+          <!-- 3. Floating HUD Toast Animation (Volume, Speed, Snapshot) -->
+          <div class="yt-hud-toast" id="hudToast">
+            <i class="fas fa-volume-high" id="hudToastIcon"></i>
+            <span id="hudToastText">Volume 100%</span>
           </div>
 
-          <div class="yt-menu-item">
-            <span>Visual Filter FX</span>
-            <select id="filterFxSel" class="form-control" style="width: 110px; padding: 2px 6px; font-size: 0.75rem;" onchange="setVisualFilter(this.value)">
-              <option value="none" selected>Normal</option>
-              <option value="cyberpunk">Cyberpunk Neon</option>
-              <option value="hdr">Vivid HDR</option>
-              <option value="vintage">Vintage Sepia</option>
-              <option value="warm">Warm Cinema</option>
-              <option value="matrix">Matrix Emerald</option>
-            </select>
-          </div>
+          <!-- 4. Camera Shutter Flash Animation -->
+          <div class="yt-shutter-flash" id="shutterFlash"></div>
 
-          <div class="yt-menu-item">
-            <span>Speed Preset</span>
-            <select id="speedSel" class="form-control" style="width: 85px; padding: 2px 6px; font-size: 0.75rem;" onchange="setSpeed(this.value)">
-              <option value="0.25">0.25x</option>
-              <option value="0.5">0.5x</option>
-              <option value="0.75">0.75x</option>
-              <option value="1" selected>1.0x</option>
-              <option value="1.25">1.25x</option>
-              <option value="1.5">1.5x</option>
-              <option value="2">2.0x</option>
-            </select>
-          </div>
+          <!-- 5. Hold-to-2X Speed Badge -->
+          <div class="yt-speed-hold-badge" id="speedHoldBadge"><i class="fas fa-forward"></i> 2X SPEED</div>
 
-          <div class="yt-menu-item">
-            <span>Audio Equalizer</span>
-            <select id="eqSel" class="form-control" style="width: 95px; padding: 2px 6px; font-size: 0.75rem;" onchange="setAudioPreset(this.value)">
-              <option value="flat" selected>Flat / Normal</option>
-              <option value="bass">Bass Boost</option>
-              <option value="vocal">Vocal Clarity</option>
-              <option value="night">Night Mode</option>
-            </select>
-          </div>
-
-          <div class="yt-menu-item">
-            <span>Aspect Fit</span>
-            <select id="aspectSel" class="form-control" style="width: 85px; padding: 2px 6px; font-size: 0.75rem;" onchange="setAspect(this.value)">
-              <option value="contain">Contain</option>
-              <option value="cover">Fill Crop</option>
-              <option value="16/9">16:9</option>
-              <option value="9/16">9:16 Reel</option>
-            </select>
-          </div>
-
-          <!-- A-B Loop Section -->
-          <div class="yt-menu-item" style="border-top: 1px solid rgba(255,255,255,0.1); padding-top: 6px;">
-            <span>A-B Loop Repeat</span>
-            <div style="display: flex; gap: 4px;">
-              <button class="btn btn-secondary btn-sm" id="btnLoopA" style="padding: 2px 6px; font-size: 0.72rem;" onclick="setLoopPoint('A')">Set A</button>
-              <button class="btn btn-secondary btn-sm" id="btnLoopB" style="padding: 2px 6px; font-size: 0.72rem;" onclick="setLoopPoint('B')">Set B</button>
-              <button class="btn btn-secondary btn-sm" style="padding: 2px 6px; font-size: 0.72rem; color:#ef4444;" onclick="clearLoop()">Clear</button>
+          <!-- YouTube Settings Menu -->
+          <div class="yt-settings-menu" id="settingsMenu">
+            <div style="font-weight: 800; font-size: 0.9rem; color: #ffffff; border-bottom: 1px solid rgba(255,255,255,0.15); padding-bottom: 6px;">
+              <i class="fas fa-gear" style="color: #ec4899;"></i> Player Settings
             </div>
-          </div>
-
-          <div class="yt-menu-item">
-            <span>Volume Boost</span>
-            <span style="color:#10b981; font-weight:700;" id="menuBoostVal">100%</span>
-          </div>
-          <input type="range" min="0" max="200" value="100" class="range-slider" id="menuBoostSlider" oninput="setAudioBoost(this.value)">
-
-          <div class="yt-menu-item" style="border-top: 1px solid rgba(255,255,255,0.1); padding-top: 6px;">
-            <span>Stats for Nerds</span>
-            <button class="btn btn-secondary btn-sm" style="padding: 2px 8px; font-size: 0.72rem;" onclick="toggleNerdStats()">Show</button>
-          </div>
-        </div>
-
-        <!-- YouTube Bottom Overlay Controls -->
-        <div class="yt-controls-overlay" id="controlsOverlay">
-          
-          <!-- Scrubber Timeline Bar -->
-          <div class="yt-scrubber-wrapper" id="scrubberWrapper">
-            <div class="yt-scrubber-track">
-              <div class="yt-loop-range" id="loopRange"></div>
-              <div class="yt-scrubber-played" id="scrubberPlayed"></div>
-              <div class="yt-scrubber-thumb" id="scrubberThumb"></div>
-            </div>
-            <div class="yt-scrub-tooltip" id="scrubTooltip">00:00</div>
-          </div>
-
-          <!-- Controls Buttons Row -->
-          <div class="yt-buttons-row">
             
-            <!-- Left Group: Play/Pause, Rewind, Skip, Volume, Time -->
-            <div class="yt-btn-group">
-              <button class="yt-btn" id="btnPlayPause" onclick="togglePlay()" title="Play/Pause (Space)"><i class="fas fa-play"></i></button>
-              <button class="yt-btn" onclick="seekRelative(-10)" title="Rewind 10s (←)"><i class="fas fa-rotate-left"></i></button>
-              <button class="yt-btn" onclick="seekRelative(10)" title="Skip 10s (→)"><i class="fas fa-rotate-right"></i></button>
+            <div class="yt-menu-item">
+              <span>Ambient Glow</span>
+              <button class="btn btn-secondary btn-sm" id="btnAmbientToggle" style="padding: 2px 8px; font-size: 0.72rem; color:#10b981;" onclick="toggleAmbientGlow()">ON</button>
+            </div>
 
-              <div class="yt-volume-wrap">
-                <button class="yt-btn" id="btnMute" onclick="toggleMute()" title="Mute (M)"><i class="fas fa-volume-high"></i></button>
-                <input type="range" min="0" max="1" step="0.05" value="1" class="yt-volume-slider" id="volumeSlider" oninput="setPlayerVolume(this.value)">
+            <div class="yt-menu-item">
+              <span>Visual Filter</span>
+              <select id="filterFxSel" class="form-control" style="width: 100px; padding: 2px 6px; font-size: 0.75rem;" onchange="setVisualFilter(this.value)">
+                <option value="none" selected>Normal</option>
+                <option value="cyberpunk">Cyberpunk</option>
+                <option value="hdr">Vivid HDR</option>
+                <option value="vintage">Vintage</option>
+                <option value="warm">Warm Gold</option>
+              </select>
+            </div>
+
+            <div class="yt-menu-item">
+              <span>Speed Preset</span>
+              <select id="speedSel" class="form-control" style="width: 85px; padding: 2px 6px; font-size: 0.75rem;" onchange="setSpeed(this.value)">
+                <option value="0.25">0.25x</option>
+                <option value="0.5">0.5x</option>
+                <option value="0.75">0.75x</option>
+                <option value="1" selected>1.0x</option>
+                <option value="1.25">1.25x</option>
+                <option value="1.5">1.5x</option>
+                <option value="2">2.0x</option>
+              </select>
+            </div>
+
+            <div class="yt-menu-item">
+              <span>Audio Equalizer</span>
+              <select id="eqSel" class="form-control" style="width: 95px; padding: 2px 6px; font-size: 0.75rem;" onchange="setAudioPreset(this.value)">
+                <option value="flat" selected>Flat / Normal</option>
+                <option value="bass">Bass Boost</option>
+                <option value="vocal">Vocal Clarity</option>
+                <option value="night">Night Mode</option>
+              </select>
+            </div>
+
+            <div class="yt-menu-item">
+              <span>Loop Mode</span>
+              <button class="btn btn-secondary btn-sm" id="btnMenuLoop" style="padding: 2px 8px; font-size: 0.72rem;" onclick="toggleLoop()">OFF</button>
+            </div>
+
+            <div class="yt-menu-item">
+              <span>Volume Boost</span>
+              <span style="color:#10b981; font-weight:700;" id="menuBoostVal">100%</span>
+            </div>
+            <input type="range" min="0" max="200" value="100" class="range-slider" id="menuBoostSlider" oninput="setAudioBoost(this.value)">
+          </div>
+
+          <!-- YouTube Bottom Controls Overlay -->
+          <div class="yt-controls-overlay" id="controlsOverlay">
+            
+            <!-- Scrubber Timeline Bar -->
+            <div class="yt-scrubber-wrapper" id="scrubberWrapper">
+              <div class="yt-scrubber-track">
+                <div class="yt-scrubber-played" id="scrubberPlayed"></div>
+                <div class="yt-scrubber-thumb" id="scrubberThumb"></div>
+              </div>
+              <div class="yt-scrub-tooltip" id="scrubTooltip">00:00</div>
+            </div>
+
+            <!-- Controls Buttons Row -->
+            <div class="yt-buttons-row">
+              
+              <!-- Left Group: Prev, Play/Pause, Next, Rewind 5s, Skip 5s, Volume, Time -->
+              <div class="yt-btn-group">
+                <button class="yt-btn" onclick="playPrevTrack()" title="Previous Video in Playlist"><i class="fas fa-backward-step"></i></button>
+                <button class="yt-btn" id="btnPlayPause" onclick="togglePlay()" title="Play/Pause (Space)"><i class="fas fa-play"></i></button>
+                <button class="yt-btn" onclick="playNextTrack()" title="Next Video in Playlist"><i class="fas fa-forward-step"></i></button>
+
+                <button class="yt-btn" onclick="seekAnimated(-5)" title="Rewind 5s (←)"><i class="fas fa-rotate-left"></i></button>
+                <button class="yt-btn" onclick="seekAnimated(5)" title="Skip 5s (→)"><i class="fas fa-rotate-right"></i></button>
+
+                <div class="yt-volume-wrap">
+                  <button class="yt-btn" id="btnMute" onclick="toggleMute()" title="Mute (M)"><i class="fas fa-volume-high"></i></button>
+                  <input type="range" min="0" max="1" step="0.05" value="1" class="yt-volume-slider" id="volumeSlider" oninput="setPlayerVolume(this.value)">
+                </div>
+
+                <span class="yt-time-text" id="timeDisplay">00:00 / 00:00</span>
               </div>
 
-              <span class="yt-time-text" id="timeDisplay">00:00 / 00:00</span>
-            </div>
+              <!-- Right Group: Frame Step, Capture Snapshot, Playlist Toggle, Settings, PiP, Fullscreen -->
+              <div class="yt-btn-group">
+                <button class="yt-btn" onclick="stepFrame(-1)" title="Previous Frame [,]"><i class="fas fa-chevron-left" style="font-size:0.9rem;"></i></button>
+                <button class="yt-btn" onclick="stepFrame(1)" title="Next Frame [.]"><i class="fas fa-chevron-right" style="font-size:0.9rem;"></i></button>
+                <button class="yt-btn" onclick="captureFrame()" title="Grab HD Snapshot [S]"><i class="fas fa-camera"></i></button>
+                <button class="yt-btn" id="btnTogglePlaylist" onclick="togglePlaylistDrawer()" title="Toggle Playlist Queue"><i class="fas fa-list"></i></button>
+                <button class="yt-btn" onclick="toggleSettingsMenu()" title="Settings"><i class="fas fa-gear"></i></button>
+                <button class="yt-btn" onclick="togglePiP()" title="Miniplayer (PiP)"><i class="fas fa-up-right-from-square"></i></button>
+                <button class="yt-btn" onclick="toggleTheater()" title="Theater Mode"><i class="fas fa-expand"></i></button>
+                <button class="yt-btn" onclick="toggleFullscreen()" title="Fullscreen (F)"><i class="fas fa-maximize"></i></button>
+              </div>
 
-            <!-- Right Group: Bookmark, Frame Step, Capture Snapshot, Settings, PiP, Theater, Fullscreen -->
-            <div class="yt-btn-group">
-              <button class="yt-btn" onclick="addBookmark()" title="Add Bookmark Marker"><i class="fas fa-bookmark"></i></button>
-              <button class="yt-btn" onclick="stepFrame(-1)" title="Previous Frame [,]"><i class="fas fa-backward-step"></i></button>
-              <button class="yt-btn" onclick="stepFrame(1)" title="Next Frame [.]"><i class="fas fa-forward-step"></i></button>
-              <button class="yt-btn" onclick="captureFrame()" title="Grab HD Frame [S]"><i class="fas fa-camera"></i></button>
-              <button class="yt-btn" onclick="toggleSettingsMenu()" title="FX & Settings"><i class="fas fa-gear"></i></button>
-              <button class="yt-btn" onclick="togglePiP()" title="Miniplayer (PiP)"><i class="fas fa-up-right-from-square"></i></button>
-              <button class="yt-btn" onclick="toggleTheater()" title="Theater Mode"><i class="fas fa-expand"></i></button>
-              <button class="yt-btn" onclick="toggleFullscreen()" title="Fullscreen (F)"><i class="fas fa-maximize"></i></button>
             </div>
 
           </div>
 
         </div>
 
-      </div>
+        <!-- Multi-Video Playlist Sidebar Queue -->
+        <div class="yt-playlist-sidebar" id="playlistSidebar">
+          <div class="playlist-header">
+            <div style="font-weight: 800; font-size: 0.92rem; color: var(--text-primary); display: flex; align-items: center; gap: 8px;">
+              <i class="fas fa-list-check" style="color: #ec4899;"></i> Playlist Queue (<span id="playlistCount">0</span>)
+            </div>
+            <button class="btn btn-secondary btn-sm" onclick="document.getElementById('fileInput').click()" style="padding: 2px 8px; font-size: 0.72rem;">
+              <i class="fas fa-plus"></i> Add More
+            </button>
+          </div>
 
-      <!-- Interactive Timeline Bookmarks Strip -->
-      <div class="yt-bookmarks-bar" id="bookmarksBar" style="display: none;">
-        <span style="font-size: 0.78rem; font-weight: 800; color: var(--text-secondary);"><i class="fas fa-bookmark" style="color: #ec4899;"></i> Bookmarks:</span>
-        <div id="bookmarksList" style="display: flex; gap: 8px; flex-wrap: wrap;"></div>
-      </div>
+          <div class="playlist-items-scroll" id="playlistContainer">
+            <!-- Rendered dynamically -->
+          </div>
+        </div>
 
+      </div>
     </div>
   </main>
 
   <script>
     const video = document.getElementById('videoEl');
     const container = document.getElementById('playerWrap');
+    const playerGrid = document.getElementById('playerGrid');
     const ambientCanvas = document.getElementById('ambientCanvas');
     const ambientCtx = ambientCanvas.getContext('2d', { alpha: false });
 
-    const vizCanvas = document.getElementById('visualizerCanvas');
-    const vizCtx = vizCanvas.getContext('2d');
+    let playlist = [];
+    let currentTrackIndex = 0;
 
     let audioCtx = null;
     let audioSource = null;
-    let analyserNode = null;
     let gainNode = null;
     let bassFilter = null;
     let trebleFilter = null;
     let controlsTimer = null;
+    let hudTimer = null;
     let isAmbientOn = true;
-    let isVisualizerOn = true;
     let originalSpeed = 1.0;
     let holdSpeedTimeout = null;
-
-    let loopA = null;
-    let loopB = null;
-    let bookmarks = [];
 
     function initAudioBooster() {
       if (audioCtx) return;
@@ -677,9 +753,6 @@
         const AudioContext = window.AudioContext || window.webkitAudioContext;
         audioCtx = new AudioContext();
         audioSource = audioCtx.createMediaElementSource(video);
-
-        analyserNode = audioCtx.createAnalyser();
-        analyserNode.fftSize = 64;
 
         bassFilter = audioCtx.createBiquadFilter();
         bassFilter.type = 'lowshelf';
@@ -696,8 +769,7 @@
 
         audioSource.connect(bassFilter);
         bassFilter.connect(trebleFilter);
-        trebleFilter.connect(analyserNode);
-        analyserNode.connect(gainNode);
+        trebleFilter.connect(gainNode);
         gainNode.connect(audioCtx.destination);
       } catch(e) {}
     }
@@ -708,57 +780,134 @@
       if (preset === 'bass') {
         bassFilter.gain.value = 8;
         trebleFilter.gain.value = -2;
+        showHudToast('fa-sliders', 'Equalizer: Bass Boost 🔊');
       } else if (preset === 'vocal') {
         bassFilter.gain.value = -4;
         trebleFilter.gain.value = 6;
+        showHudToast('fa-microphone', 'Equalizer: Vocal Clarity 🎙️');
       } else if (preset === 'night') {
         bassFilter.gain.value = -3;
         trebleFilter.gain.value = -3;
+        showHudToast('fa-moon', 'Equalizer: Night Mode 🌙');
       } else {
         bassFilter.gain.value = 0;
         trebleFilter.gain.value = 0;
+        showHudToast('fa-sliders', 'Equalizer: Flat / Normal');
       }
     }
 
     function setVisualFilter(val) {
       if (val === 'cyberpunk') {
         video.style.filter = 'contrast(1.3) saturate(1.7) hue-rotate(15deg)';
+        showHudToast('fa-wand-magic-sparkles', 'Filter: Cyberpunk Neon');
       } else if (val === 'hdr') {
         video.style.filter = 'contrast(1.25) saturate(1.4) brightness(1.05)';
+        showHudToast('fa-wand-magic-sparkles', 'Filter: Vivid HDR');
       } else if (val === 'vintage') {
         video.style.filter = 'sepia(0.6) contrast(1.15) brightness(0.9)';
+        showHudToast('fa-wand-magic-sparkles', 'Filter: Vintage Sepia');
       } else if (val === 'warm') {
         video.style.filter = 'sepia(0.25) saturate(1.3) brightness(1.05)';
-      } else if (val === 'matrix') {
-        video.style.filter = 'hue-rotate(90deg) saturate(1.6) contrast(1.2)';
+        showHudToast('fa-wand-magic-sparkles', 'Filter: Warm Gold');
       } else {
         video.style.filter = 'none';
+        showHudToast('fa-wand-magic-sparkles', 'Filter: Normal');
       }
     }
 
-    function handleVideo(e) {
-      const file = e.target.files[0];
-      if (!file) return;
+    // Multi-File Playlist Upload Handler
+    function handleVideoUpload(e) {
+      const files = Array.from(e.target.files);
+      if (!files.length) return;
 
-      const url = URL.createObjectURL(file);
-      video.src = url;
-      container.style.display = 'block';
+      const startIndex = playlist.length;
+      files.forEach((file, idx) => {
+        playlist.push({
+          id: 'track_' + Date.now() + '_' + idx,
+          name: file.name,
+          size: (file.size / (1024*1024)).toFixed(1) + 'MB',
+          url: URL.createObjectURL(file)
+        });
+      });
+
+      playerGrid.style.display = 'grid';
       document.getElementById('dropzone').style.display = 'none';
+      if (playlist.length > 1) {
+        playerGrid.classList.add('with-playlist');
+      }
+
+      renderPlaylistSidebar();
+      if (startIndex === 0) {
+        loadTrack(0);
+      }
+    }
+
+    function loadTrack(index) {
+      if (index < 0 || index >= playlist.length) return;
+      currentTrackIndex = index;
+      const track = playlist[index];
+      video.src = track.url;
+      renderPlaylistSidebar();
 
       video.onloadedmetadata = () => {
         updateTimeDisplay();
         ambientCanvas.width = 160;
         ambientCanvas.height = 90;
-        vizCanvas.width = container.clientWidth || 800;
-        vizCanvas.height = 70;
-        document.getElementById('statRes').textContent = `Resolution: ${video.videoWidth} x ${video.videoHeight}`;
-        document.getElementById('statViewport').textContent = `Viewport: ${container.clientWidth} x ${container.clientHeight}`;
       };
 
       initAudioBooster();
-      togglePlay();
+      video.play();
+      document.getElementById('btnPlayPause').innerHTML = '<i class="fas fa-pause"></i>';
+      showCenterPulse('play');
       renderAmbientLoop();
-      renderVisualizerLoop();
+    }
+
+    function playNextTrack() {
+      if (currentTrackIndex < playlist.length - 1) {
+        loadTrack(currentTrackIndex + 1);
+        showHudToast('fa-forward-step', `Next: ${playlist[currentTrackIndex].name}`);
+      } else {
+        showHudToast('fa-circle-info', 'End of Playlist');
+      }
+    }
+
+    function playPrevTrack() {
+      if (video.currentTime > 3) {
+        video.currentTime = 0;
+      } else if (currentTrackIndex > 0) {
+        loadTrack(currentTrackIndex - 1);
+        showHudToast('fa-backward-step', `Previous: ${playlist[currentTrackIndex].name}`);
+      }
+    }
+
+    video.addEventListener('ended', () => {
+      if (video.loop) return;
+      if (currentTrackIndex < playlist.length - 1) {
+        playNextTrack();
+      } else {
+        document.getElementById('btnPlayPause').innerHTML = '<i class="fas fa-play"></i>';
+      }
+    });
+
+    function renderPlaylistSidebar() {
+      const container = document.getElementById('playlistContainer');
+      document.getElementById('playlistCount').textContent = playlist.length;
+      if (!container) return;
+
+      container.innerHTML = playlist.map((item, idx) => `
+        <div class="playlist-item-card ${idx === currentTrackIndex ? 'active' : ''}" onclick="loadTrack(${idx})">
+          <span class="playlist-item-index">${idx + 1}</span>
+          <div class="playlist-item-info">
+            <div class="playlist-item-title">${item.name}</div>
+            <div class="playlist-item-meta">${item.size}</div>
+          </div>
+          ${idx === currentTrackIndex ? '<i class="fas fa-chart-simple" style="color:#ec4899; font-size:0.8rem;"></i>' : ''}
+        </div>
+      `).join('');
+    }
+
+    function togglePlaylistDrawer() {
+      playerGrid.classList.toggle('with-playlist');
     }
 
     // Real-Time Ambient Light Engine
@@ -769,45 +918,6 @@
       requestAnimationFrame(renderAmbientLoop);
     }
 
-    // Real-Time Neon Audio Visualizer Engine
-    function renderVisualizerLoop() {
-      if (analyserNode && isVisualizerOn && !video.paused) {
-        const bufferLength = analyserNode.frequencyBinCount;
-        const dataArray = new Uint8Array(bufferLength);
-        analyserNode.getByteFrequencyData(dataArray);
-
-        vizCtx.clearRect(0, 0, vizCanvas.width, vizCanvas.height);
-
-        const barWidth = (vizCanvas.width / bufferLength) * 2;
-        let x = 0;
-
-        for (let i = 0; i < bufferLength; i++) {
-          const barHeight = (dataArray[i] / 255) * (vizCanvas.height - 10);
-          
-          const grad = vizCtx.createLinearGradient(0, vizCanvas.height - barHeight, 0, vizCanvas.height);
-          grad.addColorStop(0, '#ec4899');
-          grad.addColorStop(1, 'rgba(99, 102, 241, 0.2)');
-
-          vizCtx.fillStyle = grad;
-          vizCtx.fillRect(x, vizCanvas.height - barHeight, barWidth - 3, barHeight);
-          x += barWidth;
-        }
-      } else if (!isVisualizerOn || video.paused) {
-        vizCtx.clearRect(0, 0, vizCanvas.width, vizCanvas.height);
-      }
-      requestAnimationFrame(renderVisualizerLoop);
-    }
-
-    function toggleVisualizer() {
-      isVisualizerOn = !isVisualizerOn;
-      vizCanvas.classList.toggle('disabled', !isVisualizerOn);
-      const btn = document.getElementById('btnVizToggle');
-      if (btn) {
-        btn.textContent = isVisualizerOn ? 'ON' : 'OFF';
-        btn.style.color = isVisualizerOn ? '#10b981' : '';
-      }
-    }
-
     function toggleAmbientGlow() {
       isAmbientOn = !isAmbientOn;
       ambientCanvas.classList.toggle('disabled', !isAmbientOn);
@@ -816,9 +926,10 @@
         btn.textContent = isAmbientOn ? 'ON' : 'OFF';
         btn.style.color = isAmbientOn ? '#10b981' : '';
       }
+      showHudToast('fa-sun', `Ambient Glow: ${isAmbientOn ? 'ON' : 'OFF'}`);
     }
 
-    // Play / Pause Logic
+    // Play / Pause Animation & Logic
     function togglePlay() {
       if (video.paused || video.ended) {
         video.play();
@@ -841,21 +952,44 @@
       setTimeout(() => pulse.classList.remove('show'), 350);
     }
 
-    function seekRelative(sec) {
+    // Animated 5s Skip Left / Right
+    function seekAnimated(sec) {
       video.currentTime = Math.max(0, Math.min(video.duration, video.currentTime + sec));
       resetControlsTimeout();
+
+      const el = document.getElementById(sec < 0 ? 'animSkipLeft' : 'animSkipRight');
+      if (el) {
+        el.classList.add('show');
+        setTimeout(() => el.classList.remove('show'), 400);
+      }
     }
 
-    // Volume & Audio Boost
+    // Floating HUD Toast System
+    function showHudToast(iconClass, text) {
+      const toast = document.getElementById('hudToast');
+      const icon = document.getElementById('hudToastIcon');
+      const txt = document.getElementById('hudToastText');
+
+      icon.className = `fas ${iconClass}`;
+      txt.textContent = text;
+      toast.classList.add('show');
+
+      clearTimeout(hudTimer);
+      hudTimer = setTimeout(() => toast.classList.remove('show'), 1500);
+    }
+
+    // Volume Controls & HUD
     function toggleMute() {
       video.muted = !video.muted;
       document.getElementById('btnMute').innerHTML = video.muted ? '<i class="fas fa-volume-xmark"></i>' : '<i class="fas fa-volume-high"></i>';
+      showHudToast(video.muted ? 'fa-volume-xmark' : 'fa-volume-high', video.muted ? 'Muted' : `Volume ${Math.round(video.volume * 100)}%`);
     }
 
     function setPlayerVolume(val) {
       video.volume = parseFloat(val);
       video.muted = (video.volume === 0);
       document.getElementById('btnMute').innerHTML = video.muted ? '<i class="fas fa-volume-xmark"></i>' : '<i class="fas fa-volume-high"></i>';
+      showHudToast('fa-volume-high', `Volume ${Math.round(video.volume * 100)}%`);
     }
 
     function setAudioBoost(val) {
@@ -865,104 +999,35 @@
       if (gainNode) {
         gainNode.gain.value = pct / 100;
       }
+      showHudToast('fa-volume-high', `Audio Boost ${pct}%`);
     }
 
     function setSpeed(val) {
       video.playbackRate = parseFloat(val);
       originalSpeed = video.playbackRate;
+      showHudToast('fa-gauge-high', `Speed ${val}x`);
     }
 
-    function setAspect(val) {
-      if (val === 'contain' || val === 'cover') {
-        video.style.objectFit = val;
-        container.style.aspectRatio = 'auto';
-      } else {
-        video.style.objectFit = 'contain';
-        container.style.aspectRatio = val;
+    function toggleLoop() {
+      video.loop = !video.loop;
+      const btn = document.getElementById('btnMenuLoop');
+      if (btn) {
+        btn.textContent = video.loop ? 'ON' : 'OFF';
+        btn.style.color = video.loop ? '#10b981' : '';
       }
-    }
-
-    // A-B Loop Logic with timeline range highlight
-    function setLoopPoint(point) {
-      if (point === 'A') {
-        loopA = video.currentTime;
-        document.getElementById('btnLoopA').textContent = `A: ${loopA.toFixed(1)}s`;
-        document.getElementById('btnLoopA').classList.add('active');
-      } else {
-        loopB = video.currentTime;
-        document.getElementById('btnLoopB').textContent = `B: ${loopB.toFixed(1)}s`;
-        document.getElementById('btnLoopB').classList.add('active');
-      }
-      updateLoopRangeDisplay();
-    }
-
-    function clearLoop() {
-      loopA = null;
-      loopB = null;
-      document.getElementById('btnLoopA').textContent = 'Set A';
-      document.getElementById('btnLoopB').textContent = 'Set B';
-      document.getElementById('btnLoopA').classList.remove('active');
-      document.getElementById('btnLoopB').classList.remove('active');
-      document.getElementById('loopRange').style.display = 'none';
-    }
-
-    function updateLoopRangeDisplay() {
-      if (loopA !== null && loopB !== null && loopB > loopA && video.duration) {
-        const leftPct = (loopA / video.duration) * 100;
-        const widthPct = ((loopB - loopA) / video.duration) * 100;
-        const rangeEl = document.getElementById('loopRange');
-        rangeEl.style.left = `${leftPct}%`;
-        rangeEl.style.width = `${widthPct}%`;
-        rangeEl.style.display = 'block';
-      }
-    }
-
-    video.addEventListener('timeupdate', () => {
-      if (loopA !== null && loopB !== null && loopB > loopA) {
-        if (video.currentTime >= loopB || video.currentTime < loopA) {
-          video.currentTime = loopA;
-        }
-      }
-    });
-
-    // Interactive Timeline Bookmarks
-    function addBookmark() {
-      const cur = video.currentTime;
-      const label = formatSec(cur);
-      bookmarks.push({ time: cur, label: `Bookmark @ ${label}` });
-      renderBookmarks();
-    }
-
-    function renderBookmarks() {
-      const bar = document.getElementById('bookmarksBar');
-      const list = document.getElementById('bookmarksList');
-      if (bookmarks.length === 0) {
-        bar.style.display = 'none';
-        return;
-      }
-      bar.style.display = 'flex';
-      list.innerHTML = bookmarks.map((b, idx) => `
-        <div class="yt-bookmark-chip" onclick="video.currentTime = ${b.time}; video.play();">
-          <i class="fas fa-play" style="font-size:0.6rem; color:#ec4899;"></i> ${b.label}
-          <span style="color:#94a3b8; margin-left:4px; font-weight:normal;" onclick="event.stopPropagation(); bookmarks.splice(${idx},1); renderBookmarks();">&times;</span>
-        </div>
-      `).join('');
+      showHudToast('fa-repeat', `Loop: ${video.loop ? 'ON' : 'OFF'}`);
     }
 
     function stepFrame(step) {
       video.pause();
       document.getElementById('btnPlayPause').innerHTML = '<i class="fas fa-play"></i>';
       video.currentTime += step * (1 / 30);
+      showHudToast('fa-film', `${step > 0 ? '+1' : '-1'} Frame`);
     }
 
     function toggleSettingsMenu() {
       const menu = document.getElementById('settingsMenu');
       menu.classList.toggle('open');
-    }
-
-    function toggleNerdStats() {
-      document.getElementById('nerdStats').classList.toggle('open');
-      toggleSettingsMenu();
     }
 
     function toggleTheater() {
@@ -987,8 +1052,15 @@
       }
     }
 
+    // 1-Click Snapshot with Flash Animation
     function captureFrame() {
       if (!video.videoWidth) return;
+      
+      // Shutter Flash FX
+      const flash = document.getElementById('shutterFlash');
+      flash.classList.add('flash');
+      setTimeout(() => flash.classList.remove('flash'), 180);
+
       const canvas = document.createElement('canvas');
       canvas.width = video.videoWidth;
       canvas.height = video.videoHeight;
@@ -999,8 +1071,10 @@
 
       const a = document.createElement('a');
       a.href = canvas.toDataURL('image/png');
-      a.download = `frame_${Math.floor(video.currentTime)}s_${video.videoWidth}x${video.videoHeight}.png`;
+      a.download = `snapshot_${Math.floor(video.currentTime)}s_${video.videoWidth}x${video.videoHeight}.png`;
       a.click();
+
+      showHudToast('fa-camera', 'HD Snapshot Saved ✓');
     }
 
     // Scrubber & Timeline Progress
@@ -1104,35 +1178,6 @@
     video.addEventListener('touchstart', startHoldSpeed);
     window.addEventListener('touchend', endHoldSpeed);
 
-    // Mobile Double-Tap Skip
-    let lastTap = 0;
-    container.addEventListener('touchend', (e) => {
-      if (e.target.closest('.yt-controls-overlay')) return;
-      const now = new Date().getTime();
-      if (now - lastTap < 300 && now - lastTap > 0) {
-        const touchX = e.changedTouches[0].clientX;
-        const rect = container.getBoundingClientRect();
-        const relX = touchX - rect.left;
-
-        if (relX < rect.width / 2) {
-          seekRelative(-10);
-          showGestureRipple('left');
-        } else {
-          seekRelative(10);
-          showGestureRipple('right');
-        }
-      }
-      lastTap = now;
-    });
-
-    function showGestureRipple(side) {
-      const el = document.getElementById(side === 'left' ? 'rippleLeft' : 'rippleRight');
-      if (el) {
-        el.classList.add('active');
-        setTimeout(() => el.classList.remove('active'), 450);
-      }
-    }
-
     // Keyboard Shortcuts
     window.addEventListener('keydown', (e) => {
       if (e.target.tagName === 'INPUT' || e.target.tagName === 'SELECT') return;
@@ -1147,14 +1192,24 @@
       } else if (e.key === 's' || e.key === 'S') {
         e.preventDefault();
         captureFrame();
-      } else if (e.key === 'b' || e.key === 'B') {
-        addBookmark();
       } else if (e.key === 'ArrowLeft') {
         e.preventDefault();
-        seekRelative(-5);
+        seekAnimated(-5);
       } else if (e.key === 'ArrowRight') {
         e.preventDefault();
-        seekRelative(5);
+        seekAnimated(5);
+      } else if (e.key === 'ArrowUp') {
+        e.preventDefault();
+        setPlayerVolume(Math.min(1, video.volume + 0.1));
+        document.getElementById('volumeSlider').value = video.volume;
+      } else if (e.key === 'ArrowDown') {
+        e.preventDefault();
+        setPlayerVolume(Math.max(0, video.volume - 0.1));
+        document.getElementById('volumeSlider').value = video.volume;
+      } else if (e.key === 'n' || e.key === 'N') {
+        playNextTrack();
+      } else if (e.key === 'p' || e.key === 'P') {
+        playPrevTrack();
       } else if (e.key === ',' || e.key === '<') {
         stepFrame(-1);
       } else if (e.key === '.' || e.key === '>') {

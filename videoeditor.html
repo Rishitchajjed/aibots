@@ -1,0 +1,900 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+  <meta name="google-site-verification" content="ndzq-U-NLijgza_QqgQdcc2U3oMRoud_BT2ZZiwFREM">
+  <meta name="google-site-verification" content="-Yb6Nx74gbZ3wRN5uP-Y8KKwDWlt1DPpxs4nA3PkE6M">
+  <meta name="robots" content="index, follow">
+  <title>Video Editor Studio Pro — AI Bots</title>
+  <meta name="description" content="Free private in-browser video editor: Trim, cut, crop, apply cinematic filters, add text overlays, adjust speed, mute audio, and export HD videos with 0 server uploads.">
+  <meta name="keywords" content="video editor online, trim video online, crop video for reels, video filters online, add text to video, free video editor no watermark, ai bots video studio">
+  <link rel="icon" href="logo.png" type="image/png">
+  <link rel="canonical" href="https://www.aibots.co.in/videoeditor.html">
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#6366f1">
+  <meta name="author" content="Rishit Chajjed">
+
+  <!-- Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-2L87FMQS3W"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-2L87FMQS3W');
+  </script>
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="css/theme.css">
+
+  <style>
+    .editor-layout {
+      display: grid;
+      grid-template-columns: 1fr 340px;
+      gap: 24px;
+      align-items: start;
+    }
+    @media (max-width: 980px) {
+      .editor-layout { grid-template-columns: 1fr; }
+    }
+
+    /* Video Player Viewport Container */
+    .viewport-card {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-xl);
+      padding: 20px;
+      box-shadow: var(--shadow-md);
+      position: relative;
+    }
+    .video-screen-wrapper {
+      position: relative;
+      width: 100%;
+      background: #020617;
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 280px;
+      max-height: 520px;
+      box-shadow: inset 0 0 30px rgba(0,0,0,0.8);
+    }
+    #previewVideo, #renderCanvas {
+      max-width: 100%;
+      max-height: 500px;
+      display: block;
+      border-radius: var(--radius-md);
+    }
+    #renderCanvas {
+      display: none;
+    }
+
+    /* On-Screen Text Overlay Preview */
+    .video-text-overlay {
+      position: absolute;
+      pointer-events: none;
+      user-select: none;
+      font-weight: 800;
+      text-align: center;
+      transition: all 0.1s ease;
+      z-index: 10;
+      text-shadow: 0 2px 8px rgba(0,0,0,0.8);
+      max-width: 90%;
+      word-break: break-word;
+    }
+
+    /* Player Controls Bar */
+    .player-controls-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 12px 0 0;
+      flex-wrap: wrap;
+    }
+    .time-badge {
+      font-family: var(--font-mono);
+      font-size: 0.88rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      background: var(--bg-tertiary);
+      padding: 4px 10px;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border-color);
+    }
+
+    /* Interactive Visual Scrubber & Timeline */
+    .timeline-card {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-xl);
+      padding: 20px;
+      margin-top: 18px;
+      box-shadow: var(--shadow-sm);
+    }
+    .timeline-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+    .scrub-track-wrapper {
+      position: relative;
+      height: 48px;
+      background: var(--bg-tertiary);
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border-color);
+      overflow: hidden;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+    }
+    .trim-region {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 0%;
+      width: 100%;
+      background: rgba(99, 102, 241, 0.25);
+      border-left: 3px solid var(--primary);
+      border-right: 3px solid var(--primary);
+      pointer-events: none;
+    }
+    .playhead-needle {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 0%;
+      width: 3px;
+      background: #ef4444;
+      box-shadow: 0 0 8px #ef4444;
+      pointer-events: none;
+      z-index: 5;
+    }
+
+    /* Controls Panel Accordion */
+    .sidebar-panel {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    .tool-box {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-xl);
+      padding: 18px;
+      box-shadow: var(--shadow-sm);
+    }
+    .tool-box-title {
+      font-size: 0.92rem;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 14px;
+      color: var(--text-primary);
+    }
+
+    /* Preset Chips */
+    .chip-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 6px;
+    }
+    .chip-btn {
+      padding: 6px 8px;
+      font-size: 0.78rem;
+      font-weight: 700;
+      border-radius: var(--radius-md);
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border-color);
+      color: var(--text-secondary);
+      cursor: pointer;
+      text-align: center;
+      transition: all 0.15s;
+      user-select: none;
+    }
+    .chip-btn:hover {
+      border-color: var(--primary);
+      color: var(--text-primary);
+    }
+    .chip-btn.active {
+      background: var(--primary);
+      color: white;
+      border-color: var(--primary);
+      box-shadow: 0 2px 8px var(--primary-glow);
+    }
+
+    /* Dual Range Slider for Trimming */
+    .range-dual-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-top: 10px;
+    }
+    .trim-input {
+      width: 80px;
+      padding: 6px 8px;
+      font-size: 0.82rem;
+      font-family: var(--font-mono);
+      font-weight: 700;
+      text-align: center;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border-color);
+      background: var(--bg-tertiary);
+      color: var(--text-primary);
+    }
+
+    /* Export Progress Overlay */
+    .export-overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(2, 6, 23, 0.88);
+      backdrop-filter: blur(8px);
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      border-radius: var(--radius-xl);
+      z-index: 100;
+      padding: 24px;
+      text-align: center;
+    }
+    .export-overlay.active { display: flex; }
+    .progress-bar-wrap {
+      width: 100%;
+      max-width: 320px;
+      height: 10px;
+      background: rgba(255,255,255,0.1);
+      border-radius: 999px;
+      overflow: hidden;
+      margin: 16px 0 8px;
+    }
+    .progress-bar-fill {
+      width: 0%;
+      height: 100%;
+      background: linear-gradient(135deg, var(--primary), #ec4899);
+      transition: width 0.1s linear;
+    }
+  </style>
+</head>
+<body>
+  <div class="bg-mesh"></div>
+
+  <!-- Navbar -->
+  <header class="navbar">
+    <div class="app-container" style="width: 100%;">
+      <div class="nav-wrapper">
+        <a href="index.html" class="brand-link">
+          <img src="logo.png" alt="AI Bots Logo" class="brand-logo-img">
+          <span>AI Bots</span>
+          <span class="brand-badge" style="background: linear-gradient(135deg, #ec4899, #8b5cf6); color: white;">VIDEO STUDIO</span>
+        </a>
+
+        <div class="nav-actions">
+          <a href="index.html" class="btn btn-secondary btn-sm"><i class="fas fa-house"></i> Hub</a>
+          <button class="icon-btn theme-toggle-btn" title="Toggle Dark/Light Mode"><i class="fas fa-moon"></i></button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="app-container tool-page-wrapper">
+    <div class="tool-header">
+      <span class="tool-header-badge"><i class="fas fa-clapperboard"></i> 100% In-Browser & Private</span>
+      <h1 class="tool-title">Video Studio Pro</h1>
+      <p class="tool-desc">Trim clips, crop aspect ratios, add text overlays, apply color grades, change speed, and export HD videos.</p>
+    </div>
+
+    <!-- Dropzone / Empty State -->
+    <div class="dropzone-container" id="videoDropzone" onclick="document.getElementById('videoFileInput').click()">
+      <input type="file" id="videoFileInput" class="dropzone-input" accept="video/*" onchange="handleVideoUpload(event)">
+      <div class="dropzone-icon" style="color: #ec4899;"><i class="fas fa-film"></i></div>
+      <div class="dropzone-title">Upload Video File to Start Editing</div>
+      <div class="dropzone-subtitle">Supports MP4, WebM, MOV, AVI, MKV • 100% Client-Side Processing</div>
+      <button class="btn btn-primary btn-sm" style="margin-top: 14px; pointer-events: none;"><i class="fas fa-upload"></i> Select Video</button>
+    </div>
+
+    <!-- MAIN STUDIO WORKSPACE (Hidden until video loaded) -->
+    <div id="studioWorkspace" style="display: none;">
+      
+      <div class="editor-layout">
+        
+        <!-- LEFT: Video Viewport & Timeline -->
+        <div>
+          <!-- Viewport Card -->
+          <div class="viewport-card">
+            
+            <!-- Export Render Overlay -->
+            <div class="export-overlay" id="exportOverlay">
+              <div style="font-size: 2.2rem; color: #ec4899; margin-bottom: 12px;"><i class="fas fa-circle-notch fa-spin"></i></div>
+              <h3 style="font-size: 1.25rem; font-weight: 800; color: #fff;">Rendering Edited Video...</h3>
+              <p style="font-size: 0.85rem; color: #cbd5e1;" id="exportStatusText">Processing frames client-side</p>
+              <div class="progress-bar-wrap">
+                <div class="progress-bar-fill" id="exportProgressBar"></div>
+              </div>
+              <div style="font-family: var(--font-mono); font-size: 0.9rem; font-weight: 800; color: #38bdf8;" id="exportPercentText">0%</div>
+              <button onclick="cancelExport()" class="btn btn-secondary btn-sm" style="margin-top: 16px; color: #ef4444; border-color: rgba(239,68,68,0.4);">Cancel</button>
+            </div>
+
+            <!-- Video Screen -->
+            <div class="video-screen-wrapper" id="screenWrapper">
+              <video id="previewVideo" playsinline></video>
+              <canvas id="renderCanvas"></canvas>
+              <div class="video-text-overlay" id="textOverlayDisplay"></div>
+            </div>
+
+            <!-- Playback Bar -->
+            <div class="player-controls-bar">
+              <div style="display: flex; gap: 8px; align-items: center;">
+                <button onclick="togglePlayPause()" class="btn btn-primary btn-sm" id="playBtn" title="Play/Pause [Space]">
+                  <i class="fas fa-play" id="playIcon"></i> <span id="playBtnText">Play</span>
+                </button>
+                <button onclick="stepFrame(-1)" class="btn btn-secondary btn-sm" title="Previous Frame [←]"><i class="fas fa-backward-step"></i></button>
+                <button onclick="stepFrame(1)" class="btn btn-secondary btn-sm" title="Next Frame [→]"><i class="fas fa-forward-step"></i></button>
+                <button onclick="toggleMute()" class="btn btn-secondary btn-sm" id="muteBtn" title="Mute Audio"><i class="fas fa-volume-high" id="muteIcon"></i></button>
+              </div>
+
+              <div style="display: flex; gap: 8px; align-items: center;">
+                <button onclick="captureFrameSnapshot()" class="btn btn-secondary btn-sm" title="Capture Frame as HD PNG"><i class="fas fa-camera"></i> Snapshot</button>
+                <div class="time-badge"><span id="currentTimeText">00:00</span> / <span id="durationText">00:00</span></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Timeline & Trimming Card -->
+          <div class="timeline-card">
+            <div class="timeline-header">
+              <div style="font-weight: 800; font-size: 0.95rem; color: var(--text-primary);"><i class="fas fa-timeline" style="color: var(--primary);"></i> Precision Clip Trimmer</div>
+              <div style="font-size: 0.8rem; color: var(--text-secondary);">Selected Length: <strong id="clipLengthText" style="color: var(--primary);">00:00</strong></div>
+            </div>
+
+            <!-- Scrubber Track -->
+            <div class="scrub-track-wrapper" id="scrubTrack" onclick="handleScrubClick(event)">
+              <div class="trim-region" id="trimRegion"></div>
+              <div class="playhead-needle" id="playhead"></div>
+            </div>
+
+            <!-- Trim Start / End Range Sliders -->
+            <div class="range-dual-row">
+              <div style="display: flex; align-items: center; gap: 6px;">
+                <span style="font-size: 0.78rem; font-weight: 700; color: var(--text-secondary);">START:</span>
+                <input type="text" id="trimStartInput" class="trim-input" value="00:00.0" onchange="updateTrimFromInputs()">
+                <button onclick="setTrimStartToCurrent()" class="btn btn-secondary btn-sm" style="padding: 4px 8px;" title="Set Start to Playhead"><i class="fas fa-arrow-right-to-bracket"></i></button>
+              </div>
+
+              <div style="flex-grow: 1; text-align: center;">
+                <button onclick="resetTrim()" class="btn btn-secondary btn-sm" style="padding: 4px 10px; font-size: 0.76rem;"><i class="fas fa-arrows-rotate"></i> Reset Trim</button>
+              </div>
+
+              <div style="display: flex; align-items: center; gap: 6px;">
+                <button onclick="setTrimEndToCurrent()" class="btn btn-secondary btn-sm" style="padding: 4px 8px;" title="Set End to Playhead"><i class="fas fa-arrow-right-from-bracket"></i></button>
+                <span style="font-size: 0.78rem; font-weight: 700; color: var(--text-secondary);">END:</span>
+                <input type="text" id="trimEndInput" class="trim-input" value="00:00.0" onchange="updateTrimFromInputs()">
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- RIGHT: Studio Controls Sidebar -->
+        <div class="sidebar-panel">
+
+          <!-- 1. Export Action Card -->
+          <div class="tool-box" style="background: linear-gradient(135deg, rgba(99,102,241,0.1), rgba(236,72,153,0.1)); border-color: var(--primary);">
+            <div class="tool-box-title" style="color: var(--primary);"><i class="fas fa-download"></i> Export Video</div>
+            <button onclick="startVideoExport()" class="btn btn-primary" style="width: 100%; padding: 12px; font-size: 1rem; font-weight: 800; background: linear-gradient(135deg, #6366f1, #ec4899); border: none;">
+              <i class="fas fa-wand-magic-sparkles"></i> Render & Export Video
+            </button>
+            <div style="font-size: 0.75rem; color: var(--text-secondary); text-align: center; margin-top: 8px;">
+              Fast local encoding • No watermark • HD Quality
+            </div>
+          </div>
+          
+          <!-- 2. Aspect Ratio & Rotation -->
+          <div class="tool-box">
+            <div class="tool-box-title"><i class="fas fa-crop-simple" style="color: #38bdf8;"></i> Aspect Ratio & Orientation</div>
+            <div class="chip-grid" style="margin-bottom: 12px;">
+              <div class="chip-btn active" onclick="setAspectRatio('original', this)">Original</div>
+              <div class="chip-btn" onclick="setAspectRatio('16:9', this)">16:9 YouTube</div>
+              <div class="chip-btn" onclick="setAspectRatio('9:16', this)">9:16 Reels</div>
+              <div class="chip-btn" onclick="setAspectRatio('1:1', this)">1:1 Square</div>
+              <div class="chip-btn" onclick="setAspectRatio('4:5', this)">4:5 Portrait</div>
+              <div class="chip-btn" onclick="setAspectRatio('21:9', this)">21:9 Cinema</div>
+            </div>
+
+            <div style="display: flex; gap: 6px;">
+              <button onclick="rotateVideo(90)" class="btn btn-secondary btn-sm" style="flex: 1;"><i class="fas fa-rotate-right"></i> +90°</button>
+              <button onclick="toggleFlip('h')" class="btn btn-secondary btn-sm" style="flex: 1;"><i class="fas fa-arrows-left-right"></i> Flip H</button>
+              <button onclick="toggleFlip('v')" class="btn btn-secondary btn-sm" style="flex: 1;"><i class="fas fa-arrows-up-down"></i> Flip V</button>
+            </div>
+          </div>
+
+          <!-- 3. Speed Control -->
+          <div class="tool-box">
+            <div class="tool-box-title"><i class="fas fa-gauge-high" style="color: #f59e0b;"></i> Playback Speed</div>
+            <div class="chip-grid">
+              <div class="chip-btn" onclick="setPlaybackSpeed(0.5, this)">0.5x Slow</div>
+              <div class="chip-btn active" onclick="setPlaybackSpeed(1.0, this)">1.0x Normal</div>
+              <div class="chip-btn" onclick="setPlaybackSpeed(1.5, this)">1.5x Brisk</div>
+              <div class="chip-btn" onclick="setPlaybackSpeed(2.0, this)">2.0x Fast</div>
+              <div class="chip-btn" onclick="setPlaybackSpeed(3.0, this)">3.0x Hyper</div>
+              <div class="chip-btn" onclick="setPlaybackSpeed(0.25, this)">0.25x Super</div>
+            </div>
+          </div>
+
+          <!-- 4. Text & Watermark Overlay -->
+          <div class="tool-box">
+            <div class="tool-box-title"><i class="fas fa-font" style="color: #10b981;"></i> Text Overlay</div>
+            <input type="text" id="textOverlayInput" class="form-control" placeholder="Type overlay text here..." style="margin-bottom: 10px; font-size: 0.88rem;" oninput="updateTextOverlay()">
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 10px;">
+              <select id="textPositionSelect" class="form-control" style="font-size: 0.82rem;" onchange="updateTextOverlay()">
+                <option value="bottom">Bottom Center</option>
+                <option value="center">Center</option>
+                <option value="top">Top Center</option>
+              </select>
+              <select id="textSizeSelect" class="form-control" style="font-size: 0.82rem;" onchange="updateTextOverlay()">
+                <option value="22px">Small (22px)</option>
+                <option value="32px" selected>Medium (32px)</option>
+                <option value="46px">Large (46px)</option>
+                <option value="60px">Title (60px)</option>
+              </select>
+            </div>
+            <div style="display: flex; gap: 8px; align-items: center;">
+              <input type="color" id="textColorPicker" value="#ffffff" onchange="updateTextOverlay()" style="width: 38px; height: 34px; border: none; border-radius: var(--radius-sm); cursor: pointer;">
+              <select id="textFontSelect" class="form-control" style="font-size: 0.82rem; flex: 1;" onchange="updateTextOverlay()">
+                <option value="sans-serif">Sans-Serif (Modern)</option>
+                <option value="Impact">Impact (Meme)</option>
+                <option value="monospace">Monospace (Code)</option>
+                <option value="cursive">Cursive (Elegant)</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- 5. Color Grading & Filters -->
+          <div class="tool-box">
+            <div class="tool-box-title"><i class="fas fa-sliders" style="color: #a855f7;"></i> Cinematic Color Filters</div>
+            <div class="chip-grid" style="margin-bottom: 14px;">
+              <div class="chip-btn active" onclick="applyPresetFilter('none', this)">Normal</div>
+              <div class="chip-btn" onclick="applyPresetFilter('cyberpunk', this)">Cyberpunk</div>
+              <div class="chip-btn" onclick="applyPresetFilter('vintage', this)">Vintage B&W</div>
+              <div class="chip-btn" onclick="applyPresetFilter('warm', this)">Warm Gold</div>
+              <div class="chip-btn" onclick="applyPresetFilter('vivid', this)">Vivid Boost</div>
+              <div class="chip-btn" onclick="applyPresetFilter('emerald', this)">Emerald Film</div>
+            </div>
+
+            <div style="display: flex; flex-direction: column; gap: 8px; font-size: 0.82rem;">
+              <div style="display: flex; justify-content: space-between;"><span>Brightness</span><span id="valBrightness">100%</span></div>
+              <input type="range" min="30" max="200" value="100" class="range-slider" id="sliderBrightness" oninput="updateCustomFilters()">
+
+              <div style="display: flex; justify-content: space-between;"><span>Contrast</span><span id="valContrast">100%</span></div>
+              <input type="range" min="30" max="200" value="100" class="range-slider" id="sliderContrast" oninput="updateCustomFilters()">
+
+              <div style="display: flex; justify-content: space-between;"><span>Saturation</span><span id="valSaturation">100%</span></div>
+              <input type="range" min="0" max="250" value="100" class="range-slider" id="sliderSaturation" oninput="updateCustomFilters()">
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    // ==========================================
+    // STUDIO STATE VARIABLES
+    // ==========================================
+    const video = document.getElementById('previewVideo');
+    const canvas = document.getElementById('renderCanvas');
+    const ctx = canvas.getContext('2d');
+
+    let videoFile = null;
+    let videoDuration = 0;
+    let trimStart = 0;
+    let trimEnd = 0;
+    let playbackSpeed = 1.0;
+    let rotationAngle = 0;
+    let flipH = false;
+    let flipV = false;
+    let currentAspectRatio = 'original';
+    let filterStyle = '';
+    let isRendering = false;
+    let mediaRecorder = null;
+    let recordedChunks = [];
+
+    // ==========================================
+    // VIDEO LOADING & INITIALIZATION
+    // ==========================================
+    function handleVideoUpload(e) {
+      const file = e.target.files[0];
+      if (!file) return;
+      videoFile = file;
+
+      const url = URL.createObjectURL(file);
+      video.src = url;
+
+      video.onloadedmetadata = () => {
+        videoDuration = video.duration;
+        trimStart = 0;
+        trimEnd = videoDuration;
+
+        document.getElementById('durationText').textContent = formatTime(videoDuration);
+        document.getElementById('clipLengthText').textContent = formatTime(videoDuration);
+        document.getElementById('trimStartInput').value = formatTime(0, true);
+        document.getElementById('trimEndInput').value = formatTime(videoDuration, true);
+
+        document.getElementById('videoDropzone').style.display = 'none';
+        document.getElementById('studioWorkspace').style.display = 'block';
+
+        updateTrimDisplay();
+        updateTimelinePlayhead();
+      };
+    }
+
+    // Playback Controls
+    function togglePlayPause() {
+      if (video.paused) {
+        if (video.currentTime >= trimEnd) video.currentTime = trimStart;
+        video.play();
+        document.getElementById('playIcon').className = 'fas fa-pause';
+        document.getElementById('playBtnText').textContent = 'Pause';
+      } else {
+        video.pause();
+        document.getElementById('playIcon').className = 'fas fa-play';
+        document.getElementById('playBtnText').textContent = 'Play';
+      }
+    }
+
+    video.addEventListener('timeupdate', () => {
+      document.getElementById('currentTimeText').textContent = formatTime(video.currentTime);
+      updateTimelinePlayhead();
+
+      // Loop within trim range during playback preview
+      if (video.currentTime >= trimEnd) {
+        video.currentTime = trimStart;
+      }
+    });
+
+    video.addEventListener('ended', () => {
+      document.getElementById('playIcon').className = 'fas fa-play';
+      document.getElementById('playBtnText').textContent = 'Play';
+    });
+
+    function stepFrame(step) {
+      video.pause();
+      video.currentTime = Math.max(trimStart, Math.min(trimEnd, video.currentTime + step * 0.05));
+    }
+
+    function toggleMute() {
+      video.muted = !video.muted;
+      const icon = document.getElementById('muteIcon');
+      icon.className = video.muted ? 'fas fa-volume-xmark' : 'fas fa-volume-high';
+    }
+
+    // ==========================================
+    // TIMELINE & TRIMMING LOGIC
+    // ==========================================
+    function updateTimelinePlayhead() {
+      if (!videoDuration) return;
+      const pct = (video.currentTime / videoDuration) * 100;
+      document.getElementById('playhead').style.left = `${pct}%`;
+    }
+
+    function updateTrimDisplay() {
+      if (!videoDuration) return;
+      const leftPct = (trimStart / videoDuration) * 100;
+      const widthPct = ((trimEnd - trimStart) / videoDuration) * 100;
+
+      const region = document.getElementById('trimRegion');
+      region.style.left = `${leftPct}%`;
+      region.style.width = `${widthPct}%`;
+
+      document.getElementById('clipLengthText').textContent = formatTime(trimEnd - trimStart);
+    }
+
+    function handleScrubClick(e) {
+      if (!videoDuration) return;
+      const rect = document.getElementById('scrubTrack').getBoundingClientRect();
+      const clickX = e.clientX - rect.left;
+      const pct = Math.max(0, Math.min(1, clickX / rect.width));
+      video.currentTime = pct * videoDuration;
+    }
+
+    function setTrimStartToCurrent() {
+      trimStart = Math.min(video.currentTime, trimEnd - 0.5);
+      document.getElementById('trimStartInput').value = formatTime(trimStart, true);
+      updateTrimDisplay();
+    }
+
+    function setTrimEndToCurrent() {
+      trimEnd = Math.max(video.currentTime, trimStart + 0.5);
+      document.getElementById('trimEndInput').value = formatTime(trimEnd, true);
+      updateTrimDisplay();
+    }
+
+    function resetTrim() {
+      trimStart = 0;
+      trimEnd = videoDuration;
+      document.getElementById('trimStartInput').value = formatTime(0, true);
+      document.getElementById('trimEndInput').value = formatTime(videoDuration, true);
+      updateTrimDisplay();
+    }
+
+    function updateTrimFromInputs() {
+      const s = parseTime(document.getElementById('trimStartInput').value);
+      const e = parseTime(document.getElementById('trimEndInput').value);
+      if (s >= 0 && e > s && e <= videoDuration) {
+        trimStart = s;
+        trimEnd = e;
+        updateTrimDisplay();
+      }
+    }
+
+    // ==========================================
+    // ASPECT RATIO & ORIENTATION
+    // ==========================================
+    function setAspectRatio(ratio, btn) {
+      currentAspectRatio = ratio;
+      btn.parentElement.querySelectorAll('.chip-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+
+      const wrapper = document.getElementById('screenWrapper');
+      if (ratio === '16:9') wrapper.style.aspectRatio = '16 / 9';
+      else if (ratio === '9:16') wrapper.style.aspectRatio = '9 / 16';
+      else if (ratio === '1:1') wrapper.style.aspectRatio = '1 / 1';
+      else if (ratio === '4:5') wrapper.style.aspectRatio = '4 / 5';
+      else if (ratio === '21:9') wrapper.style.aspectRatio = '21 / 9';
+      else wrapper.style.aspectRatio = 'auto';
+    }
+
+    function rotateVideo(deg) {
+      rotationAngle = (rotationAngle + deg) % 360;
+      applyTransforms();
+    }
+
+    function toggleFlip(dir) {
+      if (dir === 'h') flipH = !flipH;
+      if (dir === 'v') flipV = !flipV;
+      applyTransforms();
+    }
+
+    function applyTransforms() {
+      const scaleX = flipH ? -1 : 1;
+      const scaleY = flipV ? -1 : 1;
+      video.style.transform = `rotate(${rotationAngle}deg) scale(${scaleX}, ${scaleY})`;
+    }
+
+    // ==========================================
+    // SPEED CONTROL
+    // ==========================================
+    function setPlaybackSpeed(spd, btn) {
+      playbackSpeed = spd;
+      video.playbackRate = spd;
+      btn.parentElement.querySelectorAll('.chip-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+    }
+
+    // ==========================================
+    // TEXT OVERLAY
+    // ==========================================
+    function updateTextOverlay() {
+      const text = document.getElementById('textOverlayInput').value;
+      const pos = document.getElementById('textPositionSelect').value;
+      const size = document.getElementById('textSizeSelect').value;
+      const color = document.getElementById('textColorPicker').value;
+      const font = document.getElementById('textFontSelect').value;
+
+      const overlay = document.getElementById('textOverlayDisplay');
+      overlay.textContent = text;
+      overlay.style.color = color;
+      overlay.style.fontSize = size;
+      overlay.style.fontFamily = font;
+
+      if (pos === 'top') {
+        overlay.style.top = '10%'; overlay.style.bottom = 'auto'; overlay.style.transform = 'translateY(0)';
+      } else if (pos === 'center') {
+        overlay.style.top = '50%'; overlay.style.bottom = 'auto'; overlay.style.transform = 'translateY(-50%)';
+      } else {
+        overlay.style.bottom = '10%'; overlay.style.top = 'auto'; overlay.style.transform = 'translateY(0)';
+      }
+    }
+
+    // ==========================================
+    // FILTERS & COLOR GRADING
+    // ==========================================
+    function applyPresetFilter(name, btn) {
+      btn.parentElement.querySelectorAll('.chip-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+
+      if (name === 'cyberpunk') {
+        filterStyle = 'contrast(130%) hue-rotate(180deg) saturate(180%)';
+      } else if (name === 'vintage') {
+        filterStyle = 'grayscale(100%) contrast(120%) sepia(25%)';
+      } else if (name === 'warm') {
+        filterStyle = 'sepia(35%) saturate(140%) brightness(105%)';
+      } else if (name === 'vivid') {
+        filterStyle = 'saturate(170%) contrast(115%)';
+      } else if (name === 'emerald') {
+        filterStyle = 'hue-rotate(60deg) saturate(130%) contrast(110%)';
+      } else {
+        filterStyle = 'none';
+      }
+
+      video.style.filter = filterStyle;
+    }
+
+    function updateCustomFilters() {
+      const b = document.getElementById('sliderBrightness').value;
+      const c = document.getElementById('sliderContrast').value;
+      const s = document.getElementById('sliderSaturation').value;
+
+      document.getElementById('valBrightness').textContent = `${b}%`;
+      document.getElementById('valContrast').textContent = `${c}%`;
+      document.getElementById('valSaturation').textContent = `${s}%`;
+
+      filterStyle = `brightness(${b}%) contrast(${c}%) saturate(${s}%)`;
+      video.style.filter = filterStyle;
+    }
+
+    // ==========================================
+    // SNAPSHOT CAPTURE (HD FRAME)
+    // ==========================================
+    function captureFrameSnapshot() {
+      const snapCanvas = document.createElement('canvas');
+      snapCanvas.width = video.videoWidth;
+      snapCanvas.height = video.videoHeight;
+      const snapCtx = snapCanvas.getContext('2d');
+
+      // Draw transform and filter
+      snapCtx.filter = filterStyle;
+      snapCtx.drawImage(video, 0, 0, snapCanvas.width, snapCanvas.height);
+
+      // Download
+      const link = document.createElement('a');
+      link.download = `snapshot_${Math.floor(video.currentTime)}s.png`;
+      link.href = snapCanvas.toDataURL('image/png');
+      link.click();
+    }
+
+    // ==========================================
+    // CLIENT-SIDE HIGH-DEF VIDEO EXPORT
+    // ==========================================
+    async function startVideoExport() {
+      video.pause();
+      isRendering = true;
+      document.getElementById('exportOverlay').classList.add('active');
+
+      canvas.width = video.videoWidth || 1280;
+      canvas.height = video.videoHeight || 720;
+
+      const stream = canvas.captureStream(30);
+      
+      // Audio track capture if present
+      try {
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        const source = audioCtx.createMediaElementSource(video);
+        const dest = audioCtx.createMediaStreamDestination();
+        source.connect(dest);
+        source.connect(audioCtx.destination);
+        dest.stream.getAudioTracks().forEach(track => stream.addTrack(track));
+      } catch (err) {}
+
+      recordedChunks = [];
+      const options = { mimeType: 'video/webm;codecs=vp9' };
+      try {
+        mediaRecorder = new MediaRecorder(stream, options);
+      } catch (e) {
+        mediaRecorder = new MediaRecorder(stream);
+      }
+
+      mediaRecorder.ondataavailable = (e) => {
+        if (e.data.size > 0) recordedChunks.push(e.data);
+      };
+
+      mediaRecorder.onstop = () => {
+        const blob = new Blob(recordedChunks, { type: 'video/webm' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `edited_video_${Date.now()}.webm`;
+        a.click();
+        document.getElementById('exportOverlay').classList.remove('active');
+        isRendering = false;
+        video.currentTime = trimStart;
+      };
+
+      mediaRecorder.start();
+
+      video.currentTime = trimStart;
+      video.playbackRate = 1.0;
+      video.play();
+
+      function renderFrame() {
+        if (!isRendering) return;
+
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.save();
+        ctx.filter = filterStyle;
+        ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+        ctx.restore();
+
+        // Draw Text Overlay on Canvas
+        const text = document.getElementById('textOverlayInput').value;
+        if (text) {
+          ctx.save();
+          ctx.font = `bold ${document.getElementById('textSizeSelect').value} ${document.getElementById('textFontSelect').value}`;
+          ctx.fillStyle = document.getElementById('textColorPicker').value;
+          ctx.textAlign = 'center';
+          ctx.shadowColor = 'rgba(0,0,0,0.8)';
+          ctx.shadowBlur = 8;
+          const pos = document.getElementById('textPositionSelect').value;
+          const y = pos === 'top' ? canvas.height * 0.15 : (pos === 'center' ? canvas.height * 0.5 : canvas.height * 0.85);
+          ctx.fillText(text, canvas.width / 2, y);
+          ctx.restore();
+        }
+
+        // Calculate Render Progress
+        const elapsed = video.currentTime - trimStart;
+        const total = trimEnd - trimStart;
+        const pct = Math.min(100, Math.max(0, Math.round((elapsed / total) * 100)));
+
+        document.getElementById('exportProgressBar').style.width = `${pct}%`;
+        document.getElementById('exportPercentText').textContent = `${pct}%`;
+
+        if (video.currentTime >= trimEnd || video.ended) {
+          mediaRecorder.stop();
+          video.pause();
+        } else {
+          requestAnimationFrame(renderFrame);
+        }
+      }
+
+      requestAnimationFrame(renderFrame);
+    }
+
+    function cancelExport() {
+      isRendering = false;
+      if (mediaRecorder && mediaRecorder.state !== 'inactive') mediaRecorder.stop();
+      document.getElementById('exportOverlay').classList.remove('active');
+      video.pause();
+      video.currentTime = trimStart;
+    }
+
+    // ==========================================
+    // UTILITIES
+    // ==========================================
+    function formatTime(seconds, includeDecimals = false) {
+      if (isNaN(seconds) || seconds < 0) return "00:00";
+      const m = Math.floor(seconds / 60);
+      const s = Math.floor(seconds % 60);
+      const dec = Math.floor((seconds % 1) * 10);
+      const str = `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+      return includeDecimals ? `${str}.${dec}` : str;
+    }
+
+    function parseTime(timeStr) {
+      const parts = timeStr.split(':');
+      if (parts.length === 2) {
+        return parseFloat(parts[0]) * 60 + parseFloat(parts[1]);
+      }
+      return parseFloat(timeStr) || 0;
+    }
+
+    // Keyboard Shortcuts
+    window.addEventListener('keydown', (e) => {
+      if (e.target.tagName === 'INPUT' || e.target.tagName === 'SELECT') return;
+      if (e.key === ' ' || e.code === 'Space') {
+        e.preventDefault();
+        togglePlayPause();
+      } else if (e.key === 'ArrowLeft') {
+        e.preventDefault();
+        stepFrame(-1);
+      } else if (e.key === 'ArrowRight') {
+        e.preventDefault();
+        stepFrame(1);
+      }
+    });
+  </script>
+  <script src="js/app.js"></script>
+</body>
+</html>

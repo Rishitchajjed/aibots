@@ -416,6 +416,7 @@
         <button class="admin-tab-btn" onclick="switchAdminTab('aiTab', this)"><i class="fas fa-robot"></i> Gemini AI Studio</button>
         <button class="admin-tab-btn" onclick="switchAdminTab('broadcastTab', this)"><i class="fas fa-bullhorn"></i> Live Banners & Popups</button>
         <button class="admin-tab-btn" onclick="switchAdminTab('festiveTab', this)"><i class="fas fa-wand-magic-sparkles"></i> Festive Decorator</button>
+        <button class="admin-tab-btn" onclick="switchAdminTab('donorsTab', this)"><i class="fas fa-trophy"></i> Supporters & Donors Wall</button>
         <button class="admin-tab-btn" onclick="switchAdminTab('monetizationTab', this)"><i class="fas fa-heart"></i> UPI Donations</button>
         <button class="admin-tab-btn" onclick="switchAdminTab('analyticsTab', this)"><i class="fas fa-chart-line"></i> Search & Clicks Log</button>
         <button class="admin-tab-btn" onclick="switchAdminTab('securityTab', this)"><i class="fas fa-key"></i> Security & Password</button>
@@ -735,6 +736,72 @@
               </button>
             </div>
 
+          </div>
+        </div>
+      </div>
+
+      
+      <!-- TAB: Supporters & Donation Wall of Fame Manager -->
+      <div id="donorsTab" class="tab-pane">
+        <div class="admin-card">
+          <div class="admin-card-header">
+            <div style="display: flex; align-items: center; gap: 12px;">
+              <div class="admin-card-icon" style="background: linear-gradient(135deg, #f59e0b, #ec4899);"><i class="fas fa-trophy"></i></div>
+              <div>
+                <h2 class="admin-card-title">Supporters & Donation Wall of Fame</h2>
+                <p class="admin-card-subtitle">Appreciate donors and supporters by featuring their names, contributions, and quotes on the homepage.</p>
+              </div>
+            </div>
+          </div>
+
+          <div style="background: var(--bg-tertiary); border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 22px; margin-bottom: 22px;">
+            <h3 style="font-size: 1.05rem; font-weight: 800; margin-bottom: 14px; color: var(--text-primary);"><i class="fas fa-plus-circle" style="color: #f59e0b;"></i> Add New Donor / Supporter</h3>
+            
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 14px; margin-bottom: 14px;">
+              <div>
+                <label class="form-label">SUPPORTER NAME *</label>
+                <input type="text" id="donorNameInput" class="form-control" placeholder="e.g. Rohan Sharma">
+              </div>
+              <div>
+                <label class="form-label">CONTRIBUTION / AMOUNT</label>
+                <input type="text" id="donorAmountInput" class="form-control" placeholder="e.g. ₹500 or Coffee Support">
+              </div>
+              <div>
+                <label class="form-label">APPRECIATION TIER / BADGE</label>
+                <select id="donorTierInput" class="form-control">
+                  <option value="👑 Diamond Patron">👑 Diamond Patron</option>
+                  <option value="🥇 Gold Supporter" selected>🥇 Gold Supporter</option>
+                  <option value="🥈 Silver Backer">🥈 Silver Backer</option>
+                  <option value="🌟 Community Hero">🌟 Community Hero</option>
+                  <option value="☕ Coffee Contributor">☕ Coffee Contributor</option>
+                  <option value="💖 Generous Backer">💖 Generous Backer</option>
+                </select>
+              </div>
+              <div>
+                <label class="form-label">DATE / MONTH</label>
+                <input type="text" id="donorDateInput" class="form-control" placeholder="e.g. Aug 2026">
+              </div>
+            </div>
+
+            <div style="margin-bottom: 16px;">
+              <label class="form-label">PERSONAL MESSAGE / APPRECIATION NOTE</label>
+              <input type="text" id="donorMessageInput" class="form-control" placeholder="e.g. Thank you for making amazing free tools!">
+            </div>
+
+            <button onclick="addDonorEntry()" class="btn btn-primary" style="background: linear-gradient(135deg, #f59e0b, #ec4899); border: none; font-weight: 800; padding: 10px 20px;">
+              <i class="fas fa-plus"></i> Add Supporter to Wall
+            </button>
+          </div>
+
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; flex-wrap: wrap; gap: 10px;">
+            <h3 style="font-size: 1rem; font-weight: 800; color: var(--text-primary);"><i class="fas fa-list"></i> Current Featured Donors (<span id="donorCountText">0</span>)</h3>
+            <button onclick="syncDonorsToCloudNow()" class="btn btn-secondary btn-sm" style="color: #10b981; border-color: rgba(16, 185, 129, 0.4);">
+              <i class="fas fa-cloud-arrow-up"></i> Save & Sync Donors to Cloud
+            </button>
+          </div>
+
+          <div id="donorsListContainer" style="display: flex; flex-direction: column; gap: 12px;">
+            <!-- Rendered dynamically -->
           </div>
         </div>
       </div>

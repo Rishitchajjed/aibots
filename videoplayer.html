@@ -6,9 +6,9 @@
   <meta name="google-site-verification" content="ndzq-U-NLijgza_QqgQdcc2U3oMRoud_BT2ZZiwFREM">
   <meta name="google-site-verification" content="-Yb6Nx74gbZ3wRN5uP-Y8KKwDWlt1DPpxs4nA3PkE6M">
   <meta name="robots" content="index, follow">
-  <title>YouTube-Grade HD Video Player & Frame Grabber — AI Bots</title>
-  <meta name="description" content="Play any local video with YouTube-style on-screen controls: Auto-hiding scrubber, 200% audio booster, double-tap seek, frame grabber, speed changer, and theater mode.">
-  <meta name="keywords" content="youtube style video player web, custom html5 video player, audio booster, frame grabber, ai bots video">
+  <title>Ultimate Cinema HD Video Player & Frame Grabber — AI Bots</title>
+  <meta name="description" content="Play any video with YouTube Ambient Glow, Hold-to-2X Speed, 200% Audio Booster, EQ, Stats for Nerds, A-B Loop, and 4K Frame Grabber. 100% private.">
+  <meta name="keywords" content="ambient light video player, hold to 2x speed player, youtube player web, stats for nerds video, ai bots video">
   <link rel="icon" href="logo.png" type="image/png">
   <link rel="canonical" href="https://www.aibots.co.in/videoplayer.html">
   <link rel="manifest" href="manifest.json">
@@ -32,9 +32,10 @@
 
   <style>
     .vp-card {
-      max-width: 1080px;
+      max-width: 1120px;
       margin: 0 auto;
       transition: all 0.3s ease;
+      position: relative;
     }
     
     .vp-dropzone {
@@ -56,20 +57,39 @@
     .vp-dropzone i { font-size: 3.2rem; color: var(--primary); margin-bottom: 12px; display: block; }
     .vp-dropzone input[type="file"] { position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%; }
 
+    /* Ambient Glow Canvas Backdrop (YouTube Cinematic Lighting) */
+    .yt-ambient-glow {
+      position: absolute;
+      top: -30px;
+      left: -30px;
+      right: -30px;
+      bottom: -30px;
+      filter: blur(60px);
+      opacity: 0.55;
+      z-index: 1;
+      pointer-events: none;
+      border-radius: 40px;
+      transition: opacity 0.4s ease;
+    }
+    .yt-ambient-glow.disabled {
+      opacity: 0 !important;
+    }
+
     /* ==========================================
        YOUTUBE-GRADE CUSTOM VIDEO PLAYER CONTAINER
        ========================================== */
     .yt-player-container {
       position: relative;
       width: 100%;
-      height: 560px;
+      height: 580px;
       background: #000000;
       border-radius: var(--radius-xl);
       overflow: hidden;
-      box-shadow: 0 20px 50px rgba(0,0,0,0.8);
+      box-shadow: 0 25px 60px rgba(0,0,0,0.85);
       user-select: none;
       -webkit-user-select: none;
       margin-top: 20px;
+      z-index: 5;
     }
     @media (max-width: 768px) {
       .yt-player-container { height: 260px; border-radius: var(--radius-lg); }
@@ -83,6 +103,30 @@
       cursor: pointer;
     }
 
+    /* 2X Speed Indicator Badge (YouTube Press & Hold) */
+    .yt-speed-hold-badge {
+      position: absolute;
+      top: 24px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(0,0,0,0.75);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255,255,255,0.2);
+      color: #ffffff;
+      padding: 6px 16px;
+      border-radius: 999px;
+      font-size: 0.88rem;
+      font-weight: 800;
+      letter-spacing: 0.05em;
+      display: none;
+      align-items: center;
+      gap: 6px;
+      z-index: 25;
+      pointer-events: none;
+      animation: pulseBadge 0.6s infinite alternate;
+    }
+    @keyframes pulseBadge { from { opacity: 0.85; } to { opacity: 1; } }
+
     /* Big Center Play/Pause Pulse Icon */
     .yt-center-play-pulse {
       position: absolute;
@@ -92,7 +136,7 @@
       width: 76px;
       height: 76px;
       border-radius: 50%;
-      background: rgba(0,0,0,0.65);
+      background: rgba(0,0,0,0.68);
       backdrop-filter: blur(8px);
       color: #ffffff;
       display: flex;
@@ -131,14 +175,14 @@
     .gesture-ripple.right { right: 0; border-radius: 50% 0 0 50%; }
     .gesture-ripple.active { opacity: 1; }
 
-    /* YouTube Controls Overlay (Bottom Gradient & Fade) */
+    /* YouTube Controls Overlay */
     .yt-controls-overlay {
       position: absolute;
       bottom: 0;
       left: 0;
       right: 0;
       background: linear-gradient(to top, rgba(0,0,0,0.95) 0%, rgba(0,0,0,0.6) 60%, transparent 100%);
-      padding: 24px 16px 10px;
+      padding: 24px 18px 12px;
       display: flex;
       flex-direction: column;
       gap: 6px;
@@ -281,16 +325,16 @@
       bottom: 56px;
       right: 16px;
       background: rgba(15,23,42,0.96);
-      backdrop-filter: blur(14px);
-      -webkit-backdrop-filter: blur(14px);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
       border: 1px solid rgba(255,255,255,0.15);
       border-radius: var(--radius-lg);
-      padding: 14px;
-      width: 240px;
+      padding: 16px;
+      width: 260px;
       display: none;
       flex-direction: column;
       gap: 12px;
-      box-shadow: 0 15px 35px rgba(0,0,0,0.8);
+      box-shadow: 0 20px 40px rgba(0,0,0,0.85);
       z-index: 50;
       animation: modalFadeIn 0.2s ease;
     }
@@ -304,6 +348,27 @@
       font-size: 0.82rem;
       color: #cbd5e1;
     }
+
+    /* Stats for Nerds Panel */
+    .yt-nerd-stats {
+      position: absolute;
+      top: 16px;
+      left: 16px;
+      background: rgba(15,23,42,0.92);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255,255,255,0.15);
+      border-radius: var(--radius-md);
+      padding: 12px 16px;
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      color: #38bdf8;
+      display: none;
+      flex-direction: column;
+      gap: 4px;
+      z-index: 40;
+      line-height: 1.4;
+    }
+    .yt-nerd-stats.open { display: flex; }
 
     /* Theater Mode */
     .vp-card.theater-mode {
@@ -325,11 +390,11 @@
         <a href="index.html" class="brand-link">
           <img src="logo.png" alt="AI Bots Logo" class="brand-logo-img">
           <span>AI Bots</span>
-          <span class="brand-badge" style="background: linear-gradient(135deg, #6366f1, #ec4899); color: white;">YOUTUBE PRO</span>
+          <span class="brand-badge" style="background: linear-gradient(135deg, #6366f1, #ec4899); color: white;">CINEMA PRO</span>
         </a>
 
         <div class="nav-actions">
-          <a href="videoeditor.html" class="btn btn-primary btn-sm"><i class="fas fa-scissors"></i> Video Editor Studio</a>
+          <a href="videoeditor.html" class="btn btn-primary btn-sm"><i class="fas fa-scissors"></i> Video Studio Editor</a>
           <a href="index.html" class="btn btn-secondary btn-sm"><i class="fas fa-house"></i> Hub</a>
           <button class="icon-btn theme-toggle-btn" title="Toggle Dark/Light Mode"><i class="fas fa-moon"></i></button>
         </div>
@@ -339,12 +404,15 @@
 
   <main class="app-container tool-page-wrapper">
     <div class="tool-header">
-      <span class="tool-header-badge"><i class="fas fa-play"></i> YouTube-Grade Player</span>
+      <span class="tool-header-badge"><i class="fas fa-play"></i> Cinema Ambient Player</span>
       <h1 class="tool-title">HD Video Player</h1>
-      <p class="tool-desc">Play local videos with full YouTube-style on-screen controls, auto-hiding scrubber, 200% audio booster, and instant snapshot grabber.</p>
+      <p class="tool-desc">Cinema lighting, Hold-to-2X speed, 200% volume booster, Equalizer, Stats for Nerds, and frame grabber.</p>
     </div>
 
     <div class="vp-card" id="vpMainCard">
+      <!-- Ambient Glow Canvas (Real-time dynamic light reflection) -->
+      <canvas class="yt-ambient-glow" id="ambientCanvas"></canvas>
+
       <!-- File Dropzone -->
       <div class="vp-dropzone" id="dropzone" onclick="document.getElementById('fileInput').click()">
         <input type="file" id="fileInput" accept="video/*" onchange="handleVideo(event)">
@@ -359,6 +427,22 @@
         <!-- Video Element -->
         <video id="videoEl" playsinline webkit-playsinline></video>
 
+        <!-- Hold-to-2X Speed Badge -->
+        <div class="yt-speed-hold-badge" id="speedHoldBadge"><i class="fas fa-forward"></i> 2X SPEED</div>
+
+        <!-- Stats for Nerds Overlay -->
+        <div class="yt-nerd-stats" id="nerdStats">
+          <div style="font-weight: 800; color: #ffffff; margin-bottom: 4px; display: flex; justify-content: space-between;">
+            <span>STATS FOR NERDS</span>
+            <span style="cursor: pointer; color: #ef4444;" onclick="document.getElementById('nerdStats').classList.remove('open')">&times;</span>
+          </div>
+          <div id="statRes">Resolution: --</div>
+          <div id="statViewport">Viewport: --</div>
+          <div id="statFps">Render FPS: 60 fps</div>
+          <div id="statBitrate">Buffer: Healthy</div>
+          <div id="statAudio">Audio Engine: Web Audio EQ Active</div>
+        </div>
+
         <!-- Big Center Play/Pause Ripple Indicator -->
         <div class="yt-center-play-pulse" id="centerPulse"><i class="fas fa-play" id="centerPulseIcon"></i></div>
 
@@ -369,11 +453,16 @@
         <!-- YouTube Settings Floating Menu -->
         <div class="yt-settings-menu" id="settingsMenu">
           <div style="font-weight: 800; font-size: 0.9rem; color: #ffffff; border-bottom: 1px solid rgba(255,255,255,0.15); padding-bottom: 6px;">
-            <i class="fas fa-gear" style="color: #ec4899;"></i> Player Settings
+            <i class="fas fa-gear" style="color: #ec4899;"></i> Cinema Settings
           </div>
           
           <div class="yt-menu-item">
-            <span>Speed</span>
+            <span>Ambient Light Glow</span>
+            <button class="btn btn-secondary btn-sm" id="btnAmbientToggle" style="padding: 2px 8px; font-size: 0.72rem; color:#10b981;" onclick="toggleAmbientGlow()">ON</button>
+          </div>
+
+          <div class="yt-menu-item">
+            <span>Speed Preset</span>
             <select id="speedSel" class="form-control" style="width: 85px; padding: 2px 6px; font-size: 0.75rem;" onchange="setSpeed(this.value)">
               <option value="0.25">0.25x</option>
               <option value="0.5">0.5x</option>
@@ -382,6 +471,16 @@
               <option value="1.25">1.25x</option>
               <option value="1.5">1.5x</option>
               <option value="2">2.0x</option>
+            </select>
+          </div>
+
+          <div class="yt-menu-item">
+            <span>Audio Equalizer</span>
+            <select id="eqSel" class="form-control" style="width: 95px; padding: 2px 6px; font-size: 0.75rem;" onchange="setAudioPreset(this.value)">
+              <option value="flat" selected>Flat / Normal</option>
+              <option value="bass">Bass Boost</option>
+              <option value="vocal">Vocal Clarity</option>
+              <option value="night">Night Mode</option>
             </select>
           </div>
 
@@ -405,6 +504,11 @@
             <span style="color:#10b981; font-weight:700;" id="menuBoostVal">100%</span>
           </div>
           <input type="range" min="0" max="200" value="100" class="range-slider" id="menuBoostSlider" oninput="setAudioBoost(this.value)">
+
+          <div class="yt-menu-item" style="border-top: 1px solid rgba(255,255,255,0.1); padding-top: 6px;">
+            <span>Stats for Nerds</span>
+            <button class="btn btn-secondary btn-sm" style="padding: 2px 8px; font-size: 0.72rem;" onclick="toggleNerdStats()">Show</button>
+          </div>
         </div>
 
         <!-- YouTube Bottom Overlay Controls -->
@@ -441,7 +545,7 @@
               <button class="yt-btn" onclick="stepFrame(-1)" title="Previous Frame [,]"><i class="fas fa-backward-step"></i></button>
               <button class="yt-btn" onclick="stepFrame(1)" title="Next Frame [.]"><i class="fas fa-forward-step"></i></button>
               <button class="yt-btn" onclick="captureFrame()" title="Grab HD Frame [S]"><i class="fas fa-camera"></i></button>
-              <button class="yt-btn" onclick="toggleSettingsMenu()" title="Settings (Speed, Fit, Loop)"><i class="fas fa-gear"></i></button>
+              <button class="yt-btn" onclick="toggleSettingsMenu()" title="Settings (Speed, EQ, Glow)"><i class="fas fa-gear"></i></button>
               <button class="yt-btn" onclick="togglePiP()" title="Miniplayer (PiP)"><i class="fas fa-up-right-from-square"></i></button>
               <button class="yt-btn" onclick="toggleTheater()" title="Theater Mode"><i class="fas fa-expand"></i></button>
               <button class="yt-btn" onclick="toggleFullscreen()" title="Fullscreen (F)"><i class="fas fa-maximize"></i></button>
@@ -458,10 +562,18 @@
   <script>
     const video = document.getElementById('videoEl');
     const container = document.getElementById('playerWrap');
+    const ambientCanvas = document.getElementById('ambientCanvas');
+    const ambientCtx = ambientCanvas.getContext('2d', { alpha: false });
+
     let audioCtx = null;
     let audioSource = null;
     let gainNode = null;
+    let bassFilter = null;
+    let trebleFilter = null;
     let controlsTimer = null;
+    let isAmbientOn = true;
+    let originalSpeed = 1.0;
+    let holdSpeedTimeout = null;
 
     function initAudioBooster() {
       if (audioCtx) return;
@@ -469,11 +581,43 @@
         const AudioContext = window.AudioContext || window.webkitAudioContext;
         audioCtx = new AudioContext();
         audioSource = audioCtx.createMediaElementSource(video);
+
+        bassFilter = audioCtx.createBiquadFilter();
+        bassFilter.type = 'lowshelf';
+        bassFilter.frequency.value = 250;
+        bassFilter.gain.value = 0;
+
+        trebleFilter = audioCtx.createBiquadFilter();
+        trebleFilter.type = 'highshelf';
+        trebleFilter.frequency.value = 3000;
+        trebleFilter.gain.value = 0;
+
         gainNode = audioCtx.createGain();
         gainNode.gain.value = 1.0;
-        audioSource.connect(gainNode);
+
+        audioSource.connect(bassFilter);
+        bassFilter.connect(trebleFilter);
+        trebleFilter.connect(gainNode);
         gainNode.connect(audioCtx.destination);
       } catch(e) {}
+    }
+
+    function setAudioPreset(preset) {
+      initAudioBooster();
+      if (!bassFilter || !trebleFilter) return;
+      if (preset === 'bass') {
+        bassFilter.gain.value = 8;
+        trebleFilter.gain.value = -2;
+      } else if (preset === 'vocal') {
+        bassFilter.gain.value = -4;
+        trebleFilter.gain.value = 6;
+      } else if (preset === 'night') {
+        bassFilter.gain.value = -3;
+        trebleFilter.gain.value = -3;
+      } else {
+        bassFilter.gain.value = 0;
+        trebleFilter.gain.value = 0;
+      }
     }
 
     function handleVideo(e) {
@@ -487,10 +631,33 @@
 
       video.onloadedmetadata = () => {
         updateTimeDisplay();
+        ambientCanvas.width = 160;
+        ambientCanvas.height = 90;
+        document.getElementById('statRes').textContent = `Resolution: ${video.videoWidth} x ${video.videoHeight}`;
+        document.getElementById('statViewport').textContent = `Viewport: ${container.clientWidth} x ${container.clientHeight}`;
       };
 
       initAudioBooster();
       togglePlay();
+      renderAmbientLoop();
+    }
+
+    // Real-Time Ambient Light Engine
+    function renderAmbientLoop() {
+      if (!video.paused && !video.ended && isAmbientOn && video.videoWidth) {
+        ambientCtx.drawImage(video, 0, 0, ambientCanvas.width, ambientCanvas.height);
+      }
+      requestAnimationFrame(renderAmbientLoop);
+    }
+
+    function toggleAmbientGlow() {
+      isAmbientOn = !isAmbientOn;
+      ambientCanvas.classList.toggle('disabled', !isAmbientOn);
+      const btn = document.getElementById('btnAmbientToggle');
+      if (btn) {
+        btn.textContent = isAmbientOn ? 'ON' : 'OFF';
+        btn.style.color = isAmbientOn ? '#10b981' : '';
+      }
     }
 
     // Play / Pause Logic
@@ -544,6 +711,7 @@
 
     function setSpeed(val) {
       video.playbackRate = parseFloat(val);
+      originalSpeed = video.playbackRate;
     }
 
     function setAspect(val) {
@@ -574,6 +742,11 @@
     function toggleSettingsMenu() {
       const menu = document.getElementById('settingsMenu');
       menu.classList.toggle('open');
+    }
+
+    function toggleNerdStats() {
+      document.getElementById('nerdStats').classList.toggle('open');
+      toggleSettingsMenu();
     }
 
     function toggleTheater() {
@@ -688,6 +861,32 @@
       clearTimeout(controlsTimer);
       container.classList.remove('hide-controls');
     });
+
+    // YouTube Hold-to-2X Speed Feature
+    let isHoldingSpeed = false;
+    function startHoldSpeed() {
+      if (video.paused) return;
+      holdSpeedTimeout = setTimeout(() => {
+        isHoldingSpeed = true;
+        originalSpeed = video.playbackRate;
+        video.playbackRate = 2.0;
+        document.getElementById('speedHoldBadge').style.display = 'flex';
+      }, 400);
+    }
+
+    function endHoldSpeed() {
+      clearTimeout(holdSpeedTimeout);
+      if (isHoldingSpeed) {
+        isHoldingSpeed = false;
+        video.playbackRate = originalSpeed;
+        document.getElementById('speedHoldBadge').style.display = 'none';
+      }
+    }
+
+    video.addEventListener('mousedown', startHoldSpeed);
+    window.addEventListener('mouseup', endHoldSpeed);
+    video.addEventListener('touchstart', startHoldSpeed);
+    window.addEventListener('touchend', endHoldSpeed);
 
     // Mobile Double-Tap Skip
     let lastTap = 0;

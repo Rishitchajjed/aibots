@@ -6,9 +6,9 @@
   <meta name="google-site-verification" content="ndzq-U-NLijgza_QqgQdcc2U3oMRoud_BT2ZZiwFREM">
   <meta name="google-site-verification" content="-Yb6Nx74gbZ3wRN5uP-Y8KKwDWlt1DPpxs4nA3PkE6M">
   <meta name="robots" content="index, follow">
-  <title>Video Studio Pro — Multi-Clip Video & Photo Sequence Editor | AI Bots</title>
-  <meta name="description" content="Professional in-browser multi-clip video and photo timeline editor: Combine multiple videos & photos, set photo display durations, audio solo preview, 5x micro-waveform zoom, and HD export.">
-  <meta name="keywords" content="multi clip video editor online, combine photos and videos online, set photo duration video, waveform audio zoom, video editor no watermark, ai bots video studio">
+  <title>Video Studio Pro — Advanced Multi-Track & Audio Waveform Editor | AI Bots</title>
+  <meta name="description" content="Ultimate in-browser video & audio editor: Auto-zoomed waveform trimmer, live music scrubbing, dual draggable cut handles, multi-clip video/photo sequencing, and HD export.">
+  <meta name="keywords" content="video editor online, adjust music to video online, auto zoom audio waveform, trim music for video, combine photos and videos online, ai bots video studio">
   <link rel="icon" href="logo.png" type="image/png">
   <link rel="canonical" href="https://www.aibots.co.in/videoeditor.html">
   <link rel="manifest" href="manifest.json">
@@ -286,7 +286,7 @@
     /* Individual Track Lane */
     .track-lane {
       position: relative;
-      height: 64px;
+      height: 68px;
       background: var(--bg-tertiary);
       border: 1px solid var(--border-color);
       border-radius: var(--radius-md);
@@ -339,20 +339,20 @@
     }
     .video-slice-box:active { cursor: grabbing; }
 
-    /* Audio Slice Box */
+    /* Audio Slice Box with High-Contrast Pink Glow */
     .audio-slice-box {
       position: absolute;
       top: 0;
       bottom: 0;
       left: 0%;
       width: 100%;
-      background: linear-gradient(135deg, rgba(236, 72, 153, 0.4), rgba(244, 63, 94, 0.4));
+      background: linear-gradient(135deg, rgba(236, 72, 153, 0.45), rgba(244, 63, 94, 0.45));
       border: 2px solid #ec4899;
       border-radius: var(--radius-sm);
       cursor: grab;
       z-index: 10;
       display: none;
-      box-shadow: 0 0 15px rgba(236, 72, 153, 0.3);
+      box-shadow: 0 0 18px rgba(236, 72, 153, 0.4);
     }
     .audio-slice-box:active { cursor: grabbing; }
 
@@ -362,7 +362,7 @@
       width: 100%;
       height: 100%;
       pointer-events: none;
-      opacity: 0.8;
+      opacity: 0.85;
     }
 
     /* Handles & Floating Tooltips */
@@ -370,21 +370,24 @@
       position: absolute;
       top: 0;
       bottom: 0;
-      width: 18px;
+      width: 20px;
       background: var(--primary);
       cursor: ew-resize;
       z-index: 30;
       display: flex;
       align-items: center;
       justify-content: center;
-      box-shadow: 0 0 10px rgba(0,0,0,0.6);
+      box-shadow: 0 0 12px rgba(0,0,0,0.7);
       touch-action: none;
     }
-    .drag-handle-audio { background: #ec4899 !important; }
+    .drag-handle-audio {
+      background: #ec4899 !important;
+      box-shadow: 0 0 12px rgba(236, 72, 153, 0.6) !important;
+    }
     .drag-handle::after {
       content: '';
-      width: 3px;
-      height: 20px;
+      width: 4px;
+      height: 22px;
       background: #ffffff;
       border-radius: 2px;
     }
@@ -401,7 +404,7 @@
 
     .drag-tooltip {
       position: absolute;
-      top: -30px;
+      top: -32px;
       left: 50%;
       transform: translateX(-50%);
       background: #0f172a;
@@ -410,14 +413,15 @@
       font-size: 0.72rem;
       font-family: var(--font-mono);
       font-weight: 800;
-      padding: 2px 6px;
+      padding: 3px 8px;
       border-radius: var(--radius-sm);
       pointer-events: none;
       white-space: nowrap;
       display: none;
       z-index: 60;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.5);
     }
-    .drag-handle:hover .drag-tooltip, .drag-handle:active .drag-tooltip, .video-slice-box:active .drag-tooltip {
+    .drag-handle:hover .drag-tooltip, .drag-handle:active .drag-tooltip, .video-slice-box:active .drag-tooltip, .audio-slice-box:active .drag-tooltip {
       display: block;
     }
 
@@ -572,9 +576,9 @@
 
   <main class="app-container tool-page-wrapper">
     <div class="tool-header">
-      <span class="tool-header-badge"><i class="fas fa-clapperboard"></i> Multi-Clip Video & Photo Sequencing</span>
+      <span class="tool-header-badge"><i class="fas fa-clapperboard"></i> Multi-Track Timeline & Audio Waveform Engine</span>
       <h1 class="tool-title">Video Studio Pro</h1>
-      <p class="tool-desc">Combine multiple videos & photos, set photo durations, solo preview music beats, and export seamless HD sequences.</p>
+      <p class="tool-desc">Combine videos & photos, auto-zoom music waveforms, adjust song start offsets with live scrub auditioning, and render synchronized HD videos.</p>
     </div>
 
     <!-- Dropzone / Empty State -->
@@ -648,7 +652,6 @@
               <input type="file" id="mediaAddFileInput" accept="video/*,image/*" multiple style="display: none;" onchange="handleMediaBinUpload(event)">
             </div>
             <div class="media-bin-strip" id="mediaBinStrip">
-              <!-- Rendered Dynamically -->
               <button class="add-media-btn" onclick="document.getElementById('mediaAddFileInput').click()">
                 <i class="fas fa-plus"></i> Add Clip
               </button>
@@ -703,15 +706,18 @@
                   </div>
                 </div>
 
-                <!-- TRACK 2: Audio / BGM Track Lane with Waveform -->
+                <!-- TRACK 2: Audio / BGM Track Lane with Waveform & Dual Slip Handles -->
                 <div class="track-lane" id="audioTrackLane">
-                  <div class="track-lane-header" id="audioLaneLabel"><i class="fas fa-music"></i> Audio Track (Click 'Upload Audio' to add song)</div>
+                  <div class="track-lane-header" id="audioLaneLabel"><i class="fas fa-music"></i> Audio Track (Upload Music in sidebar)</div>
                   <canvas class="audio-waveform-canvas" id="audioWaveformCanvas"></canvas>
                   
                   <div class="audio-slice-box" id="audioSlice">
                     <div class="drag-tooltip" id="audioSliceTooltip">Music Start: 00:00.0</div>
-                    <div class="drag-handle drag-handle-left drag-handle-audio" id="audioHandleLeft" title="Drag to slip music start">
+                    <div class="drag-handle drag-handle-left drag-handle-audio" id="audioHandleLeft" title="Drag left edge to slip music start">
                       <div class="drag-tooltip" id="audioHandleTooltip">00:00.0</div>
+                    </div>
+                    <div class="drag-handle drag-handle-right drag-handle-audio" id="audioHandleRight" title="Drag right edge to slip music end">
+                      <div class="drag-tooltip" id="audioHandleRightTooltip">00:00.0</div>
                     </div>
                   </div>
                 </div>
@@ -757,7 +763,42 @@
             </div>
           </div>
 
-          <!-- Photo Duration Control (Visible when active clip is a photo) -->
+          <!-- DEDICATED MUSIC SLIP & WAVEFORM ADJUSTER BOX -->
+          <div class="tool-box" id="musicAdjusterBox" style="background: linear-gradient(135deg, rgba(236,72,153,0.08), rgba(99,102,241,0.08)); border-color: #ec4899;">
+            <div class="tool-box-title" style="color: #ec4899;"><i class="fas fa-sliders"></i> Music Track Adjuster & Waveform</div>
+            
+            <input type="file" id="bgmFileInput" accept="audio/*" style="display: none;" onchange="handleBgmUpload(event)">
+            <button onclick="document.getElementById('bgmFileInput').click()" class="btn btn-secondary btn-sm" style="width: 100%; margin-bottom: 12px; border-color: #ec4899; color: #ec4899;">
+              <i class="fas fa-file-audio"></i> <span id="bgmBtnText">Upload Audio Track / Song</span>
+            </button>
+
+            <!-- Music Start Position Slider with Live Scrub -->
+            <div id="musicControlsGroup" style="display: none;">
+              <div style="display: flex; justify-content: space-between; font-size: 0.82rem; margin-bottom: 4px;">
+                <span style="font-weight: 700; color: #ec4899;">Song Start Offset (Beat Align)</span>
+                <strong id="valBgmStart" style="font-family: var(--font-mono); color: #ec4899;">00:00.0</strong>
+              </div>
+              <input type="range" min="0" max="100" step="0.1" value="0" class="range-slider" id="sliderBgmStart" oninput="handleBgmSliderChange(this.value)">
+
+              <div style="display: flex; justify-content: space-between; font-size: 0.76rem; color: var(--text-secondary); margin-top: 4px; margin-bottom: 12px;">
+                <span>0s (Intro)</span>
+                <button onclick="autoFitMusicToVideo()" class="btn btn-secondary btn-sm" style="padding: 2px 8px; font-size: 0.72rem; color: #ec4899;">
+                  <i class="fas fa-wand-magic-sparkles"></i> Auto-Fit to Video
+                </button>
+                <span id="bgmTotalDurText">00:00</span>
+              </div>
+
+              <div style="display: flex; flex-direction: column; gap: 8px; font-size: 0.82rem; border-top: 1px solid var(--border-color); padding-top: 10px;">
+                <div style="display: flex; justify-content: space-between;"><span>Video Voice Volume</span><span id="valVideoVol">100%</span></div>
+                <input type="range" min="0" max="200" value="100" class="range-slider" id="sliderVideoVol" oninput="updateAudioMixer()">
+
+                <div style="display: flex; justify-content: space-between;"><span>Background Music Volume</span><span id="valBgmVol">80%</span></div>
+                <input type="range" min="0" max="200" value="80" class="range-slider" id="sliderBgmVol" oninput="updateAudioMixer()">
+              </div>
+            </div>
+          </div>
+
+          <!-- Photo Duration Control -->
           <div class="tool-box" id="photoDurationBox" style="display: none;">
             <div class="tool-box-title"><i class="fas fa-image" style="color: #f59e0b;"></i> Photo Display Duration</div>
             <div style="display: flex; justify-content: space-between; font-size: 0.82rem; margin-bottom: 6px;">
@@ -765,25 +806,8 @@
             </div>
             <input type="range" min="1" max="15" step="0.5" value="3" class="range-slider" id="sliderPhotoDuration" oninput="updateActivePhotoDuration()">
           </div>
-
-          <!-- 2. Background Music & Audio Mixer -->
-          <div class="tool-box">
-            <div class="tool-box-title"><i class="fas fa-headphones" style="color: #ec4899;"></i> Audio Track & Music Mixer</div>
-            <input type="file" id="bgmFileInput" accept="audio/*" style="display: none;" onchange="handleBgmUpload(event)">
-            <button onclick="document.getElementById('bgmFileInput').click()" class="btn btn-secondary btn-sm" style="width: 100%; margin-bottom: 12px;">
-              <i class="fas fa-file-audio"></i> <span id="bgmBtnText">Upload Audio Track / Song</span>
-            </button>
-
-            <div style="display: flex; flex-direction: column; gap: 8px; font-size: 0.82rem;">
-              <div style="display: flex; justify-content: space-between;"><span>Original Clip Audio</span><span id="valVideoVol">100%</span></div>
-              <input type="range" min="0" max="200" value="100" class="range-slider" id="sliderVideoVol" oninput="updateAudioMixer()">
-
-              <div style="display: flex; justify-content: space-between;"><span>Background Music Volume</span><span id="valBgmVol">80%</span></div>
-              <input type="range" min="0" max="200" value="80" class="range-slider" id="sliderBgmVol" oninput="updateAudioMixer()">
-            </div>
-          </div>
           
-          <!-- 3. Aspect Ratio & Orientation -->
+          <!-- Aspect Ratio & Orientation -->
           <div class="tool-box">
             <div class="tool-box-title"><i class="fas fa-crop-simple" style="color: #38bdf8;"></i> Aspect Ratio & Orientation</div>
             <div class="chip-grid" style="margin-bottom: 12px;">
@@ -802,7 +826,7 @@
             </div>
           </div>
 
-          <!-- 4. Playback Speed -->
+          <!-- Playback Speed -->
           <div class="tool-box">
             <div class="tool-box-title"><i class="fas fa-gauge-high" style="color: #f59e0b;"></i> Playback Speed</div>
             <div class="chip-grid">
@@ -815,7 +839,7 @@
             </div>
           </div>
 
-          <!-- 5. Text & Emoji Stickers -->
+          <!-- Text & Emoji Stickers -->
           <div class="tool-box">
             <div class="tool-box-title"><i class="fas fa-font" style="color: #10b981;"></i> Text & Stickers</div>
             
@@ -855,7 +879,7 @@
             </div>
           </div>
 
-          <!-- 6. Logo & Watermark Inserter -->
+          <!-- Logo & Watermark Inserter -->
           <div class="tool-box">
             <div class="tool-box-title"><i class="fas fa-image" style="color: #6366f1;"></i> Logo & Watermark Overlay</div>
             <input type="file" id="logoFileInput" accept="image/*" style="display: none;" onchange="handleLogoUpload(event)">
@@ -868,7 +892,7 @@
             <input type="range" min="30" max="220" value="80" class="range-slider" id="sliderLogoScale" oninput="updateLogoScale()">
           </div>
 
-          <!-- 7. Color Grading & Cinematic Filters -->
+          <!-- Color Grading & Cinematic Filters -->
           <div class="tool-box">
             <div class="tool-box-title"><i class="fas fa-sliders" style="color: #a855f7;"></i> Cinematic Color Filters</div>
             <div class="chip-grid" style="margin-bottom: 14px;">
@@ -906,11 +930,12 @@
     const canvas = document.getElementById('exportCanvas');
     const ctx = canvas.getContext('2d');
 
-    let mediaClips = []; // [{ id, type: 'video'|'photo', file, url, duration, trimStart, trimEnd }]
+    let mediaClips = [];
     let activeClipIndex = 0;
 
     let bgmStartOffset = 0;
     let bgmAudioDuration = 0;
+    let decodedAudioBuffer = null;
     let playbackSpeed = 1.0;
     let rotationAngle = 0;
     let flipH = false;
@@ -973,7 +998,7 @@
         if (!isVid && !isImg) continue;
 
         const url = URL.createObjectURL(file);
-        let duration = 3.0; // Default photo duration
+        let duration = 3.0;
 
         if (isVid) {
           const tempVid = document.createElement('video');
@@ -997,7 +1022,7 @@
       document.getElementById('studioWorkspace').style.display = 'block';
 
       renderMediaBinStrip();
-      selectClip(mediaClips.length - files.length); // Select first newly uploaded clip
+      selectClip(mediaClips.length - files.length);
     }
 
     function renderMediaBinStrip() {
@@ -1025,7 +1050,6 @@
         strip.appendChild(item);
       });
 
-      // Append Add Clip button
       const addBtn = document.createElement('button');
       addBtn.className = 'add-media-btn';
       addBtn.onclick = () => document.getElementById('mediaAddFileInput').click();
@@ -1106,7 +1130,7 @@
       const fCanvas = document.getElementById('filmstripCanvas');
       const fCtx = fCanvas.getContext('2d');
       fCanvas.width = fCanvas.parentElement.clientWidth || 800;
-      fCanvas.height = 64;
+      fCanvas.height = 68;
 
       const clip = mediaClips[activeClipIndex];
       if (!clip || clip.type !== 'video') return;
@@ -1131,7 +1155,7 @@
       const fCanvas = document.getElementById('filmstripCanvas');
       const fCtx = fCanvas.getContext('2d');
       fCanvas.width = fCanvas.parentElement.clientWidth || 800;
-      fCanvas.height = 64;
+      fCanvas.height = 68;
 
       const img = new Image();
       img.src = url;
@@ -1144,7 +1168,9 @@
       };
     }
 
-    // Background Music Upload & Waveform Decoding
+    // ==========================================
+    // AUDIO ADJUSTER & WAVEFORM RENDERING
+    // ==========================================
     async function handleBgmUpload(e) {
       const file = e.target.files[0];
       if (!file) return;
@@ -1155,19 +1181,22 @@
       document.getElementById('audioLaneLabel').innerHTML = `<i class="fas fa-music"></i> ${file.name.substring(0, 26)}`;
       document.getElementById('audioSlice').style.display = 'block';
       document.getElementById('audioTrimInputsRow').style.display = 'flex';
+      document.getElementById('musicControlsGroup').style.display = 'block';
 
       bgmAudio.onloadedmetadata = () => {
         bgmAudioDuration = bgmAudio.duration;
         bgmStartOffset = 0;
         document.getElementById('bgmStartInput').value = formatTime(0, true);
+        document.getElementById('sliderBgmStart').max = Math.max(1, bgmAudioDuration - 1);
+        document.getElementById('bgmTotalDurText').textContent = formatTime(bgmAudioDuration);
         updateAudioTrimDisplay();
       };
 
       try {
         const actx = new (window.AudioContext || window.webkitAudioContext)();
         const arrayBuffer = await file.arrayBuffer();
-        const audioBuffer = await actx.decodeAudioData(arrayBuffer);
-        drawDecodedWaveform(audioBuffer);
+        decodedAudioBuffer = await actx.decodeAudioData(arrayBuffer);
+        drawDecodedWaveform(decodedAudioBuffer);
       } catch (err) {
         drawFallbackWaveform();
       }
@@ -1179,7 +1208,7 @@
       const c = document.getElementById('audioWaveformCanvas');
       const cx = c.getContext('2d');
       c.width = c.parentElement.clientWidth || 800;
-      c.height = 64;
+      c.height = 68;
       cx.clearRect(0, 0, c.width, c.height);
 
       const data = buffer.getChannelData(0);
@@ -1204,13 +1233,41 @@
       const c = document.getElementById('audioWaveformCanvas');
       const cx = c.getContext('2d');
       c.width = c.parentElement.clientWidth || 800;
-      c.height = 64;
+      c.height = 68;
       cx.clearRect(0, 0, c.width, c.height);
       cx.fillStyle = '#ec4899';
       for (let x = 0; x < c.width; x += 4) {
         const barH = 10 + Math.sin(x * 0.05) * 15 + Math.random() * 15;
         cx.fillRect(x, (c.height - barH) / 2, 2.5, barH);
       }
+    }
+
+    // Live Auditioning Slider for Music
+    function handleBgmSliderChange(val) {
+      bgmStartOffset = parseFloat(val);
+      document.getElementById('valBgmStart').textContent = formatTime(bgmStartOffset, true);
+      document.getElementById('bgmStartInput').value = formatTime(bgmStartOffset, true);
+      updateAudioTrimDisplay();
+
+      // Quick audible scrub blip
+      if (bgmLoaded) {
+        initAudioGraph();
+        bgmAudio.currentTime = bgmStartOffset;
+        bgmAudio.play();
+        clearTimeout(window._bgmScrubTimer);
+        window._bgmScrubTimer = setTimeout(() => {
+          if (!isSoloPlaying && video.paused) bgmAudio.pause();
+        }, 1200);
+      }
+    }
+
+    function autoFitMusicToVideo() {
+      if (!bgmLoaded) return;
+      bgmStartOffset = 0;
+      document.getElementById('sliderBgmStart').value = 0;
+      document.getElementById('valBgmStart').textContent = "00:00.0";
+      document.getElementById('bgmStartInput').value = "00:00.0";
+      updateAudioTrimDisplay();
     }
 
     // Logo Upload
@@ -1255,7 +1312,7 @@
       if (bgmGainNode) bgmGainNode.gain.value = bVol;
     }
 
-    // Solo Audio Preview (Listen to Song beat at current slip)
+    // Solo Audio Preview
     let isSoloPlaying = false;
     function previewAudioSolo() {
       if (!bgmLoaded) {
@@ -1281,7 +1338,7 @@
             isSoloPlaying = false;
             btn.innerHTML = '<i class="fas fa-headphones"></i> Solo Audio Preview';
           }
-        }, 5000); // 5s Solo Preview
+        }, 5000);
       }
     }
 
@@ -1311,7 +1368,6 @@
           document.getElementById('playBtnText').textContent = 'Play';
         }
       } else {
-        // Photo preview simulation
         if (bgmLoaded) {
           if (bgmAudio.paused) {
             bgmAudio.currentTime = bgmStartOffset;
@@ -1375,6 +1431,7 @@
       updateAudioTrimDisplay();
       updateTimelinePlayhead();
       generateFilmstripThumbnails();
+      if (decodedAudioBuffer) drawDecodedWaveform(decodedAudioBuffer);
     }
 
     function splitVideoAtPlayhead(point) {
@@ -1434,9 +1491,14 @@
       const slice = document.getElementById('audioSlice');
       slice.style.left = `${leftPct}%`;
       slice.style.width = `${Math.max(5, widthPct)}%`;
+
       document.getElementById('bgmStartInput').value = formatTime(bgmStartOffset, true);
+      document.getElementById('sliderBgmStart').value = bgmStartOffset;
+      document.getElementById('valBgmStart').textContent = formatTime(bgmStartOffset, true);
+
       document.getElementById('audioSliceTooltip').textContent = `Music Start: ${formatTime(bgmStartOffset, true)}`;
       document.getElementById('audioHandleTooltip').textContent = formatTime(bgmStartOffset, true);
+      document.getElementById('audioHandleRightTooltip').textContent = formatTime(bgmStartOffset + duration, true);
     }
 
     function handleTimelineLaneClick(e) {
@@ -1460,6 +1522,8 @@
 
       const aLane = document.getElementById('audioTrackLane');
       const aSlice = document.getElementById('audioSlice');
+      const aLeft = document.getElementById('audioHandleLeft');
+      const aRight = document.getElementById('audioHandleRight');
 
       let activeDrag = null;
       let dragStartX = 0;
@@ -1499,7 +1563,27 @@
         vSlice.setPointerCapture(e.pointerId);
       });
 
+      // Audio Left Handle (Slip Start)
+      aLeft.addEventListener('pointerdown', (e) => {
+        e.stopPropagation();
+        activeDrag = 'a-left';
+        dragStartX = e.clientX;
+        initialBgmOffset = bgmStartOffset;
+        aLeft.setPointerCapture(e.pointerId);
+      });
+
+      // Audio Right Handle (Slip End)
+      aRight.addEventListener('pointerdown', (e) => {
+        e.stopPropagation();
+        activeDrag = 'a-right';
+        dragStartX = e.clientX;
+        initialBgmOffset = bgmStartOffset;
+        aRight.setPointerCapture(e.pointerId);
+      });
+
+      // Audio Slice Middle Slide
       aSlice.addEventListener('pointerdown', (e) => {
+        if (e.target === aLeft || e.target === aRight) return;
         e.stopPropagation();
         activeDrag = 'a-slide';
         dragStartX = e.clientX;
@@ -1544,7 +1628,7 @@
           document.getElementById('trimEndInput').value = formatTime(clip.trimEnd, true);
           updateTrimDisplay();
           if (clip.type === 'video') video.currentTime = clip.trimStart;
-        } else if (activeDrag === 'a-slide' && bgmAudioDuration) {
+        } else if ((activeDrag === 'a-slide' || activeDrag === 'a-left' || activeDrag === 'a-right') && bgmAudioDuration) {
           const aDeltaSeconds = (deltaX / aLane.clientWidth) * bgmAudioDuration;
           bgmStartOffset = Math.max(0, Math.min(bgmAudioDuration - 1, initialBgmOffset + aDeltaSeconds));
           updateAudioTrimDisplay();
@@ -1869,11 +1953,9 @@
         if (bgmLoaded) bgmAudio.pause();
       };
 
-      // Calculate total sequence duration
       const totalSeqDuration = mediaClips.reduce((sum, c) => sum + (c.trimEnd - c.trimStart), 0);
       let renderedDurationSoFar = 0;
 
-      // Start Background Music for entire sequence
       if (bgmLoaded) {
         bgmAudio.currentTime = bgmStartOffset;
         bgmAudio.playbackRate = 1.0;
@@ -1882,7 +1964,6 @@
 
       mediaRecorder.start();
 
-      // Render Sequence Clips One by One
       for (let i = 0; i < mediaClips.length; i++) {
         if (!isRendering) break;
         const clip = mediaClips[i];
@@ -1917,7 +1998,6 @@
             requestAnimationFrame(renderVideoClip);
           });
         } else {
-          // Photo Clip Slide
           const img = new Image();
           img.src = clip.url;
           await new Promise(r => img.onload = r);

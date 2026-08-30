@@ -2196,47 +2196,18 @@
       let renderedDurationSoFar = 0;
       const exportStartTime = performance.now();
 
-      // Preload video DOM elements for each clip
-      const clipElements = [];
-      for (let i = 0; i < mediaClips.length; i++) {
-        const clip = mediaClips[i];
-        if (clip.type === 'video') {
-          const vid = document.createElement('video');
-          vid.src = clip.url;
-          vid.muted = true;
-          vid.playsInline = true;
-          await new Promise((res) => {
-            if (vid.readyState >= 2) return res();
-            vid.onloadeddata = () => res();
-            vid.onloadedmetadata = () => res();
-            setTimeout(res, 600);
-          });
-          clipElements.push(vid);
-        } else {
-          const img = new Image();
-          img.src = clip.url;
-          await new Promise((res) => {
-            if (img.complete) return res();
-            img.onload = () => res();
-            setTimeout(res, 600);
-          });
-          clipElements.push(img);
-        }
-      }
-
       if (bgmLoaded) {
         bgmAudio.currentTime = bgmStartOffset;
-        bgmAudio.playbackRate = exportPlayRate;
+        bgmAudio.playbackRate = 1.0;
         bgmAudio.play();
       }
 
       mediaRecorder.start();
 
-      // Render Sequence Clips One by One with Strict Total Cap
+      // Render Sequence Clips using the Primary Viewport Elements
       for (let i = 0; i < mediaClips.length; i++) {
         if (!isRendering || renderedDurationSoFar >= totalSeqDuration) break;
         const clip = mediaClips[i];
-        const element = clipElements[i];
         const clipMaxAllowed = totalSeqDuration - renderedDurationSoFar;
         const clipDuration = Math.min(clipMaxAllowed, Math.max(0.1, clip.trimEnd - clip.trimStart));
         const effectiveClipEnd = clip.trimStart + clipDuration;
@@ -2244,19 +2215,18 @@
         document.getElementById('exportStatusText').textContent = `Encoding Clip ${i + 1} of ${mediaClips.length} (${selectedExportQuality.toUpperCase()})...`;
 
         if (clip.type === 'video') {
-          if (Math.abs(element.currentTime - clip.trimStart) > 0.05) {
-            element.currentTime = clip.trimStart;
-            await new Promise((r) => {
-              element.onseeked = () => r();
-              setTimeout(r, 400);
-            });
-          }
-          element.playbackRate = exportPlayRate;
+          photo.style.display = 'none';
+          video.style.display = 'block';
+          video.src = clip.url;
+          video.currentTime = clip.trimStart;
+          await new Promise((res) => {
+            video.onloadeddata = () => res();
+            setTimeout(res, 300);
+          });
+          video.playbackRate = 1.0;
           try {
-            await element.play();
-          } catch(err) {
-            console.warn("Play error during export:", err);
-          }
+            await video.play();
+          } catch(err) {}
 
           let clipActualRendered = 0;
 
@@ -2264,9 +2234,9 @@
             function renderVideoClip() {
               if (!isRendering) return resolve();
 
-              drawFrameToCanvas(element, element.videoWidth || 1920, element.videoHeight || 1080);
+              drawFrameToCanvas(video, video.videoWidth || 1920, video.videoHeight || 1080);
 
-              const clipElapsed = Math.max(0, element.currentTime - clip.trimStart);
+              const clipElapsed = Math.max(0, video.currentTime - clip.trimStart);
               clipActualRendered = clipElapsed;
               const totalElapsed = Math.min(totalSeqDuration, renderedDurationSoFar + clipElapsed);
               const pct = Math.min(100, Math.max(0, Math.round((totalElapsed / totalSeqDuration) * 100)));
@@ -2274,14 +2244,14 @@
               document.getElementById('exportPercentText').textContent = `${pct}%`;
 
               const wallElapsedSec = (performance.now() - exportStartTime) / 1000;
-              if (totalElapsed > 1 && wallElapsedSec > 1) {
+              if (totalElapsed > 0.5 && wallElapsedSec > 0.5) {
                 const speedRate = totalElapsed / wallElapsedSec;
                 const remainingSec = Math.max(0, (totalSeqDuration - totalElapsed) / speedRate);
                 document.getElementById('exportEtaText').textContent = `ETA: ~${formatTime(remainingSec)}`;
               }
 
-              if (element.currentTime >= effectiveClipEnd - 0.05 || element.ended || (renderedDurationSoFar + clipElapsed) >= totalSeqDuration) {
-                element.pause();
+              if (video.currentTime >= effectiveClipEnd - 0.05 || video.ended || (renderedDurationSoFar + clipElapsed) >= totalSeqDuration) {
+                video.pause();
                 renderedDurationSoFar += clipActualRendered;
                 resolve();
               } else {
@@ -2291,6 +2261,9 @@
             requestAnimationFrame(renderVideoClip);
           });
         } else {
+          video.style.display = 'none';
+          photo.style.display = 'block';
+          photo.src = clip.url;
           const photoDur = Math.min(clipMaxAllowed, clip.duration);
           const startT = performance.now();
 
@@ -2298,7 +2271,7 @@
             function renderPhotoClip(now) {
               if (!isRendering) return resolve();
 
-              drawFrameToCanvas(element, element.naturalWidth || 1920, element.naturalHeight || 1080);
+              drawFrameToCanvas(photo, photo.naturalWidth || 1920, photo.naturalHeight || 1080);
 
               const photoElapsed = Math.min(photoDur, (now - startT) / 1000);
               const totalElapsed = Math.min(totalSeqDuration, renderedDurationSoFar + photoElapsed);
@@ -2307,7 +2280,7 @@
               document.getElementById('exportPercentText').textContent = `${pct}%`;
 
               const wallElapsedSec = (performance.now() - exportStartTime) / 1000;
-              if (totalElapsed > 1 && wallElapsedSec > 1) {
+              if (totalElapsed > 0.5 && wallElapsedSec > 0.5) {
                 const speedRate = totalElapsed / wallElapsedSec;
                 const remainingSec = Math.max(0, (totalSeqDuration - totalElapsed) / speedRate);
                 document.getElementById('exportEtaText').textContent = `ETA: ~${formatTime(remainingSec)}`;

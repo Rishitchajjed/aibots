@@ -6,9 +6,9 @@
   <meta name="google-site-verification" content="ndzq-U-NLijgza_QqgQdcc2U3oMRoud_BT2ZZiwFREM">
   <meta name="google-site-verification" content="-Yb6Nx74gbZ3wRN5uP-Y8KKwDWlt1DPpxs4nA3PkE6M">
   <meta name="robots" content="index, follow">
-  <title>Video Studio Pro — Synchronized HD Video Editor | AI Bots</title>
-  <meta name="description" content="Professional in-browser video editor with perfect audio-video synchronization, precision trim cutting, background music mixing, aspect ratio cropping (9:16 Reels/16:9), text overlays, and instant HD export.">
-  <meta name="keywords" content="video editor online, trim video online, add music to video online, crop video for reels, video audio sync, free video editor no watermark, ai bots video studio">
+  <title>Video Studio Pro — Multi-Track Video & Audio Timeline Editor | AI Bots</title>
+  <meta name="description" content="Professional in-browser multi-track video and audio editor: Visual dual-handle scrubber, cut & slip music tracks, crop aspect ratios, add text & stickers, and export HD videos.">
+  <meta name="keywords" content="video editor online, multi track timeline video editor, visual scrubber video trim, add cut music to video, crop video for reels, ai bots video studio">
   <link rel="icon" href="logo.png" type="image/png">
   <link rel="canonical" href="https://www.aibots.co.in/videoeditor.html">
   <link rel="manifest" href="manifest.json">
@@ -71,7 +71,7 @@
       display: none;
     }
 
-    /* On-Screen Text & Watermark Overlay Layer */
+    /* Overlays */
     .video-text-overlay {
       position: absolute;
       pointer-events: none;
@@ -112,8 +112,10 @@
       border: 1px solid var(--border-color);
     }
 
-    /* Interactive Visual Scrubber & Timeline */
-    .timeline-card {
+    /* ===================================================
+       MULTI-TRACK TIMELINE STUDIO (CapCut / NLE Style)
+       =================================================== */
+    .multitrack-timeline-card {
       background: var(--bg-secondary);
       border: 1px solid var(--border-color);
       border-radius: var(--radius-xl);
@@ -121,47 +123,157 @@
       margin-top: 18px;
       box-shadow: var(--shadow-sm);
     }
-    .timeline-header {
+    .timeline-top-bar {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 12px;
+      margin-bottom: 16px;
+      flex-wrap: wrap;
+      gap: 10px;
     }
-    .scrub-track-wrapper {
+
+    .timeline-lanes-container {
       position: relative;
-      height: 52px;
-      background: var(--bg-tertiary);
-      border-radius: var(--radius-md);
+      background: var(--bg-primary);
       border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      padding: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      user-select: none;
+    }
+
+    /* Master Playhead Needle across both tracks */
+    .master-playhead {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 14px;
+      width: 3px;
+      background: #ef4444;
+      box-shadow: 0 0 12px #ef4444;
+      pointer-events: none;
+      z-index: 50;
+      transition: left 0.04s linear;
+    }
+    .master-playhead-cap {
+      position: absolute;
+      top: -6px;
+      left: -6px;
+      width: 15px;
+      height: 15px;
+      background: #ef4444;
+      border-radius: 50%;
+      box-shadow: 0 0 8px #ef4444;
+    }
+
+    /* Individual Track Lane */
+    .track-lane {
+      position: relative;
+      height: 56px;
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
       overflow: hidden;
       cursor: pointer;
+    }
+    .track-lane-label {
+      position: absolute;
+      left: 10px;
+      top: 6px;
+      font-size: 0.72rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-secondary);
+      z-index: 20;
+      pointer-events: none;
       display: flex;
       align-items: center;
+      gap: 6px;
+      background: rgba(15, 23, 42, 0.75);
+      padding: 2px 8px;
+      border-radius: var(--radius-sm);
     }
-    .trim-region {
+
+    /* Video Visual Slice Box */
+    .video-slice-box {
       position: absolute;
       top: 0;
       bottom: 0;
       left: 0%;
       width: 100%;
-      background: rgba(99, 102, 241, 0.25);
-      border-left: 3px solid var(--primary);
-      border-right: 3px solid var(--primary);
-      pointer-events: none;
+      background: linear-gradient(135deg, rgba(99, 102, 241, 0.35), rgba(139, 92, 246, 0.35));
+      border-top: 2px solid var(--primary);
+      border-bottom: 2px solid var(--primary);
+      cursor: grab;
+      z-index: 10;
     }
-    .playhead-needle {
+    .video-slice-box:active { cursor: grabbing; }
+
+    /* Audio Visual Slice Box */
+    .audio-slice-box {
       position: absolute;
       top: 0;
       bottom: 0;
       left: 0%;
-      width: 3px;
-      background: #ef4444;
-      box-shadow: 0 0 10px #ef4444;
+      width: 100%;
+      background: linear-gradient(135deg, rgba(236, 72, 153, 0.35), rgba(244, 63, 94, 0.35));
+      border-top: 2px solid #ec4899;
+      border-bottom: 2px solid #ec4899;
+      cursor: grab;
+      z-index: 10;
+      display: none;
+    }
+    .audio-slice-box:active { cursor: grabbing; }
+
+    /* Audio Waveform Canvas Background */
+    .audio-waveform-canvas {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
       pointer-events: none;
-      z-index: 5;
+      opacity: 0.5;
     }
 
-    /* Controls Panel Accordion */
+    /* Draggable Handles */
+    .drag-handle {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      width: 14px;
+      background: var(--primary);
+      cursor: ew-resize;
+      z-index: 30;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 0 10px rgba(0,0,0,0.5);
+    }
+    .drag-handle-audio {
+      background: #ec4899 !important;
+    }
+    .drag-handle::after {
+      content: '';
+      width: 2px;
+      height: 16px;
+      background: #ffffff;
+      border-radius: 1px;
+    }
+    .drag-handle-left {
+      left: 0;
+      border-top-left-radius: var(--radius-sm);
+      border-bottom-left-radius: var(--radius-sm);
+    }
+    .drag-handle-right {
+      right: 0;
+      border-top-right-radius: var(--radius-sm);
+      border-bottom-right-radius: var(--radius-sm);
+    }
+
+    /* Sidebar controls */
     .sidebar-panel {
       display: flex;
       flex-direction: column;
@@ -214,12 +326,13 @@
       box-shadow: 0 2px 8px var(--primary-glow);
     }
 
-    /* Dual Range Slider for Trimming */
+    /* Dual Range Inputs Row */
     .range-dual-row {
       display: flex;
       align-items: center;
       gap: 10px;
-      margin-top: 10px;
+      margin-top: 14px;
+      flex-wrap: wrap;
     }
     .trim-input {
       width: 84px;
@@ -298,7 +411,7 @@
         <a href="index.html" class="brand-link">
           <img src="logo.png" alt="AI Bots Logo" class="brand-logo-img">
           <span>AI Bots</span>
-          <span class="brand-badge" style="background: linear-gradient(135deg, #ec4899, #8b5cf6); color: white;">VIDEO STUDIO PRO</span>
+          <span class="brand-badge" style="background: linear-gradient(135deg, #ec4899, #8b5cf6); color: white;">TIMELINE STUDIO</span>
         </a>
 
         <div class="nav-actions">
@@ -311,16 +424,16 @@
 
   <main class="app-container tool-page-wrapper">
     <div class="tool-header">
-      <span class="tool-header-badge"><i class="fas fa-clapperboard"></i> 100% In-Browser & Private</span>
+      <span class="tool-header-badge"><i class="fas fa-clapperboard"></i> Multi-Track Timeline & Audio Slip</span>
       <h1 class="tool-title">Video Studio Pro</h1>
-      <p class="tool-desc">Trim clips, mix audio tracks, add logos & text, apply cinematic filters, crop aspect ratios, and export high-definition videos with guaranteed synchronization.</p>
+      <p class="tool-desc">Drag handles to cut video in-between, align & slip background music tracks, crop aspect ratios, add text & stickers, and export HD videos.</p>
     </div>
 
     <!-- Dropzone / Empty State -->
     <div class="dropzone-container" id="videoDropzone" onclick="document.getElementById('videoFileInput').click()">
       <input type="file" id="videoFileInput" class="dropzone-input" accept="video/*" onchange="handleVideoUpload(event)">
       <div class="dropzone-icon" style="color: #ec4899;"><i class="fas fa-film"></i></div>
-      <div class="dropzone-title">Upload Video to Start Editing</div>
+      <div class="dropzone-title">Upload Video to Open Multi-Track Timeline</div>
       <div class="dropzone-subtitle">Supports MP4, WebM, MOV, AVI, MKV • 100% Client-Side Processing • 0 Server Uploads</div>
       <button class="btn btn-primary btn-sm" style="margin-top: 14px; pointer-events: none;"><i class="fas fa-upload"></i> Select Video File</button>
     </div>
@@ -330,7 +443,7 @@
       
       <div class="editor-layout">
         
-        <!-- LEFT: Video Viewport & Timeline -->
+        <!-- LEFT: Video Viewport & Multi-Track Timeline -->
         <div>
           <!-- Viewport Card -->
           <div class="viewport-card">
@@ -375,35 +488,67 @@
             </div>
           </div>
 
-          <!-- Timeline & Trimming Card -->
-          <div class="timeline-card">
-            <div class="timeline-header">
-              <div style="font-weight: 800; font-size: 0.95rem; color: var(--text-primary);"><i class="fas fa-timeline" style="color: var(--primary);"></i> Precision Clip Trimmer</div>
-              <div style="font-size: 0.82rem; color: var(--text-secondary);">Trimmed Length: <strong id="clipLengthText" style="color: var(--primary);">00:00.0</strong></div>
+          <!-- MULTI-TRACK VISUAL TIMELINE CARD -->
+          <div class="multitrack-timeline-card">
+            <div class="timeline-top-bar">
+              <div style="font-weight: 800; font-size: 0.95rem; color: var(--text-primary);">
+                <i class="fas fa-layer-group" style="color: var(--primary); margin-right: 6px;"></i> Visual Multi-Track Timeline
+              </div>
+              <div style="font-size: 0.82rem; color: var(--text-secondary);">
+                Selected Output Duration: <strong id="clipLengthText" style="color: var(--primary);">00:00.0</strong>
+              </div>
             </div>
 
-            <!-- Scrubber Track -->
-            <div class="scrub-track-wrapper" id="scrubTrack" onclick="handleScrubClick(event)">
-              <div class="trim-region" id="trimRegion"></div>
-              <div class="playhead-needle" id="playhead"></div>
+            <!-- Timeline Lanes Container -->
+            <div class="timeline-lanes-container" id="timelineLanes" onclick="handleTimelineLaneClick(event)">
+              
+              <!-- Master Playhead Needle -->
+              <div class="master-playhead" id="masterPlayhead">
+                <div class="master-playhead-cap"></div>
+              </div>
+
+              <!-- TRACK 1: Video Track Lane -->
+              <div class="track-lane" id="videoTrackLane">
+                <div class="track-lane-label"><i class="fas fa-video"></i> Video Track (Drag edges to trim / Drag middle to slide)</div>
+                
+                <div class="video-slice-box" id="videoSlice">
+                  <div class="drag-handle drag-handle-left" id="videoHandleLeft" title="Drag to adjust video start"></div>
+                  <div class="drag-handle drag-handle-right" id="videoHandleRight" title="Drag to adjust video end"></div>
+                </div>
+              </div>
+
+              <!-- TRACK 2: Audio / BGM Track Lane -->
+              <div class="track-lane" id="audioTrackLane">
+                <div class="track-lane-label" id="audioLaneLabel"><i class="fas fa-music"></i> Audio Track (Click 'Add Music' in sidebar to upload track)</div>
+                <canvas class="audio-waveform-canvas" id="audioWaveformCanvas"></canvas>
+                
+                <div class="audio-slice-box" id="audioSlice">
+                  <div class="drag-handle drag-handle-left drag-handle-audio" id="audioHandleLeft" title="Drag to slip music start"></div>
+                  <div class="drag-handle drag-handle-right drag-handle-audio" id="audioHandleRight" title="Drag to trim music end"></div>
+                </div>
+              </div>
+
             </div>
 
-            <!-- Trim Start / End Range Sliders -->
+            <!-- Precision Range Millisecond Inputs -->
             <div class="range-dual-row">
               <div style="display: flex; align-items: center; gap: 6px;">
-                <span style="font-size: 0.78rem; font-weight: 700; color: var(--text-secondary);">START:</span>
+                <span style="font-size: 0.78rem; font-weight: 700; color: var(--text-secondary);">VIDEO IN:</span>
                 <input type="text" id="trimStartInput" class="trim-input" value="00:00.0" onchange="updateTrimFromInputs()">
-                <button onclick="setTrimStartToCurrent()" class="btn btn-secondary btn-sm" style="padding: 4px 8px;" title="Set Start to Playhead"><i class="fas fa-arrow-right-to-bracket"></i></button>
+              </div>
+
+              <div style="display: flex; align-items: center; gap: 6px;">
+                <span style="font-size: 0.78rem; font-weight: 700; color: var(--text-secondary);">VIDEO OUT:</span>
+                <input type="text" id="trimEndInput" class="trim-input" value="00:00.0" onchange="updateTrimFromInputs()">
               </div>
 
               <div style="flex-grow: 1; text-align: center;">
-                <button onclick="resetTrim()" class="btn btn-secondary btn-sm" style="padding: 4px 10px; font-size: 0.76rem;"><i class="fas fa-arrows-rotate"></i> Reset Trim</button>
+                <button onclick="resetTrim()" class="btn btn-secondary btn-sm" style="padding: 4px 12px; font-size: 0.76rem;"><i class="fas fa-arrows-rotate"></i> Reset All Trims</button>
               </div>
 
-              <div style="display: flex; align-items: center; gap: 6px;">
-                <button onclick="setTrimEndToCurrent()" class="btn btn-secondary btn-sm" style="padding: 4px 8px;" title="Set End to Playhead"><i class="fas fa-arrow-right-from-bracket"></i></button>
-                <span style="font-size: 0.78rem; font-weight: 700; color: var(--text-secondary);">END:</span>
-                <input type="text" id="trimEndInput" class="trim-input" value="00:00.0" onchange="updateTrimFromInputs()">
+              <div style="display: flex; align-items: center; gap: 6px;" id="audioTrimInputsRow" style="display: none;">
+                <span style="font-size: 0.78rem; font-weight: 700; color: #ec4899;">MUSIC START:</span>
+                <input type="text" id="bgmStartInput" class="trim-input" value="00:00.0" onchange="updateAudioTrimFromInputs()">
               </div>
             </div>
           </div>
@@ -428,14 +573,14 @@
             <div class="tool-box-title"><i class="fas fa-headphones" style="color: #ec4899;"></i> Audio Track & Music Mixer</div>
             <input type="file" id="bgmFileInput" accept="audio/*" style="display: none;" onchange="handleBgmUpload(event)">
             <button onclick="document.getElementById('bgmFileInput').click()" class="btn btn-secondary btn-sm" style="width: 100%; margin-bottom: 12px;">
-              <i class="fas fa-file-audio"></i> <span id="bgmBtnText">Add Music / Audio File</span>
+              <i class="fas fa-file-audio"></i> <span id="bgmBtnText">Upload Audio Track / Song</span>
             </button>
 
             <div style="display: flex; flex-direction: column; gap: 8px; font-size: 0.82rem;">
-              <div style="display: flex; justify-content: space-between;"><span>Original Video Audio</span><span id="valVideoVol">100%</span></div>
+              <div style="display: flex; justify-content: space-between;"><span>Original Video Voice</span><span id="valVideoVol">100%</span></div>
               <input type="range" min="0" max="200" value="100" class="range-slider" id="sliderVideoVol" oninput="updateAudioMixer()">
 
-              <div style="display: flex; justify-content: space-between;"><span>Background Music</span><span id="valBgmVol">80%</span></div>
+              <div style="display: flex; justify-content: space-between;"><span>Background Music Volume</span><span id="valBgmVol">80%</span></div>
               <input type="range" min="0" max="200" value="80" class="range-slider" id="sliderBgmVol" oninput="updateAudioMixer()">
             </div>
           </div>
@@ -566,6 +711,10 @@
     let videoDuration = 0;
     let trimStart = 0;
     let trimEnd = 0;
+
+    // Audio Track Timestamps
+    let bgmStartOffset = 0; // In seconds into the song
+    let bgmAudioDuration = 0;
     let playbackSpeed = 1.0;
     let rotationAngle = 0;
     let flipH = false;
@@ -602,8 +751,8 @@
         videoGainNode = audioCtx.createGain();
         videoGainNode.gain.value = 1.0;
         videoAudioSource.connect(videoGainNode);
-        videoGainNode.connect(audioCtx.destination); // For speakers
-        videoGainNode.connect(audioDestinationNode); // For recorder
+        videoGainNode.connect(audioCtx.destination);
+        videoGainNode.connect(audioDestinationNode);
 
         // BGM Audio Connection
         bgmAudioSource = audioCtx.createMediaElementSource(bgmAudio);
@@ -613,7 +762,7 @@
         bgmGainNode.connect(audioCtx.destination);
         bgmGainNode.connect(audioDestinationNode);
       } catch (e) {
-        console.warn("Web Audio Initialization Notice:", e);
+        console.warn("Web Audio Notice:", e);
       }
     }
 
@@ -644,10 +793,11 @@
         initAudioGraph();
         updateTrimDisplay();
         updateTimelinePlayhead();
+        initInteractiveTimelineHandles();
       };
     }
 
-    // Background Music Upload
+    // Background Music Upload & Waveform Generation
     function handleBgmUpload(e) {
       const file = e.target.files[0];
       if (!file) return;
@@ -655,7 +805,32 @@
       bgmAudio.src = URL.createObjectURL(file);
       bgmLoaded = true;
       document.getElementById('bgmBtnText').textContent = `🎵 ${file.name.substring(0, 18)}...`;
+      document.getElementById('audioLaneLabel').innerHTML = `<i class="fas fa-music"></i> ${file.name.substring(0, 26)} (Drag handles to slip audio segment)`;
+      document.getElementById('audioSlice').style.display = 'block';
+      document.getElementById('audioTrimInputsRow').style.display = 'flex';
+
+      bgmAudio.onloadedmetadata = () => {
+        bgmAudioDuration = bgmAudio.duration;
+        bgmStartOffset = 0;
+        document.getElementById('bgmStartInput').value = formatTime(0, true);
+        updateAudioTrimDisplay();
+        drawDummyWaveform();
+      };
       updateAudioMixer();
+    }
+
+    function drawDummyWaveform() {
+      const c = document.getElementById('audioWaveformCanvas');
+      const cx = c.getContext('2d');
+      c.width = c.parentElement.clientWidth || 600;
+      c.height = 56;
+      cx.clearRect(0, 0, c.width, c.height);
+      cx.fillStyle = '#ec4899';
+
+      for (let x = 0; x < c.width; x += 4) {
+        const barH = 10 + Math.sin(x * 0.05) * 15 + Math.random() * 15;
+        cx.fillRect(x, (c.height - barH) / 2, 2.5, barH);
+      }
     }
 
     // Logo Upload
@@ -708,9 +883,9 @@
       if (video.paused) {
         if (video.currentTime >= trimEnd - 0.1) {
           video.currentTime = trimStart;
-          if (bgmLoaded) bgmAudio.currentTime = 0;
+          if (bgmLoaded) bgmAudio.currentTime = bgmStartOffset;
         } else if (bgmLoaded) {
-          bgmAudio.currentTime = Math.max(0, video.currentTime - trimStart);
+          bgmAudio.currentTime = Math.max(0, bgmStartOffset + (video.currentTime - trimStart));
         }
         video.play();
         if (bgmLoaded) bgmAudio.play();
@@ -728,10 +903,9 @@
       document.getElementById('currentTimeText').textContent = formatTime(video.currentTime, true);
       updateTimelinePlayhead();
 
-      // Only auto-loop during interactive preview (NOT during active export)
       if (!isRendering && video.currentTime >= trimEnd) {
         video.currentTime = trimStart;
-        if (bgmLoaded) bgmAudio.currentTime = 0;
+        if (bgmLoaded) bgmAudio.currentTime = bgmStartOffset;
       }
     });
 
@@ -755,13 +929,18 @@
       icon.className = video.muted ? 'fas fa-volume-xmark' : 'fas fa-volume-high';
     }
 
-    // ==========================================
-    // TIMELINE & TRIMMING LOGIC
-    // ==========================================
+    // ===================================================
+    // MULTI-TRACK INTERACTIVE DRAG & SLIP SCRUBBER
+    // ===================================================
     function updateTimelinePlayhead() {
       if (!videoDuration) return;
       const pct = (video.currentTime / videoDuration) * 100;
-      document.getElementById('playhead').style.left = `${pct}%`;
+      const lanes = document.getElementById('timelineLanes');
+      if (lanes) {
+        const laneW = lanes.clientWidth - 28;
+        const leftPx = 14 + (pct / 100) * laneW;
+        document.getElementById('masterPlayhead').style.left = `${leftPx}px`;
+      }
     }
 
     function updateTrimDisplay() {
@@ -769,44 +948,150 @@
       const leftPct = (trimStart / videoDuration) * 100;
       const widthPct = ((trimEnd - trimStart) / videoDuration) * 100;
 
-      const region = document.getElementById('trimRegion');
-      region.style.left = `${leftPct}%`;
-      region.style.width = `${widthPct}%`;
+      const slice = document.getElementById('videoSlice');
+      slice.style.left = `${leftPct}%`;
+      slice.style.width = `${widthPct}%`;
 
       document.getElementById('clipLengthText').textContent = formatTime(trimEnd - trimStart, true);
     }
 
-    function handleScrubClick(e) {
+    function updateAudioTrimDisplay() {
+      if (!bgmAudioDuration) return;
+      const leftPct = (bgmStartOffset / bgmAudioDuration) * 100;
+      const duration = Math.min(trimEnd - trimStart, bgmAudioDuration - bgmStartOffset);
+      const widthPct = (duration / bgmAudioDuration) * 100;
+
+      const slice = document.getElementById('audioSlice');
+      slice.style.left = `${leftPct}%`;
+      slice.style.width = `${Math.max(5, widthPct)}%`;
+      document.getElementById('bgmStartInput').value = formatTime(bgmStartOffset, true);
+    }
+
+    function handleTimelineLaneClick(e) {
       if (!videoDuration || isRendering) return;
-      const rect = document.getElementById('scrubTrack').getBoundingClientRect();
+      if (e.target.classList.contains('drag-handle') || e.target.classList.contains('video-slice-box') || e.target.classList.contains('audio-slice-box')) return;
+
+      const rect = document.getElementById('videoTrackLane').getBoundingClientRect();
       const clickX = e.clientX - rect.left;
       const pct = Math.max(0, Math.min(1, clickX / rect.width));
       const targetTime = pct * videoDuration;
       video.currentTime = targetTime;
-      if (bgmLoaded) bgmAudio.currentTime = Math.max(0, targetTime - trimStart);
+      if (bgmLoaded) bgmAudio.currentTime = Math.max(0, bgmStartOffset + (targetTime - trimStart));
     }
 
-    function setTrimStartToCurrent() {
-      if (isRendering) return;
-      trimStart = Math.min(video.currentTime, trimEnd - 0.5);
-      document.getElementById('trimStartInput').value = formatTime(trimStart, true);
-      updateTrimDisplay();
-    }
+    function initInteractiveTimelineHandles() {
+      const vLane = document.getElementById('videoTrackLane');
+      const vSlice = document.getElementById('videoSlice');
+      const vLeft = document.getElementById('videoHandleLeft');
+      const vRight = document.getElementById('videoHandleRight');
 
-    function setTrimEndToCurrent() {
-      if (isRendering) return;
-      trimEnd = Math.max(video.currentTime, trimStart + 0.5);
-      document.getElementById('trimEndInput').value = formatTime(trimEnd, true);
-      updateTrimDisplay();
+      const aLane = document.getElementById('audioTrackLane');
+      const aSlice = document.getElementById('audioSlice');
+      const aLeft = document.getElementById('audioHandleLeft');
+      const aRight = document.getElementById('audioHandleRight');
+
+      let activeDrag = null; // 'v-left', 'v-right', 'v-slide', 'a-left', 'a-slide'
+      let dragStartX = 0;
+      let initialTrimStart = 0;
+      let initialTrimEnd = 0;
+      let initialBgmOffset = 0;
+
+      // Video Left Handle Drag
+      vLeft.addEventListener('pointerdown', (e) => {
+        e.stopPropagation();
+        activeDrag = 'v-left';
+        dragStartX = e.clientX;
+        initialTrimStart = trimStart;
+        vLeft.setPointerCapture(e.pointerId);
+      });
+
+      // Video Right Handle Drag
+      vRight.addEventListener('pointerdown', (e) => {
+        e.stopPropagation();
+        activeDrag = 'v-right';
+        dragStartX = e.clientX;
+        initialTrimEnd = trimEnd;
+        vRight.setPointerCapture(e.pointerId);
+      });
+
+      // Video Slice Middle Slide
+      vSlice.addEventListener('pointerdown', (e) => {
+        if (e.target === vLeft || e.target === vRight) return;
+        e.stopPropagation();
+        activeDrag = 'v-slide';
+        dragStartX = e.clientX;
+        initialTrimStart = trimStart;
+        initialTrimEnd = trimEnd;
+        vSlice.setPointerCapture(e.pointerId);
+      });
+
+      // Audio Left Handle / Slide Drag
+      aSlice.addEventListener('pointerdown', (e) => {
+        e.stopPropagation();
+        activeDrag = 'a-slide';
+        dragStartX = e.clientX;
+        initialBgmOffset = bgmStartOffset;
+        aSlice.setPointerCapture(e.pointerId);
+      });
+
+      window.addEventListener('pointermove', (e) => {
+        if (!activeDrag || !videoDuration) return;
+        const laneW = vLane.clientWidth;
+        const deltaX = e.clientX - dragStartX;
+        const deltaSeconds = (deltaX / laneW) * videoDuration;
+
+        if (activeDrag === 'v-left') {
+          trimStart = Math.max(0, Math.min(trimEnd - 0.5, initialTrimStart + deltaSeconds));
+          document.getElementById('trimStartInput').value = formatTime(trimStart, true);
+          updateTrimDisplay();
+          video.currentTime = trimStart;
+        } else if (activeDrag === 'v-right') {
+          trimEnd = Math.min(videoDuration, Math.max(trimStart + 0.5, initialTrimEnd + deltaSeconds));
+          document.getElementById('trimEndInput').value = formatTime(trimEnd, true);
+          updateTrimDisplay();
+          video.currentTime = trimEnd;
+        } else if (activeDrag === 'v-slide') {
+          const sliceLen = initialTrimEnd - initialTrimStart;
+          let newStart = initialTrimStart + deltaSeconds;
+          let newEnd = newStart + sliceLen;
+
+          if (newStart < 0) {
+            newStart = 0;
+            newEnd = sliceLen;
+          }
+          if (newEnd > videoDuration) {
+            newEnd = videoDuration;
+            newStart = videoDuration - sliceLen;
+          }
+
+          trimStart = newStart;
+          trimEnd = newEnd;
+          document.getElementById('trimStartInput').value = formatTime(trimStart, true);
+          document.getElementById('trimEndInput').value = formatTime(trimEnd, true);
+          updateTrimDisplay();
+          video.currentTime = trimStart;
+        } else if (activeDrag === 'a-slide' && bgmAudioDuration) {
+          const aDeltaSeconds = (deltaX / aLane.clientWidth) * bgmAudioDuration;
+          bgmStartOffset = Math.max(0, Math.min(bgmAudioDuration - 1, initialBgmOffset + aDeltaSeconds));
+          updateAudioTrimDisplay();
+        }
+      });
+
+      window.addEventListener('pointerup', () => {
+        activeDrag = null;
+      });
     }
 
     function resetTrim() {
       if (isRendering) return;
       trimStart = 0;
       trimEnd = videoDuration;
+      bgmStartOffset = 0;
       document.getElementById('trimStartInput').value = formatTime(0, true);
       document.getElementById('trimEndInput').value = formatTime(videoDuration, true);
+      document.getElementById('bgmStartInput').value = formatTime(0, true);
       updateTrimDisplay();
+      updateAudioTrimDisplay();
     }
 
     function updateTrimFromInputs() {
@@ -817,6 +1102,15 @@
         trimStart = s;
         trimEnd = e;
         updateTrimDisplay();
+      }
+    }
+
+    function updateAudioTrimFromInputs() {
+      if (isRendering) return;
+      const s = parseTime(document.getElementById('bgmStartInput').value);
+      if (s >= 0 && s < bgmAudioDuration) {
+        bgmStartOffset = s;
+        updateAudioTrimDisplay();
       }
     }
 
@@ -978,19 +1272,19 @@
       function setUint32(data) { view.setUint32(pos, data, true); pos += 4; }
 
       setUint32(0x46464952); // "RIFF"
-      setUint32(length - 8); // file length - 8
+      setUint32(length - 8);
       setUint32(0x45564157); // "WAVE"
 
-      setUint32(0x20746d66); // "fmt " chunk
-      setUint32(16); // length = 16
-      setUint16(1); // PCM (uncompressed)
+      setUint32(0x20746d66); // "fmt "
+      setUint32(16);
+      setUint16(1);
       setUint16(numOfChan);
       setUint32(abuffer.sampleRate);
       setUint32(abuffer.sampleRate * 2 * numOfChan);
       setUint16(numOfChan * 2);
-      setUint16(16); // 16-bit
+      setUint16(16);
 
-      setUint32(0x61746164); // "data" - chunk
+      setUint32(0x61746164); // "data"
       setUint32(length - pos - 4);
 
       for (i = 0; i < abuffer.numberOfChannels; i++) channels.push(abuffer.getChannelData(i));
@@ -1025,7 +1319,6 @@
       document.getElementById('exportProgressBar').style.width = '0%';
       document.getElementById('exportPercentText').textContent = '0%';
 
-      // 1. Calculate Target Aspect Ratio & Dimensions
       const srcW = video.videoWidth || 1280;
       const srcH = video.videoHeight || 720;
       let targetW = srcW;
@@ -1046,10 +1339,8 @@
       canvas.width = targetW;
       canvas.height = targetH;
 
-      // 2. Prepare MediaRecorder Stream
       const canvasStream = canvas.captureStream(30);
 
-      // Add Mixed Audio Track
       if (audioDestinationNode && audioDestinationNode.stream.getAudioTracks().length > 0) {
         audioDestinationNode.stream.getAudioTracks().forEach(t => canvasStream.addTrack(t));
       }
@@ -1065,7 +1356,7 @@
       try {
         mediaRecorder = new MediaRecorder(canvasStream, {
           mimeType: mimeType,
-          videoBitsPerSecond: 6000000 // 6 Mbps HD
+          videoBitsPerSecond: 6000000
         });
       } catch (e) {
         mediaRecorder = new MediaRecorder(canvasStream);
@@ -1090,45 +1381,35 @@
         if (bgmLoaded) bgmAudio.pause();
       };
 
-      // 3. Perfect Zero-Latency Start Synchronization
-      // Seek video to exact trimStart and wait for 'seeked' event
       video.currentTime = trimStart;
 
       const onSeekedForExport = () => {
         video.removeEventListener('seeked', onSeekedForExport);
 
-        // Start BGM at exact moment
         if (bgmLoaded) {
-          bgmAudio.currentTime = 0;
+          bgmAudio.currentTime = bgmStartOffset;
           bgmAudio.playbackRate = 1.0;
           bgmAudio.play();
         }
 
-        // Start Recording
         mediaRecorder.start();
         video.playbackRate = 1.0;
         video.play();
 
         const durationToExport = Math.max(0.5, trimEnd - trimStart);
-        const startTimeReal = performance.now();
 
-        // 4. Render Frame Loop
         function renderLoop() {
           if (!isRendering) return;
 
-          // Render Video Frame with Aspect Fit & Transforms
           ctx.fillStyle = '#000000';
           ctx.fillRect(0, 0, canvas.width, canvas.height);
 
           ctx.save();
           ctx.filter = filterStyle;
 
-          // Calculate fitted bounding box on canvas
           const scale = Math.min(canvas.width / srcW, canvas.height / srcH);
           const drawW = srcW * scale;
           const drawH = srcH * scale;
-          const drawX = (canvas.width - drawW) / 2;
-          const drawY = (canvas.height - drawH) / 2;
 
           ctx.translate(canvas.width / 2, canvas.height / 2);
           ctx.rotate((rotationAngle * Math.PI) / 180);
@@ -1136,7 +1417,6 @@
           ctx.drawImage(video, -drawW / 2, -drawH / 2, drawW, drawH);
           ctx.restore();
 
-          // Render Logo Overlay
           if (logoImage && logoImage.complete) {
             ctx.save();
             const logoW = parseInt(document.getElementById('sliderLogoScale').value) * 1.5;
@@ -1145,7 +1425,6 @@
             ctx.restore();
           }
 
-          // Render Text Overlay
           const text = document.getElementById('textOverlayInput').value;
           if (text) {
             ctx.save();
@@ -1160,7 +1439,6 @@
             ctx.restore();
           }
 
-          // Calculate Progress & Check Strict End
           const currentPos = video.currentTime;
           const elapsed = Math.max(0, currentPos - trimStart);
           const pct = Math.min(100, Math.max(0, Math.round((elapsed / durationToExport) * 100)));
@@ -1168,7 +1446,6 @@
           document.getElementById('exportProgressBar').style.width = `${pct}%`;
           document.getElementById('exportPercentText').textContent = `${pct}%`;
 
-          // STRICT STOP: When current time reaches trimEnd OR video ended
           if (currentPos >= trimEnd - 0.05 || video.ended) {
             finalizeExport();
           } else {
@@ -1178,12 +1455,9 @@
 
         requestAnimationFrame(renderLoop);
 
-        // Fallback safety timeout to strictly guarantee stop at exact expected length
         const safetyTimeoutMs = (durationToExport + 1.0) * 1000;
         exportTimer = setTimeout(() => {
-          if (isRendering) {
-            finalizeExport();
-          }
+          if (isRendering) finalizeExport();
         }, safetyTimeoutMs);
       };
 

@@ -2,15 +2,20 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
   <meta name="google-site-verification" content="ndzq-U-NLijgza_QqgQdcc2U3oMRoud_BT2ZZiwFREM">
   <meta name="google-site-verification" content="-Yb6Nx74gbZ3wRN5uP-Y8KKwDWlt1DPpxs4nA3PkE6M">
   <meta name="robots" content="index, follow">
   <title>HD Video Player & Frame Grabber — AI Bots</title>
-  <meta name="description" content="Play any local video in your browser with speed controls, Picture-in-Picture, loop, and instant screenshot frame capture. 100% private.">
-  <meta name="keywords" content="video player online, play mp4 in browser, capture video frame, picture in picture video player, ai bots video">
+  <meta name="description" content="Play local videos in your browser with speed adjustment, frame-by-frame stepping, Picture-in-Picture, loop repeat, and instant HD frame capture. 100% private.">
+  <meta name="keywords" content="video player online, play mp4 in browser, capture video frame, picture in picture video player, frame grabber, ai bots video">
   <link rel="icon" href="logo.png" type="image/png">
   <link rel="canonical" href="https://www.aibots.co.in/videoplayer.html">
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#6366f1">
+  <meta name="author" content="Rishit Chajjed">
+  <meta name="creator" content="Rishit Chajjed">
+
   <!-- Google Analytics -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-2L87FMQS3W"></script>
   <script>
@@ -19,59 +24,79 @@
     gtag('js', new Date());
     gtag('config', 'G-2L87FMQS3W');
   </script>
+
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link rel="stylesheet" href="css/theme.css">
+
   <style>
-    .vp-card { max-width: 920px; margin: 0 auto; }
+    .vp-card { max-width: 960px; margin: 0 auto; }
+    
     .vp-dropzone {
       border: 2px dashed var(--primary);
-      border-radius: var(--radius-lg);
-      padding: 44px 20px;
+      border-radius: var(--radius-xl);
+      padding: 48px 20px;
       text-align: center;
       background: var(--bg-secondary);
       cursor: pointer;
       position: relative;
-      transition: all 0.2s;
+      transition: all 0.2s ease;
+      box-shadow: var(--shadow-sm);
     }
-    .vp-dropzone:hover { background: color-mix(in srgb, var(--primary) 8%, var(--bg-secondary)); }
-    .vp-dropzone i { font-size: 2.8rem; color: var(--primary); margin-bottom: 10px; display: block; }
+    .vp-dropzone:hover {
+      background: color-mix(in srgb, var(--primary) 8%, var(--bg-secondary));
+      border-color: #ec4899;
+      transform: translateY(-2px);
+    }
+    .vp-dropzone i { font-size: 3rem; color: var(--primary); margin-bottom: 12px; display: block; }
     .vp-dropzone input[type="file"] { position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%; }
 
     .vp-player-box {
       background: #020617;
       border: 1px solid var(--border-color);
-      border-radius: var(--radius-lg);
+      border-radius: var(--radius-xl);
       overflow: hidden;
-      box-shadow: var(--shadow-lg);
+      box-shadow: var(--shadow-xl);
       margin-top: 20px;
+    }
+    .vp-video-screen {
+      position: relative;
+      width: 100%;
+      background: #000;
     }
     video {
       width: 100%;
-      max-height: 520px;
+      max-height: 540px;
       display: block;
       background: #000;
     }
+    
     .vp-controls-bar {
       background: var(--bg-secondary);
       border-top: 1px solid var(--border-color);
-      padding: 12px 18px;
+      padding: 14px 18px;
       display: flex;
       justify-content: space-between;
       align-items: center;
       flex-wrap: wrap;
       gap: 12px;
     }
-    .vp-btn-group { display: flex; gap: 8px; align-items: center; }
+    .vp-btn-group { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+
+    /* Metadata Bar */
+    .vp-meta-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.76rem;
+      font-family: var(--font-mono);
+      font-weight: 700;
+      color: var(--text-secondary);
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border-color);
+      padding: 3px 8px;
+      border-radius: var(--radius-sm);
+    }
   </style>
-  <link rel="manifest" href="manifest.json">
-  <meta name="theme-color" content="#6366f1">
-  <meta name="mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="apple-mobile-web-app-title" content="AI Bots">
-  <link rel="apple-touch-icon" href="logo.png">
-  <meta name="author" content="Rishit Chajjed">
-  <meta name="creator" content="Rishit Chajjed">
 </head>
 <body>
   <div class="bg-mesh"></div>
@@ -87,6 +112,7 @@
         </a>
 
         <div class="nav-actions">
+          <a href="videoeditor.html" class="btn btn-primary btn-sm"><i class="fas fa-scissors"></i> Video Editor Pro</a>
           <a href="index.html" class="btn btn-secondary btn-sm"><i class="fas fa-house"></i> Hub</a>
           <button class="icon-btn theme-toggle-btn" title="Toggle Dark/Light Mode"><i class="fas fa-moon"></i></button>
         </div>
@@ -97,38 +123,52 @@
   <main class="app-container tool-page-wrapper">
     <div class="tool-header">
       <span class="tool-header-badge"><i class="fas fa-play"></i> Media Tool</span>
-      <h1 class="tool-title">HD Video Player</h1>
-      <p class="tool-desc">Play local video files directly in your browser with speed adjustment, PiP, and frame capture.</p>
+      <h1 class="tool-title">HD Video Player & Frame Grabber</h1>
+      <p class="tool-desc">Play local video files directly in your browser with speed adjustment, frame stepping, PiP, and lossless screenshot capture.</p>
     </div>
 
     <div class="vp-card">
       <div class="vp-dropzone" id="dropzone" onclick="document.getElementById('fileInput').click()">
         <input type="file" id="fileInput" accept="video/*" onchange="handleVideo(event)">
         <i class="fas fa-film"></i>
-        <h3 style="margin:0 0 6px;">Choose or Drop a Video</h3>
-        <p style="margin:0; color:var(--text-secondary); font-size:0.85rem;">Supports MP4, WebM, MOV, MKV, OGG</p>
+        <h3 style="margin:0 0 6px; font-weight:800;">Choose or Drop a Video</h3>
+        <p style="margin:0; color:var(--text-secondary); font-size:0.85rem;">Supports MP4, WebM, MOV, MKV, AVI, OGG • 100% Private Client-Side</p>
       </div>
 
       <div class="vp-player-box" id="playerWrap" style="display: none;">
-        <video id="videoEl" controls playsinline></video>
+        <div class="vp-video-screen" id="videoScreenContainer">
+          <video id="videoEl" controls playsinline></video>
+        </div>
 
         <div class="vp-controls-bar">
+          <!-- Left Group: Metadata & Speed -->
           <div class="vp-btn-group">
-            <span style="font-size: 0.85rem; color: var(--text-secondary);"><i class="fas fa-gauge-high"></i> Speed:</span>
-            <select id="speedSel" class="form-control" style="width: 90px; padding: 4px 8px; font-size: 0.8rem;" onchange="setSpeed(this.value)">
-              <option value="0.5">0.5x</option>
-              <option value="0.75">0.75x</option>
-              <option value="1" selected>1.0x (Normal)</option>
-              <option value="1.25">1.25x</option>
-              <option value="1.5">1.5x</option>
-              <option value="2">2.0x</option>
-            </select>
+            <span class="vp-meta-badge" id="metaInfo">-- x --</span>
+            
+            <div style="display: flex; align-items: center; gap: 6px;">
+              <span style="font-size: 0.82rem; color: var(--text-secondary); font-weight: 700;"><i class="fas fa-gauge-high"></i></span>
+              <select id="speedSel" class="form-control" style="width: 100px; padding: 4px 8px; font-size: 0.8rem;" onchange="setSpeed(this.value)">
+                <option value="0.25">0.25x Slow</option>
+                <option value="0.5">0.5x</option>
+                <option value="0.75">0.75x</option>
+                <option value="1" selected>1.0x Normal</option>
+                <option value="1.25">1.25x</option>
+                <option value="1.5">1.5x Fast</option>
+                <option value="2">2.0x 2x</option>
+              </select>
+            </div>
+
+            <!-- Quick Frame Stepping -->
+            <button class="btn btn-secondary btn-sm" onclick="stepFrame(-1)" title="Previous Frame [,]"><i class="fas fa-backward-step"></i> -1 Frame</button>
+            <button class="btn btn-secondary btn-sm" onclick="stepFrame(1)" title="Next Frame [.]"><i class="fas fa-forward-step"></i> +1 Frame</button>
           </div>
 
+          <!-- Right Group: Actions & Tools -->
           <div class="vp-btn-group">
-            <button class="btn btn-secondary btn-sm" onclick="togglePiP()"><i class="fas fa-up-right-from-square"></i> Mini Player (PiP)</button>
-            <button class="btn btn-primary btn-sm" onclick="captureFrame()"><i class="fas fa-camera"></i> Capture Frame</button>
-            <button class="btn btn-secondary btn-sm" onclick="document.getElementById('fileInput').click()"><i class="fas fa-folder-open"></i> Open Another</button>
+            <button class="btn btn-secondary btn-sm" id="btnLoopToggle" onclick="toggleLoop()" title="Toggle Video Repeat"><i class="fas fa-repeat"></i> Loop: OFF</button>
+            <button class="btn btn-secondary btn-sm" onclick="togglePiP()" title="Floating Mini Player"><i class="fas fa-up-right-from-square"></i> Mini Player</button>
+            <button class="btn btn-primary btn-sm" onclick="captureFrame()" title="Grab Full-Resolution Frame [S]"><i class="fas fa-camera"></i> Capture Frame</button>
+            <button class="btn btn-secondary btn-sm" onclick="document.getElementById('fileInput').click()" title="Open Another File"><i class="fas fa-folder-open"></i> Open Another</button>
           </div>
         </div>
       </div>
@@ -146,11 +186,33 @@
       video.src = url;
       document.getElementById('playerWrap').style.display = 'block';
       document.getElementById('dropzone').style.display = 'none';
+
+      video.onloadedmetadata = () => {
+        const metaEl = document.getElementById('metaInfo');
+        if (metaEl && video.videoWidth) {
+          metaEl.textContent = `${video.videoWidth}x${video.videoHeight} • ${(file.size / (1024*1024)).toFixed(1)}MB`;
+        }
+      };
+
       video.play();
     }
 
     function setSpeed(val) {
       video.playbackRate = parseFloat(val);
+    }
+
+    function stepFrame(step) {
+      video.pause();
+      video.currentTime += step * (1 / 30);
+    }
+
+    function toggleLoop() {
+      video.loop = !video.loop;
+      const btn = document.getElementById('btnLoopToggle');
+      if (btn) {
+        btn.innerHTML = video.loop ? '<i class="fas fa-repeat" style="color:#10b981;"></i> Loop: ON' : '<i class="fas fa-repeat"></i> Loop: OFF';
+        btn.style.color = video.loop ? '#10b981' : '';
+      }
     }
 
     async function togglePiP() {
@@ -171,13 +233,46 @@
       canvas.width = video.videoWidth;
       canvas.height = video.videoHeight;
       const ctx = canvas.getContext('2d');
+      ctx.imageSmoothingEnabled = true;
+      ctx.imageSmoothingQuality = 'high';
       ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
 
       const a = document.createElement('a');
       a.href = canvas.toDataURL('image/png');
-      a.download = `frame_${Math.floor(video.currentTime)}s.png`;
+      a.download = `frame_${Math.floor(video.currentTime)}s_${video.videoWidth}x${video.videoHeight}.png`;
       a.click();
     }
+
+    // Keyboard Shortcuts
+    window.addEventListener('keydown', (e) => {
+      if (e.target.tagName === 'INPUT' || e.target.tagName === 'SELECT') return;
+      if (e.key === ' ' || e.code === 'Space') {
+        e.preventDefault();
+        video.paused ? video.play() : video.pause();
+      } else if (e.key === 'f' || e.key === 'F') {
+        e.preventDefault();
+        if (!document.fullscreenElement) {
+          video.requestFullscreen();
+        } else {
+          document.exitFullscreen();
+        }
+      } else if (e.key === 'm' || e.key === 'M') {
+        video.muted = !video.muted;
+      } else if (e.key === 's' || e.key === 'S') {
+        e.preventDefault();
+        captureFrame();
+      } else if (e.key === 'ArrowLeft') {
+        e.preventDefault();
+        video.currentTime -= 5;
+      } else if (e.key === 'ArrowRight') {
+        e.preventDefault();
+        video.currentTime += 5;
+      } else if (e.key === ',' || e.key === '<') {
+        stepFrame(-1);
+      } else if (e.key === '.' || e.key === '>') {
+        stepFrame(1);
+      }
+    });
   </script>
   <script src="js/app.js"></script>
 </body>

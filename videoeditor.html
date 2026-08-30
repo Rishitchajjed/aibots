@@ -2206,8 +2206,10 @@
           vid.muted = true;
           vid.playsInline = true;
           await new Promise((res) => {
-            if (vid.readyState >= 1) return res();
-            vid.onloadedmetadata = res;
+            if (vid.readyState >= 2) return res();
+            vid.onloadeddata = () => res();
+            vid.onloadedmetadata = () => res();
+            setTimeout(res, 600);
           });
           clipElements.push(vid);
         } else {
@@ -2215,7 +2217,8 @@
           img.src = clip.url;
           await new Promise((res) => {
             if (img.complete) return res();
-            img.onload = res;
+            img.onload = () => res();
+            setTimeout(res, 600);
           });
           clipElements.push(img);
         }
@@ -2241,10 +2244,19 @@
         document.getElementById('exportStatusText').textContent = `Encoding Clip ${i + 1} of ${mediaClips.length} (${selectedExportQuality.toUpperCase()})...`;
 
         if (clip.type === 'video') {
-          element.currentTime = clip.trimStart;
-          await new Promise(r => element.onseeked = r);
+          if (Math.abs(element.currentTime - clip.trimStart) > 0.05) {
+            element.currentTime = clip.trimStart;
+            await new Promise((r) => {
+              element.onseeked = () => r();
+              setTimeout(r, 400);
+            });
+          }
           element.playbackRate = exportPlayRate;
-          element.play();
+          try {
+            await element.play();
+          } catch(err) {
+            console.warn("Play error during export:", err);
+          }
 
           let clipActualRendered = 0;
 

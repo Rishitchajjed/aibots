@@ -2205,19 +2205,24 @@
 
       mediaRecorder.start();
 
-      // Render Sequence Clips One by One Deterministically
+      // Render Sequence Clips One by One with Strict Total Cap
       for (let i = 0; i < mediaClips.length; i++) {
-        if (!isRendering) break;
+        if (!isRendering || renderedDurationSoFar >= totalSeqDuration) break;
         const clip = mediaClips[i];
         const element = clipElements[i];
-        const clipDuration = Math.max(0.1, clip.trimEnd - clip.trimStart);
+        const clipMaxAllowed = totalSeqDuration - renderedDurationSoFar;
+        const clipDuration = Math.min(clipMaxAllowed, Math.max(0.1, clip.trimEnd - clip.trimStart));
+        const effectiveClipEnd = clip.trimStart + clipDuration;
 
         document.getElementById('exportStatusText').textContent = `Encoding Clip ${i + 1} of ${mediaClips.length} (${selectedExportQuality.toUpperCase()})...`;
 
         if (clip.type === 'video') {
           element.currentTime = clip.trimStart;
           await new Promise(r => element.onseeked = r);
+          element.playbackRate = 1.0;
           element.play();
+
+          let clipActualRendered = 0;
 
           await new Promise((resolve) => {
             function renderVideoClip() {
@@ -2226,7 +2231,8 @@
               drawFrameToCanvas(element, element.videoWidth || 1920, element.videoHeight || 1080);
 
               const clipElapsed = Math.max(0, element.currentTime - clip.trimStart);
-              const totalElapsed = renderedDurationSoFar + clipElapsed;
+              clipActualRendered = clipElapsed;
+              const totalElapsed = Math.min(totalSeqDuration, renderedDurationSoFar + clipElapsed);
               const pct = Math.min(100, Math.max(0, Math.round((totalElapsed / totalSeqDuration) * 100)));
               document.getElementById('exportProgressBar').style.width = `${pct}%`;
               document.getElementById('exportPercentText').textContent = `${pct}%`;
@@ -2238,9 +2244,9 @@
                 document.getElementById('exportEtaText').textContent = `ETA: ~${formatTime(remainingSec)}`;
               }
 
-              if (element.currentTime >= clip.trimEnd - 0.05 || element.ended || (renderedDurationSoFar + clipElapsed) >= totalSeqDuration) {
+              if (element.currentTime >= effectiveClipEnd - 0.05 || element.ended || (renderedDurationSoFar + clipElapsed) >= totalSeqDuration) {
                 element.pause();
-                renderedDurationSoFar += clipDuration;
+                renderedDurationSoFar += clipActualRendered;
                 resolve();
               } else {
                 requestAnimationFrame(renderVideoClip);
@@ -2249,7 +2255,7 @@
             requestAnimationFrame(renderVideoClip);
           });
         } else {
-          const photoDur = clip.duration;
+          const photoDur = Math.min(clipMaxAllowed, clip.duration);
           const startT = performance.now();
 
           await new Promise((resolve) => {
@@ -2258,8 +2264,8 @@
 
               drawFrameToCanvas(element, element.naturalWidth || 1920, element.naturalHeight || 1080);
 
-              const photoElapsed = (now - startT) / 1000;
-              const totalElapsed = renderedDurationSoFar + photoElapsed;
+              const photoElapsed = Math.min(photoDur, (now - startT) / 1000);
+              const totalElapsed = Math.min(totalSeqDuration, renderedDurationSoFar + photoElapsed);
               const pct = Math.min(100, Math.max(0, Math.round((totalElapsed / totalSeqDuration) * 100)));
               document.getElementById('exportProgressBar').style.width = `${pct}%`;
               document.getElementById('exportPercentText').textContent = `${pct}%`;
@@ -2271,7 +2277,7 @@
                 document.getElementById('exportEtaText').textContent = `ETA: ~${formatTime(remainingSec)}`;
               }
 
-              if (photoElapsed >= photoDur) {
+              if (photoElapsed >= photoDur || (renderedDurationSoFar + photoElapsed) >= totalSeqDuration) {
                 renderedDurationSoFar += photoDur;
                 resolve();
               } else {

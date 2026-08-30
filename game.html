@@ -980,7 +980,7 @@
       
       <!-- In-Canvas Floating Menu Bar (Always Accessible in Fullscreen & Mobile) -->
       <div class="in-canvas-top-bar" id="inCanvasTopBar">
-        <button class="hud-btn hud-btn-primary" onclick="openQuestModal()" title="Quest Log [Q]">
+        <button class="hud-btn hud-btn-primary" onclick="openQuestModal()" title="Quest Log">
           <i class="fas fa-scroll"></i> <span class="hud-btn-label">Quests</span> <span id="inCanvasQuestBadge" style="background:#fbbf24; color:#0f172a; padding:1px 6px; border-radius:999px; font-size:0.68rem; font-weight:800;">1/5</span>
         </button>
         <button class="hud-btn" onclick="openInventoryModal()" title="Equipment & Gear [I]">
@@ -1217,7 +1217,7 @@
           <div class="act-btn act-dash" id="btnDash" title="Dash [Shift]"><i class="fas fa-wind"></i></div>
           <div class="act-btn act-mount" id="btnMount" title="Hoverbike [V]"><i class="fas fa-motorcycle"></i></div>
           <div class="act-btn act-interact" id="btnInteract" title="Interact / Talk / Open [E]"><i class="fas fa-comment-dots"></i></div>
-          <div class="act-btn act-quest" id="btnQuestMobile" title="Quests [Q]"><i class="fas fa-scroll"></i></div>
+          <div class="act-btn act-quest" id="btnQuestMobile" title="Quests"><i class="fas fa-scroll"></i></div>
         </div>
       </div>
     </div>
@@ -2062,6 +2062,8 @@
     });
 
     window.addEventListener('keyup', e => { keys[e.key.toLowerCase()] = false; });
+    window.addEventListener('blur', () => { for (const k in keys) keys[k] = false; });
+    document.addEventListener('visibilitychange', () => { if (document.hidden) for (const k in keys) keys[k] = false; });
 
     function bindPointerBtn(id, keyName) {
       const el = document.getElementById(id);
@@ -2619,31 +2621,33 @@
       if (keys['a'] || keys['arrowleft']) { moveX -= 1; player.facing = 'left'; }
       if (keys['d'] || keys['arrowright']) { moveX += 1; player.facing = 'right'; }
 
-      // 360-degree analog mobile virtual joystick
-      if (typeof joystickState !== 'undefined' && joystickState.active) {
-        moveX += joystickState.vx;
-        moveY += joystickState.vy;
+      // If keyboard movement is active, cancel target waypoint tap-to-move
+      if (moveX !== 0 || moveY !== 0) {
+        targetWaypoint = null;
+        if (typeof tapReticle !== 'undefined' && tapReticle) tapReticle.style.display = 'none';
+      } else if (typeof joystickState !== 'undefined' && joystickState.active) {
+        moveX = joystickState.vx;
+        moveY = joystickState.vy;
         if (Math.abs(joystickState.vx) > Math.abs(joystickState.vy)) {
           player.facing = joystickState.vx > 0 ? 'right' : 'left';
         } else if (Math.abs(joystickState.vy) > 0.1) {
           player.facing = joystickState.vy > 0 ? 'down' : 'up';
         }
         targetWaypoint = null;
-        if (tapReticle) tapReticle.style.display = 'none';
+        if (typeof tapReticle !== 'undefined' && tapReticle) tapReticle.style.display = 'none';
       } else if (typeof targetWaypoint !== 'undefined' && targetWaypoint) {
-        // Tap-to-move pathfinding
         const tdx = targetWaypoint.x - player.x;
         const tdy = targetWaypoint.y - player.y;
         const tdist = Math.hypot(tdx, tdy);
-        if (tdist > 15) {
-          moveX += tdx / tdist;
-          moveY += tdy / tdist;
+        if (tdist > 12) {
+          moveX = tdx / tdist;
+          moveY = tdy / tdist;
           if (Math.abs(tdx) > Math.abs(tdy)) {
             player.facing = tdx > 0 ? 'right' : 'left';
           } else {
             player.facing = tdy > 0 ? 'down' : 'up';
           }
-          if (tapReticle && canvasWrapper) {
+          if (typeof tapReticle !== 'undefined' && tapReticle && typeof canvasWrapper !== 'undefined' && canvasWrapper) {
             const screenX = (targetWaypoint.x - camera.x) * (canvas.clientWidth / canvas.width);
             const screenY = (targetWaypoint.y - camera.y) * (canvas.clientHeight / canvas.height);
             tapReticle.style.left = screenX + 'px';
@@ -2651,31 +2655,16 @@
           }
         } else {
           targetWaypoint = null;
-          if (tapReticle) tapReticle.style.display = 'none';
+          if (typeof tapReticle !== 'undefined' && tapReticle) tapReticle.style.display = 'none';
         }
       }
 
-      player.isMoving = moveX !== 0 || moveY !== 0;
-      if (player.isMoving) {
-        player.walkCycle += player.isMounted ? 0.35 : 0.22;
-
-        // Add Dynamic Footprints / Hover Tracks
-        if (globalTicks % 8 === 0) {
-          footprints.push({
-            x: player.x, y: player.y + (player.isMounted ? 10 : 14),
-            isMounted: player.isMounted, life: 60
-          });
-          if (footprints.length > 50) footprints.shift();
-        }
+      // Proper vector magnitude normalization (eliminates diagonal stutter and speed glitch)
+      const mag = Math.hypot(moveX, moveY);
+      if (mag > 1) {
+        moveX /= mag;
+        moveY /= mag;
       }
-
-      // Update Footprints Life
-      for (let i = footprints.length - 1; i >= 0; i--) {
-        footprints[i].life--;
-        if (footprints[i].life <= 0) footprints.splice(i, 1);
-      }
-
-      if (moveX !== 0 && moveY !== 0) { moveX *= 0.7071; moveY *= 0.7071; }
 
       const currentSpeed = player.isMounted ? player.speed * 2.2 : player.speed;
       player.x = Math.max(player.radius, Math.min(WORLD.width - player.radius, player.x + moveX * currentSpeed));
@@ -2697,28 +2686,6 @@
       }
 
       
-      // Auto-Open Chests on Proximity Contact
-      for (const c of chests) {
-        if (!c.opened && Math.hypot(c.x - player.x, c.y - player.y) < 45) {
-          c.opened = true;
-          spawnLootOrb(c.x, c.y, c.coins, '#fbbf24');
-          addFloatingText(`+${c.coins} Gold!`, c.x, c.y - 25, '#fbbf24');
-          if (typeof checkQuestProgress === 'function') checkQuestProgress('mine', 1);
-        }
-      }
-
-      // Auto-Mine Ores on Proximity Contact
-      for (let i = ores.length - 1; i >= 0; i--) {
-        const ore = ores[i];
-        if (Math.hypot(ore.x - player.x, ore.y - player.y) < 40) {
-          const reward = ore.type === 'gold' ? 35 : 25;
-          spawnLootOrb(ore.x, ore.y, reward, ore.type === 'gold' ? '#f59e0b' : '#38bdf8');
-          addFloatingText(`Mined +${reward} ${ore.type.toUpperCase()}!`, ore.x, ore.y - 20, '#38bdf8');
-          ores.splice(i, 1);
-          if (typeof checkQuestProgress === 'function') checkQuestProgress('mine', 1);
-        }
-      }
-
       // Auto-Portal Proximity Warp (with cooldown)
       for (const p of portals) {
         if (p.cooldown === undefined) p.cooldown = 0;

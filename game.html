@@ -1415,15 +1415,18 @@
     let nearbyLootValue = 0;
 
     function collectNearbyLoot() {
+      if (typeof AudioEngine !== 'undefined') AudioEngine.init();
       let collected = 0;
       let totalVal = 0;
+
+      // Generous 180px reach around player
       for (let i = lootOrbs.length - 1; i >= 0; i--) {
         const orb = lootOrbs[i];
         const d = Math.hypot(player.x - orb.x, player.y - orb.y);
-        if (d < 80) {
-          player.coins += orb.value;
-          player.score += orb.value * 3;
-          totalVal += orb.value;
+        if (d < 180) {
+          player.coins += (orb.value || 25);
+          player.score += (orb.value || 25) * 3;
+          totalVal += (orb.value || 25);
           collected++;
           lootOrbs.splice(i, 1);
           createRiftParticles(orb.x, orb.y, '#fbbf24');
@@ -1431,11 +1434,30 @@
       }
 
       if (collected > 0) {
-        addFloatingText(`+${totalVal} Gold Collected!`, player.x, player.y - 28, '#fbbf24');
-        AudioEngine.coin();
+        addFloatingText(`+${totalVal} Gold Collected! 💰`, player.x, player.y - 28, '#fbbf24');
+        if (typeof AudioEngine !== 'undefined') AudioEngine.coin();
         updateHud();
+      } else if (lootOrbs.length > 0) {
+        // If there is loot anywhere in the current camera view, collect the closest one
+        let closestIdx = -1, minD = 500;
+        for (let i = 0; i < lootOrbs.length; i++) {
+          const d = Math.hypot(player.x - lootOrbs[i].x, player.y - lootOrbs[i].y);
+          if (d < minD) { minD = d; closestIdx = i; }
+        }
+        if (closestIdx !== -1) {
+          const orb = lootOrbs[closestIdx];
+          player.coins += orb.value;
+          player.score += orb.value * 3;
+          addFloatingText(`+${orb.value} Gold Collected! 💰`, player.x, player.y - 28, '#fbbf24');
+          lootOrbs.splice(closestIdx, 1);
+          createRiftParticles(player.x, player.y, '#fbbf24');
+          if (typeof AudioEngine !== 'undefined') AudioEngine.coin();
+          updateHud();
+        } else {
+          addFloatingText("No loot nearby!", player.x, player.y - 20, '#94a3b8');
+        }
       } else {
-        addFloatingText("No loot in range!", player.x, player.y - 20, '#94a3b8');
+        addFloatingText("No loot on ground!", player.x, player.y - 20, '#94a3b8');
       }
     }
 
@@ -1534,7 +1556,36 @@
     }
 
     // Key listener for Manual Collect (E) and Blink (T)
-    </script>
+    
+    // Canvas Click or Tap on Loot Orbs to Collect
+    const gameCanvasEl = document.getElementById('gameCanvas');
+    if (gameCanvasEl) {
+      gameCanvasEl.addEventListener('pointerdown', (e) => {
+        const rect = gameCanvasEl.getBoundingClientRect();
+        const screenX = (e.clientX - rect.left) * (canvas.width / rect.width);
+        const screenY = (e.clientY - rect.top) * (canvas.height / rect.height);
+        const worldX = screenX + camera.x;
+        const worldY = screenY + camera.y;
+
+        // Check if clicked near any loot orb (50px click tolerance)
+        for (let i = lootOrbs.length - 1; i >= 0; i--) {
+          const orb = lootOrbs[i];
+          if (Math.hypot(orb.x - worldX, orb.y - worldY) < 55) {
+            player.coins += orb.value;
+            player.score += orb.value * 3;
+            addFloatingText(`+${orb.value} Gold! 💰`, orb.x, orb.y - 20, '#fbbf24');
+            createRiftParticles(orb.x, orb.y, '#fbbf24');
+            lootOrbs.splice(i, 1);
+            if (typeof AudioEngine !== 'undefined') AudioEngine.coin();
+            updateHud();
+            e.stopPropagation();
+            return;
+          }
+        }
+      });
+    }
+
+  </script>
   <script>
 
     // Universal Canvas roundRect Polyfill (Chrome, Safari, iOS WebKit, Firefox)
@@ -2300,10 +2351,10 @@
       for (let i = lootOrbs.length - 1; i >= 0; i--) {
         const orb = lootOrbs[i];
         const d = Math.hypot(player.x - orb.x, player.y - orb.y);
-        if (d < 85) {
-          player.coins += orb.value;
-          player.score += orb.value * 3;
-          totalVal += orb.value;
+        if (d < 180) {
+          player.coins += (orb.value || 25);
+          player.score += (orb.value || 25) * 3;
+          totalVal += (orb.value || 25);
           collected++;
           lootOrbs.splice(i, 1);
           createRiftParticles(orb.x, orb.y, '#fbbf24');
@@ -2318,7 +2369,7 @@
         return;
       }
 
-      // 1. Check Chests (120px reach)
+      // 2. Check Chests (120px reach)
       for (const c of chests) {
         if (!c.opened && Math.hypot(c.x - player.x, c.y - player.y) < 110) {
           c.opened = true;
@@ -3225,11 +3276,24 @@
         ctx.fillRect(c.x - 4, c.y - 4, 8, 8);
       }
 
-      // Draw Loot Orbs with Pulsing Glow
+      // Draw Loot Orbs with Glowing Pulsing Gold Halo
       for (const orb of lootOrbs) {
-        ctx.fillStyle = orb.color;
-        ctx.beginPath(); ctx.arc(orb.x, orb.y, orb.radius, 0, Math.PI * 2); ctx.fill();
-        ctx.strokeStyle = '#fff'; ctx.lineWidth = 1.5; ctx.stroke();
+        const pulse = 1 + Math.sin(globalTicks * 0.1) * 0.2;
+        // Outer Glow Halo
+        ctx.fillStyle = 'rgba(251, 191, 36, 0.3)';
+        ctx.beginPath(); ctx.arc(orb.x, orb.y, 14 * pulse, 0, Math.PI * 2); ctx.fill();
+
+        // Main Coin Disc
+        ctx.fillStyle = orb.color || '#fbbf24';
+        ctx.beginPath(); ctx.arc(orb.x, orb.y, 8, 0, Math.PI * 2); ctx.fill();
+        ctx.strokeStyle = '#ffffff'; ctx.lineWidth = 2; ctx.stroke();
+
+        // Coin Icon / Label
+        ctx.fillStyle = '#0f172a';
+        ctx.font = 'bold 9px sans-serif';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText('$', orb.x, orb.y);
       }
 
       // Draw NPCs
@@ -3547,15 +3611,18 @@
     let nearbyLootValue = 0;
 
     function collectNearbyLoot() {
+      if (typeof AudioEngine !== 'undefined') AudioEngine.init();
       let collected = 0;
       let totalVal = 0;
+
+      // Generous 180px reach around player
       for (let i = lootOrbs.length - 1; i >= 0; i--) {
         const orb = lootOrbs[i];
         const d = Math.hypot(player.x - orb.x, player.y - orb.y);
-        if (d < 80) {
-          player.coins += orb.value;
-          player.score += orb.value * 3;
-          totalVal += orb.value;
+        if (d < 180) {
+          player.coins += (orb.value || 25);
+          player.score += (orb.value || 25) * 3;
+          totalVal += (orb.value || 25);
           collected++;
           lootOrbs.splice(i, 1);
           createRiftParticles(orb.x, orb.y, '#fbbf24');
@@ -3563,11 +3630,30 @@
       }
 
       if (collected > 0) {
-        addFloatingText(`+${totalVal} Gold Collected!`, player.x, player.y - 28, '#fbbf24');
-        AudioEngine.coin();
+        addFloatingText(`+${totalVal} Gold Collected! 💰`, player.x, player.y - 28, '#fbbf24');
+        if (typeof AudioEngine !== 'undefined') AudioEngine.coin();
         updateHud();
+      } else if (lootOrbs.length > 0) {
+        // If there is loot anywhere in the current camera view, collect the closest one
+        let closestIdx = -1, minD = 500;
+        for (let i = 0; i < lootOrbs.length; i++) {
+          const d = Math.hypot(player.x - lootOrbs[i].x, player.y - lootOrbs[i].y);
+          if (d < minD) { minD = d; closestIdx = i; }
+        }
+        if (closestIdx !== -1) {
+          const orb = lootOrbs[closestIdx];
+          player.coins += orb.value;
+          player.score += orb.value * 3;
+          addFloatingText(`+${orb.value} Gold Collected! 💰`, player.x, player.y - 28, '#fbbf24');
+          lootOrbs.splice(closestIdx, 1);
+          createRiftParticles(player.x, player.y, '#fbbf24');
+          if (typeof AudioEngine !== 'undefined') AudioEngine.coin();
+          updateHud();
+        } else {
+          addFloatingText("No loot nearby!", player.x, player.y - 20, '#94a3b8');
+        }
       } else {
-        addFloatingText("No loot in range!", player.x, player.y - 20, '#94a3b8');
+        addFloatingText("No loot on ground!", player.x, player.y - 20, '#94a3b8');
       }
     }
 

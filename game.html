@@ -613,6 +613,47 @@
       border-color: #38bdf8;
       transform: translateY(-2px);
     }
+  
+    .modal-backdrop {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(10, 15, 30, 0.88);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      z-index: 10000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      overflow-y: auto;
+    }
+    .modal-backdrop.active {
+      display: flex !important;
+    }
+    .modal-card {
+      width: 100%;
+      max-width: 560px;
+      max-height: 85vh;
+      overflow-y: auto;
+      margin: auto;
+      position: relative;
+      background: rgba(15, 23, 42, 0.95);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: var(--radius-xl);
+      padding: 24px;
+      box-shadow: 0 25px 60px rgba(0,0,0,0.9), 0 0 35px rgba(99,102,241,0.3);
+      animation: modalSlide 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    @keyframes modalSlide {
+      0% { opacity: 0; transform: scale(0.92) translateY(15px); }
+      100% { opacity: 1; transform: scale(1) translateY(0); }
+    }
+
   </style>
   <link rel="manifest" href="manifest.json">
   <meta name="theme-color" content="#6366f1">
@@ -1025,7 +1066,142 @@
     </div>
   </footer>
 
-  <script src="js/app.min.js"></script>
+  <script src="js/app.min.js">
+    // ==========================================
+    // IN-CANVAS MODAL & CONTROLS HANDLERS
+    // ==========================================
+    const questData = [
+      { id: 1, title: "1. Slime Exterminator", desc: "Defeat 5 Forest Slimes", target: 5, reward: "50 XP, 30 Gold", type: "slime" },
+      { id: 2, title: "2. Lava Drake Slayer", desc: "Slay 3 Lava Drakes in Volcano Realm", target: 3, reward: "120 XP, 60 Gold, 1 Talent Pt", type: "drake" },
+      { id: 3, title: "3. Ice Titan Challenge", desc: "Conquer 3 Frost Golems in Glacial Peak", target: 3, reward: "180 XP, 100 Gold", type: "golem" },
+      { id: 4, title: "4. Desert Scavenger", desc: "Collect 100 Gold from Sand Dunes", target: 100, reward: "250 XP, 150 Gold", type: "coins" },
+      { id: 5, title: "5. Realm Sovereign", desc: "Defeat the Mecha Dragon Titan Boss", target: 1, reward: "500 XP, 300 Gold, Master Title", type: "boss" }
+    ];
+
+    let activeQuestIndex = 0;
+    let questProgress = 0;
+
+    function openQuestModal() {
+      const container = document.getElementById('questListContainer');
+      if (container) {
+        container.innerHTML = questData.map((q, idx) => {
+          const isDone = idx < activeQuestIndex;
+          const isCurrent = idx === activeQuestIndex;
+          const statusBadge = isDone 
+            ? '<span style="color:#10b981; font-weight:800;"><i class="fas fa-check-circle"></i> COMPLETED</span>'
+            : (isCurrent ? `<span style="color:#fbbf24; font-weight:800;"><i class="fas fa-spinner fa-spin"></i> ACTIVE (${questProgress}/${q.target})</span>` : '<span style="color:#94a3b8;"><i class="fas fa-lock"></i> LOCKED</span>');
+
+          return `
+            <div style="background: rgba(255,255,255,0.04); border: 1px solid ${isCurrent ? '#fbbf24' : 'rgba(255,255,255,0.1)'}; border-radius: var(--radius-lg); padding: 12px; display: flex; justify-content: space-between; align-items: center; ${isCurrent ? 'box-shadow: 0 0 15px rgba(251,191,36,0.3);' : ''}">
+              <div>
+                <div style="font-weight: 800; font-size: 0.92rem; color: ${isCurrent ? '#facc15' : '#f8fafc'};">${q.title}</div>
+                <div style="font-size: 0.78rem; color: #94a3b8; margin: 2px 0;">${q.desc}</div>
+                <div style="font-size: 0.72rem; color: #38bdf8;"><i class="fas fa-gift"></i> Reward: ${q.reward}</div>
+              </div>
+              <div style="font-size: 0.78rem;">
+                ${statusBadge}
+              </div>
+            </div>
+          `;
+        }).join('');
+      }
+
+      const qBadge = document.getElementById('inCanvasQuestBadge');
+      if (qBadge) qBadge.textContent = `${activeQuestIndex + 1}/${questData.length}`;
+      const topQBadge = document.getElementById('questCountBadge');
+      if (topQBadge) topQBadge.textContent = `${activeQuestIndex + 1}/${questData.length}`;
+
+      const modal = document.getElementById('questModal');
+      if (modal) modal.classList.add('active');
+    }
+
+    function openInventoryModal() {
+      const modal = document.getElementById('inventoryModal');
+      if (modal) modal.classList.add('active');
+    }
+
+    function openTalentsModal() {
+      const modal = document.getElementById('talentsModal');
+      if (document.getElementById('modalTalentPts') && window.player) {
+        document.getElementById('modalTalentPts').textContent = player.talentPoints || 0;
+        if (document.getElementById('tDmgRank')) document.getElementById('tDmgRank').textContent = player.talents ? player.talents.dmg : 0;
+        if (document.getElementById('tHpRank')) document.getElementById('tHpRank').textContent = player.talents ? player.talents.hp : 0;
+        if (document.getElementById('tMpRank')) document.getElementById('tMpRank').textContent = player.talents ? player.talents.mp : 0;
+      }
+      if (modal) modal.classList.add('active');
+    }
+
+    function openHeroModal() {
+      const modal = document.getElementById('heroModal');
+      if (modal) modal.classList.add('active');
+    }
+
+    function openShopModal() {
+      const modal = document.getElementById('shopModal');
+      if (document.getElementById('shopGoldText') && window.player) {
+        document.getElementById('shopGoldText').textContent = player.coins || 0;
+      }
+      if (modal) modal.classList.add('active');
+    }
+
+    function closeModal(id) {
+      if (id) {
+        const modal = document.getElementById(id);
+        if (modal) modal.classList.remove('active');
+      } else {
+        document.querySelectorAll('.modal-backdrop').forEach(m => m.classList.remove('active'));
+      }
+    }
+
+    // Close on escape key
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        closeModal();
+      } else if (e.key === 'q' || e.key === 'Q') {
+        if (!document.querySelector('input:focus')) openQuestModal();
+      } else if (e.key === 'i' || e.key === 'I') {
+        if (!document.querySelector('input:focus')) openInventoryModal();
+      } else if (e.key === 't' || e.key === 'T') {
+        if (!document.querySelector('input:focus')) openTalentsModal();
+      }
+    });
+
+    function toggleFullscreen() {
+      const wrapper = document.getElementById('canvasWrapper') || document.documentElement;
+      const isFs = !!(document.fullscreenElement || document.webkitFullscreenElement);
+      if (!isFs) {
+        if (wrapper.requestFullscreen) {
+          wrapper.requestFullscreen().catch(() => {});
+        } else if (wrapper.webkitRequestFullscreen) {
+          wrapper.webkitRequestFullscreen();
+        }
+      } else {
+        if (document.exitFullscreen) {
+          document.exitFullscreen().catch(() => {});
+        } else if (document.webkitExitFullscreen) {
+          document.webkitExitFullscreen();
+        }
+      }
+      setTimeout(updateFullscreenButtons, 120);
+    }
+
+    function updateFullscreenButtons() {
+      const isFs = !!(document.fullscreenElement || document.webkitFullscreenElement);
+      const icon = document.getElementById('inCanvasFsIcon');
+      const text = document.getElementById('inCanvasFsText');
+      const btn = document.getElementById('inCanvasFullscreenBtn');
+      if (icon) icon.className = isFs ? 'fas fa-compress' : 'fas fa-expand';
+      if (text) text.textContent = isFs ? 'Exit Fullscreen' : 'Fullscreen';
+      if (btn) {
+        btn.style.color = isFs ? '#ec4899' : '#38bdf8';
+        btn.style.borderColor = isFs ? 'rgba(236,72,153,0.7)' : 'rgba(6,182,212,0.7)';
+      }
+    }
+
+    document.addEventListener('fullscreenchange', updateFullscreenButtons);
+    document.addEventListener('webkitfullscreenchange', updateFullscreenButtons);
+
+  </script>
   <script>
 
     // Universal Canvas roundRect Polyfill (Chrome, Safari, iOS WebKit, Firefox)
@@ -1128,10 +1304,10 @@
     function toggleFullscreen() {
       const wrapper = document.getElementById('canvasWrapper') || document.documentElement;
       if (!document.fullscreenElement && !document.webkitFullscreenElement) {
-        if (wrapper.requestFullscreen) {
-          wrapper.requestFullscreen();
-        } else if (wrapper.webkitRequestFullscreen) {
-          wrapper.webkitRequestFullscreen();
+        if (wrapper.rerequestFullscreen) {
+          wrapper.rerequestFullscreen();
+        } else if (wrapper.webkitRerequestFullscreen) {
+          wrapper.webkitRerequestFullscreen();
         }
       } else {
         if (document.exitFullscreen) {
@@ -1159,10 +1335,10 @@
     document.addEventListener('fullscreenchange', updateFullscreenButtons);
     document.addEventListener('webkitfullscreenchange', updateFullscreenButtons);
 );
-        } else if (elem.webkitRequestFullscreen) {
-          elem.webkitRequestFullscreen();
-        } else if (elem.msRequestFullscreen) {
-          elem.msRequestFullscreen();
+        } else if (elem.webkitRerequestFullscreen) {
+          elem.webkitRerequestFullscreen();
+        } else if (elem.msRerequestFullscreen) {
+          elem.msRerequestFullscreen();
         }
       } else {
         if (document.exitFullscreen) {
@@ -2894,7 +3070,7 @@
       } catch (err) {
         console.error("Game loop error:", err);
       }
-      requestAnimationFrame(gameLoop);
+      rerequestAnimationFrame(gameLoop);
     }
 
     function startGame() {
@@ -2902,7 +3078,7 @@
         initWorld();
         updateHud();
         if (typeof updateQuestHUD === 'function') updateQuestHUD();
-        requestAnimationFrame(gameLoop);
+        rerequestAnimationFrame(gameLoop);
       } catch (e) {
         console.error("Game start error:", e);
       }

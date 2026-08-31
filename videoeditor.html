@@ -733,7 +733,7 @@
 
             <!-- Video Screen (Edge to Edge Fitting) -->
             <div class="video-screen-wrapper" id="screenWrapper">
-              <video id="previewVideo" playsinline></video>
+              <video id="previewVideo" playsinline webkit-playsinline preload="auto"></video>
               <img id="previewPhoto" alt="Preview Photo Slide">
               <canvas id="exportCanvas"></canvas>
               <div class="video-text-overlay" id="textOverlayDisplay"></div>
@@ -1085,33 +1085,69 @@
     let videoGainNode = null;
     let bgmGainNode = null;
     let audioDestinationNode = null;
+    let videoAudioSourceConnected = false;
+    let bgmAudioSourceConnected = false;
 
     const bgmAudio = new Audio();
+    bgmAudio.preload = 'auto';
     let bgmLoaded = false;
     let logoImage = null;
 
+    // Unlock Web Audio context on any user touch/click gesture
+    function unlockAudioContext() {
+      if (audioCtx && audioCtx.state === 'suspended') {
+        audioCtx.resume().catch(() => {});
+      }
+    }
+    window.addEventListener('pointerdown', unlockAudioContext, { passive: true });
+    window.addEventListener('touchstart', unlockAudioContext, { passive: true });
+    window.addEventListener('click', unlockAudioContext, { passive: true });
+
     function initAudioGraph() {
-      if (audioCtx) return;
-      try {
-        const AudioContext = window.AudioContext || window.webkitAudioContext;
-        audioCtx = new AudioContext();
-        audioDestinationNode = audioCtx.createMediaStreamDestination();
+      if (!audioCtx) {
+        try {
+          const AudioContext = window.AudioContext || window.webkitAudioContext;
+          if (AudioContext) {
+            audioCtx = new AudioContext();
+            if (audioCtx.createMediaStreamDestination) {
+              audioDestinationNode = audioCtx.createMediaStreamDestination();
+            }
+          }
+        } catch (e) {
+          console.warn("Web AudioContext Notice:", e);
+        }
+      }
 
-        videoAudioSource = audioCtx.createMediaElementSource(video);
-        videoGainNode = audioCtx.createGain();
-        videoGainNode.gain.value = 1.0;
-        videoAudioSource.connect(videoGainNode);
-        videoGainNode.connect(audioCtx.destination);
-        videoGainNode.connect(audioDestinationNode);
+      if (audioCtx && audioCtx.state === 'suspended') {
+        audioCtx.resume().catch(() => {});
+      }
 
-        bgmAudioSource = audioCtx.createMediaElementSource(bgmAudio);
-        bgmGainNode = audioCtx.createGain();
-        bgmGainNode.gain.value = 0.8;
-        bgmAudioSource.connect(bgmGainNode);
-        bgmGainNode.connect(audioCtx.destination);
-        bgmGainNode.connect(audioDestinationNode);
-      } catch (e) {
-        console.warn("Web Audio Notice:", e);
+      if (audioCtx && !videoAudioSourceConnected && video) {
+        try {
+          videoAudioSource = audioCtx.createMediaElementSource(video);
+          videoGainNode = audioCtx.createGain();
+          videoGainNode.gain.value = 1.0;
+          videoAudioSource.connect(videoGainNode);
+          videoGainNode.connect(audioCtx.destination);
+          if (audioDestinationNode) videoGainNode.connect(audioDestinationNode);
+          videoAudioSourceConnected = true;
+        } catch (e) {
+          console.warn("Video Audio node connect notice:", e);
+        }
+      }
+
+      if (audioCtx && !bgmAudioSourceConnected && bgmAudio) {
+        try {
+          bgmAudioSource = audioCtx.createMediaElementSource(bgmAudio);
+          bgmGainNode = audioCtx.createGain();
+          bgmGainNode.gain.value = 0.8;
+          bgmAudioSource.connect(bgmGainNode);
+          bgmGainNode.connect(audioCtx.destination);
+          if (audioDestinationNode) bgmGainNode.connect(audioDestinationNode);
+          bgmAudioSourceConnected = true;
+        } catch (e) {
+          console.warn("BGM Audio node connect notice:", e);
+        }
       }
     }
 
@@ -1135,6 +1171,71 @@
     }
 
     // ==========================================
+    // ROBUST MEDIA DURATION EXTRACTOR (MOBILE SAFE)
+    // ==========================================
+    function extractMediaDuration(file, isVid, url) {
+      if (!isVid) return Promise.resolve(3.0);
+      return new Promise((resolve) => {
+        const tempVid = document.createElement('video');
+        tempVid.muted = true;
+        tempVid.defaultMuted = true;
+        tempVid.playsInline = true;
+        tempVid.setAttribute('playsinline', '');
+        tempVid.setAttribute('webkit-playsinline', '');
+        tempVid.preload = 'auto';
+
+        let settled = false;
+        const cleanup = () => {
+          tempVid.onloadedmetadata = null;
+          tempVid.ondurationchange = null;
+          tempVid.onloadeddata = null;
+          tempVid.oncanplay = null;
+          tempVid.onerror = null;
+        };
+
+        const done = (dur) => {
+          if (settled) return;
+          settled = true;
+          cleanup();
+          const validDur = Number.isFinite(dur) && dur > 0.05 ? dur : 5.0;
+          resolve(validDur);
+        };
+
+        const timer = setTimeout(() => {
+          done(tempVid.duration || 5.0);
+        }, 2000);
+
+        tempVid.onloadedmetadata = () => {
+          if (tempVid.duration > 0) {
+            clearTimeout(timer);
+            done(tempVid.duration);
+          }
+        };
+        tempVid.ondurationchange = () => {
+          if (tempVid.duration > 0) {
+            clearTimeout(timer);
+            done(tempVid.duration);
+          }
+        };
+        tempVid.onloadeddata = () => {
+          clearTimeout(timer);
+          done(tempVid.duration);
+        };
+        tempVid.oncanplay = () => {
+          clearTimeout(timer);
+          done(tempVid.duration);
+        };
+        tempVid.onerror = () => {
+          clearTimeout(timer);
+          done(5.0);
+        };
+
+        tempVid.src = url;
+        try { tempVid.load(); } catch(e) {}
+      });
+    }
+
+    // ==========================================
     // MEDIA BIN UPLOAD & CLIPS INITIALIZATION
     // ==========================================
     async function handleMediaBinUpload(e) {
@@ -1142,19 +1243,12 @@
       if (!files.length) return;
 
       for (const file of files) {
-        const isVid = file.type.startsWith('video/');
-        const isImg = file.type.startsWith('image/');
+        const isVid = file.type.startsWith('video/') || /\.(mp4|webm|mov|m4v|mkv|3gp)$/i.test(file.name);
+        const isImg = file.type.startsWith('image/') || /\.(jpg|jpeg|png|webp|gif|bmp)$/i.test(file.name);
         if (!isVid && !isImg) continue;
 
         const url = URL.createObjectURL(file);
-        let duration = 3.0;
-
-        if (isVid) {
-          const tempVid = document.createElement('video');
-          tempVid.src = url;
-          await new Promise(r => tempVid.onloadedmetadata = r);
-          duration = tempVid.duration;
-        }
+        const duration = await extractMediaDuration(file, isVid, url);
 
         const col = clipColors[mediaClips.length % clipColors.length];
         mediaClips.push({
@@ -1169,18 +1263,24 @@
         });
       }
 
-      document.getElementById('videoDropzone').style.display = 'none';
-      document.getElementById('studioWorkspace').style.display = 'block';
+      if (document.getElementById('videoFileInput')) document.getElementById('videoFileInput').value = '';
+      if (document.getElementById('mediaAddFileInput')) document.getElementById('mediaAddFileInput').value = '';
 
-      initAudioGraph();
-      renderMediaBinStrip();
-      renderUnifiedSequenceTimeline();
-      selectClip(mediaClips.length - files.length);
-      seekSequenceTo(0);
+      if (mediaClips.length > 0) {
+        document.getElementById('videoDropzone').style.display = 'none';
+        document.getElementById('studioWorkspace').style.display = 'block';
+
+        initAudioGraph();
+        renderMediaBinStrip();
+        renderUnifiedSequenceTimeline();
+        selectClip(mediaClips.length - files.length >= 0 ? mediaClips.length - files.length : 0);
+        seekSequenceTo(0);
+      }
     }
 
     function renderMediaBinStrip() {
       const strip = document.getElementById('mediaBinStrip');
+      if (!strip) return;
       strip.innerHTML = '';
 
       mediaClips.forEach((clip, idx) => {
@@ -1190,7 +1290,7 @@
 
         if (clip.type === 'video') {
           item.innerHTML = `
-            <video src="${clip.url}" muted></video>
+            <video src="${clip.url}" muted playsinline webkit-playsinline preload="metadata"></video>
             <span class="media-clip-badge" style="background:${clip.color};">🎥 ${formatTime(clip.trimEnd - clip.trimStart)}</span>
             <div class="media-clip-del" onclick="deleteClip(event, ${idx})"><i class="fas fa-xmark"></i></div>
           `;
@@ -1216,10 +1316,12 @@
     // ===================================================
     function renderUnifiedSequenceTimeline() {
       const track = document.getElementById('sequenceTrackLane');
+      if (!track) return;
       track.innerHTML = '';
 
       const totalDur = getTotalSequenceDuration();
-      document.getElementById('totalSeqTimeText').textContent = formatTime(totalDur, true);
+      const durLabel = document.getElementById('totalSeqTimeText');
+      if (durLabel) durLabel.textContent = formatTime(totalDur, true);
 
       mediaClips.forEach((clip, idx) => {
         const clipDur = Math.max(0.1, clip.trimEnd - clip.trimStart);
@@ -1257,7 +1359,7 @@
       updatePlayheadPosition();
     }
 
-    function selectClip(idx) {
+    function selectClip(idx, keepPlaying = false) {
       if (idx < 0 || idx >= mediaClips.length) return;
       activeClipIndex = idx;
       const clip = mediaClips[idx];
@@ -1268,27 +1370,51 @@
         b.classList.toggle('active', i === idx);
       });
 
-      document.getElementById('focusClipTitle').textContent = `${clip.type === 'video' ? '🎥' : '📷'} Clip ${idx + 1}`;
+      const titleEl = document.getElementById('focusClipTitle');
+      if (titleEl) titleEl.textContent = `${clip.type === 'video' ? '🎥' : '📷'} Clip ${idx + 1}`;
 
       const photoBox = document.getElementById('photoDurationBox');
       if (clip.type === 'video') {
-        photoBox.style.display = 'none';
+        if (photoBox) photoBox.style.display = 'none';
         photo.style.display = 'none';
         video.style.display = 'block';
-        video.src = clip.url;
+
+        const currentSrc = video.src || '';
+        if (!currentSrc.includes(clip.url)) {
+          video.src = clip.url;
+          try { video.load(); } catch(e) {}
+        }
         video.currentTime = clip.trimStart;
-        document.getElementById('trimStartInput').value = formatTime(clip.trimStart, true);
-        document.getElementById('trimEndInput').value = formatTime(clip.trimEnd, true);
+
+        const startIn = document.getElementById('trimStartInput');
+        const endIn = document.getElementById('trimEndInput');
+        if (startIn) startIn.value = formatTime(clip.trimStart, true);
+        if (endIn) endIn.value = formatTime(clip.trimEnd, true);
+
+        if (keepPlaying) {
+          const playPromise = video.play();
+          if (playPromise !== undefined) {
+            playPromise.catch(e => {
+              console.warn("Autoplay notice on clip switch:", e);
+            });
+          }
+        }
       } else {
-        photoBox.style.display = 'block';
+        if (photoBox) photoBox.style.display = 'block';
         video.pause();
         video.style.display = 'none';
         photo.style.display = 'block';
         photo.src = clip.url;
-        document.getElementById('sliderPhotoDuration').value = clip.duration;
-        document.getElementById('valPhotoDuration').textContent = `${clip.duration}s`;
-        document.getElementById('trimStartInput').value = formatTime(0, true);
-        document.getElementById('trimEndInput').value = formatTime(clip.duration, true);
+
+        const sPhoto = document.getElementById('sliderPhotoDuration');
+        const valPhoto = document.getElementById('valPhotoDuration');
+        if (sPhoto) sPhoto.value = clip.duration;
+        if (valPhoto) valPhoto.textContent = `${clip.duration}s`;
+
+        const startIn = document.getElementById('trimStartInput');
+        const endIn = document.getElementById('trimEndInput');
+        if (startIn) startIn.value = formatTime(0, true);
+        if (endIn) endIn.value = formatTime(clip.duration, true);
       }
 
       updateFocusTrimmerDisplay();
@@ -1303,15 +1429,22 @@
       const widthPct = ((clip.trimEnd - clip.trimStart) / dur) * 100;
 
       const win = document.getElementById('focusActiveWindow');
-      win.style.left = `${startPct}%`;
-      win.style.width = `${Math.max(4, widthPct)}%`;
+      if (win) {
+        win.style.left = `${startPct}%`;
+        win.style.width = `${Math.max(4, widthPct)}%`;
+      }
 
-      document.getElementById('focusLeftTooltip').textContent = formatTime(clip.trimStart, true);
-      document.getElementById('focusRightTooltip').textContent = formatTime(clip.trimEnd, true);
-      document.getElementById('focusClipDurBadge').textContent = `${formatTime(clip.trimEnd - clip.trimStart, true)} / ${formatTime(clip.duration, true)}`;
+      const leftTip = document.getElementById('focusLeftTooltip');
+      const rightTip = document.getElementById('focusRightTooltip');
+      const badge = document.getElementById('focusClipDurBadge');
+      if (leftTip) leftTip.textContent = formatTime(clip.trimStart, true);
+      if (rightTip) rightTip.textContent = formatTime(clip.trimEnd, true);
+      if (badge) badge.textContent = `${formatTime(clip.trimEnd - clip.trimStart, true)} / ${formatTime(clip.duration, true)}`;
       
-      document.getElementById('trimStartInput').value = formatTime(clip.trimStart, true);
-      document.getElementById('trimEndInput').value = formatTime(clip.trimEnd, true);
+      const startIn = document.getElementById('trimStartInput');
+      const endIn = document.getElementById('trimEndInput');
+      if (startIn) startIn.value = formatTime(clip.trimStart, true);
+      if (endIn) endIn.value = formatTime(clip.trimEnd, true);
     }
 
     function deleteClip(e, idx) {
@@ -1343,11 +1476,17 @@
     // ===================================================
     let activeDrag = null;
 
+    function getEventClientX(e) {
+      if (e.touches && e.touches.length > 0) return e.touches[0].clientX;
+      if (e.changedTouches && e.changedTouches.length > 0) return e.changedTouches[0].clientX;
+      return e.clientX || 0;
+    }
+
     function handlePlayheadDown(e) {
       e.stopPropagation();
       activeDrag = {
         type: 'playhead',
-        startX: e.clientX,
+        startX: getEventClientX(e),
         startSeqTime: sequenceCurrentTime
       };
       pauseSequencePlayback();
@@ -1356,14 +1495,14 @@
     function handleTimelineContainerDown(e) {
       if (e.target.classList.contains('clip-trim-handle') || e.target.classList.contains('master-playhead-cap')) return;
       const rect = document.getElementById('sequenceTrackLane').getBoundingClientRect();
-      const clickX = e.clientX - rect.left;
+      const clickX = getEventClientX(e) - rect.left;
       const pct = Math.max(0, Math.min(1, clickX / rect.width));
       const targetSeqTime = pct * getTotalSequenceDuration();
       seekSequenceTo(targetSeqTime);
 
       activeDrag = {
         type: 'playhead',
-        startX: e.clientX,
+        startX: getEventClientX(e),
         startSeqTime: targetSeqTime
       };
     }
@@ -1371,9 +1510,10 @@
     function handleFocusLeftDown(e) {
       e.stopPropagation();
       const clip = mediaClips[activeClipIndex];
+      if (!clip) return;
       activeDrag = {
         type: 'focus-left',
-        startX: e.clientX,
+        startX: getEventClientX(e),
         initTrimStart: clip.trimStart,
         clipDuration: clip.duration
       };
@@ -1382,9 +1522,10 @@
     function handleFocusRightDown(e) {
       e.stopPropagation();
       const clip = mediaClips[activeClipIndex];
+      if (!clip) return;
       activeDrag = {
         type: 'focus-right',
-        startX: e.clientX,
+        startX: getEventClientX(e),
         initTrimEnd: clip.trimEnd,
         clipDuration: clip.duration
       };
@@ -1395,7 +1536,7 @@
       const clip = mediaClips[activeClipIndex];
       if (!clip) return;
       const rect = document.getElementById('clipFocusTrack').getBoundingClientRect();
-      const clickX = e.clientX - rect.left;
+      const clickX = getEventClientX(e) - rect.left;
       const pct = Math.max(0, Math.min(1, clickX / rect.width));
       const clickSec = pct * clip.duration;
 
@@ -1406,7 +1547,7 @@
       e.stopPropagation();
       activeDrag = {
         type: 'audio-left',
-        startX: e.clientX,
+        startX: getEventClientX(e),
         initOffset: bgmStartOffset,
         initCutDur: bgmCutDuration > 0 ? bgmCutDuration : getTotalSequenceDuration()
       };
@@ -1416,7 +1557,7 @@
       e.stopPropagation();
       activeDrag = {
         type: 'audio-right',
-        startX: e.clientX,
+        startX: getEventClientX(e),
         initOffset: bgmStartOffset,
         initCutDur: bgmCutDuration > 0 ? bgmCutDuration : Math.min(getTotalSequenceDuration(), bgmAudioDuration - bgmStartOffset)
       };
@@ -1427,21 +1568,22 @@
       e.stopPropagation();
       activeDrag = {
         type: 'audio-slide',
-        startX: e.clientX,
+        startX: getEventClientX(e),
         initOffset: bgmStartOffset,
         initCutDur: bgmCutDuration > 0 ? bgmCutDuration : getTotalSequenceDuration()
       };
     }
 
-    window.addEventListener('pointermove', (e) => {
+    function processDragMove(e) {
       if (!activeDrag) return;
 
       const track = document.getElementById('sequenceTrackLane');
-      const trackW = track.clientWidth || 800;
+      const trackW = track ? (track.clientWidth || 800) : 800;
       const focusTrack = document.getElementById('clipFocusTrack');
-      const focusW = focusTrack ? focusTrack.clientWidth : 800;
+      const focusW = focusTrack ? (focusTrack.clientWidth || 800) : 800;
       const totalDur = getTotalSequenceDuration();
-      const deltaX = e.clientX - activeDrag.startX;
+      const currentX = getEventClientX(e);
+      const deltaX = currentX - activeDrag.startX;
 
       if (activeDrag.type === 'playhead') {
         const deltaSec = (deltaX / trackW) * totalDur;
@@ -1449,6 +1591,7 @@
       } 
       else if (activeDrag.type === 'focus-left') {
         const clip = mediaClips[activeClipIndex];
+        if (!clip) return;
         const deltaSec = (deltaX / focusW) * activeDrag.clipDuration;
         clip.trimStart = Math.max(0, Math.min(clip.trimEnd - 0.2, activeDrag.initTrimStart + deltaSec));
         
@@ -1458,6 +1601,7 @@
       }
       else if (activeDrag.type === 'focus-right') {
         const clip = mediaClips[activeClipIndex];
+        if (!clip) return;
         const deltaSec = (deltaX / focusW) * activeDrag.clipDuration;
         clip.trimEnd = Math.min(clip.duration, Math.max(clip.trimStart + 0.2, activeDrag.initTrimEnd + deltaSec));
 
@@ -1477,9 +1621,9 @@
         bgmCutDuration = Math.max(0.5, Math.min(bgmAudioDuration - bgmStartOffset, activeDrag.initCutDur + deltaSec));
         updateAudioTrimDisplay();
       }
-    });
+    }
 
-    window.addEventListener('pointerup', () => {
+    function processDragEnd() {
       if (activeDrag) {
         if (activeDrag.type === 'focus-left' || activeDrag.type === 'focus-right') {
           renderMediaBinStrip();
@@ -1487,11 +1631,17 @@
         }
         activeDrag = null;
       }
-    });
+    }
+
+    window.addEventListener('pointermove', processDragMove);
+    window.addEventListener('pointerup', processDragEnd);
+    window.addEventListener('touchmove', processDragMove, { passive: true });
+    window.addEventListener('touchend', processDragEnd);
 
     function updateClipBlockWidths() {
       const totalDur = getTotalSequenceDuration();
-      document.getElementById('totalSeqTimeText').textContent = formatTime(totalDur, true);
+      const durTextEl = document.getElementById('totalSeqTimeText');
+      if (durTextEl) durTextEl.textContent = formatTime(totalDur, true);
 
       mediaClips.forEach((clip, idx) => {
         const clipDur = Math.max(0.1, clip.trimEnd - clip.trimStart);
@@ -1511,8 +1661,10 @@
     function seekSequenceTo(targetTime) {
       const totalDur = getTotalSequenceDuration();
       sequenceCurrentTime = Math.max(0, Math.min(totalDur, targetTime));
-      document.getElementById('seqTimeText').textContent = formatTime(sequenceCurrentTime, true);
-      document.getElementById('needleTooltip').textContent = formatTime(sequenceCurrentTime, true);
+      const seqText = document.getElementById('seqTimeText');
+      const tipText = document.getElementById('needleTooltip');
+      if (seqText) seqText.textContent = formatTime(sequenceCurrentTime, true);
+      if (tipText) tipText.textContent = formatTime(sequenceCurrentTime, true);
       updatePlayheadPosition();
 
       let accumulated = 0;
@@ -1520,7 +1672,7 @@
         const clip = mediaClips[i];
         const clipDur = Math.max(0.1, clip.trimEnd - clip.trimStart);
         if (sequenceCurrentTime <= accumulated + clipDur || i === mediaClips.length - 1) {
-          if (activeClipIndex !== i) selectClip(i);
+          if (activeClipIndex !== i) selectClip(i, isPlayingSequence);
           const clipLocalTime = clip.trimStart + (sequenceCurrentTime - accumulated);
           if (clip.type === 'video') {
             video.currentTime = clipLocalTime;
@@ -1541,7 +1693,7 @@
 
     function togglePlayPause() {
       initAudioGraph();
-      if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume();
+      if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume().catch(() => {});
 
       if (isPlayingSequence) {
         pauseSequencePlayback();
@@ -1563,7 +1715,13 @@
       if (bgmLoaded) {
         bgmAudio.currentTime = Math.max(0, bgmStartOffset + (sequenceCurrentTime % (bgmAudioDuration || 1)));
         bgmAudio.loop = true;
-        bgmAudio.play();
+        bgmAudio.play().catch(e => console.warn("BGM Play Notice:", e));
+      }
+
+      const activeClip = mediaClips[activeClipIndex];
+      if (activeClip && activeClip.type === 'video') {
+        const p = video.play();
+        if (p !== undefined) p.catch(e => console.warn("Video Play Notice:", e));
       }
 
       let lastFrameTime = performance.now();
@@ -1582,8 +1740,10 @@
           return;
         }
 
-        document.getElementById('seqTimeText').textContent = formatTime(sequenceCurrentTime, true);
-        document.getElementById('needleTooltip').textContent = formatTime(sequenceCurrentTime, true);
+        const seqText = document.getElementById('seqTimeText');
+        const tipText = document.getElementById('needleTooltip');
+        if (seqText) seqText.textContent = formatTime(sequenceCurrentTime, true);
+        if (tipText) tipText.textContent = formatTime(sequenceCurrentTime, true);
         updatePlayheadPosition();
 
         let accumulated = 0;
@@ -1591,10 +1751,13 @@
           const clip = mediaClips[i];
           const clipDur = Math.max(0.1, clip.trimEnd - clip.trimStart);
           if (sequenceCurrentTime <= accumulated + clipDur || i === mediaClips.length - 1) {
-            if (activeClipIndex !== i) selectClip(i);
+            if (activeClipIndex !== i) selectClip(i, true);
             const clipLocalTime = clip.trimStart + (sequenceCurrentTime - accumulated);
             if (clip.type === 'video') {
-              if (video.paused) video.play();
+              if (video.paused) {
+                const p = video.play();
+                if (p !== undefined) p.catch(() => {});
+              }
               if (Math.abs(video.currentTime - clipLocalTime) > 0.3) {
                 video.currentTime = clipLocalTime;
               }
@@ -1626,7 +1789,8 @@
       const track = document.getElementById('sequenceTrackLane');
       if (track) {
         const leftPx = (pct / 100) * track.clientWidth;
-        document.getElementById('masterPlayhead').style.left = `${leftPx}px`;
+        const head = document.getElementById('masterPlayhead');
+        if (head) head.style.left = `${leftPx}px`;
       }
     }
 
@@ -1672,6 +1836,7 @@
 
     function drawDecodedWaveform(buffer) {
       const c = document.getElementById('audioWaveformCanvas');
+      if (!c) return;
       const cx = c.getContext('2d');
       c.width = c.parentElement.clientWidth || 800;
       c.height = 68;
@@ -1697,6 +1862,7 @@
 
     function drawFallbackWaveform() {
       const c = document.getElementById('audioWaveformCanvas');
+      if (!c) return;
       const cx = c.getContext('2d');
       c.width = c.parentElement.clientWidth || 800;
       c.height = 68;
@@ -1717,16 +1883,24 @@
       const widthPct = (activeDuration / bgmAudioDuration) * 100;
 
       const slice = document.getElementById('audioSlice');
-      slice.style.left = `${leftPct}%`;
-      slice.style.width = `${Math.max(4, widthPct)}%`;
+      if (slice) {
+        slice.style.left = `${leftPct}%`;
+        slice.style.width = `${Math.max(4, widthPct)}%`;
+      }
 
-      document.getElementById('bgmStartInput').value = formatTime(bgmStartOffset, true);
-      document.getElementById('sliderBgmStart').value = bgmStartOffset;
-      document.getElementById('valBgmStart').textContent = formatTime(bgmStartOffset, true);
+      const bgmInput = document.getElementById('bgmStartInput');
+      const bgmSlider = document.getElementById('sliderBgmStart');
+      const bgmVal = document.getElementById('valBgmStart');
+      if (bgmInput) bgmInput.value = formatTime(bgmStartOffset, true);
+      if (bgmSlider) bgmSlider.value = bgmStartOffset;
+      if (bgmVal) bgmVal.textContent = formatTime(bgmStartOffset, true);
 
-      document.getElementById('audioSliceTooltip').textContent = `Music: ${formatTime(bgmStartOffset, true)} - ${formatTime(bgmStartOffset + activeDuration, true)}`;
-      document.getElementById('audioHandleTooltip').textContent = formatTime(bgmStartOffset, true);
-      document.getElementById('audioHandleRightTooltip').textContent = formatTime(bgmStartOffset + activeDuration, true);
+      const sliceTip = document.getElementById('audioSliceTooltip');
+      const leftTip = document.getElementById('audioHandleTooltip');
+      const rightTip = document.getElementById('audioHandleRightTooltip');
+      if (sliceTip) sliceTip.textContent = `Music: ${formatTime(bgmStartOffset, true)} - ${formatTime(bgmStartOffset + activeDuration, true)}`;
+      if (leftTip) leftTip.textContent = formatTime(bgmStartOffset, true);
+      if (rightTip) rightTip.textContent = formatTime(bgmStartOffset + activeDuration, true);
     }
 
     function handleBgmSliderChange(val) {
@@ -1738,7 +1912,7 @@
       if (bgmLoaded) {
         initAudioGraph();
         bgmAudio.currentTime = bgmStartOffset;
-        bgmAudio.play();
+        bgmAudio.play().catch(() => {});
         clearTimeout(window._bgmScrubTimer);
         window._bgmScrubTimer = setTimeout(() => {
           if (!isPlayingSequence) bgmAudio.pause();
@@ -1746,7 +1920,7 @@
       }
     }
 
-        function autoTrimVideoToSong() {
+    function autoTrimVideoToSong() {
       if (!bgmLoaded || !bgmAudioDuration) {
         alert("Please upload a song first.");
         return;
@@ -1773,7 +1947,6 @@
       renderUnifiedSequenceTimeline();
       renderMediaBinStrip();
       seekSequenceTo(0);
-      alert(`⚡ All ${mediaClips.length} clips trimmed proportionally to match song duration (${formatTime(targetTotal)})!`);
     }
 
     function autoFitMusicToVideo() {
@@ -1844,7 +2017,7 @@
       } else {
         pauseSequencePlayback();
         bgmAudio.currentTime = bgmStartOffset;
-        bgmAudio.play();
+        bgmAudio.play().catch(() => {});
         isSoloPlaying = true;
         btn.innerHTML = '<i class="fas fa-stop"></i> Stop Audio Solo';
         setTimeout(() => {
@@ -1874,7 +2047,7 @@
       if (decodedAudioBuffer) drawDecodedWaveform(decodedAudioBuffer);
     }
 
-        function setQuickDuration(seconds) {
+    function setQuickDuration(seconds) {
       if (!mediaClips.length) return;
 
       const totalRaw = mediaClips.reduce((sum, c) => sum + (c.duration || 3), 0);
@@ -2132,15 +2305,37 @@
       return new Blob([outBuffer], { type: "audio/wav" });
     }
 
+    // Supported MIME type detector for Phone & Desktop
+    function getSupportedMimeType() {
+      const candidates = [
+        'video/mp4;codecs=avc1,mp4a.40.2',
+        'video/mp4;codecs=avc1',
+        'video/mp4;codecs=h264,aac',
+        'video/mp4',
+        'video/webm;codecs=vp9,opus',
+        'video/webm;codecs=vp8,opus',
+        'video/webm;codecs=h264',
+        'video/webm'
+      ];
+      if (typeof MediaRecorder === 'undefined') return '';
+      for (const t of candidates) {
+        if (MediaRecorder.isTypeSupported && MediaRecorder.isTypeSupported(t)) {
+          return t;
+        }
+      }
+      return '';
+    }
 
     // ===================================================
-    // HIGH-SPEED LOSSLESS HD EXPORT ENGINE
+    // HIGH-SPEED LOSSLESS HD EXPORT ENGINE (MOBILE BULLETPROOF)
     // ===================================================
     async function startVideoExport() {
       if (isRendering || !mediaClips.length) return;
 
       initAudioGraph();
-      if (audioCtx && audioCtx.state === 'suspended') await audioCtx.resume();
+      if (audioCtx && audioCtx.state === 'suspended') {
+        try { await audioCtx.resume(); } catch(e) {}
+      }
 
       pauseSequencePlayback();
 
@@ -2150,26 +2345,31 @@
       document.getElementById('exportPercentText').textContent = '0%';
       document.getElementById('exportEtaText').textContent = 'Est. Time: Initializing...';
       document.getElementById('exportHeaderTitle').textContent = 'Rendering Video Output...';
-      document.getElementById('exportStatusText').textContent = 'Initializing GPU canvas encoder...';
+      document.getElementById('exportStatusText').textContent = 'Preparing video tracks...';
 
+      const isMobile = /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent) || window.innerWidth <= 768;
+      
       let targetW = 1920;
       let targetH = 1080;
-      let bitRate = 12000000;
+      let bitRate = 10000000;
 
-      if (selectedExportQuality === '720p') {
-        targetW = 1280; targetH = 720; bitRate = 6000000;
+      if (selectedExportQuality === '720p' || (isMobile && selectedExportQuality === '1080p' && window.innerWidth <= 480)) {
+        targetW = 1280; targetH = 720; bitRate = 5000000;
       } else if (selectedExportQuality === '480p') {
-        targetW = 854; targetH = 480; bitRate = 3000000;
+        targetW = 854; targetH = 480; bitRate = 2500000;
       }
 
       if (currentAspectRatio === '9:16') {
         const tmp = targetW; targetW = targetH; targetH = tmp;
       } else if (currentAspectRatio === '1:1') {
-        targetH = targetW;
+        targetH = Math.min(targetW, targetH);
+        targetW = targetH;
       } else if (currentAspectRatio === '4:5') {
         targetW = 1080; targetH = 1350;
+        if (isMobile) { targetW = 720; targetH = 900; }
       } else if (currentAspectRatio === '21:9') {
         targetW = 2560; targetH = 1080;
+        if (isMobile) { targetW = 1280; targetH = 540; }
       }
 
       canvas.width = targetW;
@@ -2178,27 +2378,46 @@
       ctx.imageSmoothingEnabled = true;
       ctx.imageSmoothingQuality = 'high';
 
-      const canvasStream = canvas.captureStream(30);
+      // Initial black frame
+      ctx.fillStyle = '#000000';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-      if (audioDestinationNode && audioDestinationNode.stream.getAudioTracks().length > 0) {
-        audioDestinationNode.stream.getAudioTracks().forEach(t => canvasStream.addTrack(t));
+      let canvasStream;
+      try {
+        canvasStream = canvas.captureStream ? canvas.captureStream(30) : canvas.mozCaptureStream(30);
+      } catch (e) {
+        alert("Video export is not supported in this browser version. Please try Chrome, Edge, or Safari 14.1+");
+        document.getElementById('exportOverlay').classList.remove('active');
+        isRendering = false;
+        return;
+      }
+
+      if (audioDestinationNode && audioDestinationNode.stream && audioDestinationNode.stream.getAudioTracks().length > 0) {
+        try {
+          audioDestinationNode.stream.getAudioTracks().forEach(t => {
+            try { canvasStream.addTrack(t); } catch(err) {}
+          });
+        } catch(e) {}
       }
 
       recordedChunks = [];
-      let mimeType = 'video/webm;codecs=vp9,opus';
-      if (MediaRecorder.isTypeSupported('video/mp4;codecs=avc1,mp4a.40.2')) {
-        mimeType = 'video/mp4;codecs=avc1,mp4a.40.2';
-      } else if (MediaRecorder.isTypeSupported('video/webm;codecs=vp8,opus')) {
-        mimeType = 'video/webm;codecs=vp8,opus';
-      }
+      const chosenMime = getSupportedMimeType();
+      const recorderOptions = {};
+      if (chosenMime) recorderOptions.mimeType = chosenMime;
+      if (bitRate) recorderOptions.videoBitsPerSecond = bitRate;
 
       try {
-        mediaRecorder = new MediaRecorder(canvasStream, {
-          mimeType: mimeType,
-          videoBitsPerSecond: bitRate
-        });
+        mediaRecorder = new MediaRecorder(canvasStream, recorderOptions);
       } catch (e) {
-        mediaRecorder = new MediaRecorder(canvasStream);
+        try {
+          mediaRecorder = new MediaRecorder(canvasStream);
+        } catch (e2) {
+          console.error("MediaRecorder creation failed:", e2);
+          alert("Unable to start video recorder on this device.");
+          document.getElementById('exportOverlay').classList.remove('active');
+          isRendering = false;
+          return;
+        }
       }
 
       mediaRecorder.ondataavailable = (e) => {
@@ -2206,13 +2425,18 @@
       };
 
       mediaRecorder.onstop = () => {
-        const ext = mimeType.includes('mp4') ? 'mp4' : 'webm';
-        const blob = new Blob(recordedChunks, { type: mimeType });
+        const ext = (chosenMime && chosenMime.includes('mp4')) ? 'mp4' : 'webm';
+        const blob = new Blob(recordedChunks, { type: chosenMime || 'video/webm' });
         const url = URL.createObjectURL(blob);
         const a = document.createElement('a');
         a.href = url;
         a.download = `aibots_studio_${Date.now()}.${ext}`;
+        document.body.appendChild(a);
         a.click();
+        setTimeout(() => {
+          document.body.removeChild(a);
+          URL.revokeObjectURL(url);
+        }, 2000);
 
         document.getElementById('exportOverlay').classList.remove('active');
         isRendering = false;
@@ -2229,15 +2453,14 @@
         bgmAudio.playbackRate = 1.0;
         bgmAudio.loop = true;
         try {
-          await bgmAudio.play();
-        } catch(e) {
-          console.warn("BGM Play Notice:", e);
-        }
+          const bgmPromise = bgmAudio.play();
+          if (bgmPromise !== undefined) bgmPromise.catch(() => {});
+        } catch(e) {}
       }
 
-      mediaRecorder.start();
+      mediaRecorder.start(100);
 
-      // Render Sequence Clips using the Primary Viewport Elements
+      // Render Sequence Clips with Full Multi-Video Merging & Transition Support
       for (let i = 0; i < mediaClips.length; i++) {
         if (!isRendering || renderedDurationSoFar >= totalSeqDuration) break;
         const clip = mediaClips[i];
@@ -2250,28 +2473,68 @@
         if (clip.type === 'video') {
           photo.style.display = 'none';
           video.style.display = 'block';
-          if (video.src !== clip.url) {
+          
+          video.muted = true;
+          video.playsInline = true;
+
+          const currentSrc = video.src || '';
+          if (!currentSrc.includes(clip.url)) {
             video.src = clip.url;
-            await new Promise(r => { video.onloadedmetadata = r; setTimeout(r, 400); });
+            try { video.load(); } catch(e) {}
+            await new Promise(r => {
+              let s = false;
+              const done = () => { if (!s) { s = true; r(); } };
+              video.onloadeddata = done;
+              video.oncanplay = done;
+              setTimeout(done, 1000);
+            });
           }
+
           video.currentTime = clip.trimStart;
-          await new Promise(r => { video.onseeked = r; setTimeout(r, 300); });
+          await new Promise(r => {
+            let s = false;
+            const done = () => { if (!s) { s = true; r(); } };
+            video.onseeked = done;
+            setTimeout(done, 800);
+          });
+
           video.playbackRate = 1.0;
+          let playSucceeded = false;
           try {
-            await video.play();
-          } catch(err) {}
+            const p = video.play();
+            if (p !== undefined) {
+              await p;
+              playSucceeded = true;
+            }
+          } catch(err) {
+            console.warn("Real-time play blocked on mobile, using seek stepper:", err);
+          }
 
           let clipActualRendered = 0;
 
           await new Promise((resolve) => {
-            function renderVideoClip() {
+            let lastStepTime = performance.now();
+            let fallbackCurTime = clip.trimStart;
+
+            function renderVideoClip(now) {
               if (!isRendering) return resolve();
 
               drawFrameToCanvas(video, video.videoWidth || 1920, video.videoHeight || 1080);
 
-              const clipElapsed = Math.max(0, video.currentTime - clip.trimStart);
-              clipActualRendered = clipElapsed;
-              const totalElapsed = Math.min(totalSeqDuration, renderedDurationSoFar + clipElapsed);
+              let clipElapsed = 0;
+              if (playSucceeded && !video.paused && video.currentTime > clip.trimStart) {
+                clipElapsed = Math.max(0, video.currentTime - clip.trimStart);
+                fallbackCurTime = video.currentTime;
+              } else {
+                const dt = (now - lastStepTime) / 1000;
+                lastStepTime = now;
+                fallbackCurTime += Math.min(0.066, Math.max(0.016, dt));
+                video.currentTime = Math.min(effectiveClipEnd, fallbackCurTime);
+                clipElapsed = Math.max(0, fallbackCurTime - clip.trimStart);
+              }
+
+              clipActualRendered = Math.min(clipDuration, clipElapsed);
+              const totalElapsed = Math.min(totalSeqDuration, renderedDurationSoFar + clipActualRendered);
               const pct = Math.min(100, Math.max(0, Math.round((totalElapsed / totalSeqDuration) * 100)));
               document.getElementById('exportProgressBar').style.width = `${pct}%`;
               document.getElementById('exportPercentText').textContent = `${pct}%`;
@@ -2283,9 +2546,9 @@
                 document.getElementById('exportEtaText').textContent = `ETA: ~${formatTime(remainingSec)}`;
               }
 
-              if (video.currentTime >= effectiveClipEnd - 0.05 || video.ended || (renderedDurationSoFar + clipElapsed) >= totalSeqDuration) {
+              if (clipActualRendered >= clipDuration - 0.05 || video.currentTime >= effectiveClipEnd - 0.05 || video.ended || (renderedDurationSoFar + clipActualRendered) >= totalSeqDuration) {
                 video.pause();
-                renderedDurationSoFar += clipActualRendered;
+                renderedDurationSoFar += clipDuration;
                 resolve();
               } else {
                 requestAnimationFrame(renderVideoClip);

@@ -1170,11 +1170,28 @@
       }
     }
 
-    // ==========================================
-    // ROBUST MEDIA DURATION EXTRACTOR (MOBILE SAFE)
-    // ==========================================
-    function extractMediaDuration(file, isVid, url) {
-      if (!isVid) return Promise.resolve(3.0);
+    // ===================================================
+    // ROBUST HIGH-SPEED MEDIA PROBE & THUMBNAIL GENERATOR
+    // ===================================================
+    function extractMediaInfo(file, isVid, url) {
+      if (!isVid) {
+        return new Promise((resolve) => {
+          const img = new Image();
+          img.onload = () => {
+            resolve({
+              duration: 3.0,
+              thumbnail: url,
+              width: img.naturalWidth || 1920,
+              height: img.naturalHeight || 1080
+            });
+          };
+          img.onerror = () => {
+            resolve({ duration: 3.0, thumbnail: url, width: 1920, height: 1080 });
+          };
+          img.src = url;
+        });
+      }
+
       return new Promise((resolve) => {
         const tempVid = document.createElement('video');
         tempVid.muted = true;
@@ -1182,52 +1199,66 @@
         tempVid.playsInline = true;
         tempVid.setAttribute('playsinline', '');
         tempVid.setAttribute('webkit-playsinline', '');
-        tempVid.preload = 'auto';
+        tempVid.preload = 'metadata';
 
         let settled = false;
         const cleanup = () => {
           tempVid.onloadedmetadata = null;
-          tempVid.ondurationchange = null;
-          tempVid.onloadeddata = null;
-          tempVid.oncanplay = null;
+          tempVid.onseeked = null;
           tempVid.onerror = null;
+          try {
+            tempVid.src = '';
+            tempVid.load();
+          } catch(e) {}
         };
 
-        const done = (dur) => {
+        const finish = (duration, thumb) => {
           if (settled) return;
           settled = true;
           cleanup();
-          const validDur = Number.isFinite(dur) && dur > 0.05 ? dur : 5.0;
-          resolve(validDur);
+          const validDur = (Number.isFinite(duration) && duration > 0.05) ? duration : 5.0;
+          resolve({
+            duration: validDur,
+            thumbnail: thumb || null,
+            width: tempVid.videoWidth || 1920,
+            height: tempVid.videoHeight || 1080
+          });
         };
 
         const timer = setTimeout(() => {
-          done(tempVid.duration || 5.0);
-        }, 2000);
+          finish(tempVid.duration || 5.0, null);
+        }, 2200);
 
         tempVid.onloadedmetadata = () => {
-          if (tempVid.duration > 0) {
+          const dur = tempVid.duration;
+          // Capture a frame thumbnail at 0.1s or 10%
+          try {
+            tempVid.currentTime = Math.min(0.5, (dur || 5) * 0.1);
+          } catch(e) {
             clearTimeout(timer);
-            done(tempVid.duration);
+            finish(dur, null);
           }
         };
-        tempVid.ondurationchange = () => {
-          if (tempVid.duration > 0) {
+
+        tempVid.onseeked = () => {
+          try {
+            const snapCanvas = document.createElement('canvas');
+            snapCanvas.width = 160;
+            snapCanvas.height = 90;
+            const snapCtx = snapCanvas.getContext('2d');
+            snapCtx.drawImage(tempVid, 0, 0, 160, 90);
+            const thumb = snapCanvas.toDataURL('image/jpeg', 0.65);
             clearTimeout(timer);
-            done(tempVid.duration);
+            finish(tempVid.duration, thumb);
+          } catch(e) {
+            clearTimeout(timer);
+            finish(tempVid.duration, null);
           }
         };
-        tempVid.onloadeddata = () => {
-          clearTimeout(timer);
-          done(tempVid.duration);
-        };
-        tempVid.oncanplay = () => {
-          clearTimeout(timer);
-          done(tempVid.duration);
-        };
+
         tempVid.onerror = () => {
           clearTimeout(timer);
-          done(5.0);
+          finish(5.0, null);
         };
 
         tempVid.src = url;
@@ -1236,19 +1267,22 @@
     }
 
     // ==========================================
-    // MEDIA BIN UPLOAD & CLIPS INITIALIZATION
+    // MEDIA BIN UPLOAD & BATCH INITIALIZATION
     // ==========================================
     async function handleMediaBinUpload(e) {
       const files = Array.from(e.target.files);
       if (!files.length) return;
 
-      for (const file of files) {
+      const previousCount = mediaClips.length;
+
+      for (let i = 0; i < files.length; i++) {
+        const file = files[i];
         const isVid = file.type.startsWith('video/') || /\.(mp4|webm|mov|m4v|mkv|3gp)$/i.test(file.name);
         const isImg = file.type.startsWith('image/') || /\.(jpg|jpeg|png|webp|gif|bmp)$/i.test(file.name);
         if (!isVid && !isImg) continue;
 
         const url = URL.createObjectURL(file);
-        const duration = await extractMediaDuration(file, isVid, url);
+        const info = await extractMediaInfo(file, isVid, url);
 
         const col = clipColors[mediaClips.length % clipColors.length];
         mediaClips.push({
@@ -1256,10 +1290,13 @@
           type: isVid ? 'video' : 'photo',
           file: file,
           url: url,
-          duration: duration,
+          thumbnailUrl: info.thumbnail || url,
+          duration: info.duration,
           trimStart: 0,
-          trimEnd: duration,
-          color: col
+          trimEnd: info.duration,
+          color: col,
+          width: info.width,
+          height: info.height
         });
       }
 
@@ -1273,11 +1310,12 @@
         initAudioGraph();
         renderMediaBinStrip();
         renderUnifiedSequenceTimeline();
-        selectClip(mediaClips.length - files.length >= 0 ? mediaClips.length - files.length : 0);
+        selectClip(previousCount < mediaClips.length ? previousCount : 0);
         seekSequenceTo(0);
       }
     }
 
+    // High performance Media Bin rendering using pure <img> (Zero video decoder overhead!)
     function renderMediaBinStrip() {
       const strip = document.getElementById('mediaBinStrip');
       if (!strip) return;
@@ -1285,22 +1323,19 @@
 
       mediaClips.forEach((clip, idx) => {
         const item = document.createElement('div');
+        item.id = `media_bin_item_${idx}`;
         item.className = `media-clip-item ${idx === activeClipIndex ? 'active' : ''}`;
         item.onclick = () => selectClip(idx);
 
-        if (clip.type === 'video') {
-          item.innerHTML = `
-            <video src="${clip.url}" muted playsinline webkit-playsinline preload="metadata"></video>
-            <span class="media-clip-badge" style="background:${clip.color};">🎥 ${formatTime(clip.trimEnd - clip.trimStart)}</span>
-            <div class="media-clip-del" onclick="deleteClip(event, ${idx})"><i class="fas fa-xmark"></i></div>
-          `;
-        } else {
-          item.innerHTML = `
-            <img src="${clip.url}">
-            <span class="media-clip-badge" style="background:#f59e0b;">📷 ${clip.duration}s</span>
-            <div class="media-clip-del" onclick="deleteClip(event, ${idx})"><i class="fas fa-xmark"></i></div>
-          `;
-        }
+        const badgeIcon = clip.type === 'video' ? '🎥' : '📷';
+        const durText = clip.type === 'video' ? formatTime(clip.trimEnd - clip.trimStart) : `${clip.duration}s`;
+        const imgSrc = clip.thumbnailUrl || clip.url;
+
+        item.innerHTML = `
+          <img src="${imgSrc}" alt="Clip ${idx + 1}" loading="lazy" onerror="this.style.opacity=0.3">
+          <span class="media-clip-badge" style="background:${clip.color};">${badgeIcon} ${idx + 1}: ${durText}</span>
+          <div class="media-clip-del" onclick="deleteClip(event, ${idx})" title="Delete clip"><i class="fas fa-xmark"></i></div>
+        `;
         strip.appendChild(item);
       });
 
@@ -1330,7 +1365,7 @@
         const block = document.createElement('div');
         block.id = `clip_block_${idx}`;
         block.className = `joined-clip-block ${idx === activeClipIndex ? 'active' : ''}`;
-        block.style.width = `${Math.max(6, widthPct)}%`;
+        block.style.width = `${Math.max(4, widthPct)}%`;
         block.style.background = `linear-gradient(135deg, ${clip.color}99, ${clip.color}44)`;
         block.style.borderColor = clip.color;
         block.onclick = (e) => {
@@ -1364,7 +1399,10 @@
       activeClipIndex = idx;
       const clip = mediaClips[idx];
 
-      renderMediaBinStrip();
+      // Update active state in media bin without destroying DOM
+      document.querySelectorAll('.media-clip-item').forEach((item, i) => {
+        item.classList.toggle('active', i === idx);
+      });
       
       document.querySelectorAll('.joined-clip-block').forEach((b, i) => {
         b.classList.toggle('active', i === idx);
@@ -2535,7 +2573,15 @@
           // Photo clip
           video.style.display = 'none';
           photo.style.display = 'block';
-          photo.src = clip.url;
+          if (photo.src !== clip.url) {
+            photo.src = clip.url;
+            await new Promise(r => {
+              if (photo.complete && photo.naturalWidth > 0) return r();
+              photo.onload = () => r();
+              photo.onerror = () => r();
+              setTimeout(r, 400);
+            });
+          }
 
           const photoDur = Math.min(clipMaxAllowed, clip.duration);
           const photoStartPerf = performance.now();
@@ -2575,6 +2621,9 @@
     }
 
     function drawFrameToCanvas(srcElement, srcW, srcH) {
+      const realW = (srcW && srcW > 0) ? srcW : (srcElement.videoWidth || srcElement.naturalWidth || 1920);
+      const realH = (srcH && srcH > 0) ? srcH : (srcElement.videoHeight || srcElement.naturalHeight || 1080);
+
       ctx.fillStyle = '#000000';
       ctx.fillRect(0, 0, canvas.width, canvas.height);
 
@@ -2583,9 +2632,9 @@
       ctx.imageSmoothingQuality = 'high';
       ctx.filter = filterStyle;
 
-      const scale = Math.min(canvas.width / srcW, canvas.height / srcH);
-      const drawW = srcW * scale;
-      const drawH = srcH * scale;
+      const scale = Math.min(canvas.width / realW, canvas.height / realH);
+      const drawW = realW * scale;
+      const drawH = realH * scale;
 
       ctx.translate(canvas.width / 2, canvas.height / 2);
       ctx.rotate((rotationAngle * Math.PI) / 180);

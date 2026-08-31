@@ -561,6 +561,60 @@
     .vp-card.theater-mode .yt-player-container {
       height: 82vh !important;
     }
+
+    /* Tap / Double-Tap Skip Zones */
+    .yt-touch-zones {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      z-index: 15;
+      touch-action: manipulation;
+    }
+    .yt-touch-zone {
+      height: 100%;
+      user-select: none;
+      -webkit-user-select: none;
+      cursor: pointer;
+    }
+    .yt-touch-zone.left {
+      width: 38%;
+    }
+    .yt-touch-zone.center {
+      width: 24%;
+    }
+    .yt-touch-zone.right {
+      width: 38%;
+    }
+
+    /* Mobile-First Controls Bar */
+    @media (max-width: 768px) {
+      .yt-controls-overlay {
+        left: 8px !important;
+        right: 8px !important;
+        bottom: 8px !important;
+        padding: 6px 10px !important;
+        border-radius: 14px !important;
+        gap: 4px !important;
+      }
+      .yt-buttons-row {
+        gap: 4px !important;
+      }
+      .yt-btn-group {
+        gap: 3px !important;
+      }
+      .yt-btn {
+        font-size: 0.9rem !important;
+        padding: 4px !important;
+      }
+      .yt-time-text {
+        font-size: 0.68rem !important;
+        white-space: nowrap !important;
+        margin-left: 2px !important;
+      }
+      .desktop-only-btn {
+        display: none !important;
+      }
+    }
   </style>
 </head>
 <body>
@@ -611,6 +665,13 @@
         <div class="yt-player-container" id="playerWrap">
           
           <video id="videoEl" playsinline webkit-playsinline></video>
+
+          <!-- Touch Interaction Layer (Double tap to skip ±5s, single tap to toggle controls) -->
+          <div class="yt-touch-zones" id="touchZones">
+            <div class="yt-touch-zone left" id="touchZoneLeft" title="Double tap to rewind 5s"></div>
+            <div class="yt-touch-zone center" id="touchZoneCenter" title="Tap to play/pause"></div>
+            <div class="yt-touch-zone right" id="touchZoneRight" title="Double tap to skip 5s"></div>
+          </div>
 
           <!-- 1. Holographic Center Play/Pause Pulse Animation -->
           <div class="anim-pulse-center" id="centerPulse"><i class="fas fa-play" id="centerPulseIcon"></i></div>
@@ -688,6 +749,11 @@
             </div>
 
             <div class="yt-menu-item">
+              <span>Quick Snapshot</span>
+              <button class="btn btn-secondary btn-sm" style="padding: 2px 8px; font-size: 0.72rem;" onclick="captureFrame()"><i class="fas fa-camera"></i> Save PNG</button>
+            </div>
+
+            <div class="yt-menu-item">
               <span>Volume Boost</span>
               <span style="color:#10b981; font-weight:700;" id="menuBoostVal">100%</span>
             </div>
@@ -728,13 +794,13 @@
 
               <!-- Right Group: Frame Step, Snapshot, Playlist Toggle, Settings, PiP, Fullscreen -->
               <div class="yt-btn-group">
-                <button class="yt-btn" onclick="stepFrame(-1)" title="Previous Frame [,]"><i class="fas fa-chevron-left"></i></button>
-                <button class="yt-btn" onclick="stepFrame(1)" title="Next Frame [.]"><i class="fas fa-chevron-right"></i></button>
-                <button class="yt-btn" onclick="captureFrame()" title="Grab HD Snapshot [S]"><i class="fas fa-camera"></i></button>
+                <button class="yt-btn desktop-only-btn" onclick="stepFrame(-1)" title="Previous Frame [,]"><i class="fas fa-chevron-left"></i></button>
+                <button class="yt-btn desktop-only-btn" onclick="stepFrame(1)" title="Next Frame [.]"><i class="fas fa-chevron-right"></i></button>
+                <button class="yt-btn desktop-only-btn" onclick="captureFrame()" title="Grab HD Snapshot [S]"><i class="fas fa-camera"></i></button>
                 <button class="yt-btn" id="btnTogglePlaylist" onclick="togglePlaylistDrawer()" title="Toggle Playlist Queue"><i class="fas fa-list"></i></button>
                 <button class="yt-btn" onclick="toggleSettingsMenu()" title="Settings"><i class="fas fa-gear"></i></button>
-                <button class="yt-btn" onclick="togglePiP()" title="Miniplayer (PiP)"><i class="fas fa-up-right-from-square"></i></button>
-                <button class="yt-btn" onclick="toggleTheater()" title="Theater Mode"><i class="fas fa-expand"></i></button>
+                <button class="yt-btn desktop-only-btn" onclick="togglePiP()" title="Miniplayer (PiP)"><i class="fas fa-up-right-from-square"></i></button>
+                <button class="yt-btn desktop-only-btn" onclick="toggleTheater()" title="Theater Mode"><i class="fas fa-expand"></i></button>
                 <button class="yt-btn" onclick="toggleFullscreen()" title="Fullscreen (F)"><i class="fas fa-maximize"></i></button>
               </div>
 
@@ -980,8 +1046,6 @@
       }
     }
 
-    video.addEventListener('click', togglePlay);
-
     function showCenterPulse(action) {
       const pulse = document.getElementById('centerPulse');
       const icon = document.getElementById('centerPulseIcon');
@@ -1000,6 +1064,71 @@
         el.classList.add('show');
         setTimeout(() => el.classList.remove('show'), 400);
       }
+    }
+
+    // ===================================================
+    // TOUCH / CLICK SKIP GESTURES (LEFT: -5s, RIGHT: +5s)
+    // ===================================================
+    let tapTimeout = null;
+    let lastTapSide = null;
+    let lastTapTime = 0;
+
+    function handleZoneTap(side) {
+      const now = Date.now();
+      const isDoubleTap = (lastTapSide === side && (now - lastTapTime) < 340);
+
+      if (isDoubleTap) {
+        clearTimeout(tapTimeout);
+        lastTapSide = null;
+        lastTapTime = 0;
+
+        if (side === 'left') {
+          seekAnimated(-5);
+          showHudToast('fa-rotate-left', '-5 SEC ⏪');
+        } else if (side === 'right') {
+          seekAnimated(5);
+          showHudToast('fa-rotate-right', '+5 SEC ⏩');
+        } else {
+          togglePlay();
+        }
+      } else {
+        lastTapSide = side;
+        lastTapTime = now;
+        tapTimeout = setTimeout(() => {
+          // Single tap toggles controls visibility or toggles play in center
+          if (side === 'center') {
+            togglePlay();
+          } else {
+            toggleControlsVisibility();
+          }
+          lastTapSide = null;
+          lastTapTime = 0;
+        }, 280);
+      }
+    }
+
+    function toggleControlsVisibility() {
+      if (container.classList.contains('hide-controls')) {
+        resetControlsTimeout();
+      } else {
+        container.classList.add('hide-controls');
+      }
+    }
+
+    const tLeft = document.getElementById('touchZoneLeft');
+    const tCenter = document.getElementById('touchZoneCenter');
+    const tRight = document.getElementById('touchZoneRight');
+
+    if (tLeft) {
+      tLeft.addEventListener('click', (e) => { e.stopPropagation(); handleZoneTap('left'); });
+      tLeft.addEventListener('dblclick', (e) => { e.stopPropagation(); seekAnimated(-5); });
+    }
+    if (tRight) {
+      tRight.addEventListener('click', (e) => { e.stopPropagation(); handleZoneTap('right'); });
+      tRight.addEventListener('dblclick', (e) => { e.stopPropagation(); seekAnimated(5); });
+    }
+    if (tCenter) {
+      tCenter.addEventListener('click', (e) => { e.stopPropagation(); handleZoneTap('center'); });
     }
 
     // Floating HUD Toast System

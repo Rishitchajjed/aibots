@@ -615,6 +615,21 @@
         display: none !important;
       }
     }
+
+    /* Zero Blue Tap Lines & Clean Touch Interactions */
+    * {
+      -webkit-tap-highlight-color: transparent !important;
+    }
+    .yt-player-container, #videoEl, .yt-touch-zones, .yt-touch-zone, .yt-btn, .anim-skip-indicator, .yt-controls-overlay {
+      outline: none !important;
+      -webkit-tap-highlight-color: transparent !important;
+      -webkit-touch-callout: none !important;
+      user-select: none !important;
+      -webkit-user-select: none !important;
+    }
+    #videoEl {
+      pointer-events: none; /* Touches routed through touch zones to avoid native video download popup */
+    }
   </style>
 </head>
 <body>
@@ -934,6 +949,8 @@
         });
       });
 
+      if (document.getElementById('fileInput')) document.getElementById('fileInput').value = '';
+
       playerGrid.style.display = 'grid';
       document.getElementById('dropzone').style.display = 'none';
       if (playlist.length > 1) {
@@ -950,7 +967,11 @@
       if (index < 0 || index >= playlist.length) return;
       currentTrackIndex = index;
       const track = playlist[index];
+
+      video.pause();
       video.src = track.url;
+      try { video.load(); } catch(e) {}
+
       renderPlaylistSidebar();
 
       video.onloadedmetadata = () => {
@@ -960,8 +981,15 @@
       };
 
       initAudioBooster();
-      video.play();
-      document.getElementById('btnPlayPause').innerHTML = '<i class="fas fa-pause"></i>';
+
+      const playPromise = video.play();
+      if (playPromise !== undefined) {
+        playPromise.then(() => {
+          document.getElementById('btnPlayPause').innerHTML = '<i class="fas fa-pause"></i>';
+        }).catch(() => {
+          document.getElementById('btnPlayPause').innerHTML = '<i class="fas fa-play"></i>';
+        });
+      }
       showCenterPulse('play');
       renderAmbientLoop();
     }
@@ -1318,31 +1346,46 @@
       container.classList.remove('hide-controls');
     });
 
-    // YouTube Hold-to-2X Speed Feature
+    // YouTube Hold-to-2X Speed Feature (Clean, Reliable, Zero Native Download Dialog)
     let isHoldingSpeed = false;
-    function startHoldSpeed() {
+    let baseSpeed = 1.0;
+
+    // Prevent native mobile browser download dialog on long press
+    container.addEventListener('contextmenu', (e) => e.preventDefault());
+    video.addEventListener('contextmenu', (e) => e.preventDefault());
+
+    function startHoldSpeed(e) {
       if (video.paused) return;
+      clearTimeout(holdSpeedTimeout);
       holdSpeedTimeout = setTimeout(() => {
         isHoldingSpeed = true;
-        originalSpeed = video.playbackRate;
+        baseSpeed = (originalSpeed && originalSpeed !== 2.0) ? originalSpeed : 1.0;
         video.playbackRate = 2.0;
         document.getElementById('speedHoldBadge').style.display = 'flex';
-      }, 400);
+        showHudToast('fa-forward', '2X Speed Active ⏩');
+      }, 350);
     }
 
     function endHoldSpeed() {
       clearTimeout(holdSpeedTimeout);
       if (isHoldingSpeed) {
         isHoldingSpeed = false;
-        video.playbackRate = originalSpeed;
+        video.playbackRate = baseSpeed;
         document.getElementById('speedHoldBadge').style.display = 'none';
+        showHudToast('fa-gauge-high', `Speed ${baseSpeed}x`);
       }
     }
 
-    video.addEventListener('mousedown', startHoldSpeed);
+    const tZones = document.getElementById('touchZones');
+    if (tZones) {
+      tZones.addEventListener('mousedown', startHoldSpeed);
+      tZones.addEventListener('touchstart', startHoldSpeed, { passive: true });
+    }
+
     window.addEventListener('mouseup', endHoldSpeed);
-    video.addEventListener('touchstart', startHoldSpeed);
-    window.addEventListener('touchend', endHoldSpeed);
+    window.addEventListener('touchend', endHoldSpeed, { passive: true });
+    window.addEventListener('touchcancel', endHoldSpeed, { passive: true });
+    window.addEventListener('mouseleave', endHoldSpeed);
 
     // Keyboard Shortcuts
     window.addEventListener('keydown', (e) => {

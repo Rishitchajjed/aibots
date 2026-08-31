@@ -806,13 +806,13 @@
       <p class="tool-desc">Dedicated active clip precision trimmer, instant audio mixing, fast HD export with live ETA, and multi-clip sequence timeline.</p>
     </div>
 
-    <!-- Dropzone / Empty State -->
-    <div class="dropzone-container" id="videoDropzone" onclick="document.getElementById('videoFileInput').click()">
-      <input type="file" id="videoFileInput" class="dropzone-input" accept="video/*,image/*" multiple onchange="handleMediaBinUpload(event)">
+    <!-- Dropzone / Empty State (iOS & Mobile Ultra-Compatible) -->
+    <div class="dropzone-container" id="videoDropzone">
+      <input type="file" id="videoFileInput" class="dropzone-input" accept="video/*,video/mp4,video/quicktime,video/webm,image/*,image/jpeg,image/png,image/webp,image/heic,image/heif" multiple onchange="handleMediaBinUpload(event)">
       <div class="dropzone-icon" style="color: #ec4899;"><i class="fas fa-film"></i></div>
       <div class="dropzone-title">Upload Videos or Photos to Open Studio</div>
-      <div class="dropzone-subtitle">Supports multiple MP4, WebM, PNG, JPG, MOV • 100% Client-Side Processing • 0 Server Uploads</div>
-      <button class="btn btn-primary btn-sm" style="margin-top: 14px; pointer-events: none;"><i class="fas fa-upload"></i> Select Files</button>
+      <div class="dropzone-subtitle">Supports multiple MP4, WebM, PNG, JPG, MOV, HEIC • 100% Client-Side Processing • 0 Server Uploads</div>
+      <button type="button" class="btn btn-primary btn-sm" style="margin-top: 14px; pointer-events: none;"><i class="fas fa-upload"></i> Select Files</button>
     </div>
 
     <!-- MAIN STUDIO WORKSPACE (Hidden until media loaded) -->
@@ -880,12 +880,12 @@
               <span style="font-size: 0.82rem; font-weight: 800; color: var(--text-secondary); text-transform: uppercase;">
                 <i class="fas fa-photo-film"></i> Sequence Media Bin (Click clip to edit trim)
               </span>
-              <input type="file" id="mediaAddFileInput" accept="video/*,image/*" multiple style="display: none;" onchange="handleMediaBinUpload(event)">
+              <input type="file" id="mediaAddFileInput" accept="video/*,video/mp4,video/quicktime,video/webm,image/*,image/jpeg,image/png,image/webp,image/heic,image/heif" multiple style="position: absolute; width: 1px; height: 1px; opacity: 0; pointer-events: none;" onchange="handleMediaBinUpload(event)">
             </div>
             <div class="media-bin-strip" id="mediaBinStrip">
-              <button class="add-media-btn" onclick="document.getElementById('mediaAddFileInput').click()">
+              <label class="add-media-btn" for="mediaAddFileInput">
                 <i class="fas fa-plus"></i> Add Clip
-              </button>
+              </label>
             </div>
 
             <!-- DEDICATED ACTIVE CLIP PRECISION TRIMMER (FULL WIDTH ACCURACY) -->
@@ -1284,22 +1284,32 @@
     }
 
     // ===================================================
-    // ROBUST HIGH-SPEED MEDIA PROBE & THUMBNAIL GENERATOR
+    // ROBUST HIGH-SPEED MEDIA PROBE & THUMBNAIL GENERATOR (iOS & Mobile Optimized)
     // ===================================================
     function extractMediaInfo(file, isVid, url) {
       if (!isVid) {
         return new Promise((resolve) => {
           const img = new Image();
-          img.onload = () => {
+          let settled = false;
+          const finish = (w, h) => {
+            if (settled) return;
+            settled = true;
             resolve({
               duration: 3.0,
               thumbnail: url,
-              width: img.naturalWidth || 1920,
-              height: img.naturalHeight || 1080
+              width: (w && w > 10) ? w : 1920,
+              height: (h && h > 10) ? h : 1080
             });
           };
+
+          const timer = setTimeout(() => finish(1920, 1080), 400);
+          img.onload = () => {
+            clearTimeout(timer);
+            finish(img.naturalWidth, img.naturalHeight);
+          };
           img.onerror = () => {
-            resolve({ duration: 3.0, thumbnail: url, width: 1920, height: 1080 });
+            clearTimeout(timer);
+            finish(1920, 1080);
           };
           img.src = url;
         });
@@ -1332,21 +1342,22 @@
           const validDur = (Number.isFinite(duration) && duration > 0.05) ? duration : 5.0;
           resolve({
             duration: validDur,
-            thumbnail: thumb || null,
+            thumbnail: thumb || url,
             width: tempVid.videoWidth || 1920,
             height: tempVid.videoHeight || 1080
           });
         };
 
+        // Safety fallback timer: Max 350ms so iOS never hangs
         const timer = setTimeout(() => {
-          finish(tempVid.duration || 5.0, null);
-        }, 2200);
+          const dur = (Number.isFinite(tempVid.duration) && tempVid.duration > 0.05) ? tempVid.duration : 5.0;
+          finish(dur, null);
+        }, 350);
 
         tempVid.onloadedmetadata = () => {
-          const dur = tempVid.duration;
-          // Capture a frame thumbnail at 0.1s or 10%
+          const dur = (Number.isFinite(tempVid.duration) && tempVid.duration > 0.05) ? tempVid.duration : 5.0;
           try {
-            tempVid.currentTime = Math.min(0.5, (dur || 5) * 0.1);
+            tempVid.currentTime = Math.min(0.2, dur * 0.1);
           } catch(e) {
             clearTimeout(timer);
             finish(dur, null);
@@ -1383,15 +1394,16 @@
     // MEDIA BIN UPLOAD & BATCH INITIALIZATION
     // ==========================================
     async function handleMediaBinUpload(e) {
-      const files = Array.from(e.target.files);
+      const files = Array.from(e.target.files || []);
       if (!files.length) return;
 
       const previousCount = mediaClips.length;
 
       for (let i = 0; i < files.length; i++) {
         const file = files[i];
-        const isVid = file.type.startsWith('video/') || /\.(mp4|webm|mov|m4v|mkv|3gp)$/i.test(file.name);
-        const isImg = file.type.startsWith('image/') || /\.(jpg|jpeg|png|webp|gif|bmp)$/i.test(file.name);
+        const isVid = file.type.startsWith('video/') || /\.(mp4|webm|mov|m4v|mkv|3gp|avi|ts|flv)$/i.test(file.name);
+        const isImg = file.type.startsWith('image/') || /\.(jpg|jpeg|png|webp|gif|bmp|heic|heif|avif|tiff|svg)$/i.test(file.name) || (!isVid && !file.type);
+
         if (!isVid && !isImg) continue;
 
         const url = URL.createObjectURL(file);
@@ -1452,9 +1464,9 @@
         strip.appendChild(item);
       });
 
-      const addBtn = document.createElement('button');
+      const addBtn = document.createElement('label');
       addBtn.className = 'add-media-btn';
-      addBtn.onclick = () => document.getElementById('mediaAddFileInput').click();
+      addBtn.setAttribute('for', 'mediaAddFileInput');
       addBtn.innerHTML = '<i class="fas fa-plus"></i> Add Clip';
       strip.appendChild(addBtn);
     }

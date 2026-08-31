@@ -627,9 +627,6 @@
       user-select: none !important;
       -webkit-user-select: none !important;
     }
-    #videoEl {
-      pointer-events: none; /* Touches routed through touch zones to avoid native video download popup */
-    }
   </style>
 </head>
 <body>
@@ -867,7 +864,10 @@
     let holdSpeedTimeout = null;
 
     function initAudioBooster() {
-      if (audioCtx) return;
+      if (audioCtx) {
+        if (audioCtx.state === 'suspended') audioCtx.resume().catch(() => {});
+        return;
+      }
       try {
         const AudioContext = window.AudioContext || window.webkitAudioContext;
         audioCtx = new AudioContext();
@@ -959,11 +959,11 @@
 
       renderPlaylistSidebar();
       if (startIndex === 0) {
-        loadTrack(0);
+        loadTrack(0, true);
       }
     }
 
-    function loadTrack(index) {
+    function loadTrack(index, autoPlay = true) {
       if (index < 0 || index >= playlist.length) return;
       currentTrackIndex = index;
       const track = playlist[index];
@@ -974,30 +974,37 @@
 
       renderPlaylistSidebar();
 
-      video.onloadedmetadata = () => {
+      video.onloadeddata = () => {
         updateTimeDisplay();
         ambientCanvas.width = 160;
         ambientCanvas.height = 90;
+        if (autoPlay) {
+          if (audioCtx && audioCtx.state === 'suspended') {
+            audioCtx.resume().catch(() => {});
+          }
+          const playPromise = video.play();
+          if (playPromise !== undefined) {
+            playPromise.then(() => {
+              document.getElementById('btnPlayPause').innerHTML = '<i class="fas fa-pause"></i>';
+            }).catch(() => {
+              document.getElementById('btnPlayPause').innerHTML = '<i class="fas fa-play"></i>';
+            });
+          }
+        }
       };
 
-      initAudioBooster();
+      video.onloadedmetadata = () => {
+        updateTimeDisplay();
+      };
 
-      const playPromise = video.play();
-      if (playPromise !== undefined) {
-        playPromise.then(() => {
-          document.getElementById('btnPlayPause').innerHTML = '<i class="fas fa-pause"></i>';
-        }).catch(() => {
-          document.getElementById('btnPlayPause').innerHTML = '<i class="fas fa-play"></i>';
-        });
-      }
       showCenterPulse('play');
       renderAmbientLoop();
     }
 
     function playNextTrack() {
       if (currentTrackIndex < playlist.length - 1) {
-        loadTrack(currentTrackIndex + 1);
-        showHudToast('fa-forward-step', `Next: ${playlist[currentTrackIndex].name}`);
+        loadTrack(currentTrackIndex + 1, true);
+        showHudToast('fa-forward-step', `Next: ${playlist[currentTrackIndex + 1].name}`);
       } else {
         showHudToast('fa-circle-info', 'End of Playlist');
       }
@@ -1007,8 +1014,8 @@
       if (video.currentTime > 3) {
         video.currentTime = 0;
       } else if (currentTrackIndex > 0) {
-        loadTrack(currentTrackIndex - 1);
-        showHudToast('fa-backward-step', `Previous: ${playlist[currentTrackIndex].name}`);
+        loadTrack(currentTrackIndex - 1, true);
+        showHudToast('fa-backward-step', `Previous: ${playlist[currentTrackIndex - 1].name}`);
       }
     }
 

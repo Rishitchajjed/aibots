@@ -2327,8 +2327,136 @@
     }
 
     // ===================================================
-    // HIGH-SPEED LOSSLESS HD EXPORT ENGINE (MOBILE BULLETPROOF)
+    // MASTER MULTI-CLIP AUDIO SYNTHESIZER & MIXER
     // ===================================================
+    async function buildMasterSequenceAudioBuffer(targetSampleRate = 44100) {
+      const totalDur = getTotalSequenceDuration();
+      if (totalDur <= 0.05) return null;
+
+      try {
+        const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+        if (!AudioContextClass) return null;
+        const actx = new AudioContextClass({ sampleRate: targetSampleRate });
+        const totalSamples = Math.ceil(totalDur * targetSampleRate);
+        const masterBuffer = actx.createBuffer(2, totalSamples, targetSampleRate);
+        const leftOut = masterBuffer.getChannelData(0);
+        const rightOut = masterBuffer.getChannelData(1);
+
+        const vVol = (parseFloat(document.getElementById('sliderVideoVol')?.value || 100) / 100);
+        const bVol = (parseFloat(document.getElementById('sliderBgmVol')?.value || 80) / 100);
+
+        let accumulatedTime = 0;
+
+        // 1. Decode and place each video clip's audio track
+        for (let i = 0; i < mediaClips.length; i++) {
+          const clip = mediaClips[i];
+          const clipDur = Math.max(0.1, clip.trimEnd - clip.trimStart);
+
+          if (clip.type === 'video' && clip.file) {
+            try {
+              const arrayBuffer = await clip.file.arrayBuffer();
+              const decoded = await actx.decodeAudioData(arrayBuffer);
+
+              const startSampleInClip = Math.floor(clip.trimStart * decoded.sampleRate);
+              const outStartSample = Math.floor(accumulatedTime * targetSampleRate);
+
+              const clipLeft = decoded.getChannelData(0);
+              const clipRight = decoded.numberOfChannels > 1 ? decoded.getChannelData(1) : clipLeft;
+
+              const step = decoded.sampleRate / targetSampleRate;
+              const count = Math.min(totalSamples - outStartSample, Math.floor(clipDur * targetSampleRate));
+
+              for (let s = 0; s < count; s++) {
+                const srcIdx = startSampleInClip + Math.floor(s * step);
+                if (srcIdx < clipLeft.length && (outStartSample + s) < totalSamples) {
+                  leftOut[outStartSample + s] += clipLeft[srcIdx] * vVol;
+                  rightOut[outStartSample + s] += clipRight[srcIdx] * vVol;
+                }
+              }
+            } catch (err) {
+              console.warn(`Audio decoding notice for clip ${i + 1}:`, err);
+            }
+          }
+          accumulatedTime += clipDur;
+        }
+
+        // 2. Mix Background Music (BGM)
+        if (bgmLoaded && decodedAudioBuffer) {
+          const bgmLeft = decodedAudioBuffer.getChannelData(0);
+          const bgmRight = decodedAudioBuffer.numberOfChannels > 1 ? decodedAudioBuffer.getChannelData(1) : bgmLeft;
+          const bgmStartSample = Math.floor(bgmStartOffset * decodedAudioBuffer.sampleRate);
+          const step = decodedAudioBuffer.sampleRate / targetSampleRate;
+
+          for (let s = 0; s < totalSamples; s++) {
+            let srcIdx = bgmStartSample + Math.floor(s * step);
+            if (srcIdx >= bgmLeft.length) {
+              srcIdx = srcIdx % bgmLeft.length;
+            }
+            leftOut[s] += bgmLeft[srcIdx] * bVol;
+            rightOut[s] += bgmRight[srcIdx] * bVol;
+          }
+        }
+
+        // 3. Clamp to [-1.0, 1.0] to prevent audio distortion
+        for (let s = 0; s < totalSamples; s++) {
+          if (leftOut[s] > 1.0) leftOut[s] = 1.0;
+          else if (leftOut[s] < -1.0) leftOut[s] = -1.0;
+          if (rightOut[s] > 1.0) rightOut[s] = 1.0;
+          else if (rightOut[s] < -1.0) rightOut[s] = -1.0;
+        }
+
+        return { buffer: masterBuffer, audioCtx: actx };
+      } catch(e) {
+        console.warn("Master audio buffer building failed:", e);
+        return null;
+      }
+    }
+
+    // Helper: Pre-load and warm up a video element for crisp frame decoding
+    function prepareClipVideoElement(clip) {
+      return new Promise((resolve) => {
+        const tempVideo = document.createElement('video');
+        tempVideo.muted = true;
+        tempVideo.defaultMuted = true;
+        tempVideo.playsInline = true;
+        tempVideo.setAttribute('playsinline', '');
+        tempVideo.setAttribute('webkit-playsinline', '');
+        tempVideo.preload = 'auto';
+        tempVideo.crossOrigin = 'anonymous';
+        tempVideo.src = clip.url;
+
+        let finished = false;
+        const done = () => {
+          if (finished) return;
+          finished = true;
+          resolve(tempVideo);
+        };
+
+        const timer = setTimeout(done, 2000);
+
+        tempVideo.onloadeddata = () => {
+          tempVideo.currentTime = clip.trimStart;
+        };
+
+        tempVideo.onseeked = () => {
+          clearTimeout(timer);
+          done();
+        };
+
+        tempVideo.onerror = () => {
+          clearTimeout(timer);
+          done();
+        };
+
+        try { tempVideo.load(); } catch(e) {}
+      });
+    }
+
+    // ===================================================
+    // HIGH-SPEED LOSSLESS HD EXPORT ENGINE (MULTI-VIDEO MERGING)
+    // ===================================================
+    let activeExportAudioSource = null;
+
     async function startVideoExport() {
       if (isRendering || !mediaClips.length) return;
 
@@ -2343,9 +2471,21 @@
       document.getElementById('exportOverlay').classList.add('active');
       document.getElementById('exportProgressBar').style.width = '0%';
       document.getElementById('exportPercentText').textContent = '0%';
-      document.getElementById('exportEtaText').textContent = 'Est. Time: Initializing...';
+      document.getElementById('exportEtaText').textContent = 'Est. Time: Synthesizing Audio...';
       document.getElementById('exportHeaderTitle').textContent = 'Rendering Video Output...';
-      document.getElementById('exportStatusText').textContent = 'Preparing video tracks...';
+      document.getElementById('exportStatusText').textContent = 'Synthesizing voice and audio from all clips...';
+
+      // 1. Pre-synthesize master composite audio track for 100% voice clarity
+      let masterAudioResult = null;
+      try {
+        masterAudioResult = await buildMasterSequenceAudioBuffer(44100);
+      } catch (err) {
+        console.warn("Master audio synthesis notice:", err);
+      }
+
+      if (!isRendering) return;
+
+      document.getElementById('exportStatusText').textContent = 'Initializing high-speed video encoder...';
 
       const isMobile = /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent) || window.innerWidth <= 768;
       
@@ -2378,7 +2518,7 @@
       ctx.imageSmoothingEnabled = true;
       ctx.imageSmoothingQuality = 'high';
 
-      // Initial black frame
+      // Clear initial black frame
       ctx.fillStyle = '#000000';
       ctx.fillRect(0, 0, canvas.width, canvas.height);
 
@@ -2392,12 +2532,21 @@
         return;
       }
 
-      if (audioDestinationNode && audioDestinationNode.stream && audioDestinationNode.stream.getAudioTracks().length > 0) {
+      // Attach synthesized master audio to stream
+      if (masterAudioResult && masterAudioResult.buffer && audioCtx) {
         try {
-          audioDestinationNode.stream.getAudioTracks().forEach(t => {
-            try { canvasStream.addTrack(t); } catch(err) {}
-          });
-        } catch(e) {}
+          const exportDest = audioCtx.createMediaStreamDestination();
+          activeExportAudioSource = audioCtx.createBufferSource();
+          activeExportAudioSource.buffer = masterAudioResult.buffer;
+          activeExportAudioSource.connect(exportDest);
+          
+          const audTrack = exportDest.stream.getAudioTracks()[0];
+          if (audTrack) {
+            canvasStream.addTrack(audTrack);
+          }
+        } catch(err) {
+          console.warn("Audio track stream attach notice:", err);
+        }
       }
 
       recordedChunks = [];
@@ -2441,26 +2590,20 @@
         document.getElementById('exportOverlay').classList.remove('active');
         isRendering = false;
         selectClip(activeClipIndex);
-        if (bgmLoaded) bgmAudio.pause();
       };
 
       const totalSeqDuration = getTotalSequenceDuration();
       let renderedDurationSoFar = 0;
       const exportStartTime = performance.now();
 
-      if (bgmLoaded) {
-        bgmAudio.currentTime = bgmStartOffset;
-        bgmAudio.playbackRate = 1.0;
-        bgmAudio.loop = true;
-        try {
-          const bgmPromise = bgmAudio.play();
-          if (bgmPromise !== undefined) bgmPromise.catch(() => {});
-        } catch(e) {}
+      // Start master audio source
+      if (activeExportAudioSource) {
+        try { activeExportAudioSource.start(0); } catch(e) {}
       }
 
       mediaRecorder.start(100);
 
-      // Render Sequence Clips with Full Multi-Video Merging & Transition Support
+      // Render Sequence Clips with Full Multi-Video Merging
       for (let i = 0; i < mediaClips.length; i++) {
         if (!isRendering || renderedDurationSoFar >= totalSeqDuration) break;
         const clip = mediaClips[i];
@@ -2471,66 +2614,53 @@
         document.getElementById('exportStatusText').textContent = `Encoding Clip ${i + 1} of ${mediaClips.length} (${selectedExportQuality.toUpperCase()})...`;
 
         if (clip.type === 'video') {
-          photo.style.display = 'none';
-          video.style.display = 'block';
-          
-          video.muted = true;
-          video.playsInline = true;
+          // Prepare a clean video element for this clip to ensure readiness and zero blank frames
+          const clipVid = await prepareClipVideoElement(clip);
+          if (!isRendering) break;
 
-          const currentSrc = video.src || '';
-          if (!currentSrc.includes(clip.url)) {
-            video.src = clip.url;
-            try { video.load(); } catch(e) {}
-            await new Promise(r => {
-              let s = false;
-              const done = () => { if (!s) { s = true; r(); } };
-              video.onloadeddata = done;
-              video.oncanplay = done;
-              setTimeout(done, 1000);
-            });
-          }
+          clipVid.currentTime = clip.trimStart;
 
-          video.currentTime = clip.trimStart;
-          await new Promise(r => {
-            let s = false;
-            const done = () => { if (!s) { s = true; r(); } };
-            video.onseeked = done;
-            setTimeout(done, 800);
-          });
-
-          video.playbackRate = 1.0;
-          let playSucceeded = false;
+          // Attempt real-time playback
+          let canPlayRealtime = false;
           try {
-            const p = video.play();
-            if (p !== undefined) {
-              await p;
-              playSucceeded = true;
+            const playP = clipVid.play();
+            if (playP !== undefined) {
+              await playP;
+              canPlayRealtime = true;
             }
           } catch(err) {
-            console.warn("Real-time play blocked on mobile, using seek stepper:", err);
+            canPlayRealtime = false;
           }
 
           let clipActualRendered = 0;
 
           await new Promise((resolve) => {
             let lastStepTime = performance.now();
-            let fallbackCurTime = clip.trimStart;
+            let currentSeekTime = clip.trimStart;
+            let isSeeking = false;
 
             function renderVideoClip(now) {
               if (!isRendering) return resolve();
 
-              drawFrameToCanvas(video, video.videoWidth || 1920, video.videoHeight || 1080);
+              // Draw only when video has ready data (prevents black/blank frames!)
+              if (clipVid.readyState >= 2) {
+                drawFrameToCanvas(clipVid, clipVid.videoWidth || 1920, clipVid.videoHeight || 1080);
+              }
 
               let clipElapsed = 0;
-              if (playSucceeded && !video.paused && video.currentTime > clip.trimStart) {
-                clipElapsed = Math.max(0, video.currentTime - clip.trimStart);
-                fallbackCurTime = video.currentTime;
+              if (canPlayRealtime && !clipVid.paused && clipVid.currentTime > clip.trimStart) {
+                clipElapsed = Math.max(0, clipVid.currentTime - clip.trimStart);
+                currentSeekTime = clipVid.currentTime;
               } else {
                 const dt = (now - lastStepTime) / 1000;
                 lastStepTime = now;
-                fallbackCurTime += Math.min(0.066, Math.max(0.016, dt));
-                video.currentTime = Math.min(effectiveClipEnd, fallbackCurTime);
-                clipElapsed = Math.max(0, fallbackCurTime - clip.trimStart);
+                currentSeekTime += Math.min(0.066, Math.max(0.016, dt));
+                if (!isSeeking) {
+                  isSeeking = true;
+                  clipVid.currentTime = Math.min(effectiveClipEnd, currentSeekTime);
+                  clipVid.onseeked = () => { isSeeking = false; };
+                }
+                clipElapsed = Math.max(0, currentSeekTime - clip.trimStart);
               }
 
               clipActualRendered = Math.min(clipDuration, clipElapsed);
@@ -2546,8 +2676,8 @@
                 document.getElementById('exportEtaText').textContent = `ETA: ~${formatTime(remainingSec)}`;
               }
 
-              if (clipActualRendered >= clipDuration - 0.05 || video.currentTime >= effectiveClipEnd - 0.05 || video.ended || (renderedDurationSoFar + clipActualRendered) >= totalSeqDuration) {
-                video.pause();
+              if (clipActualRendered >= clipDuration - 0.05 || clipVid.currentTime >= effectiveClipEnd - 0.05 || clipVid.ended || (renderedDurationSoFar + clipActualRendered) >= totalSeqDuration) {
+                try { clipVid.pause(); } catch(e) {}
                 renderedDurationSoFar += clipDuration;
                 resolve();
               } else {
@@ -2557,17 +2687,18 @@
             requestAnimationFrame(renderVideoClip);
           });
         } else {
-          video.style.display = 'none';
-          photo.style.display = 'block';
-          photo.src = clip.url;
+          // Photo Slide Clip
           const photoDur = Math.min(clipMaxAllowed, clip.duration);
           const startT = performance.now();
+          const imgEl = new Image();
+          imgEl.src = clip.url;
+          await new Promise(r => { imgEl.onload = r; setTimeout(r, 600); });
 
           await new Promise((resolve) => {
             function renderPhotoClip(now) {
               if (!isRendering) return resolve();
 
-              drawFrameToCanvas(photo, photo.naturalWidth || 1920, photo.naturalHeight || 1080);
+              drawFrameToCanvas(imgEl, imgEl.naturalWidth || 1920, imgEl.naturalHeight || 1080);
 
               const photoElapsed = Math.min(photoDur, (now - startT) / 1000);
               const totalElapsed = Math.min(totalSeqDuration, renderedDurationSoFar + photoElapsed);
@@ -2613,7 +2744,9 @@
       ctx.translate(canvas.width / 2, canvas.height / 2);
       ctx.rotate((rotationAngle * Math.PI) / 180);
       ctx.scale(flipH ? -1 : 1, flipV ? -1 : 1);
-      ctx.drawImage(srcElement, -drawW / 2, -drawH / 2, drawW, drawH);
+      try {
+        ctx.drawImage(srcElement, -drawW / 2, -drawH / 2, drawW, drawH);
+      } catch(e) {}
       ctx.restore();
 
       if (logoImage && logoImage.complete) {
@@ -2643,6 +2776,10 @@
       if (!isRendering) return;
       isRendering = false;
       clearTimeout(exportTimer);
+      if (activeExportAudioSource) {
+        try { activeExportAudioSource.stop(); } catch(e) {}
+        activeExportAudioSource = null;
+      }
       video.pause();
       if (bgmLoaded) bgmAudio.pause();
       if (mediaRecorder && mediaRecorder.state !== 'inactive') {
@@ -2653,6 +2790,10 @@
     function cancelExport() {
       isRendering = false;
       clearTimeout(exportTimer);
+      if (activeExportAudioSource) {
+        try { activeExportAudioSource.stop(); } catch(e) {}
+        activeExportAudioSource = null;
+      }
       if (mediaRecorder && mediaRecorder.state !== 'inactive') {
         mediaRecorder.stop();
       }

@@ -974,13 +974,27 @@ window.updateDonationQR = function(amt) {
       clicks[toolId] = (Number(clicks[toolId]) || 0) + 1;
       localStorage.setItem('aibots_tool_click_analytics', JSON.stringify(clicks));
 
+      const activeHash = localStorage.getItem('aibots_admin_master_hash') || "25db1abcf4f86ca6a3f1927a722063f35c46ae2986e64fe56ae2241463f6d0c0";
       const payload = {
+        action: 'record_click',
+        tool_id: toolId,
+        admin_password_hash: activeHash,
+        global_maintenance: localStorage.getItem('aibots_global_maintenance') === 'true',
+        disabled_tools: JSON.parse(localStorage.getItem('aibots_disabled_tools') || '[]'),
+        featured_tool: localStorage.getItem('aibots_featured_tool') || '',
+        announcement: JSON.parse(localStorage.getItem('aibots_global_announcement') || '{}'),
+        welcome_modal: JSON.parse(localStorage.getItem('aibots_welcome_modal_config') || '{}'),
+        festive_effects: JSON.parse(localStorage.getItem('aibots_festive_effects') || '{}'),
+        upi_config: JSON.parse(localStorage.getItem('aibots_custom_upi_config') || '{"id":"9384361008@mbk","name":"Rishit Chajjed","chips":"20, 50, 100, 250, 500"}'),
         analytics_clicks: clicks,
+        analytics_searches: JSON.parse(localStorage.getItem('aibots_search_query_log') || '[]'),
         updated_at: new Date().toISOString()
       };
 
+      const cloudApi = localStorage.getItem('aibots_custom_cloud_endpoint') || GOOGLE_DRIVE_CLOUD_API;
+
       // Push to Google Drive 24/7 Cloud API with keepalive
-      fetch(GOOGLE_DRIVE_CLOUD_API, {
+      fetch(cloudApi, {
         method: 'POST',
         headers: { 'Content-Type': 'text/plain;charset=utf-8' },
         body: JSON.stringify(payload),
@@ -1130,9 +1144,14 @@ window.updateDonationQR = function(amt) {
   ];
   
   window.fetchAndApplyGlobalCloudConfig = async function() {
-    for (const endpoint of CLOUD_ENDPOINTS) {
+    const customEndpoint = localStorage.getItem('aibots_custom_cloud_endpoint');
+    const endpoints = customEndpoint ? [customEndpoint, ...CLOUD_ENDPOINTS] : CLOUD_ENDPOINTS;
+
+    for (let i = 0; i < endpoints.length; i++) {
+      const endpoint = endpoints[i];
+      const isPrimaryCloud = (i === 0);
       try {
-        const url = endpoint.includes('?') ? endpoint : `${endpoint}?_=${Date.now()}`;
+        const url = endpoint.includes('?') ? `${endpoint}&_=${Date.now()}` : `${endpoint}?_=${Date.now()}`;
         const res = await fetch(url, { cache: 'no-store' });
         if (res.ok) {
           const txt = await res.text();
@@ -1140,7 +1159,7 @@ window.updateDonationQR = function(amt) {
           let parsed = JSON.parse(cleanTxt);
           if (Array.isArray(parsed) && parsed.length > 0) parsed = parsed[0];
           const cloud = (parsed && typeof parsed === 'object' && parsed.data) ? parsed.data : parsed;
-          if (cloud) {
+          if (cloud && typeof cloud === 'object') {
             if (cloud.global_maintenance !== undefined) {
               localStorage.setItem('aibots_global_maintenance', cloud.global_maintenance ? 'true' : 'false');
             }
@@ -1150,22 +1169,23 @@ window.updateDonationQR = function(amt) {
             if (cloud.featured_tool) {
               localStorage.setItem('aibots_featured_tool', cloud.featured_tool);
             }
-            if (cloud.announcement) {
+            if (cloud.announcement && Object.keys(cloud.announcement).length > 0) {
               localStorage.setItem('aibots_global_announcement', JSON.stringify(cloud.announcement));
             }
-            if (cloud.welcome_modal) {
+            if (cloud.welcome_modal && Object.keys(cloud.welcome_modal).length > 0) {
               localStorage.setItem('aibots_welcome_modal_config', JSON.stringify(cloud.welcome_modal));
             }
-            if (cloud.festive_effects) {
+            if (cloud.festive_effects && Object.keys(cloud.festive_effects).length > 0) {
               localStorage.setItem('aibots_festive_effects', JSON.stringify(cloud.festive_effects));
             }
             if (cloud.upi_config && cloud.upi_config.id) {
               localStorage.setItem('aibots_custom_upi_config', JSON.stringify(cloud.upi_config));
             }
-            if (cloud.analytics_clicks) {
-              localStorage.setItem('aibots_tool_click_analytics', JSON.stringify(cloud.analytics_clicks));
+            if (cloud.analytics_clicks && Object.keys(cloud.analytics_clicks).length > 0) {
+              const localClicks = JSON.parse(localStorage.getItem('aibots_tool_click_analytics') || '{}');
+              localStorage.setItem('aibots_tool_click_analytics', JSON.stringify({ ...localClicks, ...cloud.analytics_clicks }));
             }
-            if (cloud.analytics_searches) {
+            if (Array.isArray(cloud.analytics_searches) && cloud.analytics_searches.length > 0) {
               localStorage.setItem('aibots_search_query_log', JSON.stringify(cloud.analytics_searches));
             }
 

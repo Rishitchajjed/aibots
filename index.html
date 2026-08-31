@@ -2672,39 +2672,6 @@ body {
 
   </main>
 
-  <!-- Modern Multi-Column Footer -->
-  
-    <!-- ==========================================================================
-         🏆 Wall of Fame — Special Thanks to Our Supporters & Donors
-         ========================================================================== -->
-    <section class="app-container" style="margin-top: 60px; margin-bottom: 40px;" id="wallOfFameSection">
-      <div style="background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--radius-xl); padding: 36px 24px; text-align: center; box-shadow: var(--shadow-md); position: relative; overflow: hidden;">
-        
-        <div style="display: inline-flex; align-items: center; gap: 8px; background: rgba(245, 158, 11, 0.12); color: #f59e0b; border: 1px solid rgba(245, 158, 11, 0.3); padding: 5px 14px; border-radius: 999px; font-size: 0.82rem; font-weight: 800; margin-bottom: 12px;">
-          <i class="fas fa-trophy"></i> HALL OF GRATITUDE
-        </div>
-        
-        <h2 style="font-size: clamp(1.6rem, 3vw, 2.2rem); font-weight: 800; color: var(--text-primary); margin-bottom: 10px;">
-          Special Thanks to Our Supporters & Donors ❤️
-        </h2>
-        <p style="font-size: 0.92rem; color: var(--text-secondary); max-width: 620px; margin: 0 auto 26px;">
-          AI Bots is 100% free and independent. Huge appreciation to our generous contributors who keep our servers running and tools updated!
-        </p>
-
-        <!-- Dynamic Donors Grid -->
-        <div id="homeDonorsGrid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px; margin-bottom: 24px; text-align: left;">
-          <!-- Rendered live from cloud config -->
-        </div>
-
-        <div style="display: flex; justify-content: center; align-items: center; gap: 12px; flex-wrap: wrap;">
-          <button onclick="openDonationModal()" class="btn btn-primary btn-sm" style="background: linear-gradient(135deg, #ec4899, #f43f5e); border: none; font-weight: 700; box-shadow: 0 4px 14px rgba(236, 72, 153, 0.35);">
-            <i class="fas fa-heart"></i> Support AI Bots & Get Featured Here
-          </button>
-        </div>
-
-      </div>
-    </section>
-
   <footer class="app-footer">
     <div class="app-container">
       <div class="footer-grid">
@@ -2904,92 +2871,6 @@ body {
       }
     }
   </script>
-<script>
-    // ===================================================
-    // 🏆 Live Supporter & Donor Wall of Fame Renderer
-    // ===================================================
-    window.openUpiModal = function() { if (typeof openDonationModal === "function") openDonationModal(); };
-    function renderHomeDonorsList() {
-      const grid = document.getElementById('homeDonorsGrid');
-      if (!grid) return;
-
-      let donors = [];
-      const stored = localStorage.getItem('aibots_donors_list');
-      if (stored) {
-        try { donors = JSON.parse(stored); } catch(e) {}
-      }
-
-      if (!donors || donors.length === 0) {
-        donors = [
-          {
-            name: "Rishit Chajjed",
-            amount: "Creator & Founder",
-            tier: "👑 Founder",
-            message: "Building high-performance, private, and free creative web tools for creators worldwide!",
-            date: "Aug 2026"
-          },
-          {
-            name: "AI Bots Community",
-            amount: "Generous Supporters",
-            tier: "🌟 Community Heroes",
-            message: "Special thanks to all early adopters, feedback contributors, and generous donors!",
-            date: "Aug 2026"
-          }
-        ];
-      }
-
-      grid.innerHTML = donors.map(d => `
-        <div style="background: var(--bg-tertiary); border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 18px; display: flex; flex-direction: column; justify-content: space-between; box-shadow: var(--shadow-sm); transition: transform 0.2s ease, border-color 0.2s ease;">
-          <div>
-            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px; gap: 8px;">
-              <div style="font-weight: 800; font-size: 1rem; color: var(--text-primary); display: flex; align-items: center; gap: 6px;">
-                <span style="color: #f59e0b;">⭐</span> ${d.name}
-              </div>
-              <span style="font-size: 0.7rem; font-weight: 800; padding: 2px 8px; border-radius: 999px; background: rgba(245, 158, 11, 0.15); color: #f59e0b; border: 1px solid rgba(245, 158, 11, 0.3); white-space: nowrap;">
-                ${d.tier || '🌟 Supporter'}
-              </span>
-            </div>
-            ${d.message ? `<div style="font-size: 0.84rem; color: var(--text-secondary); font-style: italic; line-height: 1.4; margin-bottom: 10px;">"${d.message}"</div>` : ''}
-          </div>
-          
-          <div style="display: flex; justify-content: space-between; align-items: center; font-size: 0.76rem; color: var(--text-muted); border-top: 1px solid var(--border-color); padding-top: 8px; margin-top: 6px;">
-            <span style="font-weight: 700; color: #10b981;">${d.amount || '❤️ Contributor'}</span>
-            <span>${d.date || ''}</span>
-          </div>
-        </div>
-      `).join('');
-    }
-
-    // Auto-fetch latest cloud configuration on load
-    async function syncHomeDonorsFromCloud() {
-      try {
-        const endpoints = [
-          'https://script.google.com/macros/s/AKfycbwXmAujjr_UEo1keKOfC0yWuUHoIzmP1OL7pR7HelrasdaDtCYyC0BMyh6mI5731XPrvQ/exec?_=' + Date.now(),
-          'config.json?_=' + Date.now(),
-          'https://raw.githubusercontent.com/Rishitchajjed/aibots/main/config.json?_=' + Date.now()
-        ];
-        for (const ep of endpoints) {
-          try {
-            const res = await fetch(ep, { cache: 'no-store' });
-            if (res.ok) {
-              const data = await res.json();
-              const cloud = (data && typeof data === 'object' && data.data) ? data.data : data;
-              if (cloud && cloud.donors_list) {
-                localStorage.setItem('aibots_donors_list', JSON.stringify(cloud.donors_list));
-                renderHomeDonorsList();
-                break;
-              }
-            }
-          } catch(e) {}
-        }
-      } catch(err) {}
-    }
-
-    document.addEventListener('DOMContentLoaded', () => {
-      renderHomeDonorsList();
-      syncHomeDonorsFromCloud();
-    });
-</script>
 </body>
 </html>
 

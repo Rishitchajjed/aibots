@@ -36,23 +36,5 @@
     "gemini ai",
     "resume builder"
   ],
-  "updated_at": "2026-08-28T22:03:00Z",
-  "donors_list": [
-    {
-      "id": "donor_1",
-      "name": "Rishit Chajjed",
-      "amount": "Creator & Founder",
-      "tier": "\ud83d\udc51 Founder",
-      "message": "Building high-performance, private, and free creative web tools for creators worldwide!",
-      "date": "Aug 2026"
-    },
-    {
-      "id": "donor_2",
-      "name": "AI Bots Community",
-      "amount": "Generous Supporters",
-      "tier": "\ud83c\udf1f Community Heroes",
-      "message": "Special thanks to all early adopters, feedback contributors, and generous donors!",
-      "date": "Aug 2026"
-    }
-  ]
+  "updated_at": "2026-08-28T22:03:00Z"
 }

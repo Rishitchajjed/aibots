@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -416,7 +416,6 @@
         <button class="admin-tab-btn" onclick="switchAdminTab('aiTab', this)"><i class="fas fa-robot"></i> Gemini AI Studio</button>
         <button class="admin-tab-btn" onclick="switchAdminTab('broadcastTab', this)"><i class="fas fa-bullhorn"></i> Live Banners & Popups</button>
         <button class="admin-tab-btn" onclick="switchAdminTab('festiveTab', this)"><i class="fas fa-wand-magic-sparkles"></i> Festive Decorator</button>
-        <button class="admin-tab-btn" onclick="switchAdminTab('donorsTab', this)"><i class="fas fa-trophy"></i> Supporters & Donors Wall</button>
         <button class="admin-tab-btn" onclick="switchAdminTab('monetizationTab', this)"><i class="fas fa-heart"></i> UPI Donations</button>
         <button class="admin-tab-btn" onclick="switchAdminTab('analyticsTab', this)"><i class="fas fa-chart-line"></i> Search & Clicks Log</button>
         <button class="admin-tab-btn" onclick="switchAdminTab('securityTab', this)"><i class="fas fa-key"></i> Security & Password</button>
@@ -740,71 +739,6 @@
         </div>
       </div>
 
-      
-      <!-- TAB: Supporters & Donation Wall of Fame Manager -->
-      <div id="donorsTab" class="tab-pane">
-        <div class="admin-card">
-          <div class="admin-card-header">
-            <div style="display: flex; align-items: center; gap: 12px;">
-              <div class="admin-card-icon" style="background: linear-gradient(135deg, #f59e0b, #ec4899);"><i class="fas fa-trophy"></i></div>
-              <div>
-                <h2 class="admin-card-title">Supporters & Donation Wall of Fame</h2>
-                <p class="admin-card-subtitle">Appreciate donors and supporters by featuring their names, contributions, and quotes on the homepage.</p>
-              </div>
-            </div>
-          </div>
-
-          <div style="background: var(--bg-tertiary); border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 22px; margin-bottom: 22px;">
-            <h3 style="font-size: 1.05rem; font-weight: 800; margin-bottom: 14px; color: var(--text-primary);"><i class="fas fa-plus-circle" style="color: #f59e0b;"></i> Add New Donor / Supporter</h3>
-            
-            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 14px; margin-bottom: 14px;">
-              <div>
-                <label class="form-label">SUPPORTER NAME *</label>
-                <input type="text" id="donorNameInput" class="form-control" placeholder="e.g. Rohan Sharma">
-              </div>
-              <div>
-                <label class="form-label">CONTRIBUTION / AMOUNT</label>
-                <input type="text" id="donorAmountInput" class="form-control" placeholder="e.g. ₹500 or Coffee Support">
-              </div>
-              <div>
-                <label class="form-label">APPRECIATION TIER / BADGE</label>
-                <select id="donorTierInput" class="form-control">
-                  <option value="👑 Diamond Patron">👑 Diamond Patron</option>
-                  <option value="🥇 Gold Supporter" selected>🥇 Gold Supporter</option>
-                  <option value="🥈 Silver Backer">🥈 Silver Backer</option>
-                  <option value="🌟 Community Hero">🌟 Community Hero</option>
-                  <option value="☕ Coffee Contributor">☕ Coffee Contributor</option>
-                  <option value="💖 Generous Backer">💖 Generous Backer</option>
-                </select>
-              </div>
-              <div>
-                <label class="form-label">DATE / MONTH</label>
-                <input type="text" id="donorDateInput" class="form-control" placeholder="e.g. Aug 2026">
-              </div>
-            </div>
-
-            <div style="margin-bottom: 16px;">
-              <label class="form-label">PERSONAL MESSAGE / APPRECIATION NOTE</label>
-              <input type="text" id="donorMessageInput" class="form-control" placeholder="e.g. Thank you for making amazing free tools!">
-            </div>
-
-            <button onclick="addDonorEntry()" class="btn btn-primary" style="background: linear-gradient(135deg, #f59e0b, #ec4899); border: none; font-weight: 800; padding: 10px 20px;">
-              <i class="fas fa-plus"></i> Add Supporter to Wall
-            </button>
-          </div>
-
-          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; flex-wrap: wrap; gap: 10px;">
-            <h3 style="font-size: 1rem; font-weight: 800; color: var(--text-primary);"><i class="fas fa-list"></i> Current Featured Donors (<span id="donorCountText">0</span>)</h3>
-            <button onclick="syncDonorsToCloudNow()" class="btn btn-secondary btn-sm" style="color: #10b981; border-color: rgba(16, 185, 129, 0.4);">
-              <i class="fas fa-cloud-arrow-up"></i> Save & Sync Donors to Cloud
-            </button>
-          </div>
-
-          <div id="donorsListContainer" style="display: flex; flex-direction: column; gap: 12px;">
-            <!-- Rendered dynamically -->
-          </div>
-        </div>
-      </div>
 
       <!-- TAB 5: UPI Donations & Payee Config -->
       <div id="monetizationTab" class="tab-pane">
@@ -1504,12 +1438,14 @@
     function exportAllConfigs() {
       const backup = {
         exportDate: new Date().toISOString(),
-        disabledTools: JSON.parse(localStorage.getItem('aibots_disabled_tools') || '[]'),
-        featuredTool: localStorage.getItem('aibots_featured_tool') || '',
+        admin_password_hash: localStorage.getItem(STORAGE_KEY) || BASE_DEFAULT_HASH,
+        global_maintenance: localStorage.getItem('aibots_global_maintenance') === 'true',
+        disabled_tools: JSON.parse(localStorage.getItem('aibots_disabled_tools') || '[]'),
+        featured_tool: localStorage.getItem('aibots_featured_tool') || '',
         announcement: JSON.parse(localStorage.getItem('aibots_global_announcement') || '{}'),
-        welcomeModal: JSON.parse(localStorage.getItem('aibots_welcome_modal_config') || '{}'),
-        festive: JSON.parse(localStorage.getItem('aibots_festive_effects') || '{}'),
-        upi: JSON.parse(localStorage.getItem('aibots_custom_upi_config') || '{}'),
+        welcome_modal: JSON.parse(localStorage.getItem('aibots_welcome_modal_config') || '{}'),
+        festive_effects: JSON.parse(localStorage.getItem('aibots_festive_effects') || '{}'),
+        upi_config: JSON.parse(localStorage.getItem('aibots_custom_upi_config') || '{}'),
         ai: {
           temp: localStorage.getItem('aibots_ai_temperature'),
           maxTokens: localStorage.getItem('aibots_ai_max_tokens')
@@ -1532,15 +1468,18 @@
       reader.onload = function(e) {
         try {
           const cfg = JSON.parse(e.target.result);
-          if (cfg.disabledTools) localStorage.setItem('aibots_disabled_tools', JSON.stringify(cfg.disabledTools));
-          if (cfg.featuredTool !== undefined) localStorage.setItem('aibots_featured_tool', cfg.featuredTool);
+          if (cfg.admin_password_hash) localStorage.setItem(STORAGE_KEY, cfg.admin_password_hash);
+          if (cfg.global_maintenance !== undefined) localStorage.setItem('aibots_global_maintenance', cfg.global_maintenance ? 'true' : 'false');
+          if (cfg.disabled_tools || cfg.disabledTools) localStorage.setItem('aibots_disabled_tools', JSON.stringify(cfg.disabled_tools || cfg.disabledTools));
+          if (cfg.featured_tool !== undefined || cfg.featuredTool !== undefined) localStorage.setItem('aibots_featured_tool', cfg.featured_tool || cfg.featuredTool || '');
           if (cfg.announcement) localStorage.setItem('aibots_global_announcement', JSON.stringify(cfg.announcement));
-          if (cfg.welcomeModal) localStorage.setItem('aibots_welcome_modal_config', JSON.stringify(cfg.welcomeModal));
-          if (cfg.festive) localStorage.setItem('aibots_festive_effects', JSON.stringify(cfg.festive));
-          if (cfg.upi) localStorage.setItem('aibots_custom_upi_config', JSON.stringify(cfg.upi));
+          if (cfg.welcome_modal || cfg.welcomeModal) localStorage.setItem('aibots_welcome_modal_config', JSON.stringify(cfg.welcome_modal || cfg.welcomeModal));
+          if (cfg.festive_effects || cfg.festive) localStorage.setItem('aibots_festive_effects', JSON.stringify(cfg.festive_effects || cfg.festive));
+          if (cfg.upi_config || cfg.upi) localStorage.setItem('aibots_custom_upi_config', JSON.stringify(cfg.upi_config || cfg.upi));
           
           initAdminControls();
-          showToast('Configuration successfully imported!', 'success');
+          showToast('Configuration imported successfully!', 'success');
+          syncConfigToCloudOnline(true);
         } catch (err) {
           showToast('Invalid JSON backup file!', 'error');
         }
@@ -1587,136 +1526,24 @@
     // ==========================================
     // MODULE 8: Live Online Cloud Sync Engine (Google Drive Cloud Backend)
     // ==========================================
-    
-    // ==========================================
-    // MODULE: Donors & Wall of Fame Manager
-    // ==========================================
-    let donorsList = [];
-
-    function initDonorsSettings() {
-      const stored = localStorage.getItem('aibots_donors_list');
-      if (stored) {
-        try {
-          donorsList = JSON.parse(stored);
-        } catch(e) {
-          donorsList = [];
-        }
-      } else {
-        donorsList = [
-          {
-            id: 'donor_1',
-            name: 'Rishit Chajjed',
-            amount: 'Creator & Founder',
-            tier: '👑 Founder',
-            message: 'Building high-performance, private, and free creative web tools for creators worldwide!',
-            date: 'Aug 2026'
-          },
-          {
-            id: 'donor_2',
-            name: 'AI Bots Community',
-            amount: 'Generous Supporters',
-            tier: '🌟 Community Heroes',
-            message: 'Special thanks to all early adopters, feedback contributors, and generous donors!',
-            date: 'Aug 2026'
-          }
-        ];
-        localStorage.setItem('aibots_donors_list', JSON.stringify(donorsList));
-      }
-      renderDonorsList();
-    }
-
-    function renderDonorsList() {
-      const container = document.getElementById('donorsListContainer');
-      const countEl = document.getElementById('donorCountText');
-      if (countEl) countEl.textContent = donorsList.length;
-      if (!container) return;
-
-      if (donorsList.length === 0) {
-        container.innerHTML = '<div style="font-size: 0.85rem; color: var(--text-secondary); text-align: center; padding: 18px; border: 1px dashed var(--border-color); border-radius: var(--radius-md);">No donors added yet. Add your first supporter above!</div>';
-        return;
-      }
-
-      container.innerHTML = donorsList.map((donor, idx) => `
-        <div style="display: flex; align-items: center; justify-content: space-between; background: var(--bg-primary); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 12px 16px; gap: 12px; flex-wrap: wrap;">
-          <div style="display: flex; align-items: center; gap: 12px;">
-            <div style="width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, #f59e0b, #ec4899); color: white; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 1.1rem;">
-              ${donor.name.charAt(0).toUpperCase()}
-            </div>
-            <div>
-              <div style="font-weight: 800; font-size: 0.95rem; color: var(--text-primary); display: flex; align-items: center; gap: 8px;">
-                ${donor.name}
-                <span style="font-size: 0.72rem; padding: 2px 8px; border-radius: 999px; background: rgba(245, 158, 11, 0.15); color: #f59e0b; border: 1px solid rgba(245, 158, 11, 0.3); font-weight: 700;">
-                  ${donor.tier || '🌟 Supporter'}
-                </span>
-                ${donor.amount ? `<span style="font-size: 0.75rem; color: #10b981; font-weight: 700;">${donor.amount}</span>` : ''}
-              </div>
-              ${donor.message ? `<div style="font-size: 0.82rem; color: var(--text-secondary); margin-top: 3px;">"${donor.message}"</div>` : ''}
-              ${donor.date ? `<div style="font-size: 0.72rem; color: var(--text-muted); margin-top: 2px;">${donor.date}</div>` : ''}
-            </div>
-          </div>
-
-          <button onclick="deleteDonorEntry(${idx})" class="btn btn-secondary btn-sm" style="color: #ef4444; border-color: rgba(239,68,68,0.3); padding: 4px 10px;" title="Remove from wall">
-            <i class="fas fa-trash"></i> Remove
-          </button>
-        </div>
-      `).join('');
-    }
-
-    function addDonorEntry() {
-      const name = document.getElementById('donorNameInput').value.trim();
-      const amount = document.getElementById('donorAmountInput').value.trim();
-      const tier = document.getElementById('donorTierInput').value;
-      const message = document.getElementById('donorMessageInput').value.trim();
-      let date = document.getElementById('donorDateInput').value.trim();
-
-      if (!name) {
-        showToast('Please enter a supporter name.', 'warning');
-        return;
-      }
-
-      if (!date) {
-        const now = new Date();
-        const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-        date = `${months[now.getMonth()]} ${now.getFullYear()}`;
-      }
-
-      const newDonor = {
-        id: 'donor_' + Date.now(),
-        name,
-        amount,
-        tier,
-        message,
-        date
-      };
-
-      donorsList.unshift(newDonor);
-      localStorage.setItem('aibots_donors_list', JSON.stringify(donorsList));
-      renderDonorsList();
-
-      document.getElementById('donorNameInput').value = '';
-      document.getElementById('donorAmountInput').value = '';
-      document.getElementById('donorMessageInput').value = '';
-      document.getElementById('donorDateInput').value = '';
-
-      showToast(`Added ${name} to the Wall of Fame!`, 'success');
-      syncConfigToCloudOnline();
-    }
-
-    function deleteDonorEntry(idx) {
-      if (confirm(`Remove ${donorsList[idx].name} from the Wall of Fame?`)) {
-        donorsList.splice(idx, 1);
-        localStorage.setItem('aibots_donors_list', JSON.stringify(donorsList));
-        renderDonorsList();
-        showToast('Supporter removed from list.', 'info');
-        syncConfigToCloudOnline();
-      }
-    }
-
-    async function syncDonorsToCloudNow() {
-      await syncConfigToCloudOnline(true);
-    }
-
     const GOOGLE_DRIVE_CLOUD_API = 'https://script.google.com/macros/s/AKfycbwXmAujjr_UEo1keKOfC0yWuUHoIzmP1OL7pR7HelrasdaDtCYyC0BMyh6mI5731XPrvQ/exec';
+
+    function getFullAdminConfigPayload(overrideHash = null) {
+      const activeHash = overrideHash || localStorage.getItem(STORAGE_KEY) || BASE_DEFAULT_HASH;
+      return {
+        admin_password_hash: activeHash,
+        global_maintenance: localStorage.getItem('aibots_global_maintenance') === 'true',
+        disabled_tools: JSON.parse(localStorage.getItem('aibots_disabled_tools') || '[]'),
+        featured_tool: localStorage.getItem('aibots_featured_tool') || '',
+        announcement: JSON.parse(localStorage.getItem('aibots_global_announcement') || '{}'),
+        welcome_modal: JSON.parse(localStorage.getItem('aibots_welcome_modal_config') || '{}'),
+        festive_effects: JSON.parse(localStorage.getItem('aibots_festive_effects') || '{}'),
+        upi_config: JSON.parse(localStorage.getItem('aibots_custom_upi_config') || '{"id":"9384361008@mbk","name":"Rishit Chajjed","chips":"20, 50, 100, 250, 500"}'),
+        analytics_clicks: JSON.parse(localStorage.getItem('aibots_tool_click_analytics') || '{}'),
+        analytics_searches: JSON.parse(localStorage.getItem('aibots_search_query_log') || '[]'),
+        updated_at: new Date().toISOString()
+      };
+    }
 
     async function syncConfigToCloudOnline(showFeedback = false, overrideHash = null) {
       const dot = document.getElementById('cloudStatusDot');
@@ -1727,41 +1554,29 @@
         dot.style.background = '#f59e0b';
         dot.style.boxShadow = '0 0 10px #f59e0b';
       }
-      if (text) text.textContent = '☁️ Syncing changes online to Google Drive Cloud...';
+      if (text) text.textContent = '☁️ Syncing changes online to Cloud Database...';
 
-      const activeHash = overrideHash || localStorage.getItem(STORAGE_KEY) || BASE_DEFAULT_HASH;
-
-      const fullConfig = {
-        admin_password_hash: activeHash,
-        global_maintenance: localStorage.getItem('aibots_global_maintenance') === 'true',
-        disabled_tools: JSON.parse(localStorage.getItem('aibots_disabled_tools') || '[]'),
-        featured_tool: localStorage.getItem('aibots_featured_tool') || '',
-        announcement: JSON.parse(localStorage.getItem('aibots_global_announcement') || '{}'),
-        welcome_modal: JSON.parse(localStorage.getItem('aibots_welcome_modal_config') || '{}'),
-        festive_effects: JSON.parse(localStorage.getItem('aibots_festive_effects') || '{}'),
-        upi_config: JSON.parse(localStorage.getItem('aibots_custom_upi_config') || '{"id":"9384361008@mbk","name":"Rishit Chajjed"}'),
-        donors_list: JSON.parse(localStorage.getItem('aibots_donors_list') || '[]'),
-        analytics_clicks: JSON.parse(localStorage.getItem('aibots_tool_click_analytics') || '{}'),
-        analytics_searches: JSON.parse(localStorage.getItem('aibots_search_query_log') || '[]'),
-        updated_at: new Date().toISOString()
-      };
+      const fullConfig = getFullAdminConfigPayload(overrideHash);
+      const endpoint = localStorage.getItem('aibots_custom_cloud_endpoint') || GOOGLE_DRIVE_CLOUD_API;
 
       try {
-        await fetch(GOOGLE_DRIVE_CLOUD_API, {
+        await fetch(endpoint, {
           method: 'POST',
           headers: { 'Content-Type': 'text/plain;charset=utf-8' },
           body: JSON.stringify(fullConfig),
           mode: 'no-cors'
         });
-      } catch (e) {}
+      } catch (e) {
+        console.warn('Cloud sync POST error:', e);
+      }
 
       if (dot) {
         dot.style.background = '#10b981';
         dot.style.boxShadow = '0 0 10px #10b981';
       }
-      if (text) text.textContent = '🟢 Google Drive Cloud Sync: Active (Synced live 24/7)';
+      if (text) text.textContent = '🟢 Cloud Sync: Active (Synced live across all devices)';
       if (timeEl) timeEl.textContent = `Last Synced: ${new Date().toLocaleTimeString()}`;
-      if (showFeedback) showToast('✅ All settings saved and synced to Google Drive!', 'success');
+      if (showFeedback) showToast('✅ All settings saved & synced to Cloud!', 'success');
     }
 
     async function fetchCloudConfig(showFeedback = false) {
@@ -1769,15 +1584,17 @@
       const text = document.getElementById('cloudStatusText');
       const timeEl = document.getElementById('cloudLastSyncTime');
 
-      if (text) text.textContent = '🔄 Fetching latest configuration from Google Drive...';
+      if (text) text.textContent = '🔄 Fetching latest configuration from Cloud...';
 
+      const cloudApi = localStorage.getItem('aibots_custom_cloud_endpoint') || GOOGLE_DRIVE_CLOUD_API;
       const endpoints = [
-        `${GOOGLE_DRIVE_CLOUD_API}?_=${Date.now()}`,
+        `${cloudApi}${cloudApi.includes('?') ? '&' : '?'}_=${Date.now()}`,
         `config.json?_=${Date.now()}`,
         `https://raw.githubusercontent.com/Rishitchajjed/aibots/main/config.json?_=${Date.now()}`
       ];
 
-      for (const ep of endpoints) {
+      for (let i = 0; i < endpoints.length; i++) {
+        const ep = endpoints[i];
         try {
           const res = await fetch(ep, { cache: 'no-store' });
           if (res.ok) {
@@ -1786,7 +1603,7 @@
             let parsed = JSON.parse(cleanTxt);
             if (Array.isArray(parsed) && parsed.length > 0) parsed = parsed[0];
             const cloud = (parsed && typeof parsed === 'object' && parsed.data) ? parsed.data : parsed;
-            if (cloud) {
+            if (cloud && typeof cloud === 'object') {
               if (cloud.admin_password_hash) {
                 localStorage.setItem(STORAGE_KEY, cloud.admin_password_hash);
               }
@@ -1799,29 +1616,28 @@
               if (cloud.featured_tool !== undefined) {
                 localStorage.setItem('aibots_featured_tool', cloud.featured_tool);
               }
-              if (cloud.announcement) {
+              if (cloud.announcement && Object.keys(cloud.announcement).length > 0) {
                 localStorage.setItem('aibots_global_announcement', JSON.stringify(cloud.announcement));
               }
-              if (cloud.welcome_modal) {
+              if (cloud.welcome_modal && Object.keys(cloud.welcome_modal).length > 0) {
                 localStorage.setItem('aibots_welcome_modal_config', JSON.stringify(cloud.welcome_modal));
               }
-              if (cloud.festive_effects) {
+              if (cloud.festive_effects && Object.keys(cloud.festive_effects).length > 0) {
                 localStorage.setItem('aibots_festive_effects', JSON.stringify(cloud.festive_effects));
               }
-              if (cloud.upi_config) {
+              if (cloud.upi_config && cloud.upi_config.id) {
                 localStorage.setItem('aibots_custom_upi_config', JSON.stringify(cloud.upi_config));
               }
-              if (cloud.donors_list) {
-                localStorage.setItem('aibots_donors_list', JSON.stringify(cloud.donors_list));
+              if (cloud.analytics_clicks && Object.keys(cloud.analytics_clicks).length > 0) {
+                const localClicks = JSON.parse(localStorage.getItem('aibots_tool_click_analytics') || '{}');
+                const mergedClicks = { ...localClicks, ...cloud.analytics_clicks };
+                localStorage.setItem('aibots_tool_click_analytics', JSON.stringify(mergedClicks));
               }
-              if (cloud.analytics_clicks) {
-                localStorage.setItem('aibots_tool_click_analytics', JSON.stringify(cloud.analytics_clicks));
-              }
-              if (cloud.analytics_searches) {
+              if (Array.isArray(cloud.analytics_searches) && cloud.analytics_searches.length > 0) {
                 localStorage.setItem('aibots_search_query_log', JSON.stringify(cloud.analytics_searches));
               }
 
-              // Re-render local UI with cloud values
+              // Re-render local UI with updated values
               initMaintenanceControls();
               renderToolsRegistry();
               initAiSettings();
@@ -1892,7 +1708,6 @@
       initAnnouncementSettings();
       initFestiveSettings();
       initUpiSettings();
-      initDonorsSettings();
       initCustomCloudSettings();
       renderAnalytics();
       fetchCloudConfig();

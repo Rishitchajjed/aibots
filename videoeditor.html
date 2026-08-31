@@ -422,15 +422,16 @@
       cursor: pointer;
       display: flex;
       align-items: center;
+      justify-content: center;
       border: 2px solid transparent;
       transition: border-color 0.15s, box-shadow 0.15s;
       flex-shrink: 0;
-      min-width: 36px;
+      min-width: 42px;
       box-sizing: border-box;
     }
     .joined-clip-block.active {
       border-color: #ffffff !important;
-      box-shadow: 0 0 12px rgba(255, 255, 255, 0.6);
+      box-shadow: 0 0 10px rgba(255, 255, 255, 0.7);
       z-index: 15;
     }
     .joined-clip-content {
@@ -438,42 +439,48 @@
       inset: 0;
       display: flex;
       align-items: center;
-      justify-content: space-between;
-      padding: 0 6px;
+      justify-content: center;
+      gap: 3px;
+      padding: 0 4px;
       pointer-events: none;
-      font-size: 0.66rem;
+      font-size: 0.68rem;
       font-weight: 800;
       color: #ffffff;
-      text-shadow: 0 1px 4px rgba(0,0,0,0.8);
+      text-shadow: 0 1px 3px rgba(0,0,0,0.9);
       z-index: 5;
       overflow: hidden;
       white-space: nowrap;
+      text-overflow: ellipsis;
     }
 
-    /* Clip Drag Handles */
-    .clip-trim-handle {
+    /* Clip Drag Handles: Hidden on non-active clips so colors and titles stay vibrant */
+    .joined-clip-block .clip-trim-handle {
+      display: none;
+    }
+    .joined-clip-block.active .clip-trim-handle {
+      display: flex;
       position: absolute;
       top: 0;
       bottom: 0;
-      width: 16px;
+      width: 7px;
       cursor: ew-resize;
       z-index: 30;
-      display: flex;
       align-items: center;
       justify-content: center;
       touch-action: none;
       background: #ffffff;
-      box-shadow: 0 0 8px rgba(0,0,0,0.8);
+      box-shadow: 0 0 6px rgba(0,0,0,0.6);
+      border-radius: 2px;
     }
     .clip-trim-handle::after {
       content: '';
       width: 2px;
-      height: 16px;
+      height: 12px;
       background: #0f172a;
       border-radius: 1px;
     }
-    .clip-trim-left { left: 0; border-top-left-radius: var(--radius-sm); border-bottom-left-radius: var(--radius-sm); }
-    .clip-trim-right { right: 0; border-top-right-radius: var(--radius-sm); border-bottom-right-radius: var(--radius-sm); }
+    .clip-trim-left { left: 0; }
+    .clip-trim-right { right: 0; }
 
     /* AUDIO TRACK LANE WITH DIRECT VISUAL SCRUBBER */
     .audio-track-lane {

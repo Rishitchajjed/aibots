@@ -1021,10 +1021,19 @@
 
       renderPlaylistSidebar();
 
-      video.onloadeddata = () => {
+      let hasRenderedFrame = false;
+      const handleReady = () => {
         updateTimeDisplay();
         ambientCanvas.width = 160;
         ambientCanvas.height = 90;
+
+        if (!hasRenderedFrame) {
+          hasRenderedFrame = true;
+          if (video.currentTime === 0 && (video.duration || 0) > 0) {
+            try { video.currentTime = 0.001; } catch(e) {}
+          }
+        }
+
         if (autoPlay) {
           if (audioCtx && audioCtx.state === 'suspended') {
             audioCtx.resume().catch(() => {});
@@ -1040,11 +1049,10 @@
         }
       };
 
-      video.onloadedmetadata = () => {
-        updateTimeDisplay();
-      };
+      video.onloadedmetadata = handleReady;
+      video.onloadeddata = handleReady;
+      video.oncanplay = handleReady;
 
-      showCenterPulse('play');
       renderAmbientLoop();
     }
 

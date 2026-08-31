@@ -1,9 +1,32 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-<meta name="google-site-verification" content="ndzq-U-NLijgza_QqgQdcc2U3oMRoud_BT2ZZiwFREM">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+  <meta name="google-site-verification" content="ndzq-U-NLijgza_QqgQdcc2U3oMRoud_BT2ZZiwFREM">
   <meta name="google-site-verification" content="-Yb6Nx74gbZ3wRN5uP-Y8KKwDWlt1DPpxs4nA3PkE6M">
   <meta name="robots" content="index, follow">
+  <title>Image Combiner & Stitcher Studio — AI Bots</title>
+  <meta name="description" content="100% free, private browser tool to combine, merge, and stitch multiple photos horizontally, vertically, or in grid collages & printable sheets with custom spacing, background colors, and 4K export.">
+  <meta name="keywords" content="image combiner, merge images online, stitch photos side by side, vertical screenshot merger, collage maker, combine photos, photo joiner, picture merger online, AI Bots">
+  <meta name="author" content="Rishit Chajjed">
+  <link rel="icon" href="logo.png" type="image/png">
+  <link rel="canonical" href="https://www.aibots.co.in/imagecombiner.html">
+
+  <!-- Open Graph / Social Cards -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://www.aibots.co.in/imagecombiner.html">
+  <meta property="og:title" content="Image Combiner & Stitcher Studio — AI Bots">
+  <meta property="og:description" content="Combine and stitch multiple photos horizontally, vertically, or in custom grid collages with real-time preview and 4K export.">
+  <meta property="og:image" content="https://www.aibots.co.in/logo.png">
+
+  <!-- Twitter -->
+  <meta property="twitter:card" content="summary_large_image">
+  <meta property="twitter:url" content="https://www.aibots.co.in/imagecombiner.html">
+  <meta property="twitter:title" content="Image Combiner & Stitcher Studio — AI Bots">
+  <meta property="twitter:description" content="Combine and stitch multiple photos horizontally, vertically, or in custom grid collages with real-time preview and 4K export.">
+  <meta property="twitter:image" content="https://www.aibots.co.in/logo.png">
+
   <!-- Google Analytics -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-2L87FMQS3W"></script>
   <script>
@@ -13,83 +36,363 @@
     gtag('config', 'G-2L87FMQS3W');
   </script>
 
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="google-site-verification" content="-Yb6Nx74gbZ3wRN5uP-Y8KKwDWlt1DPpxs4nA3PkE6M">
-  <link rel="icon" href="logo.png" type="image/png">
-  <title>Image Combiner & Merger - AI Bots</title>
-
+  <!-- High-Priority Preconnects & Styles -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link rel="stylesheet" href="css/theme.css">
+
   <style>
-    .thumbs-grid {
+    /* Combiner Studio Layout */
+    .combiner-studio-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
-      gap: 14px;
-      margin: 20px 0;
+      grid-template-columns: 1fr 380px;
+      gap: 24px;
+      align-items: start;
+      margin-top: 24px;
     }
-    .thumb-card {
-      position: relative;
-      aspect-ratio: 1;
-      border-radius: var(--radius-md);
-      overflow: hidden;
+
+    @media (max-width: 1024px) {
+      .combiner-studio-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* Main Canvas Viewport Area */
+    .viewport-card {
+      background: var(--bg-secondary);
       border: 1px solid var(--border-color);
-      box-shadow: var(--shadow-sm);
-      background: var(--bg-tertiary);
-    }
-    .thumb-card img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
-    .result-pages-container {
+      border-radius: var(--radius-xl);
+      padding: 24px;
+      box-shadow: var(--shadow-md);
       display: flex;
       flex-direction: column;
-      gap: 24px;
-      margin: 32px 0;
-      align-items: center;
+      gap: 20px;
+      position: relative;
     }
-    .result-page-card {
-      max-width: 580px;
-      width: 100%;
+
+    .viewport-toolbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .canvas-preview-container {
+      min-height: 420px;
+      max-height: 720px;
+      background: #090d16;
+      background-image: 
+        linear-gradient(45deg, rgba(255,255,255,0.04) 25%, transparent 25%),
+        linear-gradient(-45deg, rgba(255,255,255,0.04) 25%, transparent 25%),
+        linear-gradient(45deg, transparent 75%, rgba(255,255,255,0.04) 75%),
+        linear-gradient(-45deg, transparent 75%, rgba(255,255,255,0.04) 75%);
+      background-size: 20px 20px;
+      background-position: 0 0, 0 10px, 10px -10px, -10px 0px;
+      border-radius: var(--radius-lg);
+      overflow: auto;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      border: 1px solid var(--border-color);
+      position: relative;
+      box-shadow: inset 0 0 30px rgba(0,0,0,0.6);
+    }
+
+    #mainCanvas {
+      max-width: 100%;
+      max-height: 640px;
+      object-fit: contain;
+      box-shadow: 0 12px 36px rgba(0,0,0,0.5);
+      border-radius: 4px;
+      transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    /* Thumbnail Strip & Image Order Manager */
+    .images-strip-card {
       background: var(--bg-tertiary);
       border: 1px solid var(--border-color);
       border-radius: var(--radius-lg);
       padding: 16px;
-      text-align: center;
     }
-    .result-page-card img {
-      max-width: 100%;
-      height: auto;
-      border-radius: var(--radius-sm);
+
+    .images-strip-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+
+    .thumbs-scroll-list {
+      display: flex;
+      gap: 12px;
+      overflow-x: auto;
+      padding: 4px 2px 12px 2px;
+      scroll-behavior: smooth;
+    }
+
+    .thumb-item {
+      position: relative;
+      width: 84px;
+      height: 84px;
+      flex-shrink: 0;
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      border: 2px solid var(--border-color);
+      background: var(--bg-primary);
+      cursor: grab;
+      transition: var(--transition-fast);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .thumb-item.active {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.25);
+    }
+
+    .thumb-item img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      pointer-events: none;
+    }
+
+    .thumb-badge {
+      position: absolute;
+      top: 4px;
+      left: 4px;
+      background: rgba(0,0,0,0.75);
+      color: white;
+      font-size: 0.65rem;
+      font-weight: 800;
+      padding: 2px 6px;
+      border-radius: 99px;
+      backdrop-filter: blur(4px);
+    }
+
+    .thumb-actions {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: rgba(0,0,0,0.8);
+      display: flex;
+      justify-content: space-around;
+      padding: 3px 0;
+      opacity: 0;
+      transition: opacity 0.15s ease;
+    }
+
+    .thumb-item:hover .thumb-actions {
+      opacity: 1;
+    }
+
+    .thumb-btn {
+      background: none;
+      border: none;
+      color: white;
+      font-size: 0.72rem;
+      cursor: pointer;
+      padding: 2px 5px;
+      transition: color 0.15s;
+    }
+
+    .thumb-btn:hover {
+      color: #f43f5e;
+    }
+
+    .thumb-btn.move-btn:hover {
+      color: #38bdf8;
+    }
+
+    .add-more-thumb-btn {
+      width: 84px;
+      height: 84px;
+      flex-shrink: 0;
+      border-radius: var(--radius-md);
+      border: 2px dashed var(--border-color);
+      background: rgba(99, 102, 241, 0.05);
+      color: var(--primary);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      cursor: pointer;
+      font-size: 0.75rem;
+      font-weight: 700;
+      transition: var(--transition-fast);
+    }
+
+    .add-more-thumb-btn:hover {
+      background: rgba(99, 102, 241, 0.15);
+      border-color: var(--primary);
+      transform: translateY(-2px);
+    }
+
+    /* Sidebar Controls Card */
+    .controls-sidebar {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-xl);
+      padding: 24px;
       box-shadow: var(--shadow-md);
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .control-section {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      padding-bottom: 18px;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .control-section:last-child {
+      border-bottom: none;
+      padding-bottom: 0;
+    }
+
+    .control-section-title {
+      font-size: 0.88rem;
+      font-weight: 800;
+      color: var(--text-primary);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .layout-buttons-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 8px;
+    }
+
+    .layout-mode-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 10px 12px;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border-color);
+      background: var(--bg-tertiary);
+      color: var(--text-secondary);
+      font-size: 0.82rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: var(--transition-fast);
+    }
+
+    .layout-mode-btn:hover {
+      border-color: var(--primary);
+      color: var(--text-primary);
+    }
+
+    .layout-mode-btn.active {
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      color: white;
+      border-color: transparent;
+      box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+    }
+
+    .slider-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+      margin-bottom: 4px;
+    }
+
+    .slider-value-badge {
+      font-family: var(--font-mono, monospace);
+      font-weight: 700;
+      color: var(--primary);
+      background: var(--bg-tertiary);
+      padding: 2px 8px;
+      border-radius: 6px;
+      border: 1px solid var(--border-color);
+    }
+
+    .color-swatches-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .color-swatch {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      border: 2px solid var(--border-color);
+      cursor: pointer;
+      transition: transform 0.15s ease;
+      position: relative;
+    }
+
+    .color-swatch:hover {
+      transform: scale(1.15);
+    }
+
+    .color-swatch.active {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.4);
+      transform: scale(1.15);
+    }
+
+    .color-swatch.transparent-swatch {
+      background-image: linear-gradient(45deg, #ccc 25%, transparent 25%), linear-gradient(-45deg, #ccc 25%, transparent 25%), linear-gradient(45deg, transparent 75%, #ccc 75%), linear-gradient(-45deg, transparent 75%, #ccc 75%);
+      background-size: 8px 8px;
+      background-position: 0 0, 0 4px, 4px -4px, -4px 0px;
+    }
+
+    /* Custom color input */
+    .color-picker-wrapper {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+    }
+
+    .color-picker-wrapper input[type="color"] {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      border: none;
+      padding: 0;
+      cursor: pointer;
+      background: none;
     }
   </style>
+
   <link rel="manifest" href="manifest.json">
   <meta name="theme-color" content="#6366f1">
-  <meta name="mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="apple-mobile-web-app-title" content="AI Bots">
-  <link rel="apple-touch-icon" href="logo.png">
-  <meta name="author" content="Rishit Chajjed">
-  <meta name="creator" content="Rishit Chajjed">
 </head>
 <body>
   <div class="bg-mesh"></div>
 
-  <!-- Navbar -->
+  <!-- App Header & Navigation -->
   <header class="navbar">
     <div class="app-container" style="width: 100%;">
       <div class="nav-wrapper">
         <a href="index.html" class="brand-link">
           <img src="logo.png" alt="AI Bots Logo" class="brand-logo-img">
           <span>AI Bots</span>
-          <span class="brand-badge">Image Combiner</span>
+          <span class="brand-badge">Combiner Studio</span>
         </a>
 
         <div class="nav-actions">
-          <a href="index.html" class="btn btn-secondary btn-sm"><i class="fas fa-house"></i> Hub</a>
+          <a href="index.html" class="btn btn-secondary btn-sm"><i class="fas fa-house"></i> Home</a>
           <button class="icon-btn theme-toggle-btn" title="Toggle Dark/Light Mode"><i class="fas fa-moon"></i></button>
         </div>
       </div>
@@ -97,226 +400,726 @@
   </header>
 
   <main class="app-container tool-page-wrapper">
+    
+    <!-- Breadcrumb & Header -->
     <div class="tool-header">
-      <span class="tool-header-badge"><i class="fas fa-layer-group"></i> Multi-Layout</span>
-      <h1 class="tool-title">Image Combiner & Merger</h1>
-      <p class="tool-desc">Select multiple photos and arrange them into structured single or multi-page A4/A3/Custom grid layouts.</p>
+      <span class="tool-header-badge"><i class="fas fa-layer-group"></i> Pro Photo Merger & Stitcher</span>
+      <h1 class="tool-title">Image Combiner & Stitcher Studio</h1>
+      <p class="tool-desc">Combine, merge, and stitch multiple photos horizontally, vertically, or in grid collages & printable sheets with pixel-perfect control.</p>
     </div>
 
-    <div class="tool-card-container">
+    <!-- Multi-File Dropzone -->
+    <div class="dropzone-container" id="dropzone" style="margin-bottom: 24px;">
+      <input type="file" id="imageFileInput" class="dropzone-input" accept="image/*" multiple onchange="handleFilesSelected(event)">
+      <div class="dropzone-icon"><i class="fas fa-images"></i></div>
+      <div class="dropzone-title">Click to Select Multiple Photos or Drag & Drop Here</div>
+      <div class="dropzone-subtitle">Select 2 to 50+ images (PNG, JPG, WebP, SVG, GIF) &bull; 100% private browser processing</div>
       
-      <!-- Multi-File Dropzone -->
-      <div class="dropzone-container" id="dropzone">
-        <input type="file" id="imageFile" class="dropzone-input" accept="image/*" multiple onchange="showPreview()">
-        <div class="dropzone-icon"><i class="fas fa-images"></i></div>
-        <div class="dropzone-title">Click to Select Multiple Images or Drag & Drop</div>
-        <div class="dropzone-subtitle">Select 2 or more photos to merge</div>
-      </div>
-
-      <!-- Preview Thumbs -->
-      <div id="imagePreview" class="thumbs-grid"></div>
-
-      <!-- Settings Form -->
-      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 20px;">
-        <div class="form-group">
-          <label class="form-label" for="pageSize"><i class="fas fa-file"></i> Page Canvas Format</label>
-          <select id="pageSize" class="form-control" onchange="updateCustomSizeInputs()">
-            <option value="a4" selected>A4 (595 × 842 pt)</option>
-            <option value="a3">A3 (842 × 1191 pt)</option>
-            <option value="a2">A2 (1191 × 1684 pt)</option>
-            <option value="custom">Custom Dimensions</option>
-          </select>
-        </div>
-
-        <div class="form-group">
-          <label class="form-label" for="numPages"><i class="fas fa-copy"></i> Max Pages Limit</label>
-          <input type="number" id="numPages" class="form-control" min="1" value="1">
-        </div>
-      </div>
-
-      <div id="customSizeInputs" style="display: none; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 20px;">
-        <div class="form-group">
-          <label class="form-label" for="widthInput">Custom Width (px):</label>
-          <input type="number" id="widthInput" class="form-control" placeholder="800" min="100">
-        </div>
-        <div class="form-group">
-          <label class="form-label" for="heightInput">Custom Height (px):</label>
-          <input type="number" id="heightInput" class="form-control" placeholder="1000" min="100">
-        </div>
-      </div>
-
-      <!-- Action Buttons -->
-      <div style="display: flex; gap: 12px; justify-content: center; margin-top: 24px; flex-wrap: wrap;">
-        <button type="button" class="btn btn-primary btn-lg" onclick="combineImages()">
-          <i class="fas fa-layer-group"></i> Combine & Generate Pages
-        </button>
-        <button id="downloadButton" type="button" class="btn btn-success btn-lg" style="display: none;" onclick="downloadImages()">
-          <i class="fas fa-download"></i> Download Combined Images
+      <div style="margin-top: 14px; display: flex; gap: 8px; justify-content: center; flex-wrap: wrap;">
+        <button type="button" class="btn btn-secondary btn-sm" onclick="loadSampleImages(event)" style="font-weight: 700;">
+          <i class="fas fa-wand-magic-sparkles"></i> Try with Sample Images
         </button>
       </div>
+    </div>
 
-      <!-- Result Pages -->
-      <div id="result" class="result-pages-container"></div>
+    <!-- Active Studio Workspace (Visible when images loaded) -->
+    <div id="studioWorkspace" class="combiner-studio-grid" style="display: none;">
+      
+      <!-- Left Column: Canvas Preview & Image Strip -->
+      <div style="display: flex; flex-direction: column; gap: 20px;">
+        
+        <!-- Viewport Card -->
+        <div class="viewport-card">
+          
+          <div class="viewport-toolbar">
+            <div style="display: flex; align-items: center; gap: 10px;">
+              <span id="canvasDimBadge" class="status-badge online" style="font-family: var(--font-mono, monospace); font-size: 0.78rem;">
+                <i class="fas fa-expand"></i> 0 × 0 px
+              </span>
+              <span id="imageCountBadge" style="font-size: 0.8rem; color: var(--text-secondary); font-weight: 700;">
+                0 Images
+              </span>
+            </div>
+
+            <div style="display: flex; gap: 8px; align-items: center;">
+              <button class="btn btn-secondary btn-sm" onclick="zoomCanvas(-0.15)" title="Zoom Out"><i class="fas fa-magnifying-glass-minus"></i></button>
+              <button class="btn btn-secondary btn-sm" onclick="resetCanvasZoom()" title="Reset Zoom"><i class="fas fa-compress"></i> Fit</button>
+              <button class="btn btn-secondary btn-sm" onclick="zoomCanvas(0.15)" title="Zoom In"><i class="fas fa-magnifying-glass-plus"></i></button>
+              <button class="btn btn-secondary btn-sm" onclick="clearAllImages()" title="Clear All" style="color: #ef4444;"><i class="fas fa-trash-can"></i></button>
+            </div>
+          </div>
+
+          <!-- Interactive Canvas Area -->
+          <div class="canvas-preview-container" id="canvasContainer">
+            <canvas id="mainCanvas"></canvas>
+          </div>
+
+        </div>
+
+        <!-- Thumbnail Reordering Strip -->
+        <div class="images-strip-card">
+          <div class="images-strip-header">
+            <div style="font-size: 0.88rem; font-weight: 800; color: var(--text-primary); display: flex; align-items: center; gap: 8px;">
+              <i class="fas fa-arrow-down-1-9" style="color: var(--primary);"></i> Image Order & Transforms
+            </div>
+            <span style="font-size: 0.75rem; color: var(--text-secondary);">Use arrows to rearrange</span>
+          </div>
+
+          <div class="thumbs-scroll-list" id="thumbsList">
+            <!-- Rendered Dynamically -->
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Right Column: Sidebar Controls -->
+      <div class="controls-sidebar">
+        
+        <!-- 1. Layout Mode Selection -->
+        <div class="control-section">
+          <div class="control-section-title"><i class="fas fa-table-cells" style="color: var(--primary);"></i> 1. Arrangement Layout</div>
+          
+          <div class="layout-buttons-grid">
+            <button type="button" class="layout-mode-btn active" data-mode="horizontal" onclick="setLayoutMode('horizontal')">
+              <i class="fas fa-arrows-left-right"></i> Side-by-Side
+            </button>
+            <button type="button" class="layout-mode-btn" data-mode="vertical" onclick="setLayoutMode('vertical')">
+              <i class="fas fa-arrows-up-down"></i> Top-to-Bottom
+            </button>
+            <button type="button" class="layout-mode-btn" data-mode="grid" onclick="setLayoutMode('grid')">
+              <i class="fas fa-border-all"></i> Smart Grid
+            </button>
+            <button type="button" class="layout-mode-btn" data-mode="document" onclick="setLayoutMode('document')">
+              <i class="fas fa-file-lines"></i> Sheet / Page
+            </button>
+          </div>
+
+          <!-- Grid Columns Sub-option (Only in grid mode) -->
+          <div id="gridColumnsOption" style="display: none; margin-top: 6px;">
+            <div class="slider-row">
+              <span>Grid Columns:</span>
+              <span id="gridColsVal" class="slider-value-badge">2 Columns</span>
+            </div>
+            <input type="range" id="gridColsInput" class="form-range" min="1" max="6" value="2" oninput="updateGridCols(this.value)" style="width: 100%;">
+          </div>
+
+          <!-- Document Sheet Preset Sub-option (Only in document mode) -->
+          <div id="documentSheetOption" style="display: none; margin-top: 6px;">
+            <label class="form-label" style="font-size: 0.8rem; margin-bottom: 4px;">Canvas Preset Format:</label>
+            <select id="sheetFormatSelect" class="form-control" onchange="renderCombinedCanvas()">
+              <option value="a4_p">A4 Portrait (2480 × 3508 px)</option>
+              <option value="a4_l">A4 Landscape (3508 × 2480 px)</option>
+              <option value="sq">Instagram Square 1:1 (2048 × 2048 px)</option>
+              <option value="story">Story / Reel 9:16 (1080 × 1920 px)</option>
+              <option value="landscape">Banner / Wide 16:9 (1920 × 1080 px)</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- 2. Spacing, Padding & Rounding -->
+        <div class="control-section">
+          <div class="control-section-title"><i class="fas fa-sliders" style="color: #f59e0b;"></i> 2. Spacing & Borders</div>
+          
+          <div>
+            <div class="slider-row">
+              <span>Gap / Spacing:</span>
+              <span id="gapVal" class="slider-value-badge">16 px</span>
+            </div>
+            <input type="range" id="gapInput" class="form-range" min="0" max="80" value="16" oninput="updateSliderVal('gap', this.value)" style="width: 100%;">
+          </div>
+
+          <div>
+            <div class="slider-row">
+              <span>Outer Padding:</span>
+              <span id="paddingVal" class="slider-value-badge">20 px</span>
+            </div>
+            <input type="range" id="paddingInput" class="form-range" min="0" max="100" value="20" oninput="updateSliderVal('padding', this.value)" style="width: 100%;">
+          </div>
+
+          <div>
+            <div class="slider-row">
+              <span>Rounded Corners:</span>
+              <span id="radiusVal" class="slider-value-badge">12 px</span>
+            </div>
+            <input type="range" id="radiusInput" class="form-range" min="0" max="60" value="12" oninput="updateSliderVal('radius', this.value)" style="width: 100%;">
+          </div>
+        </div>
+
+        <!-- 3. Canvas Background & Aspect Fit -->
+        <div class="control-section">
+          <div class="control-section-title"><i class="fas fa-palette" style="color: #ec4899;"></i> 3. Background & Fitting</div>
+          
+          <div>
+            <label class="form-label" style="font-size: 0.8rem; margin-bottom: 6px;">Canvas Background:</label>
+            <div class="color-swatches-row">
+              <button class="color-swatch transparent-swatch active" data-color="transparent" onclick="setCanvasColor('transparent', this)" title="Transparent"></button>
+              <button class="color-swatch" style="background: #ffffff;" data-color="#ffffff" onclick="setCanvasColor('#ffffff', this)" title="Pure White"></button>
+              <button class="color-swatch" style="background: #0f172a;" data-color="#0f172a" onclick="setCanvasColor('#0f172a', this)" title="Studio Dark"></button>
+              <button class="color-swatch" style="background: #000000;" data-color="#000000" onclick="setCanvasColor('#000000', this)" title="Pure Black"></button>
+              <button class="color-swatch" style="background: #6366f1;" data-color="#6366f1" onclick="setCanvasColor('#6366f1', this)" title="Indigo"></button>
+              <button class="color-swatch" style="background: #f43f5e;" data-color="#f43f5e" onclick="setCanvasColor('#f43f5e', this)" title="Rose"></button>
+              
+              <div class="color-picker-wrapper" title="Pick Custom Color">
+                <input type="color" id="customColorInput" value="#6366f1" onchange="setCanvasColor(this.value, null)">
+              </div>
+            </div>
+          </div>
+
+          <div style="margin-top: 6px;">
+            <label class="form-label" style="font-size: 0.8rem; margin-bottom: 4px;">Tile Alignment & Sizing:</label>
+            <select id="fitModeSelect" class="form-control" onchange="renderCombinedCanvas()">
+              <option value="contain" selected>Fit Inside Cells (Keep Full Photo)</option>
+              <option value="cover">Fill & Crop Cells (Uniform Grid Tiles)</option>
+              <option value="auto_height">Equalize Heights (Best for Horizontal)</option>
+              <option value="auto_width">Equalize Widths (Best for Vertical)</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- 4. Export & Download -->
+        <div class="control-section">
+          <div class="control-section-title"><i class="fas fa-download" style="color: #10b981;"></i> 4. Export & Download</div>
+          
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+            <div>
+              <label class="form-label" style="font-size: 0.76rem;">FORMAT</label>
+              <select id="exportFormat" class="form-control">
+                <option value="png" selected>PNG (Lossless)</option>
+                <option value="jpeg">JPG (Photos)</option>
+                <option value="webp">WebP (Compressed)</option>
+              </select>
+            </div>
+            <div>
+              <label class="form-label" style="font-size: 0.76rem;">RESOLUTION</label>
+              <select id="exportScale" class="form-control" onchange="renderCombinedCanvas()">
+                <option value="1" selected>1x (Standard HD)</option>
+                <option value="2">2x (Ultra HD 4K)</option>
+                <option value="3">3x (Print 300 DPI)</option>
+              </select>
+            </div>
+          </div>
+
+          <div style="display: flex; flex-direction: column; gap: 10px; margin-top: 6px;">
+            <button type="button" class="btn btn-primary" style="width: 100%; font-weight: 800; justify-content: center; padding: 12px;" onclick="downloadCombinedImage()">
+              <i class="fas fa-download"></i> Download Combined Image
+            </button>
+            <button type="button" class="btn btn-secondary btn-sm" style="width: 100%; justify-content: center; font-weight: 700;" onclick="copyCombinedToClipboard()">
+              <i class="fas fa-clipboard"></i> Copy Image to Clipboard
+            </button>
+          </div>
+        </div>
+
+      </div>
 
     </div>
+
   </main>
 
   <footer class="app-footer">
     <div class="app-container">
       <p class="footer-text">&copy; 2026 AI Bots. All rights reserved.</p>
-      <p class="footer-credits">Website designed by <strong>Rishit Chajjed</strong>.</p>
+      <p class="footer-credits">Master Studio Tool &bull; 100% Client-Side Processing.</p>
     </div>
   </footer>
 
   <script src="js/app.js"></script>
   <script>
-    let imageElements = [];
-    let combinedImageURLs = [];
+    // ==========================================
+    // State Management
+    // ==========================================
+    let imageList = []; // Array of { id, src, img, rotation }
+    let activeLayoutMode = 'horizontal';
+    let canvasBgColor = 'transparent';
+    let currentZoom = 1;
+    let renderDebounceTimer = null;
 
-    function showPreview() {
-      const files = document.getElementById('imageFile').files;
-      const previewDiv = document.getElementById('imagePreview');
-      previewDiv.innerHTML = '';
-      imageElements = [];
-
-      if (!files || files.length === 0) return;
-
-      for (let i = 0; i < files.length; i++) {
-        const file = files[i];
-        const reader = new FileReader();
-
-        reader.onload = function (e) {
-          const card = document.createElement('div');
-          card.className = 'thumb-card';
-          
-          const img = document.createElement('img');
-          img.src = e.target.result;
-          card.appendChild(img);
-          previewDiv.appendChild(card);
-
-          imageElements.push(img);
-        };
-        reader.readAsDataURL(file);
+    // Initialize Dropzone
+    document.addEventListener('DOMContentLoaded', () => {
+      const dropzone = document.getElementById('dropzone');
+      if (dropzone) {
+        dropzone.addEventListener('dragover', (e) => {
+          e.preventDefault();
+          dropzone.classList.add('dragover');
+        });
+        dropzone.addEventListener('dragleave', () => {
+          dropzone.classList.remove('dragover');
+        });
+        dropzone.addEventListener('drop', (e) => {
+          e.preventDefault();
+          dropzone.classList.remove('dragover');
+          if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+            loadFiles(Array.from(e.dataTransfer.files));
+          }
+        });
       }
-      showToast(`${files.length} images selected`, 'info');
+    });
+
+    function handleFilesSelected(e) {
+      if (e.target.files && e.target.files.length > 0) {
+        loadFiles(Array.from(e.target.files));
+      }
     }
 
-    function updateCustomSizeInputs() {
-      const pageSizeDropdown = document.getElementById('pageSize');
-      const customSizeInputs = document.getElementById('customSizeInputs');
-      customSizeInputs.style.display = (pageSizeDropdown.value === 'custom') ? 'grid' : 'none';
-    }
-
-    function combineImages() {
-      if (imageElements.length === 0) {
-        showToast('Please select images first!', 'error');
+    function loadFiles(files) {
+      const imageFiles = files.filter(f => f.type.startsWith('image/'));
+      if (imageFiles.length === 0) {
+        showToast('Please select valid image files.', 'warning');
         return;
       }
 
-      const pageSizeDropdown = document.getElementById('pageSize');
-      const widthInput = document.getElementById('widthInput');
-      const heightInput = document.getElementById('heightInput');
-      const numPagesInput = document.getElementById('numPages');
+      let loadedCount = 0;
+      imageFiles.forEach(file => {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          const img = new Image();
+          img.onload = () => {
+            imageList.push({
+              id: 'img_' + Math.random().toString(36).substring(2, 9),
+              src: e.target.result,
+              img: img,
+              rotation: 0
+            });
 
-      const selectedOption = pageSizeDropdown.value;
-      let pageWidth, pageHeight;
-
-      if (selectedOption === 'custom') {
-        pageWidth = parseFloat(widthInput.value) || 800;
-        pageHeight = parseFloat(heightInput.value) || 1000;
-      } else {
-        const pageSizes = {
-          'a4': { width: 595, height: 842 },
-          'a3': { width: 842, height: 1191 },
-          'a2': { width: 1191, height: 1684 }
+            loadedCount++;
+            if (loadedCount === imageFiles.length) {
+              document.getElementById('studioWorkspace').style.display = 'grid';
+              renderThumbsStrip();
+              renderCombinedCanvas();
+              showToast(`Loaded ${imageFiles.length} photos into studio!`, 'success');
+            }
+          };
+          img.src = e.target.result;
         };
-        const pageSize = pageSizes[selectedOption];
-        pageWidth = pageSize.width;
-        pageHeight = pageSize.height;
+        reader.readAsDataURL(file);
+      });
+    }
+
+    // Sample Images for 1-Click Instant Demo
+    function loadSampleImages(e) {
+      if (e) e.stopPropagation();
+      const samples = [
+        { label: 'Sunset Sky', color1: '#ff7e5f', color2: '#feb47b' },
+        { label: 'Ocean Wave', color1: '#00c6ff', color2: '#0072ff' },
+        { label: 'Neon Cyber', color1: '#f857a6', color2: '#ff5858' },
+        { label: 'Emerald Forest', color1: '#11998e', color2: '#38ef7d' }
+      ];
+
+      imageList = [];
+      let loaded = 0;
+
+      samples.forEach((s, idx) => {
+        const canvas = document.createElement('canvas');
+        canvas.width = 600;
+        canvas.height = 450;
+        const ctx = canvas.getContext('2d');
+
+        const grad = ctx.createLinearGradient(0, 0, 600, 450);
+        grad.addColorStop(0, s.color1);
+        grad.addColorStop(1, s.color2);
+        ctx.fillStyle = grad;
+        ctx.fillRect(0, 0, 600, 450);
+
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.9)';
+        ctx.font = 'bold 36px "Plus Jakarta Sans", sans-serif';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(`Sample Photo #${idx + 1}`, 300, 210);
+
+        ctx.font = '500 20px "Plus Jakarta Sans", sans-serif';
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.75)';
+        ctx.fillText(s.label, 300, 260);
+
+        const dataUrl = canvas.toDataURL('image/png');
+        const img = new Image();
+        img.onload = () => {
+          imageList.push({
+            id: 'sample_' + idx,
+            src: dataUrl,
+            img: img,
+            rotation: 0
+          });
+          loaded++;
+          if (loaded === samples.length) {
+            document.getElementById('studioWorkspace').style.display = 'grid';
+            renderThumbsStrip();
+            renderCombinedCanvas();
+            showToast('Loaded 4 sample demo images!', 'success');
+          }
+        };
+        img.src = dataUrl;
+      });
+    }
+
+    // ==========================================
+    // Thumbnail Strip & Reordering
+    // ==========================================
+    function renderThumbsStrip() {
+      const container = document.getElementById('thumbsList');
+      if (!container) return;
+
+      container.innerHTML = imageList.map((item, idx) => `
+        <div class="thumb-item" data-id="${item.id}" title="Image ${idx + 1}">
+          <span class="thumb-badge">#${idx + 1}</span>
+          <img src="${item.src}" alt="Thumb ${idx + 1}" style="transform: rotate(${item.rotation}deg);">
+          <div class="thumb-actions">
+            ${idx > 0 ? `<button type="button" class="thumb-btn move-btn" onclick="moveImage(${idx}, -1)" title="Move Left"><i class="fas fa-chevron-left"></i></button>` : ''}
+            <button type="button" class="thumb-btn" onclick="rotateImage(${idx})" title="Rotate 90°"><i class="fas fa-rotate-right"></i></button>
+            <button type="button" class="thumb-btn" onclick="removeImage(${idx})" title="Remove"><i class="fas fa-xmark"></i></button>
+            ${idx < imageList.length - 1 ? `<button type="button" class="thumb-btn move-btn" onclick="moveImage(${idx}, 1)" title="Move Right"><i class="fas fa-chevron-right"></i></button>` : ''}
+          </div>
+        </div>
+      `).join('');
+
+      // Add More Button
+      const addBtn = document.createElement('label');
+      addBtn.className = 'add-more-thumb-btn';
+      addBtn.innerHTML = `
+        <i class="fas fa-plus" style="font-size: 1.2rem;"></i>
+        <span>Add</span>
+        <input type="file" accept="image/*" multiple style="display: none;" onchange="handleFilesSelected(event)">
+      `;
+      container.appendChild(addBtn);
+
+      const countEl = document.getElementById('imageCountBadge');
+      if (countEl) countEl.textContent = `${imageList.length} Photos`;
+    }
+
+    function moveImage(index, delta) {
+      const targetIndex = index + delta;
+      if (targetIndex < 0 || targetIndex >= imageList.length) return;
+      const temp = imageList[index];
+      imageList[index] = imageList[targetIndex];
+      imageList[targetIndex] = temp;
+      renderThumbsStrip();
+      renderCombinedCanvas();
+    }
+
+    function rotateImage(index) {
+      imageList[index].rotation = (imageList[index].rotation + 90) % 360;
+      renderThumbsStrip();
+      renderCombinedCanvas();
+    }
+
+    function removeImage(index) {
+      imageList.splice(index, 1);
+      if (imageList.length === 0) {
+        document.getElementById('studioWorkspace').style.display = 'none';
+        showToast('All photos removed.', 'info');
+      } else {
+        renderThumbsStrip();
+        renderCombinedCanvas();
+      }
+    }
+
+    function clearAllImages() {
+      if (confirm('Clear all photos from the workspace?')) {
+        imageList = [];
+        document.getElementById('studioWorkspace').style.display = 'none';
+        showToast('Workspace cleared.', 'info');
+      }
+    }
+
+    // ==========================================
+    // Layout & Control Handlers
+    // ==========================================
+    function setLayoutMode(mode) {
+      activeLayoutMode = mode;
+      document.querySelectorAll('.layout-mode-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.mode === mode);
+      });
+
+      document.getElementById('gridColumnsOption').style.display = (mode === 'grid') ? 'block' : 'none';
+      document.getElementById('documentSheetOption').style.display = (mode === 'document') ? 'block' : 'none';
+
+      // Smart defaults for fit mode
+      const fitSelect = document.getElementById('fitModeSelect');
+      if (mode === 'horizontal') fitSelect.value = 'auto_height';
+      else if (mode === 'vertical') fitSelect.value = 'auto_width';
+      else fitSelect.value = 'contain';
+
+      renderCombinedCanvas();
+    }
+
+    function updateGridCols(val) {
+      document.getElementById('gridColsVal').textContent = `${val} Columns`;
+      renderCombinedCanvas();
+    }
+
+    function updateSliderVal(type, val) {
+      document.getElementById(`${type}Val`).textContent = `${val} px`;
+      scheduleRender();
+    }
+
+    function setCanvasColor(color, btn) {
+      canvasBgColor = color;
+      document.querySelectorAll('.color-swatch').forEach(s => s.classList.remove('active'));
+      if (btn) btn.classList.add('active');
+      renderCombinedCanvas();
+    }
+
+    function scheduleRender() {
+      clearTimeout(renderDebounceTimer);
+      renderDebounceTimer = setTimeout(renderCombinedCanvas, 40);
+    }
+
+    // ==========================================
+    // Canvas Rendering Engine
+    // ==========================================
+    function renderCombinedCanvas() {
+      if (imageList.length === 0) return;
+
+      const canvas = document.getElementById('mainCanvas');
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+
+      const gap = parseInt(document.getElementById('gapInput').value) || 0;
+      const padding = parseInt(document.getElementById('paddingInput').value) || 0;
+      const radius = parseInt(document.getElementById('radiusInput').value) || 0;
+      const fitMode = document.getElementById('fitModeSelect').value;
+      const scaleMultiplier = parseInt(document.getElementById('exportScale').value) || 1;
+
+      // Calculate transformed natural dimensions for each image
+      const items = imageList.map(item => {
+        const isRotated = (item.rotation === 90 || item.rotation === 270);
+        const nw = item.img.naturalWidth || item.img.width || 400;
+        const nh = item.img.naturalHeight || item.img.height || 400;
+        return {
+          ...item,
+          w: isRotated ? nh : nw,
+          h: isRotated ? nw : nh,
+          origW: nw,
+          origH: nh
+        };
+      });
+
+      let totalWidth = 0;
+      let totalHeight = 0;
+      const layoutPositions = [];
+
+      if (activeLayoutMode === 'horizontal') {
+        // SIDE-BY-SIDE
+        const targetH = (fitMode === 'auto_height') ? Math.min(...items.map(i => i.h)) : Math.max(...items.map(i => i.h));
+        
+        let currentX = padding;
+        items.forEach(item => {
+          const ratio = (fitMode === 'auto_height') ? (targetH / item.h) : 1;
+          const drawW = item.w * ratio;
+          const drawH = item.h * ratio;
+          layoutPositions.push({ item, x: currentX, y: padding, w: drawW, h: drawH });
+          currentX += drawW + gap;
+        });
+
+        totalWidth = currentX - gap + padding;
+        totalHeight = (fitMode === 'auto_height' ? targetH : Math.max(...layoutPositions.map(p => p.h))) + (padding * 2);
+
+      } else if (activeLayoutMode === 'vertical') {
+        // TOP-TO-BOTTOM
+        const targetW = (fitMode === 'auto_width') ? Math.min(...items.map(i => i.w)) : Math.max(...items.map(i => i.w));
+        
+        let currentY = padding;
+        items.forEach(item => {
+          const ratio = (fitMode === 'auto_width') ? (targetW / item.w) : 1;
+          const drawW = item.w * ratio;
+          const drawH = item.h * ratio;
+          layoutPositions.push({ item, x: padding, y: currentY, w: drawW, h: drawH });
+          currentY += drawH + gap;
+        });
+
+        totalWidth = (fitMode === 'auto_width' ? targetW : Math.max(...layoutPositions.map(p => p.w))) + (padding * 2);
+        totalHeight = currentY - gap + padding;
+
+      } else if (activeLayoutMode === 'grid') {
+        // SMART GRID
+        const cols = parseInt(document.getElementById('gridColsInput').value) || 2;
+        const rows = Math.ceil(items.length / cols);
+        
+        // Base cell dimension
+        const cellW = Math.round(items.reduce((sum, i) => sum + i.w, 0) / items.length);
+        const cellH = Math.round(items.reduce((sum, i) => sum + i.h, 0) / items.length);
+
+        totalWidth = (cols * cellW) + ((cols - 1) * gap) + (padding * 2);
+        totalHeight = (rows * cellH) + ((rows - 1) * gap) + (padding * 2);
+
+        items.forEach((item, idx) => {
+          const col = idx % cols;
+          const row = Math.floor(idx / cols);
+          const cellX = padding + (col * (cellW + gap));
+          const cellY = padding + (row * (cellH + gap));
+
+          if (fitMode === 'cover') {
+            layoutPositions.push({ item, x: cellX, y: cellY, w: cellW, h: cellH, mode: 'cover' });
+          } else {
+            const ratio = Math.min(cellW / item.w, cellH / item.h);
+            const drawW = item.w * ratio;
+            const drawH = item.h * ratio;
+            const offsetX = cellX + (cellW - drawW) / 2;
+            const offsetY = cellY + (cellH - drawH) / 2;
+            layoutPositions.push({ item, x: offsetX, y: offsetY, w: drawW, h: drawH });
+          }
+        });
+
+      } else if (activeLayoutMode === 'document') {
+        // DOCUMENT SHEET PRESET
+        const sheetFormat = document.getElementById('sheetFormatSelect').value;
+        const formats = {
+          'a4_p': { w: 2480, h: 3508, cols: 2 },
+          'a4_l': { w: 3508, h: 2480, cols: 3 },
+          'sq': { w: 2048, h: 2048, cols: 2 },
+          'story': { w: 1080, h: 1920, cols: 1 },
+          'landscape': { w: 1920, h: 1080, cols: 2 }
+        };
+
+        const preset = formats[sheetFormat] || formats['a4_p'];
+        totalWidth = preset.w;
+        totalHeight = preset.h;
+
+        const cols = items.length === 1 ? 1 : Math.min(preset.cols, items.length);
+        const rows = Math.ceil(items.length / cols);
+
+        const availableW = totalWidth - (padding * 2) - ((cols - 1) * gap);
+        const availableH = totalHeight - (padding * 2) - ((rows - 1) * gap);
+
+        const cellW = availableW / cols;
+        const cellH = availableH / rows;
+
+        items.forEach((item, idx) => {
+          const col = idx % cols;
+          const row = Math.floor(idx / cols);
+          const cellX = padding + (col * (cellW + gap));
+          const cellY = padding + (row * (cellH + gap));
+
+          if (fitMode === 'cover') {
+            layoutPositions.push({ item, x: cellX, y: cellY, w: cellW, h: cellH, mode: 'cover' });
+          } else {
+            const ratio = Math.min(cellW / item.w, cellH / item.h);
+            const drawW = item.w * ratio;
+            const drawH = item.h * ratio;
+            const offsetX = cellX + (cellW - drawW) / 2;
+            const offsetY = cellY + (cellH - drawH) / 2;
+            layoutPositions.push({ item, x: offsetX, y: offsetY, w: drawW, h: drawH });
+          }
+        });
       }
 
-      const maxImagesPerPage = 4;
-      const maxImageWidth = pageWidth / 2;
-      const maxImageHeight = pageHeight / 2;
-      const totalPages = Math.ceil(imageElements.length / maxImagesPerPage);
-      const requestedPages = Math.min(parseInt(numPagesInput.value) || 1, totalPages);
+      // Apply resolution scale
+      const finalW = Math.max(1, Math.round(totalWidth * scaleMultiplier));
+      const finalH = Math.max(1, Math.round(totalHeight * scaleMultiplier));
 
-      combinedImageURLs = [];
-      let imageIndex = 0;
+      canvas.width = finalW;
+      canvas.height = finalH;
 
-      for (let page = 0; page < requestedPages; page++) {
-        const canvas = document.createElement('canvas');
-        const ctx = canvas.getContext('2d');
-        canvas.width = pageWidth;
-        canvas.height = pageHeight;
+      ctx.save();
+      ctx.scale(scaleMultiplier, scaleMultiplier);
 
-        // Background
-        ctx.fillStyle = '#ffffff';
-        ctx.fillRect(0, 0, pageWidth, pageHeight);
+      // Clear & Background
+      ctx.clearRect(0, 0, totalWidth, totalHeight);
+      if (canvasBgColor !== 'transparent') {
+        ctx.fillStyle = canvasBgColor;
+        ctx.fillRect(0, 0, totalWidth, totalHeight);
+      }
 
-        const pageImages = imageElements.slice(page * maxImagesPerPage, (page + 1) * maxImagesPerPage);
-        const numCols = pageImages.length === 1 ? 1 : 2;
-        const numRows = Math.ceil(pageImages.length / numCols);
+      // Draw each image tile
+      layoutPositions.forEach(pos => {
+        ctx.save();
 
-        for (let i = 0; i < pageImages.length; i++) {
-          const img = pageImages[i];
-          const col = i % 2;
-          const row = Math.floor(i / 2);
-
-          const cellW = pageWidth / numCols;
-          const cellH = pageHeight / (numRows || 1);
-
-          const naturalW = img.naturalWidth || img.width || 100;
-          const naturalH = img.naturalHeight || img.height || 100;
-
-          const ratio = Math.min(cellW / naturalW, cellH / naturalH) * 0.95;
-          const drawW = naturalW * ratio;
-          const drawH = naturalH * ratio;
-
-          const posX = (col * cellW) + (cellW - drawW) / 2;
-          const posY = (row * cellH) + (cellH - drawH) / 2;
-
-          ctx.drawImage(img, posX, posY, drawW, drawH);
+        // Rounded Clipping Path
+        if (radius > 0) {
+          ctx.beginPath();
+          ctx.roundRect(pos.x, pos.y, pos.w, pos.h, radius);
+          ctx.clip();
         }
 
-        combinedImageURLs.push(canvas.toDataURL('image/png'));
+        const centerCellX = pos.x + pos.w / 2;
+        const centerCellY = pos.y + pos.h / 2;
+
+        ctx.translate(centerCellX, centerCellY);
+        ctx.rotate((pos.item.rotation * Math.PI) / 180);
+
+        const isRotated = (pos.item.rotation === 90 || pos.item.rotation === 270);
+        const origW = pos.item.origW;
+        const origH = pos.item.origH;
+
+        if (pos.mode === 'cover') {
+          // Centered Cover Crop
+          const targetW = isRotated ? pos.h : pos.w;
+          const targetH = isRotated ? pos.w : pos.h;
+          const scale = Math.max(targetW / origW, targetH / origH);
+          const dw = origW * scale;
+          const dh = origH * scale;
+          ctx.drawImage(pos.item.img, -dw / 2, -dh / 2, dw, dh);
+        } else {
+          // Exact Fit
+          const dw = isRotated ? pos.h : pos.w;
+          const dh = isRotated ? pos.w : pos.h;
+          ctx.drawImage(pos.item.img, -dw / 2, -dh / 2, dw, dh);
+        }
+
+        ctx.restore();
+      });
+
+      ctx.restore();
+
+      // Update resolution badge in toolbar
+      const dimBadge = document.getElementById('canvasDimBadge');
+      if (dimBadge) {
+        dimBadge.innerHTML = `<i class="fas fa-expand"></i> ${finalW.toLocaleString()} × ${finalH.toLocaleString()} px`;
       }
-
-      updateCombinedImages();
-      showToast('Images combined into layout!', 'success');
     }
 
-    function updateCombinedImages() {
-      const resultDiv = document.getElementById('result');
-      resultDiv.innerHTML = '';
-
-      combinedImageURLs.forEach((url, idx) => {
-        const card = document.createElement('div');
-        card.className = 'result-page-card';
-        card.innerHTML = `
-          <div style="font-weight: 600; margin-bottom: 8px; color: var(--text-secondary);">Page ${idx + 1}</div>
-          <img src="${url}" alt="Combined Page ${idx + 1}">
-        `;
-        resultDiv.appendChild(card);
-      });
-
-      const downloadButton = document.getElementById('downloadButton');
-      downloadButton.style.display = 'inline-flex';
-      downloadButton.scrollIntoView({ behavior: 'smooth' });
+    // ==========================================
+    // Viewport Zooming
+    // ==========================================
+    function zoomCanvas(delta) {
+      currentZoom = Math.min(3, Math.max(0.2, currentZoom + delta));
+      const canvas = document.getElementById('mainCanvas');
+      if (canvas) canvas.style.transform = `scale(${currentZoom})`;
     }
 
-    function downloadImages() {
-      if (combinedImageURLs.length === 0) return;
+    function resetCanvasZoom() {
+      currentZoom = 1;
+      const canvas = document.getElementById('mainCanvas');
+      if (canvas) canvas.style.transform = 'scale(1)';
+    }
 
-      combinedImageURLs.forEach((url, i) => {
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = `combined_images_page${i + 1}.png`;
-        a.click();
-      });
-      showToast('Downloading all generated pages...', 'success');
+    // ==========================================
+    // Export & Clipboard
+    // ==========================================
+    function downloadCombinedImage() {
+      const canvas = document.getElementById('mainCanvas');
+      if (!canvas || imageList.length === 0) return;
+
+      const format = document.getElementById('exportFormat').value;
+      const mimeType = (format === 'jpeg') ? 'image/jpeg' : (format === 'webp') ? 'image/webp' : 'image/png';
+      const ext = (format === 'jpeg') ? 'jpg' : format;
+
+      const dataUrl = canvas.toDataURL(mimeType, 0.95);
+      const a = document.createElement('a');
+      a.href = dataUrl;
+      a.download = `aibots_combined_${activeLayoutMode}_${Date.now()}.${ext}`;
+      a.click();
+
+      showToast(`Exported combined image (${canvas.width}×${canvas.height}px)!`, 'success');
+    }
+
+    async function copyCombinedToClipboard() {
+      const canvas = document.getElementById('mainCanvas');
+      if (!canvas || imageList.length === 0) return;
+
+      try {
+        canvas.toBlob(async (blob) => {
+          if (!blob) {
+            showToast('Failed to generate image blob.', 'error');
+            return;
+          }
+          await navigator.clipboard.write([
+            new ClipboardItem({ 'image/png': blob })
+          ]);
+          showToast('✅ Combined image copied to clipboard!', 'success');
+        }, 'image/png');
+      } catch (err) {
+        showToast('Clipboard access denied. Please use Download button.', 'warning');
+      }
     }
   </script>
 </body>
 </html>
-

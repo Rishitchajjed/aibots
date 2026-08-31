@@ -2224,17 +2224,11 @@ body {
     <section id="tools-section" style="scroll-margin-top: 100px;">
       <h2 class="section-title" style="margin-bottom: 24px;">Explore All Creative Tools & Utilities</h2>
       
-      <!-- Live Search Bar with Command Palette shortcut -->
-      <div style="max-width: 640px; margin: 0 auto 16px; position: relative;">
-        <i class="fas fa-magnifying-glass" style="position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: var(--primary);"></i>
-        <input type="text" id="liveSearchInput" class="form-control" placeholder="Search 28+ tools, commands, or math (Ctrl + K)..." style="padding-left: 44px; padding-right: 90px; border-radius: var(--radius-full); box-shadow: var(--shadow-sm);" oninput="filterToolsLive()">
-        <button type="button" class="nav-search-pill" style="position: absolute; right: 8px; top: 50%; transform: translateY(-50%); padding: 4px 10px; font-size: 0.75rem;" onclick="openCommandPalette()">
-          <span class="cmd-kbd-badge" style="background: transparent; border: none; padding: 0;">Ctrl K</span>
-        </button>
+      <!-- Live Search Bar -->
+      <div style="max-width: 600px; margin: 0 auto 24px; position: relative;">
+        <i class="fas fa-magnifying-glass" style="position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: var(--text-muted);"></i>
+        <input type="text" id="liveSearchInput" class="form-control" placeholder="Search tool by name or feature (e.g. cricket, background, crop, pdf)..." style="padding-left: 44px; border-radius: var(--radius-full);" oninput="filterToolsLive()">
       </div>
-
-      <!-- Pinned Favorites & Recently Used Pinboard -->
-      <div id="favoritesBarContainer" class="favorites-bar-container" style="justify-content: center;"></div>
 
       <!-- Category Filter Pills -->
       <div class="filter-nav">

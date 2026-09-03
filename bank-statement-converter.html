@@ -482,9 +482,9 @@
 
         <!-- Bank Selector -->
         <div class="form-group">
-          <label class="form-label" for="bankSelect"><i class="fas fa-building-columns"></i> Select Bank</label>
+          <label class="form-label" for="bankSelect"><i class="fas fa-building-columns"></i> Select Your Bank</label>
           <select id="bankSelect" class="form-control" onchange="onBankSelectionChange()">
-            <option value="auto">🌟 Auto-Detect (All Indian Banks)</option>
+            <option value="" disabled selected>-- Select Your Bank --</option>
             <optgroup label="Public Sector Banks">
               <option value="sbi">State Bank of India (SBI)</option>
               <option value="pnb">Punjab National Bank (PNB)</option>
@@ -516,7 +516,7 @@
         <!-- Bank Ledger Name in Tally -->
         <div class="form-group">
           <label class="form-label" for="bankLedger"><i class="fas fa-wallet"></i> Bank Ledger Name in Tally</label>
-          <input type="text" id="bankLedger" class="form-control" placeholder="e.g. Punjab National Bank" value="State Bank of India">
+          <input type="text" id="bankLedger" class="form-control" placeholder="e.g. Punjab National Bank" value="Punjab National Bank">
         </div>
 
         <!-- Default Counterparty / Expense Ledger -->
@@ -657,7 +657,7 @@
 
           <div style="display:flex; justify-content:space-between; align-items:center; margin-top:12px; font-size:0.74rem; color:var(--text-secondary); flex-wrap:wrap; gap:8px;">
             <span><i class="fas fa-info-circle"></i> You can edit any cell directly before downloading your Tally XML.</span>
-            <span id="bankIndicatorBadge" style="color:var(--accent-tally); font-weight:700;">Bank: Auto-Detect</span>
+            <span id="bankIndicatorBadge" style="color:var(--accent-tally); font-weight:700;">Bank: Select Your Bank</span>
           </div>
         </div>
 
@@ -802,10 +802,9 @@
 
     let parsedTransactions = [];
     let pendingFileBuffer = null;
-    let selectedBankKey = 'auto';
+    let selectedBankKey = '';
 
     const BANK_PROFILES = {
-      'auto': { name: 'Auto-Detect', ledger: 'State Bank of India' },
       'sbi': { name: 'State Bank of India', ledger: 'State Bank of India' },
       'pnb': { name: 'Punjab National Bank', ledger: 'Punjab National Bank' },
       'bob': { name: 'Bank of Baroda', ledger: 'Bank of Baroda' },
@@ -1366,7 +1365,7 @@
       document.getElementById('btnCopyXml').disabled = false;
 
       const profile = BANK_PROFILES[selectedBankKey];
-      bankBadge.textContent = `Bank Profile: ${profile ? profile.name : 'Auto-Detect'}`;
+      bankBadge.textContent = profile ? `Bank: ${profile.name}` : (document.getElementById('bankLedger').value ? `Bank: ${document.getElementById('bankLedger').value}` : 'Bank: Select Your Bank');
 
       let totalDr = 0, totalCr = 0;
       tbody.innerHTML = parsedTransactions.map((tx, idx) => {

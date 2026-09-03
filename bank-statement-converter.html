@@ -39,24 +39,34 @@
   <style>
     :root {
       --accent-tally: #10b981;
-      --accent-blue: #3b82f6;
-      --accent-amber: #f59e0b;
-      --accent-purple: #8b5cf6;
-      --card-bg: var(--bg-secondary, #0f172a);
-      --card-border: var(--border-color, rgba(255, 255, 255, 0.12));
+      --accent-tally-dark: #059669;
+      --card-bg: var(--bg-secondary, #ffffff);
+      --card-border: var(--border-color, #e2e8f0);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      overflow-x: hidden;
+      color: var(--text-primary, #0f172a);
+      background: var(--bg-primary, #f8fafc);
     }
 
     .converter-container {
       max-width: 1340px;
       margin: 16px auto 60px;
       padding: 0 16px;
+      width: 100%;
+      box-sizing: border-box;
     }
 
     .hero-banner {
       text-align: center;
-      padding: 30px 20px 24px;
-      margin-bottom: 24px;
-      background: radial-gradient(circle at 50% 0%, rgba(16, 185, 129, 0.15) 0%, rgba(15, 23, 42, 0) 70%);
+      padding: 24px 16px 20px;
+      margin-bottom: 20px;
+      background: radial-gradient(circle at 50% 0%, rgba(16, 185, 129, 0.12) 0%, rgba(16, 185, 129, 0) 70%);
       border-bottom: 1px solid var(--card-border);
     }
     .hero-badge {
@@ -67,129 +77,142 @@
       border-radius: 999px;
       background: rgba(16, 185, 129, 0.15);
       border: 1px solid rgba(16, 185, 129, 0.35);
-      color: #34d399;
+      color: #059669;
       font-size: 0.8rem;
       font-weight: 700;
-      margin-bottom: 12px;
+      margin-bottom: 10px;
     }
+    [data-theme="dark"] .hero-badge {
+      color: #34d399;
+    }
+
     .hero-title {
-      font-size: clamp(1.8rem, 4vw, 2.6rem);
+      font-size: clamp(1.6rem, 3.5vw, 2.3rem);
       font-weight: 900;
       margin: 0 0 10px;
-      background: linear-gradient(135deg, #f8fafc, #cbd5e1, #34d399);
+      background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #059669 100%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       letter-spacing: -0.02em;
     }
+    [data-theme="dark"] .hero-title {
+      background: linear-gradient(135deg, #f8fafc 0%, #cbd5e1 50%, #34d399 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
     .hero-desc {
-      font-size: 0.95rem;
-      color: var(--text-secondary, #94a3b8);
-      max-width: 780px;
+      font-size: 0.92rem;
+      color: var(--text-secondary, #475569);
+      max-width: 760px;
       margin: 0 auto;
       line-height: 1.6;
     }
 
-    /* Grid Layout */
+    /* Grid Layout - Prevents overflow on smaller laptops */
     .app-grid {
       display: grid;
-      grid-template-columns: 360px 1fr;
-      gap: 20px;
+      grid-template-columns: 290px minmax(0, 1fr);
+      gap: 18px;
       align-items: start;
+      width: 100%;
     }
 
     @media (max-width: 980px) {
-      .app-grid { grid-template-columns: 1fr; }
+      .app-grid {
+        grid-template-columns: 1fr;
+      }
     }
 
-    /* Sidebar Settings Card */
+    /* Sidebar Config Card */
     .sidebar-card {
       background: var(--card-bg);
       border: 1px solid var(--card-border);
-      border-radius: var(--radius-xl, 16px);
-      padding: 20px;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-      position: sticky;
-      top: 80px;
+      border-radius: var(--radius-lg, 16px);
+      padding: 18px;
+      box-shadow: var(--shadow-sm, 0 4px 6px -1px rgba(0,0,0,0.05));
     }
     .section-header {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      margin-bottom: 16px;
-      padding-bottom: 10px;
+      margin-bottom: 14px;
+      padding-bottom: 8px;
       border-bottom: 1px solid var(--card-border);
     }
     .section-header h3 {
-      font-size: 1.05rem;
+      font-size: 1rem;
       font-weight: 800;
       margin: 0;
       display: flex;
       align-items: center;
       gap: 8px;
-      color: #f8fafc;
+      color: var(--text-primary, #0f172a);
     }
 
     .form-group {
-      margin-bottom: 14px;
+      margin-bottom: 12px;
     }
     .form-label {
       display: block;
       font-size: 0.8rem;
       font-weight: 700;
-      color: var(--text-secondary, #cbd5e1);
-      margin-bottom: 6px;
+      color: var(--text-primary, #0f172a);
+      margin-bottom: 5px;
     }
     .form-control {
       width: 100%;
-      padding: 9px 12px;
+      padding: 9px 11px;
       border-radius: 8px;
-      background: var(--bg-tertiary, rgba(255,255,255,0.06));
+      background: var(--bg-tertiary, #f1f5f9);
       border: 1px solid var(--card-border);
-      color: #f8fafc;
-      font-size: 0.85rem;
+      color: var(--text-primary, #0f172a);
+      font-size: 0.84rem;
+      font-weight: 600;
       transition: all 0.2s;
     }
     .form-control:focus {
       outline: none;
       border-color: var(--accent-tally);
+      background: var(--bg-secondary, #ffffff);
       box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.2);
     }
     select.form-control option {
-      background: #0f172a;
-      color: #f8fafc;
+      background: var(--bg-secondary, #ffffff);
+      color: var(--text-primary, #0f172a);
     }
 
     /* Upload Zone */
     .upload-dropzone {
-      border: 2px dashed rgba(16, 185, 129, 0.5);
+      border: 2px dashed rgba(16, 185, 129, 0.45);
       background: rgba(16, 185, 129, 0.04);
-      border-radius: var(--radius-xl, 16px);
-      padding: 32px 20px;
+      border-radius: var(--radius-lg, 16px);
+      padding: 28px 16px;
       text-align: center;
       cursor: pointer;
       transition: all 0.2s ease;
-      margin-bottom: 20px;
+      margin-bottom: 18px;
       position: relative;
     }
     .upload-dropzone:hover, .upload-dropzone.dragover {
-      border-color: #34d399;
-      background: rgba(16, 185, 129, 0.1);
+      border-color: #059669;
+      background: rgba(16, 185, 129, 0.08);
       transform: translateY(-2px);
     }
     .upload-icon {
-      font-size: 2.4rem;
+      font-size: 2.2rem;
       color: var(--accent-tally);
-      margin-bottom: 10px;
+      margin-bottom: 8px;
     }
     .upload-title {
-      font-size: 1.1rem;
+      font-size: 1.05rem;
       font-weight: 800;
-      color: #f8fafc;
-      margin: 0 0 6px;
+      color: var(--text-primary, #0f172a);
+      margin: 0 0 4px;
     }
     .upload-subtitle {
-      font-size: 0.82rem;
-      color: var(--text-secondary, #94a3b8);
+      font-size: 0.8rem;
+      color: var(--text-secondary, #64748b);
       margin: 0;
     }
     .upload-badges {
@@ -197,15 +220,15 @@
       justify-content: center;
       gap: 6px;
       flex-wrap: wrap;
-      margin-top: 12px;
+      margin-top: 10px;
     }
     .badge-pill {
       font-size: 0.68rem;
       padding: 3px 8px;
       border-radius: 999px;
-      background: rgba(255, 255, 255, 0.08);
+      background: var(--bg-tertiary, #f1f5f9);
       border: 1px solid var(--card-border);
-      color: #e2e8f0;
+      color: var(--text-secondary, #475569);
       font-weight: 600;
     }
 
@@ -213,53 +236,70 @@
     .privacy-notice {
       display: flex;
       align-items: center;
-      gap: 10px;
-      padding: 10px 14px;
-      background: rgba(59, 130, 246, 0.08);
-      border: 1px solid rgba(59, 130, 246, 0.25);
-      border-radius: 10px;
-      font-size: 0.76rem;
+      gap: 8px;
+      padding: 8px 12px;
+      background: rgba(59, 130, 246, 0.07);
+      border: 1px solid rgba(59, 130, 246, 0.2);
+      border-radius: 8px;
+      font-size: 0.74rem;
+      color: #2563eb;
+      margin-top: 12px;
+      line-height: 1.4;
+    }
+    [data-theme="dark"] .privacy-notice {
       color: #93c5fd;
-      margin-top: 14px;
     }
 
-    /* Summary Metrics Strip */
+    /* Summary Metrics Strip - Responsive without horizontal scroll */
     .metrics-strip {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
-      gap: 12px;
-      margin-bottom: 18px;
+      grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+      gap: 10px;
+      margin-bottom: 16px;
+      width: 100%;
+      box-sizing: border-box;
     }
     .metric-card {
       background: var(--card-bg);
       border: 1px solid var(--card-border);
       border-radius: 12px;
-      padding: 14px;
+      padding: 12px;
       display: flex;
       flex-direction: column;
-      gap: 4px;
+      gap: 3px;
+      min-width: 0;
+      overflow: hidden;
+      box-shadow: var(--shadow-sm, 0 2px 4px rgba(0,0,0,0.03));
     }
     .metric-title {
-      font-size: 0.72rem;
-      font-weight: 700;
-      color: var(--text-secondary, #94a3b8);
+      font-size: 0.68rem;
+      font-weight: 800;
+      color: var(--text-secondary, #64748b);
       text-transform: uppercase;
-      letter-spacing: 0.5px;
+      letter-spacing: 0.4px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
     .metric-value {
-      font-size: 1.3rem;
+      font-size: clamp(1rem, 1.8vw, 1.25rem);
       font-weight: 900;
       font-family: var(--font-mono, 'JetBrains Mono', monospace);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 
     /* Main Table Container */
     .table-card {
       background: var(--card-bg);
       border: 1px solid var(--card-border);
-      border-radius: var(--radius-xl, 16px);
-      padding: 18px;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+      border-radius: var(--radius-lg, 16px);
+      padding: 16px;
+      box-shadow: var(--shadow-sm, 0 4px 6px -1px rgba(0,0,0,0.05));
       overflow: hidden;
+      width: 100%;
+      box-sizing: border-box;
     }
     .table-actions-bar {
       display: flex;
@@ -267,71 +307,78 @@
       align-items: center;
       flex-wrap: wrap;
       gap: 10px;
-      margin-bottom: 14px;
+      margin-bottom: 12px;
     }
     .table-responsive {
       max-height: 520px;
       overflow-y: auto;
+      overflow-x: auto;
       border: 1px solid var(--card-border);
       border-radius: 10px;
+      width: 100%;
     }
     .data-table {
       width: 100%;
+      min-width: 780px;
       border-collapse: collapse;
       font-size: 0.82rem;
       text-align: left;
     }
     .data-table th {
-      background: rgba(15, 23, 42, 0.95);
+      background: var(--bg-tertiary, #f1f5f9);
       position: sticky;
       top: 0;
       padding: 10px 12px;
       font-weight: 800;
-      color: #94a3b8;
+      color: var(--text-primary, #0f172a);
       border-bottom: 1px solid var(--card-border);
       white-space: nowrap;
       z-index: 5;
     }
     .data-table td {
-      padding: 8px 12px;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+      padding: 7px 10px;
+      border-bottom: 1px solid var(--card-border);
       vertical-align: middle;
+      color: var(--text-primary, #0f172a);
     }
     .data-table tr:hover td {
-      background: rgba(255, 255, 255, 0.03);
+      background: rgba(16, 185, 129, 0.03);
     }
     .cell-input {
       background: transparent;
       border: 1px solid transparent;
-      color: inherit;
+      color: var(--text-primary, #0f172a);
       padding: 4px 6px;
       border-radius: 4px;
       width: 100%;
       font-family: inherit;
       font-size: inherit;
+      font-weight: 500;
     }
     .cell-input:focus {
-      background: rgba(15, 23, 42, 0.8);
+      background: var(--bg-tertiary, #f1f5f9);
       border-color: var(--accent-tally);
       outline: none;
     }
     .badge-debit {
-      color: #f87171;
+      color: #dc2626 !important;
       font-weight: 700;
       font-family: var(--font-mono);
     }
     .badge-credit {
-      color: #34d399;
+      color: #059669 !important;
       font-weight: 700;
       font-family: var(--font-mono);
     }
+    [data-theme="dark"] .badge-debit { color: #f87171 !important; }
+    [data-theme="dark"] .badge-credit { color: #34d399 !important; }
 
     /* Modal */
     .modal-overlay {
       position: fixed;
       inset: 0;
-      background: rgba(0, 0, 0, 0.75);
-      backdrop-filter: blur(8px);
+      background: rgba(0, 0, 0, 0.65);
+      backdrop-filter: blur(6px);
       z-index: 1000;
       display: none;
       align-items: center;
@@ -340,30 +387,31 @@
     }
     .modal-overlay.active { display: flex; }
     .modal-box {
-      background: #0f172a;
+      background: var(--card-bg, #ffffff);
       border: 1px solid var(--card-border);
       border-radius: 16px;
       width: 100%;
       max-width: 500px;
-      padding: 24px;
-      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.8);
+      padding: 22px;
+      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.25);
+      color: var(--text-primary, #0f172a);
     }
 
     /* FAQ Section */
     .faq-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-      gap: 16px;
-      margin-top: 30px;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 14px;
+      margin-top: 24px;
     }
     .faq-item {
       background: var(--card-bg);
       border: 1px solid var(--card-border);
       border-radius: 12px;
-      padding: 16px 18px;
+      padding: 14px 16px;
     }
-    .faq-q { font-weight: 800; font-size: 0.92rem; color: #f8fafc; margin-bottom: 6px; }
-    .faq-a { font-size: 0.82rem; color: var(--text-secondary, #94a3b8); line-height: 1.5; margin: 0; }
+    .faq-q { font-weight: 800; font-size: 0.88rem; color: var(--text-primary, #0f172a); margin-bottom: 5px; }
+    .faq-a { font-size: 0.8rem; color: var(--text-secondary, #475569); line-height: 1.5; margin: 0; }
   </style>
 </head>
 <body>
@@ -389,16 +437,16 @@
     
     <!-- Hero Header -->
     <div class="hero-banner">
-      <div class="hero-badge"><i class="fas fa-bolt"></i> 100% Client-Side &amp; Secure</div>
+      <div class="hero-badge"><i class="fas fa-bolt"></i> 100% Client-Side &amp; Private</div>
       <h1 class="hero-title">Bank Statement to Tally XML Converter</h1>
       <p class="hero-desc">
-        Seamlessly convert PDF bank statements from <strong>21+ Indian Public &amp; Private Sector Banks</strong> into standard <strong>TallyPrime &amp; Tally.ERP 9 XML</strong> vouchers. With smart ledger auto-mapping, password decryption, and zero cloud uploads.
+        Seamlessly convert PDF bank statements from <strong>21+ Indian Public &amp; Private Sector Banks</strong> into standard <strong>TallyPrime &amp; Tally.ERP 9 XML</strong> vouchers. Fast in-browser parsing with automatic ledger categorization.
       </p>
     </div>
 
     <div class="app-grid">
       
-      <!-- LEFT COLUMN: Tally Settings & Bank Options -->
+      <!-- LEFT COLUMN: Compact Tally Settings -->
       <aside class="sidebar-card">
         <div class="section-header">
           <h3><i class="fas fa-sliders" style="color:var(--accent-tally);"></i> Tally Config</h3>
@@ -438,12 +486,6 @@
           </select>
         </div>
 
-        <!-- Tally Company Name -->
-        <div class="form-group">
-          <label class="form-label" for="companyName"><i class="fas fa-briefcase"></i> Tally Company Name</label>
-          <input type="text" id="companyName" class="form-control" placeholder="e.g. My Business Pvt Ltd" value="My Company">
-        </div>
-
         <!-- Bank Ledger Name in Tally -->
         <div class="form-group">
           <label class="form-label" for="bankLedger"><i class="fas fa-wallet"></i> Bank Ledger Name in Tally</label>
@@ -456,34 +498,24 @@
           <input type="text" id="defaultCounterLedger" class="form-control" placeholder="e.g. Suspense Account" value="Suspense Account">
         </div>
 
-        <!-- Voucher Type Strategy -->
-        <div class="form-group">
-          <label class="form-label" for="voucherTypeMode"><i class="fas fa-file-invoice"></i> Voucher Type Rule</label>
-          <select id="voucherTypeMode" class="form-control">
-            <option value="standard">Standard (Payment for Dr, Receipt for Cr)</option>
-            <option value="contra_cash">Auto-Contra (Cash ATM / Deposit as Contra)</option>
-            <option value="all_journal">All as Journal Vouchers</option>
-          </select>
-        </div>
-
-        <!-- Auto-Ledger Rules Info -->
-        <div style="background:rgba(255,255,255,0.03); border:1px solid var(--card-border); border-radius:8px; padding:10px; font-size:0.75rem; color:#cbd5e1;">
-          <div style="font-weight:700; color:#38bdf8; margin-bottom:4px;"><i class="fas fa-wand-magic-sparkles"></i> Smart Ledger Heuristics</div>
-          Transactions containing <code>ATM / CASH</code> map to <em>Cash A/c</em>, <code>INTEREST</code> to <em>Bank Interest Recd</em>, and <code>CHARGES</code> to <em>Bank Charges</em>.
+        <!-- Smart Auto-Ledger Rule Info -->
+        <div style="background:var(--bg-tertiary); border:1px solid var(--card-border); border-radius:8px; padding:9px 11px; font-size:0.75rem; color:var(--text-secondary); margin-top:8px;">
+          <div style="font-weight:700; color:var(--accent-tally); margin-bottom:3px;"><i class="fas fa-wand-magic-sparkles"></i> Auto-Categorization</div>
+          <code>ATM / CASH</code> maps to <em>Cash</em>, <code>SALARY</code> to <em>Salary A/c</em>, <code>INTEREST</code> to <em>Bank Interest Recd</em>, and <code>CHARGES</code> to <em>Bank Charges</em>.
         </div>
 
         <!-- Privacy Shield -->
         <div class="privacy-notice">
-          <i class="fas fa-shield-halved" style="font-size:1.2rem; flex-shrink:0;"></i>
-          <span><strong>100% Private:</strong> Files are parsed strictly inside your web browser. No statements are uploaded to any server.</span>
+          <i class="fas fa-shield-halved" style="font-size:1.1rem; flex-shrink:0;"></i>
+          <span><strong>100% Private:</strong> Parsing runs locally inside your browser. No data leaves your machine.</span>
         </div>
 
-        <!-- Action Export Buttons in Sidebar -->
-        <div style="display:flex; flex-direction:column; gap:8px; margin-top:16px;">
-          <button class="btn btn-primary" onclick="exportToTallyXml()" id="btnExportXml" style="background:#10b981; border-color:#10b981; font-weight:800;" disabled>
+        <!-- Sidebar Export Buttons -->
+        <div style="display:flex; flex-direction:column; gap:8px; margin-top:14px;">
+          <button class="btn btn-primary" onclick="exportToTallyXml()" id="btnExportXml" style="background:#10b981; border-color:#10b981; font-weight:800; padding:10px;" disabled>
             <i class="fas fa-file-code"></i> Download Tally XML
           </button>
-          <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px;">
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:6px;">
             <button class="btn btn-secondary btn-sm" onclick="exportToCsv()" id="btnExportCsv" disabled>
               <i class="fas fa-file-csv"></i> Excel / CSV
             </button>
@@ -491,14 +523,14 @@
               <i class="fas fa-copy"></i> Copy XML
             </button>
           </div>
-          <button class="btn btn-secondary btn-sm" onclick="openHelpModal()" style="margin-top:4px;">
+          <button class="btn btn-secondary btn-sm" onclick="openHelpModal()" style="margin-top:2px;">
             <i class="fas fa-circle-question"></i> How to Import in Tally
           </button>
         </div>
       </aside>
 
       <!-- RIGHT COLUMN: Upload Zone, Table, Metrics -->
-      <section>
+      <section style="min-width:0; width:100%;">
         
         <!-- Upload Dropzone -->
         <div class="upload-dropzone" id="dropzone" onclick="document.getElementById('fileInput').click()">
@@ -515,11 +547,11 @@
         </div>
 
         <!-- Progress Spinner & Status Bar -->
-        <div id="parseStatusCard" style="display:none; background:rgba(15,23,42,0.85); border:1px solid rgba(16,185,129,0.4); border-radius:12px; padding:14px 18px; margin-bottom:18px; align-items:center; gap:12px;">
-          <i class="fas fa-spinner fa-spin" style="font-size:1.4rem; color:#34d399;" id="parseSpinner"></i>
+        <div id="parseStatusCard" style="display:none; background:var(--bg-secondary); border:1px solid rgba(16,185,129,0.4); border-radius:12px; padding:12px 16px; margin-bottom:16px; align-items:center; gap:12px; box-shadow:var(--shadow-sm);">
+          <i class="fas fa-spinner fa-spin" style="font-size:1.3rem; color:var(--accent-tally);" id="parseSpinner"></i>
           <div style="flex:1;">
-            <div id="parseStatusText" style="font-weight:700; font-size:0.85rem; color:#f8fafc;">Extracting transactions from PDF...</div>
-            <div id="parseSubText" style="font-size:0.75rem; color:#94a3b8;">Reconstructing table rows and cleaning multi-line narrations...</div>
+            <div id="parseStatusText" style="font-weight:700; font-size:0.85rem; color:var(--text-primary);">Extracting transactions from PDF...</div>
+            <div id="parseSubText" style="font-size:0.75rem; color:var(--text-secondary);">Reconstructing table rows and cleaning multi-line narrations...</div>
           </div>
         </div>
 
@@ -527,36 +559,37 @@
         <div class="metrics-strip" id="metricsStrip" style="display:none;">
           <div class="metric-card">
             <span class="metric-title">Total Records</span>
-            <span class="metric-value" id="metricCount" style="color:#38bdf8;">0</span>
+            <span class="metric-value" id="metricCount" style="color:#0284c7;">0</span>
           </div>
           <div class="metric-card">
             <span class="metric-title">Total Withdrawals (Dr)</span>
-            <span class="metric-value" id="metricDebit" style="color:#f87171;">₹0.00</span>
+            <span class="metric-value" id="metricDebit" style="color:#dc2626;">₹0.00</span>
           </div>
           <div class="metric-card">
             <span class="metric-title">Total Deposits (Cr)</span>
-            <span class="metric-value" id="metricCredit" style="color:#34d399;">₹0.00</span>
+            <span class="metric-value" id="metricCredit" style="color:#059669;">₹0.00</span>
           </div>
           <div class="metric-card">
             <span class="metric-title">Net Difference</span>
-            <span class="metric-value" id="metricNet" style="color:#fbbf24;">₹0.00</span>
+            <span class="metric-value" id="metricNet" style="color:#d97706;">₹0.00</span>
           </div>
         </div>
 
         <!-- Interactive Table Card -->
         <div class="table-card" id="tableCard" style="display:none;">
           <div class="table-actions-bar">
-            <div style="display:flex; align-items:center; gap:8px;">
-              <h3 style="margin:0; font-size:1.05rem; font-weight:800; color:#f8fafc;">
+            <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
+              <h3 style="margin:0; font-size:1rem; font-weight:800; color:var(--text-primary);">
                 <i class="fas fa-table-list" style="color:var(--accent-tally);"></i> Parsed Transactions
               </h3>
-              <span id="rowCountBadge" style="font-size:0.75rem; background:rgba(255,255,255,0.08); padding:2px 8px; border-radius:999px; font-weight:700; color:#cbd5e1;">0 rows</span>
+              <span id="rowCountBadge" style="font-size:0.74rem; background:var(--bg-tertiary); padding:2px 8px; border-radius:999px; font-weight:700; color:var(--text-secondary); border:1px solid var(--card-border);">0 rows</span>
             </div>
             
-            <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
-              <input type="text" id="tableSearch" class="form-control" placeholder="Search narration or amount..." style="width:200px; padding:6px 10px; font-size:0.78rem;" oninput="filterTable()">
-              <button class="btn btn-secondary btn-sm" onclick="addNewRow()"><i class="fas fa-plus"></i> Add Row</button>
-              <button class="btn btn-secondary btn-sm" onclick="clearAllData()"><i class="fas fa-trash"></i> Clear</button>
+            <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap;">
+              <input type="text" id="tableSearch" class="form-control" placeholder="Search narration or amount..." style="width:180px; padding:6px 9px; font-size:0.78rem;" oninput="filterTable()">
+              <button class="btn btn-secondary btn-sm" onclick="addNewRow()" title="Add custom row"><i class="fas fa-plus"></i> Add Row</button>
+              <button class="btn btn-secondary btn-sm" onclick="clearAllData()" title="Clear all"><i class="fas fa-trash"></i></button>
+              <button class="btn btn-primary btn-sm" onclick="exportToTallyXml()" style="background:#10b981; border-color:#10b981; font-weight:700;"><i class="fas fa-download"></i> Tally XML</button>
             </div>
           </div>
 
@@ -565,15 +598,15 @@
             <table class="data-table" id="transactionTable">
               <thead>
                 <tr>
-                  <th style="width:40px;">#</th>
-                  <th style="width:110px;">Date</th>
+                  <th style="width:36px;">#</th>
+                  <th style="width:105px;">Date</th>
                   <th>Narration / Particulars</th>
-                  <th style="width:130px;">Chq / Ref No</th>
-                  <th style="width:110px; text-align:right;">Withdrawal (Dr)</th>
-                  <th style="width:110px; text-align:right;">Deposit (Cr)</th>
-                  <th style="width:110px; text-align:right;">Balance</th>
-                  <th style="width:150px;">Counter Ledger</th>
-                  <th style="width:40px; text-align:center;">Del</th>
+                  <th style="width:120px;">Chq / Ref No</th>
+                  <th style="width:105px; text-align:right;">Withdrawal (Dr)</th>
+                  <th style="width:105px; text-align:right;">Deposit (Cr)</th>
+                  <th style="width:105px; text-align:right;">Balance</th>
+                  <th style="width:145px;">Counter Ledger</th>
+                  <th style="width:36px; text-align:center;">Del</th>
                 </tr>
               </thead>
               <tbody id="tableBody">
@@ -582,39 +615,39 @@
             </table>
           </div>
 
-          <div style="display:flex; justify-content:space-between; align-items:center; margin-top:14px; font-size:0.75rem; color:#94a3b8; flex-wrap:wrap; gap:10px;">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-top:12px; font-size:0.74rem; color:var(--text-secondary); flex-wrap:wrap; gap:8px;">
             <span><i class="fas fa-info-circle"></i> You can edit any cell directly before downloading your Tally XML.</span>
-            <span id="bankIndicatorBadge" style="color:#38bdf8; font-weight:700;">Bank: Auto-Detect</span>
+            <span id="bankIndicatorBadge" style="color:var(--accent-tally); font-weight:700;">Bank: Auto-Detect</span>
           </div>
         </div>
 
         <!-- 21 Supported Banks Showcase -->
-        <div style="margin-top:28px; background:var(--card-bg); border:1px solid var(--card-border); border-radius:var(--radius-xl, 16px); padding:20px;">
-          <h4 style="margin:0 0 12px; font-size:0.95rem; font-weight:800; color:#f8fafc; display:flex; align-items:center; gap:8px;">
+        <div style="margin-top:24px; background:var(--card-bg); border:1px solid var(--card-border); border-radius:var(--radius-lg, 16px); padding:16px;">
+          <h4 style="margin:0 0 10px; font-size:0.92rem; font-weight:800; color:var(--text-primary); display:flex; align-items:center; gap:8px;">
             <i class="fas fa-check-double" style="color:#10b981;"></i> Supported Indian Banks (21 Banks)
           </h4>
-          <div style="display:grid; grid-template-columns:repeat(auto-fill, minmax(220px, 1fr)); gap:8px; font-size:0.78rem;">
-            <div style="color:#cbd5e1;">🏛️ State Bank of India (SBI)</div>
-            <div style="color:#cbd5e1;">🏛️ Punjab National Bank (PNB)</div>
-            <div style="color:#cbd5e1;">🏛️ Bank of Baroda (BOB)</div>
-            <div style="color:#cbd5e1;">🏛️ Canara Bank</div>
-            <div style="color:#cbd5e1;">🏛️ Union Bank of India</div>
-            <div style="color:#cbd5e1;">🏛️ Bank of India (BOI)</div>
-            <div style="color:#cbd5e1;">🏛️ Indian Bank</div>
-            <div style="color:#cbd5e1;">🏛️ Central Bank of India</div>
-            <div style="color:#cbd5e1;">🏛️ Indian Overseas Bank</div>
-            <div style="color:#cbd5e1;">🏛️ UCO Bank</div>
-            <div style="color:#cbd5e1;">🏛️ Bank of Maharashtra</div>
-            <div style="color:#cbd5e1;">🏛️ Punjab &amp; Sind Bank</div>
-            <div style="color:#38bdf8; font-weight:700;">🏦 HDFC Bank</div>
-            <div style="color:#38bdf8; font-weight:700;">🏦 ICICI Bank</div>
-            <div style="color:#38bdf8; font-weight:700;">🏦 Axis Bank</div>
-            <div style="color:#38bdf8; font-weight:700;">🏦 Kotak Mahindra Bank</div>
-            <div style="color:#38bdf8; font-weight:700;">🏦 IndusInd Bank</div>
-            <div style="color:#38bdf8; font-weight:700;">🏦 YES Bank</div>
-            <div style="color:#38bdf8; font-weight:700;">🏦 IDFC FIRST Bank</div>
-            <div style="color:#38bdf8; font-weight:700;">🏦 Federal Bank</div>
-            <div style="color:#38bdf8; font-weight:700;">🏦 Bandhan Bank</div>
+          <div style="display:grid; grid-template-columns:repeat(auto-fill, minmax(200px, 1fr)); gap:6px; font-size:0.78rem;">
+            <div style="color:var(--text-secondary);">🏛️ State Bank of India (SBI)</div>
+            <div style="color:var(--text-secondary);">🏛️ Punjab National Bank (PNB)</div>
+            <div style="color:var(--text-secondary);">🏛️ Bank of Baroda (BOB)</div>
+            <div style="color:var(--text-secondary);">🏛️ Canara Bank</div>
+            <div style="color:var(--text-secondary);">🏛️ Union Bank of India</div>
+            <div style="color:var(--text-secondary);">🏛️ Bank of India (BOI)</div>
+            <div style="color:var(--text-secondary);">🏛️ Indian Bank</div>
+            <div style="color:var(--text-secondary);">🏛️ Central Bank of India</div>
+            <div style="color:var(--text-secondary);">🏛️ Indian Overseas Bank</div>
+            <div style="color:var(--text-secondary);">🏛️ UCO Bank</div>
+            <div style="color:var(--text-secondary);">🏛️ Bank of Maharashtra</div>
+            <div style="color:var(--text-secondary);">🏛️ Punjab &amp; Sind Bank</div>
+            <div style="color:#0284c7; font-weight:700;">🏦 HDFC Bank</div>
+            <div style="color:#0284c7; font-weight:700;">🏦 ICICI Bank</div>
+            <div style="color:#0284c7; font-weight:700;">🏦 Axis Bank</div>
+            <div style="color:#0284c7; font-weight:700;">🏦 Kotak Mahindra Bank</div>
+            <div style="color:#0284c7; font-weight:700;">🏦 IndusInd Bank</div>
+            <div style="color:#0284c7; font-weight:700;">🏦 YES Bank</div>
+            <div style="color:#0284c7; font-weight:700;">🏦 IDFC FIRST Bank</div>
+            <div style="color:#0284c7; font-weight:700;">🏦 Federal Bank</div>
+            <div style="color:#0284c7; font-weight:700;">🏦 Bandhan Bank</div>
           </div>
         </div>
 
@@ -646,11 +679,11 @@
   <!-- PASSWORD MODAL FOR ENCRYPTED PDFS -->
   <div class="modal-overlay" id="passwordModal">
     <div class="modal-box">
-      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;">
-        <h3 style="margin:0; font-size:1.15rem; color:#f8fafc;"><i class="fas fa-lock" style="color:#fbbf24;"></i> Password Protected PDF</h3>
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+        <h3 style="margin:0; font-size:1.1rem; color:var(--text-primary);"><i class="fas fa-lock" style="color:#f59e0b;"></i> Password Protected PDF</h3>
         <button class="icon-btn" onclick="closePasswordModal()"><i class="fas fa-xmark"></i></button>
       </div>
-      <p style="font-size:0.82rem; color:#94a3b8; margin:0 0 16px;">
+      <p style="font-size:0.82rem; color:var(--text-secondary); margin:0 0 14px;">
         This bank statement is encrypted. Common passwords are:
         <br>&bull; <strong>SBI:</strong> 5 digits of Acc No + DOB (DDMM)
         <br>&bull; <strong>HDFC:</strong> Customer ID or PAN (uppercase)
@@ -663,7 +696,7 @@
           <button class="btn btn-secondary" onclick="togglePasswordVisibility()"><i class="fas fa-eye" id="pwdEyeIcon"></i></button>
         </div>
       </div>
-      <div style="display:flex; justify-content:flex-end; gap:8px; margin-top:20px;">
+      <div style="display:flex; justify-content:flex-end; gap:8px; margin-top:18px;">
         <button class="btn btn-secondary" onclick="closePasswordModal()">Cancel</button>
         <button class="btn btn-primary" onclick="submitPasswordAndParse()" style="background:#10b981; border-color:#10b981;">Unlock &amp; Parse</button>
       </div>
@@ -672,14 +705,14 @@
 
   <!-- HELP MODAL: HOW TO IMPORT IN TALLY -->
   <div class="modal-overlay" id="helpModal">
-    <div class="modal-box" style="max-width:600px;">
-      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;">
-        <h3 style="margin:0; font-size:1.15rem; color:#38bdf8;"><i class="fas fa-book-open"></i> How to Import in Tally</h3>
+    <div class="modal-box" style="max-width:580px;">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+        <h3 style="margin:0; font-size:1.1rem; color:var(--accent-tally);"><i class="fas fa-book-open"></i> How to Import in Tally</h3>
         <button class="icon-btn" onclick="closeHelpModal()"><i class="fas fa-xmark"></i></button>
       </div>
-      <div style="font-size:0.85rem; color:#cbd5e1; line-height:1.6;">
-        <h4 style="color:#facc15; margin:12px 0 6px;">For TallyPrime:</h4>
-        <ol style="padding-left:20px; margin:0 0 14px;">
+      <div style="font-size:0.85rem; color:var(--text-primary); line-height:1.6;">
+        <h4 style="color:#d97706; margin:10px 0 4px;">For TallyPrime:</h4>
+        <ol style="padding-left:18px; margin:0 0 12px;">
           <li>Open your company in <strong>TallyPrime</strong>.</li>
           <li>Make sure the Bank Ledger Name (e.g. <code>State Bank of India</code>) exists in your Tally masters.</li>
           <li>Press <strong>Alt + O</strong> (Import) &gt; Select <strong>Transactions</strong>.</li>
@@ -688,14 +721,14 @@
           <li>TallyPrime will import all bank payments and receipts into your Day Book!</li>
         </ol>
 
-        <h4 style="color:#facc15; margin:12px 0 6px;">For Tally.ERP 9:</h4>
-        <ol style="padding-left:20px; margin:0;">
+        <h4 style="color:#d97706; margin:10px 0 4px;">For Tally.ERP 9:</h4>
+        <ol style="padding-left:18px; margin:0;">
           <li>Gateway of Tally &gt; <strong>Import of Data</strong> &gt; <strong>Vouchers</strong>.</li>
           <li>Enter the full path and filename of the downloaded XML file.</li>
           <li>Press Enter to import.</li>
         </ol>
       </div>
-      <div style="display:flex; justify-content:flex-end; margin-top:18px;">
+      <div style="display:flex; justify-content:flex-end; margin-top:16px;">
         <button class="btn btn-primary" onclick="closeHelpModal()">Got it!</button>
       </div>
     </div>
@@ -822,18 +855,15 @@
           // Sort lines by Y descending (top of page to bottom)
           const sortedYs = Object.keys(lineMap).map(Number).sort((a, b) => b - a);
           for (const y of sortedYs) {
-            // Sort items inside line left-to-right by X
             const lineItems = lineMap[y].sort((a, b) => a.x - b.x);
             allLines.push(lineItems);
           }
         }
 
-        // Process extracted lines into transactions
         showStatus("Classifying bank transactions...", "Identifying dates, withdrawals & deposits...");
         const txns = extractTransactionsFromLines(allLines, selectedBankKey);
         
         if (txns.length === 0) {
-          // Fallback text-based line scanner
           const fallbackTxns = fallbackTextScanner(allLines);
           if (fallbackTxns.length > 0) {
             parsedTransactions = fallbackTxns;
@@ -858,7 +888,6 @@
       }
     }
 
-    // Helper: Parse Indian formatted number
     function parseIndianAmount(str) {
       if (!str) return 0;
       let clean = str.replace(/[INR\s,`]/gi, '').trim();
@@ -867,12 +896,10 @@
       return isNaN(num) ? 0 : num;
     }
 
-    // Helper: Standardize Date string to DD/MM/YYYY and YYYYMMDD
     function parseStatementDate(str) {
       if (!str) return null;
       str = str.trim();
       
-      // Match DD/MM/YYYY or DD-MM-YYYY or DD.MM.YYYY
       let m = str.match(/(\d{1,2})[-/.](\d{1,2})[-/.](\d{2,4})/);
       if (m) {
         let day = m[1].padStart(2, '0');
@@ -881,7 +908,6 @@
         return { display: `${day}/${month}/${year}`, tally: `${year}${month}${day}` };
       }
 
-      // Match DD-Mon-YYYY (e.g. 15-Apr-2024 or 15 Apr 2024)
       const months = { jan:'01', feb:'02', mar:'03', apr:'04', may:'05', jun:'06', jul:'07', aug:'08', sep:'09', oct:'10', nov:'11', dec:'12' };
       m = str.match(/(\d{1,2})[-\s]([A-Za-z]{3})[A-Za-z]*[-\s](\d{2,4})/);
       if (m) {
@@ -895,7 +921,6 @@
       return null;
     }
 
-    // Core Statement Row Extractor
     function extractTransactionsFromLines(lineItemsArray, bankKey) {
       const results = [];
       let currentTxn = null;
@@ -987,7 +1012,6 @@
       return results;
     }
 
-    // Fallback Line Scanner
     function fallbackTextScanner(lineItemsArray) {
       const results = [];
       const dateReg = /(\d{1,2}[-/.]\d{1,2}[-/.]\d{2,4})/;
@@ -1018,7 +1042,6 @@
       return results;
     }
 
-    // Parse CSV / TXT fallback
     function parseCsvText(csvText) {
       const lines = csvText.split(/\r?\n/);
       const results = [];
@@ -1058,7 +1081,6 @@
       }
     }
 
-    // Smart Rule-based Counter Ledger Mapper
     function autoMapLedger(narration) {
       if (!narration) return document.getElementById('defaultCounterLedger').value || 'Suspense Account';
       const upper = narration.toUpperCase();
@@ -1111,22 +1133,21 @@
 
         return `
           <tr data-idx="${idx}">
-            <td style="color:#64748b; font-family:var(--font-mono); font-size:0.75rem;">${idx + 1}</td>
-            <td><input type="text" class="cell-input" value="${tx.date}" onchange="updateTxField(${idx}, 'date', this.value)" style="width:90px;"></td>
+            <td style="color:var(--text-secondary); font-family:var(--font-mono); font-size:0.75rem;">${idx + 1}</td>
+            <td><input type="text" class="cell-input" value="${tx.date}" onchange="updateTxField(${idx}, 'date', this.value)" style="width:88px;"></td>
             <td><input type="text" class="cell-input" value="${escapeHtml(tx.narration)}" onchange="updateTxField(${idx}, 'narration', this.value)" title="${escapeHtml(tx.narration)}"></td>
             <td><input type="text" class="cell-input" value="${escapeHtml(tx.refNo || '')}" onchange="updateTxField(${idx}, 'refNo', this.value)" placeholder="Ref / Chq"></td>
             <td style="text-align:right;"><input type="number" step="0.01" class="cell-input badge-debit" value="${tx.debit || ''}" onchange="updateTxField(${idx}, 'debit', parseFloat(this.value)||0)" style="text-align:right; width:85px;"></td>
             <td style="text-align:right;"><input type="number" step="0.01" class="cell-input badge-credit" value="${tx.credit || ''}" onchange="updateTxField(${idx}, 'credit', parseFloat(this.value)||0)" style="text-align:right; width:85px;"></td>
-            <td style="text-align:right; font-family:var(--font-mono); color:#cbd5e1;">₹${(tx.balance || 0).toLocaleString('en-IN', {minimumFractionDigits:2})}</td>
-            <td><input type="text" class="cell-input" value="${escapeHtml(tx.counterLedger || '')}" onchange="updateTxField(${idx}, 'counterLedger', this.value)" style="color:#38bdf8; font-weight:700;"></td>
+            <td style="text-align:right; font-family:var(--font-mono); color:var(--text-primary); font-weight:600;">₹${(tx.balance || 0).toLocaleString('en-IN', {minimumFractionDigits:2})}</td>
+            <td><input type="text" class="cell-input" value="${escapeHtml(tx.counterLedger || '')}" onchange="updateTxField(${idx}, 'counterLedger', this.value)" style="color:#0284c7; font-weight:700;"></td>
             <td style="text-align:center;">
-              <button class="icon-btn" onclick="deleteRow(${idx})" style="color:#ef4444; width:24px; height:24px; font-size:0.75rem;" title="Delete row"><i class="fas fa-trash"></i></button>
+              <button class="icon-btn" onclick="deleteRow(${idx})" style="color:#ef4444; width:22px; height:22px; font-size:0.75rem;" title="Delete row"><i class="fas fa-trash"></i></button>
             </td>
           </tr>
         `;
       }).join('');
 
-      // Update Summary Cards
       document.getElementById('metricCount').textContent = parsedTransactions.length;
       document.getElementById('metricDebit').textContent = '₹' + totalDr.toLocaleString('en-IN', {minimumFractionDigits:2});
       document.getElementById('metricCredit').textContent = '₹' + totalCr.toLocaleString('en-IN', {minimumFractionDigits:2});
@@ -1134,7 +1155,7 @@
       const net = totalCr - totalDr;
       const netEl = document.getElementById('metricNet');
       netEl.textContent = (net >= 0 ? '+' : '') + '₹' + net.toLocaleString('en-IN', {minimumFractionDigits:2});
-      netEl.style.color = net >= 0 ? '#34d399' : '#f87171';
+      netEl.style.color = net >= 0 ? '#059669' : '#dc2626';
 
       document.getElementById('rowCountBadge').textContent = `${parsedTransactions.length} transactions`;
     }
@@ -1154,7 +1175,7 @@
           const net = totalCr - totalDr;
           const netEl = document.getElementById('metricNet');
           netEl.textContent = (net >= 0 ? '+' : '') + '₹' + net.toLocaleString('en-IN', {minimumFractionDigits:2});
-          netEl.style.color = net >= 0 ? '#34d399' : '#f87171';
+          netEl.style.color = net >= 0 ? '#059669' : '#dc2626';
         }
       }
     }
@@ -1210,9 +1231,7 @@
         return null;
       }
 
-      const companyName = document.getElementById('companyName').value.trim() || "My Company";
       const bankLedger = document.getElementById('bankLedger').value.trim() || "State Bank of India";
-      const voucherMode = document.getElementById('voucherTypeMode').value;
 
       let xml = `<?xml version="1.0" encoding="utf-8"?>\n`;
       xml += `<ENVELOPE>\n`;
@@ -1223,9 +1242,6 @@
       xml += `    <IMPORTDATA>\n`;
       xml += `      <REQUESTDESC>\n`;
       xml += `        <REPORTNAME>Vouchers</REPORTNAME>\n`;
-      xml += `        <STATICVARIABLES>\n`;
-      xml += `          <SVCURRENTCOMPANY>${escapeXml(companyName)}</SVCURRENTCOMPANY>\n`;
-      xml += `        </STATICVARIABLES>\n`;
       xml += `      </REQUESTDESC>\n`;
       xml += `      <REQUESTDATA>\n`;
 
@@ -1241,13 +1257,10 @@
         const narration = tx.narration || "Bank Transaction";
         const refNo = tx.refNo || "";
 
-        let vchType = "Payment";
-        if (voucherMode === 'all_journal') {
-          vchType = "Journal";
-        } else if (voucherMode === 'contra_cash' && counterLedger.toLowerCase().includes('cash')) {
+        // Standard Accounting Rule: Debits = Payment, Credits = Receipt, Cash = Contra
+        let vchType = isDebit ? "Payment" : "Receipt";
+        if (counterLedger.toLowerCase().trim() === 'cash') {
           vchType = "Contra";
-        } else {
-          vchType = isDebit ? "Payment" : "Receipt";
         }
 
         const vchNumber = idx + 1;
@@ -1264,14 +1277,14 @@
         xml += `            <EFFECTIVEDATE>${tallyDate}</EFFECTIVEDATE>\n`;
         xml += `            <NARRATION>${escapeXml(narration)}</NARRATION>\n`;
 
-        // Counterparty Entry
+        // Counterparty Ledger Entry
         xml += `            <ALLLEDGERENTRIES.LIST>\n`;
         xml += `              <LEDGERNAME>${escapeXml(counterLedger)}</LEDGERNAME>\n`;
         xml += `              <ISDEEMEDPOSITIVE>${isDebit ? 'Yes' : 'No'}</ISDEEMEDPOSITIVE>\n`;
         xml += `              <AMOUNT>${isDebit ? '-' + amountStr : amountStr}</AMOUNT>\n`;
         xml += `            </ALLLEDGERENTRIES.LIST>\n`;
 
-        // Bank Entry
+        // Bank Ledger Entry with Bank Allocations
         xml += `            <ALLLEDGERENTRIES.LIST>\n`;
         xml += `              <LEDGERNAME>${escapeXml(bankLedger)}</LEDGERNAME>\n`;
         xml += `              <ISDEEMEDPOSITIVE>${isDebit ? 'No' : 'Yes'}</ISDEEMEDPOSITIVE>\n`;

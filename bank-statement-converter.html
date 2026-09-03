@@ -544,7 +544,7 @@
           <div class="upload-badges">
             <span class="badge-pill">🔒 Password Decryption Supported</span>
             <span class="badge-pill">⚡ 21+ Banks Pre-Configured</span>
-            <span class="badge-pill">📑 Multi-Page PDF Support</span>
+            <span class="badge-pill" style="color:#059669; font-weight:700; border-color:rgba(16,185,129,0.4);">⭐ Repotic TDL &amp; Native Tally Ready</span>
             <span class="badge-pill">📊 TallyPrime &amp; ERP 9 Ready</span>
           </div>
         </div>
@@ -722,7 +722,20 @@
         <button class="icon-btn" onclick="closeHelpModal()"><i class="fas fa-xmark"></i></button>
       </div>
       <div style="font-size:0.85rem; color:var(--text-primary); line-height:1.6;">
-        <h4 style="color:#d97706; margin:10px 0 4px;">For TallyPrime:</h4>
+        <!-- Repotic TDL Guide -->
+        <div style="background: rgba(16, 185, 129, 0.08); border: 1px solid rgba(16, 185, 129, 0.3); border-radius: 8px; padding: 12px; margin-bottom: 14px;">
+          <h4 style="color:#059669; margin:0 0 6px; font-weight:800;"><i class="fas fa-plug-circle-check"></i> Importing with Repotic TDL (Repotic.tcp):</h4>
+          <ol style="padding-left:18px; margin:0; font-size:0.82rem; line-height:1.5;">
+            <li>Ensure <strong>Repotic.tcp</strong> is loaded (F1: Help &gt; TDLs &amp; AddOns &gt; F4: Manage Local TDLs).</li>
+            <li>Press <code>Esc</code> to return to <strong>Gateway of Tally</strong>.</li>
+            <li>Click on the <strong>Repotic</strong> menu option (or press <strong>R</strong>).</li>
+            <li>Select <strong>Import Bank Statement</strong>.</li>
+            <li>Select your Bank Ledger (e.g. <code>Punjab National Bank</code>).</li>
+            <li>Choose either the <strong>Tally XML</strong> or <strong>Excel / CSV</strong> file downloaded from this tool and press Enter to import all transactions!</li>
+          </ol>
+        </div>
+
+        <h4 style="color:#d97706; margin:10px 0 4px;">For Native TallyPrime (Without TDL):</h4>
         <ol style="padding-left:18px; margin:0 0 12px;">
           <li>Open your company in <strong>TallyPrime</strong>.</li>
           <li><strong>Step 1 (If ledgers are new):</strong> Click <strong>Download Masters XML</strong> &gt; Press <strong>Alt + O</strong> (Import) &gt; Select <strong>Masters</strong> &gt; Choose the Masters XML file.</li>

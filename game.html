@@ -7,7 +7,7 @@
   <meta name="google-site-verification" content="-Yb6Nx74gbZ3wRN5uP-Y8KKwDWlt1DPpxs4nA3PkE6M">
   <meta name="robots" content="index, follow">
   <title>Realm of Bots: Extreme Action RPG — AI Bots</title>
-  <meta name="description" content="Play Realm of Bots: Extreme Action RPG with Multi-Phase Bosses, Meteor Swarms, Blizzard Novas, 4 Pet Companions, Cyber Mounts, Void Rifts, and Retro-Synth Audio!">
+  <meta name="description" content="Play Realm of Bots: Extreme Action RPG with 5 World Bosses, Meteor Swarms, Blizzard Novas, 4 Pet Companions, Cyber Mounts, 12 Quests, 18 Achievements, and Retro-Synth Audio!">
   <meta name="keywords" content="open world game, browser rpg, action rpg, 2d open world rpg, terrain engine, realm of bots, ai bots, web game">
   <meta name="author" content="Rishit Chajjed">
   <link rel="icon" href="logo.png" type="image/png">
@@ -17,7 +17,7 @@
   <meta property="og:type" content="game">
   <meta property="og:url" content="https://www.aibots.co.in/game.html">
   <meta property="og:title" content="Realm of Bots: Extreme Action RPG — AI Bots">
-  <meta property="og:description" content="Epic open-world action RPG with Meteor Storms, Glacial Blizzards, Multi-Phase Bosses, Pet Evolutions, and Cyber Hoverbikes!">
+  <meta property="og:description" content="Epic open-world action RPG with 5 Legendary World Bosses, Meteor Storms, Glacial Blizzards, Pet Evolutions, 12 Quests, 18 Achievements, and Cyber Hoverbikes!">
   <meta property="og:image" content="https://www.aibots.co.in/logo.png">
 
   <!-- Fonts & Icons -->
@@ -167,12 +167,6 @@
       color: #38bdf8;
     }
 
-    .hud-btn-exit-fullscreen {
-      background: linear-gradient(135deg, #ef4444, #dc2626) !important;
-      border-color: #f87171 !important;
-      color: #ffffff !important;
-    }
-
     /* Top-Left Player Stats Overlay */
     .game-hud-top-left {
       position: absolute;
@@ -291,7 +285,7 @@
       padding: 7px 12px;
       border-radius: 12px;
       border: 1px solid rgba(168, 85, 247, 0.45);
-      max-width: 230px;
+      max-width: 235px;
       font-size: 0.74rem;
       z-index: 15;
       pointer-events: auto;
@@ -521,7 +515,7 @@
       .hotbar-key { display: none; }
       .in-canvas-top-bar { top: 6px; padding: 3px 8px; max-width: 96%; }
       .hud-btn-label { display: none; }
-      .quest-tracker { top: 85px; max-width: 170px; font-size: 0.66rem; }
+      .quest-tracker { top: 85px; max-width: 175px; font-size: 0.66rem; }
       .minimap-wrapper { width: 75px; height: 75px; }
       .boss-health-bar { top: 44px; }
     }
@@ -550,7 +544,7 @@
       border-radius: 18px;
       box-shadow: 0 25px 60px rgba(0, 0, 0, 0.9), 0 0 35px rgba(99, 102, 241, 0.25);
       width: 100%;
-      max-width: 580px;
+      max-width: 600px;
       max-height: 88%;
       overflow-y: auto;
       padding: 18px;
@@ -650,8 +644,8 @@
         <button class="hud-btn" onclick="openMountsModal()"><i class="fas fa-motorcycle" style="color:#fbbf24;"></i> <span class="hud-btn-label">Mounts</span></button>
         <button class="hud-btn" onclick="openShopModal()"><i class="fas fa-store" style="color:#f472b6;"></i> <span class="hud-btn-label">Shop</span></button>
         <button class="hud-btn" onclick="openTalentsModal()"><i class="fas fa-dna" style="color:#38bdf8;"></i> <span class="hud-btn-label">Talents (<span id="inCanvasTalentPts">0</span>)</span></button>
-        <button class="hud-btn" onclick="openQuestModal()"><i class="fas fa-scroll" style="color:#fbbf24;"></i> <span class="hud-btn-label">Quests</span></button>
-        <button class="hud-btn hud-btn-boss" onclick="openBossMapModal()"><i class="fas fa-skull-crossbones"></i> <span class="hud-btn-label">Boss Map</span></button>
+        <button class="hud-btn" onclick="openQuestModal()"><i class="fas fa-scroll" style="color:#fbbf24;"></i> <span class="hud-btn-label">Quests (<span id="topBarQuestCount">0/12</span>)</span></button>
+        <button class="hud-btn hud-btn-boss" onclick="openBossMapModal()"><i class="fas fa-skull-crossbones"></i> <span class="hud-btn-label">5 Bosses</span></button>
         <button class="hud-btn" onclick="openTeleportModal()"><i class="fas fa-dungeon" style="color:#06b6d4;"></i> <span class="hud-btn-label">Warp</span></button>
         <button class="hud-btn" onclick="toggleAudioMute()" id="inCanvasMuteBtn" title="Mute/Unmute"><i class="fas fa-volume-up" id="inCanvasMuteIcon"></i></button>
         <button class="hud-btn hud-btn-fullscreen" onclick="toggleFullscreen()" id="inCanvasFullscreenBtn" title="Fullscreen Mode"><i class="fas fa-expand" id="inCanvasFsIcon"></i> <span class="hud-btn-label" id="inCanvasFsText">FS</span></button>
@@ -683,11 +677,11 @@
           <div class="hud-badge"><i class="fas fa-coins" style="color:#fbbf24;"></i> <span id="coinText">100</span></div>
           <div class="hud-badge"><i class="fas fa-award" style="color:#38bdf8;"></i> <span id="scoreText">0</span></div>
         </div>
-        <div class="minimap-wrapper" title="Click Minimap to Warp or locate Bosses!">
+        <div class="minimap-wrapper" title="Click Minimap to Warp or locate 5 World Bosses!">
           <canvas id="minimapCanvas" width="100" height="100"></canvas>
         </div>
-        <div class="boss-radar-tag" onclick="openBossMapModal()" title="Click to view full Boss Map">
-          <i class="fas fa-crosshairs"></i> Boss Radar
+        <div class="boss-radar-tag" onclick="openBossMapModal()" title="Click to view 5 World Bosses Map">
+          <i class="fas fa-crosshairs"></i> 5 Boss Radar
         </div>
       </div>
 
@@ -950,15 +944,15 @@
 
       <!-- 7. Quest & Achievements Modal (Dual-Tab) -->
       <div class="modal-backdrop" id="questModal">
-        <div class="modal-card" style="max-width: 640px;">
+        <div class="modal-card" style="max-width: 660px;">
           <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
             <h3 style="margin:0; font-size:1.15rem; color:#fbbf24;"><i class="fas fa-scroll"></i> Quest Chronicles & Achievements</h3>
             <button class="btn btn-secondary btn-sm" onclick="closeModal('questModal')"><i class="fas fa-xmark"></i></button>
           </div>
           <!-- Dual Tabs -->
           <div style="display:flex; gap:8px; margin-bottom:12px; border-bottom:1px solid rgba(255,255,255,0.12); padding-bottom:8px;">
-            <button class="btn btn-sm btn-primary" id="tabBtnQuests" onclick="switchQuestTab('quests')"><i class="fas fa-scroll"></i> Quests (<span id="questTabCount">0/6</span>)</button>
-            <button class="btn btn-sm btn-secondary" id="tabBtnAchievements" onclick="switchQuestTab('achievements')"><i class="fas fa-award"></i> Achievements (<span id="achieveTabCount">0/8</span>)</button>
+            <button class="btn btn-sm btn-primary" id="tabBtnQuests" onclick="switchQuestTab('quests')"><i class="fas fa-scroll"></i> 12 Story Quests (<span id="questTabCount">0/12</span>)</button>
+            <button class="btn btn-sm btn-secondary" id="tabBtnAchievements" onclick="switchQuestTab('achievements')"><i class="fas fa-award"></i> 18 Achievements (<span id="achieveTabCount">0/18</span>)</button>
           </div>
           <div id="questListContainer" style="display:flex; flex-direction:column; gap:8px;"></div>
           <div id="achievementsListContainer" style="display:none; flex-direction:column; gap:8px;"></div>
@@ -976,14 +970,14 @@
         </div>
       </div>
 
-      <!-- 9. Dedicated Boss Map & Radar Modal -->
+      <!-- 9. Dedicated 5 World Bosses Map & Radar Modal -->
       <div class="modal-backdrop" id="bossMapModal">
-        <div class="modal-card" style="max-width: 620px;">
+        <div class="modal-card" style="max-width: 660px;">
           <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
-            <h3 style="margin:0; font-size:1.15rem; color:#ef4444;"><i class="fas fa-skull-crossbones"></i> Boss Locations & Live Radar</h3>
+            <h3 style="margin:0; font-size:1.15rem; color:#ef4444;"><i class="fas fa-skull-crossbones"></i> 5 World Bosses & Live Radar</h3>
             <button class="btn btn-secondary btn-sm" onclick="closeModal('bossMapModal')"><i class="fas fa-xmark"></i></button>
           </div>
-          <p style="font-size:0.75rem; color:#94a3b8; margin-top:0;">Bosses are also marked on the top-right minimap with pulsing radar rings (☠️). Click any boss card below to warp directly!</p>
+          <p style="font-size:0.75rem; color:#94a3b8; margin-top:0;">All 5 world bosses are marked on the top-right minimap with unique color-coded sonar ping waves. Click any boss card below to warp directly into combat!</p>
           <div id="bossCardsContainer" style="display:flex; flex-direction:column; gap:10px;"></div>
         </div>
       </div>
@@ -1006,24 +1000,23 @@
       </div>
 
       <div class="info-card">
-        <h4><i class="fas fa-map"></i> 4 Living Biomes & Bosses</h4>
+        <h4><i class="fas fa-skull-crossbones"></i> 5 Legendary World Bosses</h4>
         <p style="font-size: 0.85rem; color: var(--text-secondary); line-height: 1.6; margin: 0;">
-          🌿 <strong>Emerald Forest</strong>: Slimes, Wildflowers, Sage NPC.<br>
-          🏜️ <strong>Solaris Dunes</strong>: Scorpions, Gold Veins, Mirages.<br>
-          ❄️ <strong>Glacial Peaks</strong>: Frost Yeti King Mini-Boss (X:800, Y:1800).<br>
-          🌋 <strong>Infernal Volcano</strong>: Mecha Dragon Titan (X:2500, Y:1900).<br>
-          🌀 <strong>Cyber Citadel</strong>: Healing Fountain & Armory.
+          🌿 <strong>Venom Hydra Queen</strong> (Forest: X:600, Y:450)<br>
+          🏜️ <strong>Dune Colossus Scarab</strong> (Dunes: X:2600, Y:450)<br>
+          ❄️ <strong>Frost Yeti King</strong> (Glacier: X:800, Y:1800)<br>
+          🌋 <strong>Mecha Dragon Titan</strong> (Volcano: X:2500, Y:1900)<br>
+          🌌 <strong>Void Star Archon</strong> (Cosmic Rift: X:1600, Y:2250)
         </p>
       </div>
 
       <div class="info-card">
-        <h4><i class="fas fa-shield-cat"></i> Quests & Radar</h4>
+        <h4><i class="fas fa-trophy"></i> 12 Quests & 18 Achievements</h4>
         <p style="font-size: 0.85rem; color: var(--text-secondary); line-height: 1.6; margin: 0;">
-          📜 <strong>Click Active Quest</strong>: Tap on-screen quest HUD to switch active tracking or claim badges.<br>
-          🐺 <strong>Frost Wolf</strong>: Chills mobs and auto-vacuums gold.<br>
-          🐉 <strong>Plasma Drake</strong>: Shoots fiery AoE blasts.<br>
-          🧚 <strong>Astral Pixie</strong>: Restores HP & Mana.<br>
-          📍 <strong>Boss Radar</strong>: Follow the screen-edge compass arrow to find bosses!
+          📜 <strong>Select Any Quest</strong>: Tap on-screen quest HUD to switch active tracking or claim badges.<br>
+          ⚡ <strong>Universal Progress</strong>: All boss kills, chest loots, and mining count toward all quests.<br>
+          🏅 <strong>18 Badges</strong>: Unlock gold, talent points, and titles like 👑 Realm Legend!<br>
+          🧭 <strong>Compass Radar</strong>: Follow the screen-edge rotating arrows to hunt bosses!
         </p>
       </div>
     </div>
@@ -1123,7 +1116,6 @@
         });
       },
 
-      // Retro-Synth Background Music Sequencer
       startBGM() {
         if (this.bgmPlaying) return;
         this.init();
@@ -1229,31 +1221,55 @@
     const scenery = [];
 
     // ==========================================================================
-    // QUEST & ACHIEVEMENT SYSTEM (UNIVERSAL TRACKING + SELECTABLE ACTIVE QUEST)
+    // EXPANDED 12 MAIN QUESTS & 18 EPIC ACHIEVEMENTS
     // ==========================================================================
     const quests = [
-      { id: 'slimes', title: "Forest Slimes Hunt", desc: "Defeat 4 Forest Slimes", target: 4, progress: 0, completed: false, type: "slime", reward: "+80 XP, 40 Gold", rewardXp: 80, rewardCoins: 40, rewardTalent: 0 },
-      { id: 'scorpions', title: "Solaris Dunes Scorpions", desc: "Slay 3 Desert Scorpions", target: 3, progress: 0, completed: false, type: "scorpion", reward: "+140 XP, 75 Gold, +1 Talent Pt", rewardXp: 140, rewardCoins: 75, rewardTalent: 1 },
-      { id: 'yeti', title: "Frost Yeti King Challenge", desc: "Conquer the Frost Yeti King", target: 1, progress: 0, completed: false, type: "yeti_boss", reward: "+250 XP, 150 Gold", rewardXp: 250, rewardCoins: 150, rewardTalent: 0 },
-      { id: 'titan', title: "Nether Titan Slayer", desc: "Defeat the Mecha Dragon Titan", target: 1, progress: 0, completed: false, type: "boss", reward: "+600 XP, 400 Gold, 👑 Realm Master", rewardXp: 600, rewardCoins: 400, rewardTalent: 2 },
-      { id: 'chests', title: "Treasure Raider", desc: "Open 3 Treasure Chests in the Realm", target: 3, progress: 0, completed: false, type: "chest", reward: "+120 XP, 80 Gold", rewardXp: 120, rewardCoins: 80, rewardTalent: 0 },
-      { id: 'ores', title: "Master Mineral Miner", desc: "Mine 4 Gold or Crystal Ores", target: 4, progress: 0, completed: false, type: "ore", reward: "+100 XP, 50 Gold", rewardXp: 100, rewardCoins: 50, rewardTalent: 0 }
+      { id: 'slimes', title: "1. Forest Slimes Hunt", desc: "Defeat 4 Forest Slimes", target: 4, progress: 0, completed: false, type: "slime", reward: "+80 XP, 50 Gold", rewardXp: 80, rewardCoins: 50, rewardTalent: 0 },
+      { id: 'scorpions', title: "2. Solaris Dunes Scorpions", desc: "Slay 4 Desert Scorpions", target: 4, progress: 0, completed: false, type: "scorpion", reward: "+140 XP, 80 Gold", rewardXp: 140, rewardCoins: 80, rewardTalent: 0 },
+      { id: 'ice_golems', title: "3. Glacial Ice Golems", desc: "Shatter 3 Glacial Golems", target: 3, progress: 0, completed: false, type: "ice_golem", reward: "+180 XP, 95 Gold", rewardXp: 180, rewardCoins: 95, rewardTalent: 0 },
+      { id: 'fire_demons', title: "4. Infernal Fire Demons", desc: "Extinguish 3 Fire Demons", target: 3, progress: 0, completed: false, type: "fire_demon", reward: "+220 XP, 110 Gold", rewardXp: 220, rewardCoins: 110, rewardTalent: 0 },
+      { id: 'hydra', title: "5. Venom Hydra Challenge", desc: "Conquer the Venom Hydra Queen in Forest Glade", target: 1, progress: 0, completed: false, type: "hydra_boss", reward: "+350 XP, 200 Gold, +1 Talent Pt", rewardXp: 350, rewardCoins: 200, rewardTalent: 1 },
+      { id: 'yeti', title: "6. Frost Yeti King Trial", desc: "Conquer the Frost Yeti King in Glacial Peak", target: 1, progress: 0, completed: false, type: "yeti_boss", reward: "+400 XP, 250 Gold, +1 Talent Pt", rewardXp: 400, rewardCoins: 250, rewardTalent: 1 },
+      { id: 'scarab', title: "7. Dune Colossus Trial", desc: "Vanquish the Dune Colossus Scarab in Solaris Dunes", target: 1, progress: 0, completed: false, type: "scarab_boss", reward: "+450 XP, 280 Gold, +1 Talent Pt", rewardXp: 450, rewardCoins: 280, rewardTalent: 1 },
+      { id: 'titan', title: "8. Nether Titan Slayer", desc: "Defeat the Mecha Dragon Titan in Infernal Caldera", target: 1, progress: 0, completed: false, type: "boss", reward: "+700 XP, 450 Gold, 👑 Realm Master", rewardXp: 700, rewardCoins: 450, rewardTalent: 2 },
+      { id: 'void_archon', title: "9. Void Archon Purge", desc: "Vanquish the Void Star Archon at the Cosmic Rift", target: 1, progress: 0, completed: false, type: "void_boss", reward: "+1000 XP, 600 Gold, 🌌 Void Sovereign", rewardXp: 1000, rewardCoins: 600, rewardTalent: 2 },
+      { id: 'chests', title: "10. Treasure Raider", desc: "Open 5 Treasure Chests across the Realm", target: 5, progress: 0, completed: false, type: "chest", reward: "+150 XP, 100 Gold", rewardXp: 150, rewardCoins: 100, rewardTalent: 0 },
+      { id: 'ores', title: "11. Master Mineral Miner", desc: "Mine 5 Gold or Crystal Ores", target: 5, progress: 0, completed: false, type: "ore", reward: "+150 XP, 90 Gold", rewardXp: 150, rewardCoins: 90, rewardTalent: 0 },
+      { id: 'combo', title: "12. Bladestorm Mastery", desc: "Reach a 6x Combo Streak in combat", target: 6, progress: 0, completed: false, type: "combo", reward: "+160 XP, 100 Gold, +1 Talent Pt", rewardXp: 160, rewardCoins: 100, rewardTalent: 1 }
     ];
     let activeQuestId = 'slimes';
     let currentQuestTab = 'quests';
 
     const achievements = [
       { id: 'first_blood', name: 'First Blood', desc: 'Defeat your first monster in the realm', icon: 'fa-skull', reward: '+50 Gold', achieved: false },
-      { id: 'kill_10', name: 'Monster Hunter', desc: 'Defeat 10 monsters total', icon: 'fa-shield-halved', reward: '+100 Gold', achieved: false },
-      { id: 'kill_yeti', name: 'Glacial Vanquisher', desc: 'Defeat the Frost Yeti King', icon: 'fa-snowflake', reward: '+200 Gold', achieved: false },
+      { id: 'kill_10', name: 'Monster Hunter', desc: 'Defeat 10 monsters total', icon: 'fa-shield-halved', reward: '+120 Gold', achieved: false },
+      { id: 'kill_30', name: 'Extinction Protocol', desc: 'Defeat 30 monsters total', icon: 'fa-skull-crossbones', reward: '+300 Gold, +1 Talent Pt', achieved: false },
+      { id: 'kill_hydra', name: 'Serpent Vanquisher', desc: 'Defeat the Venom Hydra Queen', icon: 'fa-virus', reward: '+200 Gold', achieved: false },
+      { id: 'kill_scarab', name: 'Sandstorm Conqueror', desc: 'Defeat the Dune Colossus Scarab', icon: 'fa-sun', reward: '+250 Gold', achieved: false },
+      { id: 'kill_yeti', name: 'Glacial Champion', desc: 'Defeat the Frost Yeti King', icon: 'fa-snowflake', reward: '+250 Gold', achieved: false },
       { id: 'kill_titan', name: 'Titan Slayer', desc: 'Conquer the Mecha Dragon Titan', icon: 'fa-dragon', reward: '+500 Gold, 👑 Title', achieved: false },
-      { id: 'open_chests', name: 'Treasure Seeker', desc: 'Open 3 treasure chests', icon: 'fa-gem', reward: '+100 Gold', achieved: false },
-      { id: 'mine_ores', name: 'Prospector', desc: 'Mine 3 mineral ores', icon: 'fa-cubes-stacked', reward: '+100 Gold', achieved: false },
+      { id: 'kill_archon', name: 'Void Sovereign', desc: 'Vanquish the Void Star Archon', icon: 'fa-meteor', reward: '+750 Gold, +2 Talent Pts', achieved: false },
+      { id: 'pantheon', name: 'Pantheon Slayer', desc: 'Defeat all 5 Legendary World Bosses', icon: 'fa-award', reward: '+1,000 Gold, 🌟 Master Crest', achieved: false },
+      { id: 'open_chests', name: 'Treasure Seeker', desc: 'Open 5 treasure chests', icon: 'fa-gem', reward: '+150 Gold', achieved: false },
+      { id: 'mine_ores', name: 'Prospector', desc: 'Mine 5 mineral ores', icon: 'fa-cubes-stacked', reward: '+150 Gold', achieved: false },
+      { id: 'combo_10', name: 'Bladestorm Virtuoso', desc: 'Achieve a 10x Attack Combo Streak', icon: 'fa-fire-flame-curved', reward: '+150 Gold', achieved: false },
+      { id: 'cast_meteor', name: 'Celestial Arcanist', desc: 'Cast Meteor Swarm 5 times', icon: 'fa-fire', reward: '+120 Gold', achieved: false },
+      { id: 'cast_blizzard', name: 'Absolute Zero', desc: 'Cast Blizzard Nova 5 times', icon: 'fa-icicles', reward: '+120 Gold', achieved: false },
       { id: 'ride_mount', name: 'Cyber Rider', desc: 'Equip and ride the Cyber Mount', icon: 'fa-motorcycle', reward: '+50 Gold', achieved: false },
-      { id: 'level_5', name: 'Ascended Bot', desc: 'Reach Hero Level 5', icon: 'fa-crown', reward: '+250 Gold, +1 Talent Pt', achieved: false }
+      { id: 'rich_bot', name: 'Gold Magnate', desc: 'Amass 600 Gold Coins in your treasury', icon: 'fa-sack-dollar', reward: '+200 Gold', achieved: false },
+      { id: 'level_5', name: 'Ascended Bot', desc: 'Reach Hero Level 5', icon: 'fa-crown', reward: '+250 Gold, +1 Talent Pt', achieved: false },
+      { id: 'level_10', name: 'Mythic Deity', desc: 'Reach Hero Level 10', icon: 'fa-star', reward: '+500 Gold, +2 Talent Pts', achieved: false }
     ];
 
-    let stats = { totalKills: 0, chestsOpened: 0, oresMined: 0 };
+    let stats = {
+      totalKills: 0,
+      chestsOpened: 0,
+      oresMined: 0,
+      meteorCasts: 0,
+      blizzardCasts: 0,
+      highestCombo: 0,
+      bossesDefeated: { hydra: false, scarab: false, yeti: false, titan: false, archon: false }
+    };
 
     function checkAchievements() {
       let newlyAchieved = false;
@@ -1274,19 +1290,43 @@
       if (a1 && !a1.achieved && stats.totalKills >= 1) triggerAchieve(a1, 50);
 
       const a2 = achievements.find(a => a.id === 'kill_10');
-      if (a2 && !a2.achieved && stats.totalKills >= 10) triggerAchieve(a2, 100);
+      if (a2 && !a2.achieved && stats.totalKills >= 10) triggerAchieve(a2, 120);
 
-      const a3 = achievements.find(a => a.id === 'open_chests');
-      if (a3 && !a3.achieved && stats.chestsOpened >= 3) triggerAchieve(a3, 100);
+      const a3 = achievements.find(a => a.id === 'kill_30');
+      if (a3 && !a3.achieved && stats.totalKills >= 30) triggerAchieve(a3, 300, 1);
 
-      const a4 = achievements.find(a => a.id === 'mine_ores');
-      if (a4 && !a4.achieved && stats.oresMined >= 3) triggerAchieve(a4, 100);
+      const a4 = achievements.find(a => a.id === 'open_chests');
+      if (a4 && !a4.achieved && stats.chestsOpened >= 5) triggerAchieve(a4, 150);
 
-      const a5 = achievements.find(a => a.id === 'ride_mount');
-      if (a5 && !a5.achieved && player.isMounted) triggerAchieve(a5, 50);
+      const a5 = achievements.find(a => a.id === 'mine_ores');
+      if (a5 && !a5.achieved && stats.oresMined >= 5) triggerAchieve(a5, 150);
 
-      const a6 = achievements.find(a => a.id === 'level_5');
-      if (a6 && !a6.achieved && player.lvl >= 5) triggerAchieve(a6, 250, 1);
+      const a6 = achievements.find(a => a.id === 'combo_10');
+      if (a6 && !a6.achieved && (stats.highestCombo >= 10 || player.combo >= 10)) triggerAchieve(a6, 150);
+
+      const a7 = achievements.find(a => a.id === 'cast_meteor');
+      if (a7 && !a7.achieved && stats.meteorCasts >= 5) triggerAchieve(a7, 120);
+
+      const a8 = achievements.find(a => a.id === 'cast_blizzard');
+      if (a8 && !a8.achieved && stats.blizzardCasts >= 5) triggerAchieve(a8, 120);
+
+      const a9 = achievements.find(a => a.id === 'ride_mount');
+      if (a9 && !a9.achieved && player.isMounted) triggerAchieve(a9, 50);
+
+      const a10 = achievements.find(a => a.id === 'rich_bot');
+      if (a10 && !a10.achieved && player.coins >= 600) triggerAchieve(a10, 200);
+
+      const a11 = achievements.find(a => a.id === 'level_5');
+      if (a11 && !a11.achieved && player.lvl >= 5) triggerAchieve(a11, 250, 1);
+
+      const a12 = achievements.find(a => a.id === 'level_10');
+      if (a12 && !a12.achieved && player.lvl >= 10) triggerAchieve(a12, 500, 2);
+
+      const b = stats.bossesDefeated || {};
+      const aPantheon = achievements.find(a => a.id === 'pantheon');
+      if (aPantheon && !aPantheon.achieved && b.hydra && b.scarab && b.yeti && b.titan && b.archon) {
+        triggerAchieve(aPantheon, 1000);
+      }
 
       if (newlyAchieved) {
         updateHud();
@@ -1296,11 +1336,12 @@
 
     // Teleport Waypoints
     const waypoints = [
-      { name: "Cyber Citadel (Hub)", x: 1600, y: 1200, icon: "fa-city", color: "#38bdf8", desc: "Safe zone & Armory" },
-      { name: "Emerald Forest", x: 800, y: 600, icon: "fa-tree", color: "#22c55e", desc: "Slimes & Wild Herbs" },
-      { name: "Solaris Desert Dunes", x: 2400, y: 700, icon: "fa-sun", color: "#eab308", desc: "Scorpions & Gold Veins" },
-      { name: "Glacial Peak (Yeti King 👑)", x: 800, y: 1800, icon: "fa-snowflake", color: "#06b6d4", desc: "Sub-zero ice realm & Boss" },
-      { name: "Infernal Caldera (Dragon Titan 👑)", x: 2400, y: 1800, icon: "fa-fire", color: "#ef4444", desc: "Magma lake & Raid Boss" }
+      { name: "Cyber Citadel (Hub)", x: 1600, y: 1200, icon: "fa-city", color: "#38bdf8", desc: "Safe zone, Healing Fountain & Armory" },
+      { name: "Emerald Forest (Hydra Glade 👑)", x: 600, y: 450, icon: "fa-virus", color: "#10b981", desc: "Venom Hydra Queen Boss Shrine" },
+      { name: "Solaris Dunes (Scarab Oasis 👑)", x: 2600, y: 450, icon: "fa-sun", color: "#f59e0b", desc: "Dune Colossus Scarab Boss Lair" },
+      { name: "Glacial Peak (Yeti Shrine 👑)", x: 800, y: 1800, icon: "fa-snowflake", color: "#06b6d4", desc: "Frost Yeti King Mini-Boss Arena" },
+      { name: "Infernal Caldera (Dragon Titan 👑)", x: 2500, y: 1900, icon: "fa-fire", color: "#ef4444", desc: "Mecha Dragon Titan Raid Boss Crater" },
+      { name: "Cosmic Void Rift (Star Archon 👑)", x: 1600, y: 2250, icon: "fa-meteor", color: "#a855f7", desc: "Void Star Archon Cosmic Singularity" }
     ];
 
     // ==========================================================================
@@ -1367,7 +1408,7 @@
       for (let i = 0; i < 35; i++) scenery.push({ x: Math.random() * 1500, y: 1250 + Math.random() * 1100, type: 'crystal', size: 18 + Math.random() * 14 });
       for (let i = 0; i < 30; i++) scenery.push({ x: 1650 + Math.random() * 1500, y: 1250 + Math.random() * 1100, type: 'volcano_rock', size: 22 + Math.random() * 16 });
 
-      for (let i = 0; i < 20; i++) {
+      for (let i = 0; i < 22; i++) {
         ores.push({
           x: 200 + Math.random() * (WORLD.width - 400),
           y: 200 + Math.random() * (WORLD.height - 400),
@@ -1376,12 +1417,12 @@
       }
 
       npcs.push({ x: 1600, y: 1080, name: 'Cyber Merchant', role: 'shop', dialog: "Welcome to the Cyber Armory! Equip Laser Katanas, Shields, and Drone Pets!" });
-      npcs.push({ x: 1520, y: 1160, name: 'Elder Bot Sage', role: 'quest', dialog: "Mount your Cyber Bike with [V], check Boss Radar (☠️), and defeat the Nether Titan!" });
+      npcs.push({ x: 1520, y: 1160, name: 'Elder Bot Sage', role: 'quest', dialog: "Mount your Cyber Bike with [V], check Boss Radar (☠️), and conquer all 5 World Bosses!" });
 
       chests.push({ x: 1530, y: 1220, opened: false, coins: 60 });
       chests.push({ x: 1670, y: 1220, opened: false, coins: 75 });
 
-      for (let i = 0; i < 22; i++) {
+      for (let i = 0; i < 24; i++) {
         chests.push({
           x: 200 + Math.random() * (WORLD.width - 400),
           y: 200 + Math.random() * (WORLD.height - 400),
@@ -1394,31 +1435,72 @@
       portals.push({ x: 2800, y: 300, targetX: 400, targetY: 2100, name: 'Frost Portal' });
       portals.push({ x: 400, y: 2100, targetX: 2800, targetY: 300, name: 'Desert Portal' });
       portals.push({ x: 1600, y: 1330, targetX: 2500, targetY: 1900, name: 'Titan Caldera Portal' });
+      portals.push({ x: 1600, y: 2100, targetX: 1600, targetY: 2250, name: 'Void Singularity Gate' });
 
-      for (let i = 0; i < 18; i++) spawnEnemy();
-      spawnBoss();
+      for (let i = 0; i < 20; i++) spawnEnemy();
+
+      // SPAWN ALL 5 WORLD BOSSES
+      spawnHydraBoss();
+      spawnScarabBoss();
       spawnYetiMiniBoss();
+      spawnBoss();
+      spawnVoidArchonBoss();
 
       loadSavedData();
     }
 
-    function spawnBoss() {
+    // 1. Forest Boss (NW)
+    function spawnHydraBoss() {
       enemies.push({
-        type: 'boss', name: 'Mecha Dragon Titan',
-        x: 2500, y: 1900,
-        hp: 900, maxHp: 900, speed: 1.8,
-        color: '#dc2626', radius: 48, xp: 600, coins: 350, atk: 30,
-        isBoss: true, phase: 1, attackTimer: 0, wingAngle: 0
+        type: 'hydra_boss', name: 'Venom Hydra Queen',
+        x: 600, y: 450,
+        hp: 550, maxHp: 550, speed: 1.7,
+        color: '#10b981', radius: 40, xp: 380, coins: 200, atk: 24,
+        isBoss: true, phase: 1, attackTimer: 0
       });
     }
 
+    // 2. Desert Boss (NE)
+    function spawnScarabBoss() {
+      enemies.push({
+        type: 'scarab_boss', name: 'Dune Colossus Scarab',
+        x: 2600, y: 450,
+        hp: 700, maxHp: 700, speed: 1.9,
+        color: '#f59e0b', radius: 42, xp: 480, coins: 260, atk: 26,
+        isBoss: true, phase: 1, attackTimer: 0
+      });
+    }
+
+    // 3. Glacier Boss (SW)
     function spawnYetiMiniBoss() {
       enemies.push({
         type: 'yeti_boss', name: 'Frost Yeti King',
         x: 800, y: 1800,
-        hp: 450, maxHp: 450, speed: 1.6,
-        color: '#38bdf8', radius: 36, xp: 300, coins: 160, atk: 22,
+        hp: 600, maxHp: 600, speed: 1.6,
+        color: '#38bdf8', radius: 38, xp: 400, coins: 220, atk: 24,
         isBoss: true, phase: 1, attackTimer: 0
+      });
+    }
+
+    // 4. Volcano Boss (SE)
+    function spawnBoss() {
+      enemies.push({
+        type: 'boss', name: 'Mecha Dragon Titan',
+        x: 2500, y: 1900,
+        hp: 1100, maxHp: 1100, speed: 2.0,
+        color: '#dc2626', radius: 50, xp: 750, coins: 450, atk: 32,
+        isBoss: true, phase: 1, attackTimer: 0, wingAngle: 0
+      });
+    }
+
+    // 5. Cosmic Void Rift Boss (South Central)
+    function spawnVoidArchonBoss() {
+      enemies.push({
+        type: 'void_boss', name: 'Void Star Archon',
+        x: 1600, y: 2250,
+        hp: 1400, maxHp: 1400, speed: 2.2,
+        color: '#a855f7', radius: 52, xp: 1000, coins: 600, atk: 36,
+        isBoss: true, phase: 1, attackTimer: 0, orbitAngle: 0
       });
     }
 
@@ -1525,7 +1607,7 @@
         if (inCloseCleave || inFrontCone) {
           hitAny = true;
           const isCrit = Math.random() < 0.32;
-          const baseDmg = 32 + player.lvl * 8 + player.equipment.swordDmgBonus + (player.talents.dmg * 14);
+          const baseDmg = 34 + player.lvl * 8 + player.equipment.swordDmgBonus + (player.talents.dmg * 14);
           const dmg = isCrit ? Math.round(baseDmg * 1.85) : baseDmg;
 
           en.hp -= dmg;
@@ -1536,7 +1618,10 @@
 
           player.combo++;
           player.comboTimer = 140;
+          stats.highestCombo = Math.max(stats.highestCombo || 0, player.combo);
           updateComboHUD();
+          checkComboQuests();
+          checkAchievements();
 
           const pushAngle = Math.atan2(en.y - player.y, en.x - player.x);
           en.x += Math.cos(pushAngle) * (en.isBoss ? 10 : 32);
@@ -1589,12 +1674,32 @@
       updateQuestHUD();
     }
 
+    function checkComboQuests() {
+      for (const q of quests) {
+        if (q.type === 'combo' && !q.completed) {
+          q.progress = Math.max(q.progress, player.combo);
+          if (q.progress >= q.target) {
+            q.progress = q.target;
+            q.completed = true;
+            player.coins += q.rewardCoins;
+            player.xp += q.rewardXp;
+            if (q.rewardTalent) player.talentPoints += q.rewardTalent;
+            addFloatingText(`Quest Complete: ${q.title}! 🏆`, player.x, player.y - 32, '#c084fc');
+            AudioEngine.levelUp();
+            showToast(`🏆 Quest Completed: ${q.title}! (${q.reward})`, "success");
+            autoAdvanceQuest(q.id);
+          }
+        }
+      }
+      updateQuestHUD();
+    }
+
     function autoAdvanceQuest(completedId) {
       if (activeQuestId === completedId) {
         const nextUncompleted = quests.find(q => !q.completed);
         if (nextUncompleted) {
           activeQuestId = nextUncompleted.id;
-          showToast(`🎯 Next Active Quest: ${nextUncompleted.title}`, "info");
+          showToast(`🎯 Next Tracked Quest: ${nextUncompleted.title}`, "info");
         }
       }
     }
@@ -1631,6 +1736,8 @@
         return;
       }
       player.mp -= 40;
+      stats.meteorCasts = (stats.meteorCasts || 0) + 1;
+      checkAchievements();
       updateHud();
       AudioEngine.meteor();
       screenShake = 18;
@@ -1654,6 +1761,8 @@
         return;
       }
       player.mp -= 35;
+      stats.blizzardCasts = (stats.blizzardCasts || 0) + 1;
+      checkAchievements();
       updateHud();
       AudioEngine.blizzard();
       screenShake = 12;
@@ -1662,7 +1771,7 @@
         const en = enemies[i];
         if (Math.hypot(en.x - player.x, en.y - player.y) < 260) {
           en.frozenTimer = 180;
-          const dmg = 40 + player.lvl * 8;
+          const dmg = 45 + player.lvl * 9;
           en.hp -= dmg;
           addFloatingText("FROZEN! ❄️", en.x, en.y - 18, '#38bdf8');
           addSlashParticles(en.x, en.y, '#38bdf8');
@@ -1679,11 +1788,11 @@
         return;
       }
       player.mp -= 30;
-      player.shieldHp = 80;
-      player.hp = Math.min(player.maxHp, player.hp + 40);
+      player.shieldHp = 90;
+      player.hp = Math.min(player.maxHp, player.hp + 45);
       updateHud();
       AudioEngine.shield();
-      addFloatingText("+40 HP & Barrier! 🛡️", player.x, player.y - 30, '#34d399');
+      addFloatingText("+45 HP & Barrier! 🛡️", player.x, player.y - 30, '#34d399');
     }
 
     function performDash() {
@@ -1753,6 +1862,7 @@
       if (collected > 0) {
         addFloatingText(`+${totalVal} Gold Collected! 💰`, player.x, player.y - 28, '#fbbf24');
         AudioEngine.coin();
+        checkAchievements();
         updateHud();
         saveGameData();
       }
@@ -1820,33 +1930,67 @@
       player.score += en.xp * 2;
       addFloatingText(`+${en.xp} XP`, en.x, en.y - 18, '#facc15');
 
+      if (!stats.bossesDefeated) stats.bossesDefeated = {};
+
       if (en.isBoss) {
         addFloatingText(`${en.name} DEFEATED! 👑`, player.x, player.y - 45, '#ec4899');
         document.getElementById('bossBar').style.display = 'none';
 
-        if (en.type === 'boss') {
-          const achTitan = achievements.find(a => a.id === 'kill_titan');
-          if (achTitan && !achTitan.achieved) {
-            achTitan.achieved = true;
+        if (en.type === 'hydra_boss') {
+          stats.bossesDefeated.hydra = true;
+          const ach = achievements.find(a => a.id === 'kill_hydra');
+          if (ach && !ach.achieved) {
+            ach.achieved = true;
+            player.coins += 200;
+            addFloatingText(`🌿 SERPENT VANQUISHER UNLOCKED!`, player.x, player.y - 65, '#10b981');
+            showToast("🌿 Achievement Unlocked: Serpent Vanquisher! (+200 Gold)", "success");
+          }
+          setTimeout(spawnHydraBoss, 45000);
+        } else if (en.type === 'scarab_boss') {
+          stats.bossesDefeated.scarab = true;
+          const ach = achievements.find(a => a.id === 'kill_scarab');
+          if (ach && !ach.achieved) {
+            ach.achieved = true;
+            player.coins += 250;
+            addFloatingText(`🏜️ SANDSTORM CONQUEROR UNLOCKED!`, player.x, player.y - 65, '#f59e0b');
+            showToast("🏜️ Achievement Unlocked: Sandstorm Conqueror! (+250 Gold)", "success");
+          }
+          setTimeout(spawnScarabBoss, 45000);
+        } else if (en.type === 'yeti_boss') {
+          stats.bossesDefeated.yeti = true;
+          const ach = achievements.find(a => a.id === 'kill_yeti');
+          if (ach && !ach.achieved) {
+            ach.achieved = true;
+            player.coins += 250;
+            addFloatingText(`❄️ GLACIAL CHAMPION UNLOCKED!`, player.x, player.y - 65, '#38bdf8');
+            showToast("❄️ Achievement Unlocked: Glacial Champion! (+250 Gold)", "success");
+          }
+          setTimeout(spawnYetiMiniBoss, 45000);
+        } else if (en.type === 'boss') {
+          stats.bossesDefeated.titan = true;
+          const ach = achievements.find(a => a.id === 'kill_titan');
+          if (ach && !ach.achieved) {
+            ach.achieved = true;
             player.coins += 500;
             addFloatingText(`👑 TITAN SLAYER UNLOCKED!`, player.x, player.y - 65, '#facc15');
             showToast("👑 Achievement Unlocked: Titan Slayer! (+500 Gold)", "success");
           }
-        }
-        if (en.type === 'yeti_boss') {
-          const achYeti = achievements.find(a => a.id === 'kill_yeti');
-          if (achYeti && !achYeti.achieved) {
-            achYeti.achieved = true;
-            player.coins += 200;
-            addFloatingText(`❄️ GLACIAL VANQUISHER UNLOCKED!`, player.x, player.y - 65, '#38bdf8');
-            showToast("❄️ Achievement Unlocked: Glacial Vanquisher! (+200 Gold)", "success");
+          setTimeout(spawnBoss, 45000);
+        } else if (en.type === 'void_boss') {
+          stats.bossesDefeated.archon = true;
+          const ach = achievements.find(a => a.id === 'kill_archon');
+          if (ach && !ach.achieved) {
+            ach.achieved = true;
+            player.coins += 750;
+            player.talentPoints += 2;
+            addFloatingText(`🌌 VOID SOVEREIGN UNLOCKED!`, player.x, player.y - 65, '#c084fc');
+            showToast("🌌 Achievement Unlocked: Void Sovereign! (+750 Gold, +2 Talents)", "success");
           }
+          setTimeout(spawnVoidArchonBoss, 45000);
         }
-
-        setTimeout(en.type === 'boss' ? spawnBoss : spawnYetiMiniBoss, 45000);
       }
 
-      // Universal Quest Objective Progress (updates ALL matching quests!)
+      // Universal Quest Progress Update
       for (const q of quests) {
         if (!q.completed && (q.type === en.type || q.type === 'any')) {
           q.progress++;
@@ -1883,7 +2027,7 @@
 
       updateHud();
       saveGameData();
-      if (!en.isBoss) setTimeout(spawnEnemy, 4000);
+      if (!en.isBoss) setTimeout(spawnEnemy, 3500);
     }
 
     // ==========================================================================
@@ -1975,13 +2119,33 @@
               AudioEngine.laser();
             }
           }
+        } else if (player.petType === 'dragon') {
+          if (pet.attackCooldown > 0) pet.attackCooldown--;
+          else {
+            let closest = null, minD = 250;
+            for (const en of enemies) {
+              const d = Math.hypot(en.x - pet.x, en.y - pet.y);
+              if (d < minD) { minD = d; closest = en; }
+            }
+            if (closest) {
+              pet.attackCooldown = 55;
+              const ang = Math.atan2(closest.y - pet.y, closest.x - pet.x);
+              projectiles.push({
+                x: pet.x, y: pet.y,
+                vx: Math.cos(ang) * 9, vy: Math.sin(ang) * 9,
+                radius: 8, life: 55, isPlayer: true,
+                dmg: 45 + player.lvl * 7, color: '#f43f5e'
+              });
+              AudioEngine.magic();
+            }
+          }
         } else if (player.petType === 'fairy') {
           if (pet.healCooldown > 0) pet.healCooldown--;
           else {
             pet.healCooldown = 180;
-            player.hp = Math.min(player.maxHp, player.hp + 15);
-            player.mp = Math.min(player.maxMp, player.mp + 15);
-            addFloatingText("+15 HP/MP 🧚", player.x, player.y - 20, '#ec4899');
+            player.hp = Math.min(player.maxHp, player.hp + 18);
+            player.mp = Math.min(player.maxMp, player.mp + 18);
+            addFloatingText("+18 HP/MP 🧚", player.x, player.y - 20, '#ec4899');
           }
         } else if (player.petType === 'wolf') {
           for (let i = lootOrbs.length - 1; i >= 0; i--) {
@@ -1992,6 +2156,7 @@
               addFloatingText(`+${orb.value} 🐺`, orb.x, orb.y - 15, '#fbbf24');
               lootOrbs.splice(i, 1);
               AudioEngine.coin();
+              checkAchievements();
             }
           }
         }
@@ -2002,9 +2167,10 @@
         if (en.isBoss) {
           activeBoss = en;
           if (en.wingAngle !== undefined) en.wingAngle += 0.15;
+          if (en.orbitAngle !== undefined) en.orbitAngle += 0.08;
           if (en.hp < en.maxHp * 0.5 && en.phase === 1) {
             en.phase = 2;
-            en.speed *= 1.4;
+            en.speed *= 1.35;
             addFloatingText(`${en.name} ENRAGED! (Phase 2) 🔥`, en.x, en.y - 35, '#ef4444');
             screenShake = 16;
           }
@@ -2017,7 +2183,7 @@
         }
 
         const dist = Math.hypot(player.x - en.x, player.y - en.y);
-        if (dist < 380 && dist > 10) {
+        if (dist < 420 && dist > 10) {
           const angle = Math.atan2(player.y - en.y, player.x - en.x);
           en.x += Math.cos(angle) * en.speed;
           en.y += Math.sin(angle) * en.speed;
@@ -2049,7 +2215,7 @@
       }
 
       const bossBar = document.getElementById('bossBar');
-      if (activeBoss && Math.hypot(player.x - activeBoss.x, player.y - activeBoss.y) < 650) {
+      if (activeBoss && Math.hypot(player.x - activeBoss.x, player.y - activeBoss.y) < 680) {
         bossBar.style.display = 'flex';
         document.getElementById('bossName').textContent = activeBoss.name;
         document.getElementById('bossPhaseText').textContent = `PHASE ${activeBoss.phase || 1}`;
@@ -2128,6 +2294,13 @@
       gv.addColorStop(0, '#7f1d1d'); gv.addColorStop(1, '#1c0505');
       ctx.fillStyle = gv; ctx.fillRect(1600, 1200, 1600, 1200);
 
+      // Cosmic Void Rift Zone in South-Center
+      const gVoid = ctx.createRadialGradient(1600, 2250, 40, 1600, 2250, 320);
+      gVoid.addColorStop(0, 'rgba(88, 28, 135, 0.9)');
+      gVoid.addColorStop(1, 'rgba(15, 23, 42, 0)');
+      ctx.fillStyle = gVoid;
+      ctx.fillRect(1300, 1950, 600, 450);
+
       ctx.fillStyle = 'rgba(51, 65, 85, 0.7)';
       ctx.fillRect(0, 1165, WORLD.width, 70);
       ctx.fillRect(1565, 0, 70, WORLD.height);
@@ -2194,18 +2367,44 @@
         ctx.fillText(npc.name, npc.x, npc.y - 24);
       }
 
+      // DRAW ALL ENEMIES & 5 DISTINCT WORLD BOSSES
       for (const en of enemies) {
         if (en.type === 'boss') {
-          const wingSpan = 38; const wingY = Math.sin(en.wingAngle || 0) * 14;
+          // Dragon Wings
+          const wingSpan = 42; const wingY = Math.sin(en.wingAngle || 0) * 16;
           ctx.fillStyle = '#991b1b';
           ctx.beginPath(); ctx.moveTo(en.x - 20, en.y); ctx.lineTo(en.x - 20 - wingSpan, en.y - 30 + wingY); ctx.lineTo(en.x - 10, en.y + 10); ctx.fill();
           ctx.beginPath(); ctx.moveTo(en.x + 20, en.y); ctx.lineTo(en.x + 20 + wingSpan, en.y - 30 + wingY); ctx.lineTo(en.x + 10, en.y + 10); ctx.fill();
+        } else if (en.type === 'hydra_boss') {
+          // Serpentine Hydra Heads
+          for (let h = -1; h <= 1; h++) {
+            const hx = en.x + h * 22;
+            const hy = en.y - 30 + Math.sin(globalTicks * 0.1 + h) * 8;
+            ctx.strokeStyle = '#059669'; ctx.lineWidth = 6;
+            ctx.beginPath(); ctx.moveTo(en.x + h * 12, en.y); ctx.lineTo(hx, hy); ctx.stroke();
+            ctx.fillStyle = '#10b981'; ctx.beginPath(); ctx.arc(hx, hy, 10, 0, Math.PI * 2); ctx.fill();
+          }
+        } else if (en.type === 'scarab_boss') {
+          // Scarab Golden Carapace Plates
+          ctx.fillStyle = '#b45309';
+          ctx.beginPath(); ctx.arc(en.x, en.y, en.radius + 6, Math.PI, Math.PI * 2); ctx.fill();
+          ctx.strokeStyle = '#fde047'; ctx.lineWidth = 3; ctx.stroke();
+        } else if (en.type === 'void_boss') {
+          // Orbiting Dimensional Void Shards
+          const orbA = en.orbitAngle || 0;
+          for (let s = 0; s < 4; s++) {
+            const sa = orbA + (s * Math.PI) / 2;
+            const sx = en.x + Math.cos(sa) * 48;
+            const sy = en.y + Math.sin(sa) * 48;
+            ctx.fillStyle = '#c084fc';
+            ctx.beginPath(); ctx.arc(sx, sy, 7, 0, Math.PI * 2); ctx.fill();
+          }
         }
 
         if (en.isBoss) {
           ctx.save();
-          ctx.shadowColor = en.type === 'boss' ? '#ef4444' : '#38bdf8';
-          ctx.shadowBlur = 25;
+          ctx.shadowColor = en.color;
+          ctx.shadowBlur = 28;
           ctx.fillStyle = en.color;
           ctx.beginPath(); ctx.arc(en.x, en.y, en.radius, 0, Math.PI * 2); ctx.fill();
           ctx.restore();
@@ -2216,10 +2415,10 @@
           ctx.textAlign = 'center';
           ctx.fillText(`👑 [BOSS] ${en.name}`, en.x, en.y - en.radius - 20);
 
-          const barW = 75; const barH = 6;
+          const barW = 85; const barH = 6;
           ctx.fillStyle = 'rgba(0,0,0,0.85)';
           ctx.fillRect(en.x - barW/2, en.y - en.radius - 14, barW, barH);
-          ctx.fillStyle = en.type === 'boss' ? '#ef4444' : '#38bdf8';
+          ctx.fillStyle = en.color;
           ctx.fillRect(en.x - barW/2, en.y - en.radius - 14, barW * (en.hp / en.maxHp), barH);
           ctx.strokeStyle = '#ffffff'; ctx.lineWidth = 1;
           ctx.strokeRect(en.x - barW/2, en.y - en.radius - 14, barW, barH);
@@ -2253,7 +2452,7 @@
       ctx.restore();
 
       // ======================================================================
-      // SCREEN-EDGE BOSS COMPASS & OFF-SCREEN DIRECTION RADAR
+      // SCREEN-EDGE BOSS COMPASS & OFF-SCREEN DIRECTION RADAR FOR ALL 5 BOSSES
       // ======================================================================
       for (const en of enemies) {
         if (en.isBoss) {
@@ -2283,8 +2482,7 @@
               indicatorX = cx + (dirY * maxH) / tanAngle;
             }
 
-            const isDragon = en.type === 'boss';
-            const themeColor = isDragon ? '#ef4444' : '#38bdf8';
+            const themeColor = en.color || '#ef4444';
             const badgeText = `👑 ${en.name} (${distMeters}m)`;
 
             ctx.save();
@@ -2433,7 +2631,7 @@
     }
 
     // ==========================================================================
-    // MINIMAP WITH PROMINENT BOSS RADAR & PING WAVES
+    // MINIMAP WITH PROMINENT 5-BOSS RADAR PING WAVES
     // ==========================================================================
     function drawMinimap() {
       miniCtx.clearRect(0, 0, miniCanvas.width, miniCanvas.height);
@@ -2459,25 +2657,28 @@
       }
 
       const radarPulse = (globalTicks * 0.04) % 1;
+      const bossTags = {
+        'hydra_boss': { label: 'HYDRA 👑', color: '#10b981' },
+        'scarab_boss': { label: 'SCARAB 👑', color: '#f59e0b' },
+        'yeti_boss': { label: 'YETI 👑', color: '#38bdf8' },
+        'boss': { label: 'TITAN 👑', color: '#ef4444' },
+        'void_boss': { label: 'ARCHON 👑', color: '#a855f7' }
+      };
+
       for (const en of enemies) {
         if (en.isBoss) {
           const bx = en.x * sx;
           const by = en.y * sy;
-          const isDragon = en.type === 'boss';
+          const info = bossTags[en.type] || { label: 'BOSS 👑', color: '#ef4444' };
 
           miniCtx.save();
-          miniCtx.strokeStyle = isDragon ? `rgba(239, 68, 68, ${1 - radarPulse})` : `rgba(56, 189, 248, ${1 - radarPulse})`;
+          miniCtx.strokeStyle = info.color;
           miniCtx.lineWidth = 1.8;
           miniCtx.beginPath();
           miniCtx.arc(bx, by, 4 + radarPulse * 16, 0, Math.PI * 2);
           miniCtx.stroke();
 
-          miniCtx.fillStyle = isDragon ? 'rgba(239, 68, 68, 0.35)' : 'rgba(56, 189, 248, 0.35)';
-          miniCtx.beginPath();
-          miniCtx.arc(bx, by, 7.5, 0, Math.PI * 2);
-          miniCtx.fill();
-
-          miniCtx.fillStyle = isDragon ? '#dc2626' : '#0284c7';
+          miniCtx.fillStyle = info.color;
           miniCtx.beginPath();
           miniCtx.arc(bx, by, 5, 0, Math.PI * 2);
           miniCtx.fill();
@@ -2491,13 +2692,12 @@
           miniCtx.textBaseline = 'middle';
           miniCtx.fillText('☠', bx, by);
 
-          const label = isDragon ? 'TITAN 👑' : 'YETI 👑';
           miniCtx.font = 'bold 7px sans-serif';
-          const tw = miniCtx.measureText(label).width;
+          const tw = miniCtx.measureText(info.label).width;
           miniCtx.fillStyle = 'rgba(15, 23, 42, 0.88)';
           miniCtx.fillRect(bx - tw/2 - 2, by - 14, tw + 4, 9);
-          miniCtx.fillStyle = isDragon ? '#f87171' : '#38bdf8';
-          miniCtx.fillText(label, bx, by - 9.5);
+          miniCtx.fillStyle = info.color;
+          miniCtx.fillText(info.label, bx, by - 9.5);
           miniCtx.restore();
         }
       }
@@ -2572,11 +2772,13 @@
 
       const completedCount = quests.filter(q => q.completed).length;
       document.getElementById('questTabCount').textContent = `${completedCount}/${quests.length}`;
+      const topCount = document.getElementById('topBarQuestCount');
+      if (topCount) topCount.textContent = `${completedCount}/${quests.length}`;
 
       const achievedCount = achievements.filter(a => a.achieved).length;
       document.getElementById('achieveTabCount').textContent = `${achievedCount}/${achievements.length}`;
 
-      // Render Quests List
+      // Render 12 Quests
       qContainer.innerHTML = quests.map(q => {
         const isCurrent = q.id === activeQuestId;
         const pct = Math.min(100, Math.round((q.progress / q.target) * 100));
@@ -2612,7 +2814,7 @@
         `;
       }).join('');
 
-      // Render Achievements List
+      // Render 18 Achievements
       aContainer.innerHTML = achievements.map(ach => `
         <div style="background:rgba(255,255,255,0.05); border:1.5px solid ${ach.achieved ? '#fbbf24' : 'rgba(255,255,255,0.1)'}; padding:10px 14px; border-radius:12px; display:flex; justify-content:space-between; align-items:center;">
           <div style="display:flex; gap:12px; align-items:center;">
@@ -2639,23 +2841,31 @@
       const container = document.getElementById('bossCardsContainer');
       const bossList = enemies.filter(en => en.isBoss);
 
+      const biomeNames = {
+        'hydra_boss': 'Emerald Forest Glade (NW)',
+        'scarab_boss': 'Solaris Dunes Oasis (NE)',
+        'yeti_boss': 'Glacial Peak Shrine (SW)',
+        'boss': 'Infernal Volcano Caldera (SE)',
+        'void_boss': 'Cosmic Void Rift Sanctuary (South Center)'
+      };
+
       container.innerHTML = `
         <div style="background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.1); border-radius:12px; padding:10px; margin-bottom:6px;">
-          <div style="font-weight:800; font-size:0.84rem; color:#38bdf8; margin-bottom:4px;"><i class="fas fa-compass"></i> World Quadrant Map</div>
+          <div style="font-weight:800; font-size:0.84rem; color:#38bdf8; margin-bottom:4px;"><i class="fas fa-compass"></i> 5 World Boss Habitats</div>
           <div style="display:grid; grid-template-columns:1fr 1fr; gap:6px; font-size:0.72rem; text-align:center;">
-            <div style="background:#064e3b; padding:6px; border-radius:6px; border:1px solid #10b981;">🌿 Emerald Forest (NW)<br><span style="color:#cbd5e1;">Slimes & Merchant</span></div>
-            <div style="background:#78350f; padding:6px; border-radius:6px; border:1px solid #f59e0b;">🏜️ Solaris Dunes (NE)<br><span style="color:#cbd5e1;">Scorpions & Gold</span></div>
+            <div style="background:#064e3b; padding:6px; border-radius:6px; border:1px solid #10b981;">🌿 Emerald Forest (NW)<br><span style="color:#34d399; font-weight:800;">👑 Venom Hydra Queen</span></div>
+            <div style="background:#78350f; padding:6px; border-radius:6px; border:1px solid #f59e0b;">🏜️ Solaris Dunes (NE)<br><span style="color:#fbbf24; font-weight:800;">👑 Dune Colossus Scarab</span></div>
             <div style="background:#0c4a6e; padding:6px; border-radius:6px; border:1px solid #38bdf8;">❄️ Glacial Peak (SW)<br><span style="color:#38bdf8; font-weight:800;">👑 Frost Yeti King</span></div>
             <div style="background:#450a0a; padding:6px; border-radius:6px; border:1px solid #ef4444;">🌋 Infernal Caldera (SE)<br><span style="color:#f87171; font-weight:800;">👑 Dragon Titan</span></div>
+            <div style="background:#3b0764; padding:6px; border-radius:6px; border:1px solid #c084fc; grid-column:span 2;">🌌 Cosmic Void Rift (Center South)<br><span style="color:#c084fc; font-weight:800;">👑 Void Star Archon</span></div>
           </div>
         </div>
       ` + bossList.map(b => {
-        const isDragon = b.type === 'boss';
         const dist = Math.round(Math.hypot(b.x - player.x, b.y - player.y));
-        const themeColor = isDragon ? '#ef4444' : '#38bdf8';
-        const biomeName = isDragon ? 'Infernal Volcano Caldera' : 'Glacial Peak Shrine';
+        const themeColor = b.color || '#ef4444';
+        const biomeName = biomeNames[b.type] || 'Unknown Realm';
         return `
-          <div style="background:rgba(15,23,42,0.9); border:1.5px solid ${themeColor}; border-radius:12px; padding:12px; display:flex; justify-content:space-between; align-items:center; box-shadow:0 0 16px ${isDragon ? 'rgba(239,68,68,0.3)' : 'rgba(56,189,248,0.3)'};">
+          <div style="background:rgba(15,23,42,0.9); border:1.5px solid ${themeColor}; border-radius:12px; padding:12px; display:flex; justify-content:space-between; align-items:center; box-shadow:0 0 16px ${themeColor}44;">
             <div>
               <div style="font-weight:900; font-size:0.95rem; color:${themeColor}; display:flex; align-items:center; gap:6px;">
                 <i class="fas fa-skull"></i> ${b.name} <span style="font-size:0.68rem; background:${themeColor}; color:#0f172a; padding:1px 6px; border-radius:999px; font-weight:800;">${b.phase ? 'PHASE ' + b.phase : 'ACTIVE'}</span>
@@ -2800,6 +3010,10 @@
       const descEl = document.getElementById('questDesc');
       if (!descEl) return;
 
+      const completedCount = quests.filter(item => item.completed).length;
+      const topCount = document.getElementById('topBarQuestCount');
+      if (topCount) topCount.textContent = `${completedCount}/${quests.length}`;
+
       if (q) {
         if (q.completed) {
           descEl.innerHTML = `<span style="color:#34d399; font-weight:800;">✅ COMPLETED: ${q.title} (${q.progress}/${q.target})</span><div style="font-size:0.66rem; color:#fbbf24; margin-top:2px;">[Click here to Track Next Quest]</div>`;
@@ -2819,7 +3033,7 @@
           activeQuestId = anyUncompleted.id;
           updateQuestHUD();
         } else {
-          descEl.innerHTML = `<span style="color:#facc15; font-weight:900;">🏆 ALL CHRONICLES COMPLETED!</span><div style="font-size:0.66rem; color:#38bdf8;">Realm Master 👑</div>`;
+          descEl.innerHTML = `<span style="color:#facc15; font-weight:900;">🏆 ALL 12 CHRONICLES COMPLETED!</span><div style="font-size:0.66rem; color:#38bdf8;">Realm Master 👑</div>`;
         }
       }
     }
@@ -2900,7 +3114,10 @@
           player.petType = d.petType || 'drone';
           player.potions = d.potions || { hp: 2, mp: 2 };
           player.equipment = d.equipment || { swordDmgBonus: 0, hasArmor: false };
-          if (d.stats) stats = d.stats;
+          if (d.stats) {
+            stats = { ...stats, ...d.stats };
+            if (d.stats.bossesDefeated) stats.bossesDefeated = { ...stats.bossesDefeated, ...d.stats.bossesDefeated };
+          }
 
           if (d.quests && Array.isArray(d.quests)) {
             for (const sq of d.quests) {
@@ -2908,17 +3125,6 @@
               if (q) {
                 q.progress = sq.progress || 0;
                 q.completed = !!sq.completed;
-              }
-            }
-          } else if (d.activeQuestIndex !== undefined) {
-            // Smooth backward compatibility migration
-            for (let i = 0; i < quests.length; i++) {
-              if (i < d.activeQuestIndex) {
-                quests[i].completed = true;
-                quests[i].progress = quests[i].target;
-              } else if (i === d.activeQuestIndex) {
-                quests[i].progress = d.questProgress || 0;
-                if (quests[i].progress >= quests[i].target) quests[i].completed = true;
               }
             }
           }

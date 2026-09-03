@@ -94,6 +94,7 @@
       height: 100%;
       display: block;
       image-rendering: auto;
+      cursor: crosshair;
     }
 
     /* Floating In-Canvas Glass HUD Bar */
@@ -407,24 +408,6 @@
       pointer-events: none;
     }
 
-    .tap-target-reticle {
-      position: absolute;
-      width: 34px;
-      height: 34px;
-      border-radius: 50%;
-      border: 2px dashed #38bdf8;
-      box-shadow: 0 0 14px #38bdf8;
-      transform: translate(-50%, -50%);
-      pointer-events: none;
-      animation: tapPulse 0.9s infinite alternate ease-in-out;
-      display: none;
-      z-index: 15;
-    }
-    @keyframes tapPulse {
-      0% { transform: translate(-50%, -50%) scale(0.85); opacity: 0.9; }
-      100% { transform: translate(-50%, -50%) scale(1.2); opacity: 0.4; }
-    }
-
     .action-buttons {
       display: flex;
       gap: 8px;
@@ -451,7 +434,7 @@
       transition: transform 0.1s;
     }
     .act-btn:active { transform: scale(0.86); }
-    .act-attack { background: rgba(239, 68, 68, 0.8); border-color: #f87171; }
+    .act-attack { background: rgba(239, 68, 68, 0.85); border-color: #f87171; box-shadow: 0 0 14px rgba(239, 68, 68, 0.6); }
     .act-magic { background: rgba(59, 130, 246, 0.8); border-color: #60a5fa; }
     .act-ult { background: rgba(168, 85, 247, 0.85); border-color: #c084fc; box-shadow: 0 0 14px rgba(168, 85, 247, 0.6); }
     .act-blizzard { background: rgba(6, 182, 212, 0.85); border-color: #38bdf8; }
@@ -645,7 +628,7 @@
       <!-- QUEST TRACKER -->
       <div class="quest-tracker" id="questTracker">
         <div class="quest-title"><i class="fas fa-compass"></i> ACTIVE QUEST</div>
-        <div id="questDesc" style="color: #e2e8f0; line-height: 1.2;">Slay 3 Forest Slimes (0/3)</div>
+        <div id="questDesc" style="color: #e2e8f0; line-height: 1.2;">Slay 4 Forest Slimes (0/4)</div>
       </div>
 
       <!-- BOSS HEALTH BAR BANNER -->
@@ -666,7 +649,7 @@
 
       <!-- BOTTOM HOTBAR -->
       <div class="hotbar-container">
-        <div class="hotbar-slot" onclick="performAttack()" title="Slash Attack [Space / J]"><i class="fas fa-sword" style="color:#ef4444;"></i><span class="hotbar-key">J</span></div>
+        <div class="hotbar-slot" onclick="performAttack()" title="Laser Katana Slash [Space / J / Click Canvas]"><i class="fas fa-khanda" style="color:#ef4444;"></i><span class="hotbar-key">J</span></div>
         <div class="hotbar-slot" onclick="castMagic()" title="Plasma Shards [K / F]"><i class="fas fa-wand-magic-sparkles" style="color:#60a5fa;"></i><span class="hotbar-key">K</span></div>
         <div class="hotbar-slot" onclick="castMeteorSwarm()" title="Meteor Swarm [Q / 3]"><i class="fas fa-meteor" style="color:#f59e0b;"></i><span class="hotbar-key">Q</span></div>
         <div class="hotbar-slot" onclick="castBlizzardNova()" title="Blizzard Nova [R / 4]"><i class="fas fa-snowflake" style="color:#06b6d4;"></i><span class="hotbar-key">R</span></div>
@@ -675,9 +658,6 @@
         <div class="hotbar-slot" onclick="usePotion('hp')" title="Health Potion [1 / H]"><i class="fas fa-flask" style="color:#ef4444;"></i><span class="hotbar-count" id="hpPotCount">2</span><span class="hotbar-key">1</span></div>
         <div class="hotbar-slot" onclick="usePotion('mp')" title="Mana Elixir [2 / M]"><i class="fas fa-flask" style="color:#3b82f6;"></i><span class="hotbar-count" id="mpPotCount">2</span><span class="hotbar-key">2</span></div>
       </div>
-
-      <!-- TAP TARGET RETICLE -->
-      <div class="tap-target-reticle" id="tapReticle"></div>
 
       <!-- MOBILE CONTROLS OVERLAY -->
       <div class="mobile-controls">
@@ -690,7 +670,7 @@
           <button class="act-btn act-ult" id="btnUlt" title="Meteor Swarm"><i class="fas fa-meteor"></i></button>
           <button class="act-btn act-blizzard" id="btnBlizzard" title="Blizzard Nova"><i class="fas fa-snowflake"></i></button>
           <button class="act-btn act-magic" id="btnMagic" title="Plasma Blast"><i class="fas fa-wand-magic-sparkles"></i></button>
-          <button class="act-btn act-attack" id="btnAttack" title="Attack"><i class="fas fa-sword"></i></button>
+          <button class="act-btn act-attack" id="btnAttack" title="Laser Katana Slash"><i class="fas fa-khanda"></i></button>
           <button class="act-btn act-dash" id="btnDash" title="Dash"><i class="fas fa-wind"></i></button>
           <button class="act-btn act-mount" id="btnMount" title="Mount"><i class="fas fa-motorcycle"></i></button>
           <button class="act-btn act-interact" id="btnInteract" title="Interact / Collect"><i class="fas fa-comment-dots"></i></button>
@@ -880,7 +860,7 @@
             <div class="modal-card-item">
               <i class="fas fa-hand-fist" style="color:#ef4444; font-size:1.5rem;"></i>
               <div style="font-weight:800; font-size:0.85rem;">Blade Mastery</div>
-              <div style="font-size:0.68rem; color:#94a3b8;">+12 ATK per rank (<span id="tDmgRank">0</span>/5)</div>
+              <div style="font-size:0.68rem; color:#94a3b8;">+14 ATK per rank (<span id="tDmgRank">0</span>/5)</div>
               <button class="btn btn-primary btn-sm" onclick="upgradeTalent('dmg')">+ Upgrade</button>
             </div>
             <div class="modal-card-item">
@@ -929,7 +909,7 @@
         <h4><i class="fas fa-keyboard"></i> Combat & Spells</h4>
         <p style="font-size: 0.85rem; color: var(--text-secondary); line-height: 1.6; margin: 0;">
           <span class="key-badge">W</span> <span class="key-badge">A</span> <span class="key-badge">S</span> <span class="key-badge">D</span> Move Hero<br>
-          <span class="key-badge">Space</span> or <span class="key-badge">J</span> Sword Slash Combo<br>
+          <span class="key-badge">Click</span> or <span class="key-badge">Space</span> or <span class="key-badge">J</span> Laser Katana Slash<br>
           <span class="key-badge">K</span> or <span class="key-badge">F</span> Plasma Blast Spell<br>
           <span class="key-badge">Q</span> or <span class="key-badge">3</span> Meteor Swarm (AoE)<br>
           <span class="key-badge">R</span> or <span class="key-badge">4</span> Blizzard Nova (Freeze)<br>
@@ -1003,8 +983,8 @@
       },
 
       sword() {
-        this.playTone(280, 'sawtooth', 0.08, 0.12);
-        setTimeout(() => this.playTone(520, 'triangle', 0.08, 0.08), 30);
+        this.playTone(340, 'sawtooth', 0.08, 0.16);
+        setTimeout(() => this.playTone(620, 'triangle', 0.08, 0.12), 25);
       },
       magic() {
         this.playTone(600, 'sine', 0.2, 0.15);
@@ -1028,7 +1008,7 @@
         setTimeout(() => this.playTone(640, 'sine', 0.1, 0.1), 30);
       },
       hit() {
-        this.playTone(130, 'square', 0.1, 0.2, true);
+        this.playTone(140, 'square', 0.1, 0.22, true);
       },
       coin() {
         this.playTone(987, 'sine', 0.08, 0.15);
@@ -1126,14 +1106,14 @@
       talentPoints: 0,
       talents: { dmg: 0, hp: 0, mp: 0 },
       skin: 'cyber_knight',
-      petType: 'drone', // 'drone', 'dragon', 'wolf', 'fairy', 'none'
+      petType: 'drone',
       mountType: 'hoverbike',
       isMounted: false,
       combo: 0, comboTimer: 0,
       shieldHp: 0,
       potions: { hp: 2, mp: 2 },
       equipment: { swordDmgBonus: 0, hasArmor: false },
-      facing: 'down', attacking: false, attackTimer: 0,
+      facing: 'down', attacking: false, attackTimer: 0, slashAngle: 0,
       invulnerable: 0, dashTimer: 0, dashCooldown: 0,
       walkCycle: 0, isMoving: false
     };
@@ -1316,23 +1296,53 @@
     }
 
     // ==========================================================================
-    // SPELLS & COMBAT ACTIONS
+    // SPELLS & COMBAT ACTIONS (SWORD & ABILITIES)
     // ==========================================================================
-    function performAttack() {
-      if (isAnyModalOpen() || player.attackTimer > 0) return;
+    function performAttack(targetAngle = null) {
+      if (isAnyModalOpen()) return;
+      if (player.attackTimer > 6) return; // allows smooth and responsive combo clicking
       player.attacking = true;
-      player.attackTimer = 15;
+      player.attackTimer = 16;
       AudioEngine.sword();
 
-      const reach = 56;
-      let hitX = player.x, hitY = player.y;
-      if (player.facing === 'up') hitY -= reach;
-      if (player.facing === 'down') hitY += reach;
-      if (player.facing === 'left') hitX -= reach;
-      if (player.facing === 'right') hitX += reach;
+      // Determine swing direction
+      let swingAngle = 0;
+      if (targetAngle !== null && !isNaN(targetAngle)) {
+        swingAngle = targetAngle;
+        if (Math.abs(Math.cos(swingAngle)) > Math.abs(Math.sin(swingAngle))) {
+          player.facing = Math.cos(swingAngle) > 0 ? 'right' : 'left';
+        } else {
+          player.facing = Math.sin(swingAngle) > 0 ? 'down' : 'up';
+        }
+      } else {
+        // Auto-target assistance: find closest enemy in 130px radius
+        let closest = null, minD = 130;
+        for (const en of enemies) {
+          const d = Math.hypot(en.x - player.x, en.y - player.y);
+          if (d < minD) { minD = d; closest = en; }
+        }
+        if (closest) {
+          swingAngle = Math.atan2(closest.y - player.y, closest.x - player.x);
+          if (Math.abs(Math.cos(swingAngle)) > Math.abs(Math.sin(swingAngle))) {
+            player.facing = Math.cos(swingAngle) > 0 ? 'right' : 'left';
+          } else {
+            player.facing = Math.sin(swingAngle) > 0 ? 'down' : 'up';
+          }
+        } else {
+          if (player.facing === 'right') swingAngle = 0;
+          else if (player.facing === 'left') swingAngle = Math.PI;
+          else if (player.facing === 'down') swingAngle = Math.PI / 2;
+          else if (player.facing === 'up') swingAngle = -Math.PI / 2;
+        }
+      }
+      player.slashAngle = swingAngle;
 
+      const attackReach = 92;
+      const attackSpread = Math.PI * 0.52; // generous 185-degree frontal slice
+
+      // Open chests in melee range
       for (const c of chests) {
-        if (!c.opened && Math.hypot(c.x - hitX, c.y - hitY) < 65) {
+        if (!c.opened && Math.hypot(c.x - player.x, c.y - player.y) < 95) {
           c.opened = true;
           spawnLootOrb(c.x, c.y, c.coins, '#fbbf24');
           addFloatingText(`+${c.coins} Gold!`, c.x, c.y - 25, '#fbbf24');
@@ -1341,9 +1351,10 @@
         }
       }
 
+      // Mine ores in melee range
       for (let i = ores.length - 1; i >= 0; i--) {
         const ore = ores[i];
-        if (Math.hypot(ore.x - hitX, ore.y - hitY) < 65) {
+        if (Math.hypot(ore.x - player.x, ore.y - player.y) < 95) {
           const reward = ore.type === 'gold' ? 40 : 30;
           spawnLootOrb(ore.x, ore.y, reward, ore.type === 'gold' ? '#f59e0b' : '#38bdf8');
           addFloatingText(`Mined +${reward} ${ore.type.toUpperCase()}!`, ore.x, ore.y - 20, '#38bdf8');
@@ -1353,30 +1364,46 @@
         }
       }
 
+      // Hit enemies with cleave + frontal cone
+      let hitAny = false;
       for (let i = enemies.length - 1; i >= 0; i--) {
         const en = enemies[i];
-        if (Math.hypot(en.x - hitX, en.y - hitY) < en.radius + 34) {
-          const isCrit = Math.random() < 0.28;
-          const baseDmg = 26 + player.lvl * 7 + player.equipment.swordDmgBonus + (player.talents.dmg * 12);
+        const dist = Math.hypot(en.x - player.x, en.y - player.y);
+        const enAngle = Math.atan2(en.y - player.y, en.x - player.x);
+        let angleDiff = Math.abs(enAngle - swingAngle);
+        while (angleDiff > Math.PI) angleDiff = Math.abs(angleDiff - Math.PI * 2);
+
+        const inCloseCleave = dist < (en.radius + 50); // enemies touching the player are ALWAYS hit
+        const inFrontCone = dist < (en.radius + attackReach) && angleDiff <= attackSpread;
+
+        if (inCloseCleave || inFrontCone) {
+          hitAny = true;
+          const isCrit = Math.random() < 0.32;
+          const baseDmg = 32 + player.lvl * 8 + player.equipment.swordDmgBonus + (player.talents.dmg * 14);
           const dmg = isCrit ? Math.round(baseDmg * 1.85) : baseDmg;
 
           en.hp -= dmg;
           addFloatingText(isCrit ? `CRIT -${dmg}! 🔥` : `-${dmg}`, en.x, en.y - 15, isCrit ? '#facc15' : '#ef4444');
           addSlashParticles(en.x, en.y, '#f87171');
           AudioEngine.hit();
-          screenShake = isCrit ? 11 : 5;
+          screenShake = isCrit ? 12 : 6;
 
           player.combo++;
-          player.comboTimer = 130;
+          player.comboTimer = 140;
           updateComboHUD();
 
-          const angle = Math.atan2(en.y - player.y, en.x - player.x);
-          en.x += Math.cos(angle) * (en.isBoss ? 8 : 28);
-          en.y += Math.sin(angle) * (en.isBoss ? 8 : 28);
+          const pushAngle = Math.atan2(en.y - player.y, en.x - player.x);
+          en.x += Math.cos(pushAngle) * (en.isBoss ? 10 : 32);
+          en.y += Math.sin(pushAngle) * (en.isBoss ? 10 : 32);
 
           if (en.hp <= 0) defeatEnemy(en, i);
         }
       }
+
+      // Spawn weapon slash trail sparks
+      const tipX = player.x + Math.cos(swingAngle) * 58;
+      const tipY = player.y + Math.sin(swingAngle) * 58;
+      addSlashParticles(tipX, tipY, '#38bdf8');
     }
 
     function castMagic() {
@@ -1390,11 +1417,11 @@
       AudioEngine.magic();
 
       let vx = 0, vy = 0;
-      if (player.facing === 'up') vy = -10.5;
-      if (player.facing === 'down') vy = 10.5;
-      if (player.facing === 'left') vx = -10.5;
-      if (player.facing === 'right') vx = 10.5;
-      if (vx === 0 && vy === 0) vy = 10.5;
+      if (player.facing === 'up') vy = -11;
+      if (player.facing === 'down') vy = 11;
+      if (player.facing === 'left') vx = -11;
+      if (player.facing === 'right') vx = 11;
+      if (vx === 0 && vy === 0) vy = 11;
 
       projectiles.push({
         x: player.x, y: player.y, vx, vy,
@@ -1785,10 +1812,7 @@
             }
             updateHud();
             if (player.hp <= 0) {
-              alert(`Game Over!
-Score: ${player.score}
-Level: ${player.lvl}
-Respawning at Citadel...`);
+              alert(`Game Over!\nScore: ${player.score}\nLevel: ${player.lvl}\nRespawning at Citadel...`);
               restartGame();
             }
           }
@@ -2007,22 +2031,89 @@ Respawning at Citadel...`);
       if (player.invulnerable % 4 > 2) ctx.globalAlpha = 0.5;
 
       const skinThemes = {
-        'cyber_knight': { body: '#0284c7', armor: '#38bdf8', visor: '#facc15', blade: '#ec4899' },
-        'arcane_mage': { body: '#7e22ce', armor: '#c084fc', visor: '#38bdf8', blade: '#a855f7' },
-        'neon_ranger': { body: '#047857', armor: '#34d399', visor: '#fbbf24', blade: '#10b981' },
-        'mecha_paladin': { body: '#b45309', armor: '#fbbf24', visor: '#f43f5e', blade: '#eab308' }
+        'cyber_knight': { body: '#0284c7', armor: '#38bdf8', visor: '#facc15', blade: '#38bdf8', bladeGlow: '#06b6d4' },
+        'arcane_mage': { body: '#7e22ce', armor: '#c084fc', visor: '#38bdf8', blade: '#c084fc', bladeGlow: '#a855f7' },
+        'neon_ranger': { body: '#047857', armor: '#34d399', visor: '#fbbf24', blade: '#34d399', bladeGlow: '#10b981' },
+        'mecha_paladin': { body: '#b45309', armor: '#fbbf24', visor: '#f43f5e', blade: '#fbbf24', bladeGlow: '#f59e0b' }
       };
       const theme = skinThemes[player.skin] || skinThemes['cyber_knight'];
 
+      // Draw Mount if active
       if (player.isMounted) {
         ctx.fillStyle = '#0f172a'; ctx.beginPath(); ctx.roundRect(-24, 2, 48, 18, 8); ctx.fill();
         ctx.strokeStyle = '#fbbf24'; ctx.lineWidth = 2.5; ctx.stroke();
+        // Thruster glow
+        ctx.fillStyle = '#38bdf8';
+        ctx.beginPath(); ctx.arc(-22, 10, 5, 0, Math.PI * 2); ctx.fill();
       }
 
+      // Character Body & Visor
       ctx.fillStyle = theme.body; ctx.beginPath(); ctx.roundRect(-14, -12, 28, 26, 6); ctx.fill();
       ctx.fillStyle = '#0f172a'; ctx.beginPath(); ctx.roundRect(-12, -26, 24, 16, 5); ctx.fill();
       ctx.fillStyle = theme.visor; ctx.beginPath(); ctx.roundRect(-8, -20, 16, 6, 2); ctx.fill();
 
+      // IN-HAND WEAPON (GLOWING LASER KATANA)
+      ctx.save();
+      const baseHandX = player.facing === 'left' ? -14 : 14;
+      const baseHandY = -2;
+      ctx.translate(baseHandX, baseHandY);
+
+      let swordAngle = player.facing === 'left' ? -Math.PI * 0.75 : Math.PI * 0.25;
+      if (player.attackTimer > 0) {
+        const progress = (16 - player.attackTimer) / 16;
+        const swingArc = (progress - 0.5) * 2.4;
+        swordAngle = (player.slashAngle || swordAngle) + swingArc;
+      }
+      ctx.rotate(swordAngle);
+
+      // Hilt
+      ctx.fillStyle = '#334155';
+      ctx.fillRect(-3, -4, 6, 9);
+      // Guard
+      ctx.fillStyle = '#fbbf24';
+      ctx.fillRect(-7, -5, 14, 3);
+      // Glowing Energy Blade
+      ctx.shadowColor = theme.bladeGlow;
+      ctx.shadowBlur = 12;
+      ctx.fillStyle = theme.blade;
+      ctx.fillRect(-2.5, -34, 5, 29);
+      // Blade Tip (pointed)
+      ctx.beginPath();
+      ctx.moveTo(-2.5, -34);
+      ctx.lineTo(0, -40);
+      ctx.lineTo(2.5, -34);
+      ctx.fill();
+      ctx.shadowBlur = 0;
+      ctx.restore();
+
+      // SWORD SLASH ARC VISUAL EFFECT
+      if (player.attackTimer > 0) {
+        ctx.save();
+        const swingAngle = player.slashAngle || (player.facing === 'right' ? 0 : (player.facing === 'left' ? Math.PI : (player.facing === 'down' ? Math.PI/2 : -Math.PI/2)));
+        const slashProgress = (16 - player.attackTimer) / 16;
+        ctx.strokeStyle = theme.blade;
+        ctx.lineWidth = 5;
+        ctx.lineCap = 'round';
+        ctx.shadowColor = theme.bladeGlow;
+        ctx.shadowBlur = 16;
+
+        ctx.beginPath();
+        const startA = swingAngle - 0.95 + slashProgress * 0.4;
+        const endA = swingAngle + 0.95;
+        ctx.arc(0, 0, 52, startA, endA);
+        ctx.stroke();
+
+        // Inner brighter flash
+        ctx.strokeStyle = '#ffffff';
+        ctx.lineWidth = 2.5;
+        ctx.beginPath();
+        ctx.arc(0, 0, 48, startA + 0.15, endA - 0.15);
+        ctx.stroke();
+
+        ctx.restore();
+      }
+
+      // Barrier Shield
       if (player.shieldHp > 0) {
         ctx.strokeStyle = '#38bdf8'; ctx.lineWidth = 2.5;
         ctx.beginPath(); ctx.arc(0, 0, player.radius + 8, 0, Math.PI * 2); ctx.stroke();
@@ -2292,6 +2383,19 @@ Respawning at Citadel...`);
       initWorld(); updateHud();
     }
 
+    // Direct Click/Tap on Canvas to Swing Laser Katana towards cursor/tap
+    canvas.addEventListener('pointerdown', (e) => {
+      if (isAnyModalOpen()) return;
+      AudioEngine.init();
+      const rect = canvas.getBoundingClientRect();
+      const clickCanvasX = (e.clientX - rect.left) * (canvas.width / rect.width);
+      const clickCanvasY = (e.clientY - rect.top) * (canvas.height / rect.height);
+      const targetWorldX = camera.x + clickCanvasX;
+      const targetWorldY = camera.y + clickCanvasY;
+      const angle = Math.atan2(targetWorldY - player.y, targetWorldX - player.x);
+      performAttack(angle);
+    });
+
     // Keyboard Listeners
     window.addEventListener('keydown', (e) => {
       const k = e.key.toLowerCase();
@@ -2326,7 +2430,7 @@ Respawning at Citadel...`);
 
     if (jZone) {
       jZone.addEventListener('pointerdown', (e) => {
-        e.preventDefault(); AudioEngine.init();
+        e.preventDefault(); e.stopPropagation(); AudioEngine.init();
         const rect = canvasWrapper.getBoundingClientRect();
         const touchX = e.clientX - rect.left, touchY = e.clientY - rect.top;
         joystickState.active = true; joystickState.pointerId = e.pointerId;
@@ -2361,18 +2465,19 @@ Respawning at Citadel...`);
     }
 
     // Mobile Action Button Bindings
-    document.getElementById('btnAttack')?.addEventListener('pointerdown', (e) => { e.preventDefault(); performAttack(); });
-    document.getElementById('btnMagic')?.addEventListener('pointerdown', (e) => { e.preventDefault(); castMagic(); });
-    document.getElementById('btnUlt')?.addEventListener('pointerdown', (e) => { e.preventDefault(); castMeteorSwarm(); });
-    document.getElementById('btnBlizzard')?.addEventListener('pointerdown', (e) => { e.preventDefault(); castBlizzardNova(); });
-    document.getElementById('btnDash')?.addEventListener('pointerdown', (e) => { e.preventDefault(); performDash(); });
-    document.getElementById('btnMount')?.addEventListener('pointerdown', (e) => { e.preventDefault(); toggleMount(); });
-    document.getElementById('btnInteract')?.addEventListener('pointerdown', (e) => { e.preventDefault(); handleInteract(); });
+    document.getElementById('btnAttack')?.addEventListener('pointerdown', (e) => { e.preventDefault(); e.stopPropagation(); performAttack(); });
+    document.getElementById('btnMagic')?.addEventListener('pointerdown', (e) => { e.preventDefault(); e.stopPropagation(); castMagic(); });
+    document.getElementById('btnUlt')?.addEventListener('pointerdown', (e) => { e.preventDefault(); e.stopPropagation(); castMeteorSwarm(); });
+    document.getElementById('btnBlizzard')?.addEventListener('pointerdown', (e) => { e.preventDefault(); e.stopPropagation(); castBlizzardNova(); });
+    document.getElementById('btnDash')?.addEventListener('pointerdown', (e) => { e.preventDefault(); e.stopPropagation(); performDash(); });
+    document.getElementById('btnMount')?.addEventListener('pointerdown', (e) => { e.preventDefault(); e.stopPropagation(); toggleMount(); });
+    document.getElementById('btnInteract')?.addEventListener('pointerdown', (e) => { e.preventDefault(); e.stopPropagation(); handleInteract(); });
 
     // Interactive Minimap Click-to-Warp
     if (miniCanvas) {
       miniCanvas.style.cursor = 'crosshair';
       miniCanvas.addEventListener('click', (e) => {
+        e.stopPropagation();
         const rect = miniCanvas.getBoundingClientRect();
         const clickX = (e.clientX - rect.left) / rect.width;
         const clickY = (e.clientY - rect.top) / rect.height;

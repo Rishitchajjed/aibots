@@ -149,6 +149,18 @@
       color: #ffffff;
     }
 
+    .hud-btn-boss {
+      background: linear-gradient(135deg, rgba(239, 68, 68, 0.3), rgba(220, 38, 38, 0.45));
+      border-color: #ef4444;
+      color: #fca5a5;
+    }
+
+    .hud-btn-boss:hover {
+      box-shadow: 0 0 16px rgba(239, 68, 68, 0.8);
+      border-color: #f87171;
+      color: #ffffff;
+    }
+
     .hud-btn-fullscreen {
       background: rgba(6, 182, 212, 0.22);
       border-color: rgba(6, 182, 212, 0.6);
@@ -243,16 +255,31 @@
     }
 
     .minimap-wrapper {
-      width: 90px;
-      height: 90px;
+      width: 96px;
+      height: 96px;
       border-radius: 50%;
-      border: 2px solid rgba(129, 140, 248, 0.7);
+      border: 2px solid rgba(239, 68, 68, 0.7);
       background: rgba(15, 23, 42, 0.9);
       overflow: hidden;
-      box-shadow: 0 4px 16px rgba(0,0,0,0.8), 0 0 10px rgba(99,102,241,0.4);
+      box-shadow: 0 4px 16px rgba(0,0,0,0.8), 0 0 14px rgba(239, 68, 68, 0.4);
       position: relative;
     }
     #minimapCanvas { width: 100%; height: 100%; }
+
+    .boss-radar-tag {
+      font-size: 0.65rem;
+      font-weight: 800;
+      color: #f87171;
+      background: rgba(15, 23, 42, 0.9);
+      padding: 2px 7px;
+      border-radius: 999px;
+      border: 1px solid rgba(239, 68, 68, 0.5);
+      box-shadow: 0 0 10px rgba(239, 68, 68, 0.4);
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      cursor: pointer;
+    }
 
     /* Quest Tracker HUD */
     .quest-tracker {
@@ -291,6 +318,25 @@
       box-shadow: 0 0 35px rgba(239, 68, 68, 0.7);
     }
     .boss-name { font-size: 0.8rem; font-weight: 900; color: #f87171; text-transform: uppercase; letter-spacing: 1px; }
+
+    /* MANUAL COLLECT LOOT PROMPT */
+    #manualCollectPrompt {
+      position: absolute;
+      bottom: 62px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(15,23,42,0.9);
+      border: 1.5px solid #fbbf24;
+      border-radius: 999px;
+      padding: 5px 14px;
+      font-size: 0.78rem;
+      font-weight: 800;
+      color: #fbbf24;
+      display: none;
+      z-index: 25;
+      box-shadow: 0 0 20px rgba(251,191,36,0.6);
+      cursor: pointer;
+    }
 
     /* Bottom Ability Hotbar */
     .hotbar-container {
@@ -460,7 +506,7 @@
       .in-canvas-top-bar { top: 6px; padding: 3px 8px; max-width: 96%; }
       .hud-btn-label { display: none; }
       .quest-tracker { top: 85px; max-width: 160px; font-size: 0.65rem; }
-      .minimap-wrapper { width: 70px; height: 70px; }
+      .minimap-wrapper { width: 75px; height: 75px; }
       .boss-health-bar { top: 44px; }
     }
 
@@ -589,6 +635,7 @@
         <button class="hud-btn" onclick="openShopModal()"><i class="fas fa-store" style="color:#f472b6;"></i> <span class="hud-btn-label">Shop</span></button>
         <button class="hud-btn" onclick="openTalentsModal()"><i class="fas fa-dna" style="color:#38bdf8;"></i> <span class="hud-btn-label">Talents (<span id="inCanvasTalentPts">0</span>)</span></button>
         <button class="hud-btn" onclick="openQuestModal()"><i class="fas fa-scroll" style="color:#fbbf24;"></i> <span class="hud-btn-label">Quests</span></button>
+        <button class="hud-btn hud-btn-boss" onclick="openBossMapModal()"><i class="fas fa-skull-crossbones"></i> <span class="hud-btn-label">Boss Map</span></button>
         <button class="hud-btn" onclick="openTeleportModal()"><i class="fas fa-dungeon" style="color:#06b6d4;"></i> <span class="hud-btn-label">Warp</span></button>
         <button class="hud-btn" onclick="toggleAudioMute()" id="inCanvasMuteBtn" title="Mute/Unmute"><i class="fas fa-volume-up" id="inCanvasMuteIcon"></i></button>
         <button class="hud-btn hud-btn-fullscreen" onclick="toggleFullscreen()" id="inCanvasFullscreenBtn" title="Fullscreen Mode"><i class="fas fa-expand" id="inCanvasFsIcon"></i> <span class="hud-btn-label" id="inCanvasFsText">FS</span></button>
@@ -620,8 +667,11 @@
           <div class="hud-badge"><i class="fas fa-coins" style="color:#fbbf24;"></i> <span id="coinText">100</span></div>
           <div class="hud-badge"><i class="fas fa-award" style="color:#38bdf8;"></i> <span id="scoreText">0</span></div>
         </div>
-        <div class="minimap-wrapper" title="Click Minimap to Warp!">
+        <div class="minimap-wrapper" title="Click Minimap to Warp or locate Bosses!">
           <canvas id="minimapCanvas" width="100" height="100"></canvas>
+        </div>
+        <div class="boss-radar-tag" onclick="openBossMapModal()" title="Click to view full Boss Map">
+          <i class="fas fa-crosshairs"></i> Boss Radar
         </div>
       </div>
 
@@ -643,7 +693,7 @@
       </div>
 
       <!-- MANUAL COLLECT LOOT PROMPT -->
-      <div id="manualCollectPrompt" style="position: absolute; bottom: 62px; left: 50%; transform: translateX(-50%); background: rgba(15,23,42,0.9); border: 1.5px solid #fbbf24; border-radius: 999px; padding: 5px 14px; font-size: 0.78rem; font-weight: 800; color: #fbbf24; display: none; z-index: 25; box-shadow: 0 0 20px rgba(251,191,36,0.6); cursor: pointer;" onclick="collectNearbyLoot()">
+      <div id="manualCollectPrompt" onclick="collectNearbyLoot()">
         <i class="fas fa-hand-holding-dollar"></i> <span id="manualCollectText">[E / Tap] Collect Loot</span>
       </div>
 
@@ -901,6 +951,18 @@
         </div>
       </div>
 
+      <!-- 9. Dedicated Boss Map & Radar Modal -->
+      <div class="modal-backdrop" id="bossMapModal">
+        <div class="modal-card" style="max-width: 620px;">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+            <h3 style="margin:0; font-size:1.15rem; color:#ef4444;"><i class="fas fa-skull-crossbones"></i> Boss Locations & Live Radar</h3>
+            <button class="btn btn-secondary btn-sm" onclick="closeModal('bossMapModal')"><i class="fas fa-xmark"></i></button>
+          </div>
+          <p style="font-size:0.75rem; color:#94a3b8; margin-top:0;">Bosses are also marked on the top-right minimap with pulsing radar rings (☠️). Click any boss card below to warp directly!</p>
+          <div id="bossCardsContainer" style="display:flex; flex-direction:column; gap:10px;"></div>
+        </div>
+      </div>
+
     </div>
 
     <!-- Controls & Gameplay Guides -->
@@ -923,20 +985,20 @@
         <p style="font-size: 0.85rem; color: var(--text-secondary); line-height: 1.6; margin: 0;">
           🌿 <strong>Emerald Forest</strong>: Slimes, Wildflowers, Sage NPC.<br>
           🏜️ <strong>Solaris Dunes</strong>: Scorpions, Gold Veins, Mirages.<br>
-          ❄️ <strong>Glacial Peaks</strong>: Frost Yeti King Mini-Boss.<br>
-          🌋 <strong>Infernal Volcano</strong>: Mecha Dragon Titan Boss.<br>
+          ❄️ <strong>Glacial Peaks</strong>: Frost Yeti King Mini-Boss (X:800, Y:1800).<br>
+          🌋 <strong>Infernal Volcano</strong>: Mecha Dragon Titan (X:2500, Y:1900).<br>
           🌀 <strong>Cyber Citadel</strong>: Healing Fountain & Armory.
         </p>
       </div>
 
       <div class="info-card">
-        <h4><i class="fas fa-shield-cat"></i> Pets & Mounts</h4>
+        <h4><i class="fas fa-shield-cat"></i> Pets & Radar</h4>
         <p style="font-size: 0.85rem; color: var(--text-secondary); line-height: 1.6; margin: 0;">
           🤖 <strong>Drone</strong>: Auto-targets enemies with lasers.<br>
           🐺 <strong>Frost Wolf</strong>: Chills mobs and auto-vacuums gold.<br>
           🐉 <strong>Plasma Drake</strong>: Shoots fiery AoE blasts.<br>
           🧚 <strong>Astral Pixie</strong>: Restores HP & Mana.<br>
-          💾 <strong>Auto-Save</strong>: Progress is saved in real-time!
+          📍 <strong>Boss Radar</strong>: Follow the screen-edge compass arrow to find bosses!
         </p>
       </div>
     </div>
@@ -1153,11 +1215,11 @@
 
     // Teleport Waypoints
     const waypoints = [
-      { name: "Cyber Citadel (Hub)", x: 1600, y: 1200, icon: "fa-city", color: "#38bdf8" },
-      { name: "Emerald Forest", x: 800, y: 600, icon: "fa-tree", color: "#22c55e" },
-      { name: "Solaris Desert Dunes", x: 2400, y: 700, icon: "fa-sun", color: "#eab308" },
-      { name: "Glacial Peak Shrine", x: 800, y: 1800, icon: "fa-snowflake", color: "#06b6d4" },
-      { name: "Infernal Volcano Caldera", x: 2400, y: 1800, icon: "fa-fire", color: "#ef4444" }
+      { name: "Cyber Citadel (Hub)", x: 1600, y: 1200, icon: "fa-city", color: "#38bdf8", desc: "Safe zone & Armory" },
+      { name: "Emerald Forest", x: 800, y: 600, icon: "fa-tree", color: "#22c55e", desc: "Slimes & Wild Herbs" },
+      { name: "Solaris Desert Dunes", x: 2400, y: 700, icon: "fa-sun", color: "#eab308", desc: "Scorpions & Gold Veins" },
+      { name: "Glacial Peak (Yeti King 👑)", x: 800, y: 1800, icon: "fa-snowflake", color: "#06b6d4", desc: "Sub-zero ice realm & Boss" },
+      { name: "Infernal Caldera (Dragon Titan 👑)", x: 2400, y: 1800, icon: "fa-fire", color: "#ef4444", desc: "Magma lake & Raid Boss" }
     ];
 
     // ==========================================================================
@@ -1233,7 +1295,7 @@
       }
 
       npcs.push({ x: 1600, y: 1080, name: 'Cyber Merchant', role: 'shop', dialog: "Welcome to the Cyber Armory! Equip Laser Katanas, Shields, and Drone Pets!" });
-      npcs.push({ x: 1520, y: 1160, name: 'Elder Bot Sage', role: 'quest', dialog: "Mount your Cyber Bike with [V], cast Meteors with [Q], and defeat the Nether Titan!" });
+      npcs.push({ x: 1520, y: 1160, name: 'Elder Bot Sage', role: 'quest', dialog: "Mount your Cyber Bike with [V], check Boss Radar (☠️), and defeat the Nether Titan!" });
 
       chests.push({ x: 1530, y: 1220, opened: false, coins: 60 });
       chests.push({ x: 1670, y: 1220, opened: false, coins: 75 });
@@ -1300,12 +1362,11 @@
     // ==========================================================================
     function performAttack(targetAngle = null) {
       if (isAnyModalOpen()) return;
-      if (player.attackTimer > 6) return; // allows smooth and responsive combo clicking
+      if (player.attackTimer > 6) return;
       player.attacking = true;
       player.attackTimer = 16;
       AudioEngine.sword();
 
-      // Determine swing direction
       let swingAngle = 0;
       if (targetAngle !== null && !isNaN(targetAngle)) {
         swingAngle = targetAngle;
@@ -1315,7 +1376,6 @@
           player.facing = Math.sin(swingAngle) > 0 ? 'down' : 'up';
         }
       } else {
-        // Auto-target assistance: find closest enemy in 130px radius
         let closest = null, minD = 130;
         for (const en of enemies) {
           const d = Math.hypot(en.x - player.x, en.y - player.y);
@@ -1338,9 +1398,8 @@
       player.slashAngle = swingAngle;
 
       const attackReach = 92;
-      const attackSpread = Math.PI * 0.52; // generous 185-degree frontal slice
+      const attackSpread = Math.PI * 0.52;
 
-      // Open chests in melee range
       for (const c of chests) {
         if (!c.opened && Math.hypot(c.x - player.x, c.y - player.y) < 95) {
           c.opened = true;
@@ -1351,7 +1410,6 @@
         }
       }
 
-      // Mine ores in melee range
       for (let i = ores.length - 1; i >= 0; i--) {
         const ore = ores[i];
         if (Math.hypot(ore.x - player.x, ore.y - player.y) < 95) {
@@ -1364,7 +1422,6 @@
         }
       }
 
-      // Hit enemies with cleave + frontal cone
       let hitAny = false;
       for (let i = enemies.length - 1; i >= 0; i--) {
         const en = enemies[i];
@@ -1373,7 +1430,7 @@
         let angleDiff = Math.abs(enAngle - swingAngle);
         while (angleDiff > Math.PI) angleDiff = Math.abs(angleDiff - Math.PI * 2);
 
-        const inCloseCleave = dist < (en.radius + 50); // enemies touching the player are ALWAYS hit
+        const inCloseCleave = dist < (en.radius + 50);
         const inFrontCone = dist < (en.radius + attackReach) && angleDiff <= attackSpread;
 
         if (inCloseCleave || inFrontCone) {
@@ -1400,7 +1457,6 @@
         }
       }
 
-      // Spawn weapon slash trail sparks
       const tipX = player.x + Math.cos(swingAngle) * 58;
       const tipY = player.y + Math.sin(swingAngle) * 58;
       addSlashParticles(tipX, tipY, '#38bdf8');
@@ -1972,8 +2028,32 @@
           ctx.beginPath(); ctx.moveTo(en.x - 20, en.y); ctx.lineTo(en.x - 20 - wingSpan, en.y - 30 + wingY); ctx.lineTo(en.x - 10, en.y + 10); ctx.fill();
           ctx.beginPath(); ctx.moveTo(en.x + 20, en.y); ctx.lineTo(en.x + 20 + wingSpan, en.y - 30 + wingY); ctx.lineTo(en.x + 10, en.y + 10); ctx.fill();
         }
-        ctx.fillStyle = en.color;
-        ctx.beginPath(); ctx.arc(en.x, en.y, en.radius, 0, Math.PI * 2); ctx.fill();
+
+        if (en.isBoss) {
+          ctx.save();
+          ctx.shadowColor = en.type === 'boss' ? '#ef4444' : '#38bdf8';
+          ctx.shadowBlur = 25;
+          ctx.fillStyle = en.color;
+          ctx.beginPath(); ctx.arc(en.x, en.y, en.radius, 0, Math.PI * 2); ctx.fill();
+          ctx.restore();
+
+          // Overhead Title Plate & Live Health Bar in World
+          ctx.fillStyle = '#f8fafc';
+          ctx.font = 'bold 13px sans-serif';
+          ctx.textAlign = 'center';
+          ctx.fillText(`👑 [BOSS] ${en.name}`, en.x, en.y - en.radius - 20);
+
+          const barW = 75; const barH = 6;
+          ctx.fillStyle = 'rgba(0,0,0,0.85)';
+          ctx.fillRect(en.x - barW/2, en.y - en.radius - 14, barW, barH);
+          ctx.fillStyle = en.type === 'boss' ? '#ef4444' : '#38bdf8';
+          ctx.fillRect(en.x - barW/2, en.y - en.radius - 14, barW * (en.hp / en.maxHp), barH);
+          ctx.strokeStyle = '#ffffff'; ctx.lineWidth = 1;
+          ctx.strokeRect(en.x - barW/2, en.y - en.radius - 14, barW, barH);
+        } else {
+          ctx.fillStyle = en.color;
+          ctx.beginPath(); ctx.arc(en.x, en.y, en.radius, 0, Math.PI * 2); ctx.fill();
+        }
       }
 
       if (player.petType !== 'none') {
@@ -1998,6 +2078,87 @@
       }
 
       ctx.restore();
+
+      // ======================================================================
+      // SCREEN-EDGE BOSS COMPASS & OFF-SCREEN DIRECTION RADAR
+      // ======================================================================
+      for (const en of enemies) {
+        if (en.isBoss) {
+          const screenX = en.x - camera.x;
+          const screenY = en.y - camera.y;
+          const pad = 65;
+          const isOffScreen = screenX < pad || screenX > canvas.width - pad || screenY < pad || screenY > canvas.height - pad;
+
+          if (isOffScreen) {
+            const angle = Math.atan2(en.y - player.y, en.x - player.x);
+            const distMeters = Math.round(Math.hypot(en.x - player.x, en.y - player.y));
+            
+            const cx = canvas.width / 2;
+            const cy = canvas.height / 2;
+            const maxW = (canvas.width / 2) - 85;
+            const maxH = (canvas.height / 2) - 80;
+
+            let indicatorX, indicatorY;
+            const tanAngle = Math.tan(angle);
+            if (Math.abs(Math.cos(angle)) * maxH > Math.abs(Math.sin(angle)) * maxW) {
+              const dirX = Math.cos(angle) > 0 ? 1 : -1;
+              indicatorX = cx + dirX * maxW;
+              indicatorY = cy + dirX * maxW * tanAngle;
+            } else {
+              const dirY = Math.sin(angle) > 0 ? 1 : -1;
+              indicatorY = cy + dirY * maxH;
+              indicatorX = cx + (dirY * maxH) / tanAngle;
+            }
+
+            const isDragon = en.type === 'boss';
+            const themeColor = isDragon ? '#ef4444' : '#38bdf8';
+            const badgeText = `👑 ${en.name} (${distMeters}m)`;
+
+            ctx.save();
+            ctx.translate(indicatorX, indicatorY);
+
+            // Arrow pointing toward boss
+            ctx.save();
+            ctx.rotate(angle);
+            ctx.fillStyle = themeColor;
+            ctx.beginPath();
+            ctx.moveTo(22, 0);
+            ctx.lineTo(8, -8);
+            ctx.lineTo(8, 8);
+            ctx.closePath();
+            ctx.fill();
+            ctx.restore();
+
+            // Glass Label
+            ctx.font = 'bold 11px sans-serif';
+            const textWidth = ctx.measureText(badgeText).width;
+            ctx.fillStyle = 'rgba(15, 23, 42, 0.92)';
+            ctx.strokeStyle = themeColor;
+            ctx.lineWidth = 1.6;
+            ctx.beginPath();
+            ctx.roundRect(-textWidth / 2 - 8, -14, textWidth + 16, 26, 8);
+            ctx.fill();
+            ctx.stroke();
+
+            // Pulsing Dot
+            const pulse = (Math.sin(globalTicks * 0.1) + 1) * 0.5;
+            ctx.fillStyle = themeColor;
+            ctx.shadowColor = themeColor;
+            ctx.shadowBlur = 8 * pulse;
+            ctx.beginPath();
+            ctx.arc(-textWidth / 2, -1, 3.5, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Text
+            ctx.fillStyle = '#f8fafc';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText(badgeText, 4, -1);
+
+            ctx.restore();
+          }
+        }
+      }
 
       const nightIntensity = Math.sin(timeOfDay * Math.PI * 2) * 0.5;
       if (nightIntensity > 0) {
@@ -2038,16 +2199,13 @@
       };
       const theme = skinThemes[player.skin] || skinThemes['cyber_knight'];
 
-      // Draw Mount if active
       if (player.isMounted) {
         ctx.fillStyle = '#0f172a'; ctx.beginPath(); ctx.roundRect(-24, 2, 48, 18, 8); ctx.fill();
         ctx.strokeStyle = '#fbbf24'; ctx.lineWidth = 2.5; ctx.stroke();
-        // Thruster glow
         ctx.fillStyle = '#38bdf8';
         ctx.beginPath(); ctx.arc(-22, 10, 5, 0, Math.PI * 2); ctx.fill();
       }
 
-      // Character Body & Visor
       ctx.fillStyle = theme.body; ctx.beginPath(); ctx.roundRect(-14, -12, 28, 26, 6); ctx.fill();
       ctx.fillStyle = '#0f172a'; ctx.beginPath(); ctx.roundRect(-12, -26, 24, 16, 5); ctx.fill();
       ctx.fillStyle = theme.visor; ctx.beginPath(); ctx.roundRect(-8, -20, 16, 6, 2); ctx.fill();
@@ -2066,23 +2224,11 @@
       }
       ctx.rotate(swordAngle);
 
-      // Hilt
-      ctx.fillStyle = '#334155';
-      ctx.fillRect(-3, -4, 6, 9);
-      // Guard
-      ctx.fillStyle = '#fbbf24';
-      ctx.fillRect(-7, -5, 14, 3);
-      // Glowing Energy Blade
-      ctx.shadowColor = theme.bladeGlow;
-      ctx.shadowBlur = 12;
-      ctx.fillStyle = theme.blade;
-      ctx.fillRect(-2.5, -34, 5, 29);
-      // Blade Tip (pointed)
-      ctx.beginPath();
-      ctx.moveTo(-2.5, -34);
-      ctx.lineTo(0, -40);
-      ctx.lineTo(2.5, -34);
-      ctx.fill();
+      ctx.fillStyle = '#334155'; ctx.fillRect(-3, -4, 6, 9);
+      ctx.fillStyle = '#fbbf24'; ctx.fillRect(-7, -5, 14, 3);
+      ctx.shadowColor = theme.bladeGlow; ctx.shadowBlur = 12;
+      ctx.fillStyle = theme.blade; ctx.fillRect(-2.5, -34, 5, 29);
+      ctx.beginPath(); ctx.moveTo(-2.5, -34); ctx.lineTo(0, -40); ctx.lineTo(2.5, -34); ctx.fill();
       ctx.shadowBlur = 0;
       ctx.restore();
 
@@ -2092,10 +2238,8 @@
         const swingAngle = player.slashAngle || (player.facing === 'right' ? 0 : (player.facing === 'left' ? Math.PI : (player.facing === 'down' ? Math.PI/2 : -Math.PI/2)));
         const slashProgress = (16 - player.attackTimer) / 16;
         ctx.strokeStyle = theme.blade;
-        ctx.lineWidth = 5;
-        ctx.lineCap = 'round';
-        ctx.shadowColor = theme.bladeGlow;
-        ctx.shadowBlur = 16;
+        ctx.lineWidth = 5; ctx.lineCap = 'round';
+        ctx.shadowColor = theme.bladeGlow; ctx.shadowBlur = 16;
 
         ctx.beginPath();
         const startA = swingAngle - 0.95 + slashProgress * 0.4;
@@ -2103,9 +2247,7 @@
         ctx.arc(0, 0, 52, startA, endA);
         ctx.stroke();
 
-        // Inner brighter flash
-        ctx.strokeStyle = '#ffffff';
-        ctx.lineWidth = 2.5;
+        ctx.strokeStyle = '#ffffff'; ctx.lineWidth = 2.5;
         ctx.beginPath();
         ctx.arc(0, 0, 48, startA + 0.15, endA - 0.15);
         ctx.stroke();
@@ -2113,7 +2255,6 @@
         ctx.restore();
       }
 
-      // Barrier Shield
       if (player.shieldHp > 0) {
         ctx.strokeStyle = '#38bdf8'; ctx.lineWidth = 2.5;
         ctx.beginPath(); ctx.arc(0, 0, player.radius + 8, 0, Math.PI * 2); ctx.stroke();
@@ -2122,22 +2263,96 @@
       ctx.restore();
     }
 
+    // ==========================================================================
+    // MINIMAP WITH PROMINENT BOSS RADAR & PING WAVES
+    // ==========================================================================
     function drawMinimap() {
       miniCtx.clearRect(0, 0, miniCanvas.width, miniCanvas.height);
       const sx = miniCanvas.width / WORLD.width, sy = miniCanvas.height / WORLD.height;
 
+      // 4 Biome Quads
       miniCtx.fillStyle = '#064e3b'; miniCtx.fillRect(0, 0, miniCanvas.width/2, miniCanvas.height/2);
       miniCtx.fillStyle = '#78350f'; miniCtx.fillRect(miniCanvas.width/2, 0, miniCanvas.width/2, miniCanvas.height/2);
       miniCtx.fillStyle = '#0c4a6e'; miniCtx.fillRect(0, 1200 * sy, miniCanvas.width/2, miniCanvas.height/2);
       miniCtx.fillStyle = '#450a0a'; miniCtx.fillRect(miniCanvas.width/2, 1200 * sy, miniCanvas.width/2, miniCanvas.height/2);
 
+      // Roads & Center Citadel
+      miniCtx.fillStyle = 'rgba(51, 65, 85, 0.7)';
+      miniCtx.fillRect(0, 1165 * sy, miniCanvas.width, 70 * sy);
+      miniCtx.fillRect(1565 * sx, 0, 70 * sx, miniCanvas.height);
+      miniCtx.fillStyle = '#6366f1';
+      miniCtx.fillRect(1440 * sx, 1040 * sy, 320 * sx, 320 * sy);
+
+      // Portals
       miniCtx.fillStyle = '#c084fc';
       for (const p of portals) miniCtx.fillRect(p.x * sx - 1.5, p.y * sy - 1.5, 3.5, 3.5);
 
-      miniCtx.fillStyle = '#ef4444';
-      for (const en of enemies) miniCtx.fillRect(en.x * sx - 1, en.y * sy - 1, en.isBoss ? 4 : 2, en.isBoss ? 4 : 2);
+      // Normal Enemies
+      miniCtx.fillStyle = '#f87171';
+      for (const en of enemies) {
+        if (!en.isBoss) miniCtx.fillRect(en.x * sx - 1, en.y * sy - 1, 2, 2);
+      }
 
-      miniCtx.fillStyle = '#38bdf8'; miniCtx.beginPath(); miniCtx.arc(player.x * sx, player.y * sy, 3.5, 0, Math.PI * 2); miniCtx.fill();
+      // BOSS MARKERS - ANIMATED RADAR BEACONS & SKULL EMBLEMS
+      const radarPulse = (globalTicks * 0.04) % 1;
+      for (const en of enemies) {
+        if (en.isBoss) {
+          const bx = en.x * sx;
+          const by = en.y * sy;
+          const isDragon = en.type === 'boss';
+
+          // 1. Radar Pulse Wave
+          miniCtx.save();
+          miniCtx.strokeStyle = isDragon ? `rgba(239, 68, 68, ${1 - radarPulse})` : `rgba(56, 189, 248, ${1 - radarPulse})`;
+          miniCtx.lineWidth = 1.8;
+          miniCtx.beginPath();
+          miniCtx.arc(bx, by, 4 + radarPulse * 16, 0, Math.PI * 2);
+          miniCtx.stroke();
+
+          // 2. Glowing Outer Badge
+          miniCtx.fillStyle = isDragon ? 'rgba(239, 68, 68, 0.35)' : 'rgba(56, 189, 248, 0.35)';
+          miniCtx.beginPath();
+          miniCtx.arc(bx, by, 7.5, 0, Math.PI * 2);
+          miniCtx.fill();
+
+          // 3. Central Boss Emblem Pin
+          miniCtx.fillStyle = isDragon ? '#dc2626' : '#0284c7';
+          miniCtx.beginPath();
+          miniCtx.arc(bx, by, 5, 0, Math.PI * 2);
+          miniCtx.fill();
+          miniCtx.strokeStyle = '#facc15';
+          miniCtx.lineWidth = 1.6;
+          miniCtx.stroke();
+
+          // 4. Skull / Danger Glyphs
+          miniCtx.fillStyle = '#ffffff';
+          miniCtx.font = 'bold 7px sans-serif';
+          miniCtx.textAlign = 'center';
+          miniCtx.textBaseline = 'middle';
+          miniCtx.fillText('☠', bx, by);
+
+          // 5. Boss Name Label with Dark Box
+          const label = isDragon ? 'TITAN 👑' : 'YETI 👑';
+          miniCtx.font = 'bold 7px sans-serif';
+          const tw = miniCtx.measureText(label).width;
+          miniCtx.fillStyle = 'rgba(15, 23, 42, 0.88)';
+          miniCtx.fillRect(bx - tw/2 - 2, by - 14, tw + 4, 9);
+          miniCtx.fillStyle = isDragon ? '#f87171' : '#38bdf8';
+          miniCtx.fillText(label, bx, by - 9.5);
+          miniCtx.restore();
+        }
+      }
+
+      // Player Location Dot
+      miniCtx.save();
+      miniCtx.fillStyle = '#38bdf8';
+      miniCtx.beginPath();
+      miniCtx.arc(player.x * sx, player.y * sy, 3.5, 0, Math.PI * 2);
+      miniCtx.fill();
+      miniCtx.strokeStyle = '#ffffff';
+      miniCtx.lineWidth = 1.5;
+      miniCtx.stroke();
+      miniCtx.restore();
     }
 
     // ==========================================================================
@@ -2173,19 +2388,63 @@
       `).join('');
       document.getElementById('questModal').classList.add('active');
     }
+
+    function openBossMapModal() {
+      const container = document.getElementById('bossCardsContainer');
+      const bossList = enemies.filter(en => en.isBoss);
+
+      container.innerHTML = `
+        <div style="background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.1); border-radius:12px; padding:10px; margin-bottom:6px;">
+          <div style="font-weight:800; font-size:0.84rem; color:#38bdf8; margin-bottom:4px;"><i class="fas fa-compass"></i> World Quadrant Map</div>
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:6px; font-size:0.72rem; text-align:center;">
+            <div style="background:#064e3b; padding:6px; border-radius:6px; border:1px solid #10b981;">🌿 Emerald Forest (NW)<br><span style="color:#cbd5e1;">Slimes & Merchant</span></div>
+            <div style="background:#78350f; padding:6px; border-radius:6px; border:1px solid #f59e0b;">🏜️ Solaris Dunes (NE)<br><span style="color:#cbd5e1;">Scorpions & Gold</span></div>
+            <div style="background:#0c4a6e; padding:6px; border-radius:6px; border:1px solid #38bdf8;">❄️ Glacial Peak (SW)<br><span style="color:#38bdf8; font-weight:800;">👑 Frost Yeti King</span></div>
+            <div style="background:#450a0a; padding:6px; border-radius:6px; border:1px solid #ef4444;">🌋 Infernal Caldera (SE)<br><span style="color:#f87171; font-weight:800;">👑 Dragon Titan</span></div>
+          </div>
+        </div>
+      ` + bossList.map(b => {
+        const isDragon = b.type === 'boss';
+        const dist = Math.round(Math.hypot(b.x - player.x, b.y - player.y));
+        const themeColor = isDragon ? '#ef4444' : '#38bdf8';
+        const biomeName = isDragon ? 'Infernal Volcano Caldera' : 'Glacial Peak Shrine';
+        return `
+          <div style="background:rgba(15,23,42,0.9); border:1.5px solid ${themeColor}; border-radius:12px; padding:12px; display:flex; justify-content:space-between; align-items:center; box-shadow:0 0 16px ${isDragon ? 'rgba(239,68,68,0.3)' : 'rgba(56,189,248,0.3)'};">
+            <div>
+              <div style="font-weight:900; font-size:0.95rem; color:${themeColor}; display:flex; align-items:center; gap:6px;">
+                <i class="fas fa-skull"></i> ${b.name} <span style="font-size:0.68rem; background:${themeColor}; color:#0f172a; padding:1px 6px; border-radius:999px; font-weight:800;">${b.phase ? 'PHASE ' + b.phase : 'ACTIVE'}</span>
+              </div>
+              <div style="font-size:0.75rem; color:#cbd5e1; margin-top:2px;">📍 Location: <strong>${biomeName}</strong> (X: ${Math.round(b.x)}, Y: ${Math.round(b.y)})</div>
+              <div style="font-size:0.72rem; color:#fbbf24; margin-top:2px;">📏 Distance: <strong>${dist} meters</strong> away</div>
+              <div style="font-size:0.72rem; color:#94a3b8; margin-top:1px;">❤️ Health: <strong>${Math.floor(b.hp)} / ${b.maxHp} HP</strong></div>
+            </div>
+            <button class="btn btn-primary btn-sm" style="background:${themeColor}; border-color:${themeColor}; color:#0f172a; font-weight:900;" onclick="teleportToCoords(${b.x - 70}, ${b.y}, '${b.name} Arena'); closeModal('bossMapModal');">
+              <i class="fas fa-bolt"></i> Warp ➔
+            </button>
+          </div>
+        `;
+      }).join('');
+
+      document.getElementById('bossMapModal').classList.add('active');
+    }
+
     function openTeleportModal() {
       const container = document.getElementById('teleportListContainer');
       container.innerHTML = waypoints.map(wp => `
         <div class="modal-card-item" style="flex-direction:row; justify-content:space-between; padding:10px 14px;" onclick="teleportToCoords(${wp.x}, ${wp.y}, '${wp.name}')">
           <div style="display:flex; align-items:center; gap:10px;">
             <i class="fas ${wp.icon}" style="color:${wp.color}; font-size:1.3rem;"></i>
-            <span style="font-weight:800; font-size:0.85rem;">${wp.name}</span>
+            <div style="text-align:left;">
+              <span style="font-weight:800; font-size:0.85rem;">${wp.name}</span>
+              <div style="font-size:0.68rem; color:#94a3b8;">${wp.desc || ''}</div>
+            </div>
           </div>
           <button class="btn btn-primary btn-sm" style="background:${wp.color}; color:#0f172a; font-weight:800;">Warp</button>
         </div>
       `).join('');
       document.getElementById('teleportModal').classList.add('active');
     }
+
     function closeModal(id) {
       if (id) document.getElementById(id).classList.remove('active');
       else document.querySelectorAll('.modal-backdrop').forEach(m => m.classList.remove('active'));
@@ -2244,7 +2503,7 @@
       createRiftParticles(player.x, player.y, '#ec4899');
       addFloatingText(`Warped to ${name}!`, player.x, player.y - 30, '#06b6d4');
       AudioEngine.portal();
-      closeModal('teleportModal');
+      closeModal();
     }
 
     function addFloatingText(text, x, y, color) { floatingTexts.push({ text, x, y, color, life: 45 }); }
@@ -2415,6 +2674,7 @@
       else if (k === 'e') handleInteract();
       else if (e.key === '1' || k === 'h') usePotion('hp');
       else if (e.key === '2' || k === 'm') usePotion('mp');
+      else if (k === 'b') openBossMapModal();
       else if (k === 'i') openShopModal();
       else if (k === 't') openTalentsModal();
       else if (k === 'p') openTeleportModal();

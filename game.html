@@ -281,23 +281,39 @@
       cursor: pointer;
     }
 
-    /* Quest Tracker HUD */
+    /* Active Quest Tracker HUD (Clickable & Interactive) */
     .quest-tracker {
       position: absolute;
       top: 96px;
       left: 10px;
-      background: rgba(15, 23, 42, 0.85);
-      backdrop-filter: blur(8px);
-      padding: 6px 10px;
+      background: rgba(15, 23, 42, 0.9);
+      backdrop-filter: blur(10px);
+      padding: 7px 12px;
       border-radius: 12px;
-      border: 1px solid rgba(168, 85, 247, 0.4);
-      max-width: 210px;
-      font-size: 0.72rem;
+      border: 1px solid rgba(168, 85, 247, 0.45);
+      max-width: 230px;
+      font-size: 0.74rem;
       z-index: 15;
-      pointer-events: none;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+      pointer-events: auto;
+      cursor: pointer;
+      box-shadow: 0 4px 14px rgba(0,0,0,0.6);
+      transition: all 0.15s ease;
     }
-    .quest-title { font-weight: 800; color: #c084fc; margin-bottom: 2px; display: flex; align-items: center; gap: 4px; }
+    .quest-tracker:hover {
+      border-color: #fbbf24;
+      background: rgba(30, 41, 59, 0.95);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 18px rgba(251, 191, 36, 0.35);
+    }
+    .quest-title {
+      font-weight: 800;
+      color: #c084fc;
+      margin-bottom: 3px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 0.72rem;
+    }
 
     /* Boss Banner HUD */
     .boss-health-bar {
@@ -505,7 +521,7 @@
       .hotbar-key { display: none; }
       .in-canvas-top-bar { top: 6px; padding: 3px 8px; max-width: 96%; }
       .hud-btn-label { display: none; }
-      .quest-tracker { top: 85px; max-width: 160px; font-size: 0.65rem; }
+      .quest-tracker { top: 85px; max-width: 170px; font-size: 0.66rem; }
       .minimap-wrapper { width: 75px; height: 75px; }
       .boss-health-bar { top: 44px; }
     }
@@ -675,10 +691,13 @@
         </div>
       </div>
 
-      <!-- QUEST TRACKER -->
-      <div class="quest-tracker" id="questTracker">
-        <div class="quest-title"><i class="fas fa-compass"></i> ACTIVE QUEST</div>
-        <div id="questDesc" style="color: #e2e8f0; line-height: 1.2;">Slay 4 Forest Slimes (0/4)</div>
+      <!-- ACTIVE QUEST TRACKER (Click to open Quest Chronicles) -->
+      <div class="quest-tracker" id="questTracker" onclick="openQuestModal()" title="Click to open Quest & Achievement Log">
+        <div class="quest-title">
+          <span><i class="fas fa-compass"></i> TRACKED QUEST</span>
+          <span style="font-size:0.6rem; color:#facc15;"><i class="fas fa-arrow-up-right-from-square"></i></span>
+        </div>
+        <div id="questDesc" style="color: #e2e8f0; line-height: 1.3;">Slay 4 Forest Slimes (0/4)</div>
       </div>
 
       <!-- BOSS HEALTH BAR BANNER -->
@@ -727,7 +746,7 @@
         </div>
       </div>
 
-      <!-- MODALS (Rendered inside Canvas for Fullscreen Compatibility) -->
+      <!-- MODALS -->
 
       <!-- 1. Hero Class Modal -->
       <div class="modal-backdrop" id="heroModal">
@@ -929,14 +948,20 @@
         </div>
       </div>
 
-      <!-- 7. Quest Log Modal -->
+      <!-- 7. Quest & Achievements Modal (Dual-Tab) -->
       <div class="modal-backdrop" id="questModal">
-        <div class="modal-card">
+        <div class="modal-card" style="max-width: 640px;">
           <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
-            <h3 style="margin:0; font-size:1.1rem; color:#fbbf24;"><i class="fas fa-scroll"></i> Quest Chronicles</h3>
+            <h3 style="margin:0; font-size:1.15rem; color:#fbbf24;"><i class="fas fa-scroll"></i> Quest Chronicles & Achievements</h3>
             <button class="btn btn-secondary btn-sm" onclick="closeModal('questModal')"><i class="fas fa-xmark"></i></button>
           </div>
+          <!-- Dual Tabs -->
+          <div style="display:flex; gap:8px; margin-bottom:12px; border-bottom:1px solid rgba(255,255,255,0.12); padding-bottom:8px;">
+            <button class="btn btn-sm btn-primary" id="tabBtnQuests" onclick="switchQuestTab('quests')"><i class="fas fa-scroll"></i> Quests (<span id="questTabCount">0/6</span>)</button>
+            <button class="btn btn-sm btn-secondary" id="tabBtnAchievements" onclick="switchQuestTab('achievements')"><i class="fas fa-award"></i> Achievements (<span id="achieveTabCount">0/8</span>)</button>
+          </div>
           <div id="questListContainer" style="display:flex; flex-direction:column; gap:8px;"></div>
+          <div id="achievementsListContainer" style="display:none; flex-direction:column; gap:8px;"></div>
         </div>
       </div>
 
@@ -992,9 +1017,9 @@
       </div>
 
       <div class="info-card">
-        <h4><i class="fas fa-shield-cat"></i> Pets & Radar</h4>
+        <h4><i class="fas fa-shield-cat"></i> Quests & Radar</h4>
         <p style="font-size: 0.85rem; color: var(--text-secondary); line-height: 1.6; margin: 0;">
-          🤖 <strong>Drone</strong>: Auto-targets enemies with lasers.<br>
+          📜 <strong>Click Active Quest</strong>: Tap on-screen quest HUD to switch active tracking or claim badges.<br>
           🐺 <strong>Frost Wolf</strong>: Chills mobs and auto-vacuums gold.<br>
           🐉 <strong>Plasma Drake</strong>: Shoots fiery AoE blasts.<br>
           🧚 <strong>Astral Pixie</strong>: Restores HP & Mana.<br>
@@ -1203,15 +1228,71 @@
     const keys = {};
     const scenery = [];
 
-    // Quest System
-    const questData = [
-      { id: 1, title: "1. Forest Slimes", desc: "Defeat 4 Forest Slimes", target: 4, type: "slime", reward: "+80 XP, 40 Gold" },
-      { id: 2, title: "2. Desert Scorpions", desc: "Slay 3 Desert Scorpions", target: 3, type: "scorpion", reward: "+140 XP, 75 Gold, 1 Talent Pt" },
-      { id: 3, title: "3. Frost Yeti Challenge", desc: "Conquer the Frost Yeti King", target: 1, type: "yeti_boss", reward: "+250 XP, 150 Gold" },
-      { id: 4, title: "4. Nether Titan Slayer", desc: "Defeat the Mecha Dragon Titan", target: 1, type: "boss", reward: "+600 XP, 400 Gold, Realm Master" }
+    // ==========================================================================
+    // QUEST & ACHIEVEMENT SYSTEM (UNIVERSAL TRACKING + SELECTABLE ACTIVE QUEST)
+    // ==========================================================================
+    const quests = [
+      { id: 'slimes', title: "Forest Slimes Hunt", desc: "Defeat 4 Forest Slimes", target: 4, progress: 0, completed: false, type: "slime", reward: "+80 XP, 40 Gold", rewardXp: 80, rewardCoins: 40, rewardTalent: 0 },
+      { id: 'scorpions', title: "Solaris Dunes Scorpions", desc: "Slay 3 Desert Scorpions", target: 3, progress: 0, completed: false, type: "scorpion", reward: "+140 XP, 75 Gold, +1 Talent Pt", rewardXp: 140, rewardCoins: 75, rewardTalent: 1 },
+      { id: 'yeti', title: "Frost Yeti King Challenge", desc: "Conquer the Frost Yeti King", target: 1, progress: 0, completed: false, type: "yeti_boss", reward: "+250 XP, 150 Gold", rewardXp: 250, rewardCoins: 150, rewardTalent: 0 },
+      { id: 'titan', title: "Nether Titan Slayer", desc: "Defeat the Mecha Dragon Titan", target: 1, progress: 0, completed: false, type: "boss", reward: "+600 XP, 400 Gold, 👑 Realm Master", rewardXp: 600, rewardCoins: 400, rewardTalent: 2 },
+      { id: 'chests', title: "Treasure Raider", desc: "Open 3 Treasure Chests in the Realm", target: 3, progress: 0, completed: false, type: "chest", reward: "+120 XP, 80 Gold", rewardXp: 120, rewardCoins: 80, rewardTalent: 0 },
+      { id: 'ores', title: "Master Mineral Miner", desc: "Mine 4 Gold or Crystal Ores", target: 4, progress: 0, completed: false, type: "ore", reward: "+100 XP, 50 Gold", rewardXp: 100, rewardCoins: 50, rewardTalent: 0 }
     ];
-    let activeQuestIndex = 0;
-    let questProgress = 0;
+    let activeQuestId = 'slimes';
+    let currentQuestTab = 'quests';
+
+    const achievements = [
+      { id: 'first_blood', name: 'First Blood', desc: 'Defeat your first monster in the realm', icon: 'fa-skull', reward: '+50 Gold', achieved: false },
+      { id: 'kill_10', name: 'Monster Hunter', desc: 'Defeat 10 monsters total', icon: 'fa-shield-halved', reward: '+100 Gold', achieved: false },
+      { id: 'kill_yeti', name: 'Glacial Vanquisher', desc: 'Defeat the Frost Yeti King', icon: 'fa-snowflake', reward: '+200 Gold', achieved: false },
+      { id: 'kill_titan', name: 'Titan Slayer', desc: 'Conquer the Mecha Dragon Titan', icon: 'fa-dragon', reward: '+500 Gold, 👑 Title', achieved: false },
+      { id: 'open_chests', name: 'Treasure Seeker', desc: 'Open 3 treasure chests', icon: 'fa-gem', reward: '+100 Gold', achieved: false },
+      { id: 'mine_ores', name: 'Prospector', desc: 'Mine 3 mineral ores', icon: 'fa-cubes-stacked', reward: '+100 Gold', achieved: false },
+      { id: 'ride_mount', name: 'Cyber Rider', desc: 'Equip and ride the Cyber Mount', icon: 'fa-motorcycle', reward: '+50 Gold', achieved: false },
+      { id: 'level_5', name: 'Ascended Bot', desc: 'Reach Hero Level 5', icon: 'fa-crown', reward: '+250 Gold, +1 Talent Pt', achieved: false }
+    ];
+
+    let stats = { totalKills: 0, chestsOpened: 0, oresMined: 0 };
+
+    function checkAchievements() {
+      let newlyAchieved = false;
+
+      function triggerAchieve(ach, bonusCoins = 0, bonusTalent = 0) {
+        if (!ach.achieved) {
+          ach.achieved = true;
+          player.coins += bonusCoins;
+          if (bonusTalent) player.talentPoints += bonusTalent;
+          newlyAchieved = true;
+          addFloatingText(`🏆 Achievement: ${ach.name}!`, player.x, player.y - 35, '#fbbf24');
+          AudioEngine.levelUp();
+          showToast(`🏅 Achievement Unlocked: ${ach.name}! (${ach.reward})`, "success");
+        }
+      }
+
+      const a1 = achievements.find(a => a.id === 'first_blood');
+      if (a1 && !a1.achieved && stats.totalKills >= 1) triggerAchieve(a1, 50);
+
+      const a2 = achievements.find(a => a.id === 'kill_10');
+      if (a2 && !a2.achieved && stats.totalKills >= 10) triggerAchieve(a2, 100);
+
+      const a3 = achievements.find(a => a.id === 'open_chests');
+      if (a3 && !a3.achieved && stats.chestsOpened >= 3) triggerAchieve(a3, 100);
+
+      const a4 = achievements.find(a => a.id === 'mine_ores');
+      if (a4 && !a4.achieved && stats.oresMined >= 3) triggerAchieve(a4, 100);
+
+      const a5 = achievements.find(a => a.id === 'ride_mount');
+      if (a5 && !a5.achieved && player.isMounted) triggerAchieve(a5, 50);
+
+      const a6 = achievements.find(a => a.id === 'level_5');
+      if (a6 && !a6.achieved && player.lvl >= 5) triggerAchieve(a6, 250, 1);
+
+      if (newlyAchieved) {
+        updateHud();
+        saveGameData();
+      }
+    }
 
     // Teleport Waypoints
     const waypoints = [
@@ -1400,24 +1481,32 @@
       const attackReach = 92;
       const attackSpread = Math.PI * 0.52;
 
+      // Open chests
       for (const c of chests) {
         if (!c.opened && Math.hypot(c.x - player.x, c.y - player.y) < 95) {
           c.opened = true;
+          stats.chestsOpened++;
           spawnLootOrb(c.x, c.y, c.coins, '#fbbf24');
           addFloatingText(`+${c.coins} Gold!`, c.x, c.y - 25, '#fbbf24');
           AudioEngine.coin();
+          checkChestQuests();
+          checkAchievements();
           updateHud();
         }
       }
 
+      // Mine ores
       for (let i = ores.length - 1; i >= 0; i--) {
         const ore = ores[i];
         if (Math.hypot(ore.x - player.x, ore.y - player.y) < 95) {
           const reward = ore.type === 'gold' ? 40 : 30;
+          stats.oresMined++;
           spawnLootOrb(ore.x, ore.y, reward, ore.type === 'gold' ? '#f59e0b' : '#38bdf8');
           addFloatingText(`Mined +${reward} ${ore.type.toUpperCase()}!`, ore.x, ore.y - 20, '#38bdf8');
           ores.splice(i, 1);
           AudioEngine.coin();
+          checkOreQuests();
+          checkAchievements();
           updateHud();
         }
       }
@@ -1460,6 +1549,54 @@
       const tipX = player.x + Math.cos(swingAngle) * 58;
       const tipY = player.y + Math.sin(swingAngle) * 58;
       addSlashParticles(tipX, tipY, '#38bdf8');
+    }
+
+    function checkChestQuests() {
+      for (const q of quests) {
+        if (q.type === 'chest' && !q.completed) {
+          q.progress++;
+          if (q.progress >= q.target) {
+            q.progress = q.target;
+            q.completed = true;
+            player.coins += q.rewardCoins;
+            player.xp += q.rewardXp;
+            addFloatingText(`Quest Complete: ${q.title}! 🏆`, player.x, player.y - 32, '#c084fc');
+            AudioEngine.levelUp();
+            showToast(`🏆 Quest Completed: ${q.title}! (${q.reward})`, "success");
+            autoAdvanceQuest(q.id);
+          }
+        }
+      }
+      updateQuestHUD();
+    }
+
+    function checkOreQuests() {
+      for (const q of quests) {
+        if (q.type === 'ore' && !q.completed) {
+          q.progress++;
+          if (q.progress >= q.target) {
+            q.progress = q.target;
+            q.completed = true;
+            player.coins += q.rewardCoins;
+            player.xp += q.rewardXp;
+            addFloatingText(`Quest Complete: ${q.title}! 🏆`, player.x, player.y - 32, '#c084fc');
+            AudioEngine.levelUp();
+            showToast(`🏆 Quest Completed: ${q.title}! (${q.reward})`, "success");
+            autoAdvanceQuest(q.id);
+          }
+        }
+      }
+      updateQuestHUD();
+    }
+
+    function autoAdvanceQuest(completedId) {
+      if (activeQuestId === completedId) {
+        const nextUncompleted = quests.find(q => !q.completed);
+        if (nextUncompleted) {
+          activeQuestId = nextUncompleted.id;
+          showToast(`🎯 Next Active Quest: ${nextUncompleted.title}`, "info");
+        }
+      }
     }
 
     function castMagic() {
@@ -1521,12 +1658,15 @@
       AudioEngine.blizzard();
       screenShake = 12;
 
-      for (const en of enemies) {
+      for (let i = enemies.length - 1; i >= 0; i--) {
+        const en = enemies[i];
         if (Math.hypot(en.x - player.x, en.y - player.y) < 260) {
           en.frozenTimer = 180;
-          en.hp -= 40 + player.lvl * 8;
+          const dmg = 40 + player.lvl * 8;
+          en.hp -= dmg;
           addFloatingText("FROZEN! ❄️", en.x, en.y - 18, '#38bdf8');
           addSlashParticles(en.x, en.y, '#38bdf8');
+          if (en.hp <= 0) defeatEnemy(en, i);
         }
       }
       addFloatingText("BLIZZARD NOVA! ❄️", player.x, player.y - 32, '#38bdf8');
@@ -1572,6 +1712,7 @@
       if (player.isMounted) {
         slot.classList.add('active-mount');
         showToast("Cyber Mount Activated! (+120% Speed)", "success");
+        checkAchievements();
       } else {
         slot.classList.remove('active-mount');
         showToast("Dismounted.", "info");
@@ -1632,9 +1773,12 @@
       for (const c of chests) {
         if (!c.opened && Math.hypot(c.x - player.x, c.y - player.y) < 110) {
           c.opened = true;
+          stats.chestsOpened++;
           spawnLootOrb(c.x, c.y, c.coins, '#fbbf24');
           addFloatingText(`+${c.coins} Gold Chest!`, c.x, c.y - 25, '#fbbf24');
           AudioEngine.coin();
+          checkChestQuests();
+          checkAchievements();
           updateHud();
           return;
         }
@@ -1670,6 +1814,7 @@
 
     function defeatEnemy(en, idx) {
       enemies.splice(idx, 1);
+      stats.totalKills++;
       spawnLootOrb(en.x, en.y, en.coins, '#fbbf24');
       player.xp += en.xp;
       player.score += en.xp * 2;
@@ -1678,22 +1823,49 @@
       if (en.isBoss) {
         addFloatingText(`${en.name} DEFEATED! 👑`, player.x, player.y - 45, '#ec4899');
         document.getElementById('bossBar').style.display = 'none';
+
+        if (en.type === 'boss') {
+          const achTitan = achievements.find(a => a.id === 'kill_titan');
+          if (achTitan && !achTitan.achieved) {
+            achTitan.achieved = true;
+            player.coins += 500;
+            addFloatingText(`👑 TITAN SLAYER UNLOCKED!`, player.x, player.y - 65, '#facc15');
+            showToast("👑 Achievement Unlocked: Titan Slayer! (+500 Gold)", "success");
+          }
+        }
+        if (en.type === 'yeti_boss') {
+          const achYeti = achievements.find(a => a.id === 'kill_yeti');
+          if (achYeti && !achYeti.achieved) {
+            achYeti.achieved = true;
+            player.coins += 200;
+            addFloatingText(`❄️ GLACIAL VANQUISHER UNLOCKED!`, player.x, player.y - 65, '#38bdf8');
+            showToast("❄️ Achievement Unlocked: Glacial Vanquisher! (+200 Gold)", "success");
+          }
+        }
+
         setTimeout(en.type === 'boss' ? spawnBoss : spawnYetiMiniBoss, 45000);
       }
 
-      const activeQ = questData[activeQuestIndex];
-      if (activeQ && (activeQ.type === en.type || activeQ.type === 'any')) {
-        questProgress++;
-        if (questProgress >= activeQ.target) {
-          player.coins += 50;
-          player.xp += 100;
-          addFloatingText("Quest Completed! 🏆", player.x, player.y - 30, '#c084fc');
-          AudioEngine.levelUp();
-          activeQuestIndex = Math.min(questData.length - 1, activeQuestIndex + 1);
-          questProgress = 0;
+      // Universal Quest Objective Progress (updates ALL matching quests!)
+      for (const q of quests) {
+        if (!q.completed && (q.type === en.type || q.type === 'any')) {
+          q.progress++;
+          if (q.progress >= q.target) {
+            q.progress = q.target;
+            q.completed = true;
+            player.coins += q.rewardCoins;
+            player.xp += q.rewardXp;
+            if (q.rewardTalent) player.talentPoints += q.rewardTalent;
+            addFloatingText(`Quest Complete: ${q.title}! 🏆`, player.x, player.y - 32, '#c084fc');
+            AudioEngine.levelUp();
+            showToast(`🏆 Quest Completed: ${q.title}! (${q.reward})`, "success");
+            autoAdvanceQuest(q.id);
+          }
         }
-        updateQuestHUD();
       }
+
+      checkAchievements();
+      updateQuestHUD();
 
       if (player.xp >= player.nextXp) {
         player.lvl++;
@@ -1706,6 +1878,7 @@
         player.mp = player.maxMp;
         addFloatingText("LEVEL UP! +1 Skill Point ⭐", player.x, player.y - 40, '#38bdf8');
         AudioEngine.levelUp();
+        checkAchievements();
       }
 
       updateHud();
@@ -2117,7 +2290,6 @@
             ctx.save();
             ctx.translate(indicatorX, indicatorY);
 
-            // Arrow pointing toward boss
             ctx.save();
             ctx.rotate(angle);
             ctx.fillStyle = themeColor;
@@ -2129,7 +2301,6 @@
             ctx.fill();
             ctx.restore();
 
-            // Glass Label
             ctx.font = 'bold 11px sans-serif';
             const textWidth = ctx.measureText(badgeText).width;
             ctx.fillStyle = 'rgba(15, 23, 42, 0.92)';
@@ -2140,7 +2311,6 @@
             ctx.fill();
             ctx.stroke();
 
-            // Pulsing Dot
             const pulse = (Math.sin(globalTicks * 0.1) + 1) * 0.5;
             ctx.fillStyle = themeColor;
             ctx.shadowColor = themeColor;
@@ -2149,7 +2319,6 @@
             ctx.arc(-textWidth / 2, -1, 3.5, 0, Math.PI * 2);
             ctx.fill();
 
-            // Text
             ctx.fillStyle = '#f8fafc';
             ctx.textAlign = 'center';
             ctx.textBaseline = 'middle';
@@ -2270,30 +2439,25 @@
       miniCtx.clearRect(0, 0, miniCanvas.width, miniCanvas.height);
       const sx = miniCanvas.width / WORLD.width, sy = miniCanvas.height / WORLD.height;
 
-      // 4 Biome Quads
       miniCtx.fillStyle = '#064e3b'; miniCtx.fillRect(0, 0, miniCanvas.width/2, miniCanvas.height/2);
       miniCtx.fillStyle = '#78350f'; miniCtx.fillRect(miniCanvas.width/2, 0, miniCanvas.width/2, miniCanvas.height/2);
       miniCtx.fillStyle = '#0c4a6e'; miniCtx.fillRect(0, 1200 * sy, miniCanvas.width/2, miniCanvas.height/2);
       miniCtx.fillStyle = '#450a0a'; miniCtx.fillRect(miniCanvas.width/2, 1200 * sy, miniCanvas.width/2, miniCanvas.height/2);
 
-      // Roads & Center Citadel
       miniCtx.fillStyle = 'rgba(51, 65, 85, 0.7)';
       miniCtx.fillRect(0, 1165 * sy, miniCanvas.width, 70 * sy);
       miniCtx.fillRect(1565 * sx, 0, 70 * sx, miniCanvas.height);
       miniCtx.fillStyle = '#6366f1';
       miniCtx.fillRect(1440 * sx, 1040 * sy, 320 * sx, 320 * sy);
 
-      // Portals
       miniCtx.fillStyle = '#c084fc';
       for (const p of portals) miniCtx.fillRect(p.x * sx - 1.5, p.y * sy - 1.5, 3.5, 3.5);
 
-      // Normal Enemies
       miniCtx.fillStyle = '#f87171';
       for (const en of enemies) {
         if (!en.isBoss) miniCtx.fillRect(en.x * sx - 1, en.y * sy - 1, 2, 2);
       }
 
-      // BOSS MARKERS - ANIMATED RADAR BEACONS & SKULL EMBLEMS
       const radarPulse = (globalTicks * 0.04) % 1;
       for (const en of enemies) {
         if (en.isBoss) {
@@ -2301,7 +2465,6 @@
           const by = en.y * sy;
           const isDragon = en.type === 'boss';
 
-          // 1. Radar Pulse Wave
           miniCtx.save();
           miniCtx.strokeStyle = isDragon ? `rgba(239, 68, 68, ${1 - radarPulse})` : `rgba(56, 189, 248, ${1 - radarPulse})`;
           miniCtx.lineWidth = 1.8;
@@ -2309,13 +2472,11 @@
           miniCtx.arc(bx, by, 4 + radarPulse * 16, 0, Math.PI * 2);
           miniCtx.stroke();
 
-          // 2. Glowing Outer Badge
           miniCtx.fillStyle = isDragon ? 'rgba(239, 68, 68, 0.35)' : 'rgba(56, 189, 248, 0.35)';
           miniCtx.beginPath();
           miniCtx.arc(bx, by, 7.5, 0, Math.PI * 2);
           miniCtx.fill();
 
-          // 3. Central Boss Emblem Pin
           miniCtx.fillStyle = isDragon ? '#dc2626' : '#0284c7';
           miniCtx.beginPath();
           miniCtx.arc(bx, by, 5, 0, Math.PI * 2);
@@ -2324,14 +2485,12 @@
           miniCtx.lineWidth = 1.6;
           miniCtx.stroke();
 
-          // 4. Skull / Danger Glyphs
           miniCtx.fillStyle = '#ffffff';
           miniCtx.font = 'bold 7px sans-serif';
           miniCtx.textAlign = 'center';
           miniCtx.textBaseline = 'middle';
           miniCtx.fillText('☠', bx, by);
 
-          // 5. Boss Name Label with Dark Box
           const label = isDragon ? 'TITAN 👑' : 'YETI 👑';
           miniCtx.font = 'bold 7px sans-serif';
           const tw = miniCtx.measureText(label).width;
@@ -2343,7 +2502,6 @@
         }
       }
 
-      // Player Location Dot
       miniCtx.save();
       miniCtx.fillStyle = '#38bdf8';
       miniCtx.beginPath();
@@ -2377,15 +2535,103 @@
       document.getElementById('tMpRank').textContent = player.talents.mp;
       document.getElementById('talentsModal').classList.add('active');
     }
-    function openQuestModal() {
-      const container = document.getElementById('questListContainer');
-      container.innerHTML = questData.map((q, idx) => `
-        <div style="background:rgba(255,255,255,0.05); border:1px solid ${idx === activeQuestIndex ? '#fbbf24' : 'rgba(255,255,255,0.1)'}; padding:10px; border-radius:10px;">
-          <div style="font-weight:800; color:${idx === activeQuestIndex ? '#facc15' : '#f8fafc'};">${q.title}</div>
-          <div style="font-size:0.75rem; color:#94a3b8;">${q.desc} (${idx === activeQuestIndex ? questProgress : (idx < activeQuestIndex ? q.target : 0)}/${q.target})</div>
-          <div style="font-size:0.7rem; color:#38bdf8;">Reward: ${q.reward}</div>
+
+    function switchQuestTab(tab) {
+      currentQuestTab = tab;
+      const btnQ = document.getElementById('tabBtnQuests');
+      const btnA = document.getElementById('tabBtnAchievements');
+      const boxQ = document.getElementById('questListContainer');
+      const boxA = document.getElementById('achievementsListContainer');
+
+      if (tab === 'quests') {
+        btnQ.className = 'btn btn-sm btn-primary';
+        btnA.className = 'btn btn-sm btn-secondary';
+        boxQ.style.display = 'flex';
+        boxA.style.display = 'none';
+      } else {
+        btnA.className = 'btn btn-sm btn-primary';
+        btnQ.className = 'btn btn-sm btn-secondary';
+        boxA.style.display = 'flex';
+        boxQ.style.display = 'none';
+      }
+      renderQuestModalContent();
+    }
+
+    function setActiveTrackedQuest(questId) {
+      activeQuestId = questId;
+      const q = quests.find(item => item.id === questId);
+      if (q) showToast(`🎯 Now Tracking: ${q.title}`, "success");
+      updateQuestHUD();
+      renderQuestModalContent();
+      saveGameData();
+    }
+
+    function renderQuestModalContent() {
+      const qContainer = document.getElementById('questListContainer');
+      const aContainer = document.getElementById('achievementsListContainer');
+
+      const completedCount = quests.filter(q => q.completed).length;
+      document.getElementById('questTabCount').textContent = `${completedCount}/${quests.length}`;
+
+      const achievedCount = achievements.filter(a => a.achieved).length;
+      document.getElementById('achieveTabCount').textContent = `${achievedCount}/${achievements.length}`;
+
+      // Render Quests List
+      qContainer.innerHTML = quests.map(q => {
+        const isCurrent = q.id === activeQuestId;
+        const pct = Math.min(100, Math.round((q.progress / q.target) * 100));
+        let statusBadge = '';
+        let buttonAction = '';
+
+        if (q.completed) {
+          statusBadge = `<span style="font-size:0.68rem; background:rgba(34,197,94,0.25); color:#34d399; padding:2px 8px; border-radius:999px; border:1px solid #22c55e; font-weight:800;"><i class="fas fa-check"></i> COMPLETED</span>`;
+          buttonAction = `<button class="btn btn-secondary btn-sm" style="font-size:0.7rem; padding:3px 8px; opacity:0.7;" disabled>Done</button>`;
+        } else if (isCurrent) {
+          statusBadge = `<span style="font-size:0.68rem; background:rgba(251,191,36,0.25); color:#facc15; padding:2px 8px; border-radius:999px; border:1px solid #fbbf24; font-weight:800;"><i class="fas fa-crosshairs"></i> TRACKING NOW</span>`;
+          buttonAction = `<button class="btn btn-primary btn-sm" style="font-size:0.7rem; padding:3px 8px; background:#fbbf24; color:#0f172a; font-weight:800;" disabled>Active</button>`;
+        } else {
+          statusBadge = `<span style="font-size:0.68rem; background:rgba(148,163,184,0.15); color:#94a3b8; padding:2px 8px; border-radius:999px; border:1px solid rgba(255,255,255,0.15);">In Progress</span>`;
+          buttonAction = `<button class="btn btn-secondary btn-sm" style="font-size:0.7rem; padding:3px 8px;" onclick="setActiveTrackedQuest('${q.id}')">Track</button>`;
+        }
+
+        return `
+          <div style="background:rgba(255,255,255,0.05); border:1.5px solid ${isCurrent ? '#fbbf24' : (q.completed ? 'rgba(34,197,94,0.4)' : 'rgba(255,255,255,0.1)')}; padding:10px 14px; border-radius:12px; transition:all 0.15s ease;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
+              <div style="font-weight:800; font-size:0.9rem; color:${q.completed ? '#34d399' : (isCurrent ? '#facc15' : '#f8fafc')};">${q.title}</div>
+              <div style="display:flex; gap:6px; align-items:center;">
+                ${statusBadge}
+                ${buttonAction}
+              </div>
+            </div>
+            <div style="font-size:0.75rem; color:#cbd5e1; margin-bottom:6px;">${q.desc} (${q.progress}/${q.target})</div>
+            <div style="width:100%; height:6px; background:rgba(0,0,0,0.6); border-radius:4px; overflow:hidden; border:1px solid rgba(255,255,255,0.12); margin-bottom:6px;">
+              <div style="width:${pct}%; height:100%; background:${q.completed ? '#22c55e' : 'linear-gradient(90deg, #6366f1, #38bdf8)'};"></div>
+            </div>
+            <div style="font-size:0.7rem; color:#38bdf8; font-weight:700;"><i class="fas fa-gift"></i> Reward: ${q.reward}</div>
+          </div>
+        `;
+      }).join('');
+
+      // Render Achievements List
+      aContainer.innerHTML = achievements.map(ach => `
+        <div style="background:rgba(255,255,255,0.05); border:1.5px solid ${ach.achieved ? '#fbbf24' : 'rgba(255,255,255,0.1)'}; padding:10px 14px; border-radius:12px; display:flex; justify-content:space-between; align-items:center;">
+          <div style="display:flex; gap:12px; align-items:center;">
+            <i class="fas ${ach.icon}" style="font-size:1.6rem; color:${ach.achieved ? '#fbbf24' : '#64748b'};"></i>
+            <div>
+              <div style="font-weight:800; font-size:0.88rem; color:${ach.achieved ? '#facc15' : '#e2e8f0'};">${ach.name}</div>
+              <div style="font-size:0.72rem; color:#94a3b8;">${ach.desc}</div>
+              <div style="font-size:0.68rem; color:#38bdf8; font-weight:700; margin-top:2px;">Reward: ${ach.reward}</div>
+            </div>
+          </div>
+          <span style="font-size:0.75rem; font-weight:800; padding:3px 10px; border-radius:999px; background:${ach.achieved ? 'rgba(251,191,36,0.25)' : 'rgba(255,255,255,0.06)'}; color:${ach.achieved ? '#fbbf24' : '#64748b'}; border:1px solid ${ach.achieved ? '#fbbf24' : 'rgba(255,255,255,0.1)'};">
+            ${ach.achieved ? '<i class="fas fa-check"></i> UNLOCKED' : '<i class="fas fa-lock"></i> LOCKED'}
+          </span>
         </div>
       `).join('');
+    }
+
+    function openQuestModal() {
+      renderQuestModalContent();
       document.getElementById('questModal').classList.add('active');
     }
 
@@ -2550,8 +2796,32 @@
     }
 
     function updateQuestHUD() {
-      const q = questData[activeQuestIndex];
-      if (q) document.getElementById('questDesc').textContent = `${q.desc} (${questProgress}/${q.target})`;
+      const q = quests.find(item => item.id === activeQuestId);
+      const descEl = document.getElementById('questDesc');
+      if (!descEl) return;
+
+      if (q) {
+        if (q.completed) {
+          descEl.innerHTML = `<span style="color:#34d399; font-weight:800;">✅ COMPLETED: ${q.title} (${q.progress}/${q.target})</span><div style="font-size:0.66rem; color:#fbbf24; margin-top:2px;">[Click here to Track Next Quest]</div>`;
+        } else {
+          const pct = Math.min(100, Math.round((q.progress / q.target) * 100));
+          descEl.innerHTML = `
+            <div style="font-weight:800; color:#f8fafc; font-size:0.75rem;">${q.title}</div>
+            <div style="font-size:0.7rem; color:#cbd5e1; margin:2px 0;">${q.desc} (${q.progress}/${q.target})</div>
+            <div style="width:100%; height:5px; background:rgba(0,0,0,0.6); border-radius:4px; overflow:hidden; border:1px solid rgba(255,255,255,0.15);">
+              <div style="width:${pct}%; height:100%; background:linear-gradient(90deg, #c084fc, #38bdf8);"></div>
+            </div>
+          `;
+        }
+      } else {
+        const anyUncompleted = quests.find(item => !item.completed);
+        if (anyUncompleted) {
+          activeQuestId = anyUncompleted.id;
+          updateQuestHUD();
+        } else {
+          descEl.innerHTML = `<span style="color:#facc15; font-weight:900;">🏆 ALL CHRONICLES COMPLETED!</span><div style="font-size:0.66rem; color:#38bdf8;">Realm Master 👑</div>`;
+        }
+      }
     }
 
     function toggleFullscreen() {
@@ -2602,7 +2872,10 @@
           talentPoints: player.talentPoints, talents: player.talents,
           skin: player.skin, petType: player.petType,
           potions: player.potions, equipment: player.equipment,
-          activeQuestIndex, questProgress
+          activeQuestId,
+          quests: quests.map(q => ({ id: q.id, progress: q.progress, completed: q.completed })),
+          achievements: achievements.map(a => ({ id: a.id, achieved: a.achieved })),
+          stats
         };
         localStorage.setItem('realm_of_bots_save', JSON.stringify(data));
         const high = Math.max(player.score, parseInt(localStorage.getItem('realm_bots_high') || '0'));
@@ -2627,8 +2900,41 @@
           player.petType = d.petType || 'drone';
           player.potions = d.potions || { hp: 2, mp: 2 };
           player.equipment = d.equipment || { swordDmgBonus: 0, hasArmor: false };
-          activeQuestIndex = d.activeQuestIndex || 0;
-          questProgress = d.questProgress || 0;
+          if (d.stats) stats = d.stats;
+
+          if (d.quests && Array.isArray(d.quests)) {
+            for (const sq of d.quests) {
+              const q = quests.find(item => item.id === sq.id);
+              if (q) {
+                q.progress = sq.progress || 0;
+                q.completed = !!sq.completed;
+              }
+            }
+          } else if (d.activeQuestIndex !== undefined) {
+            // Smooth backward compatibility migration
+            for (let i = 0; i < quests.length; i++) {
+              if (i < d.activeQuestIndex) {
+                quests[i].completed = true;
+                quests[i].progress = quests[i].target;
+              } else if (i === d.activeQuestIndex) {
+                quests[i].progress = d.questProgress || 0;
+                if (quests[i].progress >= quests[i].target) quests[i].completed = true;
+              }
+            }
+          }
+
+          if (d.activeQuestId) activeQuestId = d.activeQuestId;
+          else {
+            const firstUnfinished = quests.find(q => !q.completed);
+            if (firstUnfinished) activeQuestId = firstUnfinished.id;
+          }
+
+          if (d.achievements && Array.isArray(d.achievements)) {
+            for (const sa of d.achievements) {
+              const a = achievements.find(item => item.id === sa.id);
+              if (a) a.achieved = !!sa.achieved;
+            }
+          }
         }
         const high = localStorage.getItem('realm_bots_high') || '0';
         document.getElementById('topHighScore').textContent = high;

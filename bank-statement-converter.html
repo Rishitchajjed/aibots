@@ -886,43 +886,111 @@
         const pdf = await loadingTask.promise;
         closePasswordModal();
 
-        let allLines = [];
+        let allTxns = [];
+        let allFallbackLines = [];
         const numPages = pdf.numPages;
 
         for (let i = 1; i <= numPages; i++) {
-          showStatus(`Parsing Page ${i} of ${numPages}...`, "Reconstructing transaction tables...");
+          showStatus(`Parsing Page ${i} of ${numPages}...`, "Reconstructing transaction tables & row bounds...");
           const page = await pdf.getPage(i);
           const textContent = await page.getTextContent({ normalizeWhitespace: true });
           
+          const rawItems = textContent.items
+            .filter(it => it.str && it.str.trim())
+            .map((it, idx) => ({
+              id: idx,
+              str: it.str.trim(),
+              x: it.transform[4],
+              y: it.transform[5],
+              w: it.width,
+              h: it.height
+            }));
+
+          const pageTxns = parsePageItemsRowBounded(rawItems, selectedBankKey);
+          allTxns = allTxns.concat(pageTxns);
+
+          // Build fallback lines in case
           const lineMap = {};
           for (const item of textContent.items) {
             const str = item.str.trim();
             if (!str) continue;
-            const x = item.transform[4];
-            const y = Math.round(item.transform[5] / 3.5) * 3.5;
+            const y = Math.round(item.transform[5] / 4) * 4;
             if (!lineMap[y]) lineMap[y] = [];
-            lineMap[y].push({ x, str: item.str });
+            lineMap[y].push({ x: item.transform[4], str: item.str });
           }
-
           const sortedYs = Object.keys(lineMap).map(Number).sort((a, b) => b - a);
           for (const y of sortedYs) {
-            const lineItems = lineMap[y].sort((a, b) => a.x - b.x);
-            allLines.push(lineItems);
+            allFallbackLines.push(lineMap[y].sort((a, b) => a.x - b.x));
           }
         }
 
-        showStatus("Classifying bank transactions...", "Identifying dates, withdrawals & deposits...");
-        const txns = extractTransactionsFromLines(allLines, selectedBankKey);
+        showStatus("Classifying bank transactions...", "Verifying running balance deltas & narrations...");
         
-        if (txns.length === 0) {
-          const fallbackTxns = fallbackTextScanner(allLines);
+        if (allTxns.length === 0) {
+          const fallbackTxns = fallbackTextScanner(allFallbackLines);
           if (fallbackTxns.length > 0) {
             parsedTransactions = fallbackTxns;
           } else {
             alert("Could not automatically detect transactions in this PDF.\nPlease verify the statement has readable text (not scanned images) or try loading demo data.");
           }
         } else {
-          parsedTransactions = txns;
+          // PASS 2: Mathematical verification against running balance delta
+          if (allTxns.length > 1) {
+            let incCount = 0;
+            let decCount = 0;
+            for (let i = 1; i < Math.min(allTxns.length, 25); i++) {
+              if (allTxns[i].tallyDate >= allTxns[i - 1].tallyDate) incCount++;
+              else decCount++;
+            }
+            const isChronological = incCount >= decCount;
+
+            if (isChronological) {
+              for (let i = 1; i < allTxns.length; i++) {
+                const prev = allTxns[i - 1];
+                const curr = allTxns[i];
+                if (prev.balance > 0 && curr.balance > 0) {
+                  const amt = curr.debit > 0 ? curr.debit : curr.credit;
+                  if (amt > 0) {
+                    const diff = curr.balance - prev.balance;
+                    if (Math.abs(diff - amt) < 2.0) {
+                      curr.credit = amt;
+                      curr.debit = 0;
+                    } else if (Math.abs(-diff - amt) < 2.0) {
+                      curr.debit = amt;
+                      curr.credit = 0;
+                    }
+                  }
+                }
+              }
+              if (allTxns[0].balance > 0 && allTxns[1].balance > 0) {
+                const fAmt = allTxns[0].debit > 0 ? allTxns[0].debit : allTxns[0].credit;
+                if (/(\bTo:|\bTo\s+|\bWDL\b|\bATM\b|\bPaid\b)/i.test(allTxns[0].narration)) {
+                  allTxns[0].debit = fAmt; allTxns[0].credit = 0;
+                } else if (/(\bBy:|\bBy\s+|\bSalary\b|\bInterest\b|\bDep\b)/i.test(allTxns[0].narration)) {
+                  allTxns[0].credit = fAmt; allTxns[0].debit = 0;
+                }
+              }
+            } else {
+              for (let i = 0; i < allTxns.length - 1; i++) {
+                const curr = allTxns[i];
+                const next = allTxns[i + 1];
+                if (curr.balance > 0 && next.balance > 0) {
+                  const amt = curr.debit > 0 ? curr.debit : curr.credit;
+                  if (amt > 0) {
+                    const diff = curr.balance - next.balance;
+                    if (Math.abs(diff - amt) < 2.0) {
+                      curr.credit = amt;
+                      curr.debit = 0;
+                    } else if (Math.abs(-diff - amt) < 2.0) {
+                      curr.debit = amt;
+                      curr.credit = 0;
+                    }
+                  }
+                }
+              }
+            }
+          }
+          parsedTransactions = allTxns;
         }
 
         renderTable();
@@ -972,183 +1040,154 @@
       return null;
     }
 
-    function extractTransactionsFromLines(lineItemsArray, bankKey) {
-      const results = [];
-      let currentTxn = null;
+    // =========================================================================
+    // ROW-BOUNDED CELL PARSER (PREVENTS NARRATION MIXUPS & LOSS)
+    // =========================================================================
+    function parsePageItemsRowBounded(pageItems, bankKey) {
+      if (!pageItems || pageItems.length === 0) return [];
 
-      // First Pass: Detect header X positions for Debit, Credit, Balance
+      // Detect header X coordinates
       let headerXDebit = null;
       let headerXCredit = null;
       let headerXBalance = null;
 
-      for (let i = 0; i < Math.min(lineItemsArray.length, 100); i++) {
-        const line = lineItemsArray[i];
-        for (const item of line) {
-          const str = item.str.trim().toLowerCase();
-          if (/^(withdrawal|withdrawals|debit|debits|dr|dr\.)$/i.test(str)) {
-            headerXDebit = item.x;
-          } else if (/^(deposit|deposits|credit|credits|cr|cr\.)$/i.test(str)) {
-            headerXCredit = item.x;
-          } else if (/^(balance|bal|closing\s*balance)$/i.test(str)) {
-            headerXBalance = item.x;
-          }
+      for (let i = 0; i < pageItems.length; i++) {
+        const str = pageItems[i].str.toLowerCase();
+        if (/^(withdrawal|withdrawals|debit|debits|dr|dr\.)$/i.test(str) && headerXDebit === null) {
+          headerXDebit = pageItems[i].x;
+        } else if (/^(deposit|deposits|credit|credits|cr|cr\.)$/i.test(str) && headerXCredit === null) {
+          headerXCredit = pageItems[i].x;
+        } else if (/^(balance|bal|closing\s*balance)$/i.test(str) && headerXBalance === null) {
+          headerXBalance = pageItems[i].x;
         }
-        if (headerXDebit !== null && headerXCredit !== null) break;
       }
 
       const dateRegex = /^(\d{1,2}[-/.]\d{1,2}[-/.]\d{2,4}|\d{1,2}[-\s][A-Za-z]{3}[a-z]*[-\s]\d{2,4})/;
-      const amountRegex = /(?:INR\s*)?([0-9]{1,3}(?:,[0-9]{2,3})*(?:\.[0-9]{2})?)/;
+      const amountRegex = /(?:INR\s*)?([0-9]{1,3}(?:,[0-9]{2,3})*(?:\.[0-9]{2}))/;
 
-      for (let i = 0; i < lineItemsArray.length; i++) {
-        const line = lineItemsArray[i];
-        const lineStr = line.map(item => item.str.trim()).join(' ').trim();
-        if (!lineStr) continue;
-
-        const dateMatch = lineStr.match(dateRegex);
-
-        if (dateMatch) {
-          const parsedDate = parseStatementDate(dateMatch[1]);
-          
-          if (parsedDate) {
-            const amountsFound = [];
-            for (const item of line) {
-              const text = item.str.trim();
-              if (amountRegex.test(text) && /[0-9]+\.[0-9]{2}/.test(text)) {
-                amountsFound.push({ x: item.x, val: parseIndianAmount(text), raw: text });
-              }
-            }
-
-            if (amountsFound.length >= 1) {
-              let debit = 0;
-              let credit = 0;
-              let balance = 0;
-              let chqNo = "";
-
-              const chqMatch = lineStr.match(/(?:CHQ|CHEQUE|REF|UTR|UPI)[\s/:-]*([A-Z0-9]{4,22})/i);
-              if (chqMatch) chqNo = chqMatch[1];
-
-              let narration = lineStr.replace(dateMatch[0], '').trim();
-              narration = narration.replace(/[0-9]{1,3}(?:,[0-9]{2,3})*(?:\.[0-9]{2})/g, '').trim();
-              narration = narration.replace(/\b(DR|CR|INR)\b/gi, '').trim();
-
-              if (amountsFound.length >= 3) {
-                debit = amountsFound[0].val;
-                credit = amountsFound[1].val;
-                balance = amountsFound[2].val;
-              } else if (amountsFound.length === 2) {
-                const txnAmt = amountsFound[0].val;
-                const txnX = amountsFound[0].x;
-                balance = amountsFound[1].val;
-
-                if (headerXDebit !== null && headerXCredit !== null) {
-                  if (Math.abs(txnX - headerXDebit) < Math.abs(txnX - headerXCredit)) {
-                    debit = txnAmt;
-                  } else {
-                    credit = txnAmt;
-                  }
-                } else {
-                  if (/(\bTo:|\bTo\s+|\bWDL\b|\bATM\b|\bPAID\b|\bPURCHASE\b|\bPOS\b)/i.test(lineStr)) {
-                    debit = txnAmt;
-                  } else if (/(\bBy:|\bBy\s+|\bSALARY\b|\bINTEREST\b|\bDEP\b|\bREFUND\b)/i.test(lineStr)) {
-                    credit = txnAmt;
-                  } else {
-                    debit = txnAmt;
-                  }
-                }
-              } else {
-                const singleAmt = amountsFound[0].val;
-                if (/(\bTo:|\bTo\s+|\bWDL\b|\bATM\b|\bPAID\b)/i.test(lineStr)) {
-                  debit = singleAmt;
-                } else {
-                  credit = singleAmt;
-                }
-              }
-
-              currentTxn = {
-                date: parsedDate.display,
-                tallyDate: parsedDate.tally,
-                narration: narration || "Bank Transaction",
-                refNo: chqNo,
-                debit: debit,
-                credit: credit,
-                balance: balance,
-                counterLedger: autoMapLedger(narration)
-              };
-
-              results.push(currentTxn);
-            }
-          }
-        } else if (currentTxn) {
-          if (!lineStr.includes('Page ') && !lineStr.includes('Statement of Account') && !lineStr.includes('Branch Code') && !lineStr.includes('Opening Balance')) {
-            if (currentTxn.narration.length < 240) {
-              currentTxn.narration += " " + lineStr;
-              if (!currentTxn.refNo) {
-                const chqMatch = lineStr.match(/(?:CHQ|CHEQUE|REF|UTR|UPI)[\s/:-]*([A-Z0-9]{4,22})/i);
-                if (chqMatch) currentTxn.refNo = chqMatch[1];
-              }
-            }
+      // Find all date items on the page (must be in date column: x < 160)
+      const dateItems = [];
+      for (const it of pageItems) {
+        const m = it.str.match(dateRegex);
+        if (m && it.x < 160) {
+          const pDate = parseStatementDate(m[1]);
+          if (pDate) {
+            dateItems.push({
+              item: it,
+              pDate: pDate,
+              x: it.x,
+              y: it.y
+            });
           }
         }
       }
 
-      // PASS 2: Mathematical verification against running balance delta
-      if (results.length > 1) {
-        let incCount = 0;
-        let decCount = 0;
-        for (let i = 1; i < Math.min(results.length, 25); i++) {
-          if (results[i].tallyDate >= results[i - 1].tallyDate) incCount++;
-          else decCount++;
-        }
-        const isChronological = incCount >= decCount;
+      // Sort dates top to bottom (y descending)
+      dateItems.sort((a, b) => b.y - a.y);
 
-        if (isChronological) {
-          for (let i = 1; i < results.length; i++) {
-            const prev = results[i - 1];
-            const curr = results[i];
-            if (prev.balance > 0 && curr.balance > 0) {
-              const amt = curr.debit > 0 ? curr.debit : curr.credit;
-              if (amt > 0) {
-                const diff = curr.balance - prev.balance;
-                if (Math.abs(diff - amt) < 2.0) {
-                  curr.credit = amt;
-                  curr.debit = 0;
-                } else if (Math.abs(-diff - amt) < 2.0) {
-                  curr.debit = amt;
-                  curr.credit = 0;
-                }
-              }
-            }
-          }
-          if (results[0].balance > 0 && results[1].balance > 0) {
-            const fAmt = results[0].debit > 0 ? results[0].debit : results[0].credit;
-            if (/(\bTo:|\bTo\s+|\bWDL\b|\bATM\b|\bPaid\b)/i.test(results[0].narration)) {
-              results[0].debit = fAmt; results[0].credit = 0;
-            } else if (/(\bBy:|\bBy\s+|\bSalary\b|\bInterest\b|\bDep\b)/i.test(results[0].narration)) {
-              results[0].credit = fAmt; results[0].debit = 0;
-            }
-          }
+      const txns = [];
+      for (let idx = 0; idx < dateItems.length; idx++) {
+        const d = dateItems[idx];
+        const yTop = d.y + 8;
+        let yBottom;
+        if (idx + 1 < dateItems.length) {
+          yBottom = dateItems[idx + 1].y + 8;
         } else {
-          for (let i = 0; i < results.length - 1; i++) {
-            const curr = results[i];
-            const next = results[i + 1];
-            if (curr.balance > 0 && next.balance > 0) {
-              const amt = curr.debit > 0 ? curr.debit : curr.credit;
-              if (amt > 0) {
-                const diff = curr.balance - next.balance;
-                if (Math.abs(diff - amt) < 2.0) {
-                  curr.credit = amt;
-                  curr.debit = 0;
-                } else if (Math.abs(-diff - amt) < 2.0) {
-                  curr.debit = amt;
-                  curr.credit = 0;
-                }
-              }
+          yBottom = d.y - 50;
+        }
+
+        // All items inside [yBottom, yTop) belong EXCLUSIVELY to this row
+        const rowItems = pageItems.filter(it => it.y >= yBottom && it.y < yTop);
+
+        // Identify Amount items
+        const amtItems = [];
+        for (const it of rowItems) {
+          if (it === d.item || dateRegex.test(it.str)) continue;
+          const m = it.str.match(amountRegex);
+          if (m && /[0-9]+\.[0-9]{2}/.test(it.str)) {
+            const val = parseIndianAmount(m[1]);
+            if (val > 0) {
+              amtItems.push({ item: it, val: val, x: it.x, y: it.y, raw: it.str });
             }
           }
         }
+
+        amtItems.sort((a, b) => a.x - b.x);
+        const amtItemSet = new Set(amtItems.map(a => a.item));
+
+        // Identify Narration items (everything else in the row)
+        const narrItems = [];
+        for (const it of rowItems) {
+          if (it === d.item || amtItemSet.has(it)) continue;
+          const s = it.str.toLowerCase();
+          if (s === 'cr.' || s === 'dr.' || s === 'cr' || s === 'dr' || s === 'inr') continue;
+          narrItems.push(it);
+        }
+
+        // Sort narration: top to bottom, then left to right
+        narrItems.sort((a, b) => (b.y - a.y) || (a.x - b.x));
+        let narration = narrItems.map(it => it.str).join(' ');
+        narration = narration.replace(/([a-zA-Z0-9])- ([a-zA-Z0-9])/g, '$1-$2');
+        narration = narration.replace(/\s+/g, ' ').trim();
+        narration = narration.replace(/^[.\-_/:\s]+/, '').trim();
+        if (!narration) narration = "Bank Transaction";
+
+        // Extract Ref / Chq
+        let chqNo = "";
+        const chqMatch = narration.match(/(?:CHQ|CHEQUE|REF|UTR|UPI)[\s/:-]*([A-Z0-9]{4,22})/i);
+        if (chqMatch) chqNo = chqMatch[1];
+
+        // Debit / Credit
+        let debit = 0;
+        let credit = 0;
+        let balance = 0;
+
+        if (amtItems.length >= 3) {
+          debit = amtItems[0].val;
+          credit = amtItems[1].val;
+          balance = amtItems[2].val;
+        } else if (amtItems.length === 2) {
+          balance = amtItems[1].val;
+          const txnAmt = amtItems[0].val;
+          const txnX = amtItems[0].x;
+
+          if (headerXDebit !== null && headerXCredit !== null) {
+            if (Math.abs(txnX - headerXDebit) < Math.abs(txnX - headerXCredit)) {
+              debit = txnAmt;
+            } else {
+              credit = txnAmt;
+            }
+          } else {
+            if (/(\bTo:|\bTo\s+|\bWDL\b|\bATM\b|\bPAID\b|\bPURCHASE\b|\bPOS\b)/i.test(narration)) {
+              debit = txnAmt;
+            } else if (/(\bBy:|\bBy\s+|\bSALARY\b|\bINTEREST\b|\bDEP\b|\bREFUND\b)/i.test(narration)) {
+              credit = txnAmt;
+            } else {
+              debit = txnAmt;
+            }
+          }
+        } else if (amtItems.length === 1) {
+          const singleAmt = amtItems[0].val;
+          if (/(\bTo:|\bTo\s+|\bWDL\b|\bATM\b|\bPAID\b)/i.test(narration)) {
+            debit = singleAmt;
+          } else {
+            credit = singleAmt;
+          }
+        }
+
+        txns.push({
+          date: d.pDate.display,
+          tallyDate: d.pDate.tally,
+          narration: narration,
+          refNo: chqNo,
+          debit: debit,
+          credit: credit,
+          balance: balance,
+          counterLedger: autoMapLedger(narration)
+        });
       }
 
-      return results;
+      return txns;
     }
 
     function fallbackTextScanner(lineItemsArray) {

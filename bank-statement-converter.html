@@ -1046,19 +1046,25 @@
     function parsePageItemsRowBounded(pageItems, bankKey) {
       if (!pageItems || pageItems.length === 0) return [];
 
-      // Detect header X coordinates
+      // Detect header X coordinates and Header Y
       let headerXDebit = null;
       let headerXCredit = null;
       let headerXBalance = null;
+      let headerY = null;
 
       for (let i = 0; i < pageItems.length; i++) {
         const str = pageItems[i].str.toLowerCase();
-        if (/^(withdrawal|withdrawals|debit|debits|dr|dr\.)$/i.test(str) && headerXDebit === null) {
-          headerXDebit = pageItems[i].x;
-        } else if (/^(deposit|deposits|credit|credits|cr|cr\.)$/i.test(str) && headerXCredit === null) {
-          headerXCredit = pageItems[i].x;
-        } else if (/^(balance|bal|closing\s*balance)$/i.test(str) && headerXBalance === null) {
-          headerXBalance = pageItems[i].x;
+        if (/^(withdrawal|withdrawals|debit|debits|dr|dr\.)$/i.test(str)) {
+          if (headerXDebit === null) headerXDebit = pageItems[i].x;
+          if (headerY === null || pageItems[i].y > headerY) headerY = pageItems[i].y;
+        } else if (/^(deposit|deposits|credit|credits|cr|cr\.)$/i.test(str)) {
+          if (headerXCredit === null) headerXCredit = pageItems[i].x;
+          if (headerY === null || pageItems[i].y > headerY) headerY = pageItems[i].y;
+        } else if (/^(balance|bal|closing\s*balance)$/i.test(str)) {
+          if (headerXBalance === null) headerXBalance = pageItems[i].x;
+          if (headerY === null || pageItems[i].y > headerY) headerY = pageItems[i].y;
+        } else if (/^(date|txn\s*date|trans\s*date)$/i.test(str)) {
+          if (headerY === null || pageItems[i].y > headerY) headerY = pageItems[i].y;
         }
       }
 
@@ -1088,12 +1094,33 @@
       const txns = [];
       for (let idx = 0; idx < dateItems.length; idx++) {
         const d = dateItems[idx];
-        const yTop = d.y + 8;
-        let yBottom;
-        if (idx + 1 < dateItems.length) {
-          yBottom = dateItems[idx + 1].y + 8;
+        const currY = d.y;
+        let yTop, yBottom;
+
+        // Gapless Voronoi midpoint partitioning so NO top or bottom line is clipped
+        if (dateItems.length === 1) {
+          yTop = currY + 35;
+          yBottom = currY - 35;
+        } else if (idx === 0) {
+          const nextY = dateItems[idx + 1].y;
+          const h = currY - nextY;
+          yTop = currY + (h / 2.0);
+          yBottom = (currY + nextY) / 2.0;
+        } else if (idx === dateItems.length - 1) {
+          const prevY = dateItems[idx - 1].y;
+          const h = prevY - currY;
+          yTop = (prevY + currY) / 2.0;
+          yBottom = currY - (h / 2.0);
         } else {
-          yBottom = d.y - 50;
+          const prevY = dateItems[idx - 1].y;
+          const nextY = dateItems[idx + 1].y;
+          yTop = (prevY + currY) / 2.0;
+          yBottom = (currY + nextY) / 2.0;
+        }
+
+        // If header line is above first row, do not overshoot into header
+        if (idx === 0 && headerY !== null && yTop > headerY - 4) {
+          yTop = headerY - 4;
         }
 
         // All items inside [yBottom, yTop) belong EXCLUSIVELY to this row
@@ -1127,7 +1154,10 @@
         // Sort narration: top to bottom, then left to right
         narrItems.sort((a, b) => (b.y - a.y) || (a.x - b.x));
         let narration = narrItems.map(it => it.str).join(' ');
-        narration = narration.replace(/([a-zA-Z0-9])- ([a-zA-Z0-9])/g, '$1-$2');
+        narration = narration.replace(/-\s+/g, '-');
+        narration = narration.replace(/@\s+/g, '@');
+        narration = narration.replace(/\s+\//g, '/');
+        narration = narration.replace(/\/\s+/g, '/');
         narration = narration.replace(/\s+/g, ' ').trim();
         narration = narration.replace(/^[.\-_/:\s]+/, '').trim();
         if (!narration) narration = "Bank Transaction";

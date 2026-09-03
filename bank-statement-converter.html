@@ -109,7 +109,7 @@
       line-height: 1.6;
     }
 
-    /* Grid Layout - Prevents overflow on smaller laptops */
+    /* Grid Layout */
     .app-grid {
       display: grid;
       grid-template-columns: 290px minmax(0, 1fr);
@@ -250,7 +250,7 @@
       color: #93c5fd;
     }
 
-    /* Summary Metrics Strip - Responsive without horizontal scroll */
+    /* Summary Metrics Strip */
     .metrics-strip {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
@@ -391,7 +391,7 @@
       border: 1px solid var(--card-border);
       border-radius: 16px;
       width: 100%;
-      max-width: 500px;
+      max-width: 540px;
       padding: 22px;
       box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.25);
       color: var(--text-primary, #0f172a);
@@ -489,19 +489,19 @@
         <!-- Bank Ledger Name in Tally -->
         <div class="form-group">
           <label class="form-label" for="bankLedger"><i class="fas fa-wallet"></i> Bank Ledger Name in Tally</label>
-          <input type="text" id="bankLedger" class="form-control" placeholder="e.g. State Bank of India" value="State Bank of India">
+          <input type="text" id="bankLedger" class="form-control" placeholder="e.g. Punjab National Bank" value="State Bank of India">
         </div>
 
         <!-- Default Counterparty / Expense Ledger -->
         <div class="form-group">
           <label class="form-label" for="defaultCounterLedger"><i class="fas fa-tags"></i> Default Counter Ledger</label>
-          <input type="text" id="defaultCounterLedger" class="form-control" placeholder="e.g. Suspense Account" value="Suspense Account">
+          <input type="text" id="defaultCounterLedger" class="form-control" placeholder="e.g. Suspense A/c" value="Suspense A/c">
         </div>
 
         <!-- Smart Auto-Ledger Rule Info -->
         <div style="background:var(--bg-tertiary); border:1px solid var(--card-border); border-radius:8px; padding:9px 11px; font-size:0.75rem; color:var(--text-secondary); margin-top:8px;">
           <div style="font-weight:700; color:var(--accent-tally); margin-bottom:3px;"><i class="fas fa-wand-magic-sparkles"></i> Auto-Categorization</div>
-          <code>ATM / CASH</code> maps to <em>Cash</em>, <code>SALARY</code> to <em>Salary A/c</em>, <code>INTEREST</code> to <em>Bank Interest Recd</em>, and <code>CHARGES</code> to <em>Bank Charges</em>.
+          <code>ATM / CASH</code> &rarr; <em>Cash</em>, <code>SALARY</code> &rarr; <em>Salary A/c</em>, <code>INTEREST</code> &rarr; <em>Bank Interest Recd</em>, <code>CHARGES</code> &rarr; <em>Bank Charges</em>.
         </div>
 
         <!-- Privacy Shield -->
@@ -513,7 +513,10 @@
         <!-- Sidebar Export Buttons -->
         <div style="display:flex; flex-direction:column; gap:8px; margin-top:14px;">
           <button class="btn btn-primary" onclick="exportToTallyXml()" id="btnExportXml" style="background:#10b981; border-color:#10b981; font-weight:800; padding:10px;" disabled>
-            <i class="fas fa-file-code"></i> Download Tally XML
+            <i class="fas fa-file-code"></i> Download Tally XML (Vouchers)
+          </button>
+          <button class="btn btn-secondary btn-sm" onclick="exportMastersXml()" id="btnExportMasters" style="border-color:#38bdf8; color:#0284c7; font-weight:700;" disabled>
+            <i class="fas fa-folder-tree"></i> Download Masters XML (Ledgers)
           </button>
           <div style="display:grid; grid-template-columns:1fr 1fr; gap:6px;">
             <button class="btn btn-secondary btn-sm" onclick="exportToCsv()" id="btnExportCsv" disabled>
@@ -586,11 +589,19 @@
             </div>
             
             <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap;">
-              <input type="text" id="tableSearch" class="form-control" placeholder="Search narration or amount..." style="width:180px; padding:6px 9px; font-size:0.78rem;" oninput="filterTable()">
+              <input type="text" id="tableSearch" class="form-control" placeholder="Search narration or amount..." style="width:160px; padding:6px 9px; font-size:0.78rem;" oninput="filterTable()">
               <button class="btn btn-secondary btn-sm" onclick="addNewRow()" title="Add custom row"><i class="fas fa-plus"></i> Add Row</button>
               <button class="btn btn-secondary btn-sm" onclick="clearAllData()" title="Clear all"><i class="fas fa-trash"></i></button>
               <button class="btn btn-primary btn-sm" onclick="exportToTallyXml()" style="background:#10b981; border-color:#10b981; font-weight:700;"><i class="fas fa-download"></i> Tally XML</button>
             </div>
+          </div>
+
+          <!-- Quick Batch Tool for Counter Ledger -->
+          <div style="display:flex; align-items:center; gap:8px; padding:8px 12px; background:var(--bg-tertiary); border:1px solid var(--card-border); border-radius:8px; margin-bottom:10px; flex-wrap:wrap; font-size:0.78rem;">
+            <span style="font-weight:700; color:var(--text-primary);"><i class="fas fa-bolt" style="color:var(--accent-tally);"></i> Batch Set Ledger:</span>
+            <input type="text" id="batchLedgerInput" class="form-control" placeholder="e.g. Suspense A/c" value="Suspense A/c" style="width:160px; padding:4px 8px; font-size:0.78rem;">
+            <button class="btn btn-secondary btn-sm" onclick="applyBatchLedger()" style="padding:4px 10px; font-size:0.76rem; font-weight:700;">Apply to All Rows</button>
+            <span style="color:var(--text-secondary); font-size:0.72rem; margin-left:auto;">Match this with your existing ledger in Tally to prevent missing master exceptions.</span>
           </div>
 
           <!-- Table Container -->
@@ -654,8 +665,8 @@
         <!-- FAQs -->
         <div class="faq-grid">
           <div class="faq-item">
-            <div class="faq-q">How do I import this XML into TallyPrime?</div>
-            <p class="faq-a">Open TallyPrime &gt; Press <strong>Alt + O</strong> (Import) &gt; Select <strong>Transactions</strong> &gt; Choose file format <strong>XML</strong> &gt; Select the downloaded <code>.xml</code> file and press Enter.</p>
+            <div class="faq-q">How do I fix "Referenced master is missing" in TallyPrime?</div>
+            <p class="faq-a">In TallyPrime, either: (1) On the Exceptions screen, press <strong>Alt + M</strong> (Map Master) or <strong>Enter</strong> to map the ledger to your existing ledger (e.g. <code>Suspense A/c</code>), OR (2) Click <strong>Download Masters XML</strong> and import it first via <code>Alt + O > Masters</code>.</p>
           </div>
           <div class="faq-item">
             <div class="faq-q">Is my banking data uploaded to the internet?</div>
@@ -705,7 +716,7 @@
 
   <!-- HELP MODAL: HOW TO IMPORT IN TALLY -->
   <div class="modal-overlay" id="helpModal">
-    <div class="modal-box" style="max-width:580px;">
+    <div class="modal-box" style="max-width:620px;">
       <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
         <h3 style="margin:0; font-size:1.1rem; color:var(--accent-tally);"><i class="fas fa-book-open"></i> How to Import in Tally</h3>
         <button class="icon-btn" onclick="closeHelpModal()"><i class="fas fa-xmark"></i></button>
@@ -714,12 +725,16 @@
         <h4 style="color:#d97706; margin:10px 0 4px;">For TallyPrime:</h4>
         <ol style="padding-left:18px; margin:0 0 12px;">
           <li>Open your company in <strong>TallyPrime</strong>.</li>
-          <li>Make sure the Bank Ledger Name (e.g. <code>State Bank of India</code>) exists in your Tally masters.</li>
-          <li>Press <strong>Alt + O</strong> (Import) &gt; Select <strong>Transactions</strong>.</li>
-          <li>Set File Format to <strong>XML (Data Interchange)</strong>.</li>
-          <li>Specify the folder path where the converted <code>.xml</code> file is saved and press <strong>Enter</strong>.</li>
-          <li>TallyPrime will import all bank payments and receipts into your Day Book!</li>
+          <li><strong>Step 1 (If ledgers are new):</strong> Click <strong>Download Masters XML</strong> &gt; Press <strong>Alt + O</strong> (Import) &gt; Select <strong>Masters</strong> &gt; Choose the Masters XML file.</li>
+          <li><strong>Step 2 (Vouchers):</strong> Click <strong>Download Tally XML</strong> &gt; Press <strong>Alt + O</strong> &gt; Select <strong>Transactions</strong> &gt; Choose file format <strong>XML</strong> &gt; Select file and press Enter.</li>
         </ol>
+
+        <h4 style="color:#dc2626; margin:10px 0 4px;"><i class="fas fa-triangle-exclamation"></i> If you see "Referenced master is missing":</h4>
+        <div style="background:var(--bg-tertiary); padding:10px 12px; border-radius:8px; border:1px solid var(--card-border); font-size:0.8rem; margin-bottom:12px;">
+          TallyPrime gives you two easy options:
+          <br><strong>Option A:</strong> On that exact "Import Exceptions" screen in TallyPrime, highlight the missing ledger and press <strong>Alt + M (Map Master)</strong> or <strong>Enter</strong> to map it to your existing ledger (e.g. <code>Suspense A/c</code>).
+          <br><strong>Option B:</strong> Use the <strong>"Batch Set Ledger"</strong> box on this page to set all rows to your existing ledger (e.g. <code>Suspense A/c</code>) and re-download.
+        </div>
 
         <h4 style="color:#d97706; margin:10px 0 4px;">For Tally.ERP 9:</h4>
         <ol style="padding-left:18px; margin:0;">
@@ -739,17 +754,14 @@
   <script src="js/app.js"></script>
 
   <script>
-    // Set PDF.js worker
     if (typeof pdfjsLib !== 'undefined') {
       pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.11.338/pdf.worker.min.js';
     }
 
-    // State Variables
     let parsedTransactions = [];
     let pendingFileBuffer = null;
     let selectedBankKey = 'auto';
 
-    // Bank Defaults Configuration
     const BANK_PROFILES = {
       'auto': { name: 'Auto-Detect', ledger: 'State Bank of India' },
       'sbi': { name: 'State Bank of India', ledger: 'State Bank of India' },
@@ -783,7 +795,6 @@
       }
     }
 
-    // Drag and Drop Listeners
     const dropzone = document.getElementById('dropzone');
     ['dragenter', 'dragover'].forEach(name => {
       dropzone.addEventListener(name, (e) => { e.preventDefault(); dropzone.classList.add('dragover'); });
@@ -841,7 +852,6 @@
           const page = await pdf.getPage(i);
           const textContent = await page.getTextContent({ normalizeWhitespace: true });
           
-          // Group text items by Y coordinate with 3.5px tolerance
           const lineMap = {};
           for (const item of textContent.items) {
             const str = item.str.trim();
@@ -852,7 +862,6 @@
             lineMap[y].push({ x, str: item.str });
           }
 
-          // Sort lines by Y descending (top of page to bottom)
           const sortedYs = Object.keys(lineMap).map(Number).sort((a, b) => b - a);
           for (const y of sortedYs) {
             const lineItems = lineMap[y].sort((a, b) => a.x - b.x);
@@ -1081,8 +1090,10 @@
       }
     }
 
+    // Default Ledger Heuristic: Uses standard Tally Names
     function autoMapLedger(narration) {
-      if (!narration) return document.getElementById('defaultCounterLedger').value || 'Suspense Account';
+      const defaultCounter = document.getElementById('defaultCounterLedger').value || 'Suspense A/c';
+      if (!narration) return defaultCounter;
       const upper = narration.toUpperCase();
 
       if (upper.includes('ATM') || upper.includes('CASH WDL') || upper.includes('CASH DEP') || upper.includes('SELF')) return 'Cash';
@@ -1092,11 +1103,39 @@
       if (upper.includes('PETROL') || upper.includes('FUEL') || upper.includes('HPCL') || upper.includes('IOCL') || upper.includes('BPCL')) return 'Fuel & Conveyance';
       if (upper.includes('ELECTRICITY') || upper.includes('BESCOM') || upper.includes('MSEDCL') || upper.includes('TNEB')) return 'Electricity Expenses';
       if (upper.includes('RENT') || upper.includes('LEASE')) return 'Rent Expense';
-      if (upper.includes('GST') || upper.includes('TAX') || upper.includes('TDS')) return 'Duties & Taxes';
+      if (upper.includes('GST') || upper.includes('TAX') || upper.includes('TDS')) return 'Taxes & Duties A/c';
       if (upper.includes('SWIGGY') || upper.includes('ZOMATO') || upper.includes('RESTAURANT')) return 'Staff Refreshment';
       if (upper.includes('AMAZON') || upper.includes('FLIPKART')) return 'Office Supplies';
 
-      return document.getElementById('defaultCounterLedger').value || 'Suspense Account';
+      return defaultCounter;
+    }
+
+    function getLedgerParentGroup(name) {
+      if (!name) return 'Suspense A/c';
+      const n = name.trim();
+      if (n.toLowerCase() === 'cash') return 'Cash-in-Hand';
+      if (n === 'Suspense A/c' || n === 'Suspense Account') return 'Suspense A/c';
+      if (n.includes('Bank') || n.includes('PNB') || n.includes('SBI') || n.includes('HDFC') || n.includes('ICICI')) return 'Bank Accounts';
+      if (n.includes('Tax') || n.includes('Duties') || n.includes('GST') || n.includes('TDS')) return 'Duties & Taxes';
+      if (n.includes('Interest')) return 'Indirect Incomes';
+      return 'Indirect Expenses';
+    }
+
+    function applyBatchLedger() {
+      const val = document.getElementById('batchLedgerInput').value.trim();
+      if (!val) {
+        alert("Please enter a ledger name to apply.");
+        return;
+      }
+      if (!parsedTransactions || parsedTransactions.length === 0) {
+        alert("No transactions loaded.");
+        return;
+      }
+      parsedTransactions.forEach(t => {
+        t.counterLedger = val;
+      });
+      renderTable();
+      alert(`Applied "${val}" to all ${parsedTransactions.length} transactions!`);
     }
 
     // =========================================================================
@@ -1112,6 +1151,7 @@
         tableCard.style.display = 'none';
         metricsStrip.style.display = 'none';
         document.getElementById('btnExportXml').disabled = true;
+        document.getElementById('btnExportMasters').disabled = true;
         document.getElementById('btnExportCsv').disabled = true;
         document.getElementById('btnCopyXml').disabled = true;
         return;
@@ -1120,6 +1160,7 @@
       tableCard.style.display = 'block';
       metricsStrip.style.display = 'grid';
       document.getElementById('btnExportXml').disabled = false;
+      document.getElementById('btnExportMasters').disabled = false;
       document.getElementById('btnExportCsv').disabled = false;
       document.getElementById('btnCopyXml').disabled = false;
 
@@ -1201,7 +1242,7 @@
         debit: 0,
         credit: 0,
         balance: 0,
-        counterLedger: document.getElementById('defaultCounterLedger').value || 'Suspense Account'
+        counterLedger: document.getElementById('defaultCounterLedger').value || 'Suspense A/c'
       });
       renderTable();
     }
@@ -1223,8 +1264,60 @@
     }
 
     // =========================================================================
-    // TALLY XML GENERATOR (COMPLIANT TALLYPRIME & TALLY.ERP 9 SCHEMA)
+    // TALLY XML GENERATORS
     // =========================================================================
+
+    // Generates Standalone Masters XML for Alt+O > Masters import
+    function generateMastersXml() {
+      if (!parsedTransactions || parsedTransactions.length === 0) {
+        alert("No transactions loaded to extract masters!");
+        return null;
+      }
+
+      const bankLedger = document.getElementById('bankLedger').value.trim() || "State Bank of India";
+      const uniqueLedgers = new Set();
+      uniqueLedgers.add(bankLedger);
+      parsedTransactions.forEach(tx => {
+        const cl = tx.counterLedger || document.getElementById('defaultCounterLedger').value || 'Suspense A/c';
+        if (cl) uniqueLedgers.add(cl.trim());
+      });
+
+      let xml = `<?xml version="1.0" encoding="utf-8"?>\n`;
+      xml += `<ENVELOPE>\n`;
+      xml += `  <HEADER>\n`;
+      xml += `    <TALLYREQUEST>Import Data</TALLYREQUEST>\n`;
+      xml += `  </HEADER>\n`;
+      xml += `  <BODY>\n`;
+      xml += `    <IMPORTDATA>\n`;
+      xml += `      <REQUESTDESC>\n`;
+      xml += `        <REPORTNAME>All Masters</REPORTNAME>\n`;
+      xml += `      </REQUESTDESC>\n`;
+      xml += `      <REQUESTDATA>\n`;
+
+      uniqueLedgers.forEach(ledgerName => {
+        const parent = (ledgerName === bankLedger) ? 'Bank Accounts' : getLedgerParentGroup(ledgerName);
+        xml += `        <TALLYMESSAGE xmlns:UDF="TallyUDF">\n`;
+        xml += `          <LEDGER NAME="${escapeXml(ledgerName)}" ACTION="Create">\n`;
+        xml += `            <NAME.LIST>\n`;
+        xml += `              <NAME>${escapeXml(ledgerName)}</NAME>\n`;
+        xml += `            </NAME.LIST>\n`;
+        xml += `            <PARENT>${escapeXml(parent)}</PARENT>\n`;
+        xml += `            <OPENINGBALANCE>0</OPENINGBALANCE>\n`;
+        xml += `            <ISBILLWISEON>No</ISBILLWISEON>\n`;
+        xml += `            <AFFECTSSTOCK>No</AFFECTSSTOCK>\n`;
+        xml += `          </LEDGER>\n`;
+        xml += `        </TALLYMESSAGE>\n`;
+      });
+
+      xml += `      </REQUESTDATA>\n`;
+      xml += `    </IMPORTDATA>\n`;
+      xml += `  </BODY>\n`;
+      xml += `</ENVELOPE>\n`;
+
+      return xml;
+    }
+
+    // Generates Vouchers XML with Embedded Masters definitions
     function generateTallyXml() {
       if (!parsedTransactions || parsedTransactions.length === 0) {
         alert("No transactions to convert!");
@@ -1232,6 +1325,14 @@
       }
 
       const bankLedger = document.getElementById('bankLedger').value.trim() || "State Bank of India";
+
+      // Collect all unique ledgers to embed master declarations
+      const uniqueLedgers = new Set();
+      uniqueLedgers.add(bankLedger);
+      parsedTransactions.forEach(tx => {
+        const cl = tx.counterLedger || document.getElementById('defaultCounterLedger').value || 'Suspense A/c';
+        if (cl) uniqueLedgers.add(cl.trim());
+      });
 
       let xml = `<?xml version="1.0" encoding="utf-8"?>\n`;
       xml += `<ENVELOPE>\n`;
@@ -1245,6 +1346,23 @@
       xml += `      </REQUESTDESC>\n`;
       xml += `      <REQUESTDATA>\n`;
 
+      // Embed Ledger Master declarations so Tally recognizes them
+      uniqueLedgers.forEach(ledgerName => {
+        const parent = (ledgerName === bankLedger) ? 'Bank Accounts' : getLedgerParentGroup(ledgerName);
+        xml += `        <TALLYMESSAGE xmlns:UDF="TallyUDF">\n`;
+        xml += `          <LEDGER NAME="${escapeXml(ledgerName)}" ACTION="Create">\n`;
+        xml += `            <NAME.LIST>\n`;
+        xml += `              <NAME>${escapeXml(ledgerName)}</NAME>\n`;
+        xml += `            </NAME.LIST>\n`;
+        xml += `            <PARENT>${escapeXml(parent)}</PARENT>\n`;
+        xml += `            <OPENINGBALANCE>0</OPENINGBALANCE>\n`;
+        xml += `            <ISBILLWISEON>No</ISBILLWISEON>\n`;
+        xml += `            <AFFECTSSTOCK>No</AFFECTSSTOCK>\n`;
+        xml += `          </LEDGER>\n`;
+        xml += `        </TALLYMESSAGE>\n`;
+      });
+
+      // Embed All Vouchers
       parsedTransactions.forEach((tx, idx) => {
         const isDebit = (tx.debit || 0) > 0;
         const isCredit = (tx.credit || 0) > 0;
@@ -1253,11 +1371,10 @@
 
         const amountStr = amountVal.toFixed(2);
         const tallyDate = tx.tallyDate || '20240401';
-        const counterLedger = tx.counterLedger || document.getElementById('defaultCounterLedger').value || 'Suspense Account';
+        const counterLedger = tx.counterLedger || document.getElementById('defaultCounterLedger').value || 'Suspense A/c';
         const narration = tx.narration || "Bank Transaction";
         const refNo = tx.refNo || "";
 
-        // Standard Accounting Rule: Debits = Payment, Credits = Receipt, Cash = Contra
         let vchType = isDebit ? "Payment" : "Receipt";
         if (counterLedger.toLowerCase().trim() === 'cash') {
           vchType = "Contra";
@@ -1317,7 +1434,16 @@
       if (!xml) return;
       const blob = new Blob([xml], { type: 'application/xml;charset=utf-8;' });
       const bankName = document.getElementById('bankLedger').value.replace(/[^a-zA-Z0-9]/g, '_') || 'Bank';
-      const filename = `${bankName}_Tally_Vouchers_${new Date().toISOString().slice(0,10)}.xml`;
+      const filename = `${bankName}_Vouchers_${new Date().toISOString().slice(0,10)}.xml`;
+      downloadBlob(blob, filename);
+    }
+
+    function exportMastersXml() {
+      const xml = generateMastersXml();
+      if (!xml) return;
+      const blob = new Blob([xml], { type: 'application/xml;charset=utf-8;' });
+      const bankName = document.getElementById('bankLedger').value.replace(/[^a-zA-Z0-9]/g, '_') || 'Bank';
+      const filename = `${bankName}_Masters_${new Date().toISOString().slice(0,10)}.xml`;
       downloadBlob(blob, filename);
     }
 
@@ -1366,9 +1492,6 @@
       return String(str).replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
     }
 
-    // =========================================================================
-    // PASSWORD MODAL & HELPERS
-    // =========================================================================
     function openPasswordModal() { document.getElementById('passwordModal').classList.add('active'); }
     function closePasswordModal() { document.getElementById('passwordModal').classList.remove('active'); }
     function openHelpModal() { document.getElementById('helpModal').classList.add('active'); }
@@ -1404,19 +1527,16 @@
       document.getElementById('parseStatusCard').style.display = 'none';
     }
 
-    // =========================================================================
-    // LOAD SAMPLE DEMO DATA
-    // =========================================================================
     function loadSampleDemo() {
       parsedTransactions = [
         { date: "01/04/2024", tallyDate: "20240401", narration: "UPI/409218349210/DR/Swiggy Bangalore/ICIC/Lunch", refNo: "409218349210", debit: 450.00, credit: 0, balance: 84550.00, counterLedger: "Staff Refreshment" },
         { date: "03/04/2024", tallyDate: "20240403", narration: "NEFT-AXIS00021-INFOSYS LTD-SALARY APR 2024", refNo: "AXIS240941", debit: 0, credit: 65000.00, balance: 149550.00, counterLedger: "Salary A/c" },
         { date: "05/04/2024", tallyDate: "20240405", narration: "ATM WDL CASH SBI BR TECH PARK BLR", refNo: "ATM7841", debit: 10000.00, credit: 0, balance: 139550.00, counterLedger: "Cash" },
         { date: "08/04/2024", tallyDate: "20240408", narration: "ACH/BESCOM POWER CORP/BILL PAYMENT", refNo: "ACH891234", debit: 3420.00, credit: 0, balance: 136130.00, counterLedger: "Electricity Expenses" },
-        { date: "12/04/2024", tallyDate: "20240412", narration: "IMPS/410294821094/CR/CLIENT PAYMENT/HDFC", refNo: "410294821094", debit: 0, credit: 28500.00, balance: 164630.00, counterLedger: "Suspense Account" },
+        { date: "12/04/2024", tallyDate: "20240412", narration: "IMPS/410294821094/CR/CLIENT PAYMENT/HDFC", refNo: "410294821094", debit: 0, credit: 28500.00, balance: 164630.00, counterLedger: "Suspense A/c" },
         { date: "15/04/2024", tallyDate: "20240415", narration: "HPCL PETROL BUNK KORAMANGALA BLR", refNo: "POS49120", debit: 2000.00, credit: 0, balance: 162630.00, counterLedger: "Fuel & Conveyance" },
         { date: "20/04/2024", tallyDate: "20240420", narration: "INT.COLL: 01-01-2024 TO 31-03-2024 Q4 INTEREST", refNo: "", debit: 0, credit: 890.00, balance: 163520.00, counterLedger: "Bank Interest Received" },
-        { date: "25/04/2024", tallyDate: "20240425", narration: "CHQ 491022 PAID TO APEX OFFICE INTERIORS", refNo: "491022", debit: 18500.00, credit: 0, balance: 145020.00, counterLedger: "Suspense Account" },
+        { date: "25/04/2024", tallyDate: "20240425", narration: "CHQ 491022 PAID TO APEX OFFICE INTERIORS", refNo: "491022", debit: 18500.00, credit: 0, balance: 145020.00, counterLedger: "Suspense A/c" },
         { date: "28/04/2024", tallyDate: "20240428", narration: "SMS ALERT CHARGES Q4 2024", refNo: "", debit: 17.70, credit: 0, balance: 145002.30, counterLedger: "Bank Charges" }
       ];
 

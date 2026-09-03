@@ -1,0 +1,1416 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+  <meta name="google-site-verification" content="ndzq-U-NLijgza_QqgQdcc2U3oMRoud_BT2ZZiwFREM">
+  <meta name="google-site-verification" content="-Yb6Nx74gbZ3wRN5uP-Y8KKwDWlt1DPpxs4nA3PkE6M">
+  <meta name="robots" content="index, follow">
+  
+  <!-- Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-2L87FMQS3W"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-2L87FMQS3W');
+  </script>
+
+  <title>Bank Statement to Tally XML Converter — All Indian Banks | AI Bots</title>
+  <meta name="description" content="Free Bank Statement PDF to Tally XML Converter supporting 21+ Indian Banks including SBI, PNB, Bank of Baroda, Canara, HDFC, ICICI, Axis, Kotak. Secure 100% browser-based processing.">
+  <meta name="keywords" content="bank statement to tally xml, pdf to tally xml, sbi bank statement to tally, hdfc bank statement to tally, tally prime bank statement import, tally erp 9 bank statement import, bank statement converter, ai bots">
+  <link rel="icon" href="logo.png" type="image/png">
+  <link rel="canonical" href="https://www.aibots.co.in/bank-statement-converter.html">
+
+  <!-- Open Graph / Social Cards -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://www.aibots.co.in/bank-statement-converter.html">
+  <meta property="og:title" content="Bank Statement to Tally XML Converter — AI Bots Studio">
+  <meta property="og:description" content="Convert PDF bank statements from SBI, HDFC, ICICI, Axis, PNB and 20+ Indian banks directly into TallyPrime & Tally.ERP 9 XML format.">
+  <meta property="og:image" content="https://www.aibots.co.in/logo.png">
+
+  <!-- Fonts & Icons -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="css/theme.css">
+
+  <style>
+    :root {
+      --accent-tally: #10b981;
+      --accent-blue: #3b82f6;
+      --accent-amber: #f59e0b;
+      --accent-purple: #8b5cf6;
+      --card-bg: var(--bg-secondary, #0f172a);
+      --card-border: var(--border-color, rgba(255, 255, 255, 0.12));
+    }
+
+    .converter-container {
+      max-width: 1340px;
+      margin: 16px auto 60px;
+      padding: 0 16px;
+    }
+
+    .hero-banner {
+      text-align: center;
+      padding: 30px 20px 24px;
+      margin-bottom: 24px;
+      background: radial-gradient(circle at 50% 0%, rgba(16, 185, 129, 0.15) 0%, rgba(15, 23, 42, 0) 70%);
+      border-bottom: 1px solid var(--card-border);
+    }
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 14px;
+      border-radius: 999px;
+      background: rgba(16, 185, 129, 0.15);
+      border: 1px solid rgba(16, 185, 129, 0.35);
+      color: #34d399;
+      font-size: 0.8rem;
+      font-weight: 700;
+      margin-bottom: 12px;
+    }
+    .hero-title {
+      font-size: clamp(1.8rem, 4vw, 2.6rem);
+      font-weight: 900;
+      margin: 0 0 10px;
+      background: linear-gradient(135deg, #f8fafc, #cbd5e1, #34d399);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      letter-spacing: -0.02em;
+    }
+    .hero-desc {
+      font-size: 0.95rem;
+      color: var(--text-secondary, #94a3b8);
+      max-width: 780px;
+      margin: 0 auto;
+      line-height: 1.6;
+    }
+
+    /* Grid Layout */
+    .app-grid {
+      display: grid;
+      grid-template-columns: 360px 1fr;
+      gap: 20px;
+      align-items: start;
+    }
+
+    @media (max-width: 980px) {
+      .app-grid { grid-template-columns: 1fr; }
+    }
+
+    /* Sidebar Settings Card */
+    .sidebar-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius-xl, 16px);
+      padding: 20px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+      position: sticky;
+      top: 80px;
+    }
+    .section-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 16px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--card-border);
+    }
+    .section-header h3 {
+      font-size: 1.05rem;
+      font-weight: 800;
+      margin: 0;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: #f8fafc;
+    }
+
+    .form-group {
+      margin-bottom: 14px;
+    }
+    .form-label {
+      display: block;
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: var(--text-secondary, #cbd5e1);
+      margin-bottom: 6px;
+    }
+    .form-control {
+      width: 100%;
+      padding: 9px 12px;
+      border-radius: 8px;
+      background: var(--bg-tertiary, rgba(255,255,255,0.06));
+      border: 1px solid var(--card-border);
+      color: #f8fafc;
+      font-size: 0.85rem;
+      transition: all 0.2s;
+    }
+    .form-control:focus {
+      outline: none;
+      border-color: var(--accent-tally);
+      box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.2);
+    }
+    select.form-control option {
+      background: #0f172a;
+      color: #f8fafc;
+    }
+
+    /* Upload Zone */
+    .upload-dropzone {
+      border: 2px dashed rgba(16, 185, 129, 0.5);
+      background: rgba(16, 185, 129, 0.04);
+      border-radius: var(--radius-xl, 16px);
+      padding: 32px 20px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      margin-bottom: 20px;
+      position: relative;
+    }
+    .upload-dropzone:hover, .upload-dropzone.dragover {
+      border-color: #34d399;
+      background: rgba(16, 185, 129, 0.1);
+      transform: translateY(-2px);
+    }
+    .upload-icon {
+      font-size: 2.4rem;
+      color: var(--accent-tally);
+      margin-bottom: 10px;
+    }
+    .upload-title {
+      font-size: 1.1rem;
+      font-weight: 800;
+      color: #f8fafc;
+      margin: 0 0 6px;
+    }
+    .upload-subtitle {
+      font-size: 0.82rem;
+      color: var(--text-secondary, #94a3b8);
+      margin: 0;
+    }
+    .upload-badges {
+      display: flex;
+      justify-content: center;
+      gap: 6px;
+      flex-wrap: wrap;
+      margin-top: 12px;
+    }
+    .badge-pill {
+      font-size: 0.68rem;
+      padding: 3px 8px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid var(--card-border);
+      color: #e2e8f0;
+      font-weight: 600;
+    }
+
+    /* Privacy Banner */
+    .privacy-notice {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 14px;
+      background: rgba(59, 130, 246, 0.08);
+      border: 1px solid rgba(59, 130, 246, 0.25);
+      border-radius: 10px;
+      font-size: 0.76rem;
+      color: #93c5fd;
+      margin-top: 14px;
+    }
+
+    /* Summary Metrics Strip */
+    .metrics-strip {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+      gap: 12px;
+      margin-bottom: 18px;
+    }
+    .metric-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .metric-title {
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: var(--text-secondary, #94a3b8);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .metric-value {
+      font-size: 1.3rem;
+      font-weight: 900;
+      font-family: var(--font-mono, 'JetBrains Mono', monospace);
+    }
+
+    /* Main Table Container */
+    .table-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius-xl, 16px);
+      padding: 18px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+      overflow: hidden;
+    }
+    .table-actions-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+    .table-responsive {
+      max-height: 520px;
+      overflow-y: auto;
+      border: 1px solid var(--card-border);
+      border-radius: 10px;
+    }
+    .data-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.82rem;
+      text-align: left;
+    }
+    .data-table th {
+      background: rgba(15, 23, 42, 0.95);
+      position: sticky;
+      top: 0;
+      padding: 10px 12px;
+      font-weight: 800;
+      color: #94a3b8;
+      border-bottom: 1px solid var(--card-border);
+      white-space: nowrap;
+      z-index: 5;
+    }
+    .data-table td {
+      padding: 8px 12px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+      vertical-align: middle;
+    }
+    .data-table tr:hover td {
+      background: rgba(255, 255, 255, 0.03);
+    }
+    .cell-input {
+      background: transparent;
+      border: 1px solid transparent;
+      color: inherit;
+      padding: 4px 6px;
+      border-radius: 4px;
+      width: 100%;
+      font-family: inherit;
+      font-size: inherit;
+    }
+    .cell-input:focus {
+      background: rgba(15, 23, 42, 0.8);
+      border-color: var(--accent-tally);
+      outline: none;
+    }
+    .badge-debit {
+      color: #f87171;
+      font-weight: 700;
+      font-family: var(--font-mono);
+    }
+    .badge-credit {
+      color: #34d399;
+      font-weight: 700;
+      font-family: var(--font-mono);
+    }
+
+    /* Modal */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.75);
+      backdrop-filter: blur(8px);
+      z-index: 1000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+    }
+    .modal-overlay.active { display: flex; }
+    .modal-box {
+      background: #0f172a;
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      width: 100%;
+      max-width: 500px;
+      padding: 24px;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.8);
+    }
+
+    /* FAQ Section */
+    .faq-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 16px;
+      margin-top: 30px;
+    }
+    .faq-item {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 16px 18px;
+    }
+    .faq-q { font-weight: 800; font-size: 0.92rem; color: #f8fafc; margin-bottom: 6px; }
+    .faq-a { font-size: 0.82rem; color: var(--text-secondary, #94a3b8); line-height: 1.5; margin: 0; }
+  </style>
+</head>
+<body>
+
+  <!-- Navigation Header -->
+  <header class="header">
+    <div class="container">
+      <div class="header-content">
+        <a href="index.html" class="brand-link">
+          <img src="logo.png" alt="AI Bots Logo" class="brand-logo-img">
+          <span class="brand-name">AI Bots</span>
+          <span class="brand-badge">STUDIO</span>
+        </a>
+        <div class="nav-actions">
+          <a href="index.html" class="btn btn-secondary btn-sm"><i class="fas fa-arrow-left"></i> Home</a>
+          <button id="themeToggleBtn" class="icon-btn" title="Toggle Theme"><i class="fas fa-moon"></i></button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="converter-container">
+    
+    <!-- Hero Header -->
+    <div class="hero-banner">
+      <div class="hero-badge"><i class="fas fa-bolt"></i> 100% Client-Side &amp; Secure</div>
+      <h1 class="hero-title">Bank Statement to Tally XML Converter</h1>
+      <p class="hero-desc">
+        Seamlessly convert PDF bank statements from <strong>21+ Indian Public &amp; Private Sector Banks</strong> into standard <strong>TallyPrime &amp; Tally.ERP 9 XML</strong> vouchers. With smart ledger auto-mapping, password decryption, and zero cloud uploads.
+      </p>
+    </div>
+
+    <div class="app-grid">
+      
+      <!-- LEFT COLUMN: Tally Settings & Bank Options -->
+      <aside class="sidebar-card">
+        <div class="section-header">
+          <h3><i class="fas fa-sliders" style="color:var(--accent-tally);"></i> Tally Config</h3>
+          <button class="btn btn-secondary btn-sm" onclick="loadSampleDemo()" style="padding:2px 8px; font-size:0.7rem;" title="Try sample bank statement"><i class="fas fa-flask"></i> Load Demo</button>
+        </div>
+
+        <!-- Bank Selector -->
+        <div class="form-group">
+          <label class="form-label" for="bankSelect"><i class="fas fa-building-columns"></i> Select Bank</label>
+          <select id="bankSelect" class="form-control" onchange="onBankSelectionChange()">
+            <option value="auto">🌟 Auto-Detect (All Indian Banks)</option>
+            <optgroup label="Public Sector Banks">
+              <option value="sbi">State Bank of India (SBI)</option>
+              <option value="pnb">Punjab National Bank (PNB)</option>
+              <option value="bob">Bank of Baroda (BOB)</option>
+              <option value="canara">Canara Bank</option>
+              <option value="union">Union Bank of India</option>
+              <option value="boi">Bank of India (BOI)</option>
+              <option value="indian">Indian Bank</option>
+              <option value="cbi">Central Bank of India</option>
+              <option value="iob">Indian Overseas Bank (IOB)</option>
+              <option value="uco">UCO Bank</option>
+              <option value="bom">Bank of Maharashtra</option>
+              <option value="psb">Punjab &amp; Sind Bank</option>
+            </optgroup>
+            <optgroup label="Major Private Sector Banks">
+              <option value="hdfc">HDFC Bank</option>
+              <option value="icici">ICICI Bank</option>
+              <option value="axis">Axis Bank</option>
+              <option value="kotak">Kotak Mahindra Bank</option>
+              <option value="indusind">IndusInd Bank</option>
+              <option value="yes">YES Bank</option>
+              <option value="idfc">IDFC FIRST Bank</option>
+              <option value="federal">Federal Bank</option>
+              <option value="bandhan">Bandhan Bank</option>
+            </optgroup>
+          </select>
+        </div>
+
+        <!-- Tally Company Name -->
+        <div class="form-group">
+          <label class="form-label" for="companyName"><i class="fas fa-briefcase"></i> Tally Company Name</label>
+          <input type="text" id="companyName" class="form-control" placeholder="e.g. My Business Pvt Ltd" value="My Company">
+        </div>
+
+        <!-- Bank Ledger Name in Tally -->
+        <div class="form-group">
+          <label class="form-label" for="bankLedger"><i class="fas fa-wallet"></i> Bank Ledger Name in Tally</label>
+          <input type="text" id="bankLedger" class="form-control" placeholder="e.g. State Bank of India" value="State Bank of India">
+        </div>
+
+        <!-- Default Counterparty / Expense Ledger -->
+        <div class="form-group">
+          <label class="form-label" for="defaultCounterLedger"><i class="fas fa-tags"></i> Default Counter Ledger</label>
+          <input type="text" id="defaultCounterLedger" class="form-control" placeholder="e.g. Suspense Account" value="Suspense Account">
+        </div>
+
+        <!-- Voucher Type Strategy -->
+        <div class="form-group">
+          <label class="form-label" for="voucherTypeMode"><i class="fas fa-file-invoice"></i> Voucher Type Rule</label>
+          <select id="voucherTypeMode" class="form-control">
+            <option value="standard">Standard (Payment for Dr, Receipt for Cr)</option>
+            <option value="contra_cash">Auto-Contra (Cash ATM / Deposit as Contra)</option>
+            <option value="all_journal">All as Journal Vouchers</option>
+          </select>
+        </div>
+
+        <!-- Auto-Ledger Rules Info -->
+        <div style="background:rgba(255,255,255,0.03); border:1px solid var(--card-border); border-radius:8px; padding:10px; font-size:0.75rem; color:#cbd5e1;">
+          <div style="font-weight:700; color:#38bdf8; margin-bottom:4px;"><i class="fas fa-wand-magic-sparkles"></i> Smart Ledger Heuristics</div>
+          Transactions containing <code>ATM / CASH</code> map to <em>Cash A/c</em>, <code>INTEREST</code> to <em>Bank Interest Recd</em>, and <code>CHARGES</code> to <em>Bank Charges</em>.
+        </div>
+
+        <!-- Privacy Shield -->
+        <div class="privacy-notice">
+          <i class="fas fa-shield-halved" style="font-size:1.2rem; flex-shrink:0;"></i>
+          <span><strong>100% Private:</strong> Files are parsed strictly inside your web browser. No statements are uploaded to any server.</span>
+        </div>
+
+        <!-- Action Export Buttons in Sidebar -->
+        <div style="display:flex; flex-direction:column; gap:8px; margin-top:16px;">
+          <button class="btn btn-primary" onclick="exportToTallyXml()" id="btnExportXml" style="background:#10b981; border-color:#10b981; font-weight:800;" disabled>
+            <i class="fas fa-file-code"></i> Download Tally XML
+          </button>
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px;">
+            <button class="btn btn-secondary btn-sm" onclick="exportToCsv()" id="btnExportCsv" disabled>
+              <i class="fas fa-file-csv"></i> Excel / CSV
+            </button>
+            <button class="btn btn-secondary btn-sm" onclick="copyXmlToClipboard()" id="btnCopyXml" disabled>
+              <i class="fas fa-copy"></i> Copy XML
+            </button>
+          </div>
+          <button class="btn btn-secondary btn-sm" onclick="openHelpModal()" style="margin-top:4px;">
+            <i class="fas fa-circle-question"></i> How to Import in Tally
+          </button>
+        </div>
+      </aside>
+
+      <!-- RIGHT COLUMN: Upload Zone, Table, Metrics -->
+      <section>
+        
+        <!-- Upload Dropzone -->
+        <div class="upload-dropzone" id="dropzone" onclick="document.getElementById('fileInput').click()">
+          <input type="file" id="fileInput" accept=".pdf,.csv,.txt" style="display:none;" onchange="handleFileSelected(this.files)">
+          <i class="fas fa-cloud-arrow-up upload-icon"></i>
+          <h2 class="upload-title">Drop your Bank Statement PDF here</h2>
+          <p class="upload-subtitle">or click to browse from device (PDF, CSV, or Text format)</p>
+          <div class="upload-badges">
+            <span class="badge-pill">🔒 Password Decryption Supported</span>
+            <span class="badge-pill">⚡ 21+ Banks Pre-Configured</span>
+            <span class="badge-pill">📑 Multi-Page PDF Support</span>
+            <span class="badge-pill">📊 TallyPrime &amp; ERP 9 Ready</span>
+          </div>
+        </div>
+
+        <!-- Progress Spinner & Status Bar -->
+        <div id="parseStatusCard" style="display:none; background:rgba(15,23,42,0.85); border:1px solid rgba(16,185,129,0.4); border-radius:12px; padding:14px 18px; margin-bottom:18px; align-items:center; gap:12px;">
+          <i class="fas fa-spinner fa-spin" style="font-size:1.4rem; color:#34d399;" id="parseSpinner"></i>
+          <div style="flex:1;">
+            <div id="parseStatusText" style="font-weight:700; font-size:0.85rem; color:#f8fafc;">Extracting transactions from PDF...</div>
+            <div id="parseSubText" style="font-size:0.75rem; color:#94a3b8;">Reconstructing table rows and cleaning multi-line narrations...</div>
+          </div>
+        </div>
+
+        <!-- Summary Metrics -->
+        <div class="metrics-strip" id="metricsStrip" style="display:none;">
+          <div class="metric-card">
+            <span class="metric-title">Total Records</span>
+            <span class="metric-value" id="metricCount" style="color:#38bdf8;">0</span>
+          </div>
+          <div class="metric-card">
+            <span class="metric-title">Total Withdrawals (Dr)</span>
+            <span class="metric-value" id="metricDebit" style="color:#f87171;">₹0.00</span>
+          </div>
+          <div class="metric-card">
+            <span class="metric-title">Total Deposits (Cr)</span>
+            <span class="metric-value" id="metricCredit" style="color:#34d399;">₹0.00</span>
+          </div>
+          <div class="metric-card">
+            <span class="metric-title">Net Difference</span>
+            <span class="metric-value" id="metricNet" style="color:#fbbf24;">₹0.00</span>
+          </div>
+        </div>
+
+        <!-- Interactive Table Card -->
+        <div class="table-card" id="tableCard" style="display:none;">
+          <div class="table-actions-bar">
+            <div style="display:flex; align-items:center; gap:8px;">
+              <h3 style="margin:0; font-size:1.05rem; font-weight:800; color:#f8fafc;">
+                <i class="fas fa-table-list" style="color:var(--accent-tally);"></i> Parsed Transactions
+              </h3>
+              <span id="rowCountBadge" style="font-size:0.75rem; background:rgba(255,255,255,0.08); padding:2px 8px; border-radius:999px; font-weight:700; color:#cbd5e1;">0 rows</span>
+            </div>
+            
+            <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
+              <input type="text" id="tableSearch" class="form-control" placeholder="Search narration or amount..." style="width:200px; padding:6px 10px; font-size:0.78rem;" oninput="filterTable()">
+              <button class="btn btn-secondary btn-sm" onclick="addNewRow()"><i class="fas fa-plus"></i> Add Row</button>
+              <button class="btn btn-secondary btn-sm" onclick="clearAllData()"><i class="fas fa-trash"></i> Clear</button>
+            </div>
+          </div>
+
+          <!-- Table Container -->
+          <div class="table-responsive">
+            <table class="data-table" id="transactionTable">
+              <thead>
+                <tr>
+                  <th style="width:40px;">#</th>
+                  <th style="width:110px;">Date</th>
+                  <th>Narration / Particulars</th>
+                  <th style="width:130px;">Chq / Ref No</th>
+                  <th style="width:110px; text-align:right;">Withdrawal (Dr)</th>
+                  <th style="width:110px; text-align:right;">Deposit (Cr)</th>
+                  <th style="width:110px; text-align:right;">Balance</th>
+                  <th style="width:150px;">Counter Ledger</th>
+                  <th style="width:40px; text-align:center;">Del</th>
+                </tr>
+              </thead>
+              <tbody id="tableBody">
+                <!-- Populated dynamically -->
+              </tbody>
+            </table>
+          </div>
+
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-top:14px; font-size:0.75rem; color:#94a3b8; flex-wrap:wrap; gap:10px;">
+            <span><i class="fas fa-info-circle"></i> You can edit any cell directly before downloading your Tally XML.</span>
+            <span id="bankIndicatorBadge" style="color:#38bdf8; font-weight:700;">Bank: Auto-Detect</span>
+          </div>
+        </div>
+
+        <!-- 21 Supported Banks Showcase -->
+        <div style="margin-top:28px; background:var(--card-bg); border:1px solid var(--card-border); border-radius:var(--radius-xl, 16px); padding:20px;">
+          <h4 style="margin:0 0 12px; font-size:0.95rem; font-weight:800; color:#f8fafc; display:flex; align-items:center; gap:8px;">
+            <i class="fas fa-check-double" style="color:#10b981;"></i> Supported Indian Banks (21 Banks)
+          </h4>
+          <div style="display:grid; grid-template-columns:repeat(auto-fill, minmax(220px, 1fr)); gap:8px; font-size:0.78rem;">
+            <div style="color:#cbd5e1;">🏛️ State Bank of India (SBI)</div>
+            <div style="color:#cbd5e1;">🏛️ Punjab National Bank (PNB)</div>
+            <div style="color:#cbd5e1;">🏛️ Bank of Baroda (BOB)</div>
+            <div style="color:#cbd5e1;">🏛️ Canara Bank</div>
+            <div style="color:#cbd5e1;">🏛️ Union Bank of India</div>
+            <div style="color:#cbd5e1;">🏛️ Bank of India (BOI)</div>
+            <div style="color:#cbd5e1;">🏛️ Indian Bank</div>
+            <div style="color:#cbd5e1;">🏛️ Central Bank of India</div>
+            <div style="color:#cbd5e1;">🏛️ Indian Overseas Bank</div>
+            <div style="color:#cbd5e1;">🏛️ UCO Bank</div>
+            <div style="color:#cbd5e1;">🏛️ Bank of Maharashtra</div>
+            <div style="color:#cbd5e1;">🏛️ Punjab &amp; Sind Bank</div>
+            <div style="color:#38bdf8; font-weight:700;">🏦 HDFC Bank</div>
+            <div style="color:#38bdf8; font-weight:700;">🏦 ICICI Bank</div>
+            <div style="color:#38bdf8; font-weight:700;">🏦 Axis Bank</div>
+            <div style="color:#38bdf8; font-weight:700;">🏦 Kotak Mahindra Bank</div>
+            <div style="color:#38bdf8; font-weight:700;">🏦 IndusInd Bank</div>
+            <div style="color:#38bdf8; font-weight:700;">🏦 YES Bank</div>
+            <div style="color:#38bdf8; font-weight:700;">🏦 IDFC FIRST Bank</div>
+            <div style="color:#38bdf8; font-weight:700;">🏦 Federal Bank</div>
+            <div style="color:#38bdf8; font-weight:700;">🏦 Bandhan Bank</div>
+          </div>
+        </div>
+
+        <!-- FAQs -->
+        <div class="faq-grid">
+          <div class="faq-item">
+            <div class="faq-q">How do I import this XML into TallyPrime?</div>
+            <p class="faq-a">Open TallyPrime &gt; Press <strong>Alt + O</strong> (Import) &gt; Select <strong>Transactions</strong> &gt; Choose file format <strong>XML</strong> &gt; Select the downloaded <code>.xml</code> file and press Enter.</p>
+          </div>
+          <div class="faq-item">
+            <div class="faq-q">Is my banking data uploaded to the internet?</div>
+            <p class="faq-a">No. Our converter runs 100% offline inside your browser using WebAssembly and PDF.js. Your financial details never leave your computer.</p>
+          </div>
+          <div class="faq-item">
+            <div class="faq-q">What if my bank statement has a PDF password?</div>
+            <p class="faq-a">The converter prompts you for your statement password (e.g. DOB DDMMYYYY or PAN) and unlocks it in-memory. We never store or log your password.</p>
+          </div>
+          <div class="faq-item">
+            <div class="faq-q">Does it work with Tally.ERP 9?</div>
+            <p class="faq-a">Yes! The generated XML uses the standard Tally XML envelope structure compatible with both Tally.ERP 9 and TallyPrime.</p>
+          </div>
+        </div>
+
+      </section>
+    </div>
+
+  </main>
+
+  <!-- PASSWORD MODAL FOR ENCRYPTED PDFS -->
+  <div class="modal-overlay" id="passwordModal">
+    <div class="modal-box">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;">
+        <h3 style="margin:0; font-size:1.15rem; color:#f8fafc;"><i class="fas fa-lock" style="color:#fbbf24;"></i> Password Protected PDF</h3>
+        <button class="icon-btn" onclick="closePasswordModal()"><i class="fas fa-xmark"></i></button>
+      </div>
+      <p style="font-size:0.82rem; color:#94a3b8; margin:0 0 16px;">
+        This bank statement is encrypted. Common passwords are:
+        <br>&bull; <strong>SBI:</strong> 5 digits of Acc No + DOB (DDMM)
+        <br>&bull; <strong>HDFC:</strong> Customer ID or PAN (uppercase)
+        <br>&bull; <strong>ICICI:</strong> First 4 letters of name + DOB (DDMM)
+      </p>
+      <div class="form-group">
+        <label class="form-label" for="pdfPasswordInput">Enter PDF Password</label>
+        <div style="display:flex; gap:8px;">
+          <input type="password" id="pdfPasswordInput" class="form-control" placeholder="Enter password...">
+          <button class="btn btn-secondary" onclick="togglePasswordVisibility()"><i class="fas fa-eye" id="pwdEyeIcon"></i></button>
+        </div>
+      </div>
+      <div style="display:flex; justify-content:flex-end; gap:8px; margin-top:20px;">
+        <button class="btn btn-secondary" onclick="closePasswordModal()">Cancel</button>
+        <button class="btn btn-primary" onclick="submitPasswordAndParse()" style="background:#10b981; border-color:#10b981;">Unlock &amp; Parse</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- HELP MODAL: HOW TO IMPORT IN TALLY -->
+  <div class="modal-overlay" id="helpModal">
+    <div class="modal-box" style="max-width:600px;">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;">
+        <h3 style="margin:0; font-size:1.15rem; color:#38bdf8;"><i class="fas fa-book-open"></i> How to Import in Tally</h3>
+        <button class="icon-btn" onclick="closeHelpModal()"><i class="fas fa-xmark"></i></button>
+      </div>
+      <div style="font-size:0.85rem; color:#cbd5e1; line-height:1.6;">
+        <h4 style="color:#facc15; margin:12px 0 6px;">For TallyPrime:</h4>
+        <ol style="padding-left:20px; margin:0 0 14px;">
+          <li>Open your company in <strong>TallyPrime</strong>.</li>
+          <li>Make sure the Bank Ledger Name (e.g. <code>State Bank of India</code>) exists in your Tally masters.</li>
+          <li>Press <strong>Alt + O</strong> (Import) &gt; Select <strong>Transactions</strong>.</li>
+          <li>Set File Format to <strong>XML (Data Interchange)</strong>.</li>
+          <li>Specify the folder path where the converted <code>.xml</code> file is saved and press <strong>Enter</strong>.</li>
+          <li>TallyPrime will import all bank payments and receipts into your Day Book!</li>
+        </ol>
+
+        <h4 style="color:#facc15; margin:12px 0 6px;">For Tally.ERP 9:</h4>
+        <ol style="padding-left:20px; margin:0;">
+          <li>Gateway of Tally &gt; <strong>Import of Data</strong> &gt; <strong>Vouchers</strong>.</li>
+          <li>Enter the full path and filename of the downloaded XML file.</li>
+          <li>Press Enter to import.</li>
+        </ol>
+      </div>
+      <div style="display:flex; justify-content:flex-end; margin-top:18px;">
+        <button class="btn btn-primary" onclick="closeHelpModal()">Got it!</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- PDF.js from CDN -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.11.338/pdf.min.js"></script>
+  <script src="js/app.js"></script>
+
+  <script>
+    // Set PDF.js worker
+    if (typeof pdfjsLib !== 'undefined') {
+      pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.11.338/pdf.worker.min.js';
+    }
+
+    // State Variables
+    let parsedTransactions = [];
+    let pendingFileBuffer = null;
+    let selectedBankKey = 'auto';
+
+    // Bank Defaults Configuration
+    const BANK_PROFILES = {
+      'auto': { name: 'Auto-Detect', ledger: 'State Bank of India' },
+      'sbi': { name: 'State Bank of India', ledger: 'State Bank of India' },
+      'pnb': { name: 'Punjab National Bank', ledger: 'Punjab National Bank' },
+      'bob': { name: 'Bank of Baroda', ledger: 'Bank of Baroda' },
+      'canara': { name: 'Canara Bank', ledger: 'Canara Bank' },
+      'union': { name: 'Union Bank of India', ledger: 'Union Bank of India' },
+      'boi': { name: 'Bank of India', ledger: 'Bank of India' },
+      'indian': { name: 'Indian Bank', ledger: 'Indian Bank' },
+      'cbi': { name: 'Central Bank of India', ledger: 'Central Bank of India' },
+      'iob': { name: 'Indian Overseas Bank', ledger: 'Indian Overseas Bank' },
+      'uco': { name: 'UCO Bank', ledger: 'UCO Bank' },
+      'bom': { name: 'Bank of Maharashtra', ledger: 'Bank of Maharashtra' },
+      'psb': { name: 'Punjab & Sind Bank', ledger: 'Punjab & Sind Bank' },
+      'hdfc': { name: 'HDFC Bank', ledger: 'HDFC Bank' },
+      'icici': { name: 'ICICI Bank', ledger: 'ICICI Bank' },
+      'axis': { name: 'Axis Bank', ledger: 'Axis Bank' },
+      'kotak': { name: 'Kotak Mahindra Bank', ledger: 'Kotak Mahindra Bank' },
+      'indusind': { name: 'IndusInd Bank', ledger: 'IndusInd Bank' },
+      'yes': { name: 'YES Bank', ledger: 'YES Bank' },
+      'idfc': { name: 'IDFC FIRST Bank', ledger: 'IDFC FIRST Bank' },
+      'federal': { name: 'Federal Bank', ledger: 'Federal Bank' },
+      'bandhan': { name: 'Bandhan Bank', ledger: 'Bandhan Bank' }
+    };
+
+    function onBankSelectionChange() {
+      selectedBankKey = document.getElementById('bankSelect').value;
+      const profile = BANK_PROFILES[selectedBankKey];
+      if (profile) {
+        document.getElementById('bankLedger').value = profile.ledger;
+      }
+    }
+
+    // Drag and Drop Listeners
+    const dropzone = document.getElementById('dropzone');
+    ['dragenter', 'dragover'].forEach(name => {
+      dropzone.addEventListener(name, (e) => { e.preventDefault(); dropzone.classList.add('dragover'); });
+    });
+    ['dragleave', 'drop'].forEach(name => {
+      dropzone.addEventListener(name, (e) => { e.preventDefault(); dropzone.classList.remove('dragover'); });
+    });
+    dropzone.addEventListener('drop', (e) => {
+      if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+        handleFileSelected(e.dataTransfer.files);
+      }
+    });
+
+    function handleFileSelected(files) {
+      if (!files || files.length === 0) return;
+      const file = files[0];
+      const isPdf = file.name.toLowerCase().endsWith('.pdf');
+      const isCsv = file.name.toLowerCase().endsWith('.csv') || file.name.toLowerCase().endsWith('.txt');
+
+      showStatus("Reading file...", `Loading ${file.name} (${Math.round(file.size / 1024)} KB)`);
+
+      const reader = new FileReader();
+      if (isPdf) {
+        reader.onload = function(e) {
+          pendingFileBuffer = e.target.result;
+          parsePdfWithPassword(pendingFileBuffer, "");
+        };
+        reader.readAsArrayBuffer(file);
+      } else if (isCsv) {
+        reader.onload = function(e) {
+          parseCsvText(e.target.result);
+        };
+        reader.readAsText(file);
+      } else {
+        alert("Please upload a PDF or CSV bank statement.");
+        hideStatus();
+      }
+    }
+
+    // =========================================================================
+    // PDF PARSING ENGINE WITH COORDINATE-BASED ROW RECONSTRUCTION
+    // =========================================================================
+    async function parsePdfWithPassword(arrayBuffer, password) {
+      showStatus("Analyzing PDF pages...", "Extracting raw text coordinates...");
+      try {
+        const loadingTask = pdfjsLib.getDocument({ data: arrayBuffer, password: password });
+        const pdf = await loadingTask.promise;
+        closePasswordModal();
+
+        let allLines = [];
+        const numPages = pdf.numPages;
+
+        for (let i = 1; i <= numPages; i++) {
+          showStatus(`Parsing Page ${i} of ${numPages}...`, "Reconstructing transaction tables...");
+          const page = await pdf.getPage(i);
+          const textContent = await page.getTextContent({ normalizeWhitespace: true });
+          
+          // Group text items by Y coordinate with 3.5px tolerance
+          const lineMap = {};
+          for (const item of textContent.items) {
+            const str = item.str.trim();
+            if (!str) continue;
+            const x = item.transform[4];
+            const y = Math.round(item.transform[5] / 3.5) * 3.5;
+            if (!lineMap[y]) lineMap[y] = [];
+            lineMap[y].push({ x, str: item.str });
+          }
+
+          // Sort lines by Y descending (top of page to bottom)
+          const sortedYs = Object.keys(lineMap).map(Number).sort((a, b) => b - a);
+          for (const y of sortedYs) {
+            // Sort items inside line left-to-right by X
+            const lineItems = lineMap[y].sort((a, b) => a.x - b.x);
+            allLines.push(lineItems);
+          }
+        }
+
+        // Process extracted lines into transactions
+        showStatus("Classifying bank transactions...", "Identifying dates, withdrawals & deposits...");
+        const txns = extractTransactionsFromLines(allLines, selectedBankKey);
+        
+        if (txns.length === 0) {
+          // Fallback text-based line scanner
+          const fallbackTxns = fallbackTextScanner(allLines);
+          if (fallbackTxns.length > 0) {
+            parsedTransactions = fallbackTxns;
+          } else {
+            alert("Could not automatically detect transactions in this PDF.\nPlease verify the statement has readable text (not scanned images) or try loading demo data.");
+          }
+        } else {
+          parsedTransactions = txns;
+        }
+
+        renderTable();
+        hideStatus();
+      } catch (err) {
+        if (err.name === 'PasswordException') {
+          hideStatus();
+          openPasswordModal();
+        } else {
+          console.error("PDF Parsing Error:", err);
+          alert("Error parsing PDF: " + (err.message || "Unknown error"));
+          hideStatus();
+        }
+      }
+    }
+
+    // Helper: Parse Indian formatted number
+    function parseIndianAmount(str) {
+      if (!str) return 0;
+      let clean = str.replace(/[INR\s,`]/gi, '').trim();
+      clean = clean.replace(/([0-9])-(?=[0-9])/g, '$1');
+      const num = parseFloat(clean);
+      return isNaN(num) ? 0 : num;
+    }
+
+    // Helper: Standardize Date string to DD/MM/YYYY and YYYYMMDD
+    function parseStatementDate(str) {
+      if (!str) return null;
+      str = str.trim();
+      
+      // Match DD/MM/YYYY or DD-MM-YYYY or DD.MM.YYYY
+      let m = str.match(/(\d{1,2})[-/.](\d{1,2})[-/.](\d{2,4})/);
+      if (m) {
+        let day = m[1].padStart(2, '0');
+        let month = m[2].padStart(2, '0');
+        let year = m[3].length === 2 ? '20' + m[3] : m[3];
+        return { display: `${day}/${month}/${year}`, tally: `${year}${month}${day}` };
+      }
+
+      // Match DD-Mon-YYYY (e.g. 15-Apr-2024 or 15 Apr 2024)
+      const months = { jan:'01', feb:'02', mar:'03', apr:'04', may:'05', jun:'06', jul:'07', aug:'08', sep:'09', oct:'10', nov:'11', dec:'12' };
+      m = str.match(/(\d{1,2})[-\s]([A-Za-z]{3})[A-Za-z]*[-\s](\d{2,4})/);
+      if (m) {
+        let day = m[1].padStart(2, '0');
+        let monKey = m[2].toLowerCase();
+        let month = months[monKey] || '01';
+        let year = m[3].length === 2 ? '20' + m[3] : m[3];
+        return { display: `${day}/${month}/${year}`, tally: `${year}${month}${day}` };
+      }
+
+      return null;
+    }
+
+    // Core Statement Row Extractor
+    function extractTransactionsFromLines(lineItemsArray, bankKey) {
+      const results = [];
+      let currentTxn = null;
+
+      const dateRegex = /^(\d{1,2}[-/.]\d{1,2}[-/.]\d{2,4}|\d{1,2}[-\s][A-Za-z]{3}[a-z]*[-\s]\d{2,4})/;
+      const amountRegex = /(?:INR\s*)?([0-9]{1,3}(?:,[0-9]{2,3})*(?:\.[0-9]{2})?)/;
+
+      for (let i = 0; i < lineItemsArray.length; i++) {
+        const line = lineItemsArray[i];
+        const lineStr = line.map(item => item.str.trim()).join(' ').trim();
+        if (!lineStr) continue;
+
+        const dateMatch = lineStr.match(dateRegex);
+
+        if (dateMatch) {
+          const parsedDate = parseStatementDate(dateMatch[1]);
+          
+          if (parsedDate) {
+            const amountsFound = [];
+            for (const item of line) {
+              const text = item.str.trim();
+              if (amountRegex.test(text) && /[0-9]+\.[0-9]{2}/.test(text)) {
+                amountsFound.push({ x: item.x, val: parseIndianAmount(text), raw: text });
+              }
+            }
+
+            if (amountsFound.length >= 1) {
+              let debit = 0;
+              let credit = 0;
+              let balance = 0;
+              let chqNo = "";
+
+              const chqMatch = lineStr.match(/(?:CHQ|CHEQUE|REF|UTR|UPI)[\s/:-]*([A-Z0-9]{4,22})/i);
+              if (chqMatch) chqNo = chqMatch[1];
+
+              const hasDr = /\b(DR|DEBIT|WDL)\b/i.test(lineStr);
+              const hasCr = /\b(CR|CREDIT|DEP)\b/i.test(lineStr);
+
+              if (amountsFound.length >= 2) {
+                balance = amountsFound[amountsFound.length - 1].val;
+                const txnAmt = amountsFound[0].val;
+                if (hasCr) credit = txnAmt;
+                else if (hasDr) debit = txnAmt;
+                else {
+                  if (lineStr.toLowerCase().includes('cr')) credit = txnAmt;
+                  else debit = txnAmt;
+                }
+              } else if (amountsFound.length >= 3) {
+                balance = amountsFound[2].val;
+                debit = amountsFound[0].val;
+                credit = amountsFound[1].val;
+              } else {
+                const singleAmt = amountsFound[0].val;
+                if (hasCr) credit = singleAmt;
+                else debit = singleAmt;
+              }
+
+              let narration = lineStr.replace(dateMatch[0], '').trim();
+              narration = narration.replace(/[0-9]{1,3}(?:,[0-9]{2,3})*(?:\.[0-9]{2})/g, '').trim();
+              narration = narration.replace(/\b(DR|CR|INR)\b/gi, '').trim();
+
+              currentTxn = {
+                date: parsedDate.display,
+                tallyDate: parsedDate.tally,
+                narration: narration || "Bank Transaction",
+                refNo: chqNo,
+                debit: debit,
+                credit: credit,
+                balance: balance,
+                counterLedger: autoMapLedger(narration)
+              };
+
+              results.push(currentTxn);
+            }
+          }
+        } else if (currentTxn) {
+          if (!lineStr.includes('Page ') && !lineStr.includes('Statement of Account') && !lineStr.includes('Branch Code') && !lineStr.includes('Opening Balance')) {
+            if (currentTxn.narration.length < 240) {
+              currentTxn.narration += " " + lineStr;
+              if (!currentTxn.refNo) {
+                const chqMatch = lineStr.match(/(?:CHQ|CHEQUE|REF|UTR|UPI)[\s/:-]*([A-Z0-9]{4,22})/i);
+                if (chqMatch) currentTxn.refNo = chqMatch[1];
+              }
+            }
+          }
+        }
+      }
+
+      return results;
+    }
+
+    // Fallback Line Scanner
+    function fallbackTextScanner(lineItemsArray) {
+      const results = [];
+      const dateReg = /(\d{1,2}[-/.]\d{1,2}[-/.]\d{2,4})/;
+      const amtReg = /([0-9]{1,3}(?:,[0-9]{2,3})*(?:\.[0-9]{2}))/g;
+
+      for (const line of lineItemsArray) {
+        const text = line.map(item => item.str).join(' ');
+        const dm = text.match(dateReg);
+        if (dm) {
+          const amts = text.match(amtReg);
+          if (amts && amts.length >= 1) {
+            const pDate = parseStatementDate(dm[1]);
+            const isCr = /\b(CR|CREDIT)\b/i.test(text);
+            const val = parseIndianAmount(amts[0]);
+            results.push({
+              date: pDate ? pDate.display : dm[1],
+              tallyDate: pDate ? pDate.tally : '20240401',
+              narration: text.replace(dm[0], '').replace(amtReg, '').replace(/\b(DR|CR|INR)\b/gi, '').trim() || "Transaction",
+              refNo: "",
+              debit: isCr ? 0 : val,
+              credit: isCr ? val : 0,
+              balance: amts.length > 1 ? parseIndianAmount(amts[amts.length - 1]) : 0,
+              counterLedger: autoMapLedger(text)
+            });
+          }
+        }
+      }
+      return results;
+    }
+
+    // Parse CSV / TXT fallback
+    function parseCsvText(csvText) {
+      const lines = csvText.split(/\r?\n/);
+      const results = [];
+
+      for (let i = 1; i < lines.length; i++) {
+        const line = lines[i].trim();
+        if (!line) continue;
+        const cols = line.split(',').map(c => c.replace(/^["']|["']$/g, '').trim());
+        if (cols.length >= 4) {
+          const pDate = parseStatementDate(cols[0]);
+          if (pDate) {
+            const narration = cols[1] || "";
+            const debit = parseIndianAmount(cols[2]);
+            const credit = parseIndianAmount(cols[3]);
+            const balance = cols.length >= 5 ? parseIndianAmount(cols[4]) : 0;
+            results.push({
+              date: pDate.display,
+              tallyDate: pDate.tally,
+              narration: narration,
+              refNo: cols.length >= 6 ? cols[5] : "",
+              debit: debit,
+              credit: credit,
+              balance: balance,
+              counterLedger: autoMapLedger(narration)
+            });
+          }
+        }
+      }
+
+      if (results.length > 0) {
+        parsedTransactions = results;
+        renderTable();
+        hideStatus();
+      } else {
+        alert("No valid transaction rows found in CSV. Expected columns: Date, Narration, Debit, Credit, Balance");
+        hideStatus();
+      }
+    }
+
+    // Smart Rule-based Counter Ledger Mapper
+    function autoMapLedger(narration) {
+      if (!narration) return document.getElementById('defaultCounterLedger').value || 'Suspense Account';
+      const upper = narration.toUpperCase();
+
+      if (upper.includes('ATM') || upper.includes('CASH WDL') || upper.includes('CASH DEP') || upper.includes('SELF')) return 'Cash';
+      if (upper.includes('SALARY') || upper.includes('PAYROLL')) return 'Salary A/c';
+      if (upper.includes('INT.PD') || upper.includes('INTEREST') || upper.includes('INT COLL')) return 'Bank Interest Received';
+      if (upper.includes('CHG') || upper.includes('CHARGES') || upper.includes('FEE') || upper.includes('SMS CHG')) return 'Bank Charges';
+      if (upper.includes('PETROL') || upper.includes('FUEL') || upper.includes('HPCL') || upper.includes('IOCL') || upper.includes('BPCL')) return 'Fuel & Conveyance';
+      if (upper.includes('ELECTRICITY') || upper.includes('BESCOM') || upper.includes('MSEDCL') || upper.includes('TNEB')) return 'Electricity Expenses';
+      if (upper.includes('RENT') || upper.includes('LEASE')) return 'Rent Expense';
+      if (upper.includes('GST') || upper.includes('TAX') || upper.includes('TDS')) return 'Duties & Taxes';
+      if (upper.includes('SWIGGY') || upper.includes('ZOMATO') || upper.includes('RESTAURANT')) return 'Staff Refreshment';
+      if (upper.includes('AMAZON') || upper.includes('FLIPKART')) return 'Office Supplies';
+
+      return document.getElementById('defaultCounterLedger').value || 'Suspense Account';
+    }
+
+    // =========================================================================
+    // TABLE RENDERING & INLINE EDITING
+    // =========================================================================
+    function renderTable() {
+      const tbody = document.getElementById('tableBody');
+      const tableCard = document.getElementById('tableCard');
+      const metricsStrip = document.getElementById('metricsStrip');
+      const bankBadge = document.getElementById('bankIndicatorBadge');
+
+      if (!parsedTransactions || parsedTransactions.length === 0) {
+        tableCard.style.display = 'none';
+        metricsStrip.style.display = 'none';
+        document.getElementById('btnExportXml').disabled = true;
+        document.getElementById('btnExportCsv').disabled = true;
+        document.getElementById('btnCopyXml').disabled = true;
+        return;
+      }
+
+      tableCard.style.display = 'block';
+      metricsStrip.style.display = 'grid';
+      document.getElementById('btnExportXml').disabled = false;
+      document.getElementById('btnExportCsv').disabled = false;
+      document.getElementById('btnCopyXml').disabled = false;
+
+      const profile = BANK_PROFILES[selectedBankKey];
+      bankBadge.textContent = `Bank Profile: ${profile ? profile.name : 'Auto-Detect'}`;
+
+      let totalDr = 0, totalCr = 0;
+      tbody.innerHTML = parsedTransactions.map((tx, idx) => {
+        totalDr += (tx.debit || 0);
+        totalCr += (tx.credit || 0);
+
+        return `
+          <tr data-idx="${idx}">
+            <td style="color:#64748b; font-family:var(--font-mono); font-size:0.75rem;">${idx + 1}</td>
+            <td><input type="text" class="cell-input" value="${tx.date}" onchange="updateTxField(${idx}, 'date', this.value)" style="width:90px;"></td>
+            <td><input type="text" class="cell-input" value="${escapeHtml(tx.narration)}" onchange="updateTxField(${idx}, 'narration', this.value)" title="${escapeHtml(tx.narration)}"></td>
+            <td><input type="text" class="cell-input" value="${escapeHtml(tx.refNo || '')}" onchange="updateTxField(${idx}, 'refNo', this.value)" placeholder="Ref / Chq"></td>
+            <td style="text-align:right;"><input type="number" step="0.01" class="cell-input badge-debit" value="${tx.debit || ''}" onchange="updateTxField(${idx}, 'debit', parseFloat(this.value)||0)" style="text-align:right; width:85px;"></td>
+            <td style="text-align:right;"><input type="number" step="0.01" class="cell-input badge-credit" value="${tx.credit || ''}" onchange="updateTxField(${idx}, 'credit', parseFloat(this.value)||0)" style="text-align:right; width:85px;"></td>
+            <td style="text-align:right; font-family:var(--font-mono); color:#cbd5e1;">₹${(tx.balance || 0).toLocaleString('en-IN', {minimumFractionDigits:2})}</td>
+            <td><input type="text" class="cell-input" value="${escapeHtml(tx.counterLedger || '')}" onchange="updateTxField(${idx}, 'counterLedger', this.value)" style="color:#38bdf8; font-weight:700;"></td>
+            <td style="text-align:center;">
+              <button class="icon-btn" onclick="deleteRow(${idx})" style="color:#ef4444; width:24px; height:24px; font-size:0.75rem;" title="Delete row"><i class="fas fa-trash"></i></button>
+            </td>
+          </tr>
+        `;
+      }).join('');
+
+      // Update Summary Cards
+      document.getElementById('metricCount').textContent = parsedTransactions.length;
+      document.getElementById('metricDebit').textContent = '₹' + totalDr.toLocaleString('en-IN', {minimumFractionDigits:2});
+      document.getElementById('metricCredit').textContent = '₹' + totalCr.toLocaleString('en-IN', {minimumFractionDigits:2});
+      
+      const net = totalCr - totalDr;
+      const netEl = document.getElementById('metricNet');
+      netEl.textContent = (net >= 0 ? '+' : '') + '₹' + net.toLocaleString('en-IN', {minimumFractionDigits:2});
+      netEl.style.color = net >= 0 ? '#34d399' : '#f87171';
+
+      document.getElementById('rowCountBadge').textContent = `${parsedTransactions.length} transactions`;
+    }
+
+    function updateTxField(idx, field, value) {
+      if (parsedTransactions[idx]) {
+        parsedTransactions[idx][field] = value;
+        if (field === 'date') {
+          const p = parseStatementDate(value);
+          if (p) parsedTransactions[idx].tallyDate = p.tally;
+        }
+        if (field === 'debit' || field === 'credit') {
+          let totalDr = 0, totalCr = 0;
+          parsedTransactions.forEach(t => { totalDr += t.debit || 0; totalCr += t.credit || 0; });
+          document.getElementById('metricDebit').textContent = '₹' + totalDr.toLocaleString('en-IN', {minimumFractionDigits:2});
+          document.getElementById('metricCredit').textContent = '₹' + totalCr.toLocaleString('en-IN', {minimumFractionDigits:2});
+          const net = totalCr - totalDr;
+          const netEl = document.getElementById('metricNet');
+          netEl.textContent = (net >= 0 ? '+' : '') + '₹' + net.toLocaleString('en-IN', {minimumFractionDigits:2});
+          netEl.style.color = net >= 0 ? '#34d399' : '#f87171';
+        }
+      }
+    }
+
+    function deleteRow(idx) {
+      if (confirm("Delete this transaction row?")) {
+        parsedTransactions.splice(idx, 1);
+        renderTable();
+      }
+    }
+
+    function addNewRow() {
+      const today = new Date();
+      const dd = String(today.getDate()).padStart(2, '0');
+      const mm = String(today.getMonth() + 1).padStart(2, '0');
+      const yyyy = today.getFullYear();
+      
+      parsedTransactions.unshift({
+        date: `${dd}/${mm}/${yyyy}`,
+        tallyDate: `${yyyy}${mm}${dd}`,
+        narration: "New Bank Entry",
+        refNo: "",
+        debit: 0,
+        credit: 0,
+        balance: 0,
+        counterLedger: document.getElementById('defaultCounterLedger').value || 'Suspense Account'
+      });
+      renderTable();
+    }
+
+    function clearAllData() {
+      if (confirm("Clear all loaded transactions?")) {
+        parsedTransactions = [];
+        renderTable();
+      }
+    }
+
+    function filterTable() {
+      const q = document.getElementById('tableSearch').value.toLowerCase();
+      const rows = document.querySelectorAll('#tableBody tr');
+      rows.forEach(r => {
+        const text = r.textContent.toLowerCase();
+        r.style.display = text.includes(q) ? '' : 'none';
+      });
+    }
+
+    // =========================================================================
+    // TALLY XML GENERATOR (COMPLIANT TALLYPRIME & TALLY.ERP 9 SCHEMA)
+    // =========================================================================
+    function generateTallyXml() {
+      if (!parsedTransactions || parsedTransactions.length === 0) {
+        alert("No transactions to convert!");
+        return null;
+      }
+
+      const companyName = document.getElementById('companyName').value.trim() || "My Company";
+      const bankLedger = document.getElementById('bankLedger').value.trim() || "State Bank of India";
+      const voucherMode = document.getElementById('voucherTypeMode').value;
+
+      let xml = `<?xml version="1.0" encoding="utf-8"?>\n`;
+      xml += `<ENVELOPE>\n`;
+      xml += `  <HEADER>\n`;
+      xml += `    <TALLYREQUEST>Import Data</TALLYREQUEST>\n`;
+      xml += `  </HEADER>\n`;
+      xml += `  <BODY>\n`;
+      xml += `    <IMPORTDATA>\n`;
+      xml += `      <REQUESTDESC>\n`;
+      xml += `        <REPORTNAME>Vouchers</REPORTNAME>\n`;
+      xml += `        <STATICVARIABLES>\n`;
+      xml += `          <SVCURRENTCOMPANY>${escapeXml(companyName)}</SVCURRENTCOMPANY>\n`;
+      xml += `        </STATICVARIABLES>\n`;
+      xml += `      </REQUESTDESC>\n`;
+      xml += `      <REQUESTDATA>\n`;
+
+      parsedTransactions.forEach((tx, idx) => {
+        const isDebit = (tx.debit || 0) > 0;
+        const isCredit = (tx.credit || 0) > 0;
+        const amountVal = isDebit ? tx.debit : (isCredit ? tx.credit : 0);
+        if (amountVal <= 0) return;
+
+        const amountStr = amountVal.toFixed(2);
+        const tallyDate = tx.tallyDate || '20240401';
+        const counterLedger = tx.counterLedger || document.getElementById('defaultCounterLedger').value || 'Suspense Account';
+        const narration = tx.narration || "Bank Transaction";
+        const refNo = tx.refNo || "";
+
+        let vchType = "Payment";
+        if (voucherMode === 'all_journal') {
+          vchType = "Journal";
+        } else if (voucherMode === 'contra_cash' && counterLedger.toLowerCase().includes('cash')) {
+          vchType = "Contra";
+        } else {
+          vchType = isDebit ? "Payment" : "Receipt";
+        }
+
+        const vchNumber = idx + 1;
+        const guid = `AIBOTS-${tallyDate}-${vchNumber}-${Math.random().toString(36).substring(2, 9)}`;
+
+        xml += `        <TALLYMESSAGE xmlns:UDF="TallyUDF">\n`;
+        xml += `          <VOUCHER VCHTYPE="${vchType}" ACTION="Create" OBJVIEW="Accounting Voucher View">\n`;
+        xml += `            <DATE>${tallyDate}</DATE>\n`;
+        xml += `            <GUID>${guid}</GUID>\n`;
+        xml += `            <VOUCHERTYPENAME>${vchType}</VOUCHERTYPENAME>\n`;
+        xml += `            <VOUCHERNUMBER>${vchNumber}</VOUCHERNUMBER>\n`;
+        xml += `            <PARTYLEDGERNAME>${escapeXml(counterLedger)}</PARTYLEDGERNAME>\n`;
+        xml += `            <PERSISTEDVIEW>Accounting Voucher View</PERSISTEDVIEW>\n`;
+        xml += `            <EFFECTIVEDATE>${tallyDate}</EFFECTIVEDATE>\n`;
+        xml += `            <NARRATION>${escapeXml(narration)}</NARRATION>\n`;
+
+        // Counterparty Entry
+        xml += `            <ALLLEDGERENTRIES.LIST>\n`;
+        xml += `              <LEDGERNAME>${escapeXml(counterLedger)}</LEDGERNAME>\n`;
+        xml += `              <ISDEEMEDPOSITIVE>${isDebit ? 'Yes' : 'No'}</ISDEEMEDPOSITIVE>\n`;
+        xml += `              <AMOUNT>${isDebit ? '-' + amountStr : amountStr}</AMOUNT>\n`;
+        xml += `            </ALLLEDGERENTRIES.LIST>\n`;
+
+        // Bank Entry
+        xml += `            <ALLLEDGERENTRIES.LIST>\n`;
+        xml += `              <LEDGERNAME>${escapeXml(bankLedger)}</LEDGERNAME>\n`;
+        xml += `              <ISDEEMEDPOSITIVE>${isDebit ? 'No' : 'Yes'}</ISDEEMEDPOSITIVE>\n`;
+        xml += `              <AMOUNT>${isDebit ? amountStr : '-' + amountStr}</AMOUNT>\n`;
+        xml += `              <BANKALLOCATIONS.LIST>\n`;
+        xml += `                <DATE>${tallyDate}</DATE>\n`;
+        xml += `                <INSTRUMENTDATE>${tallyDate}</INSTRUMENTDATE>\n`;
+        xml += `                <NAME>${guid}</NAME>\n`;
+        xml += `                <TRANSACTIONTYPE>${refNo ? 'Inter Bank Transfer' : 'Others'}</TRANSACTIONTYPE>\n`;
+        xml += `                <PAYMENTFAVOURING>${escapeXml(counterLedger)}</PAYMENTFAVOURING>\n`;
+        if (refNo) xml += `                <INSTRUMENTNUMBER>${escapeXml(refNo)}</INSTRUMENTNUMBER>\n`;
+        xml += `                <AMOUNT>${isDebit ? amountStr : '-' + amountStr}</AMOUNT>\n`;
+        xml += `              </BANKALLOCATIONS.LIST>\n`;
+        xml += `            </ALLLEDGERENTRIES.LIST>\n`;
+
+        xml += `          </VOUCHER>\n`;
+        xml += `        </TALLYMESSAGE>\n`;
+      });
+
+      xml += `      </REQUESTDATA>\n`;
+      xml += `    </IMPORTDATA>\n`;
+      xml += `  </BODY>\n`;
+      xml += `</ENVELOPE>\n`;
+
+      return xml;
+    }
+
+    function exportToTallyXml() {
+      const xml = generateTallyXml();
+      if (!xml) return;
+      const blob = new Blob([xml], { type: 'application/xml;charset=utf-8;' });
+      const bankName = document.getElementById('bankLedger').value.replace(/[^a-zA-Z0-9]/g, '_') || 'Bank';
+      const filename = `${bankName}_Tally_Vouchers_${new Date().toISOString().slice(0,10)}.xml`;
+      downloadBlob(blob, filename);
+    }
+
+    function exportToCsv() {
+      if (!parsedTransactions || parsedTransactions.length === 0) return;
+      let csv = "Date,Narration,Ref Number,Withdrawal (Dr),Deposit (Cr),Balance,Counter Ledger\n";
+      parsedTransactions.forEach(t => {
+        csv += `"${t.date}","${(t.narration || '').replace(/"/g, '""')}","${t.refNo || ''}",${t.debit || 0},${t.credit || 0},${t.balance || 0},"${t.counterLedger || ''}"\n`;
+      });
+      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+      downloadBlob(blob, `Bank_Statement_${new Date().toISOString().slice(0,10)}.csv`);
+    }
+
+    function copyXmlToClipboard() {
+      const xml = generateTallyXml();
+      if (!xml) return;
+      navigator.clipboard.writeText(xml).then(() => {
+        alert("Tally XML copied to clipboard successfully!");
+      }).catch(() => {
+        alert("Failed to copy automatically. Please use Download XML instead.");
+      });
+    }
+
+    function downloadBlob(blob, filename) {
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    }
+
+    function escapeXml(str) {
+      if (!str) return '';
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&apos;');
+    }
+    function escapeHtml(str) {
+      if (!str) return '';
+      return String(str).replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    }
+
+    // =========================================================================
+    // PASSWORD MODAL & HELPERS
+    // =========================================================================
+    function openPasswordModal() { document.getElementById('passwordModal').classList.add('active'); }
+    function closePasswordModal() { document.getElementById('passwordModal').classList.remove('active'); }
+    function openHelpModal() { document.getElementById('helpModal').classList.add('active'); }
+    function closeHelpModal() { document.getElementById('helpModal').classList.remove('active'); }
+
+    function togglePasswordVisibility() {
+      const input = document.getElementById('pdfPasswordInput');
+      const icon = document.getElementById('pwdEyeIcon');
+      if (input.type === 'password') {
+        input.type = 'text';
+        icon.className = 'fas fa-eye-slash';
+      } else {
+        input.type = 'password';
+        icon.className = 'fas fa-eye';
+      }
+    }
+
+    function submitPasswordAndParse() {
+      const pwd = document.getElementById('pdfPasswordInput').value.trim();
+      if (!pwd) { alert("Please enter the password."); return; }
+      if (pendingFileBuffer) {
+        parsePdfWithPassword(pendingFileBuffer, pwd);
+      }
+    }
+
+    function showStatus(text, subtext) {
+      const card = document.getElementById('parseStatusCard');
+      card.style.display = 'flex';
+      document.getElementById('parseStatusText').textContent = text;
+      document.getElementById('parseSubText').textContent = subtext || '';
+    }
+    function hideStatus() {
+      document.getElementById('parseStatusCard').style.display = 'none';
+    }
+
+    // =========================================================================
+    // LOAD SAMPLE DEMO DATA
+    // =========================================================================
+    function loadSampleDemo() {
+      parsedTransactions = [
+        { date: "01/04/2024", tallyDate: "20240401", narration: "UPI/409218349210/DR/Swiggy Bangalore/ICIC/Lunch", refNo: "409218349210", debit: 450.00, credit: 0, balance: 84550.00, counterLedger: "Staff Refreshment" },
+        { date: "03/04/2024", tallyDate: "20240403", narration: "NEFT-AXIS00021-INFOSYS LTD-SALARY APR 2024", refNo: "AXIS240941", debit: 0, credit: 65000.00, balance: 149550.00, counterLedger: "Salary A/c" },
+        { date: "05/04/2024", tallyDate: "20240405", narration: "ATM WDL CASH SBI BR TECH PARK BLR", refNo: "ATM7841", debit: 10000.00, credit: 0, balance: 139550.00, counterLedger: "Cash" },
+        { date: "08/04/2024", tallyDate: "20240408", narration: "ACH/BESCOM POWER CORP/BILL PAYMENT", refNo: "ACH891234", debit: 3420.00, credit: 0, balance: 136130.00, counterLedger: "Electricity Expenses" },
+        { date: "12/04/2024", tallyDate: "20240412", narration: "IMPS/410294821094/CR/CLIENT PAYMENT/HDFC", refNo: "410294821094", debit: 0, credit: 28500.00, balance: 164630.00, counterLedger: "Suspense Account" },
+        { date: "15/04/2024", tallyDate: "20240415", narration: "HPCL PETROL BUNK KORAMANGALA BLR", refNo: "POS49120", debit: 2000.00, credit: 0, balance: 162630.00, counterLedger: "Fuel & Conveyance" },
+        { date: "20/04/2024", tallyDate: "20240420", narration: "INT.COLL: 01-01-2024 TO 31-03-2024 Q4 INTEREST", refNo: "", debit: 0, credit: 890.00, balance: 163520.00, counterLedger: "Bank Interest Received" },
+        { date: "25/04/2024", tallyDate: "20240425", narration: "CHQ 491022 PAID TO APEX OFFICE INTERIORS", refNo: "491022", debit: 18500.00, credit: 0, balance: 145020.00, counterLedger: "Suspense Account" },
+        { date: "28/04/2024", tallyDate: "20240428", narration: "SMS ALERT CHARGES Q4 2024", refNo: "", debit: 17.70, credit: 0, balance: 145002.30, counterLedger: "Bank Charges" }
+      ];
+
+      document.getElementById('bankSelect').value = 'sbi';
+      onBankSelectionChange();
+      renderTable();
+    }
+  </script>
+</body>
+</html>

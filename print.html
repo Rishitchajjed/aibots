@@ -1,14 +1,14 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover">
   <meta name="google-site-verification" content="ndzq-U-NLijgza_QqgQdcc2U3oMRoud_BT2ZZiwFREM">
   <meta name="google-site-verification" content="-Yb6Nx74gbZ3wRN5uP-Y8KKwDWlt1DPpxs4nA3PkE6M">
   <meta name="robots" content="index, follow">
   <title>Pro Print Studio & PDF Page Manager — AI Bots</title>
-  <meta name="description" content="Professional print studio: preview PDFs and photos in ultra HD, Odd/Even front & back duplex printing, From-To page selector, 2-Up paper saver, and mobile-friendly clean printing without page splitting.">
-  <meta name="keywords" content="print studio, print pdf online, odd even print, double sided print, 2 up print, from to page print, ai bots print">
+  <meta name="description" content="Professional print studio for desktop & mobile: preview PDFs and photos in ultra HD, Odd/Even front & back duplex printing, From-To page selector, 2-Up paper saver, and clean mobile printing.">
+  <meta name="keywords" content="print studio, mobile print pdf, print pdf online, odd even print, double sided print, 2 up print, from to page print, ai bots print">
   <link rel="canonical" href="https://www.aibots.co.in/print">
 
   <!-- Open Graph / Social Cards -->
@@ -86,216 +86,678 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   
   <style>
+    /* Print Studio Modern Styles & Mobile Enhancements */
+    .print-studio-container {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding-bottom: 90px;
+    }
+
+    /* Top Stats Pills */
+    .ps-feature-pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      justify-content: center;
+      margin-bottom: 22px;
+    }
+    .ps-pill {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-full);
+      padding: 6px 14px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--text-secondary);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      box-shadow: var(--shadow-sm);
+    }
+    .ps-pill i { color: var(--primary); }
+
     /* Dropzone */
     .ps-dropzone {
       border: 2px dashed var(--primary);
-      border-radius: var(--radius-lg);
-      padding: 36px 16px;
+      border-radius: var(--radius-xl);
+      padding: 44px 20px;
       text-align: center;
       cursor: pointer;
       position: relative;
       background: var(--bg-secondary);
-      transition: all 0.2s;
+      transition: var(--transition);
+      box-shadow: var(--shadow-sm);
+      overflow: hidden;
     }
-    .ps-dropzone:hover {
-      background: color-mix(in srgb, var(--primary) 8%, var(--bg-secondary));
+    .ps-dropzone:hover, .ps-dropzone.dragover {
+      background: color-mix(in srgb, var(--primary) 6%, var(--bg-secondary));
+      border-color: var(--primary-hover);
+      transform: translateY(-2px);
+      box-shadow: 0 12px 30px rgba(99, 102, 241, 0.12);
     }
-    .ps-dropzone i { font-size: 2.5rem; color: var(--primary); margin-bottom: 10px; display: block; }
-    .ps-dropzone h3 { margin: 0 0 6px; font-size: 1.1rem; }
-    .ps-dropzone p { color: var(--text-secondary); margin: 0 0 12px; font-size: 0.82rem; }
-    .ps-dropzone input[type="file"] { position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%; }
+    .ps-dropzone-icon-wrap {
+      width: 68px;
+      height: 68px;
+      border-radius: 50%;
+      background: color-mix(in srgb, var(--primary) 12%, transparent);
+      color: var(--primary);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2rem;
+      margin-bottom: 14px;
+    }
+    .ps-dropzone h3 {
+      margin: 0 0 8px;
+      font-size: 1.25rem;
+      font-weight: 800;
+      color: var(--text-primary);
+    }
+    .ps-dropzone p {
+      color: var(--text-secondary);
+      margin: 0 0 16px;
+      font-size: 0.88rem;
+    }
+    .ps-dropzone input[type="file"] {
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      cursor: pointer;
+      width: 100%;
+      height: 100%;
+      z-index: 10;
+    }
+    .drop-btn-row {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    /* Mobile Segmented View Switcher (Visible on <= 920px) */
+    .mobile-view-tabs {
+      display: none;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-full);
+      padding: 4px;
+      margin-bottom: 16px;
+      box-shadow: var(--shadow-sm);
+    }
+    .mobile-tab-btn {
+      flex: 1;
+      border: none;
+      background: transparent;
+      padding: 10px 14px;
+      border-radius: var(--radius-full);
+      font-size: 0.88rem;
+      font-weight: 700;
+      color: var(--text-secondary);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: var(--transition);
+      user-select: none;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .mobile-tab-btn.active {
+      background: var(--primary);
+      color: #ffffff;
+      box-shadow: 0 3px 10px var(--primary-glow);
+    }
+    .mobile-tab-btn .badge {
+      background: rgba(0, 0, 0, 0.12);
+      color: inherit;
+      font-size: 0.72rem;
+      padding: 2px 7px;
+      border-radius: var(--radius-full);
+    }
+    .mobile-tab-btn.active .badge {
+      background: rgba(255, 255, 255, 0.25);
+      color: #ffffff;
+    }
 
     /* Studio Layout */
     .ps-workspace {
       display: grid;
-      grid-template-columns: 340px 1fr;
-      gap: 20px;
+      grid-template-columns: 360px 1fr;
+      gap: 24px;
       margin-top: 20px;
       align-items: start;
-    }
-    @media (max-width: 920px) {
-      .ps-workspace {
-        grid-template-columns: 1fr;
-      }
     }
 
     /* Left Settings Panel */
     .ps-sidebar {
       background: var(--bg-secondary);
       border: 1px solid var(--border-color);
-      border-radius: var(--radius-lg);
-      padding: 18px;
+      border-radius: var(--radius-xl);
+      padding: 22px;
       display: flex;
       flex-direction: column;
-      gap: 14px;
+      gap: 16px;
       position: sticky;
       top: 85px;
-    }
-    @media (max-width: 920px) {
-      .ps-sidebar { position: static; }
+      box-shadow: var(--shadow-md);
     }
 
     .ps-sidebar-title {
-      font-size: 0.95rem;
+      font-size: 1.05rem;
       font-weight: 800;
       color: var(--text-primary);
       display: flex;
       align-items: center;
-      gap: 8px;
+      justify-content: space-between;
     }
+
     .section-lbl {
-      font-size: 0.72rem;
-      font-weight: 700;
+      font-size: 0.75rem;
+      font-weight: 800;
       text-transform: uppercase;
-      letter-spacing: 0.05em;
-      color: var(--text-secondary);
-      border-bottom: 1px solid var(--border-color);
-      padding-bottom: 3px;
+      letter-spacing: 0.06em;
+      color: var(--primary);
+      border-bottom: 1.5px solid color-mix(in srgb, var(--primary) 20%, transparent);
+      padding-bottom: 4px;
       margin-top: 4px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
     }
+
+    /* File Badge */
     .file-badge {
       display: flex;
       align-items: center;
-      gap: 10px;
+      justify-content: space-between;
+      gap: 12px;
       background: var(--bg-primary);
       border: 1px solid var(--border-color);
-      border-radius: 10px;
-      padding: 8px 12px;
+      border-radius: var(--radius-md);
+      padding: 10px 14px;
     }
-    .file-badge i { font-size: 1.3rem; color: var(--primary); }
-    .file-name { font-size: 0.82rem; font-weight: 700; max-width: 190px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-    .file-size { font-size: 0.72rem; color: var(--text-secondary); }
+    .file-badge-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      overflow: hidden;
+    }
+    .file-badge i.doc-icon {
+      font-size: 1.6rem;
+      color: var(--primary);
+      flex-shrink: 0;
+    }
+    .file-name {
+      font-size: 0.88rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      max-width: 170px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .file-size {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+    .change-file-btn {
+      background: transparent;
+      border: 1px solid var(--border-color);
+      color: var(--text-secondary);
+      border-radius: var(--radius-sm);
+      padding: 5px 9px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      transition: var(--transition);
+      flex-shrink: 0;
+    }
+    .change-file-btn:hover {
+      border-color: var(--primary);
+      color: var(--primary);
+    }
+
+    /* Form Controls & Inputs (Font size >= 16px for iOS) */
+    .ps-sidebar .form-control {
+      width: 100%;
+      padding: 10px 14px;
+      font-size: 16px; /* Prevents iOS Safari auto-zoom */
+      font-family: inherit;
+      border-radius: var(--radius-md);
+      background: var(--bg-primary);
+      border: 1.5px solid var(--border-color);
+      color: var(--text-primary);
+      box-sizing: border-box;
+      outline: none;
+      transition: var(--transition);
+    }
+    .ps-sidebar .form-control:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px var(--primary-glow);
+    }
+    .ps-sidebar .form-label {
+      display: block;
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      margin-bottom: 6px;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+    }
 
     /* Odd/Even Duplex Pill Buttons */
     .duplex-btn-group {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
       gap: 6px;
+      background: var(--bg-primary);
+      padding: 4px;
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
     }
     .duplex-btn {
-      padding: 8px 4px;
-      border: 1px solid var(--border-color);
-      background: var(--bg-primary);
+      padding: 9px 6px;
+      border: 1.5px solid transparent;
+      background: transparent;
       color: var(--text-secondary);
-      border-radius: 8px;
-      font-size: 0.74rem;
+      border-radius: var(--radius-sm);
+      font-size: 0.78rem;
       font-weight: 700;
       cursor: pointer;
       text-align: center;
-      transition: all 0.15s;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      transition: var(--transition);
+      -webkit-tap-highlight-color: transparent;
     }
-    .duplex-btn:hover, .duplex-btn.active {
-      border-color: var(--primary);
-      background: color-mix(in srgb, var(--primary) 12%, transparent);
+    .duplex-btn i { font-size: 0.95rem; }
+    .duplex-btn:hover {
       color: var(--primary);
+    }
+    .duplex-btn.active {
+      background: var(--bg-secondary);
+      border-color: var(--primary);
+      color: var(--primary);
+      box-shadow: var(--shadow-sm);
     }
 
     /* From-To Row */
     .range-row {
       display: flex;
-      gap: 8px;
+      gap: 10px;
       align-items: center;
     }
-    .range-row input {
+    .range-input-wrap {
       flex: 1;
+      position: relative;
+    }
+    .range-input-wrap input {
       text-align: center;
+      font-weight: 800;
+      font-size: 16px;
+      padding: 10px;
+    }
+    .range-sep {
+      font-weight: 800;
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      text-transform: uppercase;
+    }
+
+    /* Modern Switch Toggle */
+    .toggle-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 4px 0;
+      cursor: pointer;
+    }
+    .toggle-info {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+    .toggle-title {
+      font-size: 0.88rem;
       font-weight: 700;
+      color: var(--text-primary);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .toggle-desc {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+    .switch-ui {
+      position: relative;
+      display: inline-block;
+      width: 44px;
+      height: 24px;
+      flex-shrink: 0;
+    }
+    .switch-ui input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+    .switch-slider {
+      position: absolute;
+      cursor: pointer;
+      inset: 0;
+      background: var(--border-color);
+      border-radius: 24px;
+      transition: var(--transition);
+    }
+    .switch-slider:before {
+      position: absolute;
+      content: "";
+      height: 18px;
+      width: 18px;
+      left: 3px;
+      bottom: 3px;
+      background: white;
+      border-radius: 50%;
+      transition: var(--transition);
+      box-shadow: 0 1px 3px rgba(0,0,0,0.25);
+    }
+    .switch-ui input:checked + .switch-slider {
+      background: var(--primary);
+    }
+    .switch-ui input:checked + .switch-slider:before {
+      transform: translateX(20px);
+    }
+
+    /* Swatches */
+    .swatch-row {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-top: 4px;
+    }
+    .swatch {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      cursor: pointer;
+      border: 2px solid transparent;
+      transition: transform 0.15s, border-color 0.15s;
+    }
+    .swatch.active {
+      border-color: var(--text-primary);
+      transform: scale(1.15);
+      box-shadow: 0 0 0 2px var(--bg-secondary);
     }
 
     /* Right Preview Stage */
     .ps-stage {
       background: var(--bg-secondary);
       border: 1px solid var(--border-color);
-      border-radius: var(--radius-lg);
-      padding: 18px;
+      border-radius: var(--radius-xl);
+      padding: 22px;
       display: flex;
       flex-direction: column;
-      gap: 14px;
+      gap: 16px;
+      box-shadow: var(--shadow-md);
+      min-width: 0; /* Prevents grid breakout */
     }
+
     .stage-top-bar {
       display: flex;
       justify-content: space-between;
       align-items: center;
       flex-wrap: wrap;
-      gap: 10px;
+      gap: 12px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--border-color);
+    }
+    .stage-title-wrap h3 {
+      margin: 0 0 3px;
+      font-size: 1.15rem;
+      font-weight: 800;
+      color: var(--text-primary);
+    }
+    .stage-title-wrap span {
+      font-size: 0.82rem;
+      color: var(--text-muted);
+      font-weight: 600;
+    }
+
+    .stage-actions-wrap {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+    .view-toggle-btn {
+      border: 1px solid var(--border-color);
+      background: var(--bg-primary);
+      color: var(--text-secondary);
+      border-radius: var(--radius-sm);
+      padding: 6px 12px;
+      font-size: 0.82rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: var(--transition);
+    }
+    .view-toggle-btn:hover {
+      border-color: var(--primary);
+      color: var(--primary);
     }
 
     /* Thumbnail Gallery */
     .page-gallery {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-      gap: 12px;
-      max-height: 580px;
+      grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+      gap: 14px;
+      max-height: 640px;
       overflow-y: auto;
       padding: 4px;
+      scrollbar-width: thin;
     }
-    @media (max-width: 600px) {
-      .page-gallery {
-        grid-template-columns: repeat(2, 1fr);
-        gap: 10px;
-      }
+    .page-gallery.single-view {
+      grid-template-columns: 1fr;
+      max-width: 580px;
+      margin: 0 auto;
+      width: 100%;
     }
+
     .thumb-card {
       background: var(--bg-primary);
       border: 2px solid var(--border-color);
-      border-radius: 10px;
-      padding: 8px;
+      border-radius: var(--radius-md);
+      padding: 10px;
       display: flex;
       flex-direction: column;
       align-items: center;
       position: relative;
-      transition: all 0.2s;
+      transition: var(--transition);
       user-select: none;
+      box-shadow: var(--shadow-sm);
+      cursor: pointer;
+    }
+    .thumb-card:hover {
+      border-color: var(--primary);
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-md);
     }
     .thumb-card.excluded {
-      opacity: 0.35;
+      opacity: 0.45;
       border-color: #ef4444;
-      filter: grayscale(1);
+      filter: grayscale(0.85);
     }
     .thumb-card canvas, .thumb-card img {
       width: 100%;
       height: auto;
-      border-radius: 5px;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.12);
-      background: #fff;
+      border-radius: 6px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+      background: #ffffff;
       image-rendering: -webkit-optimize-contrast;
       image-rendering: high-quality;
     }
+
+    .thumb-badge {
+      position: absolute;
+      top: 14px;
+      left: 14px;
+      background: rgba(15, 23, 42, 0.82);
+      backdrop-filter: blur(4px);
+      color: #ffffff;
+      font-size: 0.72rem;
+      font-weight: 800;
+      padding: 3px 8px;
+      border-radius: var(--radius-full);
+      box-shadow: 0 2px 6px rgba(0,0,0,0.25);
+    }
+    .thumb-badge.even {
+      background: rgba(79, 70, 229, 0.88);
+    }
+
     .thumb-meta {
       display: flex;
       justify-content: space-between;
       align-items: center;
       width: 100%;
-      margin-top: 6px;
-      font-size: 0.74rem;
+      margin-top: 10px;
+      font-size: 0.78rem;
       font-weight: 700;
     }
     .thumb-tools {
       display: flex;
-      gap: 4px;
+      gap: 6px;
     }
     .tool-icon-btn {
       background: var(--bg-secondary);
-      border: 1px solid var(--border-color);
+      border: 1.5px solid var(--border-color);
       color: var(--text-primary);
-      width: 26px;
-      height: 26px;
-      border-radius: 6px;
+      width: 32px;
+      height: 32px;
+      border-radius: var(--radius-sm);
       display: flex;
       align-items: center;
       justify-content: center;
       cursor: pointer;
-      font-size: 0.72rem;
-      transition: all 0.15s;
+      font-size: 0.82rem;
+      transition: var(--transition);
+      -webkit-tap-highlight-color: transparent;
     }
-    .tool-icon-btn:hover { border-color: var(--primary); color: var(--primary); }
+    .tool-icon-btn:hover {
+      border-color: var(--primary);
+      color: var(--primary);
+      transform: scale(1.1);
+    }
 
-    /* Swatches */
-    .swatch-row { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 4px; }
-    .swatch {
-      width: 22px; height: 22px; border-radius: 6px; cursor: pointer; border: 2px solid transparent; transition: all 0.15s;
+    /* Floating Mobile Quick Action Bar (Visible on mobile screens) */
+    .mobile-floating-bar {
+      display: none;
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: var(--bg-glass);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border-top: 1px solid var(--border-color);
+      padding: 10px 16px;
+      padding-bottom: max(10px, env(safe-area-inset-bottom));
+      z-index: 999;
+      box-shadow: 0 -8px 24px rgba(0, 0, 0, 0.12);
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
     }
-    .swatch.active { border-color: var(--text-primary); transform: scale(1.2); }
+    .mobile-floating-info {
+      display: flex;
+      flex-direction: column;
+    }
+    .mobile-floating-info strong {
+      font-size: 0.88rem;
+      color: var(--text-primary);
+    }
+    .mobile-floating-info span {
+      font-size: 0.72rem;
+      color: var(--text-muted);
+    }
+    .mobile-floating-actions {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+
+    /* Responsive Media Queries */
+    @media (max-width: 920px) {
+      .ps-workspace {
+        grid-template-columns: 1fr;
+        gap: 16px;
+        margin-top: 14px;
+      }
+      .mobile-view-tabs {
+        display: flex;
+      }
+      .ps-sidebar {
+        position: static;
+        order: 2;
+        padding: 18px;
+      }
+      .ps-stage {
+        order: 1;
+        padding: 18px;
+      }
+      /* When tab switched on mobile */
+      .ps-workspace.tab-settings .ps-stage {
+        display: none;
+      }
+      .ps-workspace.tab-settings .ps-sidebar {
+        display: flex;
+      }
+      .ps-workspace.tab-pages .ps-sidebar {
+        display: none;
+      }
+      .ps-workspace.tab-pages .ps-stage {
+        display: flex;
+      }
+    }
+
+    @media (max-width: 600px) {
+      .print-studio-container {
+        padding-left: 8px;
+        padding-right: 8px;
+        padding-bottom: 84px;
+      }
+      .tool-title {
+        font-size: 1.8rem;
+      }
+      .ps-dropzone {
+        padding: 30px 14px;
+      }
+      .page-gallery {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+        max-height: 520px;
+      }
+      .thumb-card {
+        padding: 8px;
+      }
+      .tool-icon-btn {
+        width: 30px;
+        height: 30px;
+      }
+      .mobile-floating-bar {
+        display: flex;
+      }
+      .file-name {
+        max-width: 140px;
+      }
+    }
   </style>
   <link rel="manifest" href="manifest.json">
   <meta name="theme-color" content="#6366f1">
@@ -329,152 +791,253 @@
   </header>
 
   <main class="app-container tool-page-wrapper">
-    <div class="tool-header">
-      <span class="tool-header-badge"><i class="fas fa-print"></i> Ultra-HD Document & Photo Print</span>
-      <h1 class="tool-title">Pro Print Studio</h1>
-      <p class="tool-desc">Preview pages in ultra-high resolution, select Odd/Even pages for front & back duplex printing, custom From-To range, and clean printing on mobile & desktop.</p>
-    </div>
+    <div class="print-studio-container">
+      <!-- Tool Header -->
+      <div class="tool-header">
+        <span class="tool-header-badge"><i class="fas fa-print"></i> Ultra-HD Document & Photo Print</span>
+        <h1 class="tool-title">Pro Print Studio</h1>
+        <p class="tool-desc">Preview pages in ultra-high resolution, select Odd/Even pages for front & back duplex printing, custom From-To range, 2-Up paper saving, and clean mobile & desktop printing.</p>
+      </div>
 
-    <!-- Dropzone -->
-    <div class="ps-dropzone" id="dropzone" onclick="document.getElementById('fileInput').click()">
-      <input type="file" id="fileInput" accept=".pdf,.jpg,.jpeg,.png,.webp,.bmp" onchange="handleFile(event)">
-      <i class="fas fa-file-arrow-up"></i>
-      <h3>Choose or Drop a PDF or Photos</h3>
-      <p>PDF documents and JPG, PNG, WebP images supported in full original quality</p>
-      <span class="badge" style="background:var(--primary-light); color:var(--primary); font-weight:700; padding:6px 14px; border-radius:999px;">
-        <i class="fas fa-lock"></i> 100% Client-Side & Private
-      </span>
-    </div>
+      <!-- Feature Badges -->
+      <div class="ps-feature-pills">
+        <span class="ps-pill"><i class="fas fa-mobile-screen"></i> 100% Mobile & Phone Ready</span>
+        <span class="ps-pill"><i class="fas fa-copy"></i> Duplex Odd/Even Printing</span>
+        <span class="ps-pill"><i class="fas fa-file-lines"></i> 2-Up & 4-Up Paper Saver</span>
+        <span class="ps-pill"><i class="fas fa-wand-magic-sparkles"></i> Clean Scan & B&W Filters</span>
+        <span class="ps-pill"><i class="fas fa-shield-halved"></i> 100% Private In-Browser</span>
+      </div>
 
-    <!-- Studio Workspace -->
-    <div class="ps-workspace" id="psWorkspace" style="display: none;">
-      
-      <!-- Left Sidebar: Controls -->
-      <div class="ps-sidebar">
-        <div class="ps-sidebar-title">
-          <i class="fas fa-sliders" style="color:var(--primary);"></i> Print Configuration
+      <!-- Dropzone -->
+      <div class="ps-dropzone" id="dropzone" onclick="document.getElementById('fileInput').click()">
+        <input type="file" id="fileInput" accept=".pdf,.jpg,.jpeg,.png,.webp,.bmp,image/*" onchange="handleFile(event)">
+        <div class="ps-dropzone-icon-wrap">
+          <i class="fas fa-file-arrow-up"></i>
         </div>
-
-        <div class="file-badge">
-          <i class="fas fa-file-pdf" id="docTypeIcon"></i>
-          <div>
-            <div class="file-name" id="docName">document.pdf</div>
-            <div class="file-size" id="docSize">0 KB</div>
-          </div>
-        </div>
-
-        <!-- 1. Page Selection (Odd/Even & From-To Range) -->
-        <div class="section-lbl">Page Selection & Duplex</div>
-        <div>
-          <label class="form-label" style="font-size:0.7rem;">DUPLEX / SIDES FILTER</label>
-          <div class="duplex-btn-group">
-            <button class="duplex-btn active" id="btnSetAll" onclick="setPageFilter('all', this)"><i class="fas fa-border-all"></i> All Pages</button>
-            <button class="duplex-btn" id="btnSetOdd" onclick="setPageFilter('odd', this)"><i class="fas fa-file-lines"></i> Odd (Front)</button>
-            <button class="duplex-btn" id="btnSetEven" onclick="setPageFilter('even', this)"><i class="fas fa-file"></i> Even (Back)</button>
-          </div>
-        </div>
-
-        <div>
-          <label class="form-label" style="font-size:0.7rem;">PAGE RANGE (FROM — TO)</label>
-          <div class="range-row">
-            <input type="number" id="inpFromPage" class="form-control" value="1" min="1" oninput="applyFromToRange()" placeholder="From">
-            <span style="font-weight:700; color:var(--text-secondary); font-size:0.85rem;">to</span>
-            <input type="number" id="inpToPage" class="form-control" value="1" min="1" oninput="applyFromToRange()" placeholder="To">
-          </div>
-        </div>
-
-        <!-- 2. Layout & Paper Saving -->
-        <div class="section-lbl">Layout & Paper Saving</div>
-        <div>
-          <label class="form-label" style="font-size:0.7rem;">PAGES PER SHEET (N-UP)</label>
-          <select id="nUpSelect" class="form-control" onchange="updateGalleryOnly()">
-            <option value="1" selected>1 Page per Sheet (Standard)</option>
-            <option value="2">2 Pages per Sheet (2-Up Paper Saver)</option>
-            <option value="4">4 Pages per Sheet (4-Up Handout)</option>
-          </select>
-        </div>
-
-        <div>
-          <label class="form-label" style="font-size:0.7rem;">PAPER ORIENTATION</label>
-          <select id="orientationSelect" class="form-control" onchange="updateGalleryOnly()">
-            <option value="portrait" selected>Portrait</option>
-            <option value="landscape">Landscape</option>
-          </select>
-        </div>
-
-        <!-- 3. Enhancement Filters -->
-        <div class="section-lbl">Enhancements & Ink Saver</div>
-        <div style="display:flex; justify-content:space-between; align-items:center;">
-          <span style="font-size:0.82rem; font-weight:600;"><i class="fas fa-circle-half-stroke"></i> Grayscale / B&W</span>
-          <input type="checkbox" id="chkGrayscale" onchange="renderGallery()">
-        </div>
-
-        <div style="display:flex; justify-content:space-between; align-items:center;">
-          <span style="font-size:0.82rem; font-weight:600;"><i class="fas fa-wand-magic-sparkles"></i> Clean Scan (High Contrast)</span>
-          <input type="checkbox" id="chkCleanScan" onchange="renderGallery()">
-        </div>
-
-        <!-- 4. Watermark -->
-        <div class="section-lbl">Watermark Stamp</div>
-        <div style="display:flex; justify-content:space-between; align-items:center;">
-          <span style="font-size:0.82rem; font-weight:600;"><i class="fas fa-stamp"></i> Watermark</span>
-          <input type="checkbox" id="chkWm" onchange="toggleWmOptions()">
-        </div>
-        <div id="wmBox" style="display:none; flex-direction:column; gap:8px;">
-          <input type="text" id="wmTextInput" class="form-control" value="CONFIDENTIAL" placeholder="Watermark Text" oninput="renderGallery()">
-          <div class="swatch-row">
-            <div class="swatch active" style="background:#ef4444;" data-c="#ef4444" onclick="setWmColor(this)"></div>
-            <div class="swatch" style="background:#3b82f6;" data-c="#3b82f6" onclick="setWmColor(this)"></div>
-            <div class="swatch" style="background:#10b981;" data-c="#10b981" onclick="setWmColor(this)"></div>
-            <div class="swatch" style="background:#64748b;" data-c="#64748b" onclick="setWmColor(this)"></div>
-          </div>
-        </div>
-
-        <!-- 5. Headers & Footers -->
-        <div class="section-lbl">Header & Page Number</div>
-        <div>
-          <label class="form-label" style="font-size:0.7rem;">HEADER TEXT / TITLE</label>
-          <input type="text" id="headerTextInput" class="form-control" placeholder="Optional Header (e.g. Project Notes)">
-        </div>
-        <div style="display:flex; justify-content:space-between; align-items:center;">
-          <span style="font-size:0.82rem; font-weight:600;"><i class="fas fa-hashtag"></i> Page Numbers (Page 1 of N)</span>
-          <input type="checkbox" id="chkPageNums" checked>
-        </div>
-
-        <!-- Action Buttons -->
-        <div style="display:flex; flex-direction:column; gap:8px; margin-top:6px;">
-          <button class="btn btn-primary" onclick="triggerCleanPrint()" style="padding:12px; font-weight:800; font-size:0.95rem;">
-            <i class="fas fa-print"></i> Print Document (Ultra-HD)
+        <h3>Choose or Drop a PDF or Photos</h3>
+        <p>PDF documents and JPG, PNG, WebP images supported in full original clarity</p>
+        <div class="drop-btn-row">
+          <button type="button" class="btn btn-primary btn-sm">
+            <i class="fas fa-folder-open"></i> Browse Files / Camera
           </button>
-          <button class="btn btn-secondary" onclick="downloadExportPDF()">
-            <i class="fas fa-file-pdf"></i> Download Lossless PDF
-          </button>
-          <button class="btn btn-secondary" onclick="resetStudio()" style="color:#ef4444;">
-            <i class="fas fa-trash"></i> Clear File
-          </button>
+          <span class="badge" style="background:var(--primary-light); color:var(--primary); font-weight:700; padding:6px 14px; border-radius:999px; display:inline-flex; align-items:center; gap:6px;">
+            <i class="fas fa-lock"></i> 100% Private & In-Browser
+          </span>
         </div>
       </div>
 
-      <!-- Right Stage: Interactive Thumbnails -->
-      <div class="ps-stage">
-        <div class="stage-top-bar">
-          <div>
-            <h3 style="margin:0 0 2px; font-size:1.05rem;">Page Manager</h3>
-            <span style="font-size:0.8rem; color:var(--text-secondary);" id="pageCountSummary">0 pages loaded</span>
+      <!-- Mobile Segmented Tabs (Pages vs Settings) -->
+      <div class="mobile-view-tabs" id="mobileViewTabs" style="display: none;">
+        <button class="mobile-tab-btn active" id="tabBtnPages" onclick="switchMobileTab('pages')">
+          <i class="fas fa-file-lines"></i> Page Manager <span class="badge" id="mobilePageBadge">0</span>
+        </button>
+        <button class="mobile-tab-btn" id="tabBtnSettings" onclick="switchMobileTab('settings')">
+          <i class="fas fa-sliders"></i> Print Settings
+        </button>
+      </div>
+
+      <!-- Studio Workspace -->
+      <div class="ps-workspace tab-pages" id="psWorkspace" style="display: none;">
+        
+        <!-- Left Sidebar: Controls -->
+        <div class="ps-sidebar" id="psSidebar">
+          <div class="ps-sidebar-title">
+            <span><i class="fas fa-sliders text-primary"></i> Print Settings</span>
+            <button class="btn btn-secondary btn-sm" onclick="resetStudio()" style="color:#ef4444; padding:4px 8px; font-size:0.75rem;" title="Reset / Clear File">
+              <i class="fas fa-trash"></i> Reset
+            </button>
           </div>
 
-          <div style="display:flex; gap:6px; flex-wrap:wrap;">
-            <button class="btn btn-secondary btn-sm" onclick="rotateAllPages(90)"><i class="fas fa-rotate-right"></i> Rotate 90°</button>
-            <button class="btn btn-secondary btn-sm" onclick="includeAllPages()"><i class="fas fa-check-double"></i> Select All</button>
+          <!-- Document Info Card -->
+          <div class="file-badge">
+            <div class="file-badge-left">
+              <i class="fas fa-file-pdf doc-icon" id="docTypeIcon"></i>
+              <div>
+                <div class="file-name" id="docName">document.pdf</div>
+                <div class="file-size" id="docSize">0 KB</div>
+              </div>
+            </div>
+            <button type="button" class="change-file-btn" onclick="document.getElementById('fileInput').click()">
+              <i class="fas fa-repeat"></i> Change
+            </button>
+          </div>
+
+          <!-- 1. Page Selection (Odd/Even & From-To Range) -->
+          <div class="section-lbl"><i class="fas fa-copy"></i> Duplex / Sides Filter</div>
+          <div>
+            <label class="form-label">SELECT PAGES TO PRINT</label>
+            <div class="duplex-btn-group">
+              <button class="duplex-btn active" id="btnSetAll" onclick="setPageFilter('all', this)">
+                <i class="fas fa-border-all"></i>
+                <span>All Pages</span>
+              </button>
+              <button class="duplex-btn" id="btnSetOdd" onclick="setPageFilter('odd', this)">
+                <i class="fas fa-file-lines"></i>
+                <span>Odd (Front)</span>
+              </button>
+              <button class="duplex-btn" id="btnSetEven" onclick="setPageFilter('even', this)">
+                <i class="fas fa-file"></i>
+                <span>Even (Back)</span>
+              </button>
+            </div>
+          </div>
+
+          <div>
+            <label class="form-label">PAGE RANGE (FROM — TO)</label>
+            <div class="range-row">
+              <div class="range-input-wrap">
+                <input type="number" id="inpFromPage" class="form-control" value="1" min="1" oninput="applyFromToRange()" placeholder="From">
+              </div>
+              <span class="range-sep">to</span>
+              <div class="range-input-wrap">
+                <input type="number" id="inpToPage" class="form-control" value="1" min="1" oninput="applyFromToRange()" placeholder="To">
+              </div>
+            </div>
+          </div>
+
+          <!-- 2. Layout & Paper Saving -->
+          <div class="section-lbl"><i class="fas fa-table-cells"></i> Layout & Paper Saving</div>
+          <div>
+            <label class="form-label">PAGES PER SHEET (N-UP)</label>
+            <select id="nUpSelect" class="form-control" onchange="updateGalleryOnly()">
+              <option value="1" selected>1 Page per Sheet (Standard)</option>
+              <option value="2">2 Pages per Sheet (2-Up Paper Saver)</option>
+              <option value="4">4 Pages per Sheet (4-Up Handout)</option>
+            </select>
+          </div>
+
+          <div>
+            <label class="form-label">PAPER ORIENTATION</label>
+            <select id="orientationSelect" class="form-control" onchange="updateGalleryOnly()">
+              <option value="portrait" selected>Portrait</option>
+              <option value="landscape">Landscape</option>
+            </select>
+          </div>
+
+          <!-- 3. Enhancement Filters -->
+          <div class="section-lbl"><i class="fas fa-wand-magic-sparkles"></i> Enhancements & Ink Saver</div>
+          <div class="toggle-row" onclick="toggleCheckbox('chkGrayscale')">
+            <div class="toggle-info">
+              <span class="toggle-title"><i class="fas fa-circle-half-stroke"></i> Grayscale / B&W</span>
+              <span class="toggle-desc">Saves color printer toner/ink</span>
+            </div>
+            <label class="switch-ui" onclick="event.stopPropagation()">
+              <input type="checkbox" id="chkGrayscale" onchange="renderGallery()">
+              <span class="switch-slider"></span>
+            </label>
+          </div>
+
+          <div class="toggle-row" onclick="toggleCheckbox('chkCleanScan')">
+            <div class="toggle-info">
+              <span class="toggle-title"><i class="fas fa-file-invoice"></i> Clean Scan (High Contrast)</span>
+              <span class="toggle-desc">Whitens backgrounds for scanned documents</span>
+            </div>
+            <label class="switch-ui" onclick="event.stopPropagation()">
+              <input type="checkbox" id="chkCleanScan" onchange="renderGallery()">
+              <span class="switch-slider"></span>
+            </label>
+          </div>
+
+          <!-- 4. Watermark -->
+          <div class="section-lbl"><i class="fas fa-stamp"></i> Watermark Stamp</div>
+          <div class="toggle-row" onclick="toggleCheckbox('chkWm')">
+            <div class="toggle-info">
+              <span class="toggle-title"><i class="fas fa-certificate"></i> Add Watermark</span>
+              <span class="toggle-desc">Diagonal stamp across all pages</span>
+            </div>
+            <label class="switch-ui" onclick="event.stopPropagation()">
+              <input type="checkbox" id="chkWm" onchange="toggleWmOptions()">
+              <span class="switch-slider"></span>
+            </label>
+          </div>
+          <div id="wmBox" style="display:none; flex-direction:column; gap:8px;">
+            <input type="text" id="wmTextInput" class="form-control" value="CONFIDENTIAL" placeholder="Watermark Text" oninput="renderGallery()">
+            <div class="swatch-row">
+              <div class="swatch active" style="background:#ef4444;" data-c="#ef4444" onclick="setWmColor(this)" title="Red"></div>
+              <div class="swatch" style="background:#3b82f6;" data-c="#3b82f6" onclick="setWmColor(this)" title="Blue"></div>
+              <div class="swatch" style="background:#10b981;" data-c="#10b981" onclick="setWmColor(this)" title="Green"></div>
+              <div class="swatch" style="background:#64748b;" data-c="#64748b" onclick="setWmColor(this)" title="Gray"></div>
+            </div>
+          </div>
+
+          <!-- 5. Headers & Footers -->
+          <div class="section-lbl"><i class="fas fa-heading"></i> Header & Page Number</div>
+          <div>
+            <label class="form-label">HEADER TEXT / TITLE</label>
+            <input type="text" id="headerTextInput" class="form-control" placeholder="Optional Header (e.g. Project Notes)">
+          </div>
+          <div class="toggle-row" onclick="toggleCheckbox('chkPageNums')">
+            <div class="toggle-info">
+              <span class="toggle-title"><i class="fas fa-hashtag"></i> Page Numbers</span>
+              <span class="toggle-desc">Adds "Page X of Y" in the bottom corner</span>
+            </div>
+            <label class="switch-ui" onclick="event.stopPropagation()">
+              <input type="checkbox" id="chkPageNums" checked>
+              <span class="switch-slider"></span>
+            </label>
+          </div>
+
+          <!-- Desktop Primary Action Buttons -->
+          <div style="display:flex; flex-direction:column; gap:10px; margin-top:8px;">
+            <button class="btn btn-primary" onclick="triggerCleanPrint()" style="padding:14px; font-weight:800; font-size:1rem; box-shadow:0 4px 14px var(--primary-glow);">
+              <i class="fas fa-print"></i> Print Document (Ultra-HD)
+            </button>
+            <button class="btn btn-secondary" onclick="downloadExportPDF()" style="padding:12px; font-weight:700;">
+              <i class="fas fa-file-pdf"></i> Download Lossless PDF
+            </button>
           </div>
         </div>
 
-        <!-- Gallery of Page Cards -->
-        <div class="page-gallery" id="pageGallery"></div>
-      </div>
+        <!-- Right Stage: Interactive Thumbnails -->
+        <div class="ps-stage" id="psStage">
+          <div class="stage-top-bar">
+            <div class="stage-title-wrap">
+              <h3>Page Manager</h3>
+              <span id="pageCountSummary">0 pages loaded</span>
+            </div>
 
+            <div class="stage-actions-wrap">
+              <button class="view-toggle-btn" id="btnToggleView" onclick="toggleGalleryView()" title="Toggle Grid or Large View">
+                <i class="fas fa-table-cells-large" id="viewIcon"></i> <span id="viewText">Single View</span>
+              </button>
+              <button class="btn btn-secondary btn-sm" onclick="rotateAllPages(90)" title="Rotate all pages 90° clockwise">
+                <i class="fas fa-rotate-right"></i> Rotate 90°
+              </button>
+              <button class="btn btn-secondary btn-sm" onclick="includeAllPages()">
+                <i class="fas fa-check-double"></i> Select All
+              </button>
+              <button class="btn btn-secondary btn-sm" onclick="deselectAllPages()">
+                <i class="fas fa-xmark"></i> Clear All
+              </button>
+            </div>
+          </div>
+
+          <!-- Gallery of Page Cards -->
+          <div class="page-gallery" id="pageGallery"></div>
+        </div>
+
+      </div>
     </div>
   </main>
+
+  <!-- Mobile Floating Bottom Action Bar (Sticky on phones) -->
+  <div class="mobile-floating-bar" id="mobileFloatingBar">
+    <div class="mobile-floating-info">
+      <strong id="mobileSelectedCount">0 Pages</strong>
+      <span>Ready to print</span>
+    </div>
+    <div class="mobile-floating-actions">
+      <button class="btn btn-secondary btn-sm" onclick="switchMobileTab('settings')">
+        <i class="fas fa-sliders"></i> Settings
+      </button>
+      <button class="btn btn-primary btn-sm" onclick="triggerCleanPrint()" style="box-shadow:0 3px 10px var(--primary-glow);">
+        <i class="fas fa-print"></i> Print
+      </button>
+      <button class="btn btn-secondary btn-sm" onclick="downloadExportPDF()" title="Download PDF">
+        <i class="fas fa-file-arrow-down"></i>
+      </button>
+    </div>
+  </div>
 
   <!-- SEO Frequently Asked Questions Section -->
   <section class="app-container" style="max-width: 960px; margin: 40px auto 20px;">
@@ -494,7 +1057,7 @@
         <details style="background: var(--bg-tertiary); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 14px 18px; cursor: pointer;">
           <summary style="font-weight: 700; font-size: 0.95rem; color: var(--text-primary);">What file formats can I print?</summary>
           <p style="margin-top: 10px; font-size: 0.88rem; line-height: 1.6; color: var(--text-secondary);">
-            You can print multi-page PDF documents, JPG/PNG photos, Word/Docs exports, invoices, business cards, and study notes with 100% private in-browser rendering.
+            You can print multi-page PDF documents, JPG/PNG photos, camera captures, invoices, receipts, and study notes with 100% private in-browser rendering.
           </p>
         </details>
       </div>
@@ -507,6 +1070,74 @@
     let loadedPages = []; // Array of { id, canvas, rotation, included: bool }
     let wmColor = '#ef4444';
     let currentFilter = 'all';
+    let isSingleView = false;
+
+    // Mobile Drag & Drop Events
+    const dropzone = document.getElementById('dropzone');
+    ['dragenter', 'dragover'].forEach(name => {
+      dropzone.addEventListener(name, (e) => {
+        e.preventDefault();
+        dropzone.classList.add('dragover');
+      }, false);
+    });
+    ['dragleave', 'drop'].forEach(name => {
+      dropzone.addEventListener(name, (e) => {
+        e.preventDefault();
+        dropzone.classList.remove('dragover');
+      }, false);
+    });
+    dropzone.addEventListener('drop', (e) => {
+      const dt = e.dataTransfer;
+      const files = dt.files;
+      if (files && files.length > 0) {
+        document.getElementById('fileInput').files = files;
+        handleFile({ target: { files: files } });
+      }
+    });
+
+    // Helper for toggle rows
+    function toggleCheckbox(id) {
+      const chk = document.getElementById(id);
+      chk.checked = !chk.checked;
+      chk.dispatchEvent(new Event('change'));
+    }
+
+    // Switch mobile tab (Pages vs Settings)
+    function switchMobileTab(tab) {
+      const ws = document.getElementById('psWorkspace');
+      const tabPages = document.getElementById('tabBtnPages');
+      const tabSettings = document.getElementById('tabBtnSettings');
+
+      if (tab === 'pages') {
+        ws.classList.remove('tab-settings');
+        ws.classList.add('tab-pages');
+        tabPages.classList.add('active');
+        tabSettings.classList.remove('active');
+      } else {
+        ws.classList.remove('tab-pages');
+        ws.classList.add('tab-settings');
+        tabSettings.classList.add('active');
+        tabPages.classList.remove('active');
+      }
+    }
+
+    // Toggle Grid View vs Single / Large View
+    function toggleGalleryView() {
+      isSingleView = !isSingleView;
+      const gallery = document.getElementById('pageGallery');
+      const icon = document.getElementById('viewIcon');
+      const text = document.getElementById('viewText');
+
+      if (isSingleView) {
+        gallery.classList.add('single-view');
+        icon.className = 'fas fa-grip';
+        text.textContent = 'Grid View';
+      } else {
+        gallery.classList.remove('single-view');
+        icon.className = 'fas fa-table-cells-large';
+        text.textContent = 'Single View';
+      }
+    }
 
     async function handleFile(e) {
       const file = e.target.files[0];
@@ -516,15 +1147,27 @@
       document.getElementById('docSize').textContent = `${(file.size / 1024).toFixed(1)} KB`;
       document.getElementById('dropzone').style.display = 'none';
       document.getElementById('psWorkspace').style.display = 'grid';
+      document.getElementById('mobileViewTabs').style.display = 'flex';
+
+      // Show mobile floating action bar if on mobile
+      if (window.innerWidth <= 600) {
+        document.getElementById('mobileFloatingBar').style.display = 'flex';
+      }
 
       loadedPages = [];
-      document.getElementById('pageGallery').innerHTML = '<div style="padding:40px; text-align:center; color:var(--text-secondary);">Rendering pages in ultra-high resolution...</div>';
+      document.getElementById('pageGallery').innerHTML = `
+        <div style="padding:50px 20px; text-align:center; color:var(--text-secondary); grid-column:1/-1;">
+          <i class="fas fa-circle-notch fa-spin" style="font-size:2rem; color:var(--primary); margin-bottom:12px; display:block;"></i>
+          <h4 style="margin:0 0 6px; font-size:1.1rem; color:var(--text-primary);">Processing & Rendering Pages...</h4>
+          <p style="margin:0; font-size:0.85rem; color:var(--text-muted);">Rendering high-definition document pages for clean printing.</p>
+        </div>
+      `;
 
       if (file.type === 'application/pdf') {
-        document.getElementById('docTypeIcon').className = 'fas fa-file-pdf';
+        document.getElementById('docTypeIcon').className = 'fas fa-file-pdf doc-icon';
         await loadPdf(file);
       } else {
-        document.getElementById('docTypeIcon').className = 'fas fa-file-image';
+        document.getElementById('docTypeIcon').className = 'fas fa-file-image doc-icon';
         await loadImage(file);
       }
 
@@ -534,6 +1177,8 @@
       document.getElementById('inpToPage').value = loadedPages.length;
       document.getElementById('inpToPage').max = loadedPages.length;
 
+      document.getElementById('mobilePageBadge').textContent = loadedPages.length;
+
       renderGallery();
     }
 
@@ -541,9 +1186,12 @@
       const arrayBuffer = await file.arrayBuffer();
       const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
 
+      // Smart resolution scale: 2.0 provides crisp 144-192 DPI while keeping phone memory super light and fast
+      const renderScale = window.innerWidth <= 600 ? 1.8 : 2.4;
+
       for (let i = 1; i <= pdf.numPages; i++) {
         const page = await pdf.getPage(i);
-        const viewport = page.getViewport({ scale: 3.5 });
+        const viewport = page.getViewport({ scale: renderScale });
         const canvas = document.createElement('canvas');
         canvas.width = viewport.width;
         canvas.height = viewport.height;
@@ -589,22 +1237,32 @@
       gallery.innerHTML = '';
       const includedCount = loadedPages.filter(p => p.included).length;
       document.getElementById('pageCountSummary').textContent = `${includedCount} of ${loadedPages.length} pages selected for printing`;
+      document.getElementById('mobileSelectedCount').textContent = `${includedCount} Pages`;
+      document.getElementById('mobilePageBadge').textContent = `${includedCount}/${loadedPages.length}`;
 
       loadedPages.forEach((p, idx) => {
         const card = document.createElement('div');
         card.className = `thumb-card ${p.included ? '' : 'excluded'}`;
+        card.setAttribute('role', 'button');
+        card.setAttribute('tabindex', '0');
+
+        const isOdd = (idx + 1) % 2 !== 0;
+
+        // Badge
+        const badge = document.createElement('span');
+        badge.className = `thumb-badge ${isOdd ? 'odd' : 'even'}`;
+        badge.textContent = `P.${idx + 1} (${isOdd ? 'Odd' : 'Even'})`;
+        card.appendChild(badge);
 
         const previewCanvas = document.createElement('canvas');
         applyTransformsToCanvas(p.canvas, previewCanvas, p.rotation);
-
         card.appendChild(previewCanvas);
 
-        const isOdd = (idx + 1) % 2 !== 0;
         const meta = document.createElement('div');
         meta.className = 'thumb-meta';
         meta.innerHTML = `
-          <span>Page ${idx + 1} <small style="color:var(--text-muted);">(${isOdd ? 'Odd' : 'Even'})</small></span>
-          <div class="thumb-tools">
+          <span>Page ${idx + 1}</span>
+          <div class="thumb-tools" onclick="event.stopPropagation()">
             <button class="tool-icon-btn" title="Rotate Page 90°" onclick="rotatePage(${idx})"><i class="fas fa-rotate-right"></i></button>
             <button class="tool-icon-btn" title="${p.included ? 'Exclude Page' : 'Include Page'}" onclick="togglePage(${idx})">
               <i class="fas ${p.included ? 'fa-eye' : 'fa-eye-slash'}" style="color:${p.included ? 'var(--primary)' : '#ef4444'};"></i>
@@ -612,6 +1270,12 @@
           </div>
         `;
         card.appendChild(meta);
+
+        // Clicking card body toggles page inclusion
+        card.addEventListener('click', () => {
+          togglePage(idx);
+        });
+
         gallery.appendChild(card);
       });
     }
@@ -673,6 +1337,11 @@
       document.getElementById('inpFromPage').value = 1;
       document.getElementById('inpToPage').value = loadedPages.length;
       setPageFilter('all', document.getElementById('btnSetAll'));
+    }
+
+    function deselectAllPages() {
+      loadedPages.forEach(p => p.included = false);
+      renderGallery();
     }
 
     function toggleWmOptions() {
@@ -799,14 +1468,20 @@
       return sheetUrls;
     }
 
-    /* FOOLPROOF ISOLATED PRINT ENGINE (Works 100% on iOS Safari, Android, Chrome & Desktop) */
+    /* FOOLPROOF ISOLATED PRINT ENGINE (Desktop, iOS Safari & Android Chrome) */
     function triggerCleanPrint() {
       const sheets = buildSheetsDataUrls();
-      if (sheets.length === 0) { alert("No pages selected to print!"); return; }
+      if (sheets.length === 0) {
+        alert("Please select at least 1 page to print!");
+        return;
+      }
 
       const headerText = document.getElementById('headerTextInput').value.trim();
       const showPageNums = document.getElementById('chkPageNums').checked;
       const orientation = document.getElementById('orientationSelect').value;
+
+      // Check if iOS or mobile device
+      const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
 
       // Remove any existing print iframe
       const oldIframe = document.getElementById('cleanPrintIframe');
@@ -814,7 +1489,8 @@
 
       const iframe = document.createElement('iframe');
       iframe.id = 'cleanPrintIframe';
-      iframe.style.cssText = 'position:fixed; top:-9999px; left:-9999px; width:1px; height:1px; border:none; visibility:hidden;';
+      // Give standard dimensions for reliable mobile printing
+      iframe.style.cssText = 'position:fixed; bottom:0; right:0; width:10px; height:10px; border:none; opacity:0; pointer-events:none; z-index:-1;';
       document.body.appendChild(iframe);
 
       const doc = iframe.contentWindow.document;
@@ -853,7 +1529,7 @@
               flex-direction: column;
               align-items: center;
               justify-content: center;
-              padding: 8mm 6mm;
+              padding: 6mm 4mm;
               position: relative;
               box-sizing: border-box;
               overflow: hidden;
@@ -907,8 +1583,13 @@
         loaded++;
         if (loaded >= images.length) {
           setTimeout(() => {
-            iframe.contentWindow.focus();
-            iframe.contentWindow.print();
+            try {
+              iframe.contentWindow.focus();
+              iframe.contentWindow.print();
+            } catch (err) {
+              console.warn("Direct iframe print blocked or failed, downloading PDF fallback:", err);
+              downloadExportPDF();
+            }
           }, 350);
         }
       }
@@ -929,7 +1610,7 @@
           case '<': return '&lt;';
           case '>': return '&gt;';
           case '&': return '&amp;';
-          case '\'': return '&apos;';
+          case ''': return '&apos;';
           case '"': return '&quot;';
         }
       });
@@ -937,7 +1618,10 @@
 
     async function downloadExportPDF() {
       const sheets = buildSheetsDataUrls();
-      if (sheets.length === 0) { alert("No pages selected to export!"); return; }
+      if (sheets.length === 0) {
+        alert("Please select at least 1 page to export!");
+        return;
+      }
 
       const { jsPDF } = window.jspdf;
       const orientation = document.getElementById('orientationSelect').value;
@@ -965,6 +1649,8 @@
       document.getElementById('fileInput').value = '';
       document.getElementById('dropzone').style.display = 'block';
       document.getElementById('psWorkspace').style.display = 'none';
+      document.getElementById('mobileViewTabs').style.display = 'none';
+      document.getElementById('mobileFloatingBar').style.display = 'none';
       const oldIframe = document.getElementById('cleanPrintIframe');
       if (oldIframe) oldIframe.remove();
     }

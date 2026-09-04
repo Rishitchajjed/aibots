@@ -1074,8 +1074,8 @@
           }
         }
 
-        // Detect statement summary footer box
-        if (/statement\s*summary|grand\s*total/i.test(str)) {
+        // Detect statement summary or TOTAL footer line (e.g. ICICI, HDFC, SBI)
+        if (/^(total|totals|grand\s*total|statement\s*summary)$/i.test(str.trim())) {
           if (summaryTopY === null || y > summaryTopY) {
             summaryTopY = y;
           }
@@ -1168,7 +1168,7 @@
           const s = it.str.toLowerCase();
           if (s === 'cr.' || s === 'dr.' || s === 'cr' || s === 'dr' || s === 'inr') continue;
           // Ignore table header titles or summary words if they fall into the cell
-          if (/^(date|narration|particulars|chq\.?\/ref|value\s*dt|withdrawal\s*amt|deposit\s*amt|closing\s*bal|statement\s*summary|opening\s*balance)/i.test(it.str)) {
+          if (/^(date|narration|particulars|chq\.?\/ref|value\s*dt|withdrawal\s*amt|deposit\s*amt|closing\s*bal|statement\s*summary|opening\s*balance|total|totals)/i.test(it.str.trim())) {
             continue;
           }
           narrItems.push(it);
@@ -1196,9 +1196,26 @@
         let balance = 0;
 
         if (amtItems.length >= 3) {
-          debit = amtItems[0].val;
-          credit = amtItems[1].val;
-          balance = amtItems[2].val;
+          // In standard bank statements, the rightmost column is ALWAYS the running Balance
+          balance = amtItems[amtItems.length - 1].val;
+          const txnAmt = amtItems[0].val;
+          const txnX = amtItems[0].x;
+
+          if (sharedHeaders.headerXDebit !== null && sharedHeaders.headerXCredit !== null) {
+            if (Math.abs(txnX - sharedHeaders.headerXDebit) < Math.abs(txnX - sharedHeaders.headerXCredit)) {
+              debit = txnAmt;
+            } else {
+              credit = txnAmt;
+            }
+          } else {
+            if (/(\bTo:|\bTo\s+|\bWDL\b|\bATM\b|\bPAID\b|\bPURCHASE\b|\bPOS\b)/i.test(narration)) {
+              debit = txnAmt;
+            } else if (/(\bBy:|\bBy\s+|\bSALARY\b|\bINTEREST\b|\bDEP\b|\bREFUND\b)/i.test(narration)) {
+              credit = txnAmt;
+            } else {
+              debit = txnAmt;
+            }
+          }
         } else if (amtItems.length === 2) {
           balance = amtItems[1].val;
           const txnAmt = amtItems[0].val;

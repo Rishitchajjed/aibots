@@ -1398,19 +1398,39 @@ const AI_BOTS_TOOLS = [
         // Populate Select Dropdown
         const opt = document.createElement('option');
         opt.value = tool.id;
-        opt.textContent = tool.title;
+        opt.textContent = tool.title + (isOff ? ' [🛠️ Maintenance]' : '') + (isFeatured ? ' [⭐ Featured]' : '');
         if (isFeatured) opt.selected = true;
         select.appendChild(opt);
+
+        // Status badges for the card
+        let statusBadgeHtml = '';
+        if (isOff) {
+          statusBadgeHtml = `<span style="background: rgba(239, 68, 68, 0.15); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.35); font-size: 0.68rem; font-weight: 800; padding: 2px 7px; border-radius: 99px; display: inline-flex; align-items: center; gap: 4px;">🛠️ MAINTENANCE</span>`;
+        } else if (isFeatured) {
+          statusBadgeHtml = `<span style="background: linear-gradient(135deg, #f59e0b, #ef4444); color: #ffffff; font-size: 0.68rem; font-weight: 800; padding: 2px 7px; border-radius: 99px; display: inline-flex; align-items: center; gap: 4px; box-shadow: 0 2px 6px rgba(245, 158, 11, 0.35);">⭐ FEATURED</span>`;
+        }
+
+        // Card Border / Background highlight
+        let cardStyle = '';
+        if (isOff) {
+          cardStyle = 'border: 1.5px dashed #ef4444 !important; background: rgba(239, 68, 68, 0.05) !important;';
+        } else if (isFeatured) {
+          cardStyle = 'border: 1.5px solid #f59e0b !important; background: rgba(245, 158, 11, 0.06) !important; box-shadow: 0 0 12px rgba(245, 158, 11, 0.2) !important;';
+        }
 
         // Populate Grid Card
         const card = document.createElement('div');
         card.className = 'tool-manage-card';
+        if (cardStyle) card.style.cssText = cardStyle;
         card.dataset.name = tool.title.toLowerCase();
         card.innerHTML = `
           <div style="display: flex; align-items: center; gap: 10px;">
             <i class="fas ${tool.icon}" style="color: ${tool.color || 'var(--primary)'}; font-size: 1.1rem; width: 22px;"></i>
             <div>
-              <div style="font-weight: 700; font-size: 0.88rem; color: var(--text-primary);">${tool.title}</div>
+              <div style="display: flex; align-items: center; flex-wrap: wrap; gap: 6px;">
+                <span style="font-weight: 700; font-size: 0.88rem; color: var(--text-primary);">${tool.title}</span>
+                ${statusBadgeHtml}
+              </div>
               <div style="font-size: 0.72rem; color: var(--text-secondary);">${tool.category} &bull; ${tool.url}</div>
             </div>
           </div>
@@ -1433,6 +1453,7 @@ const AI_BOTS_TOOLS = [
         if (!disabled.includes(toolId)) disabled.push(toolId);
       }
       localStorage.setItem('aibots_disabled_tools', JSON.stringify(disabled));
+      renderToolsRegistry();
       showToast(`Tool status updated!`, 'info');
       syncConfigToCloudOnline();
     }
@@ -1447,6 +1468,7 @@ const AI_BOTS_TOOLS = [
     function saveFeaturedTool() {
       const val = document.getElementById('featuredToolSelect').value;
       localStorage.setItem('aibots_featured_tool', val);
+      renderToolsRegistry();
       showToast(val ? `Featured Tool set to: ${val}` : 'Featured Tool cleared', 'success');
       syncConfigToCloudOnline();
     }

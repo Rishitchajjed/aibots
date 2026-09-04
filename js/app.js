@@ -1187,19 +1187,56 @@ window.updateDonationQR = function(amt) {
     }
   }
 
+  // Helper: Find a tool card by toolId using data-tool, href, and fallback aliases
+  function findToolCard(toolId) {
+    if (!toolId) return null;
+    return document.querySelector(
+      `.tool-card[data-tool="${toolId}"], ` +
+      `.tool-card[href="${toolId}.html"], ` +
+      `.tool-card[href*="${toolId}"]` +
+      (toolId === 'bank-statement-converter' ? ', .tool-card[data-tool="tallyconverter"]' : '')
+    );
+  }
+
   // Featured Tool Highlight on Homepage
   function highlightFeaturedTool() {
+    // 1. Reset any previously highlighted featured card
+    document.querySelectorAll('.tool-card.is-featured-card').forEach(card => {
+      card.classList.remove('is-featured-card');
+      card.style.border = '';
+      card.style.boxShadow = '';
+      const badge = card.querySelector('.tool-badge-pill');
+      if (badge) {
+        badge.classList.remove('badge-featured');
+        badge.style.background = '';
+        badge.style.color = '';
+        badge.style.boxShadow = '';
+        if (badge.dataset.originalText) {
+          badge.textContent = badge.dataset.originalText;
+        } else if (badge.dataset.wasAutoCreated === 'true') {
+          badge.remove();
+        }
+      }
+    });
+
     const featuredId = localStorage.getItem('aibots_featured_tool');
     if (featuredId) {
-      const card = document.querySelector(`.tool-card[data-tool="${featuredId}"]`);
-      if (card) {
-        card.style.border = '2px solid var(--primary)';
-        card.style.boxShadow = '0 0 20px rgba(79, 70, 229, 0.4)';
+      const card = findToolCard(featuredId);
+      if (card && !card.classList.contains('is-maintenance-card')) {
+        card.classList.add('is-featured-card');
+        card.style.border = '2px solid #f59e0b';
+        card.style.boxShadow = '0 0 25px rgba(245, 158, 11, 0.45)';
         let badge = card.querySelector('.tool-badge-pill');
         if (!badge) {
           badge = document.createElement('span');
           badge.className = 'tool-badge-pill badge-featured';
+          badge.dataset.wasAutoCreated = 'true';
           card.prepend(badge);
+        } else {
+          if (!badge.dataset.originalText && !badge.classList.contains('badge-maintenance')) {
+            badge.dataset.originalText = badge.textContent.trim();
+          }
+          badge.className = 'tool-badge-pill badge-featured';
         }
         badge.textContent = '⭐ FEATURED';
         badge.style.background = 'linear-gradient(135deg, #f59e0b, #ef4444)';
@@ -1238,11 +1275,11 @@ window.updateDonationQR = function(amt) {
       return;
     }
 
-    // 2. Check Individual Tool Maintenance
+    // 2. Check Individual Tool Maintenance on tool pages
     const disabledTools = JSON.parse(localStorage.getItem('aibots_disabled_tools') || '[]');
     const currentPath = window.location.pathname.split('/').pop().replace('.html', '').trim();
     if (disabledTools.includes(currentPath)) {
-      const toolObj = AI_BOTS_TOOLS.find(t => t.id === currentPath);
+      const toolObj = (typeof AI_BOTS_TOOLS !== 'undefined') ? AI_BOTS_TOOLS.find(t => t.id === currentPath) : null;
       const toolTitle = toolObj ? toolObj.title : 'This Tool';
 
       document.body.innerHTML = `
@@ -1264,22 +1301,50 @@ window.updateDonationQR = function(amt) {
       return;
     }
 
-    // 3. Update homepage cards for disabled tools
+    // 3. Clear existing maintenance state from all cards on homepage
+    document.querySelectorAll('.tool-card.is-maintenance-card').forEach(card => {
+      card.classList.remove('is-maintenance-card');
+      card.style.opacity = '';
+      card.style.cursor = '';
+      card.style.border = '';
+      card.onclick = null;
+      const badge = card.querySelector('.tool-badge-pill');
+      if (badge) {
+        badge.classList.remove('badge-maintenance');
+        badge.style.background = '';
+        badge.style.color = '';
+        if (badge.dataset.originalText) {
+          badge.textContent = badge.dataset.originalText;
+        } else if (badge.dataset.wasAutoCreated === 'true') {
+          badge.remove();
+        }
+      }
+    });
+
+    // 4. Update homepage cards for disabled tools
     if (disabledTools.length > 0) {
       disabledTools.forEach(toolId => {
-        const card = document.querySelector(`.tool-card[data-tool="${toolId}"]`);
+        const card = findToolCard(toolId);
         if (card) {
+          card.classList.add('is-maintenance-card');
           card.style.opacity = '0.65';
           card.style.cursor = 'not-allowed';
+          card.style.border = '2px dashed #ef4444';
           let badge = card.querySelector('.tool-badge-pill');
           if (!badge) {
             badge = document.createElement('span');
-            badge.className = 'tool-badge-pill';
+            badge.className = 'tool-badge-pill badge-maintenance';
+            badge.dataset.wasAutoCreated = 'true';
             card.prepend(badge);
+          } else {
+            if (!badge.dataset.originalText) {
+              badge.dataset.originalText = badge.textContent.trim();
+            }
+            badge.className = 'tool-badge-pill badge-maintenance';
           }
           badge.textContent = '🛠️ MAINTENANCE';
-          badge.style.background = '#f59e0b';
-          badge.style.color = '#000000';
+          badge.style.background = 'linear-gradient(135deg, #ef4444, #b91c1c)';
+          badge.style.color = '#ffffff';
 
           card.onclick = (e) => {
             e.preventDefault();

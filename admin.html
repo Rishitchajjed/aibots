@@ -1075,6 +1075,311 @@
     // ==========================================
     // MODULE 1: Tool Registry & Feature Flags
     // ==========================================
+    if (typeof AI_BOTS_TOOLS === 'undefined') {
+      // Tools Registry for Search and Navigation
+const AI_BOTS_TOOLS = [
+  {
+    id: 'bank-statement-converter',
+    title: 'Bank Statement to Tally',
+    description: 'Convert PDF/CSV statements for 20+ Indian banks into formatted Excel and Tally XML vouchers with 0.00 difference.',
+    icon: 'fa-file-excel',
+    url: 'bank-statement-converter.html',
+    category: 'finance',
+    badge: 'TALLY XML',
+    color: '#10b981'
+  },
+  {
+    id: 'videoeditor',
+    title: 'Video Studio Pro',
+    description: 'Trim clips, crop for Reels/TikTok, add text overlays, apply color grades, change speed, and export HD videos.',
+    icon: 'fa-clapperboard',
+    url: 'videoeditor.html',
+    category: 'creative',
+    badge: 'STUDIO PRO',
+    color: '#ec4899'
+  },
+  {
+    id: 'videoplayer',
+    title: 'Video Player & Cinema',
+    description: 'High performance video player with theater mode, frame grabbing, speed control, and loop playback.',
+    icon: 'fa-circle-play',
+    url: 'videoplayer.html',
+    category: 'creative',
+    badge: 'HD PLAYER',
+    color: '#8b5cf6'
+  },
+  {
+    id: 'cricketscore',
+    title: 'Cricket Score Counter',
+    description: 'Live match scoring board with batsmen/bowler stats, extras, overs, and scorecard export.',
+    icon: 'fa-baseball-bat-ball',
+    url: 'cricketscore.html',
+    category: 'utility',
+    badge: 'PRO SCORER',
+    color: '#10b981'
+  },
+  {
+    id: 'cricket',
+    title: 'Live Cricket Scores',
+    description: 'Track international and league cricket fixtures, ball-by-ball commentary, and tournament standings.',
+    icon: 'fa-satellite-dish',
+    url: 'cricket.html',
+    category: 'utility',
+    badge: 'LIVE MATCH',
+    color: '#06b6d4'
+  },
+  {
+    id: 'game',
+    title: 'Realm of Bots RPG',
+    description: 'Open-world browser arcade RPG with warrior classes, dungeon exploration, combat, and inventory.',
+    icon: 'fa-gamepad',
+    url: 'game.html',
+    category: 'gaming',
+    badge: 'ACTION RPG',
+    color: '#f59e0b'
+  },
+  {
+    id: 'typingpractice',
+    title: 'Typing Speed Test & Game',
+    description: 'Interactive arcade typing test with words per minute (WPM), accuracy tracking, and leaderboard.',
+    icon: 'fa-keyboard',
+    url: 'typingpractice.html',
+    category: 'gaming',
+    badge: 'WPM TEST',
+    color: '#6366f1'
+  },
+  {
+    id: 'invoice',
+    title: 'GST Invoice Generator',
+    description: 'Create professional GST/Non-GST tax invoices with instant UPI payment QR, itemized tax, and PDF download.',
+    icon: 'fa-file-invoice-dollar',
+    url: 'invoice.html',
+    category: 'business',
+    badge: 'PDF + UPI',
+    color: '#10b981'
+  },
+  {
+    id: 'buisnesscard',
+    title: 'Business Card Maker',
+    description: 'Design sleek, professional business cards with custom branding, themes, typography, and print export.',
+    icon: 'fa-id-card',
+    url: 'buisnesscard.html',
+    category: 'creative',
+    badge: 'CUSTOMIZABLE',
+    color: '#8b5cf6'
+  },
+  {
+    id: 'logomaker',
+    title: 'Vector Logo Maker',
+    description: 'Create unique vector logos with custom typography, brand icons, color gradients, and SVG/PNG export.',
+    icon: 'fa-shapes',
+    url: 'logomaker.html',
+    category: 'creative',
+    badge: 'VECTOR ENGINE',
+    color: '#f97316'
+  },
+  {
+    id: 'backremover',
+    title: 'AI Background Remover',
+    description: 'Effortlessly remove background from photos with 1-click precision edge detection.',
+    icon: 'fa-wand-magic-sparkles',
+    url: 'backremover.html',
+    category: 'image',
+    badge: 'AI POWERED',
+    color: '#ec4899'
+  },
+  {
+    id: 'cropphoto',
+    title: 'Image Cropper HD',
+    description: 'Precision crop photos with interactive draggable bounding box, rotation, and aspect ratio presets.',
+    icon: 'fa-crop',
+    url: 'cropphoto.html',
+    category: 'image',
+    badge: 'CANVAS HD',
+    color: '#f59e0b'
+  },
+  {
+    id: 'imagecombiner',
+    title: 'Image Merger & Stitcher',
+    description: 'Combine multiple images vertically, horizontally, or into multi-page A4 PDF collage layouts.',
+    icon: 'fa-layer-group',
+    url: 'imagecombiner.html',
+    category: 'image',
+    badge: 'MULTI-PAGE',
+    color: '#06b6d4'
+  },
+  {
+    id: 'resizeimage',
+    title: 'Image Resizer Pro',
+    description: 'Resize photos to exact pixel dimensions, percentage scales, or 33 international paper standards.',
+    icon: 'fa-expand',
+    url: 'resizeimage.html',
+    category: 'image',
+    badge: '33 PRESETS',
+    color: '#0284c7'
+  },
+  {
+    id: 'imagelink',
+    title: 'Image Link Generator',
+    description: 'Upload images to generate instant shareable URLs, copy direct markdown links, and create QR codes.',
+    icon: 'fa-link',
+    url: 'imagelink.html',
+    category: 'utility',
+    badge: 'CLOUD HOST',
+    color: '#6366f1'
+  },
+  {
+    id: 'photogenerator',
+    title: 'Photo & Image Generator',
+    description: 'Search millions of ultra-HD royalty-free stock photos via curated Unsplash collections.',
+    icon: 'fa-image',
+    url: 'photogenerator.html',
+    category: 'ai',
+    badge: 'HD SEARCH',
+    color: '#a855f7'
+  },
+  {
+    id: 'pdfmaker',
+    title: 'Image to PDF Generator',
+    description: 'Convert collections of photos and scans into clean, unified multi-page A4 PDF documents.',
+    icon: 'fa-file-pdf',
+    url: 'pdfmaker.html',
+    category: 'pdf',
+    badge: 'PDF EXPORT',
+    color: '#ef4444'
+  },
+  {
+    id: 'pdfviewer',
+    title: 'PDF Reader & Viewer',
+    description: 'High-definition browser PDF reader with thumbnail navigation, zoom, rotation, and presentation mode.',
+    icon: 'fa-book-open',
+    url: 'pdfviewer.html',
+    category: 'pdf',
+    badge: 'PDF.JS',
+    color: '#14b8a6'
+  },
+  {
+    id: 'print',
+    title: 'Print Studio Pro',
+    description: 'Format, scale, and optimize documents for physical printing with borderless margins and duplex preview.',
+    icon: 'fa-print',
+    url: 'print.html',
+    category: 'utility',
+    badge: 'PRINT READY',
+    color: '#4b5563'
+  },
+  {
+    id: 'calculator',
+    title: 'Enhanced Calculator',
+    description: 'Scientific and standard calculator with square root, trigonometry, log, memory, and calculation history.',
+    icon: 'fa-calculator',
+    url: 'calculator.html',
+    category: 'utility',
+    badge: 'MATH.JS',
+    color: '#3b82f6'
+  },
+  {
+    id: 'currency',
+    title: 'Live Currency Converter',
+    description: 'Real-time exchange rate calculator supporting 160+ fiat currencies with forex fluctuation charts.',
+    icon: 'fa-coins',
+    url: 'currency.html',
+    category: 'utility',
+    badge: 'LIVE FOREX',
+    color: '#10b981'
+  },
+  {
+    id: 'unitconverter',
+    title: 'Universal Unit Converter',
+    description: 'Convert lengths, weights, temperatures, digital storage, speed, pressure, and energy units instantly.',
+    icon: 'fa-ruler-combined',
+    url: 'unitconverter.html',
+    category: 'utility',
+    badge: 'UNIVERSAL',
+    color: '#f59e0b'
+  },
+  {
+    id: 'qrcode',
+    title: 'QR Code Studio',
+    description: 'Generate customizable QR codes for URLs, WiFi networks, vCards, emails, and phone numbers.',
+    icon: 'fa-qrcode',
+    url: 'qrcode.html',
+    category: 'utility',
+    badge: 'CUSTOM QR',
+    color: '#3b82f6'
+  },
+  {
+    id: 'password',
+    title: 'Secure Password Generator',
+    description: 'Generate cryptographically secure passwords with custom character sets, entropy scores, and copy button.',
+    icon: 'fa-key',
+    url: 'password.html',
+    category: 'security',
+    badge: 'AES SECURE',
+    color: '#ef4444'
+  },
+  {
+    id: 'wordcounter',
+    title: 'Smart Word Counter',
+    description: 'Count words, characters, sentences, paragraphs, reading time, and keyword frequency density.',
+    icon: 'fa-spell-check',
+    url: 'wordcounter.html',
+    category: 'utility',
+    badge: 'ANALYTICS',
+    color: '#8b5cf6'
+  },
+  {
+    id: 'timer',
+    title: 'Precision Stopwatch & Timer',
+    description: 'High-precision millisecond stopwatch, interval timer, and Pomodoro focus clock with audio beeps.',
+    icon: 'fa-stopwatch',
+    url: 'timer.html',
+    category: 'utility',
+    badge: 'STOPWATCH',
+    color: '#f97316'
+  },
+  {
+    id: 'weather',
+    title: 'Live Weather Radar',
+    description: 'Accurate global weather forecasts, humidity, wind velocity, UV index, and 5-day temperature outlook.',
+    icon: 'fa-cloud-sun',
+    url: 'weather.html',
+    category: 'utility',
+    badge: 'GLOBAL FORECAST',
+    color: '#06b6d4'
+  },
+  {
+    id: 'emojis',
+    title: 'Smart Emoji Picker',
+    description: 'Search, browse, and 1-click copy thousands of categorized Unicode emojis and text emoticons.',
+    icon: 'fa-face-smile',
+    url: 'emojis.html',
+    category: 'creative',
+    badge: 'UNICODE',
+    color: '#ec4899'
+  },
+  {
+    id: 'endchanger',
+    title: 'File Extension Changer',
+    description: 'Batch rename and change file extensions safely in-browser with zero upload bandwidth.',
+    icon: 'fa-file-pen',
+    url: 'endchanger.html',
+    category: 'utility',
+    badge: 'BATCH EXT',
+    color: '#6366f1'
+  },
+  {
+    id: 'chatbot',
+    title: 'AI Chatbot Assistant',
+    description: 'Intelligent conversational assistant powered by Google Gemini AI for instant Q&A and creative writing.',
+    icon: 'fa-robot',
+    url: 'chatbot.html',
+    category: 'ai',
+    badge: 'GEMINI AI',
+    color: '#10b981'
+  }
+];
+    }
     function renderToolsRegistry() {
       const grid = document.getElementById('toolsManageGrid');
       const select = document.getElementById('featuredToolSelect');

@@ -146,17 +146,20 @@
       justify-content: center;
       font-size: 2rem;
       margin-bottom: 14px;
+      pointer-events: none;
     }
     .ps-dropzone h3 {
       margin: 0 0 8px;
       font-size: 1.25rem;
       font-weight: 800;
       color: var(--text-primary);
+      pointer-events: none;
     }
     .ps-dropzone p {
       color: var(--text-secondary);
       margin: 0 0 16px;
       font-size: 0.88rem;
+      pointer-events: none;
     }
     .ps-dropzone input[type="file"] {
       position: absolute;
@@ -172,6 +175,7 @@
       gap: 10px;
       justify-content: center;
       flex-wrap: wrap;
+      pointer-events: none;
     }
 
     /* Mobile Segmented View Switcher (Visible on <= 920px) */
@@ -505,7 +509,7 @@
       flex-direction: column;
       gap: 16px;
       box-shadow: var(--shadow-md);
-      min-width: 0; /* Prevents grid breakout */
+      min-width: 0;
     }
 
     .stage-top-bar {
@@ -712,7 +716,6 @@
         order: 1;
         padding: 18px;
       }
-      /* When tab switched on mobile */
       .ps-workspace.tab-settings .ps-stage {
         display: none;
       }
@@ -809,7 +812,7 @@
       </div>
 
       <!-- Dropzone -->
-      <div class="ps-dropzone" id="dropzone" onclick="document.getElementById('fileInput').click()">
+      <div class="ps-dropzone" id="dropzone">
         <input type="file" id="fileInput" accept=".pdf,.jpg,.jpeg,.png,.webp,.bmp,image/*" onchange="handleFile(event)">
         <div class="ps-dropzone-icon-wrap">
           <i class="fas fa-file-arrow-up"></i>
@@ -1065,39 +1068,47 @@
   </section>
 
   <script>
-    pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+    if (typeof pdfjsLib !== 'undefined') {
+      pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+    }
 
     let loadedPages = []; // Array of { id, canvas, rotation, included: bool }
     let wmColor = '#ef4444';
     let currentFilter = 'all';
     let isSingleView = false;
 
-    // Mobile Drag & Drop Events
+    // Drag & Drop Handling
     const dropzone = document.getElementById('dropzone');
-    ['dragenter', 'dragover'].forEach(name => {
-      dropzone.addEventListener(name, (e) => {
+    if (dropzone) {
+      ['dragenter', 'dragover'].forEach(name => {
+        dropzone.addEventListener(name, (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          dropzone.classList.add('dragover');
+        }, false);
+      });
+      ['dragleave', 'drop'].forEach(name => {
+        dropzone.addEventListener(name, (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          dropzone.classList.remove('dragover');
+        }, false);
+      });
+      dropzone.addEventListener('drop', (e) => {
         e.preventDefault();
-        dropzone.classList.add('dragover');
-      }, false);
-    });
-    ['dragleave', 'drop'].forEach(name => {
-      dropzone.addEventListener(name, (e) => {
-        e.preventDefault();
-        dropzone.classList.remove('dragover');
-      }, false);
-    });
-    dropzone.addEventListener('drop', (e) => {
-      const dt = e.dataTransfer;
-      const files = dt.files;
-      if (files && files.length > 0) {
-        document.getElementById('fileInput').files = files;
-        handleFile({ target: { files: files } });
-      }
-    });
+        e.stopPropagation();
+        const dt = e.dataTransfer;
+        const files = dt && dt.files;
+        if (files && files.length > 0) {
+          processSelectedFile(files[0]);
+        }
+      });
+    }
 
     // Helper for toggle rows
     function toggleCheckbox(id) {
       const chk = document.getElementById(id);
+      if (!chk) return;
       chk.checked = !chk.checked;
       chk.dispatchEvent(new Event('change'));
     }
@@ -1111,13 +1122,13 @@
       if (tab === 'pages') {
         ws.classList.remove('tab-settings');
         ws.classList.add('tab-pages');
-        tabPages.classList.add('active');
-        tabSettings.classList.remove('active');
+        if (tabPages) tabPages.classList.add('active');
+        if (tabSettings) tabSettings.classList.remove('active');
       } else {
         ws.classList.remove('tab-pages');
         ws.classList.add('tab-settings');
-        tabSettings.classList.add('active');
-        tabPages.classList.remove('active');
+        if (tabSettings) tabSettings.classList.add('active');
+        if (tabPages) tabPages.classList.remove('active');
       }
     }
 
@@ -1130,26 +1141,41 @@
 
       if (isSingleView) {
         gallery.classList.add('single-view');
-        icon.className = 'fas fa-grip';
-        text.textContent = 'Grid View';
+        if (icon) icon.className = 'fas fa-grip';
+        if (text) text.textContent = 'Grid View';
       } else {
         gallery.classList.remove('single-view');
-        icon.className = 'fas fa-table-cells-large';
-        text.textContent = 'Single View';
+        if (icon) icon.className = 'fas fa-table-cells-large';
+        if (text) text.textContent = 'Single View';
       }
     }
 
-    async function handleFile(e) {
-      const file = e.target.files[0];
+    // Main file entry point
+    function handleFile(e) {
+      const file = e.target && e.target.files && e.target.files[0];
+      if (file) {
+        processSelectedFile(file);
+      }
+    }
+
+    async function processSelectedFile(file) {
       if (!file) return;
 
-      document.getElementById('docName').textContent = file.name;
+      const fileName = file.name || 'document';
+      const isPdf = file.type === 'application/pdf' || fileName.toLowerCase().endsWith('.pdf');
+      const isImage = file.type.startsWith('image/') || /\.(jpe?g|png|webp|bmp|gif|svg)$/i.test(fileName);
+
+      if (!isPdf && !isImage) {
+        alert("Unsupported file format! Please select a PDF document (.pdf) or image (.jpg, .png, .webp, .bmp).");
+        return;
+      }
+
+      document.getElementById('docName').textContent = fileName;
       document.getElementById('docSize').textContent = `${(file.size / 1024).toFixed(1)} KB`;
       document.getElementById('dropzone').style.display = 'none';
       document.getElementById('psWorkspace').style.display = 'grid';
       document.getElementById('mobileViewTabs').style.display = 'flex';
 
-      // Show mobile floating action bar if on mobile
       if (window.innerWidth <= 600) {
         document.getElementById('mobileFloatingBar').style.display = 'flex';
       }
@@ -1163,30 +1189,44 @@
         </div>
       `;
 
-      if (file.type === 'application/pdf') {
-        document.getElementById('docTypeIcon').className = 'fas fa-file-pdf doc-icon';
-        await loadPdf(file);
-      } else {
-        document.getElementById('docTypeIcon').className = 'fas fa-file-image doc-icon';
-        await loadImage(file);
+      try {
+        if (isPdf) {
+          document.getElementById('docTypeIcon').className = 'fas fa-file-pdf doc-icon';
+          await loadPdf(file);
+        } else {
+          document.getElementById('docTypeIcon').className = 'fas fa-file-image doc-icon';
+          await loadImage(file);
+        }
+
+        if (loadedPages.length === 0) {
+          throw new Error("No pages could be extracted from this file.");
+        }
+
+        // Initialize From-To inputs
+        document.getElementById('inpFromPage').value = 1;
+        document.getElementById('inpFromPage').max = loadedPages.length;
+        document.getElementById('inpToPage').value = loadedPages.length;
+        document.getElementById('inpToPage').max = loadedPages.length;
+
+        document.getElementById('mobilePageBadge').textContent = loadedPages.length;
+
+        renderGallery();
+      } catch (err) {
+        console.error("Error loading file in Print Studio:", err);
+        alert("Could not load file: " + (err.message || "Unknown error") + ". Please try another document.");
+        resetStudio();
       }
-
-      // Initialize From-To inputs
-      document.getElementById('inpFromPage').value = 1;
-      document.getElementById('inpFromPage').max = loadedPages.length;
-      document.getElementById('inpToPage').value = loadedPages.length;
-      document.getElementById('inpToPage').max = loadedPages.length;
-
-      document.getElementById('mobilePageBadge').textContent = loadedPages.length;
-
-      renderGallery();
     }
 
     async function loadPdf(file) {
       const arrayBuffer = await file.arrayBuffer();
-      const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+      const pdf = await pdfjsLib.getDocument({
+        data: arrayBuffer,
+        cMapUrl: 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/cmaps/',
+        cMapPacked: true
+      }).promise;
 
-      // Smart resolution scale: 2.0 provides crisp 144-192 DPI while keeping phone memory super light and fast
+      // Scale: 1.8x on mobile, 2.4x on desktop ensures crisp 150-200 DPI without exhausting phone memory
       const renderScale = window.innerWidth <= 600 ? 1.8 : 2.4;
 
       for (let i = 1; i <= pdf.numPages; i++) {
@@ -1205,10 +1245,12 @@
     }
 
     async function loadImage(file) {
-      return new Promise((resolve) => {
+      return new Promise((resolve, reject) => {
         const reader = new FileReader();
+        reader.onerror = () => reject(new Error("Failed to read image file"));
         reader.onload = (ev) => {
           const img = new Image();
+          img.onerror = () => reject(new Error("Failed to decode image data"));
           img.onload = () => {
             const canvas = document.createElement('canvas');
             canvas.width = img.naturalWidth || img.width;
@@ -1283,7 +1325,7 @@
     function setPageFilter(filter, btn) {
       currentFilter = filter;
       document.querySelectorAll('.duplex-btn').forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
+      if (btn) btn.classList.add('active');
 
       loadedPages.forEach((p, idx) => {
         const pageNum = idx + 1;
@@ -1480,16 +1522,12 @@
       const showPageNums = document.getElementById('chkPageNums').checked;
       const orientation = document.getElementById('orientationSelect').value;
 
-      // Check if iOS or mobile device
-      const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
-
       // Remove any existing print iframe
       const oldIframe = document.getElementById('cleanPrintIframe');
       if (oldIframe) oldIframe.remove();
 
       const iframe = document.createElement('iframe');
       iframe.id = 'cleanPrintIframe';
-      // Give standard dimensions for reliable mobile printing
       iframe.style.cssText = 'position:fixed; bottom:0; right:0; width:10px; height:10px; border:none; opacity:0; pointer-events:none; z-index:-1;';
       document.body.appendChild(iframe);
 
@@ -1605,14 +1643,13 @@
     }
 
     function escapeXml(unsafe) {
-      return unsafe.replace(/[<>&'"]/g, c => {
-        switch (c) {
-          case '<': return '&lt;';
-          case '>': return '&gt;';
-          case '&': return '&amp;';
-          case ''': return '&apos;';
-          case '"': return '&quot;';
-        }
+      return String(unsafe).replace(/[<>&'"]/g, c => {
+        if (c === '<') return '&lt;';
+        if (c === '>') return '&gt;';
+        if (c === '&') return '&amp;';
+        if (c === "'") return '&apos;';
+        if (c === '"') return '&quot;';
+        return c;
       });
     }
 
@@ -1646,7 +1683,8 @@
 
     function resetStudio() {
       loadedPages = [];
-      document.getElementById('fileInput').value = '';
+      const fileInput = document.getElementById('fileInput');
+      if (fileInput) fileInput.value = '';
       document.getElementById('dropzone').style.display = 'block';
       document.getElementById('psWorkspace').style.display = 'none';
       document.getElementById('mobileViewTabs').style.display = 'none';

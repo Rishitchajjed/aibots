@@ -516,7 +516,7 @@
         <!-- Bank Ledger Name in Tally -->
         <div class="form-group">
           <label class="form-label" for="bankLedger"><i class="fas fa-wallet"></i> Bank Ledger Name in Tally</label>
-          <input type="text" id="bankLedger" class="form-control" placeholder="e.g. Punjab National Bank" value="Punjab National Bank">
+          <input type="text" id="bankLedger" class="form-control" placeholder="e.g. ICICI Bank, HDFC Bank, SBI" value="">
         </div>
 
         <!-- Default Counterparty / Expense Ledger -->
@@ -900,6 +900,42 @@
           headerXBalance: null
         };
 
+        // Auto-detect bank from Page 1 if not explicitly chosen by user
+        try {
+          const p1 = await pdf.getPage(1);
+          const p1Text = await p1.getTextContent({ normalizeWhitespace: true });
+          const p1Combined = p1Text.items.map(it => it.str).join(' ').toUpperCase();
+          
+          if (!selectedBankKey) {
+            let detectedKey = '';
+            if (p1Combined.includes('ICICI')) detectedKey = 'icici';
+            else if (p1Combined.includes('HDFC')) detectedKey = 'hdfc';
+            else if (p1Combined.includes('STATE BANK') || p1Combined.includes('SBI')) detectedKey = 'sbi';
+            else if (p1Combined.includes('PUNJAB NATIONAL') || p1Combined.includes('PNB')) detectedKey = 'pnb';
+            else if (p1Combined.includes('AXIS BANK') || p1Combined.includes('AXIS')) detectedKey = 'axis';
+            else if (p1Combined.includes('KOTAK')) detectedKey = 'kotak';
+            else if (p1Combined.includes('BANK OF BARODA') || p1Combined.includes('BARODA')) detectedKey = 'bob';
+            else if (p1Combined.includes('CANARA')) detectedKey = 'canara';
+            else if (p1Combined.includes('UNION BANK')) detectedKey = 'union';
+            else if (p1Combined.includes('INDUSIND')) detectedKey = 'indusind';
+            else if (p1Combined.includes('IDFC')) detectedKey = 'idfc';
+            else if (p1Combined.includes('YES BANK')) detectedKey = 'yes';
+            else if (p1Combined.includes('FEDERAL BANK')) detectedKey = 'federal';
+            else if (p1Combined.includes('BANDHAN')) detectedKey = 'bandhan';
+            
+            if (detectedKey && BANK_PROFILES[detectedKey]) {
+              selectedBankKey = detectedKey;
+              const selEl = document.getElementById('bankSelect');
+              if (selEl) selEl.value = detectedKey;
+              const legEl = document.getElementById('bankLedger');
+              if (legEl && !legEl.value) legEl.value = BANK_PROFILES[detectedKey].ledger;
+              console.log("Auto-detected bank from statement:", BANK_PROFILES[detectedKey].name);
+            }
+          }
+        } catch (e) {
+          console.warn("Auto-detect bank error:", e);
+        }
+
         for (let i = 1; i <= numPages; i++) {
           showStatus(`Parsing Page ${i} of ${numPages}...`, "Reconstructing transaction tables & row bounds...");
           const page = await pdf.getPage(i);
@@ -1057,27 +1093,85 @@
       if (!pageItems || pageItems.length === 0) return [];
       if (!sharedHeaders) sharedHeaders = { headerXDebit: null, headerXCredit: null, headerXBalance: null };
 
-      // 1. Detect table headers (headerX coordinates) and Summary table top
-      let summaryTopY = null;
-      for (let i = 0; i < pageItems.length; i++) {
-        const str = pageItems[i].str.toLowerCase();
-        const y = pageItems[i].y;
-
-        // Table headers are in upper portion of page (y > 350)
-        if (y > 350) {
-          if (/^(withdrawal|withdrawals|debit|debits|dr|dr\.)$/i.test(str)) {
-            if (sharedHeaders.headerXDebit === null) sharedHeaders.headerXDebit = pageItems[i].x;
-          } else if (/^(deposit|deposits|credit|credits|cr|cr\.)$/i.test(str)) {
-            if (sharedHeaders.headerXCredit === null) sharedHeaders.headerXCredit = pageItems[i].x;
-          } else if (/^(balance|bal|closing\s*balance)$/i.test(str)) {
-            if (sharedHeaders.headerXBalance === null) sharedHeaders.headerXBalance = pageItems[i].x;
+      // 1. Line-Grouped Table Header Detection (Prevents Account Summary boxes at y>350 from misidentifying headers)
+      if (sharedHeaders.headerXDebit === null || sharedHeaders.headerXCredit === null) {
+        const lines = {};
+        for (let i = 0; i < pageItems.length; i++) {
+          const it = pageItems[i];
+          if (it.y > 250) {
+            const snappedY = Math.round(it.y / 5.0) * 5;
+            if (!lines[snappedY]) lines[snappedY] = [];
+            lines[snappedY].push(it);
           }
         }
 
-        // Detect statement summary or TOTAL footer line (e.g. ICICI, HDFC, SBI)
-        if (/^(total|totals|grand\s*total|statement\s*summary)$/i.test(str.trim())) {
-          if (summaryTopY === null || y > summaryTopY) {
-            summaryTopY = y;
+        let bestScore = 0;
+        let bestCoords = null;
+
+        for (const snappedY in lines) {
+          const itemsInLine = lines[snappedY];
+          let hasDate = false;
+          let hasNarr = false;
+          let hDebit = null;
+          let hCredit = null;
+          let hBalance = null;
+          let score = 0;
+
+          for (let j = 0; j < itemsInLine.length; j++) {
+            const it = itemsInLine[j];
+            const s = it.str.toLowerCase().trim();
+
+            if (/^(date|txn\s*date|value\s*date)/i.test(s) && it.x < 160) {
+              hasDate = true;
+              score += 3;
+            } else if (/(particulars|narration|description)/i.test(s)) {
+              hasNarr = true;
+              score += 3;
+            } else if (/(?:withdrawal|withdrawals|debit|debits|\bdr\b|\bdr\.)/i.test(s)) {
+              hDebit = it.x;
+              score += 2;
+            } else if (/(?:deposit|deposits|credit|credits|\bcr\b|\bcr\.)/i.test(s)) {
+              hCredit = it.x;
+              score += 2;
+            } else if (/(?:balance|bal|closing\s*balance)/i.test(s)) {
+              hBalance = it.x;
+              score += 2;
+            }
+          }
+
+          // A valid table header row has Date/Particulars AND at least one amount header
+          if ((hasDate || hasNarr) && (hDebit !== null || hCredit !== null) && score > bestScore) {
+            bestScore = score;
+            bestCoords = { debit: hDebit, credit: hCredit, balance: hBalance };
+          }
+        }
+
+        if (bestCoords) {
+          if (sharedHeaders.headerXDebit === null && bestCoords.debit !== null) sharedHeaders.headerXDebit = bestCoords.debit;
+          if (sharedHeaders.headerXCredit === null && bestCoords.credit !== null) sharedHeaders.headerXCredit = bestCoords.credit;
+          if (sharedHeaders.headerXBalance === null && bestCoords.balance !== null) sharedHeaders.headerXBalance = bestCoords.balance;
+        }
+      }
+
+      // 2. Detect statement summary or TOTAL footer line (STRICTLY in footer area: y < 220)
+      // This guarantees Account Summary boxes at top of Page 1 (y > 250) are NEVER mistaken for footer
+      let footerMaxY = null;
+      for (let i = 0; i < pageItems.length; i++) {
+        const it = pageItems[i];
+        const s = it.str.toLowerCase().trim();
+        const y = it.y;
+
+        if (y < 220) {
+          if (/^(total|totals|grand\s*total)$/i.test(s) || /statement\s*summary/i.test(s)) {
+            const lineY = y;
+            for (let j = 0; j < pageItems.length; j++) {
+              const other = pageItems[j];
+              if (Math.abs(other.y - lineY) < 8 || (/statement\s*summary/i.test(s) && other.y <= lineY)) {
+                if (footerMaxY === null || other.y > footerMaxY) {
+                  footerMaxY = other.y;
+                }
+              }
+            }
           }
         }
       }
@@ -1085,13 +1179,13 @@
       const dateRegex = /^(\d{1,2}[-/.]\d{1,2}[-/.]\d{2,4}|\d{1,2}[-\s][A-Za-z]{3}[a-z]*[-\s]\d{2,4})/;
       const amountRegex = /(?:INR\s*)?([0-9]{1,3}(?:,[0-9]{2,3})*(?:\.[0-9]{2}))/;
 
-      // 2. Find all date items on the page (must be in date column: x < 160)
-      // If a summary table exists at bottom of page, ignore any date items inside or below it
+      // 3. Find all date items on the page (must be in date column: x < 160)
+      // Only skip if item is inside the bottom footer summary (y <= footerMaxY + 2)
       const dateItems = [];
       for (const it of pageItems) {
         const m = it.str.match(dateRegex);
         if (m && it.x < 160) {
-          if (summaryTopY !== null && it.y <= summaryTopY) {
+          if (footerMaxY !== null && it.y <= footerMaxY + 2) {
             continue; // Skip generated date inside footer summary
           }
 
@@ -1137,13 +1231,13 @@
           yBottom = (currY + nextY) / 2.0;
         }
 
-        // Clamp yBottom so it stops strictly above the summary table (prevents swallowing STATEMENT SUMMARY)
-        if (summaryTopY !== null && yBottom < summaryTopY + 2) {
-          yBottom = summaryTopY + 2;
+        // Clamp yBottom strictly above footer summary (prevents swallowing TOTAL row amounts)
+        if (footerMaxY !== null && yBottom <= footerMaxY + 2) {
+          yBottom = footerMaxY + 2;
         }
 
-        // All items inside [yBottom, yTop) belong EXCLUSIVELY to this row
-        const rowItems = pageItems.filter(it => it.y >= yBottom && it.y < yTop);
+        // All items inside [yBottom, yTop) belong EXCLUSIVELY to this row (strictly above footerMaxY)
+        const rowItems = pageItems.filter(it => it.y >= yBottom && it.y < yTop && (footerMaxY === null || it.y > footerMaxY + 2));
 
         // Identify Amount items
         const amtItems = [];
@@ -1245,14 +1339,10 @@
           }
         }
 
-        // =====================================================================
-        // FILTER JUNK ROWS (HEADER REMNANTS, 0-AMOUNT ROWS, AND SUMMARY TOTALS)
-        // =====================================================================
-
         // Rule 1: Must have a valid transaction amount > 0
         const totalTxnAmt = (debit || 0) + (credit || 0);
         if (totalTxnAmt <= 0) {
-          continue; // Discard empty row (prevents starting 0-amount row)
+          continue; // Discard empty row
         }
 
         // Rule 2: Skip summary / total / opening balance rows
@@ -1273,7 +1363,7 @@
           upperNarr.includes("B/F") ||
           (upperNarr.includes("TOTAL") && (upperNarr.includes("DR") || upperNarr.includes("CR")))
         ) {
-          continue; // Discard summary totals (prevents ending summary row)
+          continue;
         }
 
         if (!narration) narration = "Bank Transaction";

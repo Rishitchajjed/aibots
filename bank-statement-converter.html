@@ -1711,34 +1711,34 @@
       html += '.dr-cell { color: #dc2626; font-weight: bold; mso-number-format:"#,##0.00"; text-align: right; }';
       html += '.cr-cell { color: #059669; font-weight: bold; mso-number-format:"#,##0.00"; text-align: right; }';
       html += '</style></head><body>';
-      html += '<table>';
+      html += '<table border="1">';
       html += '<colgroup>';
-      html += '<col style="width: 110pt;">'; // Date (broad width prevents ##### completely)
-      html += '<col style="width: 75pt;">';  // Type (Payment / Receipt)
-      html += '<col style="width: 320pt;">'; // Narration
-      html += '<col style="width: 140pt;">'; // Ref / Chq (text formatted, prevents 5.01E+11)
-      html += '<col style="width: 110pt;">'; // Debit
-      html += '<col style="width: 110pt;">'; // Credit
-      html += '<col style="width: 110pt;">'; // Balance
-      html += '<col style="width: 130pt;">'; // Counter Ledger
+      html += '<col width="130" style="width: 130pt;">'; // Date
+      html += '<col width="85" style="width: 85pt;">';   // Type
+      html += '<col width="350" style="width: 350pt;">'; // Narration
+      html += '<col width="150" style="width: 150pt;">'; // Ref / Chq
+      html += '<col width="115" style="width: 115pt;">'; // Debit
+      html += '<col width="115" style="width: 115pt;">'; // Credit
+      html += '<col width="115" style="width: 115pt;">'; // Balance
+      html += '<col width="140" style="width: 140pt;">'; // Counter Ledger
       html += '</colgroup>';
       html += '<thead><tr>';
-      html += '<th>Date</th><th>Vch Type</th><th>Narration / Particulars</th><th>Chq / Ref No</th>';
-      html += '<th style="text-align:right;">Withdrawal (Dr)</th><th style="text-align:right;">Deposit (Cr)</th><th style="text-align:right;">Balance</th><th>Counter Ledger</th>';
+      html += '<th width="130" style="width:130pt;">Date</th><th width="85" style="width:85pt;">Vch Type</th><th width="350" style="width:350pt;">Narration / Particulars</th><th width="150" style="width:150pt;">Chq / Ref No</th>';
+      html += '<th width="115" style="width:115pt; text-align:right;">Withdrawal (Dr)</th><th width="115" style="width:115pt; text-align:right;">Deposit (Cr)</th><th width="115" style="width:115pt; text-align:right;">Balance</th><th width="140" style="width:140pt;">Counter Ledger</th>';
       html += '</tr></thead><tbody>';
 
       parsedTransactions.forEach(t => {
         const isDr = (t.debit || 0) > 0;
         const vchType = isDr ? "Payment" : "Receipt";
         html += '<tr>';
-        html += `<td class="text-cell">${escapeHtml(t.date)}</td>`;
-        html += `<td>${vchType}</td>`;
-        html += `<td class="text-cell">${escapeHtml(t.narration || '')}</td>`;
-        html += `<td class="text-cell">${escapeHtml(t.refNo || '')}</td>`;
-        html += isDr ? `<td class="dr-cell">${t.debit.toFixed(2)}</td>` : '<td>-</td>';
-        html += !isDr ? `<td class="cr-cell">${(t.credit || 0).toFixed(2)}</td>` : '<td>-</td>';
-        html += `<td class="num-cell">${(t.balance || 0).toFixed(2)}</td>`;
-        html += `<td class="text-cell">${escapeHtml(t.counterLedger || '')}</td>`;
+        html += `<td class="text-cell" width="130" style="width:130pt; mso-number-format:'\\@';">${escapeHtml(t.date)}</td>`;
+        html += `<td width="85" style="width:85pt;">${vchType}</td>`;
+        html += `<td class="text-cell" width="350" style="width:350pt; mso-number-format:'\\@';">${escapeHtml(t.narration || '')}</td>`;
+        html += `<td class="text-cell" width="150" style="width:150pt; mso-number-format:'\\@';">${escapeHtml(t.refNo || '')}</td>`;
+        html += isDr ? `<td class="dr-cell" width="115" style="width:115pt;">${t.debit.toFixed(2)}</td>` : '<td width="115" style="width:115pt;">-</td>';
+        html += !isDr ? `<td class="cr-cell" width="115" style="width:115pt;">${(t.credit || 0).toFixed(2)}</td>` : '<td width="115" style="width:115pt;">-</td>';
+        html += `<td class="num-cell" width="115" style="width:115pt;">${(t.balance || 0).toFixed(2)}</td>`;
+        html += `<td class="text-cell" width="140" style="width:140pt; mso-number-format:'\\@';">${escapeHtml(t.counterLedger || '')}</td>`;
         html += '</tr>';
       });
 

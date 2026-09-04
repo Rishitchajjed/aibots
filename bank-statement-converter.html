@@ -1038,6 +1038,8 @@
                   }
                 }
               }
+              // Reverse to chronological order (oldest to newest) for Tally export & display
+              allTxns.reverse();
             }
           }
           parsedTransactions = allTxns;
@@ -1059,7 +1061,7 @@
 
     function parseIndianAmount(str) {
       if (!str) return 0;
-      let clean = str.replace(/[INR\s,`]/gi, '').trim();
+      let clean = str.replace(/(?:\b(?:INR|CR|DR)\b|Cr\.|Dr\.|\s|,|`)/gi, '').trim();
       clean = clean.replace(/([0-9])-(?=[0-9])/g, '$1');
       if (clean.startsWith('.')) clean = '0' + clean;
       const num = parseFloat(clean);
@@ -1098,23 +1100,31 @@
       if (!pageItems || pageItems.length === 0) return [];
       if (!sharedHeaders) sharedHeaders = { headerXDebit: null, headerXCredit: null, headerXBalance: null };
 
-      // 1. Line-Grouped Table Header Detection (Prevents Account Summary boxes at y>350 from misidentifying headers)
+      // 1. Grouped Table Header Detection (with 16pt vertical clustering to handle multi-line headers like 'Withdrawal \n (DR)' or 'Transaction \n Date')
       if (sharedHeaders.headerXDebit === null || sharedHeaders.headerXCredit === null) {
-        const lines = {};
-        for (let i = 0; i < pageItems.length; i++) {
-          const it = pageItems[i];
-          if (it.y > 250) {
-            const snappedY = Math.round(it.y / 5.0) * 5;
-            if (!lines[snappedY]) lines[snappedY] = [];
-            lines[snappedY].push(it);
+        const candidateItems = pageItems.filter(it => it.y > 200).sort((a, b) => b.y - a.y);
+        const clusters = [];
+        for (let i = 0; i < candidateItems.length; i++) {
+          const it = candidateItems[i];
+          let matched = false;
+          for (let c = 0; c < clusters.length; c++) {
+            if (Math.abs(clusters[c].meanY - it.y) <= 16) {
+              clusters[c].items.push(it);
+              clusters[c].meanY = clusters[c].items.reduce((sum, item) => sum + item.y, 0) / clusters[c].items.length;
+              matched = true;
+              break;
+            }
+          }
+          if (!matched) {
+            clusters.push({ meanY: it.y, items: [it] });
           }
         }
 
         let bestScore = 0;
         let bestCoords = null;
 
-        for (const snappedY in lines) {
-          const itemsInLine = lines[snappedY];
+        for (let c = 0; c < clusters.length; c++) {
+          const itemsInLine = clusters[c].items;
           let hasDate = false;
           let hasNarr = false;
           let hDebit = null;
@@ -1126,7 +1136,7 @@
             const it = itemsInLine[j];
             const s = it.str.toLowerCase().trim();
 
-            if (/^(date|txn\s*date|value\s*date|tran\s*date)/i.test(s) && it.x < 160) {
+            if (/^(date|txn\s*date|value\s*date|tran\s*date|transaction)/i.test(s) && it.x < 160) {
               hasDate = true;
               score += 3;
             } else if (/(particulars|narration|description)/i.test(s)) {
@@ -1269,6 +1279,12 @@
         amtItems.sort((a, b) => a.x - b.x);
         const amtItemSet = new Set(amtItems.map(a => a.item));
 
+        // Check if row is an opening balance row
+        const isOpeningRow = rowItems.some(it => /(?:opening\s*balance|\bb\/f\b|brought\s*forward)/i.test(it.str));
+        if (isOpeningRow) {
+          continue; // Skip opening balance row as a transaction
+        }
+
         // Identify Narration items (everything else in the row)
         const narrItems = [];
         for (const it of rowItems) {
@@ -1361,10 +1377,20 @@
           }
         } else if (amtItems.length === 1) {
           const singleAmt = amtItems[0].val;
-          if (/(\bTo:|\bTo\s+|\bWDL\b|\bATM\b|\bPAID\b)/i.test(narration)) {
-            debit = singleAmt;
+          if (sharedHeaders.headerXBalance !== null && Math.abs(amtItems[0].x - sharedHeaders.headerXBalance) < 35) {
+            balance = singleAmt;
+          } else if (sharedHeaders.headerXDebit !== null && sharedHeaders.headerXCredit !== null) {
+            if (Math.abs(amtItems[0].x - sharedHeaders.headerXDebit) < Math.abs(amtItems[0].x - sharedHeaders.headerXCredit)) {
+              debit = singleAmt;
+            } else {
+              credit = singleAmt;
+            }
           } else {
-            credit = singleAmt;
+            if (/(\bTo:|\bTo\s+|\bWDL\b|\bATM\b|\bPAID\b)/i.test(narration)) {
+              debit = singleAmt;
+            } else {
+              credit = singleAmt;
+            }
           }
         }
 

@@ -1136,7 +1136,7 @@
             const it = itemsInLine[j];
             const s = it.str.toLowerCase().trim();
 
-            if (/^(date|txn\s*date|value\s*date|tran\s*date|transaction)/i.test(s) && it.x < 160) {
+            if (/^(date|txn\s*date|value\s*date|tran\s*date|transaction|post\s*date)/i.test(s) && it.x < 160) {
               hasDate = true;
               score += 3;
             } else if (/(particulars|narration|description)/i.test(s)) {
@@ -1196,7 +1196,7 @@
 
       // 3. Find all date items on the page (must be in date column: x < 160)
       // Only skip if item is inside the bottom footer summary (y <= footerMaxY + 2)
-      const dateItems = [];
+      const rawDateItems = [];
       for (const it of pageItems) {
         const m = it.str.match(dateRegex);
         if (m && it.x < 160) {
@@ -1206,7 +1206,7 @@
 
           const pDate = parseStatementDate(m[1]);
           if (pDate) {
-            dateItems.push({
+            rawDateItems.push({
               item: it,
               pDate: pDate,
               x: it.x,
@@ -1216,8 +1216,16 @@
         }
       }
 
-      // Sort dates top to bottom (y descending)
-      dateItems.sort((a, b) => b.y - a.y);
+      // Sort dates top to bottom, then leftmost first
+      rawDateItems.sort((a, b) => (b.y - a.y) || (a.x - b.x));
+
+      // Deduplicate multiple dates on the same line (e.g. Txn Date at x=40 and Value Date at x=95 in SBI, BOI, YES, etc.)
+      const dateItems = [];
+      for (const d of rawDateItems) {
+        if (!dateItems.some(u => Math.abs(u.y - d.y) < 6)) {
+          dateItems.push(d);
+        }
+      }
 
       const txns = [];
       for (let idx = 0; idx < dateItems.length; idx++) {

@@ -1959,40 +1959,214 @@ body {
       padding: 0 24px 20px;
     }
 
-    /* Modern Footer Multi-column */
-    .footer-grid {
-      display: grid;
-      grid-template-columns: 2fr 1fr 1fr 1fr;
-      gap: 32px;
+    /* Modern Universally Responsive Footer (Top Brand Card + 4 Balanced Columns) */
+    .app-footer {
+      margin-top: 80px;
+      border-top: 1px solid var(--border-color);
+      background: var(--bg-secondary);
+      padding: 50px 0 30px;
       text-align: left;
+    }
+
+    .footer-top-card {
+      background: var(--bg-primary);
+      border: 1px solid var(--border-color);
+      border-radius: 16px;
+      padding: 26px 30px;
       margin-bottom: 40px;
-    }
-    @media (max-width: 768px) {
-      .footer-grid { grid-template-columns: 1fr 1fr; }
-    }
-    @media (max-width: 480px) {
-      .footer-grid { grid-template-columns: 1fr; }
-    }
-    .footer-col h4 {
-      font-size: 0.95rem;
-      font-weight: 700;
-      margin-bottom: 14px;
-      color: var(--text-primary);
-    }
-    .footer-col ul {
-      list-style: none;
       display: flex;
-      flex-direction: column;
+      justify-content: space-between;
+      align-items: center;
+      gap: 28px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+    }
+    .footer-brand-info {
+      flex: 1;
+      max-width: 680px;
+    }
+    .footer-brand-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 10px;
+    }
+    .footer-brand-title {
+      font-size: 1.25rem;
+      font-weight: 800;
+      color: var(--text-primary);
+      margin: 0;
+      letter-spacing: -0.02em;
+    }
+    .footer-brand-tagline {
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--primary);
+      background: rgba(99, 102, 241, 0.1);
+      padding: 2px 8px;
+      border-radius: 12px;
+      display: inline-block;
+      margin-left: 6px;
+    }
+    .footer-brand-desc {
+      font-size: 0.88rem;
+      color: var(--text-secondary);
+      line-height: 1.6;
+      margin: 0 0 14px 0;
+    }
+    .footer-pills {
+      display: flex;
+      flex-wrap: wrap;
       gap: 8px;
     }
-    .footer-col a {
+    .footer-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 0.74rem;
+      font-weight: 700;
+      color: var(--text-secondary);
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      padding: 3px 10px;
+      border-radius: 20px;
+    }
+    .footer-brand-actions {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      min-width: 200px;
+    }
+    .btn-donate-footer {
+      background: linear-gradient(135deg, #ec4899 0%, #f43f5e 100%);
+      color: #fff !important;
+      font-weight: 700;
+      border: none;
+      box-shadow: 0 4px 14px rgba(236, 72, 153, 0.25);
+    }
+    .btn-donate-footer:hover {
+      opacity: 0.95;
+      transform: translateY(-1px);
+    }
+
+    /* 4-Column Directory Grid */
+    .footer-grid-4col {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 32px;
+      margin-bottom: 44px;
+    }
+    .footer-col-category {
+      display: flex;
+      flex-direction: column;
+    }
+    .footer-cat-header {
+      font-size: 0.96rem;
+      font-weight: 800;
+      color: var(--text-primary);
+      margin: 0 0 16px 0;
+      padding-bottom: 8px;
+      border-bottom: 2px solid var(--border-color);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      letter-spacing: -0.01em;
+    }
+    .footer-links-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 9px;
+    }
+    .footer-links-list li a {
       color: var(--text-secondary);
       text-decoration: none;
       font-size: 0.85rem;
-      transition: color 0.2s;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: color 0.18s ease, transform 0.18s ease;
+      line-height: 1.35;
     }
-    .footer-col a:hover {
+    .footer-links-list li a:hover {
       color: var(--primary);
+      transform: translateX(3px);
+    }
+    .footer-tag-badge {
+      font-size: 0.65rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      padding: 1px 5px;
+      border-radius: 4px;
+      line-height: 1.2;
+    }
+    .footer-tag-ai { background: rgba(99, 102, 241, 0.15); color: #6366f1; }
+    .footer-tag-hot { background: rgba(239, 68, 68, 0.15); color: #ef4444; }
+    .footer-tag-new { background: rgba(16, 185, 129, 0.15); color: #10b981; }
+
+    /* Bottom Bar */
+    .footer-bottom-bar {
+      padding-top: 24px;
+      border-top: 1px solid var(--border-color);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+    .footer-bottom-links {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      font-size: 0.82rem;
+      color: var(--text-muted);
+    }
+    .footer-bottom-links a {
+      color: var(--text-secondary);
+      text-decoration: none;
+    }
+    .footer-bottom-links a:hover {
+      color: var(--primary);
+    }
+
+    /* Universal Responsiveness */
+    @media (max-width: 1024px) {
+      .footer-grid-4col {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 28px;
+      }
+      .footer-top-card {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      .footer-brand-actions {
+        flex-direction: row;
+        width: 100%;
+        flex-wrap: wrap;
+      }
+    }
+    @media (max-width: 580px) {
+      .footer-grid-4col {
+        grid-template-columns: 1fr;
+        gap: 24px;
+      }
+      .footer-top-card {
+        padding: 20px 18px;
+      }
+      .footer-brand-actions .btn {
+        width: 100%;
+        justify-content: center;
+      }
+      .footer-bottom-bar {
+        flex-direction: column;
+        text-align: center;
+        gap: 12px;
+      }
+      .footer-bottom-links {
+        justify-content: center;
+        flex-wrap: wrap;
+      }
     }
 
     @keyframes fadeIn {
@@ -2713,34 +2887,53 @@ body {
 
   <footer class="app-footer">
     <div class="app-container">
-      <div class="footer-grid">
-        <div class="footer-brand-col">
-          <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 14px;">
-            <img src="logo.png" alt="AI Bots Logo" style="width: 38px; height: 38px; border-radius: 50%;">
-            <strong style="font-size: 1.15rem; color: var(--text-primary);">AI Bots Creative Studio</strong>
-          </div>        
-          <p style="font-size: 0.85rem; color: var(--text-secondary); line-height: 1.6; margin-bottom: 14px;">
-            A fast, private, 100% free browser suite of 30+ creative, financial & productivity tools engineered by Rishit Chajjed. No accounts or software installs required.
+      <!-- Top Brand & Trust Summary -->
+      <div class="footer-top-card">
+        <div class="footer-brand-info">
+          <div class="footer-brand-header">
+            <img src="logo.png" alt="AI Bots Logo" style="width: 42px; height: 42px; border-radius: 50%; border: 2px solid var(--primary);">
+            <div>
+              <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+                <h3 class="footer-brand-title">AI Bots Creative Studio</h3>
+                <span class="footer-brand-tagline">33+ Free Browser Tools</span>
+              </div>
+            </div>
+          </div>
+          <p class="footer-brand-desc">
+            A fast, private, 100% free web suite of creative, financial, and utility tools engineered by Rishit Chajjed. No accounts required, zero tracking, and your files never leave your device.
           </p>
-          <div style="display: flex; gap: 8px; flex-wrap: wrap;">
-            <a href="about.html" class="btn btn-secondary btn-sm" style="font-size: 0.78rem; font-weight: 700;">
-              <i class="fas fa-user-astronaut"></i> About Rishit
-            </a>
-            <a href="logo-kit.html" class="btn btn-secondary btn-sm" style="font-size: 0.78rem; font-weight: 700;">
-              <i class="fas fa-icons"></i> Brand Assets
-            </a>
+          <div class="footer-pills">
+            <span class="footer-pill"><i class="fas fa-shield-halved" style="color: #10b981;"></i> 100% Client-Side</span>
+            <span class="footer-pill"><i class="fas fa-bolt" style="color: #f59e0b;"></i> Zero Latency</span>
+            <span class="footer-pill"><i class="fas fa-lock" style="color: #6366f1;"></i> Zero File Uploads</span>
+            <span class="footer-pill"><i class="fas fa-ban" style="color: #ec4899;"></i> No Ads & No Logins</span>
           </div>
         </div>
+        <div class="footer-brand-actions">
+          <a href="about.html" class="btn btn-secondary btn-sm" style="font-size: 0.8rem; font-weight: 700;">
+            <i class="fas fa-user-astronaut"></i> About Rishit Chajjed
+          </a>
+          <a href="logo-kit.html" class="btn btn-secondary btn-sm" style="font-size: 0.8rem; font-weight: 700;">
+            <i class="fas fa-icons"></i> Brand Assets & Logos
+          </a>
+          <button onclick="openDonationModal()" class="btn btn-sm btn-donate-footer">
+            <i class="fas fa-heart"></i> Buy Creator a Coffee
+          </button>
+        </div>
+      </div>
 
-        <div class="footer-col">
-          <h3 style="font-size: 0.95rem; font-weight: 800; color: var(--text-primary); margin-bottom: 12px; display: flex; align-items: center; gap: 6px;">
-            <i class="fas fa-palette text-primary"></i> Creative & Media
-          </h3>
-          <ul style="display: flex; flex-direction: column; gap: 7px; list-style: none; padding: 0; margin: 0; font-size: 0.84rem;">
-            <li><a href="videoeditor.html">Video Studio Pro</a></li>
+      <!-- 4 Balanced Directory Columns -->
+      <div class="footer-grid-4col">
+        <!-- Col 1: Creative & Media -->
+        <div class="footer-col-category">
+          <h4 class="footer-cat-header">
+            <i class="fas fa-palette" style="color: #ec4899;"></i> Creative & Media
+          </h4>
+          <ul class="footer-links-list">
+            <li><a href="videoeditor.html">Video Studio Pro <span class="footer-tag-badge footer-tag-new">New</span></a></li>
             <li><a href="videoplayer.html">Video Player & Cinema</a></li>
             <li><a href="logomaker.html">Vector Logo Maker</a></li>
-            <li><a href="backremover.html">Background Remover</a></li>
+            <li><a href="backremover.html">Background Remover <span class="footer-tag-badge footer-tag-ai">AI</span></a></li>
             <li><a href="cropphoto.html">Precision Photo Crop</a></li>
             <li><a href="resizeimage.html">Multi-Format Resizer</a></li>
             <li><a href="imagecombiner.html">Image Stitcher / Merge</a></li>
@@ -2749,60 +2942,66 @@ body {
           </ul>
         </div>
 
-        <div class="footer-col">
-          <h3 style="font-size: 0.95rem; font-weight: 800; color: var(--text-primary); margin-bottom: 12px; display: flex; align-items: center; gap: 6px;">
-            <i class="fas fa-file-invoice text-primary"></i> PDF & Finance
-          </h3>
-          <ul style="display: flex; flex-direction: column; gap: 7px; list-style: none; padding: 0; margin: 0; font-size: 0.84rem;">
-            <li><a href="bank-statement-converter.html">Bank Statement to Tally</a></li>
-            <li><a href="invoice.html">Invoice Generator</a></li>
-            <li><a href="print.html">Pro Print Studio (Ultra-HD)</a></li>
+        <!-- Col 2: PDF & Finance -->
+        <div class="footer-col-category">
+          <h4 class="footer-cat-header">
+            <i class="fas fa-file-invoice" style="color: #3b82f6;"></i> PDF & Finance
+          </h4>
+          <ul class="footer-links-list">
+            <li><a href="bank-statement-converter.html">Bank Statement to Tally <span class="footer-tag-badge footer-tag-hot">HOT</span></a></li>
+            <li><a href="invoice.html">Professional Invoice Maker</a></li>
+            <li><a href="print.html">Pro Print Studio (Ultra-HD) <span class="footer-tag-badge footer-tag-new">New</span></a></li>
             <li><a href="pdfmaker.html">Image to PDF Maker</a></li>
-            <li><a href="pdfviewer.html">Fast PDF Reader</a></li>
+            <li><a href="pdfviewer.html">Fast PDF Reader & Annotator</a></li>
             <li><a href="currency.html">Live Currency Converter</a></li>
             <li><a href="buisnesscard.html">Business Card Studio</a></li>
+            <li><a href="calculator.html">Tip & Split Calculator</a></li>
           </ul>
         </div>
 
-        <div class="footer-col">
-          <h3 style="font-size: 0.95rem; font-weight: 800; color: var(--text-primary); margin-bottom: 12px; display: flex; align-items: center; gap: 6px;">
-            <i class="fas fa-screwdriver-wrench text-primary"></i> Utilities & AI
-          </h3>
-          <ul style="display: flex; flex-direction: column; gap: 7px; list-style: none; padding: 0; margin: 0; font-size: 0.84rem;">
-            <li><a href="emojis.html">Smart Emoji Studio (1120+)</a></li>
-            <li><a href="chatbot.html">AI Assistant (Gemini)</a></li>
+        <!-- Col 3: Utilities & AI -->
+        <div class="footer-col-category">
+          <h4 class="footer-cat-header">
+            <i class="fas fa-screwdriver-wrench" style="color: #8b5cf6;"></i> Utilities & AI
+          </h4>
+          <ul class="footer-links-list">
+            <li><a href="emojis.html">Smart Emoji Studio (1120+) <span class="footer-tag-badge footer-tag-hot">Hot</span></a></li>
+            <li><a href="chatbot.html">AI Assistant (Gemini) <span class="footer-tag-badge footer-tag-ai">AI</span></a></li>
             <li><a href="qrcode.html">Custom QR Code Studio</a></li>
             <li><a href="password.html">Password Generator</a></li>
             <li><a href="unitconverter.html">Universal Unit Converter</a></li>
             <li><a href="wordcounter.html">Smart Word Counter</a></li>
             <li><a href="weather.html">Live Weather Radar</a></li>
-            <li><a href="timer.html">Stopwatch & Timer</a></li>
+            <li><a href="timer.html">Precision Stopwatch & Timer</a></li>
             <li><a href="endchanger.html">File Extension Changer</a></li>
             <li><a href="calculator.html">Scientific Calculator</a></li>
           </ul>
         </div>
 
-        <div class="footer-col">
-          <h3 style="font-size: 0.95rem; font-weight: 800; color: var(--text-primary); margin-bottom: 12px; display: flex; align-items: center; gap: 6px;">
-            <i class="fas fa-trophy text-primary"></i> Sports & Games
-          </h3>
-          <ul style="display: flex; flex-direction: column; gap: 7px; list-style: none; padding: 0; margin: 0; font-size: 0.84rem;">
-            <li><a href="cricketscore.html">Cricket Score Counter</a></li>
-            <li><a href="cricket.html">Live Match Scores</a></li>
-            <li><a href="game.html">Realm of Bots RPG</a></li>
-            <li><a href="typingpractice.html">Typing Shooter Game</a></li>
-            <li><a href="donate.html" style="color: #ec4899; font-weight: 700;"><i class="fas fa-heart"></i> Support Creator</a></li>
+        <!-- Col 4: Sports & Games -->
+        <div class="footer-col-category">
+          <h4 class="footer-cat-header">
+            <i class="fas fa-trophy" style="color: #f59e0b;"></i> Sports, Games & More
+          </h4>
+          <ul class="footer-links-list">
+            <li><a href="cricketscore.html">Cricket Score Counter <span class="footer-tag-badge footer-tag-hot">Hot</span></a></li>
+            <li><a href="cricket.html">Live Match Scores Hub</a></li>
+            <li><a href="game.html">Realm of Bots: Extreme RPG <span class="footer-tag-badge footer-tag-new">New</span></a></li>
+            <li><a href="typingpractice.html">Speed Typing Practice</a></li>
+            <li><a href="donate.html" style="color: #ec4899; font-weight: 700;"><i class="fas fa-heart"></i> Buy Creator a Coffee</a></li>
+            <li><a href="about.html"><i class="fas fa-user-circle"></i> About Rishit Chajjed</a></li>
+            <li><a href="logo-kit.html"><i class="fas fa-palette"></i> Official Brand Assets</a></li>
           </ul>
         </div>
       </div>
 
-      <div style="padding-top: 24px; border-top: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;">
-        <p class="footer-text" style="margin: 0;">&copy; 2026 AI Bots. All rights reserved.</p>
-        <div style="display: flex; gap: 12px; align-items: center;">
-          <button onclick="openDonationModal()" class="btn btn-secondary btn-sm" style="color: #9d174d; background: #fdf2f8; font-weight: 700; border-color: #f472b6;">
-            <i class="fas fa-heart"></i> Buy Creator a Coffee (UPI)
-          </button>
-          <p class="footer-credits" style="margin: 0;">Website designed & engineered by <a href="about.html" rel="author" title="About Rishit Chajjed" style="color: var(--primary); font-weight: 700; text-decoration: none;">Rishit Chajjed</a>.</p>
+      <!-- Bottom Bar -->
+      <div class="footer-bottom-bar">
+        <p class="footer-text" style="margin: 0; font-size: 0.86rem;">
+          &copy; 2026 <strong>AI Bots Creative Studio</strong>. All rights reserved. Free & Open Tools for Creators.
+        </p>
+        <div class="footer-bottom-links">
+          <span>Website designed & engineered by <a href="about.html" rel="author" style="color: var(--primary); font-weight: 700;">Rishit Chajjed</a></span>
         </div>
       </div>
     </div>

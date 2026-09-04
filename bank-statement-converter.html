@@ -990,7 +990,7 @@
             }
             const isChronological = incCount >= decCount;
 
-                        if (isChronological) {
+            if (isChronological) {
               for (let i = 1; i < allTxns.length; i++) {
                 const prev = allTxns[i - 1];
                 const curr = allTxns[i];
@@ -1026,6 +1026,7 @@
                     curr.debit = -diff;
                     curr.credit = 0;
                   }
+                }
               }
             }
           }

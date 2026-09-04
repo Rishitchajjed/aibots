@@ -1050,11 +1050,11 @@
       if (!pageItems || pageItems.length === 0) return [];
 
       // 1. Detect table headers (headerX coordinates and headerY)
+      // Note: In PDF.js coordinates, the table header is near the top of the page (highest Y)
       let headerXDebit = null;
       let headerXCredit = null;
       let headerXBalance = null;
       let headerY = null;
-      let footerY = null;
 
       for (let i = 0; i < pageItems.length; i++) {
         const str = pageItems[i].str.toLowerCase();
@@ -1062,39 +1062,27 @@
 
         if (/^(withdrawal|withdrawals|debit|debits|dr|dr\.)$/i.test(str)) {
           if (headerXDebit === null) headerXDebit = pageItems[i].x;
-          if (headerY === null || y < headerY) headerY = y;
+          if (headerY === null || y > headerY) headerY = y;
         } else if (/^(deposit|deposits|credit|credits|cr|cr\.)$/i.test(str)) {
           if (headerXCredit === null) headerXCredit = pageItems[i].x;
-          if (headerY === null || y < headerY) headerY = y;
+          if (headerY === null || y > headerY) headerY = y;
         } else if (/^(balance|bal|closing\s*balance)$/i.test(str)) {
           if (headerXBalance === null) headerXBalance = pageItems[i].x;
-          if (headerY === null || y < headerY) headerY = y;
-        } else if (/^(date|txn\s*date|trans\s*date|narration|particulars)$/i.test(str)) {
-          if (headerY === null || y < headerY) headerY = y;
-        }
-
-        // Detect footer / summary tables at the bottom of the page
-        if (/^(statement\s*summary|grand\s*total|total\s*debits|total\s*credits|closing\s*bal)$/i.test(str)) {
-          if (footerY === null || y > footerY) footerY = y;
+          if (headerY === null || y > headerY) headerY = y;
         }
       }
 
       const dateRegex = /^(\d{1,2}[-/.]\d{1,2}[-/.]\d{2,4}|\d{1,2}[-\s][A-Za-z]{3}[a-z]*[-\s]\d{2,4})/;
       const amountRegex = /(?:INR\s*)?([0-9]{1,3}(?:,[0-9]{2,3})*(?:\.[0-9]{2}))/;
 
-      // 2. Find all date items on the page:
-      // Must be on the left side (x < 160)
-      // Must be BELOW the table header row (y < headerY - 2) to skip metadata dates at the top
-      // Must be ABOVE any footer summary table (y > footerY + 2) to skip summary dates at the bottom
+      // 2. Find all date items on the page (must be in date column: x < 160)
+      // If a table header row exists on this page, ignore metadata dates above the table header
       const dateItems = [];
       for (const it of pageItems) {
         const m = it.str.match(dateRegex);
         if (m && it.x < 160) {
-          if (headerY !== null && it.y >= headerY - 2) {
+          if (headerY !== null && it.y > headerY + 5) {
             continue; // Skip metadata date above table header (e.g. statement period 01/04/2024)
-          }
-          if (footerY !== null && it.y <= footerY + 2) {
-            continue; // Skip summary date inside footer (e.g. 04/09/2024 generated date)
           }
 
           const pDate = parseStatementDate(m[1]);
@@ -1125,13 +1113,13 @@
         } else if (idx === 0) {
           const nextY = dateItems[idx + 1].y;
           const h = currY - nextY;
-          yTop = currY + (h / 2.0);
+          yTop = currY + Math.min(h / 2.0, 30);
           yBottom = (currY + nextY) / 2.0;
         } else if (idx === dateItems.length - 1) {
           const prevY = dateItems[idx - 1].y;
           const h = prevY - currY;
           yTop = (prevY + currY) / 2.0;
-          yBottom = currY - (h / 2.0);
+          yBottom = currY - Math.max(h / 2.0, 25);
         } else {
           const prevY = dateItems[idx - 1].y;
           const nextY = dateItems[idx + 1].y;
@@ -1140,8 +1128,8 @@
         }
 
         // Clamp yTop so it doesn't overshoot into table header
-        if (idx === 0 && headerY !== null && yTop > headerY - 4) {
-          yTop = headerY - 4;
+        if (idx === 0 && headerY !== null && yTop > headerY - 2) {
+          yTop = headerY - 2;
         }
 
         // All items inside [yBottom, yTop) belong EXCLUSIVELY to this row
@@ -1246,8 +1234,7 @@
           upperNarr.includes("CHQ / REF") ||
           upperNarr.includes("VALUE DT") ||
           upperNarr.includes("WITHDRAWAL AMT") ||
-          upperNarr.includes("DEPOSIT AMT") ||
-          upperNarr.includes("CLOSING BALANCE")
+          upperNarr.includes("DEPOSIT AMT")
         ) {
           continue; // Discard table header row
         }

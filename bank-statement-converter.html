@@ -546,13 +546,16 @@
             <i class="fas fa-folder-tree"></i> Download Masters XML (Ledgers)
           </button>
           <div style="display:grid; grid-template-columns:1fr 1fr; gap:6px;">
-            <button class="btn btn-secondary btn-sm" onclick="exportToCsv()" id="btnExportCsv" disabled>
-              <i class="fas fa-file-csv"></i> Excel / CSV
+            <button class="btn btn-secondary btn-sm" onclick="exportToExcel()" id="btnExportExcel" style="color:#059669; font-weight:700;" disabled>
+              <i class="fas fa-file-excel"></i> Excel (.xls)
             </button>
-            <button class="btn btn-secondary btn-sm" onclick="copyXmlToClipboard()" id="btnCopyXml" disabled>
-              <i class="fas fa-copy"></i> Copy XML
+            <button class="btn btn-secondary btn-sm" onclick="exportToCsv()" id="btnExportCsv" disabled>
+              <i class="fas fa-file-csv"></i> CSV
             </button>
           </div>
+          <button class="btn btn-secondary btn-sm" onclick="copyXmlToClipboard()" id="btnCopyXml" disabled>
+            <i class="fas fa-copy"></i> Copy Tally XML
+          </button>
           <button class="btn btn-secondary btn-sm" onclick="openHelpModal()" style="margin-top:2px;">
             <i class="fas fa-circle-question"></i> How to Import in Tally
           </button>
@@ -620,6 +623,7 @@
               <button class="btn btn-secondary btn-sm" onclick="invertAllTypes()" title="Swap all Payments (Dr) & Receipts (Cr)"><i class="fas fa-right-left"></i> Swap Dr/Cr</button>
               <button class="btn btn-secondary btn-sm" onclick="addNewRow()" title="Add custom row"><i class="fas fa-plus"></i> Add Row</button>
               <button class="btn btn-secondary btn-sm" onclick="clearAllData()" title="Clear all"><i class="fas fa-trash"></i></button>
+              <button class="btn btn-secondary btn-sm" onclick="exportToExcel()" style="color:#059669; font-weight:700;" title="Download formatted Excel (.xls)"><i class="fas fa-file-excel"></i> Excel (.xls)</button>
               <button class="btn btn-primary btn-sm" onclick="exportToTallyXml()" style="background:#10b981; border-color:#10b981; font-weight:700;"><i class="fas fa-download"></i> Tally XML</button>
             </div>
           </div>
@@ -1352,6 +1356,7 @@
         metricsStrip.style.display = 'none';
         document.getElementById('btnExportXml').disabled = true;
         document.getElementById('btnExportMasters').disabled = true;
+        document.getElementById('btnExportExcel').disabled = true;
         document.getElementById('btnExportCsv').disabled = true;
         document.getElementById('btnCopyXml').disabled = true;
         return;
@@ -1361,6 +1366,7 @@
       metricsStrip.style.display = 'grid';
       document.getElementById('btnExportXml').disabled = false;
       document.getElementById('btnExportMasters').disabled = false;
+      document.getElementById('btnExportExcel').disabled = false;
       document.getElementById('btnExportCsv').disabled = false;
       document.getElementById('btnCopyXml').disabled = false;
 
@@ -1685,14 +1691,77 @@
       downloadBlob(blob, filename);
     }
 
+    function exportToExcel() {
+      if (!parsedTransactions || parsedTransactions.length === 0) {
+        alert("No transactions to export.");
+        return;
+      }
+      let html = '<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40">';
+      html += '<head><meta charset="utf-8">';
+      html += '<!--[if gte mso 9]><xml><x:ExcelWorkbook><x:ExcelWorksheets><x:ExcelWorksheet>';
+      html += '<x:Name>Bank Statement</x:Name>';
+      html += '<x:WorksheetOptions><x:DisplayGridlines/></x:WorksheetOptions>';
+      html += '</x:ExcelWorksheet></x:ExcelWorksheets></x:ExcelWorkbook></xml><![endif]-->';
+      html += '<style>';
+      html += 'table { border-collapse: collapse; font-family: Calibri, Arial, sans-serif; font-size: 10.5pt; }';
+      html += 'th { background-color: #10b981; color: #ffffff; font-weight: bold; border: 1px solid #cbd5e1; text-align: left; padding: 7px 10px; }';
+      html += 'td { border: 1px solid #cbd5e1; padding: 5px 8px; vertical-align: middle; }';
+      html += '.text-cell { mso-number-format:"\\@"; }';
+      html += '.num-cell { mso-number-format:"#,##0.00"; text-align: right; }';
+      html += '.dr-cell { color: #dc2626; font-weight: bold; mso-number-format:"#,##0.00"; text-align: right; }';
+      html += '.cr-cell { color: #059669; font-weight: bold; mso-number-format:"#,##0.00"; text-align: right; }';
+      html += '</style></head><body>';
+      html += '<table>';
+      html += '<colgroup>';
+      html += '<col style="width: 110pt;">'; // Date (broad width prevents ##### completely)
+      html += '<col style="width: 75pt;">';  // Type (Payment / Receipt)
+      html += '<col style="width: 320pt;">'; // Narration
+      html += '<col style="width: 140pt;">'; // Ref / Chq (text formatted, prevents 5.01E+11)
+      html += '<col style="width: 110pt;">'; // Debit
+      html += '<col style="width: 110pt;">'; // Credit
+      html += '<col style="width: 110pt;">'; // Balance
+      html += '<col style="width: 130pt;">'; // Counter Ledger
+      html += '</colgroup>';
+      html += '<thead><tr>';
+      html += '<th>Date</th><th>Vch Type</th><th>Narration / Particulars</th><th>Chq / Ref No</th>';
+      html += '<th style="text-align:right;">Withdrawal (Dr)</th><th style="text-align:right;">Deposit (Cr)</th><th style="text-align:right;">Balance</th><th>Counter Ledger</th>';
+      html += '</tr></thead><tbody>';
+
+      parsedTransactions.forEach(t => {
+        const isDr = (t.debit || 0) > 0;
+        const vchType = isDr ? "Payment" : "Receipt";
+        html += '<tr>';
+        html += `<td class="text-cell">${escapeHtml(t.date)}</td>`;
+        html += `<td>${vchType}</td>`;
+        html += `<td class="text-cell">${escapeHtml(t.narration || '')}</td>`;
+        html += `<td class="text-cell">${escapeHtml(t.refNo || '')}</td>`;
+        html += isDr ? `<td class="dr-cell">${t.debit.toFixed(2)}</td>` : '<td>-</td>';
+        html += !isDr ? `<td class="cr-cell">${(t.credit || 0).toFixed(2)}</td>` : '<td>-</td>';
+        html += `<td class="num-cell">${(t.balance || 0).toFixed(2)}</td>`;
+        html += `<td class="text-cell">${escapeHtml(t.counterLedger || '')}</td>`;
+        html += '</tr>';
+      });
+
+      html += '</tbody></table></body></html>';
+
+      const blob = new Blob([html], { type: 'application/vnd.ms-excel;charset=utf-8;' });
+      const bankName = document.getElementById('bankLedger').value.replace(/[^a-zA-Z0-9]/g, '_') || 'Bank';
+      downloadBlob(blob, `${bankName}_Statement_${new Date().toISOString().slice(0, 10)}.xls`);
+    }
+
     function exportToCsv() {
       if (!parsedTransactions || parsedTransactions.length === 0) return;
-      let csv = "Date,Narration,Ref Number,Withdrawal (Dr),Deposit (Cr),Balance,Counter Ledger\n";
+      let csv = "\uFEFFDate,Type,Narration,Ref Number,Withdrawal (Dr),Deposit (Cr),Balance,Counter Ledger\n";
       parsedTransactions.forEach(t => {
-        csv += `"${t.date}","${(t.narration || '').replace(/"/g, '""')}","${t.refNo || ''}",${t.debit || 0},${t.credit || 0},${t.balance || 0},"${t.counterLedger || ''}"\n`;
+        const isDr = (t.debit || 0) > 0;
+        const vchType = isDr ? "Payment" : "Receipt";
+        const dateStr = `="${t.date}"`;
+        const refStr = t.refNo ? `="${t.refNo}"` : '""';
+        csv += `${dateStr},"${vchType}","${(t.narration || '').replace(/"/g, '""')}",${refStr},${t.debit || 0},${t.credit || 0},${t.balance || 0},"${t.counterLedger || ''}"\n`;
       });
       const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-      downloadBlob(blob, `Bank_Statement_${new Date().toISOString().slice(0,10)}.csv`);
+      const bankName = document.getElementById('bankLedger').value.replace(/[^a-zA-Z0-9]/g, '_') || 'Bank';
+      downloadBlob(blob, `${bankName}_Statement_${new Date().toISOString().slice(0,10)}.csv`);
     }
 
     function copyXmlToClipboard() {

@@ -425,17 +425,12 @@
       font-weight: 800;
     }
 
-    /* Mobile Controls */
+    /* Mobile Controls & Ergonomic Touch Clusters */
     .mobile-controls {
       display: none;
       position: absolute;
-      bottom: 10px;
-      left: 0;
-      right: 0;
-      padding: 0 10px;
-      justify-content: space-between;
-      align-items: flex-end;
-      z-index: 20;
+      inset: 0;
+      z-index: 24;
       pointer-events: none;
     }
 
@@ -443,21 +438,42 @@
       position: absolute;
       left: 0;
       bottom: 0;
-      width: 35%;
-      height: 60%;
-      z-index: 10;
+      width: 44%;
+      height: 72%;
+      z-index: 25;
       touch-action: none;
       user-select: none;
       pointer-events: auto;
+    }
+    .joystick-idle-guide {
+      position: absolute;
+      left: 64px;
+      bottom: 64px;
+      transform: translate(-50%, 50%);
+      width: 82px;
+      height: 82px;
+      border-radius: 50%;
+      border: 2px dashed rgba(99, 102, 241, 0.45);
+      background: radial-gradient(circle, rgba(99, 102, 241, 0.15) 0%, transparent 70%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      color: rgba(165, 180, 252, 0.8);
+      font-size: 0.68rem;
+      font-weight: 800;
+      gap: 3px;
+      pointer-events: none;
+      box-shadow: 0 0 16px rgba(99, 102, 241, 0.25);
     }
     .virtual-joystick-base {
       position: absolute;
       width: 110px;
       height: 110px;
       border-radius: 50%;
-      background: radial-gradient(circle, rgba(99, 102, 241, 0.25) 0%, rgba(15, 23, 42, 0.65) 70%);
-      border: 2px solid rgba(99, 102, 241, 0.6);
-      box-shadow: 0 0 20px rgba(99, 102, 241, 0.4);
+      background: radial-gradient(circle, rgba(99, 102, 241, 0.3) 0%, rgba(15, 23, 42, 0.75) 70%);
+      border: 2px solid rgba(99, 102, 241, 0.8);
+      box-shadow: 0 0 25px rgba(99, 102, 241, 0.5);
       backdrop-filter: blur(8px);
       transform: translate(-50%, -50%);
       pointer-events: none;
@@ -466,72 +482,182 @@
     }
     .virtual-joystick-knob {
       position: absolute;
-      width: 44px;
-      height: 44px;
+      width: 46px;
+      height: 46px;
       border-radius: 50%;
       background: radial-gradient(circle, #38bdf8 0%, #6366f1 100%);
       border: 2px solid #ffffff;
-      box-shadow: 0 0 12px rgba(56, 189, 248, 0.8);
+      box-shadow: 0 0 14px rgba(56, 189, 248, 0.9);
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
       pointer-events: none;
     }
 
+    /* Fixed Bottom-Right Action Buttons Cluster */
     .action-buttons {
+      position: absolute;
+      right: 12px;
+      bottom: 12px;
       display: flex;
+      flex-direction: column;
+      align-items: flex-end;
       gap: 8px;
       pointer-events: auto;
-      flex-wrap: wrap;
-      max-width: 140px;
+      z-index: 28;
+    }
+    .action-sub-row {
+      display: flex;
+      gap: 8px;
       justify-content: flex-end;
+      align-items: center;
+    }
+    .action-main-row {
+      display: flex;
+      gap: 8px;
+      justify-content: flex-end;
+      align-items: center;
     }
     .act-btn {
       width: 44px;
       height: 44px;
       border-radius: 50%;
-      background: rgba(15, 23, 42, 0.7);
-      backdrop-filter: blur(6px);
-      border: 2px solid rgba(255, 255, 255, 0.28);
+      background: rgba(15, 23, 42, 0.85);
+      backdrop-filter: blur(10px);
+      border: 2px solid rgba(255, 255, 255, 0.32);
       color: white;
-      font-size: 1.05rem;
+      font-size: 0.98rem;
       display: flex;
       align-items: center;
       justify-content: center;
       user-select: none;
       touch-action: none;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.5);
-      transition: transform 0.1s;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.6);
+      transition: transform 0.08s ease, box-shadow 0.08s ease;
+      cursor: pointer;
     }
-    .act-btn:active { transform: scale(0.86); }
-    .act-attack { background: rgba(239, 68, 68, 0.85); border-color: #f87171; box-shadow: 0 0 14px rgba(239, 68, 68, 0.6); }
-    .act-magic { background: rgba(59, 130, 246, 0.8); border-color: #60a5fa; }
-    .act-ult { background: rgba(168, 85, 247, 0.85); border-color: #c084fc; box-shadow: 0 0 14px rgba(168, 85, 247, 0.6); }
-    .act-blizzard { background: rgba(6, 182, 212, 0.85); border-color: #38bdf8; }
-    .act-dash { background: rgba(16, 185, 129, 0.8); border-color: #34d399; }
-    .act-mount { background: rgba(251, 191, 36, 0.8); border-color: #fde047; color: #0f172a; }
-    .act-interact { background: rgba(168, 85, 247, 0.8); border-color: #c084fc; }
+    .act-btn:active {
+      transform: scale(0.88);
+      box-shadow: 0 0 18px rgba(255,255,255,0.7);
+    }
+    .act-attack {
+      width: 60px;
+      height: 60px;
+      font-size: 1.35rem;
+      background: radial-gradient(circle, #ef4444 0%, #b91c1c 100%);
+      border-color: #fca5a5;
+      box-shadow: 0 0 20px rgba(239, 68, 68, 0.7), 0 4px 14px rgba(0,0,0,0.7);
+    }
+    .act-magic {
+      width: 48px;
+      height: 48px;
+      background: radial-gradient(circle, #3b82f6 0%, #1d4ed8 100%);
+      border-color: #93c5fd;
+      box-shadow: 0 0 14px rgba(59, 130, 246, 0.6);
+    }
+    .act-dash {
+      width: 48px;
+      height: 48px;
+      background: radial-gradient(circle, #10b981 0%, #047857 100%);
+      border-color: #6ee7b7;
+      box-shadow: 0 0 14px rgba(16, 185, 129, 0.6);
+    }
+    .act-ult {
+      background: radial-gradient(circle, #f59e0b 0%, #b45309 100%);
+      border-color: #fde68a;
+      box-shadow: 0 0 14px rgba(245, 158, 11, 0.6);
+    }
+    .act-blizzard {
+      background: radial-gradient(circle, #06b6d4 0%, #0e7490 100%);
+      border-color: #67e8f9;
+      box-shadow: 0 0 14px rgba(6, 182, 212, 0.6);
+    }
+    .act-mount {
+      background: radial-gradient(circle, #8b5cf6 0%, #6d28d9 100%);
+      border-color: #c4b5fd;
+    }
+    .act-interact {
+      background: radial-gradient(circle, #ec4899 0%, #be185d 100%);
+      border-color: #fbcfe8;
+    }
+
+    /* Cyber Aim Reticle & Tap Cursor */
+    .cyber-aim-reticle {
+      position: absolute;
+      width: 40px;
+      height: 40px;
+      transform: translate(-50%, -50%);
+      pointer-events: none;
+      z-index: 18;
+      display: none;
+    }
+    .reticle-ring {
+      position: absolute;
+      inset: 0;
+      border-radius: 50%;
+      border: 2px dashed #38bdf8;
+      box-shadow: 0 0 14px rgba(56, 189, 248, 0.8), inset 0 0 8px rgba(56, 189, 248, 0.4);
+      animation: reticleSpin 6s linear infinite;
+    }
+    .reticle-core {
+      position: absolute;
+      width: 6px;
+      height: 6px;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      border-radius: 50%;
+      background: #ffffff;
+      box-shadow: 0 0 8px #38bdf8;
+    }
+    .reticle-tick {
+      position: absolute;
+      background: #38bdf8;
+      box-shadow: 0 0 6px #38bdf8;
+    }
+    .reticle-t { top: -6px; left: 50%; width: 2px; height: 6px; transform: translateX(-50%); }
+    .reticle-b { bottom: -6px; left: 50%; width: 2px; height: 6px; transform: translateX(-50%); }
+    .reticle-l { left: -6px; top: 50%; width: 6px; height: 2px; transform: translateY(-50%); }
+    .reticle-r { right: -6px; top: 50%; width: 6px; height: 2px; transform: translateY(-50%); }
+
+    @keyframes reticleSpin {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+    .reticle-tap-burst {
+      animation: reticleTapAnim 0.45s cubic-bezier(0.1, 0.9, 0.2, 1) forwards !important;
+    }
+    @keyframes reticleTapAnim {
+      0% { transform: translate(-50%, -50%) scale(0.6); opacity: 1; }
+      50% { transform: translate(-50%, -50%) scale(1.35); opacity: 0.9; }
+      100% { transform: translate(-50%, -50%) scale(1.0); opacity: 0.85; }
+    }
 
     @media (max-width: 860px) {
-      .mobile-controls { display: flex; }
+      .mobile-controls { display: block !important; }
       .game-canvas-wrapper {
         aspect-ratio: auto;
-        height: 60vh;
+        height: 62vh;
         min-height: 380px;
         max-height: 520px;
       }
       .hotbar-container {
-        bottom: 72px;
-        gap: 5px;
-        padding: 3px 6px;
+        bottom: 8px;
+        left: 50%;
+        transform: translateX(-50%);
+        gap: 4px;
+        padding: 2px 5px;
+        background: rgba(10, 15, 30, 0.75);
+        max-width: 45%;
+        overflow-x: auto;
       }
-      .hotbar-slot { width: 34px; height: 34px; font-size: 0.82rem; }
+      .hotbar-slot { width: 30px; height: 30px; font-size: 0.75rem; flex-shrink: 0; }
       .hotbar-key { display: none; }
-      .in-canvas-top-bar { top: 6px; padding: 3px 8px; max-width: 96%; }
+      .in-canvas-top-bar { top: 4px; padding: 2px 6px; max-width: 96%; }
       .hud-btn-label { display: none; }
-      .quest-tracker { top: 85px; max-width: 175px; font-size: 0.66rem; }
-      .minimap-wrapper { width: 75px; height: 75px; }
-      .boss-health-bar { top: 44px; }
+      .quest-tracker { top: 80px; max-width: 160px; font-size: 0.65rem; }
+      .minimap-wrapper { width: 70px; height: 70px; }
+      .boss-health-bar { top: 40px; }
     }
 
     /* Modal System */
@@ -703,6 +829,15 @@
     <!-- CANVAS VIEWPORT -->
     <div class="game-canvas-wrapper" id="canvasWrapper">
       <canvas id="gameCanvas" width="1280" height="720"></canvas>
+      <!-- CYBER AIM RETICLE / TAP TARGET CURSOR -->
+      <div class="cyber-aim-reticle" id="cyberAimReticle">
+        <div class="reticle-ring"></div>
+        <div class="reticle-core"></div>
+        <div class="reticle-tick reticle-t"></div>
+        <div class="reticle-tick reticle-b"></div>
+        <div class="reticle-tick reticle-l"></div>
+        <div class="reticle-tick reticle-r"></div>
+      </div>
 
       <!-- FLOATING TOP COMMAND BAR -->
       <div class="in-canvas-top-bar">
@@ -792,19 +927,32 @@
 
       <!-- MOBILE CONTROLS OVERLAY -->
       <div class="mobile-controls">
+        <!-- Left Thumb Virtual Joystick -->
         <div id="joystickZone">
+          <div class="joystick-idle-guide" id="joystickIdleGuide">
+            <i class="fas fa-arrows-up-down-left-right"></i>
+            <span>Move</span>
+          </div>
           <div class="virtual-joystick-base" id="joystickBase">
             <div class="virtual-joystick-knob" id="joystickKnob"></div>
           </div>
         </div>
+
+        <!-- Right Thumb Combat Actions (Guaranteed Right-Anchored) -->
         <div class="action-buttons">
-          <button class="act-btn act-ult" id="btnUlt" title="Meteor Swarm"><i class="fas fa-meteor"></i></button>
-          <button class="act-btn act-blizzard" id="btnBlizzard" title="Blizzard Nova"><i class="fas fa-snowflake"></i></button>
-          <button class="act-btn act-magic" id="btnMagic" title="Plasma Blast"><i class="fas fa-wand-magic-sparkles"></i></button>
-          <button class="act-btn act-attack" id="btnAttack" title="Laser Katana Slash"><i class="fas fa-khanda"></i></button>
-          <button class="act-btn act-dash" id="btnDash" title="Dash"><i class="fas fa-wind"></i></button>
-          <button class="act-btn act-mount" id="btnMount" title="Mount"><i class="fas fa-motorcycle"></i></button>
-          <button class="act-btn act-interact" id="btnInteract" title="Interact / Collect"><i class="fas fa-comment-dots"></i></button>
+          <!-- Secondary Abilities & Mount -->
+          <div class="action-sub-row">
+            <button class="act-btn act-ult" id="btnUlt" title="Meteor Swarm [Q / 3]"><i class="fas fa-meteor"></i></button>
+            <button class="act-btn act-blizzard" id="btnBlizzard" title="Blizzard Nova [R / 4]"><i class="fas fa-snowflake"></i></button>
+            <button class="act-btn act-mount" id="btnMount" title="Cyber Mount [V]"><i class="fas fa-motorcycle"></i></button>
+            <button class="act-btn act-interact" id="btnInteract" title="Interact / Collect [E]"><i class="fas fa-hand-holding-hand"></i></button>
+          </div>
+          <!-- Primary Combat Strike Cluster -->
+          <div class="action-main-row">
+            <button class="act-btn act-magic" id="btnMagic" title="Plasma Blast [K / F]"><i class="fas fa-wand-magic-sparkles"></i></button>
+            <button class="act-btn act-dash" id="btnDash" title="Hyper Dash [Shift]"><i class="fas fa-wind"></i></button>
+            <button class="act-btn act-attack" id="btnAttack" title="Laser Katana Slash [Space / J / Tap]"><i class="fas fa-khanda"></i></button>
+          </div>
         </div>
       </div>
 
@@ -3223,12 +3371,46 @@
     }
 
     // Direct Click/Tap on Canvas to Swing Laser Katana towards cursor/tap
+    const aimReticle = document.getElementById('cyberAimReticle');
+
+    // Desktop Mouse Tracking: Show glowing cyber crosshair following mouse
+    canvas.addEventListener('pointermove', (e) => {
+      if (e.pointerType === 'mouse' || e.pointerType === 'pen') {
+        const rect = canvasWrapper.getBoundingClientRect();
+        const curX = e.clientX - rect.left;
+        const curY = e.clientY - rect.top;
+        if (aimReticle) {
+          aimReticle.style.left = curX + 'px';
+          aimReticle.style.top = curY + 'px';
+          aimReticle.style.display = 'block';
+        }
+      }
+    });
+
+    canvas.addEventListener('pointerleave', () => {
+      if (aimReticle && !('ontouchstart' in window)) {
+        aimReticle.style.display = 'none';
+      }
+    });
+
+    // Tap/Click to Strike & Lock Reticle
     canvas.addEventListener('pointerdown', (e) => {
       if (isAnyModalOpen()) return;
       AudioEngine.init();
-      const rect = canvas.getBoundingClientRect();
+      const rect = canvasWrapper.getBoundingClientRect();
       const clickCanvasX = (e.clientX - rect.left) * (canvas.width / rect.width);
       const clickCanvasY = (e.clientY - rect.top) * (canvas.height / rect.height);
+
+      // Instant Cyber Aim Lock animation at tap position
+      if (aimReticle) {
+        aimReticle.style.left = (e.clientX - rect.left) + 'px';
+        aimReticle.style.top = (e.clientY - rect.top) + 'px';
+        aimReticle.style.display = 'block';
+        aimReticle.classList.remove('reticle-tap-burst');
+        void aimReticle.offsetWidth;
+        aimReticle.classList.add('reticle-tap-burst');
+      }
+
       const targetWorldX = camera.x + clickCanvasX;
       const targetWorldY = camera.y + clickCanvasY;
       const angle = Math.atan2(targetWorldY - player.y, targetWorldX - player.x);
@@ -3262,33 +3444,45 @@
 
     window.addEventListener('keyup', e => { keys[e.key.toLowerCase()] = false; });
 
-    // Mobile Virtual Joystick
+    // Mobile Virtual Joystick (Left Hand Bounded & Touch-Accurate)
     const joystickState = { active: false, pointerId: null, startX: 0, startY: 0, maxRadius: 45, vx: 0, vy: 0 };
     const jZone = document.getElementById('joystickZone');
     const jBase = document.getElementById('joystickBase');
     const jKnob = document.getElementById('joystickKnob');
+    const jGuide = document.getElementById('joystickIdleGuide');
 
     if (jZone) {
       jZone.addEventListener('pointerdown', (e) => {
         e.preventDefault(); e.stopPropagation(); AudioEngine.init();
-        const rect = canvasWrapper.getBoundingClientRect();
-        const touchX = e.clientX - rect.left, touchY = e.clientY - rect.top;
-        joystickState.active = true; joystickState.pointerId = e.pointerId;
-        joystickState.startX = touchX; joystickState.startY = touchY;
-        joystickState.vx = 0; joystickState.vy = 0;
-        jBase.style.left = touchX + 'px'; jBase.style.top = touchY + 'px';
-        jBase.style.display = 'block'; jKnob.style.transform = 'translate(-50%, -50%)';
+        const rect = jZone.getBoundingClientRect();
+        const touchX = e.clientX - rect.left;
+        const touchY = e.clientY - rect.top;
+
+        joystickState.active = true;
+        joystickState.pointerId = e.pointerId;
+        joystickState.startX = touchX;
+        joystickState.startY = touchY;
+        joystickState.vx = 0;
+        joystickState.vy = 0;
+
+        jBase.style.left = touchX + 'px';
+        jBase.style.top = touchY + 'px';
+        jBase.style.display = 'block';
+        jKnob.style.transform = 'translate(-50%, -50%)';
+        if (jGuide) jGuide.style.display = 'none';
+
         jZone.setPointerCapture(e.pointerId);
       });
 
       jZone.addEventListener('pointermove', (e) => {
         if (!joystickState.active || e.pointerId !== joystickState.pointerId) return;
-        const rect = canvasWrapper.getBoundingClientRect();
+        const rect = jZone.getBoundingClientRect();
         const dx = (e.clientX - rect.left) - joystickState.startX;
         const dy = (e.clientY - rect.top) - joystickState.startY;
         const dist = Math.hypot(dx, dy);
         const angle = Math.atan2(dy, dx);
         const capped = Math.min(dist, joystickState.maxRadius);
+
         jKnob.style.transform = `translate(calc(-50% + ${Math.cos(angle)*capped}px), calc(-50% + ${Math.sin(angle)*capped}px))`;
         joystickState.vx = Math.cos(angle) * (capped / joystickState.maxRadius);
         joystickState.vy = Math.sin(angle) * (capped / joystickState.maxRadius);
@@ -3296,9 +3490,12 @@
 
       const endJoy = (e) => {
         if (e.pointerId !== joystickState.pointerId) return;
-        joystickState.active = false; joystickState.pointerId = null;
-        joystickState.vx = 0; joystickState.vy = 0;
+        joystickState.active = false;
+        joystickState.pointerId = null;
+        joystickState.vx = 0;
+        joystickState.vy = 0;
         jBase.style.display = 'none';
+        if (jGuide) jGuide.style.display = 'flex';
       };
       jZone.addEventListener('pointerup', endJoy);
       jZone.addEventListener('pointercancel', endJoy);

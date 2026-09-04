@@ -1,30 +1,51 @@
-﻿# AI Bots Creative Studio
+# AI Bots Creative Studio
 
-> AI Bots Creative Studio is a modern, privacy-focused, client-side suite of 30+ creative, image processing, PDF generation, calculation, and productivity tools. All processing happens 100% locally in the browser with sub-50ms speeds and zero server uploads.
+> AI Bots Creative Studio (https://www.aibots.co.in) is a fast, private, 100% free browser-based suite of 33+ creative, financial, productivity, and gaming tools engineered by Rishit Chajjed. All processing happens locally in the browser with zero server uploads and no account requirements.
 
-## Core Tools
+## Creative & Media Tools
 
-- [Background Remover](https://www.aibots.co.in/backremover.html): 1-click precision background removal for photos.
-- [Invoice Generator](https://www.aibots.co.in/invoice.html): Create professional GST/VAT invoices with instant PDF export.
-- [Cricket Scoreboard & Hub](https://www.aibots.co.in/cricketscore.html): Live match scorer with ball-by-ball commentary, player stats, and scorecard download.
-- [PDF Maker](https://www.aibots.co.in/pdfmaker.html): Convert multiple images into high-resolution multi-page PDF documents.
-- [PDF Viewer](https://www.aibots.co.in/pdfviewer.html): Interactive PDF reader with zoom, thumbnails, and page navigation.
-- [QR Code Maker](https://www.aibots.co.in/qrcode.html): Generate customized QR codes with logos, colors, and high-res export.
-- [Image Resizer](https://www.aibots.co.in/resizeimage.html): Resize photos to exact pixels or international paper standards (A0-A10, B, C).
-- [Image Cropper](https://www.aibots.co.in/cropphoto.html): Crop images with draggable bounding box and standard aspect ratios.
-- [Vector Logo Maker](https://www.aibots.co.in/logomaker.html): Design logos with typography, icons, and SVG/PNG export.
-- [Business Card Maker](https://www.aibots.co.in/buisnesscard.html): Design double-sided printable business cards.
-- [Image Combiner](https://www.aibots.co.in/imagecombiner.html): Merge multiple images into single or multi-page layouts.
-- [Password Generator](https://www.aibots.co.in/password.html): Generate cryptographically secure passwords with entropy meter.
-- [Currency Converter](https://www.aibots.co.in/currency.html): Real-time foreign exchange rate converter for 160+ currencies.
-- [Unit Converter](https://www.aibots.co.in/unitconverter.html): Convert length, mass, temperature, speed, area, and volume.
-- [Scientific Calculator](https://www.aibots.co.in/calculator.html): Standard and scientific calculator with math history.
-- [Weather Forecast](https://www.aibots.co.in/weather.html): Real-time weather, temperature, humidity, and 7-day forecast.
-- [Typing Practice](https://www.aibots.co.in/typingpractice.html): Speed typing test with live WPM, accuracy, and error tracking.
-- [Word Counter](https://www.aibots.co.in/wordcounter.html): Real-time word, character, sentence, and reading time counter.
-- [AI Chatbot](https://www.aibots.co.in/chatbot.html): Interactive assistant for queries, guidance, and tips.
+- [Video Studio Pro](https://www.aibots.co.in/videoeditor.html): High-speed lossless HD video trimmer, cutter, audio extractor, and compressor.
+- [Video Player & Cinema](https://www.aibots.co.in/videoplayer.html): Futuristic cyber video player with 300% audio boost, screenshot frame grabber, and playback controls.
+- [Vector Logo Maker](https://www.aibots.co.in/logomaker.html): Design high-resolution vector logos, badges, and typography with instant PNG/SVG export.
+- [Background Remover](https://www.aibots.co.in/backremover.html): 1-click precision background removal with client-side edge detection and transparent PNG export.
+- [Precision Photo Crop](https://www.aibots.co.in/cropphoto.html): Crop photos with standard aspect ratios (1:1, 16:9, 4:3, passport, circular) and rotation.
+- [Multi-Format Image Resizer](https://www.aibots.co.in/resizeimage.html): Resize images to exact pixel dimensions, percentage, or specific file sizes (KB/MB) for official forms.
+- [Image Stitcher & Combiner](https://www.aibots.co.in/imagecombiner.html): Merge and combine multiple images vertically, horizontally, or in grid collages.
+- [Direct Image Linker](https://www.aibots.co.in/imagelink.html): Upload and generate instant image links, Markdown codes, and HTML embed snippets.
+- [Photo & Avatar Search](https://www.aibots.co.in/photogenerator.html): Search, generate, and explore royalty-free stock photos and avatar concepts.
+
+## PDF & Financial Tools
+
+- [Bank Statement to Tally XML](https://www.aibots.co.in/bank-statement-converter.html): Convert PDF bank statements from 21+ Indian banks (SBI, HDFC, ICICI, PNB, Axis, BOB, Canara) directly to TallyPrime / Tally.ERP 9 XML vouchers with 100% local privacy.
+- [Professional Invoice Maker](https://www.aibots.co.in/invoice.html): Create professional GST/VAT invoices with automatic tax calculations, UPI QR payment codes, and print/PDF export.
+- [Pro Print Studio (Ultra-HD)](https://www.aibots.co.in/print.html): High-fidelity document and image print studio with multi-page management and DPI scaling.
+- [Image to PDF Maker](https://www.aibots.co.in/pdfmaker.html): Convert multiple images (JPG, PNG, WebP) into high-resolution multi-page PDF documents.
+- [Fast PDF Reader & Viewer](https://www.aibots.co.in/pdfviewer.html): In-browser interactive PDF reader with text search, zoom, rotation, and multi-page viewing.
+- [Live Currency Converter](https://www.aibots.co.in/currency.html): Real-time currency exchange rates for 160+ world currencies with historical trends.
+- [Business Card Studio](https://www.aibots.co.in/buisnesscard.html): Design double-sided printable business cards with custom QR codes and typography.
+
+## Utilities & AI Tools
+
+- [Smart Emoji Studio (1120+)](https://www.aibots.co.in/emojis.html): Search 1,120+ Unicode emojis, filter by categories, customize skin tones, and 1-click copy.
+- [AI Assistant (Gemini)](https://www.aibots.co.in/chatbot.html): Intelligent AI assistant powered by Gemini for coding, writing, and questions.
+- [Custom QR Code Studio](https://www.aibots.co.in/qrcode.html): Generate customized QR codes for URLs, text, Wi-Fi passwords, vCards, and UPI with high-res PNG/SVG download.
+- [Secure Password Generator](https://www.aibots.co.in/password.html): Cryptographically strong password generator with entropy strength analysis and presets.
+- [Universal Unit Converter](https://www.aibots.co.in/unitconverter.html): Convert length, weight, temperature, speed, area, data size, volume, and time.
+- [Smart Word & Text Counter](https://www.aibots.co.in/wordcounter.html): Live count of words, characters, sentences, paragraphs, and reading time estimation.
+- [Live Weather Radar](https://www.aibots.co.in/weather.html): Real-time weather radar, current temperature, humidity, wind, and 5-day forecasts worldwide.
+- [Precision Stopwatch & Timer](https://www.aibots.co.in/timer.html): High-precision digital stopwatch with lap recording and customizable countdown timer.
+- [File Extension Changer](https://www.aibots.co.in/endchanger.html): Rename and convert file extensions safely in-browser.
+- [Scientific & Standard Calculator](https://www.aibots.co.in/calculator.html): Pro scientific calculator with trigonometry (sin, cos, tan), DEG/RAD modes, logarithms, and history.
+
+## Sports & Gaming
+
+- [Cricket Score Counter Pro](https://www.aibots.co.in/cricketscore.html): Complete ball-by-ball cricket scorer, tournament manager, wagon wheel, extras, and scorecard download.
+- [Live Match Scores Hub](https://www.aibots.co.in/cricket.html): Real-time cricket match scores, schedule, and team stats.
+- [Realm of Bots: Extreme Action RPG](https://www.aibots.co.in/game.html): Open-world 2D Action RPG featuring 5 world bosses, laser katana combat, spells, mounts, pets, and quests.
+- [Speed Typing Shooter Game](https://www.aibots.co.in/typingpractice.html): Fast-paced typing arcade game to test and boost WPM and typing accuracy.
 
 ## Optional & Additional Documentation
 
-- [Full Tools Documentation](https://www.aibots.co.in/llms-full.txt): Comprehensive technical documentation for all tools.
+- [Full Tools Documentation](https://www.aibots.co.in/llms-full.txt): Detailed technical documentation and developer guides.
 - [WebMCP Schema](https://www.aibots.co.in/.well-known/webmcp.json): Model Context Protocol declarations for AI agent integration.
+- [Sitemap](https://www.aibots.co.in/sitemap.xml): Complete search index sitemap.

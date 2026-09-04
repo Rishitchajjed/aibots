@@ -2,6 +2,9 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+  <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+  <link rel="dns-prefetch" href="https://cdnjs.cloudflare.com">
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
   <meta name="google-site-verification" content="ndzq-U-NLijgza_QqgQdcc2U3oMRoud_BT2ZZiwFREM">
   <meta name="google-site-verification" content="-Yb6Nx74gbZ3wRN5uP-Y8KKwDWlt1DPpxs4nA3PkE6M">
@@ -323,6 +326,74 @@
     "@type": "Person",
     "name": "Rishit Chajjed"
   }
+}
+  </script>
+
+  <!-- Schema.org Breadcrumb & FAQPage -->
+  <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "Home",
+      "item": "https://www.aibots.co.in/"
+    },
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "Sports & Games",
+      "item": "https://www.aibots.co.in/#sports-games"
+    },
+    {
+      "@type": "ListItem",
+      "position": 3,
+      "name": "Cricket Score Counter Pro",
+      "item": "https://www.aibots.co.in/cricketscore"
+    }
+  ]
+}
+  </script>
+  <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "How does this Cricket Score Counter work?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "You can set up custom team names, total overs, and player names. During the match, tap buttons for runs (1, 2, 3, 4, 6, 0), wickets, wides, no-balls, and byes. The tool updates the scorecard, current run rate (CRR), required run rate (RRR), and ball-by-ball commentary in real time."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Can I use this cricket scorer offline without an internet connection?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes! The Cricket Score Counter is an offline-capable Progressive Web App (PWA). Once loaded, all calculations, match states, and wagon-wheel data are stored locally in your browser."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Can I download or share the match scorecard?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes, you can export the full match summary and scorecard as a clean image or text report to share directly on WhatsApp, Instagram, or print out for tournaments."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Does it support custom tournament overs and player stats?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes, you can configure 5, 10, 15, 20 (T20), or any custom over count, track individual batsmen runs/balls, bowler figures (overs, maidens, runs, wickets), and match extras."
+      }
+    }
+  ]
 }
   </script>
 </head>
@@ -809,6 +880,60 @@
     </div>
   </div>
 
+  
+  <!-- SEO Frequently Asked Questions Section -->
+  <section class="app-container" style="max-width: 900px; margin: 40px auto 20px; padding: 0 16px;">
+    <div style="background: var(--bg-secondary, #ffffff); border: 1px solid var(--border-color, #e2e8f0); border-radius: 16px; padding: 28px; box-shadow: 0 4px 20px rgba(0,0,0,0.03);">
+      <h2 style="font-size: 1.25rem; font-weight: 800; margin-bottom: 20px; display: flex; align-items: center; gap: 10px; color: var(--text-primary);">
+        <i class="fas fa-circle-question" style="color: var(--primary, #6366f1);"></i> Frequently Asked Questions
+      </h2>
+      <div style="display: flex; flex-direction: column; gap: 12px;">
+        <details style="background: var(--bg-tertiary, #f8fafc); border: 1px solid var(--border-color, #e2e8f0); border-radius: 12px; padding: 14px 18px; cursor: pointer; transition: all 0.2s ease;">
+          <summary style="font-weight: 700; font-size: 0.95rem; color: var(--text-primary); outline: none;">How does this Cricket Score Counter work?</summary>
+          <p style="margin-top: 10px; font-size: 0.88rem; line-height: 1.6; color: var(--text-secondary); margin-bottom: 0;">You can set up custom team names, total overs, and player names. During the match, tap buttons for runs (1, 2, 3, 4, 6, 0), wickets, wides, no-balls, and byes. The tool updates the scorecard, current run rate (CRR), required run rate (RRR), and ball-by-ball commentary in real time.</p>
+        </details>
+        <details style="background: var(--bg-tertiary, #f8fafc); border: 1px solid var(--border-color, #e2e8f0); border-radius: 12px; padding: 14px 18px; cursor: pointer; transition: all 0.2s ease;">
+          <summary style="font-weight: 700; font-size: 0.95rem; color: var(--text-primary); outline: none;">Can I use this cricket scorer offline without an internet connection?</summary>
+          <p style="margin-top: 10px; font-size: 0.88rem; line-height: 1.6; color: var(--text-secondary); margin-bottom: 0;">Yes! The Cricket Score Counter is an offline-capable Progressive Web App (PWA). Once loaded, all calculations, match states, and wagon-wheel data are stored locally in your browser.</p>
+        </details>
+        <details style="background: var(--bg-tertiary, #f8fafc); border: 1px solid var(--border-color, #e2e8f0); border-radius: 12px; padding: 14px 18px; cursor: pointer; transition: all 0.2s ease;">
+          <summary style="font-weight: 700; font-size: 0.95rem; color: var(--text-primary); outline: none;">Can I download or share the match scorecard?</summary>
+          <p style="margin-top: 10px; font-size: 0.88rem; line-height: 1.6; color: var(--text-secondary); margin-bottom: 0;">Yes, you can export the full match summary and scorecard as a clean image or text report to share directly on WhatsApp, Instagram, or print out for tournaments.</p>
+        </details>
+        <details style="background: var(--bg-tertiary, #f8fafc); border: 1px solid var(--border-color, #e2e8f0); border-radius: 12px; padding: 14px 18px; cursor: pointer; transition: all 0.2s ease;">
+          <summary style="font-weight: 700; font-size: 0.95rem; color: var(--text-primary); outline: none;">Does it support custom tournament overs and player stats?</summary>
+          <p style="margin-top: 10px; font-size: 0.88rem; line-height: 1.6; color: var(--text-secondary); margin-bottom: 0;">Yes, you can configure 5, 10, 15, 20 (T20), or any custom over count, track individual batsmen runs/balls, bowler figures (overs, maidens, runs, wickets), and match extras.</p>
+        </details>
+      </div>
+    </div>
+  </section>
+
+  <!-- Related Tools Cross-Links -->
+  <section class="app-container" style="max-width: 900px; margin: 20px auto 40px; padding: 0 16px;">
+    <div style="background: var(--bg-secondary, #ffffff); border: 1px solid var(--border-color, #e2e8f0); border-radius: 16px; padding: 24px 28px; box-shadow: 0 4px 20px rgba(0,0,0,0.03);">
+      <h3 style="font-size: 1.05rem; font-weight: 800; margin-bottom: 16px; color: var(--text-primary); display: flex; align-items: center; gap: 8px;">
+        <i class="fas fa-sparkles" style="color: #f59e0b;"></i> Explore Related Free Tools
+      </h3>
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px;">
+          <a href="cricket.html" style="display: flex; align-items: center; gap: 10px; padding: 12px 16px; background: var(--bg-tertiary, #f8fafc); border: 1px solid var(--border-color, #e2e8f0); border-radius: 12px; text-decoration: none; color: var(--text-primary); font-size: 0.86rem; font-weight: 700; transition: transform 0.2s ease, border-color 0.2s ease;">
+            <i class="fas fa-satellite-dish" style="color: var(--primary, #6366f1); font-size: 1.1rem;"></i>
+            <span>Live Match Scores</span>
+          </a>
+          <a href="game.html" style="display: flex; align-items: center; gap: 10px; padding: 12px 16px; background: var(--bg-tertiary, #f8fafc); border: 1px solid var(--border-color, #e2e8f0); border-radius: 12px; text-decoration: none; color: var(--text-primary); font-size: 0.86rem; font-weight: 700; transition: transform 0.2s ease, border-color 0.2s ease;">
+            <i class="fas fa-gamepad" style="color: var(--primary, #6366f1); font-size: 1.1rem;"></i>
+            <span>Realm of Bots RPG</span>
+          </a>
+          <a href="typingpractice.html" style="display: flex; align-items: center; gap: 10px; padding: 12px 16px; background: var(--bg-tertiary, #f8fafc); border: 1px solid var(--border-color, #e2e8f0); border-radius: 12px; text-decoration: none; color: var(--text-primary); font-size: 0.86rem; font-weight: 700; transition: transform 0.2s ease, border-color 0.2s ease;">
+            <i class="fas fa-keyboard" style="color: var(--primary, #6366f1); font-size: 1.1rem;"></i>
+            <span>Typing Shooter Game</span>
+          </a>
+          <a href="timer.html" style="display: flex; align-items: center; gap: 10px; padding: 12px 16px; background: var(--bg-tertiary, #f8fafc); border: 1px solid var(--border-color, #e2e8f0); border-radius: 12px; text-decoration: none; color: var(--text-primary); font-size: 0.86rem; font-weight: 700; transition: transform 0.2s ease, border-color 0.2s ease;">
+            <i class="fas fa-stopwatch" style="color: var(--primary, #6366f1); font-size: 1.1rem;"></i>
+            <span>Stopwatch & Timer</span>
+          </a>
+      </div>
+    </div>
+  </section>
   <footer class="app-footer">
     <div class="app-container">
       <p class="footer-text">&copy; 2026 AI Bots. All rights reserved.</p>

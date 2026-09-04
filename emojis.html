@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -6,9 +6,9 @@
   <meta name="google-site-verification" content="ndzq-U-NLijgza_QqgQdcc2U3oMRoud_BT2ZZiwFREM">
   <meta name="google-site-verification" content="-Yb6Nx74gbZ3wRN5uP-Y8KKwDWlt1DPpxs4nA3PkE6M">
   <meta name="robots" content="index, follow">
-  <title>Smart Emoji Picker & Search — AI Bots</title>
-  <meta name="description" content="Search, browse, and copy 1000+ emojis instantly with category filters, keyword search, and one-click copy.">
-  <meta name="keywords" content="emoji picker, search emoji online, copy emoji, smileys, symbols, ai bots emoji">
+  <title>Smart Emoji Picker, Search & Studio — AI Bots</title>
+  <meta name="description" content="Search, filter, customize skin tones, inspect Unicode/HTML entities, and copy 1,100+ emojis with 1-click or multi-select scratchpad composer.">
+  <meta name="keywords" content="emoji picker, search emoji online, copy emoji, skin tone emoji, emoji composer, unicode inspector, ai bots emoji">
   <link rel="icon" href="logo.png" type="image/png">
   <link rel="canonical" href="https://www.aibots.co.in/emojis.html">
   <!-- Google Analytics -->
@@ -22,101 +22,683 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link rel="stylesheet" href="css/theme.css">
   <style>
-    .emoji-search-box {
-      position: relative;
-      margin-bottom: 20px;
+    /* Emoji Studio Styles */
+    .emoji-studio-wrap {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding-bottom: 60px;
     }
-    .emoji-search-box input {
-      width: 100%;
-      padding: 14px 20px 14px 44px;
-      font-size: 1rem;
-      border-radius: var(--radius-lg);
+
+    /* Top Stats Pills */
+    .studio-stats {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      justify-content: center;
+      margin-bottom: 24px;
+    }
+    .stat-pill {
       background: var(--bg-secondary);
       border: 1px solid var(--border-color);
-      color: var(--text-primary);
-      outline: none;
-      box-sizing: border-box;
+      border-radius: var(--radius-full);
+      padding: 6px 14px;
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--text-secondary);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
       box-shadow: var(--shadow-sm);
     }
-    .emoji-search-box input:focus { border-color: var(--primary); }
-    .emoji-search-box i {
+    .stat-pill i { color: var(--primary); }
+
+    /* Search & Skin Tone Control Strip */
+    .control-strip {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-xl);
+      padding: 16px 20px;
+      box-shadow: var(--shadow-md);
+      margin-bottom: 18px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .search-box-wrap {
+      flex: 1 1 340px;
+      position: relative;
+    }
+    .search-box-wrap i.search-icon {
       position: absolute;
       left: 16px;
       top: 50%;
       transform: translateY(-50%);
       color: var(--text-muted);
       font-size: 1.1rem;
+      pointer-events: none;
+    }
+    .search-input {
+      width: 100%;
+      padding: 13px 44px 13px 44px;
+      font-size: 1rem;
+      font-family: inherit;
+      border-radius: var(--radius-full);
+      background: var(--bg-primary);
+      border: 1.5px solid var(--border-color);
+      color: var(--text-primary);
+      outline: none;
+      box-sizing: border-box;
+      transition: var(--transition);
+    }
+    .search-input:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px var(--primary-glow);
+    }
+    .search-clear-btn {
+      position: absolute;
+      right: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      cursor: pointer;
+      font-size: 1rem;
+      padding: 4px 6px;
+      border-radius: 50%;
+      display: none;
+    }
+    .search-clear-btn:hover {
+      color: var(--danger);
     }
 
-    .emoji-cat-bar {
+    /* Skin Tone Selector */
+    .tone-selector-wrap {
       display: flex;
-      gap: 6px;
-      overflow-x: auto;
-      padding-bottom: 8px;
-      margin-bottom: 20px;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
     }
-    .cat-btn {
-      background: var(--bg-secondary);
+    .tone-label {
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .tone-buttons {
+      display: inline-flex;
+      background: var(--bg-primary);
       border: 1px solid var(--border-color);
-      border-radius: 999px;
+      border-radius: var(--radius-full);
+      padding: 3px;
+      gap: 3px;
+    }
+    .tone-btn {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      border: 2px solid transparent;
+      background: transparent;
+      cursor: pointer;
+      font-size: 1.1rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: transform 0.15s, border-color 0.15s, background 0.15s;
+    }
+    .tone-btn:hover {
+      transform: scale(1.18);
+    }
+    .tone-btn.active {
+      background: color-mix(in srgb, var(--primary) 15%, transparent);
+      border-color: var(--primary);
+      transform: scale(1.15);
+    }
+
+    /* Mode Switch & Actions */
+    .mode-switch-wrap {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .mode-pill {
+      background: var(--bg-primary);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-full);
+      padding: 3px;
+      display: flex;
+    }
+    .mode-btn {
+      border: none;
+      background: transparent;
       padding: 6px 14px;
+      border-radius: var(--radius-full);
       font-size: 0.82rem;
       font-weight: 600;
       color: var(--text-secondary);
       cursor: pointer;
-      white-space: nowrap;
-      display: flex;
+      display: inline-flex;
       align-items: center;
       gap: 6px;
-      transition: all 0.15s;
+      transition: var(--transition);
     }
-    .cat-btn:hover, .cat-btn.active {
+    .mode-btn.active {
+      background: var(--primary);
+      color: #ffffff;
+      box-shadow: 0 2px 8px var(--primary-glow);
+    }
+
+    /* Scratchpad / Composer Drawer */
+    .scratchpad-card {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      padding: 16px 20px;
+      margin-bottom: 18px;
+      box-shadow: var(--shadow-md);
+      transition: var(--transition);
+      display: none; /* toggled or visible in composer mode */
+    }
+    .scratchpad-card.visible {
+      display: block;
+      animation: slideDown 0.25s ease-out;
+    }
+    @keyframes slideDown {
+      from { opacity: 0; transform: translateY(-8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .scratchpad-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+    .scratchpad-title {
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .scratchpad-metrics {
+      display: flex;
+      gap: 12px;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      font-weight: 600;
+    }
+    .scratchpad-input-wrap {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+    .scratchpad-textarea {
+      flex: 1;
+      height: 54px;
+      padding: 10px 16px;
+      font-size: 1.4rem;
+      line-height: 1.4;
+      font-family: inherit;
+      background: var(--bg-primary);
+      border: 1.5px solid var(--border-color);
+      border-radius: var(--radius-md);
+      color: var(--text-primary);
+      resize: none;
+      outline: none;
+    }
+    .scratchpad-textarea:focus {
+      border-color: var(--primary);
+    }
+    .scratchpad-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    /* Quick Filter Tag Pills */
+    .quick-tags-wrap {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      overflow-x: auto;
+      padding-bottom: 10px;
+      margin-bottom: 14px;
+      scrollbar-width: thin;
+    }
+    .tag-pill {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-full);
+      padding: 5px 12px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--text-secondary);
+      cursor: pointer;
+      white-space: nowrap;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      transition: var(--transition);
+      user-select: none;
+    }
+    .tag-pill:hover, .tag-pill.active {
       background: color-mix(in srgb, var(--primary) 12%, transparent);
       border-color: var(--primary);
       color: var(--primary);
+      transform: translateY(-1px);
+    }
+
+    /* Categories Bar */
+    .cat-nav-wrap {
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      padding-bottom: 12px;
+      margin-bottom: 16px;
+      scrollbar-width: thin;
+    }
+    .cat-tab {
+      background: var(--bg-secondary);
+      border: 1.5px solid var(--border-color);
+      border-radius: var(--radius-full);
+      padding: 8px 16px;
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--text-secondary);
+      cursor: pointer;
+      white-space: nowrap;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: var(--transition);
+      user-select: none;
+    }
+    .cat-tab .badge {
+      background: var(--bg-primary);
+      color: var(--text-muted);
+      font-size: 0.72rem;
+      padding: 2px 7px;
+      border-radius: var(--radius-full);
+      font-weight: 600;
+    }
+    .cat-tab:hover {
+      border-color: var(--primary);
+      color: var(--primary);
+    }
+    .cat-tab.active {
+      background: var(--primary);
+      border-color: var(--primary);
+      color: #ffffff;
+      box-shadow: 0 4px 12px var(--primary-glow);
+    }
+    .cat-tab.active .badge {
+      background: rgba(255, 255, 255, 0.25);
+      color: #ffffff;
+    }
+
+    /* Recents & Favorites Strip */
+    .history-strip {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      padding: 10px 16px;
+      margin-bottom: 16px;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 12px;
+      box-shadow: var(--shadow-sm);
+    }
+    .history-strip-title {
+      font-size: 0.78rem;
+      font-weight: 800;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+    .history-emojis {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      flex: 1;
+    }
+    .history-btn {
+      font-size: 1.35rem;
+      width: 36px;
+      height: 36px;
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-sm);
+      background: var(--bg-primary);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: transform 0.15s, background 0.15s;
+    }
+    .history-btn:hover {
+      transform: scale(1.2);
+      border-color: var(--primary);
+      background: color-mix(in srgb, var(--primary) 12%, transparent);
+    }
+    .history-clear-btn {
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      font-size: 0.75rem;
+      cursor: pointer;
+      padding: 4px 8px;
+      border-radius: var(--radius-sm);
+    }
+    .history-clear-btn:hover {
+      color: var(--danger);
+      background: color-mix(in srgb, var(--danger) 10%, transparent);
+    }
+
+    /* Result Bar */
+    .result-info-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+      padding: 0 4px;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      font-weight: 600;
+    }
+
+    /* Emoji Grid */
+    .emoji-grid-wrap {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-xl);
+      padding: 20px;
+      box-shadow: var(--shadow-md);
+      min-height: 480px;
+    }
+    .emoji-category-section {
+      margin-bottom: 24px;
+    }
+    .emoji-category-section:last-child {
+      margin-bottom: 0;
+    }
+    .category-section-title {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding-bottom: 6px;
+      border-bottom: 1px dashed var(--border-color);
+    }
+    .category-section-title span.count {
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      background: var(--bg-primary);
+      padding: 2px 8px;
+      border-radius: var(--radius-full);
     }
 
     .emoji-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(56px, 1fr));
+      grid-template-columns: repeat(auto-fill, minmax(54px, 1fr));
       gap: 8px;
-      background: var(--bg-secondary);
-      border: 1px solid var(--border-color);
-      border-radius: var(--radius-lg);
-      padding: 20px;
-      max-height: 580px;
-      overflow-y: auto;
     }
-    .emoji-btn {
+
+    .emoji-card {
       aspect-ratio: 1;
-      font-size: 1.6rem;
+      font-size: 1.7rem;
       background: var(--bg-primary);
-      border: 1px solid transparent;
-      border-radius: 10px;
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
       display: flex;
       align-items: center;
       justify-content: center;
       cursor: pointer;
-      transition: transform 0.12s, border-color 0.12s;
+      position: relative;
       user-select: none;
+      transition: transform 0.12s cubic-bezier(0.34, 1.56, 0.64, 1), border-color 0.12s, box-shadow 0.12s, background 0.12s;
     }
-    .emoji-btn:hover {
-      transform: scale(1.2);
+    .emoji-card:hover {
+      transform: scale(1.22);
+      z-index: 5;
       border-color: var(--primary);
       background: color-mix(in srgb, var(--primary) 10%, transparent);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
     }
-    .recent-bar {
+    .emoji-card:active {
+      transform: scale(0.95);
+    }
+    .emoji-card .info-badge {
+      position: absolute;
+      top: 2px;
+      right: 2px;
+      width: 14px;
+      height: 14px;
+      font-size: 9px;
+      color: var(--text-muted);
+      background: var(--bg-secondary);
+      border-radius: 50%;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      opacity: 0.7;
+    }
+    .emoji-card:hover .info-badge {
+      display: flex;
+    }
+    .emoji-card .fav-indicator {
+      position: absolute;
+      bottom: 2px;
+      right: 3px;
+      font-size: 10px;
+      color: #eab308;
+    }
+
+    /* Empty State */
+    .empty-state {
+      text-align: center;
+      padding: 60px 20px;
+      color: var(--text-muted);
+    }
+    .empty-state i {
+      font-size: 3rem;
+      color: var(--border-color);
+      margin-bottom: 12px;
+      display: block;
+    }
+    .empty-state h3 {
+      font-size: 1.1rem;
+      color: var(--text-primary);
+      margin-bottom: 6px;
+    }
+
+    /* Inspector Modal */
+    .modal-backdrop {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.65);
+      backdrop-filter: blur(6px);
+      z-index: 10000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+    }
+    .modal-backdrop.open {
+      display: flex;
+      animation: modalFadeIn 0.2s ease-out;
+    }
+    @keyframes modalFadeIn {
+      from { opacity: 0; transform: scale(0.96); }
+      to { opacity: 1; transform: scale(1); }
+    }
+    .inspector-card {
       background: var(--bg-secondary);
       border: 1px solid var(--border-color);
+      border-radius: var(--radius-xl);
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.35);
+      width: 100%;
+      max-width: 480px;
+      overflow: hidden;
+    }
+    .inspector-header {
+      padding: 20px 24px 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--border-color);
+    }
+    .inspector-body {
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+    }
+    .inspector-preview-hero {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      background: var(--bg-primary);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      padding: 16px 20px;
+    }
+    .preview-large-emoji {
+      font-size: 4rem;
+      line-height: 1;
+      user-select: none;
+      filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.15));
+    }
+    .preview-info {
+      flex: 1;
+    }
+    .preview-name {
+      font-size: 1.15rem;
+      font-weight: 800;
+      color: var(--text-primary);
+      margin-bottom: 4px;
+    }
+    .preview-cat {
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: var(--primary);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    /* Code Cards inside Inspector */
+    .code-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: var(--bg-primary);
+      border: 1px solid var(--border-color);
       border-radius: var(--radius-md);
-      padding: 10px 16px;
-      margin-bottom: 16px;
+      padding: 10px 14px;
+    }
+    .code-meta {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+    .code-label {
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-transform: uppercase;
+    }
+    .code-val {
+      font-family: var(--font-mono, monospace);
+      font-size: 0.92rem;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+    .code-copy-btn {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-sm);
+      padding: 6px 12px;
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: var(--primary);
+      cursor: pointer;
+      transition: var(--transition);
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+    }
+    .code-copy-btn:hover {
+      background: var(--primary);
+      color: #ffffff;
+      border-color: var(--primary);
+    }
+
+    /* Toast Notification */
+    .emoji-toast {
+      position: fixed;
+      bottom: 28px;
+      left: 50%;
+      transform: translateX(-50%) translateY(20px);
+      background: #0f172a;
+      color: #ffffff;
+      padding: 12px 24px;
+      border-radius: var(--radius-full);
+      font-weight: 700;
+      font-size: 0.92rem;
+      z-index: 10001;
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.35);
+      border: 1px solid rgba(255, 255, 255, 0.15);
       display: flex;
       align-items: center;
       gap: 10px;
+      opacity: 0;
+      pointer-events: none;
+      transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.2s ease-out;
     }
-    .recent-bar span { font-size: 0.8rem; font-weight: 700; color: var(--text-secondary); text-transform: uppercase; }
-    .recent-emojis { display: flex; gap: 6px; flex-wrap: wrap; }
+    .emoji-toast.show {
+      transform: translateX(-50%) translateY(0);
+      opacity: 1;
+    }
+    .emoji-toast span.toast-emoji {
+      font-size: 1.4rem;
+      line-height: 1;
+    }
+
+    @media (max-width: 768px) {
+      .control-strip {
+        padding: 14px;
+      }
+      .emoji-grid {
+        grid-template-columns: repeat(auto-fill, minmax(46px, 1fr));
+        gap: 6px;
+      }
+      .emoji-card {
+        font-size: 1.45rem;
+      }
+      .mode-switch-wrap {
+        width: 100%;
+        justify-content: space-between;
+      }
+      .scratchpad-input-wrap {
+        flex-direction: column;
+        align-items: stretch;
+      }
+    }
   </style>
   <link rel="manifest" href="manifest.json">
   <meta name="theme-color" content="#6366f1">
@@ -138,7 +720,7 @@
         <a href="index.html" class="brand-link">
           <img src="logo.png" alt="AI Bots Logo" class="brand-logo-img">
           <span>AI Bots</span>
-          <span class="brand-badge">Emoji Picker</span>
+          <span class="brand-badge">Emoji Studio</span>
         </a>
 
         <div class="nav-actions">
@@ -150,336 +732,875 @@
   </header>
 
   <main class="app-container tool-page-wrapper">
-    <div class="tool-header">
-      <span class="tool-header-badge"><i class="fas fa-face-smile"></i> Expressive Symbols</span>
-      <h1 class="tool-title">Emoji Picker & Search</h1>
-      <p class="tool-desc">Find, filter, and 1-click copy emojis with instant search keywords and category tabs.</p>
-    </div>
+    <div class="emoji-studio-wrap">
+      <!-- Tool Header -->
+      <div class="tool-header">
+        <span class="tool-header-badge"><i class="fas fa-face-laugh-squint"></i> Expressive Unicode Studio</span>
+        <h1 class="tool-title">Smart Emoji Picker & Studio</h1>
+        <p class="tool-desc">Search, filter, customize skin tones, inspect Unicode & HTML entities, and copy from 1,120+ expressive emojis with instant one-click or scratchpad composer.</p>
+      </div>
 
-    <!-- Search Input -->
-    <div class="emoji-search-box">
-      <i class="fas fa-magnifying-glass"></i>
-      <input type="text" id="emojiSearch" placeholder="Search emojis (e.g. fire, love, robot, party, skull)..." oninput="filterEmojis()">
-    </div>
+      <!-- Feature Pill Badges -->
+      <div class="studio-stats">
+        <span class="stat-pill"><i class="fas fa-icons"></i> 1,120+ Unicode Emojis</span>
+        <span class="stat-pill"><i class="fas fa-hand-sparkles"></i> 6 Skin Tones</span>
+        <span class="stat-pill"><i class="fas fa-tags"></i> Keyword & Synonym Search</span>
+        <span class="stat-pill"><i class="fas fa-pen-nib"></i> Emoji Composer Tray</span>
+        <span class="stat-pill"><i class="fas fa-code"></i> HTML & Hex Inspector</span>
+      </div>
 
-    <!-- Recent Copied Bar -->
-    <div class="recent-bar" id="recentWrap" style="display:none;">
-      <span>Recent:</span>
-      <div class="recent-emojis" id="recentList"></div>
-    </div>
+      <!-- Search & Controls Top Strip -->
+      <div class="control-strip">
+        <!-- Search Input -->
+        <div class="search-box-wrap">
+          <i class="fas fa-magnifying-glass search-icon"></i>
+          <input type="text" id="emojiSearch" class="search-input" placeholder="Search emojis (e.g. fire, namaste, party, love, robot)..." autocomplete="off" spellcheck="false">
+          <button id="searchClearBtn" class="search-clear-btn" title="Clear search"><i class="fas fa-times"></i></button>
+        </div>
 
-    <!-- Category Tabs -->
-    <div class="emoji-cat-bar" id="catBar">
-      <button class="cat-btn active" onclick="setCategory('all', this)"><i class="fas fa-border-all"></i> All Emojis</button>
-      <button class="cat-btn" onclick="setCategory('smileys', this)">😀 Smileys</button>
-      <button class="cat-btn" onclick="setCategory('gestures', this)">👋 People</button>
-      <button class="cat-btn" onclick="setCategory('animals', this)">🐶 Animals</button>
-      <button class="cat-btn" onclick="setCategory('food', this)">🍔 Food</button>
-      <button class="cat-btn" onclick="setCategory('travel', this)">🚀 Travel</button>
-      <button class="cat-btn" onclick="setCategory('objects', this)">💡 Objects</button>
-      <button class="cat-btn" onclick="setCategory('symbols', this)">❤️ Symbols</button>
-    </div>
+        <!-- Skin Tone Selector -->
+        <div class="tone-selector-wrap">
+          <span class="tone-label"><i class="fas fa-palette"></i> Tone:</span>
+          <div class="tone-buttons" id="toneButtons">
+            <button class="tone-btn active" data-tone="" title="Default Yellow (🖐️)">🖐️</button>
+            <button class="tone-btn" data-tone="1F3FB" title="Light Skin Tone (🖐🏻)">🖐🏻</button>
+            <button class="tone-btn" data-tone="1F3FC" title="Medium-Light Skin Tone (🖐🏼)">🖐🏼</button>
+            <button class="tone-btn" data-tone="1F3FD" title="Medium Skin Tone (🖐🏽)">🖐🏽</button>
+            <button class="tone-btn" data-tone="1F3FE" title="Medium-Dark Skin Tone (🖐🏾)">🖐🏾</button>
+            <button class="tone-btn" data-tone="1F3FF" title="Dark Skin Tone (🖐🏿)">🖐🏿</button>
+          </div>
+        </div>
 
-    <!-- Emojis Grid -->
-    <div class="emoji-grid" id="emojiGrid"></div>
+        <!-- Action Mode Switch -->
+        <div class="mode-switch-wrap">
+          <div class="mode-pill">
+            <button class="mode-btn active" id="modeCopyBtn" onclick="setActionMode('copy')">
+              <i class="fas fa-copy"></i> 1-Click Copy
+            </button>
+            <button class="mode-btn" id="modeComposerBtn" onclick="setActionMode('composer')">
+              <i class="fas fa-pen-to-square"></i> Composer Tray
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Composer / Scratchpad Card -->
+      <div class="scratchpad-card" id="scratchpadCard">
+        <div class="scratchpad-header">
+          <div class="scratchpad-title">
+            <i class="fas fa-pen-nib text-primary"></i> Emoji Scratchpad & Message Composer
+          </div>
+          <div class="scratchpad-metrics">
+            <span><strong id="padCharCount">0</strong> chars</span>
+            <span><strong id="padByteCount">0</strong> UTF-8 bytes</span>
+          </div>
+        </div>
+        <div class="scratchpad-input-wrap">
+          <textarea id="scratchpadInput" class="scratchpad-textarea" placeholder="Click any emoji below to append here, or type your message..."></textarea>
+        </div>
+        <div class="scratchpad-actions">
+          <button class="btn btn-primary btn-sm" onclick="copyComposer()"><i class="fas fa-copy"></i> Copy All</button>
+          <button class="btn btn-secondary btn-sm" onclick="insertSpace()"><i class="fas fa-keyboard"></i> Space</button>
+          <button class="btn btn-secondary btn-sm" onclick="backspaceComposer()"><i class="fas fa-delete-left"></i> Backspace</button>
+          <button class="btn btn-secondary btn-sm" onclick="clearComposer()"><i class="fas fa-trash-can"></i> Clear</button>
+          <button class="btn btn-secondary btn-sm" onclick="shareWhatsApp()" style="color:#25D366;"><i class="fab fa-whatsapp"></i> WhatsApp</button>
+          <button class="btn btn-secondary btn-sm" onclick="shareTwitter()"><i class="fab fa-x-twitter"></i> Post to X</button>
+        </div>
+      </div>
+
+      <!-- Quick Search Filter Pills -->
+      <div class="quick-tags-wrap" id="quickTags">
+        <button class="tag-pill" data-query="fire hot lit"><i class="fas fa-fire" style="color:#f97316;"></i> Hot & Viral</button>
+        <button class="tag-pill" data-query="heart love cute"><i class="fas fa-heart" style="color:#ef4444;"></i> Love & Hearts</button>
+        <button class="tag-pill" data-query="party celebrate celebration"><i class="fas fa-gift" style="color:#8b5cf6;"></i> Celebration</button>
+        <button class="tag-pill" data-query="trending rocket growth"><i class="fas fa-rocket" style="color:#3b82f6;"></i> Trending</button>
+        <button class="tag-pill" data-query="namaste pray india"><i class="fas fa-hands-praying" style="color:#f59e0b;"></i> Namaste / Pray</button>
+        <button class="tag-pill" data-query="office work business computer"><i class="fas fa-briefcase" style="color:#64748b;"></i> Work & Office</button>
+        <button class="tag-pill" data-query="food delicious pizza burger drink"><i class="fas fa-pizza-slice" style="color:#eab308;"></i> Food & Drinks</button>
+        <button class="tag-pill" data-query="sport football workout fitness ball"><i class="fas fa-futbol" style="color:#10b981;"></i> Sports & Gym</button>
+        <button class="tag-pill" data-query="animal dog cat puppy cute"><i class="fas fa-paw" style="color:#a855f7;"></i> Cute Animals</button>
+        <button class="tag-pill" data-query="money dollar rich profit cash"><i class="fas fa-sack-dollar" style="color:#10b981;"></i> Money & Cash</button>
+        <button class="tag-pill" data-query="laugh lol funny rofl haha"><i class="fas fa-face-grin-tears" style="color:#f59e0b;"></i> Funny & LOL</button>
+        <button class="tag-pill" data-query="game cool skull danger gaming"><i class="fas fa-gamepad" style="color:#06b6d4;"></i> Gaming & Memes</button>
+      </div>
+
+      <!-- Recents & Favorites Quick Bar -->
+      <div class="history-strip" id="historyStrip" style="display: none;">
+        <span class="history-strip-title" id="historyLabel"><i class="fas fa-clock-rotate-left"></i> Recent:</span>
+        <div class="history-emojis" id="historyList"></div>
+        <button class="history-clear-btn" id="historyClearBtn" title="Clear History"><i class="fas fa-xmark"></i> Clear</button>
+      </div>
+
+      <!-- Category Navigation Tabs -->
+      <div class="cat-nav-wrap" id="catNav">
+        <button class="cat-tab active" data-cat="all">
+          <i class="fas fa-shapes"></i> All Emojis <span class="badge" id="badgeAll">1120</span>
+        </button>
+        <button class="cat-tab" data-cat="smileys">
+          <i class="fas fa-face-smile"></i> Smileys <span class="badge" id="badgeSmileys">122</span>
+        </button>
+        <button class="cat-tab" data-cat="people">
+          <i class="fas fa-hand"></i> People & Gestures <span class="badge" id="badgePeople">141</span>
+        </button>
+        <button class="cat-tab" data-cat="animals">
+          <i class="fas fa-dog"></i> Animals & Nature <span class="badge" id="badgeAnimals">131</span>
+        </button>
+        <button class="cat-tab" data-cat="food">
+          <i class="fas fa-burger"></i> Food & Drink <span class="badge" id="badgeFood">123</span>
+        </button>
+        <button class="cat-tab" data-cat="activity">
+          <i class="fas fa-trophy"></i> Activities & Sports <span class="badge" id="badgeActivity">60</span>
+        </button>
+        <button class="cat-tab" data-cat="travel">
+          <i class="fas fa-plane"></i> Travel & Places <span class="badge" id="badgeTravel">118</span>
+        </button>
+        <button class="cat-tab" data-cat="objects">
+          <i class="fas fa-lightbulb"></i> Objects & Tools <span class="badge" id="badgeObjects">156</span>
+        </button>
+        <button class="cat-tab" data-cat="symbols">
+          <i class="fas fa-heart"></i> Symbols <span class="badge" id="badgeSymbols">214</span>
+        </button>
+        <button class="cat-tab" data-cat="flags">
+          <i class="fas fa-flag"></i> Flags <span class="badge" id="badgeFlags">55</span>
+        </button>
+        <button class="cat-tab" data-cat="favorites">
+          <i class="fas fa-star" style="color:#eab308;"></i> Favorites <span class="badge" id="badgeFavs">0</span>
+        </button>
+      </div>
+
+      <!-- Result Information Bar -->
+      <div class="result-info-bar">
+        <span id="resultCount">Showing 1,120 emojis</span>
+        <span id="interactionTip" style="font-size: 0.78rem; opacity: 0.85;">
+          <i class="fas fa-lightbulb text-warning"></i> Tip: Right-click or hover ℹ to inspect Unicode, HTML & Hex entities.
+        </span>
+      </div>
+
+      <!-- Main Emoji Grid Container -->
+      <div class="emoji-grid-wrap" id="gridContainer">
+        <!-- Rendered dynamically -->
+      </div>
+    </div>
   </main>
 
+  <!-- Emoji Inspector Modal -->
+  <div class="modal-backdrop" id="inspectorModal">
+    <div class="inspector-card" role="dialog" aria-modal="true">
+      <div class="inspector-header">
+        <div style="display:flex; align-items:center; gap:8px;">
+          <i class="fas fa-circle-info text-primary"></i>
+          <h3 style="margin:0; font-size:1.05rem; font-weight:700;">Emoji Code & Entity Inspector</h3>
+        </div>
+        <button class="icon-btn" onclick="closeInspector()" title="Close (Esc)"><i class="fas fa-times"></i></button>
+      </div>
+
+      <div class="inspector-body">
+        <!-- Preview Hero -->
+        <div class="inspector-preview-hero">
+          <div class="preview-large-emoji" id="inspPreviewEmoji">😀</div>
+          <div class="preview-info">
+            <div class="preview-name" id="inspName">Grinning Face</div>
+            <div class="preview-cat" id="inspCat">Smileys & Emotion</div>
+            <div id="inspToneWrap" style="margin-top:8px; display:none;">
+              <span style="font-size:0.75rem; font-weight:700; color:var(--text-muted);">SKIN TONES:</span>
+              <div id="inspToneBtns" style="display:inline-flex; gap:4px; margin-left:6px;"></div>
+            </div>
+          </div>
+          <div>
+            <button class="icon-btn" id="inspFavBtn" onclick="toggleInspFavorite()" title="Toggle Favorite">
+              <i class="far fa-star"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- Entity & Codepoint Rows -->
+        <div class="code-row">
+          <div class="code-meta">
+            <span class="code-label">Raw Emoji</span>
+            <span class="code-val" id="inspValEmoji">😀</span>
+          </div>
+          <button class="code-copy-btn" onclick="copyValue('inspValEmoji')"><i class="fas fa-copy"></i> Copy</button>
+        </div>
+
+        <div class="code-row">
+          <div class="code-meta">
+            <span class="code-label">Unicode Codepoint</span>
+            <span class="code-val" id="inspValHex">U+1F600</span>
+          </div>
+          <button class="code-copy-btn" onclick="copyValue('inspValHex')"><i class="fas fa-copy"></i> Copy</button>
+        </div>
+
+        <div class="code-row">
+          <div class="code-meta">
+            <span class="code-label">HTML Decimal Entity</span>
+            <span class="code-val" id="inspValDec">&#128512;</span>
+          </div>
+          <button class="code-copy-btn" onclick="copyValue('inspValDec')"><i class="fas fa-copy"></i> Copy</button>
+        </div>
+
+        <div class="code-row">
+          <div class="code-meta">
+            <span class="code-label">HTML Hex Entity</span>
+            <span class="code-val" id="inspValHexEnt">&#x1F600;</span>
+          </div>
+          <button class="code-copy-btn" onclick="copyValue('inspValHexEnt')"><i class="fas fa-copy"></i> Copy</button>
+        </div>
+
+        <div class="code-row">
+          <div class="code-meta">
+            <span class="code-label">Markdown / Slack Shortcode</span>
+            <span class="code-val" id="inspValCode">:grinning_face:</span>
+          </div>
+          <button class="code-copy-btn" onclick="copyValue('inspValCode')"><i class="fas fa-copy"></i> Copy</button>
+        </div>
+
+        <!-- Action Row -->
+        <div style="display:flex; gap:10px; margin-top:6px;">
+          <button class="btn btn-primary" style="flex:1;" onclick="copyInspEmojiAndClose()"><i class="fas fa-copy"></i> Copy Emoji & Close</button>
+          <button class="btn btn-secondary" onclick="appendInspToComposer()"><i class="fas fa-plus"></i> Add to Composer</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Floating Toast Notification -->
+  <div class="emoji-toast" id="emojiToast">
+    <span class="toast-emoji" id="toastEmoji">🔥</span>
+    <span id="toastMsg">Copied to clipboard!</span>
+  </div>
+
+  <!-- Load Master 1120+ Emoji Database -->
+  <script src="js/emoji-data.js"></script>
+
   <script>
-    const EMOJI_DATA = [
-      // Smileys
-      { e: '😀', cat: 'smileys', tags: 'grinning face happy smile' },
-      { e: '😃', cat: 'smileys', tags: 'happy big eyes joy' },
-      { e: '😄', cat: 'smileys', tags: 'laughing smile closed eyes' },
-      { e: '😁', cat: 'smileys', tags: 'beaming grin teeth' },
-      { e: '😆', cat: 'smileys', tags: 'squinting laugh haha' },
-      { e: '😅', cat: 'smileys', tags: 'sweat smile relief nervous' },
-      { e: '🤣', cat: 'smileys', tags: 'rofl rolling floor laughing' },
-      { e: '😂', cat: 'smileys', tags: 'joy tears of joy funny lol' },
-      { e: '🙂', cat: 'smileys', tags: 'slight smile nice' },
-      { e: '🙃', cat: 'smileys', tags: 'upside down silly sarcasm' },
-      { e: '😉', cat: 'smileys', tags: 'wink flirty' },
-      { e: '😊', cat: 'smileys', tags: 'blush sweet content' },
-      { e: '😇', cat: 'smileys', tags: 'angel halo innocent' },
-      { e: '🥰', cat: 'smileys', tags: 'hearts in love affectionate' },
-      { e: '😍', cat: 'smileys', tags: 'heart eyes love crush' },
-      { e: '🤩', cat: 'smileys', tags: 'star struck excited amazed' },
-      { e: '😘', cat: 'smileys', tags: 'kiss blowing love' },
-      { e: '😋', cat: 'smileys', tags: 'yum delicious tongue food' },
-      { e: '😛', cat: 'smileys', tags: 'tongue out playful' },
-      { e: '😜', cat: 'smileys', tags: 'winking tongue crazy' },
-      { e: '🤪', cat: 'smileys', tags: 'zany wild silly' },
-      { e: '😎', cat: 'smileys', tags: 'sunglasses cool boss' },
-      { e: '🥳', cat: 'smileys', tags: 'party celebrate hat horn' },
-      { e: '😏', cat: 'smileys', tags: 'smirk sly suggestive' },
-      { e: '😒', cat: 'smileys', tags: 'unamused bored side eye' },
-      { e: '🙄', cat: 'smileys', tags: 'rolling eyes whatever annoying' },
-      { e: '😬', cat: 'smileys', tags: 'grimace awkward oof' },
-      { e: '🤥', cat: 'smileys', tags: 'lying pinocchio nose' },
-      { e: '😌', cat: 'smileys', tags: 'relieved peaceful calm' },
-      { e: '😴', cat: 'smileys', tags: 'sleeping zzz tired' },
-      { e: '😷', cat: 'smileys', tags: 'mask sick hospital' },
-      { e: '🤒', cat: 'smileys', tags: 'thermometer fever ill' },
-      { e: '🤕', cat: 'smileys', tags: 'bandage head hurt injury' },
-      { e: '🤢', cat: 'smileys', tags: 'nauseated green gross' },
-      { e: '🤮', cat: 'smileys', tags: 'vomiting puke barf' },
-      { e: '🥵', cat: 'smileys', tags: 'hot sweating heat' },
-      { e: '🥶', cat: 'smileys', tags: 'cold freezing ice winter' },
-      { e: '🤯', cat: 'smileys', tags: 'mind blown explosion shocked' },
-      { e: '🤠', cat: 'smileys', tags: 'cowboy hat yeehaw' },
-      { e: '🤡', cat: 'smileys', tags: 'clown circus goofy' },
-      { e: '👻', cat: 'smileys', tags: 'ghost spooky halloween' },
-      { e: '💀', cat: 'smileys', tags: 'skull dead skeleton dead' },
-      { e: '☠️', cat: 'smileys', tags: 'skull and crossbones pirate danger' },
-      { e: '👽', cat: 'smileys', tags: 'alien ufo space' },
-      { e: '🤖', cat: 'smileys', tags: 'robot bot ai tech' },
-      { e: '💩', cat: 'smileys', tags: 'poop poop funny' },
+    /* AI Bots Smart Emoji Studio Engine */
 
-      // Gestures
-      { e: '👋', cat: 'gestures', tags: 'wave hello goodbye' },
-      { e: '🤚', cat: 'gestures', tags: 'raised hand stop' },
-      { e: '🖐️', cat: 'gestures', tags: 'hand fingers spread five' },
-      { e: '✋', cat: 'gestures', tags: 'raised hand high five' },
-      { e: '🖖', cat: 'gestures', tags: 'vulcan salute spock' },
-      { e: '👌', cat: 'gestures', tags: 'ok sign perfect good' },
-      { e: '🤌', cat: 'gestures', tags: 'pinched fingers italian what' },
-      { e: '🤏', cat: 'gestures', tags: 'pinching hand small tiny' },
-      { e: '✌️', cat: 'gestures', tags: 'peace sign victory two' },
-      { e: '🤞', cat: 'gestures', tags: 'crossed fingers luck hope' },
-      { e: '🤟', cat: 'gestures', tags: 'love you gesture rock' },
-      { e: '🤘', cat: 'gestures', tags: 'sign of horns rock metal' },
-      { e: '🤙', cat: 'gestures', tags: 'call me shaka hang loose' },
-      { e: '👈', cat: 'gestures', tags: 'point left' },
-      { e: '👉', cat: 'gestures', tags: 'point right' },
-      { e: '👆', cat: 'gestures', tags: 'point up' },
-      { e: '👇', cat: 'gestures', tags: 'point down' },
-      { e: '👍', cat: 'gestures', tags: 'thumbs up like good yes' },
-      { e: '👎', cat: 'gestures', tags: 'thumbs down dislike bad no' },
-      { e: '✊', cat: 'gestures', tags: 'fist raised power' },
-      { e: '👊', cat: 'gestures', tags: 'punch fist bump' },
-      { e: '👏', cat: 'gestures', tags: 'clapping applause bravo' },
-      { e: '🙌', cat: 'gestures', tags: 'raising hands praise celebrate' },
-      { e: '👐', cat: 'gestures', tags: 'open hands hug' },
-      { e: '🤲', cat: 'gestures', tags: 'palms up together pray' },
-      { e: '🤝', cat: 'gestures', tags: 'handshake deal agree partner' },
-      { e: '🙏', cat: 'gestures', tags: 'folded hands pray thank you please' },
-      { e: '💪', cat: 'gestures', tags: 'flexed biceps muscle strong fitness' },
+    // Skin Tone Modifier Map (Unicode Codepoints)
+    const TONE_MODIFIERS = {
+      '1F3FB': '\u{1F3FB}', // Light
+      '1F3FC': '\u{1F3FC}', // Medium-Light
+      '1F3FD': '\u{1F3FD}', // Medium
+      '1F3FE': '\u{1F3FE}', // Medium-Dark
+      '1F3FF': '\u{1F3FF}'  // Dark
+    };
 
-      // Animals
-      { e: '🐶', cat: 'animals', tags: 'dog puppy pet cute' },
-      { e: '🐱', cat: 'animals', tags: 'cat kitten pet meow' },
-      { e: '🐭', cat: 'animals', tags: 'mouse rat rodent' },
-      { e: '🐹', cat: 'animals', tags: 'hamster pet cute' },
-      { e: '🐰', cat: 'animals', tags: 'rabbit bunny pet easter' },
-      { e: '🦊', cat: 'animals', tags: 'fox wild cute orange' },
-      { e: '🐻', cat: 'animals', tags: 'bear teddy grizzly' },
-      { e: '🐼', cat: 'animals', tags: 'panda bear bamboo china' },
-      { e: '🐨', cat: 'animals', tags: 'koala australia cute' },
-      { e: '🐯', cat: 'animals', tags: 'tiger cub cat predator' },
-      { e: '🦁', cat: 'animals', tags: 'lion king predator mane' },
-      { e: '🐮', cat: 'animals', tags: 'cow moo farm milk' },
-      { e: '🐷', cat: 'animals', tags: 'pig farm pork oink' },
-      { e: '🐸', cat: 'animals', tags: 'frog toad ribbit green' },
-      { e: '🐵', cat: 'animals', tags: 'monkey ape jungle cute' },
-      { e: '🐔', cat: 'animals', tags: 'chicken bird farm egg' },
-      { e: '🐧', cat: 'animals', tags: 'penguin bird arctic ice' },
-      { e: '🐦', cat: 'animals', tags: 'bird tweet flying' },
-      { e: '🦅', cat: 'animals', tags: 'eagle bird predator raptor usa' },
-      { e: '🦉', cat: 'animals', tags: 'owl wise bird night' },
-      { e: '🦇', cat: 'animals', tags: 'bat vampire night cave' },
-      { e: '🐺', cat: 'animals', tags: 'wolf pack howl predator' },
-      { e: '🦄', cat: 'animals', tags: 'unicorn magic horn fantasy' },
-      { e: '🐝', cat: 'animals', tags: 'honeybee bee honey insect' },
-      { e: '🐛', cat: 'animals', tags: 'bug caterpillar insect' },
-      { e: '🦋', cat: 'animals', tags: 'butterfly beauty insect' },
-      { e: '🐌', cat: 'animals', tags: 'snail slow shell' },
-      { e: '🐞', cat: 'animals', tags: 'ladybug beetle lucky' },
-      { e: '🐢', cat: 'animals', tags: 'turtle tortoise slow shell' },
-      { e: '🐍', cat: 'animals', tags: 'snake serpent reptile venom' },
-      { e: '🐙', cat: 'animals', tags: 'octopus tentacle sea ocean' },
-      { e: '🦑', cat: 'animals', tags: 'squid ocean sea' },
-      { e: '🦐', cat: 'animals', tags: 'shrimp prawn seafood' },
-      { e: '🦞', cat: 'animals', tags: 'lobster seafood claw' },
-      { e: '🦀', cat: 'animals', tags: 'crab beach seafood crustacean' },
-      { e: '🐡', cat: 'animals', tags: 'blowfish puffer sea ocean' },
-      { e: '🐠', cat: 'animals', tags: 'tropical fish aquarium' },
-      { e: '🐟', cat: 'animals', tags: 'fish seafood ocean' },
-      { e: '🐬', cat: 'animals', tags: 'dolphin sea smart ocean' },
-      { e: '🐳', cat: 'animals', tags: 'whale ocean sea spouting' },
-      { e: '🦈', cat: 'animals', tags: 'shark ocean predator jaws' },
+    const CATEGORY_NAMES = {
+      'smileys': '😀 Smileys & Emotion',
+      'people': '👋 People & Body',
+      'animals': '🐶 Animals & Nature',
+      'food': '🍔 Food & Drink',
+      'activity': '⚽ Activities & Sports',
+      'travel': '🚀 Travel & Places',
+      'objects': '💡 Objects & Tech',
+      'symbols': '❤️ Symbols & Signs',
+      'flags': '🚩 Flags of the World',
+      'favorites': '⭐ Favorites',
+      'recents': '🕒 Recently Used'
+    };
 
-      // Food
-      { e: '🍎', cat: 'food', tags: 'red apple fruit healthy' },
-      { e: '🍌', cat: 'food', tags: 'banana fruit yellow monkey' },
-      { e: '🍉', cat: 'food', tags: 'watermelon summer fruit' },
-      { e: '🍇', cat: 'food', tags: 'grapes fruit wine' },
-      { e: '🍓', cat: 'food', tags: 'strawberry berry fruit red' },
-      { e: '🍒', cat: 'food', tags: 'cherries fruit sweet' },
-      { e: '🍑', cat: 'food', tags: 'peach fruit butt' },
-      { e: '🍍', cat: 'food', tags: 'pineapple tropical fruit' },
-      { e: '🥥', cat: 'food', tags: 'coconut tropical palm' },
-      { e: '🥝', cat: 'food', tags: 'kiwi fruit green' },
-      { e: '🥑', cat: 'food', tags: 'avocado guacamole toast healthy' },
-      { e: '🥦', cat: 'food', tags: 'broccoli vegetable green healthy' },
-      { e: '🍔', cat: 'food', tags: 'hamburger burger fast food beef' },
-      { e: '🍟', cat: 'food', tags: 'french fries potato fast food' },
-      { e: '🍕', cat: 'food', tags: 'pizza slice cheese italian' },
-      { e: '🌭', cat: 'food', tags: 'hot dog sausage fast food' },
-      { e: '🥪', cat: 'food', tags: 'sandwich lunch bread' },
-      { e: '🌮', cat: 'food', tags: 'taco mexican food' },
-      { e: '🌯', cat: 'food', tags: 'burrito wrap mexican' },
-      { e: '🍿', cat: 'food', tags: 'popcorn movie snack cinema' },
-      { e: '🍣', cat: 'food', tags: 'sushi japanese fish rice' },
-      { e: '🍜', cat: 'food', tags: 'steaming bowl ramen noodles soup' },
-      { e: '🍦', cat: 'food', tags: 'soft ice cream dessert sweet' },
-      { e: '🎂', cat: 'food', tags: 'birthday cake dessert celebration' },
-      { e: '🍩', cat: 'food', tags: 'doughnut donut dessert pastry' },
-      { e: '🍪', cat: 'food', tags: 'cookie biscuit chocolate snack' },
-      { e: '🍫', cat: 'food', tags: 'chocolate bar sweet candy' },
-      { e: '☕', cat: 'food', tags: 'hot beverage coffee tea cafe' },
-      { e: '🍵', cat: 'food', tags: 'teacup without handle green tea matcha' },
-      { e: '🧃', cat: 'food', tags: 'beverage box juice box drink' },
-      { e: '🍺', cat: 'food', tags: 'beer mug alcohol drink bar' },
-      { e: '🥂', cat: 'food', tags: 'clinking glasses champagne toast cheers' },
+    // State
+    let allEmojis = window.AI_BOTS_EMOJIS || [];
+    let currentCategory = 'all';
+    let currentSearchQuery = '';
+    let currentSkinTone = ''; // '' = default
+    let actionMode = 'copy'; // 'copy' or 'composer'
+    let currentInspectedItem = null;
 
-      // Travel
-      { e: '🚗', cat: 'travel', tags: 'automobile car vehicle drive' },
-      { e: '🚕', cat: 'travel', tags: 'taxi cab yellow vehicle' },
-      { e: '🚙', cat: 'travel', tags: 'sport utility vehicle suv blue' },
-      { e: '🚌', cat: 'travel', tags: 'bus school vehicle transit' },
-      { e: '🏎️', cat: 'travel', tags: 'racing car speed f1' },
-      { e: '🚓', cat: 'travel', tags: 'police car cop vehicle' },
-      { e: '🚑', cat: 'travel', tags: 'ambulance hospital emergency medical' },
-      { e: '🚒', cat: 'travel', tags: 'fire engine truck emergency' },
-      { e: '🚚', cat: 'travel', tags: 'delivery truck cargo' },
-      { e: '🏍️', cat: 'travel', tags: 'motorcycle bike ride' },
-      { e: '🚲', cat: 'travel', tags: 'bicycle bike ride cycle' },
-      { e: '✈️', cat: 'travel', tags: 'airplane flight travel airport' },
-      { e: '🚀', cat: 'travel', tags: 'rocket space launch moon' },
-      { e: '🛸', cat: 'travel', tags: 'flying saucer ufo alien space' },
-      { e: '⛵', cat: 'travel', tags: 'sailboat yacht boat sea' },
-      { e: '🚢', cat: 'travel', tags: 'ship cruise ocean vessel' },
-      { e: '🏝️', cat: 'travel', tags: 'desert island beach tropical' },
-      { e: '🏖️', cat: 'travel', tags: 'beach with umbrella summer vacation' },
-      { e: '🏕️', cat: 'travel', tags: 'camping tent woods outdoor' },
+    // Local Storage Data
+    let recentEmojis = JSON.parse(localStorage.getItem('aibots_recent_emojis') || '[]');
+    let favoriteEmojis = JSON.parse(localStorage.getItem('aibots_favorite_emojis') || '[]');
 
-      // Objects
-      { e: '💡', cat: 'objects', tags: 'light bulb idea creative bright' },
-      { e: '📱', cat: 'objects', tags: 'mobile phone cell smartphone iphone' },
-      { e: '💻', cat: 'objects', tags: 'laptop computer tech coding macbook' },
-      { e: '🖥️', cat: 'objects', tags: 'desktop computer monitor pc' },
-      { e: '📷', cat: 'objects', tags: 'camera photo video image picture' },
-      { e: '🎮', cat: 'objects', tags: 'video game controller playstation gaming' },
-      { e: '🕹️', cat: 'objects', tags: 'joystick arcade game retro' },
-      { e: '🎧', cat: 'objects', tags: 'headphones music audio song' },
-      { e: '📦', cat: 'objects', tags: 'package box parcel amazon shipping' },
-      { e: '✉️', cat: 'objects', tags: 'envelope mail letter email' },
-      { e: '📝', cat: 'objects', tags: 'memo note paper pencil write' },
-      { e: '📚', cat: 'objects', tags: 'books study library education reading' },
-      { e: '🔑', cat: 'objects', tags: 'key lock password security access' },
-      { e: '🔒', cat: 'objects', tags: 'locked security private safe' },
-      { e: '🎁', cat: 'objects', tags: 'wrapped gift present birthday surprise' },
-      { e: '💰', cat: 'objects', tags: 'money bag rich dollar cash' },
+    // Elements
+    const searchInput = document.getElementById('emojiSearch');
+    const searchClearBtn = document.getElementById('searchClearBtn');
+    const gridContainer = document.getElementById('gridContainer');
+    const resultCountEl = document.getElementById('resultCount');
+    const scratchpadCard = document.getElementById('scratchpadCard');
+    const scratchpadInput = document.getElementById('scratchpadInput');
+    const padCharCount = document.getElementById('padCharCount');
+    const padByteCount = document.getElementById('padByteCount');
+    const historyStrip = document.getElementById('historyStrip');
+    const historyList = document.getElementById('historyList');
+    const historyClearBtn = document.getElementById('historyClearBtn');
+    const inspectorModal = document.getElementById('inspectorModal');
+    const toastEl = document.getElementById('emojiToast');
+    let toastTimeout = null;
 
-      // Symbols
-      { e: '❤️', cat: 'symbols', tags: 'red heart love passion romance' },
-      { e: '🧡', cat: 'symbols', tags: 'orange heart love' },
-      { e: '💛', cat: 'symbols', tags: 'yellow heart love friendship' },
-      { e: '💚', cat: 'symbols', tags: 'green heart love nature' },
-      { e: '💙', cat: 'symbols', tags: 'blue heart love trust' },
-      { e: '💜', cat: 'symbols', tags: 'purple heart love luxury' },
-      { e: '🖤', cat: 'symbols', tags: 'black heart dark love' },
-      { e: '🤍', cat: 'symbols', tags: 'white heart pure love' },
-      { e: '💔', cat: 'symbols', tags: 'broken heart sadness break up' },
-      { e: '💖', cat: 'symbols', tags: 'sparkling heart love shiny' },
-      { e: '✨', cat: 'symbols', tags: 'sparkles stars magic shiny aesthetic' },
-      { e: '🔥', cat: 'symbols', tags: 'fire flame lit hot trend' },
-      { e: '⚡', cat: 'symbols', tags: 'high voltage lightning bolt power electric' },
-      { e: '⭐', cat: 'symbols', tags: 'star yellow rating favorite' },
-      { e: '🌟', cat: 'symbols', tags: 'glowing star shiny award' },
-      { e: '🎉', cat: 'symbols', tags: 'party popper tada confetti celebrate' },
-      { e: '🎊', cat: 'symbols', tags: 'confetti ball party celebration' },
-      { e: '💯', cat: 'symbols', tags: 'hundred points score perfect 100' },
-      { e: '✔️', cat: 'symbols', tags: 'check mark yes correct verify' },
-      { e: '❌', cat: 'symbols', tags: 'cross mark no wrong error cancel' }
-    ];
+    // Initialize counts on category badges
+    function initCategoryBadges() {
+      const counts = { all: allEmojis.length };
+      allEmojis.forEach(item => {
+        counts[item.cat] = (counts[item.cat] || 0) + 1;
+      });
 
-    let currentCat = 'all';
-    let recents = JSON.parse(localStorage.getItem('aibots_recent_emojis') || '[]');
+      document.getElementById('badgeAll').textContent = counts.all || 0;
+      document.getElementById('badgeSmileys').textContent = counts.smileys || 0;
+      document.getElementById('badgePeople').textContent = counts.people || 0;
+      document.getElementById('badgeAnimals').textContent = counts.animals || 0;
+      document.getElementById('badgeFood').textContent = counts.food || 0;
+      document.getElementById('badgeActivity').textContent = counts.activity || 0;
+      document.getElementById('badgeTravel').textContent = counts.travel || 0;
+      document.getElementById('badgeObjects').textContent = counts.objects || 0;
+      document.getElementById('badgeSymbols').textContent = counts.symbols || 0;
+      document.getElementById('badgeFlags').textContent = counts.flags || 0;
+      document.getElementById('badgeFavs').textContent = favoriteEmojis.length;
+    }
 
-    function renderEmojis(items) {
-      const grid = document.getElementById('emojiGrid');
-      grid.innerHTML = '';
+    // Apply skin tone modifier to an emoji string
+    function applyTone(baseEmoji, toneCode, supportsTone) {
+      if (!supportsTone || !toneCode || !TONE_MODIFIERS[toneCode]) {
+        return baseEmoji;
+      }
+      const modifier = TONE_MODIFIERS[toneCode];
+      // If emoji has zero-width joiner sequences, e.g. 👨‍💻
+      if (baseEmoji.includes('\u200D')) {
+        const parts = baseEmoji.split('\u200D');
+        return parts[0] + modifier + '\u200D' + parts.slice(1).join('\u200D');
+      }
+      return baseEmoji + modifier;
+    }
 
-      if (items.length === 0) {
-        grid.innerHTML = '<div style="grid-column: 1/-1; text-align:center; color:var(--text-muted); padding:40px;">No matching emojis found.</div>';
+    // Setup Skin Tone Selector
+    document.querySelectorAll('#toneButtons .tone-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('#toneButtons .tone-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        currentSkinTone = btn.dataset.tone;
+        renderEmojis();
+      });
+    });
+
+    // Setup Category Tabs
+    document.querySelectorAll('#catNav .cat-tab').forEach(tab => {
+      tab.addEventListener('click', () => {
+        document.querySelectorAll('#catNav .cat-tab').forEach(t => t.classList.remove('active'));
+        tab.classList.add('active');
+        currentCategory = tab.dataset.cat;
+        renderEmojis();
+      });
+    });
+
+    // Quick Tag Filter Pills
+    document.querySelectorAll('#quickTags .tag-pill').forEach(pill => {
+      pill.addEventListener('click', () => {
+        if (pill.classList.contains('active')) {
+          pill.classList.remove('active');
+          searchInput.value = '';
+          currentSearchQuery = '';
+        } else {
+          document.querySelectorAll('#quickTags .tag-pill').forEach(p => p.classList.remove('active'));
+          pill.classList.add('active');
+          searchInput.value = pill.dataset.query;
+          currentSearchQuery = pill.dataset.query.toLowerCase().trim();
+        }
+        updateSearchClearBtn();
+        renderEmojis();
+      });
+    });
+
+    // Search Input with Debounce
+    let searchTimer = null;
+    searchInput.addEventListener('input', () => {
+      clearTimeout(searchTimer);
+      searchTimer = setTimeout(() => {
+        currentSearchQuery = searchInput.value.toLowerCase().trim();
+        updateSearchClearBtn();
+        // Clear active tag pill if input is custom
+        document.querySelectorAll('#quickTags .tag-pill').forEach(p => {
+          if (p.dataset.query.toLowerCase() !== currentSearchQuery) {
+            p.classList.remove('active');
+          }
+        });
+        renderEmojis();
+      }, 70);
+    });
+
+    function updateSearchClearBtn() {
+      searchClearBtn.style.display = searchInput.value ? 'block' : 'none';
+    }
+
+    searchClearBtn.addEventListener('click', () => {
+      searchInput.value = '';
+      currentSearchQuery = '';
+      updateSearchClearBtn();
+      document.querySelectorAll('#quickTags .tag-pill').forEach(p => p.classList.remove('active'));
+      searchInput.focus();
+      renderEmojis();
+    });
+
+    // Keyboard shortcut: '/' focuses search, 'Escape' clears/closes
+    window.addEventListener('keydown', (e) => {
+      if (e.key === '/' && document.activeElement !== searchInput && document.activeElement !== scratchpadInput) {
+        e.preventDefault();
+        searchInput.focus();
+        searchInput.select();
+      } else if (e.key === 'Escape') {
+        if (inspectorModal.classList.contains('open')) {
+          closeInspector();
+        } else if (searchInput.value) {
+          searchClearBtn.click();
+        }
+      }
+    });
+
+    // Action Mode: Copy vs Composer
+    function setActionMode(mode) {
+      actionMode = mode;
+      document.getElementById('modeCopyBtn').classList.toggle('active', mode === 'copy');
+      document.getElementById('modeComposerBtn').classList.toggle('active', mode === 'composer');
+      if (mode === 'composer') {
+        scratchpadCard.classList.add('visible');
+        scratchpadInput.focus();
+      } else {
+        scratchpadCard.classList.remove('visible');
+      }
+    }
+
+    // Filter Emoji List
+    function getFilteredEmojis() {
+      let list = allEmojis;
+
+      // Filter by category
+      if (currentCategory === 'favorites') {
+        list = list.filter(item => favoriteEmojis.includes(item.e));
+      } else if (currentCategory !== 'all') {
+        list = list.filter(item => item.cat === currentCategory);
+      }
+
+      // Filter by search query
+      if (currentSearchQuery) {
+        const queryTerms = currentSearchQuery.split(/\s+/).filter(Boolean);
+        list = list.filter(item => {
+          const searchable = `${item.e} ${item.name} ${item.tags} ${item.code} ${item.hex}`.toLowerCase();
+          return queryTerms.some(term => searchable.includes(term));
+        });
+      }
+
+      return list;
+    }
+
+    // Render Emojis
+    function renderEmojis() {
+      const filtered = getFilteredEmojis();
+      resultCountEl.textContent = `Showing ${filtered.length.toLocaleString()} ${filtered.length === 1 ? 'emoji' : 'emojis'}`;
+
+      if (filtered.length === 0) {
+        gridContainer.innerHTML = `
+          <div class="empty-state">
+            <i class="fas fa-face-frown-open"></i>
+            <h3>No emojis found</h3>
+            <p>We couldn't find any emojis matching "<strong>${escapeHtml(currentSearchQuery)}</strong>". Try searching for fire, happy, heart, or browse categories above.</p>
+            <button class="btn btn-secondary btn-sm" style="margin-top:12px;" onclick="resetSearch()"><i class="fas fa-rotate-left"></i> Reset Search</button>
+          </div>
+        `;
         return;
       }
 
+      // If viewing "All" and not searching, render categorized sections
+      if (currentCategory === 'all' && !currentSearchQuery) {
+        renderGroupedSections(filtered);
+      } else {
+        // Flat grid for search results or specific categories
+        gridContainer.innerHTML = '';
+        const grid = document.createElement('div');
+        grid.className = 'emoji-grid';
+
+        const fragment = document.createDocumentFragment();
+        filtered.forEach(item => {
+          fragment.appendChild(createEmojiCard(item));
+        });
+        grid.appendChild(fragment);
+        gridContainer.appendChild(grid);
+      }
+    }
+
+    // Render Grouped Sections when in 'All' category
+    function renderGroupedSections(items) {
+      gridContainer.innerHTML = '';
+      const order = ['smileys', 'people', 'animals', 'food', 'activity', 'travel', 'objects', 'symbols', 'flags'];
+      
+      const grouped = {};
       items.forEach(item => {
-        const btn = document.createElement('button');
-        btn.className = 'emoji-btn';
-        btn.textContent = item.e;
-        btn.title = `${item.e} (${item.tags.split(' ')[0]}) - Click to Copy`;
-        btn.onclick = () => copyEmoji(item.e);
-        grid.appendChild(btn);
+        if (!grouped[item.cat]) grouped[item.cat] = [];
+        grouped[item.cat].push(item);
       });
-    }
 
-    function setCategory(cat, btn) {
-      currentCat = cat;
-      document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-      filterEmojis();
-    }
+      const fragment = document.createDocumentFragment();
 
-    function filterEmojis() {
-      const q = document.getElementById('emojiSearch').value.toLowerCase().trim();
-      const filtered = EMOJI_DATA.filter(item => {
-        const matchCat = currentCat === 'all' || item.cat === currentCat;
-        const matchQuery = !q || item.tags.includes(q) || item.e.includes(q);
-        return matchCat && matchQuery;
+      order.forEach(catKey => {
+        const catItems = grouped[catKey];
+        if (!catItems || catItems.length === 0) return;
+
+        const section = document.createElement('div');
+        section.className = 'emoji-category-section';
+
+        const title = document.createElement('div');
+        title.className = 'category-section-title';
+        title.innerHTML = `
+          <span>${CATEGORY_NAMES[catKey] || catKey}</span>
+          <span class="count">${catItems.length}</span>
+        `;
+        section.appendChild(title);
+
+        const grid = document.createElement('div');
+        grid.className = 'emoji-grid';
+
+        catItems.forEach(item => {
+          grid.appendChild(createEmojiCard(item));
+        });
+
+        section.appendChild(grid);
+        fragment.appendChild(section);
       });
-      renderEmojis(filtered);
+
+      gridContainer.appendChild(fragment);
     }
 
-    function copyEmoji(emoji) {
-      navigator.clipboard.writeText(emoji).then(() => {
-        // Save recent
-        recents = [emoji, ...recents.filter(e => e !== emoji)].slice(0, 10);
-        localStorage.setItem('aibots_recent_emojis', JSON.stringify(recents));
-        renderRecents();
+    // Create an individual emoji card element
+    function createEmojiCard(item) {
+      const card = document.createElement('div');
+      card.className = 'emoji-card';
+      
+      const displayEmoji = applyTone(item.e, currentSkinTone, item.tone);
+      card.textContent = displayEmoji;
+      card.title = `${item.name} (${item.code})`;
+      card.setAttribute('role', 'button');
+      card.setAttribute('tabindex', '0');
 
-        // Toast feedback
-        const toast = document.createElement('div');
-        toast.style.cssText = 'position:fixed; bottom:30px; left:50%; transform:translateX(-50%); background:#0f172a; color:#fff; padding:10px 20px; border-radius:999px; font-weight:700; font-size:0.9rem; z-index:9999; box-shadow:0 10px 25px rgba(0,0,0,0.3);';
-        toast.innerHTML = `<span style="font-size:1.2rem; margin-right:6px;">${emoji}</span> Copied to clipboard!`;
-        document.body.appendChild(toast);
-        setTimeout(() => toast.remove(), 1800);
+      // Info badge
+      const infoBadge = document.createElement('span');
+      infoBadge.className = 'info-badge';
+      infoBadge.innerHTML = '<i class="fas fa-info"></i>';
+      infoBadge.title = 'Inspect Unicode / HTML details';
+      card.appendChild(infoBadge);
+
+      // Favorite indicator
+      if (favoriteEmojis.includes(item.e)) {
+        const favIcon = document.createElement('i');
+        favIcon.className = 'fas fa-star fav-indicator';
+        card.appendChild(favIcon);
+      }
+
+      // Handle card clicks
+      card.addEventListener('click', (e) => {
+        if (e.target.closest('.info-badge')) {
+          e.stopPropagation();
+          openInspector(item, displayEmoji);
+          return;
+        }
+
+        if (actionMode === 'composer') {
+          appendToComposer(displayEmoji);
+          showToast(displayEmoji, 'Added to Composer!');
+        } else {
+          copyEmoji(displayEmoji, item.name);
+        }
+        recordRecent(displayEmoji);
       });
+
+      // Right-click opens inspector
+      card.addEventListener('contextmenu', (e) => {
+        e.preventDefault();
+        openInspector(item, displayEmoji);
+      });
+
+      // Keyboard support
+      card.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          card.click();
+        }
+      });
+
+      return card;
     }
 
-    function renderRecents() {
-      const wrap = document.getElementById('recentWrap');
-      const list = document.getElementById('recentList');
-      if (recents.length === 0) {
-        wrap.style.display = 'none';
+    // Copy single emoji to clipboard
+    function copyEmoji(emojiStr, name) {
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(emojiStr).then(() => {
+          showToast(emojiStr, `Copied ${name ? `"${name}"` : 'emoji'} to clipboard!`);
+        }).catch(() => fallbackCopy(emojiStr));
+      } else {
+        fallbackCopy(emojiStr);
+      }
+    }
+
+    function fallbackCopy(text) {
+      const ta = document.createElement('textarea');
+      ta.value = text;
+      ta.style.position = 'fixed';
+      ta.style.opacity = '0';
+      document.body.appendChild(ta);
+      ta.select();
+      document.execCommand('copy');
+      document.body.removeChild(ta);
+      showToast(text, 'Copied to clipboard!');
+    }
+
+    // Toast notification
+    function showToast(emojiStr, message) {
+      clearTimeout(toastTimeout);
+      document.getElementById('toastEmoji').textContent = emojiStr;
+      document.getElementById('toastMsg').textContent = message;
+      toastEl.classList.add('show');
+      toastTimeout = setTimeout(() => {
+        toastEl.classList.remove('show');
+      }, 1900);
+    }
+
+    // Recents Tracker
+    function recordRecent(emojiStr) {
+      recentEmojis = [emojiStr, ...recentEmojis.filter(e => e !== emojiStr)].slice(0, 16);
+      localStorage.setItem('aibots_recent_emojis', JSON.stringify(recentEmojis));
+      renderHistory();
+    }
+
+    function renderHistory() {
+      if (recentEmojis.length === 0) {
+        historyStrip.style.display = 'none';
         return;
       }
-      wrap.style.display = 'flex';
-      list.innerHTML = '';
-      recents.forEach(e => {
+      historyStrip.style.display = 'flex';
+      historyList.innerHTML = '';
+
+      recentEmojis.forEach(emojiStr => {
         const btn = document.createElement('button');
-        btn.style.cssText = 'background:transparent; border:none; font-size:1.3rem; cursor:pointer; padding:2px;';
-        btn.textContent = e;
-        btn.onclick = () => copyEmoji(e);
-        list.appendChild(btn);
+        btn.className = 'history-btn';
+        btn.textContent = emojiStr;
+        btn.title = `Click to copy ${emojiStr}`;
+        btn.addEventListener('click', () => {
+          if (actionMode === 'composer') {
+            appendToComposer(emojiStr);
+            showToast(emojiStr, 'Added to Composer!');
+          } else {
+            copyEmoji(emojiStr);
+          }
+        });
+        historyList.appendChild(btn);
       });
     }
 
-    renderEmojis(EMOJI_DATA);
-    renderRecents();
+    historyClearBtn.addEventListener('click', () => {
+      recentEmojis = [];
+      localStorage.removeItem('aibots_recent_emojis');
+      renderHistory();
+      showToast('🧹', 'Recent history cleared!');
+    });
+
+    // Composer / Scratchpad methods
+    function appendToComposer(emojiStr) {
+      scratchpadInput.value += emojiStr;
+      updateComposerStats();
+      if (!scratchpadCard.classList.contains('visible')) {
+        scratchpadCard.classList.add('visible');
+      }
+    }
+
+    function updateComposerStats() {
+      const text = scratchpadInput.value;
+      const glyphs = [...text];
+      padCharCount.textContent = glyphs.length;
+      const bytes = new TextEncoder().encode(text).length;
+      padByteCount.textContent = bytes;
+    }
+
+    scratchpadInput.addEventListener('input', updateComposerStats);
+
+    function copyComposer() {
+      const text = scratchpadInput.value;
+      if (!text) {
+        showToast('⚠️', 'Scratchpad is empty!');
+        return;
+      }
+      copyEmoji(text, 'Composer Text');
+    }
+
+    function insertSpace() {
+      scratchpadInput.value += ' ';
+      updateComposerStats();
+    }
+
+    function backspaceComposer() {
+      const glyphs = [...scratchpadInput.value];
+      if (glyphs.length > 0) {
+        glyphs.pop();
+        scratchpadInput.value = glyphs.join('');
+        updateComposerStats();
+      }
+    }
+
+    function clearComposer() {
+      scratchpadInput.value = '';
+      updateComposerStats();
+    }
+
+    function shareWhatsApp() {
+      const text = scratchpadInput.value;
+      if (!text) {
+        showToast('⚠️', 'Add some emojis to share!');
+        return;
+      }
+      window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank');
+    }
+
+    function shareTwitter() {
+      const text = scratchpadInput.value;
+      if (!text) {
+        showToast('⚠️', 'Add some emojis to share!');
+        return;
+      }
+      window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}`, '_blank');
+    }
+
+    // Inspector Modal
+    function openInspector(item, currentDisplayEmoji) {
+      currentInspectedItem = item;
+      const displayEmoji = currentDisplayEmoji || applyTone(item.e, currentSkinTone, item.tone);
+
+      document.getElementById('inspPreviewEmoji').textContent = displayEmoji;
+      document.getElementById('inspName').textContent = item.name;
+      document.getElementById('inspCat').textContent = CATEGORY_NAMES[item.cat] || item.cat;
+
+      // Values
+      document.getElementById('inspValEmoji').textContent = displayEmoji;
+      document.getElementById('inspValHex').textContent = item.hex || calculateHex(displayEmoji);
+      document.getElementById('inspValDec').textContent = item.dec || calculateDec(displayEmoji);
+      document.getElementById('inspValHexEnt').textContent = item.hexEnt || calculateHexEnt(displayEmoji);
+      document.getElementById('inspValCode').textContent = item.code;
+
+      // Skin Tone options for human emojis
+      const toneWrap = document.getElementById('inspToneWrap');
+      const toneBtns = document.getElementById('inspToneBtns');
+      if (item.tone) {
+        toneWrap.style.display = 'block';
+        toneBtns.innerHTML = '';
+        const tones = [
+          { tone: '', label: '🖐️' },
+          { tone: '1F3FB', label: '🖐🏻' },
+          { tone: '1F3FC', label: '🖐🏼' },
+          { tone: '1F3FD', label: '🖐🏽' },
+          { tone: '1F3FE', label: '🖐🏾' },
+          { tone: '1F3FF', label: '🖐🏿' }
+        ];
+        tones.forEach(t => {
+          const btn = document.createElement('button');
+          btn.className = 'tone-btn';
+          btn.style.width = '26px';
+          btn.style.height = '26px';
+          btn.style.fontSize = '0.9rem';
+          btn.textContent = t.label;
+          if (t.tone === currentSkinTone) btn.classList.add('active');
+          btn.onclick = () => {
+            currentSkinTone = t.tone;
+            document.querySelectorAll('#toneButtons .tone-btn').forEach(b => {
+              b.classList.toggle('active', b.dataset.tone === t.tone);
+            });
+            openInspector(item);
+            renderEmojis();
+          };
+          toneBtns.appendChild(btn);
+        });
+      } else {
+        toneWrap.style.display = 'none';
+      }
+
+      // Favorite toggle button
+      updateInspFavBtn();
+
+      inspectorModal.classList.add('open');
+    }
+
+    function closeInspector() {
+      inspectorModal.classList.remove('open');
+      currentInspectedItem = null;
+    }
+
+    inspectorModal.addEventListener('click', (e) => {
+      if (e.target === inspectorModal) {
+        closeInspector();
+      }
+    });
+
+    function updateInspFavBtn() {
+      if (!currentInspectedItem) return;
+      const isFav = favoriteEmojis.includes(currentInspectedItem.e);
+      const btn = document.getElementById('inspFavBtn');
+      btn.innerHTML = isFav ? '<i class="fas fa-star" style="color:#eab308;"></i>' : '<i class="far fa-star"></i>';
+      btn.title = isFav ? 'Remove from Favorites' : 'Add to Favorites';
+    }
+
+    function toggleInspFavorite() {
+      if (!currentInspectedItem) return;
+      const emoji = currentInspectedItem.e;
+      if (favoriteEmojis.includes(emoji)) {
+        favoriteEmojis = favoriteEmojis.filter(e => e !== emoji);
+        showToast(emoji, 'Removed from Favorites');
+      } else {
+        favoriteEmojis.push(emoji);
+        showToast(emoji, 'Added to Favorites! ⭐');
+      }
+      localStorage.setItem('aibots_favorite_emojis', JSON.stringify(favoriteEmojis));
+      document.getElementById('badgeFavs').textContent = favoriteEmojis.length;
+      updateInspFavBtn();
+      renderEmojis();
+    }
+
+    function copyValue(elementId) {
+      const val = document.getElementById(elementId).textContent;
+      navigator.clipboard.writeText(val).then(() => {
+        showToast('📋', `Copied "${val}"!`);
+      });
+    }
+
+    function copyInspEmojiAndClose() {
+      const emoji = document.getElementById('inspValEmoji').textContent;
+      copyEmoji(emoji, currentInspectedItem ? currentInspectedItem.name : '');
+      recordRecent(emoji);
+      closeInspector();
+    }
+
+    function appendInspToComposer() {
+      const emoji = document.getElementById('inspValEmoji').textContent;
+      appendToComposer(emoji);
+      recordRecent(emoji);
+      showToast(emoji, 'Added to Composer!');
+      closeInspector();
+    }
+
+    function calculateHex(str) {
+      return [...str].map(cp => 'U+' + cp.codePointAt(0).toString(16).toUpperCase()).join(' ');
+    }
+    function calculateDec(str) {
+      return [...str].map(cp => '&#' + cp.codePointAt(0) + ';').join('');
+    }
+    function calculateHexEnt(str) {
+      return [...str].map(cp => '&#x' + cp.codePointAt(0).toString(16).toUpperCase() + ';').join('');
+    }
+
+    function escapeHtml(str) {
+      return str.replace(/[&<>"']/g, m => ({
+        '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+      })[m]);
+    }
+
+    function resetSearch() {
+      searchInput.value = '';
+      currentSearchQuery = '';
+      currentCategory = 'all';
+      document.querySelectorAll('#catNav .cat-tab').forEach(t => {
+        t.classList.toggle('active', t.dataset.cat === 'all');
+      });
+      document.querySelectorAll('#quickTags .tag-pill').forEach(p => p.classList.remove('active'));
+      updateSearchClearBtn();
+      renderEmojis();
+    }
+
+    // Initial Launch
+    initCategoryBadges();
+    renderHistory();
+    renderEmojis();
   </script>
   <script src="js/app.js"></script>
 </body>
 </html>
-

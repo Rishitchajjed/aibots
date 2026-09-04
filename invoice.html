@@ -351,6 +351,421 @@
       gap: 6px;
     }
 
+    /* =========================================================
+       MOBILE & PHONE COMPATIBILITY (<= 768px)
+       ========================================================= */
+    .inv-mobile-action-bar { display: none; }
+    .mobile-upi-btn { display: none; }
+
+    @media screen and (max-width: 768px) {
+      /* Base & spacing on phones */
+      body {
+        padding-bottom: 75px !important;
+      }
+      .tool-page-wrapper {
+        padding-left: 10px !important;
+        padding-right: 10px !important;
+      }
+      .tool-header {
+        margin-bottom: 12px !important;
+        text-align: center !important;
+      }
+      .tool-title {
+        font-size: 1.6rem !important;
+      }
+      .tool-desc {
+        font-size: 0.85rem !important;
+      }
+
+      /* Top Action Bar on Mobile */
+      .inv-top-bar {
+        flex-direction: column !important;
+        align-items: stretch !important;
+        gap: 12px !important;
+        padding: 12px 14px !important;
+      }
+      .inv-top-bar > div:first-child {
+        justify-content: space-between !important;
+        width: 100% !important;
+      }
+      .inv-top-bar > div:last-child {
+        display: grid !important;
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 8px !important;
+        width: 100% !important;
+      }
+      .inv-top-bar .btn {
+        justify-content: center !important;
+        font-size: 0.82rem !important;
+        padding: 9px 8px !important;
+        min-height: 40px !important;
+      }
+      .color-swatch {
+        width: 28px !important;
+        height: 28px !important;
+        border-radius: 6px !important;
+      }
+
+      /* Invoice Sheet Mobile Padding */
+      .invoice-sheet {
+        padding: 16px 12px !important;
+        border-radius: 12px !important;
+        box-shadow: 0 4px 18px rgba(0, 0, 0, 0.06) !important;
+        overflow: hidden !important;
+      }
+
+      /* Sheet Header Mobile Stacking */
+      .sheet-header-row {
+        flex-direction: column !important;
+        align-items: stretch !important;
+        gap: 14px !important;
+      }
+      .sheet-header-biz {
+        width: 100% !important;
+      }
+      .sheet-header-biz .inv-logo-box {
+        width: 110px !important;
+        height: 52px !important;
+      }
+      .sheet-header-meta {
+        width: 100% !important;
+        text-align: left !important;
+        border-top: 1px dashed #e2e8f0 !important;
+        padding-top: 12px !important;
+      }
+      .sheet-header-meta h2 {
+        text-align: left !important;
+        font-size: 1.6rem !important;
+        margin-bottom: 8px !important;
+      }
+      .sheet-meta-fields {
+        display: grid !important;
+        grid-template-columns: 1fr 1fr !important;
+        gap: 8px !important;
+        width: 100% !important;
+        align-items: stretch !important;
+      }
+      .sheet-meta-field-item {
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: flex-start !important;
+        gap: 2px !important;
+        background: #f8fafc !important;
+        border: 1px solid #e2e8f0 !important;
+        border-radius: 6px !important;
+        padding: 6px 8px !important;
+      }
+      .sheet-meta-field-item .inv-label-tag {
+        font-size: 0.65rem !important;
+        margin: 0 !important;
+      }
+      .sheet-meta-field-item .inv-input-clean {
+        text-align: left !important;
+        width: 100% !important;
+        font-weight: 700 !important;
+        padding: 0 !important;
+      }
+
+      /* Items Table: Clean Mobile Card Layout (Zero Horizontal Scroll!) */
+      .items-table {
+        display: block !important;
+        width: 100% !important;
+        margin: 10px 0 !important;
+      }
+      .items-table thead {
+        display: none !important;
+      }
+      .items-table tbody {
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 10px !important;
+        width: 100% !important;
+      }
+      .items-table tr {
+        display: grid !important;
+        grid-template-columns: 1fr 1.2fr 1.2fr 44px !important;
+        grid-template-areas:
+          "desc desc desc del"
+          "qty  rate amt  del" !important;
+        gap: 8px !important;
+        background: #f8fafc !important;
+        border: 1px solid #e2e8f0 !important;
+        border-radius: 10px !important;
+        padding: 10px 12px !important;
+        align-items: center !important;
+        box-sizing: border-box !important;
+      }
+      .items-table td {
+        border: none !important;
+        padding: 0 !important;
+        box-sizing: border-box !important;
+      }
+      .items-table td.col-desc {
+        grid-area: desc !important;
+        margin-bottom: 2px !important;
+      }
+      .items-table td.col-desc input {
+        font-weight: 700 !important;
+        font-size: 0.95rem !important;
+        background: #ffffff !important;
+        border: 1px solid #cbd5e1 !important;
+        border-radius: 6px !important;
+        padding: 7px 10px !important;
+        width: 100% !important;
+      }
+      .items-table td.col-qty {
+        grid-area: qty !important;
+      }
+      .items-table td.col-qty::before {
+        content: "Qty";
+        display: block;
+        font-size: 0.65rem;
+        font-weight: 800;
+        color: #64748b;
+        text-transform: uppercase;
+        margin-bottom: 2px;
+      }
+      .items-table td.col-qty input {
+        background: #ffffff !important;
+        border: 1px solid #cbd5e1 !important;
+        border-radius: 6px !important;
+        padding: 6px 8px !important;
+        text-align: center !important;
+        width: 100% !important;
+        font-weight: 700 !important;
+      }
+      .items-table td.col-rate {
+        grid-area: rate !important;
+      }
+      .items-table td.col-rate::before {
+        content: "Rate";
+        display: block;
+        font-size: 0.65rem;
+        font-weight: 800;
+        color: #64748b;
+        text-transform: uppercase;
+        margin-bottom: 2px;
+      }
+      .items-table td.col-rate input {
+        background: #ffffff !important;
+        border: 1px solid #cbd5e1 !important;
+        border-radius: 6px !important;
+        padding: 6px 8px !important;
+        text-align: right !important;
+        width: 100% !important;
+        font-weight: 700 !important;
+      }
+      .items-table td.col-amount {
+        grid-area: amt !important;
+        text-align: right !important;
+      }
+      .items-table td.col-amount::before {
+        content: "Total";
+        display: block;
+        font-size: 0.65rem;
+        font-weight: 800;
+        color: #64748b;
+        text-transform: uppercase;
+        margin-bottom: 2px;
+        text-align: right;
+      }
+      .items-table td.col-amount .item-amount {
+        display: block;
+        font-weight: 800 !important;
+        font-size: 0.95rem !important;
+        color: var(--inv-accent) !important;
+        padding: 6px 0;
+      }
+      .items-table td.col-del {
+        grid-area: del !important;
+        display: flex !important;
+        justify-content: center !important;
+        align-items: center !important;
+      }
+      .btn-row-del {
+        width: 38px !important;
+        height: 38px !important;
+        border-radius: 8px !important;
+        background: rgba(239, 68, 68, 0.12) !important;
+        color: #ef4444 !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        font-size: 1rem !important;
+      }
+      .btn-row-del:active {
+        background: #ef4444 !important;
+        color: #ffffff !important;
+      }
+
+      /* Bottom Split on Mobile (Totals FIRST, Payment Details SECOND) */
+      .bottom-split-grid {
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 16px !important;
+      }
+      .bottom-split-grid > :nth-child(1) {
+        order: 2 !important; /* Payment instructions & QR code */
+      }
+      .bottom-split-grid > :nth-child(2) {
+        order: 1 !important; /* Totals Card */
+      }
+
+      .signature-area {
+        justify-content: center !important;
+        margin-top: 14px !important;
+      }
+
+      /* Direct UPI Pay Button on Mobile */
+      .mobile-upi-btn {
+        display: flex !important;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        margin-top: 10px;
+        padding: 10px 14px;
+        border-radius: 8px;
+        font-weight: 800;
+        font-size: 0.88rem;
+        background: linear-gradient(135deg, #059669, #10b981);
+        color: #ffffff;
+        text-decoration: none;
+      }
+
+      /* Floating Sticky Action Bar on Mobile */
+      .inv-mobile-action-bar {
+        display: flex !important;
+        position: fixed !important;
+        bottom: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
+        background: var(--bg-secondary) !important;
+        border-top: 1px solid var(--border-color) !important;
+        padding: 8px 12px calc(8px + env(safe-area-inset-bottom, 0px)) !important;
+        gap: 8px !important;
+        z-index: 9999 !important;
+        box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.15) !important;
+        backdrop-filter: blur(12px) !important;
+        -webkit-backdrop-filter: blur(12px) !important;
+      }
+      .inv-mobile-action-bar .btn {
+        flex: 1 !important;
+        justify-content: center !important;
+        padding: 10px 6px !important;
+        font-size: 0.85rem !important;
+        font-weight: 800 !important;
+        min-height: 42px !important;
+        border-radius: 8px !important;
+      }
+
+      /* Avoid iOS Safari Input Auto-Zoom */
+      input, select, textarea, .inv-input-clean {
+        font-size: 16px !important;
+      }
+    }
+
+    /* =========================================================
+       HIGH-FIDELITY PDF EXPORT LOCK
+       Renders exact desktop A4 proportions during html2canvas capture
+       ========================================================= */
+    .invoice-sheet.pdf-exporting {
+      width: 794px !important;
+      max-width: 794px !important;
+      min-width: 794px !important;
+      padding: 28px 32px !important;
+      box-sizing: border-box !important;
+    }
+    .invoice-sheet.pdf-exporting .sheet-header-row {
+      flex-direction: row !important;
+      justify-content: space-between !important;
+      align-items: flex-start !important;
+    }
+    .invoice-sheet.pdf-exporting .sheet-header-biz {
+      width: auto !important;
+    }
+    .invoice-sheet.pdf-exporting .sheet-header-meta {
+      width: 240px !important;
+      text-align: right !important;
+      border-top: none !important;
+      padding-top: 0 !important;
+    }
+    .invoice-sheet.pdf-exporting .sheet-header-meta h2 {
+      text-align: right !important;
+      font-size: 2rem !important;
+    }
+    .invoice-sheet.pdf-exporting .sheet-meta-fields {
+      display: flex !important;
+      flex-direction: column !important;
+      gap: 4px !important;
+      align-items: flex-end !important;
+    }
+    .invoice-sheet.pdf-exporting .sheet-meta-field-item {
+      display: flex !important;
+      flex-direction: row !important;
+      align-items: center !important;
+      gap: 6px !important;
+      background: transparent !important;
+      border: none !important;
+      padding: 0 !important;
+    }
+    .invoice-sheet.pdf-exporting .sheet-meta-field-item .inv-input-clean {
+      text-align: right !important;
+      width: 130px !important;
+    }
+    .invoice-sheet.pdf-exporting .items-table {
+      display: table !important;
+      width: 100% !important;
+    }
+    .invoice-sheet.pdf-exporting .items-table thead {
+      display: table-header-group !important;
+    }
+    .invoice-sheet.pdf-exporting .items-table tbody {
+      display: table-row-group !important;
+    }
+    .invoice-sheet.pdf-exporting .items-table tr {
+      display: table-row !important;
+      background: transparent !important;
+      border: none !important;
+      box-shadow: none !important;
+      padding: 0 !important;
+    }
+    .invoice-sheet.pdf-exporting .items-table td {
+      display: table-cell !important;
+      padding: 6px 8px !important;
+      border-bottom: 1px solid #e2e8f0 !important;
+      vertical-align: middle !important;
+    }
+    .invoice-sheet.pdf-exporting .items-table td::before {
+      display: none !important;
+    }
+    .invoice-sheet.pdf-exporting .items-table td.col-desc input {
+      background: transparent !important;
+      border: 1px solid transparent !important;
+      font-size: 0.86rem !important;
+      padding: 4px 6px !important;
+    }
+    .invoice-sheet.pdf-exporting .items-table td.col-qty input,
+    .invoice-sheet.pdf-exporting .items-table td.col-rate input {
+      background: transparent !important;
+      border: 1px solid transparent !important;
+      font-size: 0.86rem !important;
+      padding: 4px 6px !important;
+    }
+    .invoice-sheet.pdf-exporting .btn-row-del,
+    .invoice-sheet.pdf-exporting .mobile-upi-btn {
+      display: none !important;
+    }
+    .invoice-sheet.pdf-exporting .bottom-split-grid {
+      display: grid !important;
+      grid-template-columns: 1fr 310px !important;
+    }
+    .invoice-sheet.pdf-exporting .bottom-split-grid > :nth-child(1) {
+      order: 1 !important;
+    }
+    .invoice-sheet.pdf-exporting .bottom-split-grid > :nth-child(2) {
+      order: 2 !important;
+    }
+
     /* PERFECT SINGLE-PAGE PRINT RULES */
     @page {
       size: A4 portrait;
@@ -462,7 +877,7 @@
         
         <!-- Header Row -->
         <div class="sheet-header-row">
-          <div style="flex: 1; min-width: 220px;">
+          <div class="sheet-header-biz">
             <div class="inv-logo-box" onclick="document.getElementById('logoInput').click()" title="Click to Change Logo">
               <img id="logoPreview" src="logo.png" alt="AI Bots Logo">
               <input type="file" id="logoInput" accept="image/*" style="display:none;" onchange="handleLogo(event)">
@@ -475,28 +890,28 @@
           </div>
 
           <!-- Invoice Title & Meta Details -->
-          <div style="width: 240px; text-align: right;">
-            <h2 style="font-size: 2rem; font-weight: 900; color: var(--inv-accent); margin: 0 0 6px; letter-spacing: -0.02em;">INVOICE</h2>
+          <div class="sheet-header-meta">
+            <h2>INVOICE</h2>
             
-            <div style="display: flex; flex-direction: column; gap: 4px; align-items: flex-end;">
-              <div style="display: flex; align-items: center; gap: 6px;">
-                <span class="inv-label-tag" style="margin: 0;">Invoice #:</span>
-                <input type="text" class="inv-input-clean" id="invNumber" value="INV-2026-01" style="font-weight: 800; text-align: right; width: 130px;">
+            <div class="sheet-meta-fields">
+              <div class="sheet-meta-field-item">
+                <span class="inv-label-tag">Invoice #:</span>
+                <input type="text" class="inv-input-clean" id="invNumber" value="INV-2026-01">
               </div>
 
-              <div style="display: flex; align-items: center; gap: 6px;">
-                <span class="inv-label-tag" style="margin: 0;">Date:</span>
-                <input type="date" class="inv-input-clean" id="invDate" style="text-align: right; width: 130px;">
+              <div class="sheet-meta-field-item">
+                <span class="inv-label-tag">Date:</span>
+                <input type="date" class="inv-input-clean" id="invDate">
               </div>
 
-              <div style="display: flex; align-items: center; gap: 6px;">
-                <span class="inv-label-tag" style="margin: 0;">Due Date:</span>
-                <input type="date" class="inv-input-clean" id="invDueDate" style="text-align: right; width: 130px;">
+              <div class="sheet-meta-field-item">
+                <span class="inv-label-tag">Due Date:</span>
+                <input type="date" class="inv-input-clean" id="invDueDate">
               </div>
 
-              <div style="display: flex; align-items: center; gap: 6px;">
-                <span class="inv-label-tag" style="margin: 0;">Currency:</span>
-                <select class="inv-input-clean" id="invCurrency" style="width: 130px; font-weight: 700; text-align: right;" onchange="calculateTotals()">
+              <div class="sheet-meta-field-item">
+                <span class="inv-label-tag">Currency:</span>
+                <select class="inv-input-clean" id="invCurrency" onchange="calculateTotals()">
                   <option value="&#8377;">&#8377; INR (Indian Rupee)</option>
                   <option value="$">$ USD (US Dollar)</option>
                   <option value="€">€ EUR (Euro)</option>
@@ -560,9 +975,12 @@
               <div class="qr-img-wrap">
                 <img id="upiQrImg" src="https://api.qrserver.com/v1/create-qr-code/?size=140x140&data=upi://pay?pa=9384361008@mbk&pn=AI%20Bots&cu=INR" alt="UPI Payment QR">
               </div>
-              <div style="font-size: 0.78rem; line-height: 1.35; color: #475569;">
+              <div style="font-size: 0.78rem; line-height: 1.35; color: #475569; flex: 1;">
                 <strong style="color: #0f172a; display: block; font-size: 0.82rem;"><i class="fas fa-qrcode" style="color:var(--inv-accent);"></i> Instant UPI Scan & Pay</strong>
                 <span>Scan with GPay, PhonePe, or Paytm to pay <strong id="qrTotalBadge">&#8377;0.00</strong></span>
+                <a id="mobileUpiPayBtn" href="upi://pay?pa=9384361008@mbk&pn=AI%20Bots&cu=INR" class="mobile-upi-btn">
+                  <i class="fas fa-bolt"></i> Tap to Pay via UPI App
+                </a>
               </div>
             </div>
 
@@ -673,6 +1091,13 @@
       </div>
 
     </div>
+
+    <!-- Floating Sticky Action Bar for Mobile Phones -->
+    <nav class="inv-mobile-action-bar" aria-label="Mobile Actions">
+      <button class="btn btn-secondary btn-sm" onclick="addRow()"><i class="fas fa-plus"></i> Add Item</button>
+      <button class="btn btn-primary btn-sm" onclick="downloadInvoicePDF()"><i class="fas fa-file-pdf"></i> Download PDF</button>
+      <button class="btn btn-secondary btn-sm" onclick="shareViaWhatsApp()"><i class="fab fa-whatsapp" style="color: #25d366;"></i> Share</button>
+    </nav>
   </main>
 
   <!-- SEO Frequently Asked Questions Section -->
@@ -763,11 +1188,11 @@
       const tbody = document.getElementById('itemsBody');
       const tr = document.createElement('tr');
       tr.innerHTML = `
-        <td><input type="text" class="inv-input-clean item-desc" placeholder="Service or Product name" value="${desc}"></td>
-        <td><input type="number" class="inv-input-clean item-qty" min="1" value="${qty}" oninput="calculateTotals()" style="text-align:right;"></td>
-        <td><input type="number" class="inv-input-clean item-rate" min="0" step="0.01" value="${rate}" oninput="calculateTotals()" style="text-align:right;"></td>
-        <td style="font-weight: 700; text-align: right;" class="item-amount">₹0.00</td>
-        <td style="text-align: center;"><button class="btn-row-del" onclick="removeRow(this)"><i class="fas fa-trash-can"></i></button></td>
+        <td class="col-desc"><input type="text" class="inv-input-clean item-desc" placeholder="Service or Product name" value="${desc}"></td>
+        <td class="col-qty"><input type="number" class="inv-input-clean item-qty" min="1" value="${qty}" oninput="calculateTotals()" style="text-align:right;"></td>
+        <td class="col-rate"><input type="number" class="inv-input-clean item-rate" min="0" step="0.01" value="${rate}" oninput="calculateTotals()" style="text-align:right;"></td>
+        <td class="col-amount" style="font-weight: 700; text-align: right;"><span class="item-amount">₹0.00</span></td>
+        <td class="col-del" style="text-align: center;"><button class="btn-row-del" onclick="removeRow(this)" title="Delete Item"><i class="fas fa-trash-can"></i></button></td>
       `;
       tbody.appendChild(tr);
       calculateTotals();
@@ -793,7 +1218,10 @@
         const rate = parseFloat(r.querySelector('.item-rate').value) || 0;
         const amount = qty * rate;
         subtotal += amount;
-        r.querySelector('.item-amount').textContent = `${curr}${amount.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+        const amtSpan = r.querySelector('.item-amount');
+        if (amtSpan) {
+          amtSpan.textContent = `${curr}${amount.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+        }
       });
 
       const discPct = parseFloat(document.getElementById('discountPercent').value) || 0;
@@ -846,6 +1274,10 @@
       
       const upiUrl = `upi://pay?pa=${upiId}&pn=${bizName}&am=${amt.toFixed(2)}&cu=INR`;
       document.getElementById('upiQrImg').src = `https://api.qrserver.com/v1/create-qr-code/?size=140x140&data=${encodeURIComponent(upiUrl)}`;
+      const mobilePayBtn = document.getElementById('mobileUpiPayBtn');
+      if (mobilePayBtn) {
+        mobilePayBtn.href = upiUrl;
+      }
     }
 
     // Number to Words Converter
@@ -924,15 +1356,21 @@
       
       showToast('Generating 1-Page PDF...', 'info');
 
+      // Temporarily lock desktop proportions for html2canvas
+      sheet.classList.add('pdf-exporting');
+
       const opt = {
         scale: 2.2,
         useCORS: true,
         backgroundColor: '#ffffff',
-        logging: false
+        logging: false,
+        windowWidth: 1024
       };
 
       try {
         const canvas = await html2canvas(sheet, opt);
+        sheet.classList.remove('pdf-exporting');
+
         const imgData = canvas.toDataURL('image/jpeg', 0.98);
         const { jsPDF } = window.jspdf;
         const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
@@ -945,6 +1383,7 @@
         doc.save(`${invNum}.pdf`);
         showToast(`Invoice ${invNum}.pdf Downloaded!`, 'success');
       } catch(err) {
+        sheet.classList.remove('pdf-exporting');
         showToast("Error generating PDF: " + err.message, 'error');
       }
     }
@@ -952,14 +1391,17 @@
     async function downloadInvoiceImage() {
       const sheet = document.getElementById('invoiceSheet');
       const invNum = document.getElementById('invNumber').value || 'invoice';
+      sheet.classList.add('pdf-exporting');
       try {
-        const canvas = await html2canvas(sheet, { scale: 2, useCORS: true, backgroundColor: '#ffffff' });
+        const canvas = await html2canvas(sheet, { scale: 2, useCORS: true, backgroundColor: '#ffffff', windowWidth: 1024 });
+        sheet.classList.remove('pdf-exporting');
         const link = document.createElement('a');
         link.download = `${invNum}.png`;
         link.href = canvas.toDataURL('image/png');
         link.click();
         showToast(`Saved ${invNum}.png!`, 'success');
       } catch(err) {
+        sheet.classList.remove('pdf-exporting');
         showToast('Export failed', 'error');
       }
     }

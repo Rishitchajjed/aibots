@@ -11,7 +11,7 @@
   <meta name="robots" content="index, follow">
   <title>Live Weather, 7-Day Forecast & Atmospheric Studio — AI Bots</title>
   <meta name="description" content="Real-time global weather forecast, interactive logo weather simulation chamber, 24-hour hourly timeline, 7-day forecast, air quality index, UV index, and wind compass.">
-  <meta name="keywords" content="weather forecast, live weather online, 7 day weather forecast, hourly weather, air quality index, aqi, uv index, wind compass, weather simulator, ai bots weather, rishit chajjed">
+  <meta name="keywords" content="weather forecast, live weather online, 7 day weather forecast, hourly weather, air quality index, aqi, uv index, wind compass, weather simulator, ai bots weather, rishit chajjed, chennai weather">
   <link rel="icon" href="logo.png" type="image/png">
   <link rel="canonical" href="https://www.aibots.co.in/weather.html">
 
@@ -185,19 +185,20 @@
     }
 
     /* ==========================================================================
-       UNIQUE FEATURE: Dynamic Weather Logo Atmosphere Chamber
+       FLAGSHIP FEATURE: Dynamic Weather Logo Atmosphere Chamber
        ========================================================================== */
     .atmosphere-chamber-card {
       position: relative;
       background: var(--bg-secondary);
       border: 1px solid var(--border-color);
       border-radius: var(--radius-xl);
-      padding: 32px 24px;
+      padding: 34px 24px 28px;
       margin-bottom: 28px;
       overflow: hidden;
       box-shadow: var(--shadow-lg);
       text-align: center;
       transition: background 0.5s ease, border-color 0.5s ease;
+      perspective: 1000px;
     }
 
     [data-theme="dark"] .atmosphere-chamber-card {
@@ -209,7 +210,7 @@
       position: absolute;
       top: 0; left: 0; right: 0; bottom: 0;
       pointer-events: none;
-      opacity: 0.45;
+      opacity: 0.5;
       transition: opacity 0.8s ease, background 0.8s ease;
       z-index: 0;
     }
@@ -230,65 +231,57 @@
       z-index: 2;
     }
 
-    /* Weather Logo Vessel Pod */
+    /* ==========================================================================
+       UPGRADED 3D GYROSCOPIC WEATHER LOGO POD
+       ========================================================================== */
     .logo-vessel-wrap {
       position: relative;
       display: inline-block;
-      margin: 10px auto 20px;
+      margin: 10px auto 22px;
       user-select: none;
       -webkit-user-select: none;
+      perspective: 800px;
     }
 
-    .logo-pod-sphere {
-      width: 130px;
-      height: 130px;
+    /* Outer Gyroscopic Celestial Orbit Ring */
+    .logo-gyroscopic-ring {
+      position: absolute;
+      top: -22px; left: -22px; right: -22px; bottom: -22px;
       border-radius: 50%;
-      background: var(--bg-glass);
-      backdrop-filter: blur(14px);
-      -webkit-backdrop-filter: blur(14px);
-      border: 2px solid rgba(255, 255, 255, 0.4);
-      box-shadow: 0 12px 36px rgba(0, 0, 0, 0.12), 0 0 20px rgba(99, 102, 241, 0.2);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin: 0 auto;
-      cursor: pointer;
-      position: relative;
-      transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s ease;
-      touch-action: none !important;
-      -webkit-touch-callout: none !important;
-      -webkit-user-drag: none !important;
-    }
-
-    .logo-pod-sphere:hover {
-      transform: scale(1.06);
-    }
-
-    .logo-pod-sphere:active {
-      transform: scale(0.96);
-    }
-
-    .weather-animated-logo {
-      width: 82px;
-      height: 82px;
-      object-fit: contain;
+      border: 2px dashed rgba(99, 102, 241, 0.35);
+      animation: spinGyro 24s linear infinite;
       pointer-events: none;
-      filter: drop-shadow(0 6px 12px rgba(0, 0, 0, 0.18));
-      transition: transform 0.3s ease, filter 0.4s ease;
-      user-select: none;
-      -webkit-user-select: none;
-      -webkit-touch-callout: none !important;
-      -webkit-user-drag: none !important;
+      transition: border-color 0.6s ease, transform 0.6s ease;
     }
 
-    /* Solar Corona Rings (Sunny) */
+    @keyframes spinGyro {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+
+    /* Orbiting Satellite Elemental Nodes */
+    .logo-orbit-node {
+      position: absolute;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: var(--primary);
+      box-shadow: 0 0 10px var(--primary-glow);
+      pointer-events: none;
+      transition: background 0.5s ease, box-shadow 0.5s ease;
+    }
+
+    .logo-orbit-node.node-1 { top: -6px; left: 50%; transform: translateX(-50%); }
+    .logo-orbit-node.node-2 { bottom: -6px; left: 50%; transform: translateX(-50%); }
+
+    /* Solar Corona Ring (Sunny Flare) */
     .solar-corona-ring {
       position: absolute;
       top: -16px; left: -16px; right: -16px; bottom: -16px;
       border-radius: 50%;
-      border: 2px dashed rgba(245, 158, 11, 0.6);
+      border: 2px dashed rgba(245, 158, 11, 0.7);
       opacity: 0;
-      animation: rotateCorona 20s linear infinite;
+      animation: rotateCorona 16s linear infinite;
       pointer-events: none;
       transition: opacity 0.5s ease;
     }
@@ -302,12 +295,99 @@
     .lightning-flash-shield {
       position: absolute;
       top: 0; left: 0; right: 0; bottom: 0;
-      background: radial-gradient(circle, rgba(255, 255, 255, 0.8) 0%, transparent 70%);
+      background: radial-gradient(circle, rgba(255, 255, 255, 0.85) 0%, transparent 75%);
       opacity: 0;
       pointer-events: none;
       border-radius: var(--radius-xl);
-      transition: opacity 0.08s ease;
+      transition: opacity 0.06s ease;
       z-index: 1;
+    }
+
+    /* Central Floating Glassmorphic Sphere Pod with Physics & 3D Parallax */
+    .logo-pod-sphere {
+      width: 140px;
+      height: 140px;
+      border-radius: 50%;
+      background: var(--bg-glass);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      border: 2px solid rgba(255, 255, 255, 0.5);
+      box-shadow: 0 14px 40px rgba(0, 0, 0, 0.14), 0 0 24px rgba(99, 102, 241, 0.25);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto;
+      cursor: grab;
+      position: relative;
+      overflow: hidden;
+      transition: box-shadow 0.3s ease, border-color 0.4s ease;
+      touch-action: none !important;
+      -webkit-touch-callout: none !important;
+      -webkit-user-drag: none !important;
+      will-change: transform;
+      transform-style: preserve-3d;
+    }
+
+    .logo-pod-sphere:active,
+    .logo-pod-sphere.is-dragging {
+      cursor: grabbing;
+      box-shadow: 0 20px 50px rgba(99, 102, 241, 0.45);
+    }
+
+    /* Specular Glass Curved Reflection Glare */
+    .pod-specular-highlight {
+      position: absolute;
+      top: 4px;
+      left: 14px;
+      right: 14px;
+      height: 48%;
+      border-radius: 50% 50% 45% 45% / 60% 60% 35% 35%;
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.55) 0%, rgba(255, 255, 255, 0.05) 100%);
+      pointer-events: none;
+      z-index: 3;
+      transition: opacity 0.3s ease;
+    }
+
+    /* Frost Crystals Rim Overlay (Snow Mode) */
+    .pod-frost-rim {
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      border-radius: 50%;
+      box-shadow: inset 0 0 16px rgba(147, 197, 253, 0.8), inset 0 0 4px #ffffff;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.5s ease;
+      z-index: 2;
+    }
+
+    /* Water Droplets Coating (Rain Mode) */
+    .pod-rain-drips {
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      border-radius: 50%;
+      background-image: radial-gradient(circle at 30% 25%, rgba(255, 255, 255, 0.7) 1px, transparent 2px),
+                        radial-gradient(circle at 70% 35%, rgba(255, 255, 255, 0.7) 1.5px, transparent 2.5px),
+                        radial-gradient(circle at 45% 75%, rgba(255, 255, 255, 0.6) 1.2px, transparent 2px);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.5s ease;
+      z-index: 2;
+    }
+
+    /* Central AI Bots Logo Image */
+    .weather-animated-logo {
+      width: 86px;
+      height: 86px;
+      object-fit: contain;
+      pointer-events: none;
+      filter: drop-shadow(0 6px 14px rgba(0, 0, 0, 0.2));
+      transition: transform 0.3s ease, filter 0.4s ease;
+      user-select: none;
+      -webkit-user-select: none;
+      -webkit-touch-callout: none !important;
+      -webkit-user-drag: none !important;
+      position: relative;
+      z-index: 2;
     }
 
     /* Weather Mood Mode Selector */
@@ -317,13 +397,13 @@
       justify-content: center;
       gap: 6px;
       flex-wrap: wrap;
-      margin-top: 22px;
+      margin-top: 24px;
     }
 
     .chamber-mode-pill {
-      padding: 5px 12px;
+      padding: 6px 13px;
       border-radius: var(--radius-full);
-      font-size: 0.78rem;
+      font-size: 0.8rem;
       font-weight: 700;
       border: 1px solid var(--border-color);
       background: var(--bg-tertiary);
@@ -332,7 +412,7 @@
       transition: var(--transition);
       display: inline-flex;
       align-items: center;
-      gap: 4px;
+      gap: 5px;
     }
 
     .chamber-mode-pill:hover {
@@ -351,7 +431,7 @@
 
     /* Main Temperature & City Overview */
     .w-hero-location {
-      font-size: clamp(1.4rem, 3.5vw, 2.2rem);
+      font-size: clamp(1.5rem, 3.5vw, 2.3rem);
       font-weight: 800;
       color: var(--text-primary);
       margin-bottom: 4px;
@@ -373,11 +453,11 @@
       align-items: center;
       justify-content: center;
       gap: 16px;
-      margin: 8px 0;
+      margin: 6px 0;
     }
 
     .w-hero-temp {
-      font-size: clamp(3.6rem, 10vw, 5.8rem);
+      font-size: clamp(3.8rem, 10vw, 6rem);
       font-weight: 900;
       line-height: 1;
       font-family: var(--font-sans);
@@ -388,7 +468,7 @@
     }
 
     .w-hero-condition {
-      font-size: 1.25rem;
+      font-size: 1.3rem;
       font-weight: 700;
       color: var(--text-primary);
       margin-bottom: 6px;
@@ -401,7 +481,8 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 12px;
+      gap: 14px;
+      flex-wrap: wrap;
     }
 
     /* ==========================================================================
@@ -752,12 +833,12 @@
         justify-content: space-between;
       }
       .logo-pod-sphere {
-        width: 108px;
-        height: 108px;
+        width: 116px;
+        height: 116px;
       }
       .weather-animated-logo {
-        width: 68px;
-        height: 68px;
+        width: 72px;
+        height: 72px;
       }
     }
   </style>
@@ -857,7 +938,7 @@
       <div class="w-toolbar">
         <div class="w-search-box">
           <i class="fas fa-magnifying-glass w-search-icon"></i>
-          <input type="text" id="cityInput" class="w-search-input" placeholder="Search any city, airport or location worldwide..." value="Mumbai" onkeydown="if(event.key==='Enter') searchWeather()">
+          <input type="text" id="cityInput" class="w-search-input" placeholder="Search any city, airport or location worldwide..." value="Chennai" onkeydown="if(event.key==='Enter') searchWeather()">
           <button id="clearSearchBtn" class="w-clear-btn" onclick="clearSearchInput()"><i class="fas fa-xmark"></i></button>
         </div>
         <div class="w-toolbar-actions">
@@ -871,7 +952,8 @@
 
       <!-- Quick City Chips Scroller -->
       <div class="city-chips-scroller" id="cityChipsBar">
-        <div class="city-chip active" onclick="selectCityChip('Mumbai', this)"><i class="fas fa-city"></i> Mumbai</div>
+        <div class="city-chip active" onclick="selectCityChip('Chennai', this)"><i class="fas fa-location-dot" style="color:#ef4444;"></i> Chennai</div>
+        <div class="city-chip" onclick="selectCityChip('Mumbai', this)"><i class="fas fa-city"></i> Mumbai</div>
         <div class="city-chip" onclick="selectCityChip('New York', this)"><i class="fas fa-building"></i> New York</div>
         <div class="city-chip" onclick="selectCityChip('London', this)"><i class="fas fa-landmark"></i> London</div>
         <div class="city-chip" onclick="selectCityChip('Tokyo', this)"><i class="fas fa-torii-gate"></i> Tokyo</div>
@@ -888,17 +970,25 @@
         <div class="lightning-flash-shield" id="lightningFlash"></div>
 
         <div class="chamber-content">
-          <!-- Central Interactive Weather Logo Sphere -->
-          <div class="logo-vessel-wrap">
+          <!-- Central Interactive Weather Logo Sphere with Gyro Orbit & Shaders -->
+          <div class="logo-vessel-wrap" id="logoVessel">
+            <div class="logo-gyroscopic-ring" id="gyroRing">
+              <div class="logo-orbit-node node-1" id="orbitNode1"></div>
+              <div class="logo-orbit-node node-2" id="orbitNode2"></div>
+            </div>
             <div class="solar-corona-ring" id="solarCorona"></div>
-            <div class="logo-pod-sphere" id="logoSphere" onclick="triggerWeatherSurge()" title="Click to trigger weather elemental burst!">
+
+            <div class="logo-pod-sphere" id="logoSphere" title="Drag & throw the weather logo pod!">
+              <div class="pod-specular-highlight" id="podSpecular"></div>
+              <div class="pod-frost-rim" id="podFrost"></div>
+              <div class="pod-rain-drips" id="podRainDrips"></div>
               <img src="logo.png" alt="AI Bots Weather Logo" id="weatherLogoImg" class="weather-animated-logo" draggable="false" oncontextmenu="return false;">
             </div>
           </div>
 
           <!-- Hero Location & Realtime Metrics -->
           <div class="w-hero-location" id="cityName">
-            <span>Mumbai, India</span>
+            <span>Chennai, India</span>
           </div>
           <div class="w-hero-time" id="localTimeText">Local Time &bull; Loading atmospheric telemetry...</div>
 
@@ -1078,18 +1168,18 @@
   <script src="js/app.js"></script>
   <script>
     /* ==========================================================================
-       WEATHER ATMOSPHERIC ENGINE & SIMULATION ENGINE
+       WEATHER ATMOSPHERIC ENGINE & 3D GYROSCOPIC LOGO SIMULATOR
        ========================================================================== */
 
     let currentTempUnit = localStorage.getItem('aibots_weather_unit') || 'C'; // 'C' or 'F'
     let activeWeatherData = null;
     let activeAirQualityData = null;
     let currentActiveMode = 'auto'; // 'auto', 'sunny', 'rain', 'storm', 'snow', 'wind', 'mist', 'aurora'
-    let currentCityName = 'Mumbai, India';
+    let currentCityName = 'Chennai, India';
 
     // Canvas particle engine
-    let canvas = document.getElementById('weatherLogoCanvas');
-    let ctx = canvas ? canvas.getContext('2d') : null;
+    const canvas = document.getElementById('weatherLogoCanvas');
+    const ctx = canvas ? canvas.getContext('2d') : null;
     let particles = [];
     let canvasAnimId = null;
 
@@ -1174,7 +1264,7 @@
     // API FETCHER: GEOCODING + OPEN-METEO TELEMETRY + AIR QUALITY
     // =========================================================================
     async function searchWeather(queryCity = '') {
-      const city = queryCity || document.getElementById('cityInput').value.trim() || 'Mumbai';
+      const city = queryCity || document.getElementById('cityInput').value.trim() || 'Chennai';
       const searchBtn = document.querySelector('.btn-primary');
       if (searchBtn) searchBtn.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i> Loading...';
 
@@ -1235,7 +1325,6 @@
         const lat = pos.coords.latitude;
         const lon = pos.coords.longitude;
         try {
-          // Reverse geocoding or direct fetch
           const weatherUrl = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,relative_humidity_2m,apparent_temperature,is_day,precipitation,rain,weather_code,surface_pressure,wind_speed_10m,wind_direction_10m&hourly=temperature_2m,weather_code,precipitation_probability,wind_speed_10m&daily=weather_code,temperature_2m_max,temperature_2m_min,sunrise,sunset,uv_index_max,precipitation_probability_max,precipitation_sum&timezone=auto`;
           const wRes = await fetch(weatherUrl);
           const wData = await wRes.json();
@@ -1354,7 +1443,6 @@
       const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
       const totalDays = Math.min(7, daily.time.length);
 
-      // Find global min and max for range bar
       let allMin = 999, allMax = -999;
       for (let i = 0; i < totalDays; i++) {
         if (daily.temperature_2m_min[i] < allMin) allMin = daily.temperature_2m_min[i];
@@ -1457,7 +1545,6 @@
         document.getElementById('sunriseText').textContent = sr.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
         document.getElementById('sunsetText').textContent = ss.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 
-        // Calculate current progress (0 to 1)
         const nowMs = Date.now();
         const srMs = sr.getTime();
         const ssMs = ss.getTime();
@@ -1468,8 +1555,6 @@
           progress = 1;
         }
 
-        // Move the sun dot along SVG arc
-        // Arc is from (10, 45) to (150, 45) with center ~ (80, 45)
         const angle = Math.PI - (progress * Math.PI);
         const cx = 80 + 70 * Math.cos(angle);
         const cy = 45 - 35 * Math.sin(angle);
@@ -1488,7 +1573,6 @@
 
       // Humidity & Dew
       document.getElementById('humVal').textContent = `${cur.relative_humidity_2m}%`;
-      // Magnus-Tetens approximation for dew point
       const a = 17.27, b = 237.7;
       const t = cur.temperature_2m;
       const rh = cur.relative_humidity_2m;
@@ -1569,7 +1653,7 @@
       } else {
         applyAtmosphereMode(mode, 1);
       }
-      if (typeof playSound === 'function') playSound('pop');
+      playWeatherAcoustic(mode);
     }
 
     function applyAtmosphereMode(mode, isDay = 1) {
@@ -1578,43 +1662,68 @@
       const aura = document.getElementById('chamberAura');
       const corona = document.getElementById('solarCorona');
       const logoImg = document.getElementById('weatherLogoImg');
-      const sphere = document.getElementById('logoSphere');
+      const gyroRing = document.getElementById('gyroRing');
+      const frostRim = document.getElementById('podFrost');
+      const rainDrips = document.getElementById('podRainDrips');
+      const node1 = document.getElementById('orbitNode1');
+      const node2 = document.getElementById('orbitNode2');
 
-      // Reset transformations
+      // Reset styles
       if (corona) corona.style.opacity = '0';
-      if (logoImg) {
-        logoImg.style.filter = 'drop-shadow(0 6px 12px rgba(0, 0, 0, 0.18))';
-        logoImg.style.transform = 'scale(1)';
-      }
+      if (frostRim) frostRim.style.opacity = '0';
+      if (rainDrips) rainDrips.style.opacity = '0';
 
       if (mode === 'sunny') {
-        if (aura) aura.style.background = 'radial-gradient(circle at 50% 40%, rgba(245, 158, 11, 0.3) 0%, rgba(234, 88, 12, 0.15) 55%, transparent 80%)';
+        if (aura) aura.style.background = 'radial-gradient(circle at 50% 40%, rgba(245, 158, 11, 0.35) 0%, rgba(234, 88, 12, 0.16) 55%, transparent 80%)';
         if (corona) corona.style.opacity = '1';
-        if (logoImg) logoImg.style.filter = 'drop-shadow(0 0 20px rgba(245, 158, 11, 0.7)) drop-shadow(0 6px 12px rgba(0,0,0,0.2))';
+        if (gyroRing) gyroRing.style.borderColor = 'rgba(245, 158, 11, 0.6)';
+        if (node1) { node1.style.background = '#f59e0b'; node1.style.boxShadow = '0 0 12px #f59e0b'; }
+        if (node2) { node2.style.background = '#ea580c'; node2.style.boxShadow = '0 0 12px #ea580c'; }
+        if (logoImg) logoImg.style.filter = 'drop-shadow(0 0 22px rgba(245, 158, 11, 0.8)) drop-shadow(0 6px 12px rgba(0,0,0,0.2))';
         initSunnyParticles();
       } else if (mode === 'rain') {
-        if (aura) aura.style.background = 'radial-gradient(circle at 50% 40%, rgba(2, 132, 199, 0.35) 0%, rgba(30, 64, 175, 0.22) 60%, transparent 85%)';
-        if (logoImg) logoImg.style.filter = 'drop-shadow(0 0 16px rgba(56, 189, 248, 0.6))';
+        if (aura) aura.style.background = 'radial-gradient(circle at 50% 40%, rgba(2, 132, 199, 0.38) 0%, rgba(30, 64, 175, 0.25) 60%, transparent 85%)';
+        if (rainDrips) rainDrips.style.opacity = '1';
+        if (gyroRing) gyroRing.style.borderColor = 'rgba(56, 189, 248, 0.6)';
+        if (node1) { node1.style.background = '#38bdf8'; node1.style.boxShadow = '0 0 12px #38bdf8'; }
+        if (node2) { node2.style.background = '#0284c7'; node2.style.boxShadow = '0 0 12px #0284c7'; }
+        if (logoImg) logoImg.style.filter = 'drop-shadow(0 0 18px rgba(56, 189, 248, 0.7))';
         initRainParticles();
       } else if (mode === 'storm') {
-        if (aura) aura.style.background = 'radial-gradient(circle at 50% 40%, rgba(234, 179, 8, 0.35) 0%, rgba(124, 58, 237, 0.3) 60%, transparent 90%)';
-        if (logoImg) logoImg.style.filter = 'drop-shadow(0 0 24px rgba(234, 179, 8, 0.8))';
+        if (aura) aura.style.background = 'radial-gradient(circle at 50% 40%, rgba(234, 179, 8, 0.4) 0%, rgba(124, 58, 237, 0.35) 60%, transparent 90%)';
+        if (gyroRing) gyroRing.style.borderColor = 'rgba(234, 179, 8, 0.7)';
+        if (node1) { node1.style.background = '#eab308'; node1.style.boxShadow = '0 0 14px #eab308'; }
+        if (node2) { node2.style.background = '#c084fc'; node2.style.boxShadow = '0 0 14px #c084fc'; }
+        if (logoImg) logoImg.style.filter = 'drop-shadow(0 0 26px rgba(234, 179, 8, 0.9))';
         initStormParticles();
       } else if (mode === 'snow') {
-        if (aura) aura.style.background = 'radial-gradient(circle at 50% 40%, rgba(147, 197, 253, 0.35) 0%, rgba(59, 130, 246, 0.2) 65%, transparent 85%)';
-        if (logoImg) logoImg.style.filter = 'drop-shadow(0 0 18px rgba(147, 197, 253, 0.75))';
+        if (aura) aura.style.background = 'radial-gradient(circle at 50% 40%, rgba(147, 197, 253, 0.38) 0%, rgba(59, 130, 246, 0.22) 65%, transparent 85%)';
+        if (frostRim) frostRim.style.opacity = '1';
+        if (gyroRing) gyroRing.style.borderColor = 'rgba(147, 197, 253, 0.65)';
+        if (node1) { node1.style.background = '#bfdbfe'; node1.style.boxShadow = '0 0 12px #bfdbfe'; }
+        if (node2) { node2.style.background = '#60a5fa'; node2.style.boxShadow = '0 0 12px #60a5fa'; }
+        if (logoImg) logoImg.style.filter = 'drop-shadow(0 0 20px rgba(147, 197, 253, 0.8))';
         initSnowParticles();
       } else if (mode === 'wind') {
-        if (aura) aura.style.background = 'radial-gradient(circle at 50% 40%, rgba(16, 185, 129, 0.28) 0%, rgba(6, 182, 212, 0.18) 60%, transparent 85%)';
-        if (logoImg) logoImg.style.filter = 'drop-shadow(0 0 16px rgba(16, 185, 129, 0.5))';
+        if (aura) aura.style.background = 'radial-gradient(circle at 50% 40%, rgba(16, 185, 129, 0.32) 0%, rgba(6, 182, 212, 0.2) 60%, transparent 85%)';
+        if (gyroRing) gyroRing.style.borderColor = 'rgba(16, 185, 129, 0.6)';
+        if (node1) { node1.style.background = '#10b981'; node1.style.boxShadow = '0 0 12px #10b981'; }
+        if (node2) { node2.style.background = '#06b6d4'; node2.style.boxShadow = '0 0 12px #06b6d4'; }
+        if (logoImg) logoImg.style.filter = 'drop-shadow(0 0 18px rgba(16, 185, 129, 0.65))';
         initWindParticles();
       } else if (mode === 'mist') {
-        if (aura) aura.style.background = 'radial-gradient(circle at 50% 40%, rgba(148, 163, 184, 0.35) 0%, rgba(71, 85, 105, 0.25) 70%, transparent 90%)';
-        if (logoImg) logoImg.style.filter = 'drop-shadow(0 0 14px rgba(148, 163, 184, 0.6))';
+        if (aura) aura.style.background = 'radial-gradient(circle at 50% 40%, rgba(148, 163, 184, 0.38) 0%, rgba(71, 85, 105, 0.28) 70%, transparent 90%)';
+        if (gyroRing) gyroRing.style.borderColor = 'rgba(148, 163, 184, 0.6)';
+        if (node1) { node1.style.background = '#cbd5e1'; node1.style.boxShadow = '0 0 10px #cbd5e1'; }
+        if (node2) { node2.style.background = '#94a3b8'; node2.style.boxShadow = '0 0 10px #94a3b8'; }
+        if (logoImg) logoImg.style.filter = 'drop-shadow(0 0 16px rgba(148, 163, 184, 0.65))';
         initMistParticles();
       } else if (mode === 'aurora') {
-        if (aura) aura.style.background = 'radial-gradient(circle at 50% 40%, rgba(192, 132, 252, 0.35) 0%, rgba(16, 185, 129, 0.25) 50%, rgba(15, 23, 42, 0.5) 85%)';
-        if (logoImg) logoImg.style.filter = 'drop-shadow(0 0 25px rgba(192, 132, 252, 0.8))';
+        if (aura) aura.style.background = 'radial-gradient(circle at 50% 40%, rgba(192, 132, 252, 0.4) 0%, rgba(16, 185, 129, 0.28) 50%, rgba(15, 23, 42, 0.55) 85%)';
+        if (gyroRing) gyroRing.style.borderColor = 'rgba(192, 132, 252, 0.7)';
+        if (node1) { node1.style.background = '#c084fc'; node1.style.boxShadow = '0 0 14px #c084fc'; }
+        if (node2) { node2.style.background = '#10b981'; node2.style.boxShadow = '0 0 14px #10b981'; }
+        if (logoImg) logoImg.style.filter = 'drop-shadow(0 0 28px rgba(192, 132, 252, 0.85))';
         initAuroraParticles();
       }
 
@@ -1624,7 +1733,7 @@
     // Particle initializers
     function initSunnyParticles() {
       if (!canvas) return;
-      for (let i = 0; i < 40; i++) {
+      for (let i = 0; i < 45; i++) {
         particles.push({
           type: 'sun_dust',
           x: Math.random() * canvas.width,
@@ -1639,7 +1748,7 @@
 
     function initRainParticles() {
       if (!canvas) return;
-      for (let i = 0; i < 70; i++) {
+      for (let i = 0; i < 75; i++) {
         particles.push({
           type: 'raindrop',
           x: Math.random() * canvas.width,
@@ -1668,21 +1777,19 @@
         const flash = document.getElementById('lightningFlash');
         if (flash) {
           flash.style.opacity = '0.85';
-          setTimeout(() => { flash.style.opacity = '0'; }, 80);
-          setTimeout(() => { flash.style.opacity = '0.5'; }, 160);
-          setTimeout(() => { flash.style.opacity = '0'; }, 240);
+          setTimeout(() => { flash.style.opacity = '0'; }, 70);
+          setTimeout(() => { flash.style.opacity = '0.5'; }, 150);
+          setTimeout(() => { flash.style.opacity = '0'; }, 220);
         }
-        try {
-          if (typeof playSound === 'function') playSound('bounce');
-          if (navigator.vibrate) navigator.vibrate([20, 40, 20]);
-        } catch (_) {}
+        playWeatherAcoustic('storm');
+        if (navigator.vibrate) navigator.vibrate([20, 40, 20]);
         scheduleLightningFlash();
       }, nextDelay);
     }
 
     function initSnowParticles() {
       if (!canvas) return;
-      for (let i = 0; i < 65; i++) {
+      for (let i = 0; i < 70; i++) {
         particles.push({
           type: 'snowflake',
           x: Math.random() * canvas.width,
@@ -1698,7 +1805,7 @@
 
     function initWindParticles() {
       if (!canvas) return;
-      for (let i = 0; i < 35; i++) {
+      for (let i = 0; i < 40; i++) {
         particles.push({
           type: 'wind_line',
           x: Math.random() * canvas.width,
@@ -1712,12 +1819,12 @@
 
     function initMistParticles() {
       if (!canvas) return;
-      for (let i = 0; i < 20; i++) {
+      for (let i = 0; i < 22; i++) {
         particles.push({
           type: 'fog_cloud',
           x: Math.random() * canvas.width,
           y: Math.random() * canvas.height,
-          radius: Math.random() * 60 + 40,
+          radius: Math.random() * 65 + 40,
           speedX: Math.random() * 0.6 + 0.2,
           alpha: Math.random() * 0.15 + 0.05
         });
@@ -1726,7 +1833,7 @@
 
     function initAuroraParticles() {
       if (!canvas) return;
-      for (let i = 0; i < 40; i++) {
+      for (let i = 0; i < 45; i++) {
         particles.push({
           type: 'aurora_star',
           x: Math.random() * canvas.width,
@@ -1820,45 +1927,312 @@
       canvasAnimId = requestAnimationFrame(step);
     }
 
-    // Trigger Weather Surge on Logo Click/Tap
-    function triggerWeatherSurge() {
-      const logoImg = document.getElementById('weatherLogoImg');
-      const sphere = document.getElementById('logoSphere');
+    // =========================================================================
+    // WEATHER LOGO 3D PARALLAX, DRAG & TOSS PHYSICS SIMULATION
+    // =========================================================================
+    const logoSphere = document.getElementById('logoSphere');
+    const chamberCard = document.getElementById('chamberCard');
+    const podSpecular = document.getElementById('podSpecular');
 
-      if (sphere) {
-        sphere.style.transform = 'scale(1.22) rotate(360deg)';
-        setTimeout(() => { sphere.style.transform = ''; }, 600);
-      }
+    let isDraggingLogo = false;
+    let isFlyingLogo = false;
+    let logoRafId = null;
 
-      try {
-        if (typeof playSound === 'function') playSound('pop');
-        if (navigator.vibrate) navigator.vibrate([15, 30, 15]);
-      } catch (_) {}
+    let posX = 0, posY = 0;
+    let vx = 0, vy = 0;
+    let rot = 0;
 
-      // Spawn burst of 25 mini elemental sparks
-      if (canvas) {
-        const cx = canvas.width / 2;
-        const cy = 90;
-        for (let i = 0; i < 25; i++) {
-          const angle = Math.random() * Math.PI * 2;
-          const speed = Math.random() * 6 + 2;
-          particles.push({
-            type: 'sun_dust',
-            x: cx,
-            y: cy,
-            size: Math.random() * 4 + 2,
-            speedX: Math.cos(angle) * speed,
-            speedY: Math.sin(angle) * speed,
-            alpha: 1
-          });
+    let startX = 0, startY = 0;
+    let initialX = 0, initialY = 0;
+    let history = [];
+
+    // 3D Parallax Tilt on Cursor Hover (when not dragging)
+    if (chamberCard && logoSphere) {
+      chamberCard.addEventListener('mousemove', (e) => {
+        if (isDraggingLogo || isFlyingLogo) return;
+        const rect = chamberCard.getBoundingClientRect();
+        const normX = (e.clientX - rect.left) / rect.width - 0.5;
+        const normY = (e.clientY - rect.top) / rect.height - 0.5;
+
+        logoSphere.style.transform = `perspective(800px) rotateY(${normX * 22}deg) rotateX(${-normY * 22}deg) translate3d(${normX * 8}px, ${normY * 8}px, 0)`;
+        if (podSpecular) {
+          podSpecular.style.transform = `translate3d(${-normX * 18}px, ${-normY * 12}px, 0)`;
         }
+      });
+
+      chamberCard.addEventListener('mouseleave', () => {
+        if (isDraggingLogo || isFlyingLogo) return;
+        logoSphere.style.transform = 'perspective(800px) rotateY(0deg) rotateX(0deg) translate3d(0, 0, 0)';
+        if (podSpecular) podSpecular.style.transform = '';
+      });
+    }
+
+    // Touch & Mouse Drag Prevention
+    if (logoSphere) {
+      logoSphere.addEventListener('contextmenu', (e) => e.preventDefault());
+      logoSphere.addEventListener('dragstart', (e) => e.preventDefault());
+
+      function getCoords(e) {
+        if (e.touches && e.touches.length > 0) return { x: e.touches[0].clientX, y: e.touches[0].clientY };
+        if (e.changedTouches && e.changedTouches.length > 0) return { x: e.changedTouches[0].clientX, y: e.changedTouches[0].clientY };
+        return { x: e.clientX, y: e.clientY };
       }
+
+      function startDragLogo(e) {
+        if (e.cancelable) e.preventDefault();
+        e.stopPropagation();
+
+        if (logoRafId) {
+          cancelAnimationFrame(logoRafId);
+          logoRafId = null;
+        }
+
+        isFlyingLogo = false;
+        isDraggingLogo = true;
+
+        const c = getCoords(e);
+        startX = c.x;
+        startY = c.y;
+        initialX = posX;
+        initialY = posY;
+
+        history = [{ x: c.x, y: c.y, time: performance.now() }];
+        logoSphere.classList.add('is-dragging');
+        logoSphere.style.transition = 'none';
+
+        triggerWeatherSurge(false);
+      }
+
+      function onDragLogo(e) {
+        if (!isDraggingLogo) return;
+        if (e.cancelable) e.preventDefault();
+
+        const c = getCoords(e);
+        const dx = c.x - startX;
+        const dy = c.y - startY;
+
+        posX = initialX + dx;
+        posY = initialY + dy;
+
+        const now = performance.now();
+        history.push({ x: c.x, y: c.y, time: now });
+        if (history.length > 5) history.shift();
+
+        const recentX = history.length > 1 ? c.x - history[0].x : 0;
+        rot = Math.max(-25, Math.min(25, recentX * 0.8));
+
+        logoSphere.style.transform = `translate3d(${posX.toFixed(1)}px, ${posY.toFixed(1)}px, 0) scale(1.15) rotate(${rot.toFixed(1)}deg)`;
+      }
+
+      function endDragLogo(e) {
+        if (!isDraggingLogo) return;
+        isDraggingLogo = false;
+        logoSphere.classList.remove('is-dragging');
+
+        let computedVx = 0, computedVy = 0;
+        if (history.length >= 2) {
+          const oldest = history[0];
+          const latest = history[history.length - 1];
+          const dt = Math.max(latest.time - oldest.time, 10);
+          computedVx = ((latest.x - oldest.x) / dt) * 16.67;
+          computedVy = ((latest.y - oldest.y) / dt) * 16.67;
+        }
+
+        const speed = Math.hypot(computedVx, computedVy);
+
+        // If tap or tiny move
+        if (Math.hypot(posX, posY) < 8 || speed < 0.8) {
+          triggerWeatherSurge(true);
+          return;
+        }
+
+        const maxSpeed = 30;
+        if (speed > maxSpeed) {
+          computedVx = (computedVx / speed) * maxSpeed;
+          computedVy = (computedVy / speed) * maxSpeed;
+        }
+
+        vx = computedVx;
+        vy = computedVy;
+        isFlyingLogo = true;
+        startLogoPhysics();
+      }
+
+      function startLogoPhysics() {
+        let startTime = performance.now();
+
+        function loop() {
+          if (!isFlyingLogo) return;
+
+          const elapsed = performance.now() - startTime;
+          const rect = logoSphere.getBoundingClientRect();
+          const cardRect = chamberCard.getBoundingClientRect();
+
+          // Chamber bounds collision
+          if (rect.left + vx < cardRect.left + 10) {
+            vx = Math.abs(vx) * 0.72;
+            spawnElementalSparks();
+            playWeatherAcoustic('bounce');
+          } else if (rect.right + vx > cardRect.right - 10) {
+            vx = -Math.abs(vx) * 0.72;
+            spawnElementalSparks();
+            playWeatherAcoustic('bounce');
+          }
+
+          if (rect.top + vy < cardRect.top + 10) {
+            vy = Math.abs(vy) * 0.72;
+            spawnElementalSparks();
+            playWeatherAcoustic('bounce');
+          } else if (rect.bottom + vy > cardRect.bottom - 10) {
+            vy = -Math.abs(vy) * 0.72;
+            spawnElementalSparks();
+            playWeatherAcoustic('bounce');
+          }
+
+          posX += vx;
+          posY += vy;
+          rot += vx * 0.4;
+
+          vx *= 0.982;
+          vy *= 0.982;
+          rot *= 0.96;
+
+          const currentSpeed = Math.hypot(vx, vy);
+          const dist = Math.hypot(posX, posY);
+
+          // Return spring to center
+          if (currentSpeed < 3 || elapsed > 1600) {
+            const k = 0.07;
+            const damp = 0.85;
+            vx = (vx - posX * k) * damp;
+            vy = (vy - posY * k) * damp;
+          }
+
+          logoSphere.style.transform = `translate3d(${posX.toFixed(1)}px, ${posY.toFixed(1)}px, 0) rotate(${rot.toFixed(1)}deg)`;
+
+          if (dist < 1.5 && currentSpeed < 0.25 && elapsed > 400) {
+            isFlyingLogo = false;
+            logoRafId = null;
+            posX = 0; posY = 0; rot = 0;
+            logoSphere.style.transition = 'transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1)';
+            logoSphere.style.transform = 'translate3d(0, 0, 0) scale(1) rotate(0deg)';
+            return;
+          }
+
+          logoRafId = requestAnimationFrame(loop);
+        }
+
+        logoRafId = requestAnimationFrame(loop);
+      }
+
+      logoSphere.addEventListener('mousedown', startDragLogo);
+      window.addEventListener('mousemove', onDragLogo);
+      window.addEventListener('mouseup', endDragLogo);
+
+      logoSphere.addEventListener('touchstart', startDragLogo, { passive: false });
+      window.addEventListener('touchmove', onDragLogo, { passive: false });
+      window.addEventListener('touchend', endDragLogo);
+      window.addEventListener('touchcancel', endDragLogo);
+    }
+
+    // Trigger Weather Surge on Logo Click/Tap
+    function triggerWeatherSurge(isTap = true) {
+      if (isTap && logoSphere) {
+        logoSphere.style.transition = 'transform 0.65s cubic-bezier(0.34, 1.56, 0.64, 1)';
+        logoSphere.style.transform = 'translate3d(0, 0, 0) scale(1.24) rotate(360deg)';
+        setTimeout(() => {
+          posX = 0; posY = 0;
+          logoSphere.style.transition = 'transform 0.3s ease-out';
+          logoSphere.style.transform = 'translate3d(0, 0, 0) scale(1) rotate(0deg)';
+        }, 650);
+      }
+
+      playWeatherAcoustic(currentActiveMode);
+      if (navigator.vibrate) navigator.vibrate([15, 30, 15]);
+      spawnElementalSparks();
+    }
+
+    function spawnElementalSparks() {
+      if (!canvas) return;
+      const cx = canvas.width / 2;
+      const cy = 90;
+      const colorType = currentActiveMode === 'rain' ? 'raindrop' : currentActiveMode === 'snow' ? 'snowflake' : 'sun_dust';
+
+      for (let i = 0; i < 24; i++) {
+        const angle = Math.random() * Math.PI * 2;
+        const speed = Math.random() * 6 + 2;
+        particles.push({
+          type: colorType,
+          x: cx,
+          y: cy,
+          size: Math.random() * 4 + 2,
+          radius: Math.random() * 3 + 1,
+          speedX: Math.cos(angle) * speed,
+          speedY: Math.sin(angle) * speed,
+          alpha: 1
+        });
+      }
+    }
+
+    // Elemental Audio Synthesizer
+    let audioCtx = null;
+    function playWeatherAcoustic(mode) {
+      try {
+        if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        if (audioCtx.state === 'suspended') audioCtx.resume();
+        const now = audioCtx.currentTime;
+
+        if (mode === 'storm') {
+          const osc = audioCtx.createOscillator();
+          const gain = audioCtx.createGain();
+          osc.type = 'sawtooth';
+          osc.frequency.setValueAtTime(280, now);
+          osc.frequency.exponentialRampToValueAtTime(45, now + 0.4);
+          gain.gain.setValueAtTime(0.2, now);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.4);
+          osc.connect(gain); gain.connect(audioCtx.destination);
+          osc.start(now); osc.stop(now + 0.4);
+        } else if (mode === 'snow') {
+          [880, 1174.66, 1760].forEach((freq, idx) => {
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(freq, now + idx * 0.05);
+            gain.gain.setValueAtTime(0.12, now + idx * 0.05);
+            gain.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.05 + 0.2);
+            osc.connect(gain); gain.connect(audioCtx.destination);
+            osc.start(now + idx * 0.05); osc.stop(now + idx * 0.05 + 0.2);
+          });
+        } else if (mode === 'rain') {
+          [520, 680, 920].forEach((freq, idx) => {
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(freq, now + idx * 0.04);
+            gain.gain.setValueAtTime(0.14, now + idx * 0.04);
+            gain.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.04 + 0.1);
+            osc.connect(gain); gain.connect(audioCtx.destination);
+            osc.start(now + idx * 0.04); osc.stop(now + idx * 0.04 + 0.1);
+          });
+        } else {
+          // Sunny or default chime
+          const osc = audioCtx.createOscillator();
+          const gain = audioCtx.createGain();
+          osc.type = 'triangle';
+          osc.frequency.setValueAtTime(587.33, now);
+          osc.frequency.exponentialRampToValueAtTime(880, now + 0.08);
+          gain.gain.setValueAtTime(0.15, now);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.08);
+          osc.connect(gain); gain.connect(audioCtx.destination);
+          osc.start(now); osc.stop(now + 0.08);
+        }
+      } catch (_) {}
     }
 
     // Initialize on DOM Ready
     document.addEventListener('DOMContentLoaded', () => {
       document.getElementById('unitIndicator').textContent = currentTempUnit === 'C' ? '°C, km/h' : '°F, mph';
-      searchWeather('Mumbai');
+      searchWeather('Chennai');
     });
   </script>
 </body>

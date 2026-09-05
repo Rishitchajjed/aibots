@@ -1,7 +1,7 @@
 // AI Bots Progressive Web App (PWA) Service Worker
-// Version: 1.0.0 (Cache-First Core + Stale-While-Revalidate Strategy)
+// Version: 1.1.0 (Cache-First Core + Stale-While-Revalidate Strategy)
 
-const CACHE_NAME = 'aibots-pwa-v1';
+const CACHE_NAME = 'aibots-pwa-v2';
 const PRECACHE_ASSETS = [
   './',
   './index.html',

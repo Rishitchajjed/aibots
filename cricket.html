@@ -641,14 +641,15 @@
       display: none;
     }
 
-    /* AI Bots Cricket Ball */
+    /* AI Bots Cricket Ball - Pure Clean Logo (No Shading or Circle) */
     .logo-ball-actor {
       position: absolute;
-      width: 58px;
-      height: 58px;
-      border-radius: 50%;
-      background: radial-gradient(circle at 35% 35%, #ffffff, #6366f1);
-      box-shadow: 0 0 20px rgba(99, 102, 241, 0.8), inset -3px -3px 8px rgba(0,0,0,0.5);
+      width: 50px;
+      height: 50px;
+      background: transparent !important;
+      border: none !important;
+      border-radius: 0 !important;
+      box-shadow: none !important;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -656,22 +657,14 @@
       will-change: transform;
     }
     .logo-ball-actor img {
-      width: 44px;
-      height: 44px;
-      object-fit: contain;
-      filter: drop-shadow(0 2px 4px rgba(0,0,0,0.4));
-      pointer-events: none;
-    }
-    /* Cricket Ball Seam Ring */
-    .logo-ball-actor::after {
-      content: '';
-      position: absolute;
       width: 100%;
       height: 100%;
-      border-radius: 50%;
-      border: 2px dashed rgba(255, 255, 255, 0.8);
-      box-sizing: border-box;
+      object-fit: contain;
+      filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.4));
       pointer-events: none;
+    }
+    .logo-ball-actor::after {
+      display: none !important;
     }
 
     /* Ground Turf Ripple Shockwaves (For 4) */
@@ -755,23 +748,23 @@
     @keyframes sixBallLaunch {
       0% {
         transform: translate(0, 0) scale(0.9) rotate(0deg);
-        box-shadow: 0 0 15px #8b5cf6;
+        
       }
       25% {
         transform: translate(110px, -110px) scale(1.4) rotate(420deg);
-        box-shadow: 0 0 35px #ec4899, 0 0 70px #8b5cf6;
+        
       }
       55% {
         transform: translate(240px, -145px) scale(1.6) rotate(840deg);
-        box-shadow: 0 0 50px #fbbf24, 0 0 80px #ec4899;
+        
       }
       80% {
         transform: translate(370px, -70px) scale(1.2) rotate(1260deg);
-        box-shadow: 0 0 40px #8b5cf6;
+        
       }
       100% {
         transform: translate(450px, -20px) scale(0.85) rotate(1500deg);
-        box-shadow: 0 0 25px #ec4899;
+        
       }
     }
 
@@ -807,11 +800,11 @@
       90% {
         /* Rocket across boundary cushion */
         transform: translate(410px, -6px) scale(1.15) rotate(1500deg);
-        box-shadow: 0 0 45px #38bdf8, 0 0 80px #3b82f6;
+        
       }
       100% {
         transform: translate(450px, -6px) scale(1.1) rotate(1620deg);
-        box-shadow: 0 0 35px #10b981;
+        
       }
     }
 
@@ -845,7 +838,7 @@
       38% {
         /* Ball collides squarely with off/middle stump */
         transform: translate(265px, -8px) scale(1.2) rotate(720deg);
-        box-shadow: 0 0 50px #ef4444, 0 0 80px #ffffff;
+        
       }
       50% {
         /* Rebounds deflection */

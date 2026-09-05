@@ -1198,6 +1198,16 @@ window.updateDonationQR = function(amt) {
       const clicks = JSON.parse(localStorage.getItem('aibots_tool_click_analytics') || '{}');
       clicks[toolId] = (Number(clicks[toolId]) || 0) + 1;
       localStorage.setItem('aibots_tool_click_analytics', JSON.stringify(clicks));
+
+      // Send lightweight click event to cloud backend (NEVER attaches admin settings or featured_tool)
+      const cloudApi = localStorage.getItem('aibots_custom_cloud_endpoint') || GOOGLE_DRIVE_CLOUD_API;
+      fetch(cloudApi, {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body: JSON.stringify({ action: 'record_click', tool_id: toolId }),
+        mode: 'no-cors',
+        keepalive: true
+      }).catch(() => {});
     } catch(e) {}
   };
 

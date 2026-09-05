@@ -1953,7 +1953,7 @@
       const hourlyPops = [];
       const hourlyWinds = [];
 
-      for (let i = 0; i < 24; i++) {
+      for (let i = 0; i < 48; i++) {
         const d = new Date(now.getTime() + i * 3600000);
         hourlyTimes.push(d.toISOString());
         const hour = d.getHours();
@@ -2328,15 +2328,32 @@
       if (!track || !hourly || !hourly.time || hourly.time.length === 0) return;
       track.innerHTML = '';
 
-      const nowHour = new Date(currentIsoTime || Date.now()).getHours();
-      const count = Math.min(24, hourly.time.length);
+      let refTimeMs = currentIsoTime ? new Date(currentIsoTime).getTime() : Date.now();
+      if (isNaN(refTimeMs)) refTimeMs = Date.now();
 
-      for (let i = 0; i < count; i++) {
+      // Find the index in hourly.time matching current hour
+      let startIdx = 0;
+      for (let i = 0; i < hourly.time.length; i++) {
+        const itemMs = new Date(hourly.time[i]).getTime();
+        if (!isNaN(itemMs)) {
+          if (itemMs <= refTimeMs) {
+            startIdx = i;
+          } else {
+            break;
+          }
+        }
+      }
+
+      // Render 24 consecutive hours starting from the current hour
+      const totalAvailable = hourly.time.length - startIdx;
+      const count = Math.min(24, totalAvailable > 0 ? totalAvailable : hourly.time.length);
+
+      for (let step = 0; step < count; step++) {
+        const i = (startIdx + step) % hourly.time.length;
         const itemDate = new Date(hourly.time[i]);
-        const itemHour = itemDate.getHours();
-        const isCurrent = i === 0 || itemHour === nowHour;
+        const isCurrent = (step === 0);
 
-        const timeLabel = isCurrent ? 'Now' : itemDate.toLocaleTimeString([], { hour: 'numeric', hour12: true });
+        const timeLabel = isCurrent ? 'Now' : itemDate.toLocaleTimeString([], { hour: 'numeric', hour12: true }).toLowerCase();
         const wmo = WMO_MAP[hourly.weather_code[i]] || { text: 'Fair', icon: 'fa-cloud-sun', color: '#38bdf8' };
         const temp = formatTemp(hourly.temperature_2m[i]);
         const pop = hourly.precipitation_probability ? hourly.precipitation_probability[i] : 0;

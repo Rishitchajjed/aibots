@@ -10,8 +10,8 @@
   <meta name="google-site-verification" content="-Yb6Nx74gbZ3wRN5uP-Y8KKwDWlt1DPpxs4nA3PkE6M">
   <meta name="robots" content="index, follow">
   <title>Live Cricket Score Counter & Match Tracker — AI Bots</title>
-  <meta name="description" content="Track live cricket matches ball-by-ball, score runs, extras, wickets, overs timeline, 1st & 2nd innings history table, and export match scorecards online.">
-  <meta name="keywords" content="cricket score counter, live cricket scorer, cricket match scoreboard, ball by ball cricket score, cricket history table, ai bots cricket">
+  <meta name="description" content="Track live cricket matches ball-by-ball, custom overs, 1st & 2nd innings history table, boundary celebrations with AI Bots ball animation, and persistent match state.">
+  <meta name="keywords" content="cricket score counter, live cricket scorer, cricket match scoreboard, custom overs cricket, cricket history table, ai bots cricket">
   <link rel="icon" href="logo.png" type="image/png">
   <link rel="canonical" href="https://www.aibots.co.in/cricket.html">
   <!-- Open Graph / Social Cards -->
@@ -19,13 +19,13 @@
   <meta property="og:site_name" content="AI Bots">
   <meta property="og:url" content="https://www.aibots.co.in/cricket.html">
   <meta property="og:title" content="Live Cricket Score Counter & Match Tracker — AI Bots">
-  <meta property="og:description" content="Track live cricket matches ball-by-ball, score runs, extras, wickets, overs timeline, 1st & 2nd innings history table, and export match scorecards online.">
+  <meta property="og:description" content="Track live cricket matches ball-by-ball, custom overs, 1st & 2nd innings history table, boundary celebrations with AI Bots ball animation, and persistent match state.">
   <meta property="og:image" content="https://www.aibots.co.in/logo.png">
   <!-- Twitter Cards -->
   <meta property="twitter:card" content="summary_large_image">
   <meta property="twitter:url" content="https://www.aibots.co.in/cricket.html">
   <meta property="twitter:title" content="Live Cricket Score Counter & Match Tracker — AI Bots">
-  <meta property="twitter:description" content="Track live cricket matches ball-by-ball, score runs, extras, wickets, overs timeline, 1st & 2nd innings history table, and export match scorecards online.">
+  <meta property="twitter:description" content="Track live cricket matches ball-by-ball, custom overs, 1st & 2nd innings history table, boundary celebrations with AI Bots ball animation, and persistent match state.">
   <meta property="twitter:image" content="https://www.aibots.co.in/logo.png">
 
   <!-- Google Analytics -->
@@ -41,7 +41,7 @@
   <style>
     /* Cricket Match Scorer Styles */
     .cric-card {
-      max-width: 900px;
+      max-width: 920px;
       margin: 0 auto 40px;
     }
 
@@ -52,7 +52,7 @@
       align-items: center;
       background: var(--bg-secondary);
       border: 1px solid var(--border-color);
-      border-radius: var(--radius-lg);
+      border-radius: var(--radius-lg, 16px);
       padding: 16px 20px;
       margin-bottom: 20px;
       gap: 12px;
@@ -64,18 +64,18 @@
       align-items: center;
       gap: 10px;
       flex: 1;
-      min-width: 200px;
+      min-width: 220px;
     }
     .team-badge-icon {
-      width: 38px;
-      height: 38px;
+      width: 40px;
+      height: 40px;
       border-radius: 50%;
       background: var(--primary-light, rgba(99, 102, 241, 0.15));
       color: var(--primary);
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 1rem;
+      font-size: 1.1rem;
       flex-shrink: 0;
     }
     .team-input-label {
@@ -153,6 +153,48 @@
       align-items: center;
       gap: 8px;
       flex-wrap: wrap;
+    }
+
+    /* Overs Picker Badge */
+    .overs-picker-box {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-full, 9999px);
+      padding: 4px 12px;
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--text-secondary);
+    }
+    .overs-select {
+      background: transparent;
+      border: none;
+      color: var(--text-primary);
+      font-weight: 800;
+      font-family: var(--font-mono, monospace);
+      cursor: pointer;
+      padding-right: 4px;
+    }
+    .overs-select:focus { outline: none; }
+    .overs-edit-btn {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border-color);
+      color: var(--text-muted);
+      border-radius: 50%;
+      width: 24px;
+      height: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 0.72rem;
+      transition: all 0.15s ease;
+    }
+    .overs-edit-btn:hover {
+      color: var(--primary);
+      border-color: var(--primary);
     }
 
     /* Score Hero Display */
@@ -251,7 +293,7 @@
     .this-over-box {
       background: var(--bg-secondary);
       border: 1px solid var(--border-color);
-      border-radius: var(--radius-lg);
+      border-radius: var(--radius-lg, 16px);
       padding: 16px 20px;
       margin-bottom: 20px;
       box-shadow: var(--shadow-sm);
@@ -315,7 +357,7 @@
       padding: 12px 6px;
       font-size: 1.15rem;
       font-weight: 800;
-      border-radius: var(--radius-lg);
+      border-radius: var(--radius-lg, 16px);
       border: 1px solid var(--border-color);
       background: var(--bg-secondary);
       color: var(--text-primary);
@@ -479,7 +521,7 @@
     /* History Table */
     .table-scroll-container {
       overflow-x: auto;
-      border-radius: var(--radius-lg);
+      border-radius: var(--radius-lg, 14px);
       border: 1px solid var(--border-color);
       background: var(--bg-primary);
       -webkit-overflow-scrolling: touch;
@@ -513,117 +555,390 @@
     .cric-table tr:last-child td {
       border-bottom: none;
     }
-    .cric-table tr.over-break-row td {
-      background: rgba(99, 102, 241, 0.08);
-      font-weight: 700;
-      color: var(--primary);
-      font-size: 0.85rem;
-      border-top: 1px dashed var(--border-color);
-      border-bottom: 1px solid var(--border-color);
-    }
     .empty-history-box {
       padding: 40px 20px;
       text-align: center;
       color: var(--text-muted);
     }
 
-    /* Boundary Celebration Modal Overlay (AI Bots Logo & Animations) */
+    /* ==========================================================================
+       CINEMATIC CRICKET ANIMATIONS (AI BOTS LOGO AS CRICKET BALL)
+       ========================================================================== */
     .celebration-overlay {
       position: fixed;
       top: 0;
       left: 0;
       right: 0;
       bottom: 0;
-      background: rgba(15, 23, 42, 0.82);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
+      background: rgba(10, 15, 29, 0.88);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
       z-index: 9999;
       display: none;
       align-items: center;
       justify-content: center;
       cursor: pointer;
       opacity: 0;
-      transition: opacity 0.25s ease;
+      transition: opacity 0.22s ease;
+      overflow: hidden;
     }
     .celebration-overlay.active {
       display: flex;
       opacity: 1;
     }
+
     .celebration-card {
       background: radial-gradient(circle at center, rgba(30, 41, 59, 0.95), rgba(15, 23, 42, 0.98));
       border: 2px solid rgba(255, 255, 255, 0.15);
       border-radius: 28px;
-      padding: 36px 40px;
+      padding: 36px 32px 30px;
       text-align: center;
-      max-width: 440px;
-      width: 90%;
-      box-shadow: 0 25px 60px rgba(0, 0, 0, 0.6);
+      max-width: 520px;
+      width: 92%;
+      box-shadow: 0 25px 70px rgba(0, 0, 0, 0.7);
       position: relative;
       overflow: hidden;
-      transform: scale(0.85);
-      animation: celebrationPopIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+      transform: scale(0.88);
+      animation: celebrationCardPop 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
     }
-    @keyframes celebrationPopIn {
+    @keyframes celebrationCardPop {
       to { transform: scale(1); }
     }
 
-    /* Logo Chamber in Modal */
-    .celebration-logo-wrapper {
+    /* Animated Stage Container */
+    .cinematic-stage {
       position: relative;
-      width: 110px;
-      height: 110px;
-      margin: 0 auto 20px;
+      width: 100%;
+      height: 180px;
+      margin: 0 auto 16px;
+      overflow: hidden;
+      border-radius: 18px;
+      background: linear-gradient(180deg, #070a13 0%, #0d1527 65%, #14281d 100%);
+      border: 1px solid rgba(255, 255, 255, 0.1);
     }
-    .celebration-logo-glow {
+
+    /* Pitch Turf & Sky Grid */
+    .stage-turf {
       position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      width: 140px;
-      height: 140px;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 48px;
+      background: repeating-linear-gradient(90deg, #15803d 0px, #15803d 28px, #16a34a 28px, #16a34a 56px);
+      border-top: 2px solid #22c55e;
+      box-shadow: inset 0 6px 12px rgba(0,0,0,0.3);
+    }
+
+    /* Boundary Rope Line */
+    .boundary-rope {
+      position: absolute;
+      bottom: 46px;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: repeating-linear-gradient(90deg, #ffffff 0px, #ffffff 16px, #ef4444 16px, #ef4444 32px);
+      box-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
+      display: none;
+    }
+
+    /* AI Bots Cricket Ball */
+    .logo-ball-actor {
+      position: absolute;
+      width: 58px;
+      height: 58px;
       border-radius: 50%;
-      filter: blur(20px);
-      opacity: 0.8;
-      animation: glowPulse 1.4s infinite alternate;
+      background: radial-gradient(circle at 35% 35%, #ffffff, #6366f1);
+      box-shadow: 0 0 20px rgba(99, 102, 241, 0.8), inset -3px -3px 8px rgba(0,0,0,0.5);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 20;
+      will-change: transform;
     }
-    .celebration-logo-img {
-      position: relative;
-      width: 110px;
-      height: 110px;
+    .logo-ball-actor img {
+      width: 44px;
+      height: 44px;
       object-fit: contain;
-      filter: drop-shadow(0 10px 20px rgba(0,0,0,0.5));
-      animation: logoSpinTilt 2s ease infinite alternate;
+      filter: drop-shadow(0 2px 4px rgba(0,0,0,0.4));
+      pointer-events: none;
     }
-    @keyframes logoSpinTilt {
-      0% { transform: scale(0.95) rotate(-6deg); }
-      100% { transform: scale(1.08) rotate(6deg); }
-    }
-    @keyframes glowPulse {
-      0% { opacity: 0.5; transform: translate(-50%, -50%) scale(0.9); }
-      100% { opacity: 1; transform: translate(-50%, -50%) scale(1.15); }
+    /* Cricket Ball Seam Ring */
+    .logo-ball-actor::after {
+      content: '';
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      border: 2px dashed rgba(255, 255, 255, 0.8);
+      box-sizing: border-box;
+      pointer-events: none;
     }
 
-    /* Specific 4 & 6 Styles */
-    .mode-four .celebration-logo-glow { background: radial-gradient(circle, #3b82f6, #10b981); }
-    .mode-four .celebration-card { border-color: #3b82f6; box-shadow: 0 0 50px rgba(59, 130, 246, 0.4); }
-    .mode-six .celebration-logo-glow { background: radial-gradient(circle, #8b5cf6, #ec4899); }
-    .mode-six .celebration-card { border-color: #8b5cf6; box-shadow: 0 0 60px rgba(139, 92, 246, 0.5); }
+    /* Ground Turf Ripple Shockwaves (For 4) */
+    .turf-bounce-ripple {
+      position: absolute;
+      bottom: 22px;
+      width: 40px;
+      height: 14px;
+      border-radius: 50%;
+      border: 2px solid #38bdf8;
+      background: rgba(56, 189, 248, 0.25);
+      transform: scale(0);
+      opacity: 0;
+      pointer-events: none;
+    }
 
+    /* 3D Wicket Stumps & Bails (For Wicket) */
+    .wicket-set-wrapper {
+      position: absolute;
+      bottom: 12px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 72px;
+      height: 90px;
+      display: none;
+      z-index: 15;
+    }
+    .stumps-container {
+      position: relative;
+      width: 100%;
+      height: 100%;
+    }
+    .stump {
+      position: absolute;
+      bottom: 0;
+      width: 8px;
+      height: 72px;
+      background: linear-gradient(90deg, #fde047 0%, #ca8a04 50%, #854d0e 100%);
+      border-radius: 4px 4px 2px 2px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+      transform-origin: bottom center;
+      transition: transform 0.3s ease;
+    }
+    .stump-off { left: 10px; }
+    .stump-mid { left: 32px; }
+    .stump-leg { left: 54px; }
+
+    .bail {
+      position: absolute;
+      top: 15px;
+      width: 28px;
+      height: 4px;
+      background: #fef08a;
+      border-radius: 2px;
+      box-shadow: 0 0 8px rgba(254, 240, 138, 0.8);
+      transform-origin: center;
+      transition: transform 0.3s ease;
+    }
+    .bail-left { left: 8px; }
+    .bail-right { left: 36px; }
+
+    /* Flash Strobe */
+    .stage-strobe-flash {
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: #ffffff;
+      opacity: 0;
+      pointer-events: none;
+      z-index: 30;
+    }
+
+    /* -------------------------------------------------------------
+       SCENE 1: MAXIMUM SIX ANIMATION (Sky Launch Parabolic Arc)
+       ------------------------------------------------------------- */
+    .mode-six .boundary-rope { display: block; }
+    .mode-six .logo-ball-actor {
+      bottom: 16px;
+      left: 10%;
+      animation: sixBallLaunch 1.8s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+    }
+    @keyframes sixBallLaunch {
+      0% {
+        transform: translate(0, 0) scale(0.9) rotate(0deg);
+        box-shadow: 0 0 15px #8b5cf6;
+      }
+      25% {
+        transform: translate(110px, -110px) scale(1.4) rotate(420deg);
+        box-shadow: 0 0 35px #ec4899, 0 0 70px #8b5cf6;
+      }
+      55% {
+        transform: translate(240px, -145px) scale(1.6) rotate(840deg);
+        box-shadow: 0 0 50px #fbbf24, 0 0 80px #ec4899;
+      }
+      80% {
+        transform: translate(370px, -70px) scale(1.2) rotate(1260deg);
+        box-shadow: 0 0 40px #8b5cf6;
+      }
+      100% {
+        transform: translate(450px, -20px) scale(0.85) rotate(1500deg);
+        box-shadow: 0 0 25px #ec4899;
+      }
+    }
+
+    /* -------------------------------------------------------------
+       SCENE 2: CRACKING FOUR ANIMATION (Ground Bounces to Boundary)
+       ------------------------------------------------------------- */
+    .mode-four .boundary-rope { display: block; }
+    .mode-four .logo-ball-actor {
+      bottom: 22px;
+      left: 6%;
+      animation: fourBallBounce 1.8s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+    }
+    @keyframes fourBallBounce {
+      0% {
+        transform: translate(0, 0) scale(0.95) rotate(0deg);
+      }
+      20% {
+        /* High hop */
+        transform: translate(90px, -45px) scale(1.05) rotate(360deg);
+      }
+      38% {
+        /* Bounce 1 on turf */
+        transform: translate(160px, 0px) scale(0.9, 1.1) rotate(600deg);
+      }
+      56% {
+        /* Second hop */
+        transform: translate(240px, -24px) scale(1.0) rotate(900deg);
+      }
+      72% {
+        /* Bounce 2 on turf */
+        transform: translate(310px, 0px) scale(0.92, 1.08) rotate(1200deg);
+      }
+      90% {
+        /* Rocket across boundary cushion */
+        transform: translate(410px, -6px) scale(1.15) rotate(1500deg);
+        box-shadow: 0 0 45px #38bdf8, 0 0 80px #3b82f6;
+      }
+      100% {
+        transform: translate(450px, -6px) scale(1.1) rotate(1620deg);
+        box-shadow: 0 0 35px #10b981;
+      }
+    }
+
+    /* Turf impact ripples on 4 */
+    .mode-four .turf-bounce-ripple.r1 {
+      left: 170px;
+      animation: rippleBurst 0.5s 0.65s ease-out forwards;
+    }
+    .mode-four .turf-bounce-ripple.r2 {
+      left: 320px;
+      animation: rippleBurst 0.5s 1.25s ease-out forwards;
+    }
+    @keyframes rippleBurst {
+      0% { transform: scale(0.2); opacity: 1; }
+      100% { transform: scale(2.2); opacity: 0; }
+    }
+
+    /* -------------------------------------------------------------
+       SCENE 3: WICKET FALL ANIMATION (Ball Crashes Stumps & Bails)
+       ------------------------------------------------------------- */
+    .mode-wicket .wicket-set-wrapper { display: block; }
+    .mode-wicket .logo-ball-actor {
+      bottom: 24px;
+      left: -60px;
+      animation: wicketBallStrike 1.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+    @keyframes wicketBallStrike {
+      0% {
+        transform: translate(0, 0) scale(0.7) rotate(0deg);
+      }
+      38% {
+        /* Ball collides squarely with off/middle stump */
+        transform: translate(265px, -8px) scale(1.2) rotate(720deg);
+        box-shadow: 0 0 50px #ef4444, 0 0 80px #ffffff;
+      }
+      50% {
+        /* Rebounds deflection */
+        transform: translate(320px, 15px) scale(0.9) rotate(960deg);
+        opacity: 0.8;
+      }
+      100% {
+        transform: translate(380px, 40px) scale(0.6) rotate(1200deg);
+        opacity: 0;
+      }
+    }
+
+    /* Stumps Shatter Keyframes */
+    .mode-wicket .stump-off {
+      animation: stumpOffFly 1.5s 0.65s cubic-bezier(0.2, 0.8, 0.4, 1) forwards;
+    }
+    .mode-wicket .stump-mid {
+      animation: stumpMidCartwheel 1.5s 0.65s cubic-bezier(0.2, 0.8, 0.4, 1) forwards;
+    }
+    .mode-wicket .stump-leg {
+      animation: stumpLegTilt 1.5s 0.65s ease-out forwards;
+    }
+    @keyframes stumpOffFly {
+      0% { transform: rotate(0deg); }
+      100% { transform: translate(45px, 20px) rotate(65deg); filter: brightness(1.4); }
+    }
+    @keyframes stumpMidCartwheel {
+      0% { transform: rotate(0deg); }
+      40% { transform: translate(25px, -30px) rotate(120deg); }
+      100% { transform: translate(55px, 40px) rotate(240deg); }
+    }
+    @keyframes stumpLegTilt {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(-18deg); }
+    }
+
+    /* Bails Flying Keyframes */
+    .mode-wicket .bail-left {
+      animation: bailLeftFly 1.5s 0.65s cubic-bezier(0.15, 0.9, 0.3, 1) forwards;
+    }
+    .mode-wicket .bail-right {
+      animation: bailRightFly 1.5s 0.65s cubic-bezier(0.15, 0.9, 0.3, 1) forwards;
+    }
+    @keyframes bailLeftFly {
+      0% { transform: translate(0, 0) rotate(0deg); }
+      100% { transform: translate(-38px, -95px) rotate(-540deg); }
+    }
+    @keyframes bailRightFly {
+      0% { transform: translate(0, 0) rotate(0deg); }
+      100% { transform: translate(50px, -85px) rotate(600deg); }
+    }
+
+    /* Flash Strobe Trigger */
+    .mode-wicket .stage-strobe-flash {
+      animation: strobeTrigger 0.35s 0.65s ease-out forwards;
+    }
+    .mode-six .stage-strobe-flash {
+      animation: strobeTrigger 0.3s 0.4s ease-out forwards;
+    }
+    @keyframes strobeTrigger {
+      0% { opacity: 0.85; }
+      100% { opacity: 0; }
+    }
+
+    /* Celebration Typography Badges */
     .celebration-badge {
       display: inline-block;
-      font-size: 0.82rem;
+      font-size: 0.84rem;
       font-weight: 800;
       text-transform: uppercase;
       letter-spacing: 0.08em;
-      padding: 4px 16px;
+      padding: 5px 18px;
       border-radius: 9999px;
       margin-bottom: 12px;
     }
-    .mode-four .celebration-badge { background: rgba(59, 130, 246, 0.2); color: #60a5fa; border: 1px solid #3b82f6; }
-    .mode-six .celebration-badge { background: rgba(139, 92, 246, 0.2); color: #c084fc; border: 1px solid #8b5cf6; }
+    .mode-four .celebration-badge {
+      background: rgba(59, 130, 246, 0.2);
+      color: #60a5fa;
+      border: 1px solid #3b82f6;
+    }
+    .mode-six .celebration-badge {
+      background: rgba(139, 92, 246, 0.2);
+      color: #c084fc;
+      border: 1px solid #8b5cf6;
+    }
+    .mode-wicket .celebration-badge {
+      background: rgba(239, 68, 68, 0.2);
+      color: #f87171;
+      border: 1px solid #ef4444;
+    }
 
     .celebration-title {
-      font-size: clamp(2rem, 8vw, 2.7rem);
+      font-size: clamp(2.1rem, 8vw, 2.8rem);
       font-weight: 900;
       line-height: 1.1;
       margin-bottom: 8px;
@@ -639,15 +954,20 @@
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
     }
+    .mode-wicket .celebration-title {
+      background: linear-gradient(135deg, #f87171, #f59e0b);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
 
     .celebration-sub {
-      font-size: 1rem;
+      font-size: 1.05rem;
       font-weight: 700;
       color: #94a3b8;
     }
     .celebration-dismiss-hint {
       margin-top: 20px;
-      font-size: 0.75rem;
+      font-size: 0.76rem;
       color: #64748b;
       font-weight: 600;
     }
@@ -661,9 +981,10 @@
       .keypad-grid { gap: 8px; }
       .cric-btn { min-height: 48px; font-size: 1rem; }
       .history-card { padding: 16px 12px; }
-      .celebration-card { padding: 26px 20px; }
-      .celebration-logo-wrapper { width: 90px; height: 90px; }
-      .celebration-logo-img { width: 90px; height: 90px; }
+      .celebration-card { padding: 24px 18px; }
+      .cinematic-stage { height: 150px; }
+      .logo-ball-actor { width: 48px; height: 48px; }
+      .logo-ball-actor img { width: 36px; height: 36px; }
     }
   </style>
   <link rel="manifest" href="manifest.json">
@@ -683,7 +1004,7 @@
   "@type": "WebApplication",
   "name": "Live Cricket Score Counter & Match Tracker — AI Bots",
   "url": "https://www.aibots.co.in/cricket.html",
-  "description": "Track live cricket matches ball-by-ball, score runs, extras, wickets, overs timeline, 1st & 2nd innings history table, and export match scorecards online.",
+  "description": "Track live cricket matches ball-by-ball, custom overs, 1st & 2nd innings history table, boundary celebrations with AI Bots ball animation, and persistent match state.",
   "applicationCategory": "GameApplication",
   "operatingSystem": "All",
   "browserRequirements": "Requires JavaScript. Requires HTML5.",
@@ -752,7 +1073,7 @@
     <div class="tool-header">
       <span class="tool-header-badge"><i class="fas fa-baseball-bat-ball"></i> Sports Scorer</span>
       <h1 class="tool-title">Live Cricket Match Scorer</h1>
-      <p class="tool-desc">Ball-by-ball score tracking, 1st & 2nd innings history table, boundary celebrations, and persistent state.</p>
+      <p class="tool-desc">Ball-by-ball score tracking, custom overs, 1st & 2nd innings history table, boundary celebrations, and persistent state.</p>
     </div>
 
     <div class="tool-card-container cric-card">
@@ -792,14 +1113,18 @@
         </div>
 
         <div class="cric-settings-btns">
-          <div style="display:flex; align-items:center; gap:6px; background:var(--bg-secondary); border:1px solid var(--border-color); border-radius:var(--radius-full, 9999px); padding:4px 12px; font-size:0.85rem; font-weight:700; color:var(--text-secondary);">
+          <!-- Custom Overs Selector -->
+          <div class="overs-picker-box">
             <span>Overs:</span>
-            <select id="maxOversSelect" onchange="changeMaxOvers(this.value)" style="background:transparent; border:none; color:var(--text-primary); font-weight:800; font-family:var(--font-mono, monospace); cursor:pointer;">
+            <select id="maxOversSelect" class="overs-select" onchange="handleOversSelect(this.value)">
               <option value="5">5 T5</option>
               <option value="10">10 T10</option>
+              <option value="15">15 T15</option>
               <option value="20" selected>20 T20</option>
               <option value="50">50 ODI</option>
+              <option value="custom">⚙️ Custom...</option>
             </select>
+            <button class="overs-edit-btn" onclick="promptCustomOvers()" title="Set Custom Match Overs"><i class="fas fa-pen"></i></button>
           </div>
 
           <button class="btn btn-secondary btn-sm" id="animToggleBtn" onclick="toggleCelebrations()" title="Toggle Boundary Celebrations" style="height:36px; padding:0 12px;">
@@ -877,7 +1202,7 @@
         </button>
         <button class="cric-btn cric-btn-wkt" onclick="addWicket()">
           <span>W</span>
-          <span class="cric-btn-sub">Wicket</span>
+          <span class="cric-btn-sub">Wicket 🚨</span>
         </button>
         <button class="cric-btn cric-btn-extra" onclick="addExtra('wide')">
           <span>WD</span>
@@ -984,13 +1309,41 @@
     </div>
   </main>
 
-  <!-- Boundary Celebration Modal Overlay (Features AI Bots Logo) -->
+  <!-- ==========================================================================
+       CINEMATIC CRICKET ANIMATION MODAL (AI BOTS LOGO AS CRICKET BALL)
+       ========================================================================== -->
   <div class="celebration-overlay" id="celebrationOverlay" onclick="dismissCelebration()">
     <div class="celebration-card" id="celebrationCard">
-      <div class="celebration-logo-wrapper">
-        <div class="celebration-logo-glow" id="celebrationGlow"></div>
-        <img src="logo.png" alt="AI Bots Logo" class="celebration-logo-img" id="celebrationLogo">
+      <!-- Animated Cricket Arena Stage -->
+      <div class="cinematic-stage" id="cinematicStage">
+        <div class="stage-turf"></div>
+        <div class="boundary-rope"></div>
+        
+        <!-- Ground Turf Ripples for 4 -->
+        <div class="turf-bounce-ripple r1"></div>
+        <div class="turf-bounce-ripple r2"></div>
+
+        <!-- Stumps & Bails for Wicket -->
+        <div class="wicket-set-wrapper" id="wicketSet">
+          <div class="stumps-container">
+            <div class="bail bail-left"></div>
+            <div class="bail bail-right"></div>
+            <div class="stump stump-off"></div>
+            <div class="stump stump-mid"></div>
+            <div class="stump stump-leg"></div>
+          </div>
+        </div>
+
+        <!-- The AI Bots Cricket Ball Actor -->
+        <div class="logo-ball-actor" id="logoBallActor">
+          <img src="logo.png" alt="AI Bots Logo Cricket Ball">
+        </div>
+
+        <!-- Flash Strobe -->
+        <div class="stage-strobe-flash"></div>
       </div>
+
+      <!-- Celebratory Typography -->
       <div class="celebration-badge" id="celebrationBadge">AI BOTS BOUNDARY</div>
       <div class="celebration-title" id="celebrationTitle">CRACKING FOUR! ⚡</div>
       <div class="celebration-sub" id="celebrationSub">+4 Runs Added to Scoreboard</div>
@@ -1027,7 +1380,7 @@
         sixes: 0,
         dots: 0,
         thisOver: [],
-        ballsHistory: [], // array of deliveries
+        ballsHistory: [],
         isCompleted: false
       },
       innings2: {
@@ -1057,7 +1410,7 @@
 
         const now = cricAudioCtx.currentTime;
         if (type === 'four') {
-          // Energetic dual chime
+          // Cracking turf hit & boundary cheer
           [523.25, 659.25, 783.99].forEach((freq, idx) => {
             const osc = cricAudioCtx.createOscillator();
             const gain = cricAudioCtx.createGain();
@@ -1071,7 +1424,7 @@
             osc.stop(now + idx * 0.08 + 0.35);
           });
         } else if (type === 'six') {
-          // Major celebratory fanfare chime
+          // Massive launch fanfare & crowd chime
           [440, 554.37, 659.25, 880].forEach((freq, idx) => {
             const osc = cricAudioCtx.createOscillator();
             const gain = cricAudioCtx.createGain();
@@ -1085,18 +1438,31 @@
             osc.stop(now + idx * 0.09 + 0.45);
           });
         } else if (type === 'wicket') {
-          // Low dramatic chime
-          const osc = cricAudioCtx.createOscillator();
-          const gain = cricAudioCtx.createGain();
-          osc.type = 'sawtooth';
-          osc.frequency.setValueAtTime(180, now);
-          osc.frequency.exponentialRampToValueAtTime(80, now + 0.3);
-          gain.gain.setValueAtTime(0.25, now);
-          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.3);
-          osc.connect(gain);
-          gain.connect(cricAudioCtx.destination);
-          osc.start(now);
-          osc.stop(now + 0.3);
+          // Wooden stump smash & dramatic crash
+          const osc1 = cricAudioCtx.createOscillator();
+          const gain1 = cricAudioCtx.createGain();
+          osc1.type = 'sawtooth';
+          osc1.frequency.setValueAtTime(320, now);
+          osc1.frequency.exponentialRampToValueAtTime(75, now + 0.35);
+          gain1.gain.setValueAtTime(0.35, now);
+          gain1.gain.exponentialRampToValueAtTime(0.001, now + 0.35);
+          osc1.connect(gain1);
+          gain1.connect(cricAudioCtx.destination);
+          osc1.start(now);
+          osc1.stop(now + 0.35);
+
+          // Wood rattle crack
+          const osc2 = cricAudioCtx.createOscillator();
+          const gain2 = cricAudioCtx.createGain();
+          osc2.type = 'square';
+          osc2.frequency.setValueAtTime(480, now + 0.04);
+          osc2.frequency.exponentialRampToValueAtTime(110, now + 0.22);
+          gain2.gain.setValueAtTime(0.25, now + 0.04);
+          gain2.gain.exponentialRampToValueAtTime(0.001, now + 0.22);
+          osc2.connect(gain2);
+          gain2.connect(cricAudioCtx.destination);
+          osc2.start(now + 0.04);
+          osc2.stop(now + 0.22);
         }
       } catch (_) {}
     }
@@ -1205,7 +1571,7 @@
       inn.ballsHistory.push(delivery);
       inn.thisOver.push(delivery);
 
-      playAcousticChime('wicket');
+      triggerCelebration('wicket');
 
       if (inn.wickets >= 10) {
         inn.isCompleted = true;
@@ -1358,11 +1724,56 @@
       updateUI();
     }
 
-    function changeMaxOvers(val) {
-      pushUndoSnapshot();
-      matchState.maxOvers = parseInt(val, 10) || 20;
-      saveMatchState();
-      updateUI();
+    // Custom Overs Management
+    function handleOversSelect(val) {
+      if (val === 'custom') {
+        promptCustomOvers();
+      } else {
+        pushUndoSnapshot();
+        matchState.maxOvers = parseInt(val, 10) || 20;
+        saveMatchState();
+        updateUI();
+      }
+    }
+
+    function promptCustomOvers() {
+      const input = prompt(`Enter custom match overs (1 - 100):`, matchState.maxOvers.toString());
+      if (input !== null) {
+        const num = parseInt(input.trim(), 10);
+        if (!isNaN(num) && num >= 1 && num <= 100) {
+          pushUndoSnapshot();
+          matchState.maxOvers = num;
+
+          // Ensure option exists in select
+          const sel = document.getElementById('maxOversSelect');
+          if (sel) {
+            let found = false;
+            for (let i = 0; i < sel.options.length; i++) {
+              if (sel.options[i].value === num.toString()) {
+                sel.selectedIndex = i;
+                found = true;
+                break;
+              }
+            }
+            if (!found) {
+              const opt = document.createElement('option');
+              opt.value = num.toString();
+              opt.textContent = `${num} Overs (Custom)`;
+              sel.insertBefore(opt, sel.options[sel.options.length - 1]);
+              sel.value = num.toString();
+            }
+          }
+
+          saveMatchState();
+          updateUI();
+        } else {
+          alert("Please enter a valid number of overs between 1 and 100.");
+        }
+      } else {
+        // Revert select back to current maxOvers
+        const sel = document.getElementById('maxOversSelect');
+        if (sel) sel.value = matchState.maxOvers.toString();
+      }
     }
 
     // History Table Viewing
@@ -1371,7 +1782,9 @@
       updateHistoryTable();
     }
 
-    // Boundary Celebrations (AI Bots Logo & Animations)
+    // =========================================================================
+    // UPGRADED CINEMATIC CELEBRATIONS (LOGO AS CRICKET BALL, 4, 6, & WICKET)
+    // =========================================================================
     let celebrationTimer = null;
     function triggerCelebration(mode) {
       if (!matchState.settings.animations) return;
@@ -1384,22 +1797,30 @@
 
       if (!overlay || !card) return;
 
-      card.classList.remove('mode-four', 'mode-six');
+      // Reset previous classes
+      card.classList.remove('mode-four', 'mode-six', 'mode-wicket');
+      void card.offsetWidth; // Force CSS reflow to re-trigger animations
 
       if (mode === 'four') {
         card.classList.add('mode-four');
         badge.textContent = 'AI BOTS BOUNDARY';
         title.textContent = 'CRACKING FOUR! ⚡';
-        sub.textContent = '+4 Runs Smashed to the Rope!';
+        sub.textContent = '+4 RUNS! RACES ACROSS TURF & OVER THE ROPE!';
         playAcousticChime('four');
       } else if (mode === 'six') {
         card.classList.add('mode-six');
         badge.textContent = 'AI BOTS MAXIMUM';
-        const distances = [88, 92, 96, 101, 106, 112];
+        const distances = [88, 92, 96, 102, 108, 115];
         const dist = distances[Math.floor(Math.random() * distances.length)];
-        title.textContent = 'MASSIVE SIX! 🚀';
-        sub.textContent = `+6 Runs! ${dist}m Monumental Hit!`;
+        title.textContent = 'MAXIMUM SIX! 🚀';
+        sub.textContent = `+6 RUNS! ${dist}m MONSTER SHOT OVER THE STADIUM ROOF!`;
         playAcousticChime('six');
+      } else if (mode === 'wicket') {
+        card.classList.add('mode-wicket');
+        badge.textContent = 'WICKET GONE! 🎯';
+        title.textContent = 'BOWLED! CLEAN UP! 🚨';
+        sub.textContent = 'BALL CRASHES STUMPS & BAILS FLYING!';
+        playAcousticChime('wicket');
       }
 
       overlay.classList.add('active');
@@ -1407,7 +1828,7 @@
       if (celebrationTimer) clearTimeout(celebrationTimer);
       celebrationTimer = setTimeout(() => {
         dismissCelebration();
-      }, 1900);
+      }, 2100);
     }
 
     function dismissCelebration() {
@@ -1491,8 +1912,26 @@
       if (t1Input) t1Input.value = matchState.teams.team1;
       if (t2Input) t2Input.value = matchState.teams.team2;
 
+      // Overs Selector Setup
       const oversSelect = document.getElementById('maxOversSelect');
-      if (oversSelect) oversSelect.value = matchState.maxOvers.toString();
+      if (oversSelect) {
+        let matched = false;
+        for (let i = 0; i < oversSelect.options.length; i++) {
+          if (oversSelect.options[i].value === matchState.maxOvers.toString()) {
+            oversSelect.selectedIndex = i;
+            matched = true;
+            break;
+          }
+        }
+        if (!matched && matchState.maxOvers) {
+          const opt = document.createElement('option');
+          opt.value = matchState.maxOvers.toString();
+          opt.textContent = `${matchState.maxOvers} Overs (Custom)`;
+          oversSelect.insertBefore(opt, oversSelect.options[oversSelect.options.length - 1]);
+          oversSelect.value = matchState.maxOvers.toString();
+        }
+      }
+
       const maxOversDisplay = document.getElementById('maxOversDisplay');
       if (maxOversDisplay) maxOversDisplay.textContent = matchState.maxOvers;
 
@@ -1598,7 +2037,6 @@
     function updateHistoryTable() {
       const viewInnNum = matchState.historyViewingInnings;
       const inn = viewInnNum === 1 ? matchState.innings1 : matchState.innings2;
-      const teamName = viewInnNum === 1 ? matchState.teams.team1 : matchState.teams.team2;
 
       // Update tabs badges
       const b1 = document.getElementById('histBadgeInn1');
@@ -1650,11 +2088,10 @@
 
       emptyMsg.style.display = 'none';
 
-      // Build rows with over breaks
       let rowsHtml = '';
       const list = [...inn.ballsHistory].reverse();
 
-      list.forEach((b, idx) => {
+      list.forEach((b) => {
         let pillClass = 'ball-pill';
         if (b.eventText === '0') pillClass += ' ball-dot';
         else if (b.eventText === '4') pillClass += ' ball-4';
@@ -1672,7 +2109,7 @@
         rowsHtml += `
           <tr>
             <td style="font-family:var(--font-mono, monospace); font-weight:700; color:var(--text-secondary);">${b.overDisplay}</td>
-            <td><span class="${pillClass}" style="width:30px; height:30px; font-size:0.8rem;">${b.eventText}</span></td>
+            <td><span class="${pillClass}" style="min-width:30px; height:30px; font-size:0.8rem;">${b.eventText}</span></td>
             <td style="font-weight:800; color:${b.runs > 0 ? '#10b981' : 'var(--text-muted)'};">+${b.runs}</td>
             <td style="font-family:var(--font-mono, monospace); font-weight:800;">${b.totalScore}</td>
             <td style="color:var(--text-secondary); font-size:0.85rem;">
@@ -1688,7 +2125,6 @@
 
     // Copy Match Summary
     function copyMatchSummary() {
-      const isInn1 = matchState.currentInnings === 1;
       const text = `🏏 AI Bots Live Cricket Scorecard 🏏\n` +
         `Match: ${matchState.teams.team1} vs ${matchState.teams.team2} (${matchState.maxOvers} Overs)\n` +
         `1st Innings (${matchState.teams.team1}): ${matchState.innings1.runs}/${matchState.innings1.wickets} in ${getOversStr(matchState.innings1.legalBalls)} ov (4s: ${matchState.innings1.fours}, 6s: ${matchState.innings1.sixes})\n` +

@@ -434,64 +434,66 @@
       pointer-events: none;
     }
 
+    /* Compact, Ergonomic Bottom-Left Joystick Pad (124px strictly corner-anchored) */
     #joystickZone {
       position: absolute;
-      left: 0;
-      bottom: 0;
-      width: 44%;
-      height: 72%;
-      z-index: 25;
+      left: 14px;
+      bottom: 14px;
+      width: 124px;
+      height: 124px;
+      border-radius: 50%;
+      z-index: 26;
       touch-action: none;
       user-select: none;
       pointer-events: auto;
     }
-    .joystick-idle-guide {
+    .joystick-pad-base {
       position: absolute;
-      left: 64px;
-      bottom: 64px;
-      transform: translate(-50%, 50%);
-      width: 82px;
-      height: 82px;
+      inset: 0;
       border-radius: 50%;
-      border: 2px dashed rgba(99, 102, 241, 0.45);
-      background: radial-gradient(circle, rgba(99, 102, 241, 0.15) 0%, transparent 70%);
+      background: radial-gradient(circle, rgba(99, 102, 241, 0.28) 0%, rgba(15, 23, 42, 0.82) 75%);
+      border: 2px solid rgba(99, 102, 241, 0.65);
+      box-shadow: 0 0 24px rgba(99, 102, 241, 0.4), inset 0 0 16px rgba(56, 189, 248, 0.25);
+      backdrop-filter: blur(8px);
       display: flex;
-      flex-direction: column;
       align-items: center;
       justify-content: center;
-      color: rgba(165, 180, 252, 0.8);
-      font-size: 0.68rem;
-      font-weight: 800;
-      gap: 3px;
       pointer-events: none;
-      box-shadow: 0 0 16px rgba(99, 102, 241, 0.25);
+      transition: border-color 0.2s, box-shadow 0.2s;
     }
-    .virtual-joystick-base {
+    #joystickZone.active-touch .joystick-pad-base {
+      border-color: #38bdf8;
+      box-shadow: 0 0 32px rgba(56, 189, 248, 0.6), inset 0 0 20px rgba(56, 189, 248, 0.4);
+    }
+    .joystick-tick {
       position: absolute;
-      width: 110px;
-      height: 110px;
-      border-radius: 50%;
-      background: radial-gradient(circle, rgba(99, 102, 241, 0.3) 0%, rgba(15, 23, 42, 0.75) 70%);
-      border: 2px solid rgba(99, 102, 241, 0.8);
-      box-shadow: 0 0 25px rgba(99, 102, 241, 0.5);
-      backdrop-filter: blur(8px);
-      transform: translate(-50%, -50%);
+      color: rgba(56, 189, 248, 0.6);
+      font-size: 0.65rem;
       pointer-events: none;
-      display: none;
-      z-index: 26;
     }
+    .joystick-tick-n { top: 4px; left: 50%; transform: translateX(-50%); }
+    .joystick-tick-s { bottom: 4px; left: 50%; transform: translateX(-50%); }
+    .joystick-tick-w { left: 5px; top: 50%; transform: translateY(-50%); }
+    .joystick-tick-e { right: 5px; top: 50%; transform: translateY(-50%); }
+
     .virtual-joystick-knob {
       position: absolute;
-      width: 46px;
-      height: 46px;
+      width: 48px;
+      height: 48px;
       border-radius: 50%;
-      background: radial-gradient(circle, #38bdf8 0%, #6366f1 100%);
-      border: 2px solid #ffffff;
-      box-shadow: 0 0 14px rgba(56, 189, 248, 0.9);
+      background: radial-gradient(circle, #38bdf8 0%, #4f46e5 100%);
+      border: 2.5px solid #ffffff;
+      box-shadow: 0 0 16px rgba(56, 189, 248, 0.95), 0 4px 10px rgba(0, 0, 0, 0.6);
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
       pointer-events: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #ffffff;
+      font-size: 0.75rem;
+      transition: transform 0.05s ease-out;
     }
 
     /* Fixed Bottom-Right Action Buttons Cluster */
@@ -502,13 +504,13 @@
       display: flex;
       flex-direction: column;
       align-items: flex-end;
-      gap: 8px;
+      gap: 7px;
       pointer-events: auto;
       z-index: 28;
     }
     .action-sub-row {
       display: flex;
-      gap: 8px;
+      gap: 7px;
       justify-content: flex-end;
       align-items: center;
     }
@@ -522,11 +524,11 @@
       width: 44px;
       height: 44px;
       border-radius: 50%;
-      background: rgba(15, 23, 42, 0.85);
+      background: rgba(15, 23, 42, 0.88);
       backdrop-filter: blur(10px);
       border: 2px solid rgba(255, 255, 255, 0.32);
       color: white;
-      font-size: 0.98rem;
+      font-size: 0.95rem;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -535,32 +537,46 @@
       box-shadow: 0 4px 16px rgba(0,0,0,0.6);
       transition: transform 0.08s ease, box-shadow 0.08s ease;
       cursor: pointer;
+      position: relative;
     }
     .act-btn:active {
-      transform: scale(0.88);
-      box-shadow: 0 0 18px rgba(255,255,255,0.7);
+      transform: scale(0.86);
+      box-shadow: 0 0 20px rgba(255,255,255,0.8);
+    }
+    .act-badge {
+      position: absolute;
+      top: -3px;
+      right: -3px;
+      background: #ef4444;
+      color: #ffffff;
+      font-size: 0.62rem;
+      font-weight: 900;
+      padding: 1px 4px;
+      border-radius: 999px;
+      border: 1px solid #ffffff;
+      font-family: var(--font-mono);
     }
     .act-attack {
-      width: 60px;
-      height: 60px;
-      font-size: 1.35rem;
+      width: 62px;
+      height: 62px;
+      font-size: 1.45rem;
       background: radial-gradient(circle, #ef4444 0%, #b91c1c 100%);
       border-color: #fca5a5;
-      box-shadow: 0 0 20px rgba(239, 68, 68, 0.7), 0 4px 14px rgba(0,0,0,0.7);
+      box-shadow: 0 0 24px rgba(239, 68, 68, 0.8), 0 4px 14px rgba(0,0,0,0.7);
     }
     .act-magic {
-      width: 48px;
-      height: 48px;
+      width: 46px;
+      height: 46px;
       background: radial-gradient(circle, #3b82f6 0%, #1d4ed8 100%);
       border-color: #93c5fd;
-      box-shadow: 0 0 14px rgba(59, 130, 246, 0.6);
+      box-shadow: 0 0 16px rgba(59, 130, 246, 0.6);
     }
     .act-dash {
-      width: 48px;
-      height: 48px;
+      width: 46px;
+      height: 46px;
       background: radial-gradient(circle, #10b981 0%, #047857 100%);
       border-color: #6ee7b7;
-      box-shadow: 0 0 14px rgba(16, 185, 129, 0.6);
+      box-shadow: 0 0 16px rgba(16, 185, 129, 0.6);
     }
     .act-ult {
       background: radial-gradient(circle, #f59e0b 0%, #b45309 100%);
@@ -576,60 +592,108 @@
       background: radial-gradient(circle, #8b5cf6 0%, #6d28d9 100%);
       border-color: #c4b5fd;
     }
-    .act-interact {
-      background: radial-gradient(circle, #ec4899 0%, #be185d 100%);
-      border-color: #fbcfe8;
+    .act-pot-hp {
+      background: radial-gradient(circle, #dc2626 0%, #7f1d1d 100%);
+      border-color: #fca5a5;
+    }
+    .act-pot-mp {
+      background: radial-gradient(circle, #2563eb 0%, #1e3a8a 100%);
+      border-color: #93c5fd;
     }
 
-    /* Cyber Aim Reticle & Tap Cursor */
+    /* Upgraded Cyber Aim Reticle & Tap Cursor (Bounded & Reactive) */
     .cyber-aim-reticle {
       position: absolute;
-      width: 40px;
-      height: 40px;
+      width: 44px;
+      height: 44px;
       transform: translate(-50%, -50%);
       pointer-events: none;
-      z-index: 18;
+      z-index: 22;
       display: none;
+      transition: border-color 0.15s;
     }
     .reticle-ring {
       position: absolute;
       inset: 0;
       border-radius: 50%;
       border: 2px dashed #38bdf8;
-      box-shadow: 0 0 14px rgba(56, 189, 248, 0.8), inset 0 0 8px rgba(56, 189, 248, 0.4);
-      animation: reticleSpin 6s linear infinite;
+      box-shadow: 0 0 16px rgba(56, 189, 248, 0.85), inset 0 0 10px rgba(56, 189, 248, 0.45);
+      animation: reticleSpin 5s linear infinite;
+    }
+    .cyber-aim-reticle.locked .reticle-ring {
+      border: 2.5px solid #ef4444;
+      box-shadow: 0 0 22px rgba(239, 68, 68, 0.95), inset 0 0 12px rgba(239, 68, 68, 0.6);
+      animation: reticleLockedPulse 0.6s ease-in-out infinite alternate;
     }
     .reticle-core {
       position: absolute;
-      width: 6px;
-      height: 6px;
+      width: 7px;
+      height: 7px;
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
       border-radius: 50%;
       background: #ffffff;
-      box-shadow: 0 0 8px #38bdf8;
+      box-shadow: 0 0 10px #38bdf8;
+      transition: background-color 0.15s;
+    }
+    .cyber-aim-reticle.locked .reticle-core {
+      background: #fca5a5;
+      box-shadow: 0 0 14px #ef4444;
     }
     .reticle-tick {
       position: absolute;
       background: #38bdf8;
       box-shadow: 0 0 6px #38bdf8;
     }
+    .cyber-aim-reticle.locked .reticle-tick {
+      background: #ef4444;
+      box-shadow: 0 0 8px #ef4444;
+    }
     .reticle-t { top: -6px; left: 50%; width: 2px; height: 6px; transform: translateX(-50%); }
     .reticle-b { bottom: -6px; left: 50%; width: 2px; height: 6px; transform: translateX(-50%); }
     .reticle-l { left: -6px; top: 50%; width: 6px; height: 2px; transform: translateY(-50%); }
     .reticle-r { right: -6px; top: 50%; width: 6px; height: 2px; transform: translateY(-50%); }
 
+    .reticle-target-tag {
+      position: absolute;
+      top: -24px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 0.64rem;
+      font-weight: 900;
+      letter-spacing: 0.5px;
+      background: rgba(15, 23, 42, 0.92);
+      border: 1px solid #38bdf8;
+      color: #38bdf8;
+      padding: 1px 7px;
+      border-radius: 999px;
+      white-space: nowrap;
+      display: none;
+      box-shadow: 0 0 10px rgba(56, 189, 248, 0.5);
+      pointer-events: none;
+    }
+    .cyber-aim-reticle.locked .reticle-target-tag {
+      display: block;
+      border-color: #ef4444;
+      color: #fca5a5;
+      box-shadow: 0 0 12px rgba(239, 68, 68, 0.6);
+    }
+
     @keyframes reticleSpin {
       from { transform: rotate(0deg); }
       to { transform: rotate(360deg); }
     }
+    @keyframes reticleLockedPulse {
+      from { transform: scale(1.0); }
+      to { transform: scale(1.16); }
+    }
     .reticle-tap-burst {
-      animation: reticleTapAnim 0.45s cubic-bezier(0.1, 0.9, 0.2, 1) forwards !important;
+      animation: reticleTapAnim 0.4s cubic-bezier(0.1, 0.9, 0.2, 1) forwards !important;
     }
     @keyframes reticleTapAnim {
-      0% { transform: translate(-50%, -50%) scale(0.6); opacity: 1; }
-      50% { transform: translate(-50%, -50%) scale(1.35); opacity: 0.9; }
+      0% { transform: translate(-50%, -50%) scale(0.55); opacity: 1; }
+      50% { transform: translate(-50%, -50%) scale(1.4); opacity: 0.9; }
       100% { transform: translate(-50%, -50%) scale(1.0); opacity: 0.85; }
     }
 
@@ -637,26 +701,18 @@
       .mobile-controls { display: block !important; }
       .game-canvas-wrapper {
         aspect-ratio: auto;
-        height: 62vh;
-        min-height: 380px;
-        max-height: 520px;
+        height: 64vh;
+        min-height: 390px;
+        max-height: 540px;
+        touch-action: none;
       }
       .hotbar-container {
-        bottom: 8px;
-        left: 50%;
-        transform: translateX(-50%);
-        gap: 4px;
-        padding: 2px 5px;
-        background: rgba(10, 15, 30, 0.75);
-        max-width: 45%;
-        overflow-x: auto;
+        display: none !important; /* Replaced by ergonomic mobile cluster */
       }
-      .hotbar-slot { width: 30px; height: 30px; font-size: 0.75rem; flex-shrink: 0; }
-      .hotbar-key { display: none; }
       .in-canvas-top-bar { top: 4px; padding: 2px 6px; max-width: 96%; }
       .hud-btn-label { display: none; }
-      .quest-tracker { top: 80px; max-width: 160px; font-size: 0.65rem; }
-      .minimap-wrapper { width: 70px; height: 70px; }
+      .quest-tracker { top: 76px; max-width: 150px; font-size: 0.64rem; padding: 4px 8px; }
+      .minimap-wrapper { width: 68px; height: 68px; }
       .boss-health-bar { top: 40px; }
     }
 
@@ -831,6 +887,7 @@
       <canvas id="gameCanvas" width="1280" height="720"></canvas>
       <!-- CYBER AIM RETICLE / TAP TARGET CURSOR -->
       <div class="cyber-aim-reticle" id="cyberAimReticle">
+        <div class="reticle-target-tag" id="reticleTargetTag">TARGET</div>
         <div class="reticle-ring"></div>
         <div class="reticle-core"></div>
         <div class="reticle-tick reticle-t"></div>
@@ -927,31 +984,32 @@
 
       <!-- MOBILE CONTROLS OVERLAY -->
       <div class="mobile-controls">
-        <!-- Left Thumb Virtual Joystick -->
-        <div id="joystickZone">
-          <div class="joystick-idle-guide" id="joystickIdleGuide">
-            <i class="fas fa-arrows-up-down-left-right"></i>
-            <span>Move</span>
-          </div>
-          <div class="virtual-joystick-base" id="joystickBase">
-            <div class="virtual-joystick-knob" id="joystickKnob"></div>
+        <!-- Left Thumb Virtual Joystick (Ergonomic 124px Corner Anchor) -->
+        <div id="joystickZone" title="Drag to Move">
+          <div class="joystick-pad-base">
+            <span class="joystick-tick joystick-tick-n">▲</span>
+            <span class="joystick-tick joystick-tick-s">▼</span>
+            <span class="joystick-tick joystick-tick-w">◀</span>
+            <span class="joystick-tick joystick-tick-e">▶</span>
+            <div class="virtual-joystick-knob" id="joystickKnob"><i class="fas fa-crosshairs"></i></div>
           </div>
         </div>
 
         <!-- Right Thumb Combat Actions (Guaranteed Right-Anchored) -->
         <div class="action-buttons">
-          <!-- Secondary Abilities & Mount -->
+          <!-- Top Row: Quick Potions & Mount -->
           <div class="action-sub-row">
+            <button class="act-btn act-pot-hp" id="btnMobHpPot" title="Health Potion (+60 HP)"><i class="fas fa-heart"></i><span class="act-badge" id="mobHpPotCount">2</span></button>
+            <button class="act-btn act-pot-mp" id="btnMobMpPot" title="Mana Elixir (+60 MP)"><i class="fas fa-bolt"></i><span class="act-badge" id="mobMpPotCount">2</span></button>
+            <button class="act-btn act-mount" id="btnMount" title="Cyber Mount [V]"><i class="fas fa-motorcycle"></i></button>
             <button class="act-btn act-ult" id="btnUlt" title="Meteor Swarm [Q / 3]"><i class="fas fa-meteor"></i></button>
             <button class="act-btn act-blizzard" id="btnBlizzard" title="Blizzard Nova [R / 4]"><i class="fas fa-snowflake"></i></button>
-            <button class="act-btn act-mount" id="btnMount" title="Cyber Mount [V]"><i class="fas fa-motorcycle"></i></button>
-            <button class="act-btn act-interact" id="btnInteract" title="Interact / Collect [E]"><i class="fas fa-hand-holding-hand"></i></button>
           </div>
           <!-- Primary Combat Strike Cluster -->
           <div class="action-main-row">
             <button class="act-btn act-magic" id="btnMagic" title="Plasma Blast [K / F]"><i class="fas fa-wand-magic-sparkles"></i></button>
             <button class="act-btn act-dash" id="btnDash" title="Hyper Dash [Shift]"><i class="fas fa-wind"></i></button>
-            <button class="act-btn act-attack" id="btnAttack" title="Laser Katana Slash [Space / J / Tap]"><i class="fas fa-khanda"></i></button>
+            <button class="act-btn act-attack" id="btnAttack" title="Laser Katana Slash [Space / J / Tap Anywhere]"><i class="fas fa-khanda"></i></button>
           </div>
         </div>
       </div>
@@ -2470,19 +2528,28 @@
         if (floatingTexts[i].life <= 0) floatingTexts.splice(i, 1);
       }
 
-      let nearbyLootVal = 0;
-      for (const orb of lootOrbs) {
-        if (Math.hypot(player.x - orb.x, player.y - orb.y) < 95) nearbyLootVal += orb.value;
-      }
-      const promptEl = document.getElementById('manualCollectPrompt');
-      if (promptEl) {
-        if (nearbyLootVal > 0) {
-          promptEl.style.display = 'block';
-          document.getElementById('manualCollectText').textContent = `[E / Tap] Collect (+${nearbyLootVal} Gold)`;
-        } else {
-          promptEl.style.display = 'none';
+      // Auto-Loot Magnet Vacuum Engine (Addictive, Fast-Paced Mobile Flow)
+      for (let i = lootOrbs.length - 1; i >= 0; i--) {
+        const orb = lootOrbs[i];
+        const dist = Math.hypot(player.x - orb.x, player.y - orb.y);
+        if (dist < 120) {
+          // Accelerate loot towards player
+          orb.x += (player.x - orb.x) * 0.22;
+          orb.y += (player.y - orb.y) * 0.22;
+          if (dist < player.radius + 18) {
+            player.coins += orb.value;
+            player.score += orb.value * 3;
+            addFloatingText(`+${orb.value} 💰`, player.x + (Math.random() - 0.5) * 20, player.y - 18, '#fbbf24');
+            lootOrbs.splice(i, 1);
+            AudioEngine.coin();
+            if (window.navigator && navigator.vibrate) navigator.vibrate(8);
+            checkAchievements();
+            updateHud();
+          }
         }
       }
+      const promptEl = document.getElementById('manualCollectPrompt');
+      if (promptEl) promptEl.style.display = 'none';
     }
 
     function draw() {
@@ -2492,6 +2559,19 @@
 
       ctx.save();
       ctx.translate(-camera.x, -camera.y);
+
+      // Cyber Aim Laser Targeting Sight
+      if (isAimingActive && activeAimTarget) {
+        ctx.save();
+        ctx.strokeStyle = activeAimTarget.enemy ? 'rgba(239, 68, 68, 0.65)' : 'rgba(56, 189, 248, 0.45)';
+        ctx.lineWidth = 1.8;
+        ctx.setLineDash([5, 5]);
+        ctx.beginPath();
+        ctx.moveTo(player.x, player.y);
+        ctx.lineTo(activeAimTarget.worldX, activeAimTarget.worldY);
+        ctx.stroke();
+        ctx.restore();
+      }
 
       // 4 BIOMES
       const gf = ctx.createRadialGradient(800, 600, 100, 800, 600, 900);
@@ -3372,49 +3452,114 @@
 
     // Direct Click/Tap on Canvas to Swing Laser Katana towards cursor/tap
     const aimReticle = document.getElementById('cyberAimReticle');
+    const reticleTargetTag = document.getElementById('reticleTargetTag');
+    let activeAimTarget = null; // { worldX, worldY, enemy: obj }
+    let isAimingActive = false;
 
-    // Desktop Mouse Tracking: Show glowing cyber crosshair following mouse
-    canvas.addEventListener('pointermove', (e) => {
-      if (e.pointerType === 'mouse' || e.pointerType === 'pen') {
-        const rect = canvasWrapper.getBoundingClientRect();
-        const curX = e.clientX - rect.left;
-        const curY = e.clientY - rect.top;
-        if (aimReticle) {
-          aimReticle.style.left = curX + 'px';
-          aimReticle.style.top = curY + 'px';
-          aimReticle.style.display = 'block';
-        }
-      }
-    });
-
-    canvas.addEventListener('pointerleave', () => {
-      if (aimReticle && !('ontouchstart' in window)) {
-        aimReticle.style.display = 'none';
-      }
-    });
-
-    // Tap/Click to Strike & Lock Reticle
-    canvas.addEventListener('pointerdown', (e) => {
-      if (isAnyModalOpen()) return;
-      AudioEngine.init();
+    // Helper to position Reticle strictly clamped inside canvas bounds
+    function updateAimReticle(clientX, clientY, isTap = false) {
+      if (!aimReticle) return null;
       const rect = canvasWrapper.getBoundingClientRect();
-      const clickCanvasX = (e.clientX - rect.left) * (canvas.width / rect.width);
-      const clickCanvasY = (e.clientY - rect.top) * (canvas.height / rect.height);
+      const rawX = clientX - rect.left;
+      const rawY = clientY - rect.top;
 
-      // Instant Cyber Aim Lock animation at tap position
-      if (aimReticle) {
-        aimReticle.style.left = (e.clientX - rect.left) + 'px';
-        aimReticle.style.top = (e.clientY - rect.top) + 'px';
-        aimReticle.style.display = 'block';
+      // Clamping strictly within viewport boundaries (never overflowing)
+      const clampedX = Math.max(22, Math.min(rect.width - 22, rawX));
+      const clampedY = Math.max(22, Math.min(rect.height - 22, rawY));
+
+      aimReticle.style.left = clampedX + 'px';
+      aimReticle.style.top = clampedY + 'px';
+      aimReticle.style.display = 'block';
+
+      if (isTap) {
         aimReticle.classList.remove('reticle-tap-burst');
         void aimReticle.offsetWidth;
         aimReticle.classList.add('reticle-tap-burst');
       }
 
+      // Convert to Canvas and World Coordinates
+      const clickCanvasX = clampedX * (canvas.width / rect.width);
+      const clickCanvasY = clampedY * (canvas.height / rect.height);
       const targetWorldX = camera.x + clickCanvasX;
       const targetWorldY = camera.y + clickCanvasY;
+
+      // Check Magnetic Target Lock on nearby enemies
+      let lockedEnemy = null;
+      let minLockDist = 70;
+      for (const en of enemies) {
+        const d = Math.hypot(en.x - targetWorldX, en.y - targetWorldY);
+        if (d < minLockDist) {
+          minLockDist = d;
+          lockedEnemy = en;
+        }
+      }
+
+      if (lockedEnemy) {
+        aimReticle.classList.add('locked');
+        if (reticleTargetTag) {
+          const hpPct = Math.round((lockedEnemy.hp / lockedEnemy.maxHp) * 100);
+          reticleTargetTag.textContent = `${lockedEnemy.name || 'ENEMY'} [${hpPct}%]`;
+        }
+        activeAimTarget = { worldX: lockedEnemy.x, worldY: lockedEnemy.y, enemy: lockedEnemy };
+      } else {
+        aimReticle.classList.remove('locked');
+        activeAimTarget = { worldX: targetWorldX, worldY: targetWorldY, enemy: null };
+      }
+
+      // Turn player facing toward aim reticle
       const angle = Math.atan2(targetWorldY - player.y, targetWorldX - player.x);
-      performAttack(angle);
+      if (Math.abs(Math.cos(angle)) > Math.abs(Math.sin(angle))) {
+        player.facing = Math.cos(angle) > 0 ? 'right' : 'left';
+      } else {
+        player.facing = Math.sin(angle) > 0 ? 'down' : 'up';
+      }
+
+      return { targetWorldX, targetWorldY, angle };
+    }
+
+    // Touch & Mouse Pointer Tracking across Canvas
+    let activeCanvasPointerId = null;
+
+    canvas.addEventListener('pointerdown', (e) => {
+      if (isAnyModalOpen()) return;
+      AudioEngine.init();
+      activeCanvasPointerId = e.pointerId;
+      isAimingActive = true;
+
+      const aimData = updateAimReticle(e.clientX, e.clientY, true);
+      if (aimData) {
+        performAttack(aimData.angle);
+        if (window.navigator && navigator.vibrate) navigator.vibrate(12);
+      }
+    });
+
+    canvas.addEventListener('pointermove', (e) => {
+      // Support smooth tracking on both mouse hover and phone finger drag
+      if (e.pointerType === 'mouse' || (isAimingActive && e.pointerId === activeCanvasPointerId)) {
+        updateAimReticle(e.clientX, e.clientY, false);
+      }
+    });
+
+    const endCanvasAim = (e) => {
+      if (e.pointerId === activeCanvasPointerId) {
+        activeCanvasPointerId = null;
+        isAimingActive = false;
+        // Fade out reticle after 2.5 seconds of inactivity on mobile
+        if ('ontouchstart' in window) {
+          setTimeout(() => {
+            if (!isAimingActive && aimReticle) aimReticle.style.display = 'none';
+          }, 2500);
+        }
+      }
+    };
+    canvas.addEventListener('pointerup', endCanvasAim);
+    canvas.addEventListener('pointercancel', endCanvasAim);
+
+    canvas.addEventListener('pointerleave', () => {
+      if (aimReticle && !('ontouchstart' in window)) {
+        aimReticle.style.display = 'none';
+        isAimingActive = false;
+      }
     });
 
     // Keyboard Listeners
@@ -3444,32 +3589,30 @@
 
     window.addEventListener('keyup', e => { keys[e.key.toLowerCase()] = false; });
 
-    // Mobile Virtual Joystick (Left Hand Bounded & Touch-Accurate)
-    const joystickState = { active: false, pointerId: null, startX: 0, startY: 0, maxRadius: 45, vx: 0, vy: 0 };
+    // Mobile Virtual Joystick (Strictly Bounded 124px Bottom-Left Corner)
+    const joystickState = { active: false, pointerId: null, centerX: 62, centerY: 62, maxRadius: 40, vx: 0, vy: 0 };
     const jZone = document.getElementById('joystickZone');
-    const jBase = document.getElementById('joystickBase');
     const jKnob = document.getElementById('joystickKnob');
-    const jGuide = document.getElementById('joystickIdleGuide');
 
-    if (jZone) {
+    if (jZone && jKnob) {
       jZone.addEventListener('pointerdown', (e) => {
         e.preventDefault(); e.stopPropagation(); AudioEngine.init();
         const rect = jZone.getBoundingClientRect();
-        const touchX = e.clientX - rect.left;
-        const touchY = e.clientY - rect.top;
-
         joystickState.active = true;
         joystickState.pointerId = e.pointerId;
-        joystickState.startX = touchX;
-        joystickState.startY = touchY;
-        joystickState.vx = 0;
-        joystickState.vy = 0;
+        jZone.classList.add('active-touch');
 
-        jBase.style.left = touchX + 'px';
-        jBase.style.top = touchY + 'px';
-        jBase.style.display = 'block';
-        jKnob.style.transform = 'translate(-50%, -50%)';
-        if (jGuide) jGuide.style.display = 'none';
+        const touchX = e.clientX - rect.left;
+        const touchY = e.clientY - rect.top;
+        const dx = touchX - joystickState.centerX;
+        const dy = touchY - joystickState.centerY;
+        const dist = Math.hypot(dx, dy);
+        const capped = Math.min(dist, joystickState.maxRadius);
+        const angle = Math.atan2(dy, dx);
+
+        jKnob.style.transform = `translate(calc(-50% + ${Math.cos(angle)*capped}px), calc(-50% + ${Math.sin(angle)*capped}px))`;
+        joystickState.vx = Math.cos(angle) * (capped / joystickState.maxRadius);
+        joystickState.vy = Math.sin(angle) * (capped / joystickState.maxRadius);
 
         jZone.setPointerCapture(e.pointerId);
       });
@@ -3477,11 +3620,13 @@
       jZone.addEventListener('pointermove', (e) => {
         if (!joystickState.active || e.pointerId !== joystickState.pointerId) return;
         const rect = jZone.getBoundingClientRect();
-        const dx = (e.clientX - rect.left) - joystickState.startX;
-        const dy = (e.clientY - rect.top) - joystickState.startY;
+        const touchX = e.clientX - rect.left;
+        const touchY = e.clientY - rect.top;
+        const dx = touchX - joystickState.centerX;
+        const dy = touchY - joystickState.centerY;
         const dist = Math.hypot(dx, dy);
-        const angle = Math.atan2(dy, dx);
         const capped = Math.min(dist, joystickState.maxRadius);
+        const angle = Math.atan2(dy, dx);
 
         jKnob.style.transform = `translate(calc(-50% + ${Math.cos(angle)*capped}px), calc(-50% + ${Math.sin(angle)*capped}px))`;
         joystickState.vx = Math.cos(angle) * (capped / joystickState.maxRadius);
@@ -3494,21 +3639,41 @@
         joystickState.pointerId = null;
         joystickState.vx = 0;
         joystickState.vy = 0;
-        jBase.style.display = 'none';
-        if (jGuide) jGuide.style.display = 'flex';
+        jKnob.style.transform = 'translate(-50%, -50%)';
+        jZone.classList.remove('active-touch');
       };
       jZone.addEventListener('pointerup', endJoy);
       jZone.addEventListener('pointercancel', endJoy);
     }
 
-    // Mobile Action Button Bindings
-    document.getElementById('btnAttack')?.addEventListener('pointerdown', (e) => { e.preventDefault(); e.stopPropagation(); performAttack(); });
-    document.getElementById('btnMagic')?.addEventListener('pointerdown', (e) => { e.preventDefault(); e.stopPropagation(); castMagic(); });
-    document.getElementById('btnUlt')?.addEventListener('pointerdown', (e) => { e.preventDefault(); e.stopPropagation(); castMeteorSwarm(); });
-    document.getElementById('btnBlizzard')?.addEventListener('pointerdown', (e) => { e.preventDefault(); e.stopPropagation(); castBlizzardNova(); });
-    document.getElementById('btnDash')?.addEventListener('pointerdown', (e) => { e.preventDefault(); e.stopPropagation(); performDash(); });
-    document.getElementById('btnMount')?.addEventListener('pointerdown', (e) => { e.preventDefault(); e.stopPropagation(); toggleMount(); });
-    document.getElementById('btnInteract')?.addEventListener('pointerdown', (e) => { e.preventDefault(); e.stopPropagation(); handleInteract(); });
+    // Mobile Action Button Bindings with Haptic Feedback
+    const triggerHaptic = (ms = 15) => { if (window.navigator && navigator.vibrate) navigator.vibrate(ms); };
+
+    document.getElementById('btnAttack')?.addEventListener('pointerdown', (e) => {
+      e.preventDefault(); e.stopPropagation(); triggerHaptic(18);
+      performAttack(activeAimTarget ? Math.atan2(activeAimTarget.worldY - player.y, activeAimTarget.worldX - player.x) : null);
+    });
+    document.getElementById('btnMagic')?.addEventListener('pointerdown', (e) => {
+      e.preventDefault(); e.stopPropagation(); triggerHaptic(15); castMagic();
+    });
+    document.getElementById('btnUlt')?.addEventListener('pointerdown', (e) => {
+      e.preventDefault(); e.stopPropagation(); triggerHaptic(25); castMeteorSwarm();
+    });
+    document.getElementById('btnBlizzard')?.addEventListener('pointerdown', (e) => {
+      e.preventDefault(); e.stopPropagation(); triggerHaptic(25); castBlizzardNova();
+    });
+    document.getElementById('btnDash')?.addEventListener('pointerdown', (e) => {
+      e.preventDefault(); e.stopPropagation(); triggerHaptic(20); performDash();
+    });
+    document.getElementById('btnMount')?.addEventListener('pointerdown', (e) => {
+      e.preventDefault(); e.stopPropagation(); triggerHaptic(15); toggleMount();
+    });
+    document.getElementById('btnMobHpPot')?.addEventListener('pointerdown', (e) => {
+      e.preventDefault(); e.stopPropagation(); triggerHaptic(20); usePotion('hp');
+    });
+    document.getElementById('btnMobMpPot')?.addEventListener('pointerdown', (e) => {
+      e.preventDefault(); e.stopPropagation(); triggerHaptic(20); usePotion('mp');
+    });
 
     // Interactive Minimap Click-to-Warp
     if (miniCanvas) {

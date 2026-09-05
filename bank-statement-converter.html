@@ -532,6 +532,30 @@
     },
     {
       "@type": "Question",
+      "name": "How do I convert an SBI bank statement PDF to TallyPrime XML?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Upload your State Bank of India (SBI) PDF statement into the converter. The parser automatically extracts SBI's Txn Date, Narration, Ref No/Cheque No, and Debit/Credit columns, matching them to your designated SBI Bank Ledger and Suspense account for one-click Tally XML generation."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How do I convert HDFC bank statement to Tally XML?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Select HDFC Bank from the dropdown, upload your e-statement PDF (enter password if encrypted), verify the automatically mapped debit/credit amounts, and click 'Download Tally XML'. The file imports directly into TallyPrime without date or sign discrepancy errors."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How do I fix 'Referenced master is missing' or import errors in TallyPrime?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "The 'Referenced master is missing' error occurs when your bank ledger name or party/suspense ledger name in Tally does not match the names in your XML voucher. In the converter's configuration card, simply match the 'Bank Ledger Name' and 'Counter Ledger' fields to your exact master names in Tally before downloading."
+      }
+    },
+    {
+      "@type": "Question",
       "name": "Can I convert password-protected PDF bank statements?",
       "acceptedAnswer": {
         "@type": "Answer",
@@ -837,7 +861,182 @@
       </section>
     </div>
 
-  </main>
+  <!-- Bank-Specific SEO Keyword Guides & Tally Import Matrix -->
+  <section class="app-container" style="max-width: 1100px; margin: 40px auto 20px; padding: 0 16px;">
+    <div style="background: var(--bg-secondary, #ffffff); border: 1px solid var(--border-color, #e2e8f0); border-radius: 20px; padding: 36px 28px; box-shadow: 0 4px 25px rgba(0,0,0,0.04);">
+      
+      <div style="text-align: center; margin-bottom: 32px;">
+        <span style="display: inline-flex; align-items: center; gap: 6px; padding: 5px 14px; border-radius: 999px; background: rgba(16, 185, 129, 0.12); color: #059669; font-size: 0.8rem; font-weight: 800; text-transform: uppercase;">
+          <i class="fas fa-building-columns"></i> 21+ Indian Banks Supported
+        </span>
+        <h2 style="font-size: clamp(1.45rem, 2.5vw, 1.95rem); font-weight: 900; margin: 10px 0 6px; color: var(--text-primary);">
+          Indian Banks PDF to TallyPrime XML Conversion Guides
+        </h2>
+        <p style="font-size: 0.92rem; color: var(--text-secondary); max-width: 720px; margin: 0 auto; line-height: 1.6;">
+          Bank-specific statement formats, default PDF password structures, date format detection, and automated Tally XML voucher generation for India's premier public and private banks.
+        </p>
+      </div>
+
+      <!-- Bank Cards Grid -->
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 18px; margin-bottom: 36px;">
+        
+        <!-- SBI -->
+        <div style="background: var(--bg-tertiary, #f8fafc); border: 1px solid var(--border-color, #e2e8f0); border-radius: 14px; padding: 22px 20px; display: flex; flex-direction: column; gap: 10px;">
+          <div style="display: flex; align-items: center; justify-content: space-between;">
+            <div style="display: flex; align-items: center; gap: 10px;">
+              <div style="width: 36px; height: 36px; border-radius: 10px; background: #1e3a8a; color: white; display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 0.85rem;">SBI</div>
+              <div>
+                <h3 style="font-size: 1.05rem; font-weight: 800; margin: 0; color: var(--text-primary);">State Bank of India (SBI)</h3>
+                <span style="font-size: 0.74rem; color: #059669; font-weight: 700;">YONO & Onlinesbi PDF Statements</span>
+              </div>
+            </div>
+            <span style="background: rgba(16,185,129,0.15); color: #059669; font-size: 0.7rem; font-weight: 800; padding: 3px 8px; border-radius: 6px;">Auto-Detected</span>
+          </div>
+          <p style="font-size: 0.84rem; color: var(--text-secondary); line-height: 1.5; margin: 4px 0 0;">
+            Converts YONO SBI and Retail/Corporate Internet Banking PDF statements. Automatically formats <code>DD-Mon-YYYY</code> dates into Tally-compliant YYYYMMDD integers, cleanses UPI/NEFT narration lines, and generates Payment & Receipt XML vouchers.
+          </p>
+          <div style="font-size: 0.76rem; background: var(--bg-secondary); border: 1px dashed var(--border-color); border-radius: 8px; padding: 8px 12px; color: var(--text-secondary);">
+            <strong>PDF Password:</strong> 11-digit mobile number + 4-digit DOB (DDMM), or last 5 digits of ATM card.
+          </div>
+        </div>
+
+        <!-- HDFC -->
+        <div style="background: var(--bg-tertiary, #f8fafc); border: 1px solid var(--border-color, #e2e8f0); border-radius: 14px; padding: 22px 20px; display: flex; flex-direction: column; gap: 10px;">
+          <div style="display: flex; align-items: center; justify-content: space-between;">
+            <div style="display: flex; align-items: center; gap: 10px;">
+              <div style="width: 36px; height: 36px; border-radius: 10px; background: #004c8f; color: white; display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 0.82rem;">HDFC</div>
+              <div>
+                <h3 style="font-size: 1.05rem; font-weight: 800; margin: 0; color: var(--text-primary);">HDFC Bank</h3>
+                <span style="font-size: 0.74rem; color: #059669; font-weight: 700;">NetBanking & Email E-Statements</span>
+              </div>
+            </div>
+            <span style="background: rgba(16,185,129,0.15); color: #059669; font-size: 0.7rem; font-weight: 800; padding: 3px 8px; border-radius: 6px;">Auto-Detected</span>
+          </div>
+          <p style="font-size: 0.84rem; color: var(--text-secondary); line-height: 1.5; margin: 4px 0 0;">
+            Full support for HDFC's Narration, Chq/Ref Number, Value Date, and Closing Balance table format. Accurately maps cheque clearing numbers to Tally <code>BANKERSDATE</code> and <code>INSTRUMENTNUMBER</code> fields.
+          </p>
+          <div style="font-size: 0.76rem; background: var(--bg-secondary); border: 1px dashed var(--border-color); border-radius: 8px; padding: 8px 12px; color: var(--text-secondary);">
+            <strong>PDF Password:</strong> 8-digit Customer ID (Cust ID) or registered PAN (in uppercase or lowercase).
+          </div>
+        </div>
+
+        <!-- ICICI -->
+        <div style="background: var(--bg-tertiary, #f8fafc); border: 1px solid var(--border-color, #e2e8f0); border-radius: 14px; padding: 22px 20px; display: flex; flex-direction: column; gap: 10px;">
+          <div style="display: flex; align-items: center; justify-content: space-between;">
+            <div style="display: flex; align-items: center; gap: 10px;">
+              <div style="width: 36px; height: 36px; border-radius: 10px; background: #f37021; color: white; display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 0.78rem;">ICICI</div>
+              <div>
+                <h3 style="font-size: 1.05rem; font-weight: 800; margin: 0; color: var(--text-primary);">ICICI Bank</h3>
+                <span style="font-size: 0.74rem; color: #059669; font-weight: 700;">Corporate iBizz & Retail iMobile</span>
+              </div>
+            </div>
+            <span style="background: rgba(16,185,129,0.15); color: #059669; font-size: 0.7rem; font-weight: 800; padding: 3px 8px; border-radius: 6px;">Auto-Detected</span>
+          </div>
+          <p style="font-size: 0.84rem; color: var(--text-secondary); line-height: 1.5; margin: 4px 0 0;">
+            Converts multi-page ICICI Corporate Banking and Current Account statements. Splits complex RTGS/NEFT narration strings to automatically derive the vendor/counter-ledger name for rapid reconciliation.
+          </p>
+          <div style="font-size: 0.76rem; background: var(--bg-secondary); border: 1px dashed var(--border-color); border-radius: 8px; padding: 8px 12px; color: var(--text-secondary);">
+            <strong>PDF Password:</strong> First 4 characters of name (lowercase) + DDMM of birth, or 10-digit account number.
+          </div>
+        </div>
+
+        <!-- Axis -->
+        <div style="background: var(--bg-tertiary, #f8fafc); border: 1px solid var(--border-color, #e2e8f0); border-radius: 14px; padding: 22px 20px; display: flex; flex-direction: column; gap: 10px;">
+          <div style="display: flex; align-items: center; justify-content: space-between;">
+            <div style="display: flex; align-items: center; gap: 10px;">
+              <div style="width: 36px; height: 36px; border-radius: 10px; background: #97144d; color: white; display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 0.8rem;">AXIS</div>
+              <div>
+                <h3 style="font-size: 1.05rem; font-weight: 800; margin: 0; color: var(--text-primary);">Axis Bank</h3>
+                <span style="font-size: 0.74rem; color: #059669; font-weight: 700;">Internet Banking & Mobile App PDF</span>
+              </div>
+            </div>
+            <span style="background: rgba(16,185,129,0.15); color: #059669; font-size: 0.7rem; font-weight: 800; padding: 3px 8px; border-radius: 6px;">Auto-Detected</span>
+          </div>
+          <p style="font-size: 0.84rem; color: var(--text-secondary); line-height: 1.5; margin: 4px 0 0;">
+            Parses Axis Bank's Debit/Credit columns with automatic DR/CR marker detection and running balance cross-verification. Generates complete TallyPrime XML with zero debit-credit imbalance.
+          </p>
+          <div style="font-size: 0.76rem; background: var(--bg-secondary); border: 1px dashed var(--border-color); border-radius: 8px; padding: 8px 12px; color: var(--text-secondary);">
+            <strong>PDF Password:</strong> First 4 letters of name in CAPITAL + last 4 digits of Customer ID.
+          </div>
+        </div>
+
+        <!-- PNB & BoB -->
+        <div style="background: var(--bg-tertiary, #f8fafc); border: 1px solid var(--border-color, #e2e8f0); border-radius: 14px; padding: 22px 20px; display: flex; flex-direction: column; gap: 10px;">
+          <div style="display: flex; align-items: center; justify-content: space-between;">
+            <div style="display: flex; align-items: center; gap: 10px;">
+              <div style="width: 36px; height: 36px; border-radius: 10px; background: #a21c2b; color: white; display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 0.75rem;">PSU</div>
+              <div>
+                <h3 style="font-size: 1.05rem; font-weight: 800; margin: 0; color: var(--text-primary);">PNB & Bank of Baroda</h3>
+                <span style="font-size: 0.74rem; color: #059669; font-weight: 700;">Public Sector Banking Statements</span>
+              </div>
+            </div>
+            <span style="background: rgba(16,185,129,0.15); color: #059669; font-size: 0.7rem; font-weight: 800; padding: 3px 8px; border-radius: 6px;">Auto-Detected</span>
+          </div>
+          <p style="font-size: 0.84rem; color: var(--text-secondary); line-height: 1.5; margin: 4px 0 0;">
+            Expert parsing for Punjab National Bank (PNB) and Bank of Baroda (BoB) statements. Handles multi-line transaction narratives, interest postings, and inward/outward clearing cheques.
+          </p>
+          <div style="font-size: 0.76rem; background: var(--bg-secondary); border: 1px dashed var(--border-color); border-radius: 8px; padding: 8px 12px; color: var(--text-secondary);">
+            <strong>PDF Password:</strong> PNB uses Account Number. BoB uses mobile number or registered DOB.
+          </div>
+        </div>
+
+        <!-- Canara & Kotak -->
+        <div style="background: var(--bg-tertiary, #f8fafc); border: 1px solid var(--border-color, #e2e8f0); border-radius: 14px; padding: 22px 20px; display: flex; flex-direction: column; gap: 10px;">
+          <div style="display: flex; align-items: center; justify-content: space-between;">
+            <div style="display: flex; align-items: center; gap: 10px;">
+              <div style="width: 36px; height: 36px; border-radius: 10px; background: #0077b6; color: white; display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 0.75rem;">KOTAK</div>
+              <div>
+                <h3 style="font-size: 1.05rem; font-weight: 800; margin: 0; color: var(--text-primary);">Canara & Kotak Mahindra</h3>
+                <span style="font-size: 0.74rem; color: #059669; font-weight: 700;">Instant Digital & Current Account</span>
+              </div>
+            </div>
+            <span style="background: rgba(16,185,129,0.15); color: #059669; font-size: 0.7rem; font-weight: 800; padding: 3px 8px; border-radius: 6px;">Auto-Detected</span>
+          </div>
+          <p style="font-size: 0.84rem; color: var(--text-secondary); line-height: 1.5; margin: 4px 0 0;">
+            Recognizes Canara Bank and Kotak 811/Corporate e-statements. Uses smart column anchor detection to preserve debit and credit columns even when lines have unequal heights.
+          </p>
+          <div style="font-size: 0.76rem; background: var(--bg-secondary); border: 1px dashed var(--border-color); border-radius: 8px; padding: 8px 12px; color: var(--text-secondary);">
+            <strong>PDF Password:</strong> Kotak uses CRN or PAN. Canara uses first 4 letters of name + 4-digit DOB.
+          </div>
+        </div>
+
+      </div>
+
+      <!-- How to Fix Common Tally Import Errors (Featured Snippets Magnet) -->
+      <div style="background: linear-gradient(135deg, rgba(16, 185, 129, 0.05), rgba(79, 70, 229, 0.04)); border: 1px solid rgba(16, 185, 129, 0.25); border-radius: 16px; padding: 24px;">
+        <h3 style="font-size: 1.15rem; font-weight: 800; margin: 0 0 14px; color: var(--text-primary); display: flex; align-items: center; gap: 10px;">
+          <i class="fas fa-wrench" style="color: #10b981;"></i> Troubleshooting Common TallyPrime XML Import Errors
+        </h3>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(290px, 1fr)); gap: 14px;">
+          <div style="background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: 10px; padding: 14px;">
+            <div style="font-weight: 800; font-size: 0.88rem; color: #ef4444; margin-bottom: 6px;">
+              ⚠️ "Referenced Master does not exist in Company"
+            </div>
+            <p style="font-size: 0.82rem; color: var(--text-secondary); line-height: 1.5; margin: 0;">
+              <strong>Fix:</strong> Click <strong>Download Masters XML</strong> on this page and import it first in Tally via <code>Alt + O &gt; Masters</code>. Alternatively, on the Tally Exceptions screen, press <code>Alt + M</code> to map the missing ledger to your existing party account.
+            </p>
+          </div>
+          <div style="background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: 10px; padding: 14px;">
+            <div style="font-weight: 800; font-size: 0.88rem; color: #f59e0b; margin-bottom: 6px;">
+              ⚠️ "Date out of Financial Year Period"
+            </div>
+            <p style="font-size: 0.82rem; color: var(--text-secondary); line-height: 1.5; margin: 0;">
+              <strong>Fix:</strong> In TallyPrime, press <code>Alt + F2</code> (Change Period) on the Gateway of Tally, and set the dates to encompass the entire duration of your bank statement (e.g. 01-04-2025 to 31-03-2026).
+            </p>
+          </div>
+          <div style="background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: 10px; padding: 14px;">
+            <div style="font-weight: 800; font-size: 0.88rem; color: #6366f1; margin-bottom: 6px;">
+              ⚠️ "Voucher Number Duplicate or Invalid"
+            </div>
+            <p style="font-size: 0.82rem; color: var(--text-secondary); line-height: 1.5; margin: 0;">
+              <strong>Fix:</strong> In Tally, navigate to <code>Alter &gt; Voucher Type &gt; Payment / Receipt</code>. Under "Method of Voucher Numbering", set it to <strong>Automatic</strong> or set "Prevent duplicates" to <strong>No</strong>.
+            </p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
 
   <!-- SEO Frequently Asked Questions Section -->
   <section class="app-container" style="max-width: 900px; margin: 40px auto 20px; padding: 0 16px;">

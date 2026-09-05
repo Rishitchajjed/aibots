@@ -822,7 +822,108 @@
       100% { transform: scale(2.2); opacity: 0; }
     }
 
-    /* -------------------------------------------------------------
+        /* -------------------------------------------------------------
+       SCENE 4: WINNING CELEBRATION (Championship Trophy, Logo & Confetti)
+       ------------------------------------------------------------- */
+    .celebration-trophy-wrapper {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 25;
+    }
+    .mode-winner .celebration-trophy-wrapper {
+      display: flex;
+      animation: trophyZoomIn 0.65s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+    }
+    @keyframes trophyZoomIn {
+      0% { transform: translate(-50%, -50%) scale(0.3) rotate(-12deg); opacity: 0; }
+      100% { transform: translate(-50%, -50%) scale(1) rotate(0deg); opacity: 1; }
+    }
+
+    .winner-trophy-icon {
+      font-size: 4.2rem;
+      background: linear-gradient(135deg, #fef08a 0%, #eab308 50%, #ca8a04 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      filter: drop-shadow(0 0 25px rgba(234, 179, 8, 0.85));
+      animation: trophyGlowPulse 1.6s infinite alternate;
+    }
+    @keyframes trophyGlowPulse {
+      0% { filter: drop-shadow(0 0 15px rgba(234, 179, 8, 0.6)); }
+      100% { filter: drop-shadow(0 0 40px rgba(250, 204, 21, 1)); }
+    }
+
+    .trophy-logo-crown {
+      width: 48px;
+      height: 48px;
+      position: absolute;
+      top: -16px;
+      border-radius: 50%;
+      filter: drop-shadow(0 0 16px rgba(234, 179, 8, 0.95));
+      animation: crownLevitate 2s ease-in-out infinite alternate;
+    }
+    .trophy-logo-crown img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+    @keyframes crownLevitate {
+      0% { transform: translateY(0px) rotate(-4deg); }
+      100% { transform: translateY(-8px) rotate(4deg); }
+    }
+
+    .winner-confetti-box {
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      pointer-events: none;
+      display: none;
+      overflow: hidden;
+      z-index: 22;
+    }
+    .mode-winner .winner-confetti-box {
+      display: block;
+    }
+    .confetti-piece {
+      position: absolute;
+      width: 8px;
+      height: 14px;
+      border-radius: 2px;
+      opacity: 0.9;
+      animation: confettiFall 2.4s cubic-bezier(0.25, 1, 0.5, 1) infinite;
+    }
+    @keyframes confettiFall {
+      0% { transform: translateY(-20px) rotate(0deg); opacity: 1; }
+      100% { transform: translateY(210px) rotate(720deg); opacity: 0; }
+    }
+
+    .mode-winner .celebration-card {
+      border-color: #facc15;
+      box-shadow: 0 0 75px rgba(234, 179, 8, 0.5);
+    }
+    .mode-winner .celebration-badge {
+      background: rgba(234, 179, 8, 0.2);
+      color: #fde047;
+      border: 1px solid #eab308;
+    }
+    .mode-winner .celebration-title {
+      background: linear-gradient(135deg, #fef08a 0%, #facc15 50%, #f97316 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .mode-winner .stage-turf,
+    .mode-winner .boundary-rope,
+    .mode-winner .logo-ball-actor,
+    .mode-winner .wicket-set-wrapper {
+      display: none !important;
+    }
+
+
+/* -------------------------------------------------------------
        SCENE 3: WICKET FALL ANIMATION (Ball Crashes Stumps & Bails)
        ------------------------------------------------------------- */
     .mode-wicket .wicket-set-wrapper { display: block; }
@@ -1316,6 +1417,22 @@
         <div class="turf-bounce-ripple r1"></div>
         <div class="turf-bounce-ripple r2"></div>
 
+        <!-- Championship Trophy & Confetti for Winner -->
+        <div class="celebration-trophy-wrapper" id="winnerTrophy">
+          <div class="trophy-logo-crown">
+            <img src="logo.png" alt="AI Bots Champion Logo">
+          </div>
+          <i class="fas fa-trophy winner-trophy-icon"></i>
+        </div>
+        <div class="winner-confetti-box" id="winnerConfetti">
+          <div class="confetti-piece" style="left:12%; background:#facc15; animation-delay:0s;"></div>
+          <div class="confetti-piece" style="left:28%; background:#38bdf8; animation-delay:0.3s;"></div>
+          <div class="confetti-piece" style="left:45%; background:#ec4899; animation-delay:0.1s;"></div>
+          <div class="confetti-piece" style="left:62%; background:#10b981; animation-delay:0.4s;"></div>
+          <div class="confetti-piece" style="left:78%; background:#8b5cf6; animation-delay:0.2s;"></div>
+          <div class="confetti-piece" style="left:92%; background:#f97316; animation-delay:0.5s;"></div>
+        </div>
+
         <!-- Stumps & Bails for Wicket -->
         <div class="wicket-set-wrapper" id="wicketSet">
           <div class="stumps-container">
@@ -1430,6 +1547,20 @@
             osc.start(now + idx * 0.09);
             osc.stop(now + idx * 0.09 + 0.45);
           });
+        } else if (type === 'winner') {
+          // Triumphant victory fanfare brass chords
+          [261.63, 329.63, 392.00, 523.25, 659.25, 783.99, 1046.50].forEach((freq, idx) => {
+            const osc = cricAudioCtx.createOscillator();
+            const gain = cricAudioCtx.createGain();
+            osc.type = 'triangle';
+            osc.frequency.setValueAtTime(freq, now + idx * 0.08);
+            gain.gain.setValueAtTime(0.24, now + idx * 0.08);
+            gain.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.08 + 0.55);
+            osc.connect(gain);
+            gain.connect(cricAudioCtx.destination);
+            osc.start(now + idx * 0.08);
+            osc.stop(now + idx * 0.08 + 0.55);
+          });
         } else if (type === 'wicket') {
           // Wooden stump smash & dramatic crash
           const osc1 = cricAudioCtx.createOscillator();
@@ -1523,6 +1654,7 @@
       if (r === 6) triggerCelebration('six');
 
       checkOverTransition();
+      checkMatchVictoryCondition();
       saveMatchState();
       updateUI();
     }
@@ -1571,6 +1703,7 @@
       }
 
       checkOverTransition();
+      checkMatchVictoryCondition();
       saveMatchState();
       updateUI();
     }
@@ -1636,6 +1769,7 @@
         checkOverTransition();
       }
 
+      checkMatchVictoryCondition();
       saveMatchState();
       updateUI();
     }
@@ -1648,6 +1782,49 @@
           saveMatchState();
           updateUI();
         }, 1200);
+      }
+    }
+
+    
+    // Match Winning Condition Auto-Detection
+    function checkMatchVictoryCondition() {
+      if (matchState.currentInnings !== 2) return;
+      const inn1 = matchState.innings1;
+      const inn2 = matchState.innings2;
+      const target = inn1.runs + 1;
+      const maxBalls = matchState.maxOvers * 6;
+
+      // 1. Chasing team reaches target
+      if (inn2.runs >= target && !inn2.isCompleted) {
+        inn2.isCompleted = true;
+        const wicketsLeft = 10 - inn2.wickets;
+        const ballsLeft = Math.max(0, maxBalls - inn2.legalBalls);
+        const winner = matchState.teams.team2;
+        triggerCelebration('winner', {
+          title: `${winner.toUpperCase()} WINS! 🏆`,
+          sub: `${winner} won by ${wicketsLeft} wicket${wicketsLeft > 1 ? 's' : ''} (${ballsLeft} balls remaining)!`
+        });
+        saveMatchState();
+        return;
+      }
+
+      // 2. Defending team restricts chasing team
+      if ((inn2.wickets >= 10 || inn2.legalBalls >= maxBalls) && !inn2.isCompleted) {
+        inn2.isCompleted = true;
+        if (inn2.runs < target - 1) {
+          const margin = (target - 1) - inn2.runs;
+          const winner = matchState.teams.team1;
+          triggerCelebration('winner', {
+            title: `${winner.toUpperCase()} WINS! 🏆`,
+            sub: `${winner} won by ${margin} run${margin > 1 ? 's' : ''}!`
+          });
+        } else if (inn2.runs === target - 1) {
+          triggerCelebration('winner', {
+            title: `MATCH TIED! 🤝`,
+            sub: `Sensational match! Both teams finished on ${inn1.runs} runs!`
+          });
+        }
+        saveMatchState();
       }
     }
 
@@ -1665,6 +1842,7 @@
       matchState.innings1 = JSON.parse(JSON.stringify(lastState.innings1));
       matchState.innings2 = JSON.parse(JSON.stringify(lastState.innings2));
 
+      checkMatchVictoryCondition();
       saveMatchState();
       updateUI();
     }
@@ -1675,6 +1853,7 @@
       pushUndoSnapshot();
       matchState.currentInnings = innNum;
       matchState.historyViewingInnings = innNum;
+      checkMatchVictoryCondition();
       saveMatchState();
       updateUI();
     }
@@ -1702,6 +1881,7 @@
       const t2 = document.getElementById('team2Input').value.trim() || 'Team 2';
       matchState.teams.team1 = t1;
       matchState.teams.team2 = t2;
+      checkMatchVictoryCondition();
       saveMatchState();
       updateUI();
     }
@@ -1713,6 +1893,7 @@
       matchState.teams.team2 = tmp;
       document.getElementById('team1Input').value = matchState.teams.team1;
       document.getElementById('team2Input').value = matchState.teams.team2;
+      checkMatchVictoryCondition();
       saveMatchState();
       updateUI();
     }
@@ -1779,7 +1960,7 @@
     // UPGRADED CINEMATIC CELEBRATIONS (LOGO AS CRICKET BALL, 4, 6, & WICKET)
     // =========================================================================
     let celebrationTimer = null;
-    function triggerCelebration(mode) {
+    function triggerCelebration(mode, customData = null) {
       if (!matchState.settings.animations) return;
 
       const overlay = document.getElementById('celebrationOverlay');
@@ -1808,6 +1989,12 @@
         title.textContent = 'MAXIMUM SIX! 🚀';
         sub.textContent = `+6 RUNS! ${dist}m MONSTER SHOT OVER THE STADIUM ROOF!`;
         playAcousticChime('six');
+      } else if (mode === 'winner') {
+        card.classList.add('mode-winner');
+        badge.textContent = 'CHAMPIONS! 🏆';
+        title.textContent = (customData && customData.title) ? customData.title : 'VICTORY! 🏆';
+        sub.textContent = (customData && customData.sub) ? customData.sub : 'MATCH CONCLUDED WITH A THRILLING WIN!';
+        playAcousticChime('winner');
       } else if (mode === 'wicket') {
         card.classList.add('mode-wicket');
         badge.textContent = 'WICKET GONE! 🎯';

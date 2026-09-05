@@ -416,7 +416,7 @@ body {
   background: var(--bg-secondary);
   border-color: var(--primary);
   color: var(--text-primary);
-  box-shadow: var(--shadow-sm);
+  box-shadow: 0 0 16px var(--primary-glow);
 }
 
 .kbd-shortcut {
@@ -625,11 +625,22 @@ body {
   height: auto;
   cursor: grab;
   filter: drop-shadow(0 10px 20px rgba(0, 0, 0, 0.15));
-  transition: transform 0.2s ease;
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  -webkit-touch-callout: none !important;
+  -webkit-user-drag: none !important;
+  touch-action: none !important;
+  pointer-events: auto;
+  will-change: transform;
+  transform-origin: center center;
 }
 
-.hero-interactive-logo:active {
+.hero-interactive-logo:active,
+.hero-interactive-logo.is-dragging {
   cursor: grabbing;
+  filter: drop-shadow(0 18px 25px rgba(99, 102, 241, 0.35));
 }
 
 .hero-logo-hint {
@@ -1526,7 +1537,44 @@ body {
 }
 
 /* Responsive Media Queries */
+/* Modern 3D Card Depth & Surface Inset Highlights */
+[data-theme="dark"] .tool-card,
+[data-theme="dark"] .flagship-card,
+[data-theme="dark"] .feature-box,
+[data-theme="dark"] .hero-quick-dock,
+[data-theme="dark"] .metrics-bar {
+  box-shadow: 0 1px 0 0 rgba(255, 255, 255, 0.08) inset, var(--shadow-md);
+}
+
+[data-theme="dark"] .tool-card:hover,
+[data-theme="dark"] .flagship-card:hover {
+  box-shadow: 0 1px 0 0 rgba(255, 255, 255, 0.16) inset, 0 14px 28px -4px rgba(0, 0, 0, 0.7), 0 0 22px rgba(99, 102, 241, 0.22);
+}
+
 @media (max-width: 768px) {
+  /* App-Store style horizontal category scroll ribbon on mobile */
+  .filter-nav {
+    display: flex;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    justify-content: flex-start;
+    padding: 6px 16px 14px;
+    margin: 0 -16px 28px;
+    gap: 8px;
+    mask-image: linear-gradient(to right, black calc(100% - 24px), transparent 100%);
+    -webkit-mask-image: linear-gradient(to right, black calc(100% - 24px), transparent 100%);
+  }
+  .filter-nav::-webkit-scrollbar {
+    display: none;
+  }
+  .filter-btn {
+    flex-shrink: 0;
+    white-space: nowrap;
+    padding: 7px 14px;
+    font-size: 0.85rem;
+  }
   .hero-section { padding: 40px 0 20px; }
   .tool-card-container { padding: 24px 18px; }
   .features-grid { grid-template-columns: 1fr; }
@@ -2233,7 +2281,7 @@ body {
     <!-- Hero Section -->
     <section class="hero-section">
       <div class="hero-logo-wrapper">
-        <img src="logo.png" alt="AI Bots Logo" class="hero-interactive-logo" id="interactive-logo" width="90" height="90" style="width: 90px; height: 90px; object-fit: contain; aspect-ratio: 1/1;" title="Drag & throw me!" fetchpriority="high" loading="eager">
+        <img src="logo.png" alt="AI Bots Logo" class="hero-interactive-logo" id="interactive-logo" width="90" height="90" style="width: 90px; height: 90px; object-fit: contain; aspect-ratio: 1/1;" title="Drag & throw me!" fetchpriority="high" loading="eager" draggable="false" oncontextmenu="return false;">
         <div class="hero-logo-hint"><i class="fas fa-hand-pointer"></i> Drag & throw the logo with physics!</div>
       </div>
 

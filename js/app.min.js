@@ -425,6 +425,30 @@ function playSound(type = 'click') {
       gain.connect(audioCtx.destination);
       osc.start(now);
       osc.stop(now + 0.04);
+    } else if (type === 'pop') {
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(460, now);
+      osc.frequency.exponentialRampToValueAtTime(920, now + 0.05);
+      gain.gain.setValueAtTime(0.15, now);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.05);
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+      osc.start(now);
+      osc.stop(now + 0.05);
+    } else if (type === 'bounce') {
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.type = 'triangle';
+      osc.frequency.setValueAtTime(260, now);
+      osc.frequency.exponentialRampToValueAtTime(120, now + 0.08);
+      gain.gain.setValueAtTime(0.18, now);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.08);
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+      osc.start(now);
+      osc.stop(now + 0.08);
     } else if (type === 'four') {
       // Upbeat boundary fanfare chord
       [523.25, 659.25, 783.99, 1046.50].forEach((freq, i) => {
@@ -752,59 +776,274 @@ function initDropzones() {
 }
 
 /* ==========================================================================
-   7. Interactive Bouncing / Throw Logo (Original Physics Feature)
+   7. Interactive Bouncing / Throw Logo (Advanced Physics Simulation)
    ========================================================================== */
 function initInteractiveLogo() {
   const logoWrapper = document.querySelector('.hero-interactive-logo');
   if (!logoWrapper) return;
 
+  // Prevent default contextmenu and ghost image drag
+  logoWrapper.addEventListener('contextmenu', (e) => e.preventDefault());
+  logoWrapper.addEventListener('dragstart', (e) => e.preventDefault());
+
   let isDragging = false;
-  let startX, startY;
-  let offsetX = 0, offsetY = 0;
-  let startTime;
+  let isFlying = false;
+  let animId = null;
+
+  let posX = 0;
+  let posY = 0;
+  let vx = 0;
+  let vy = 0;
+  let rot = 0;
+  let vRot = 0;
+
+  let startClientX = 0;
+  let startClientY = 0;
+  let startPosX = 0;
+  let startPosY = 0;
+  let totalDistance = 0;
+
+  // History buffer for velocity calculation
+  let history = [];
+
+  function getEventCoords(e) {
+    if (e.touches && e.touches.length > 0) {
+      return { x: e.touches[0].clientX, y: e.touches[0].clientY };
+    }
+    if (e.changedTouches && e.changedTouches.length > 0) {
+      return { x: e.changedTouches[0].clientX, y: e.changedTouches[0].clientY };
+    }
+    return { x: e.clientX, y: e.clientY };
+  }
 
   function startDrag(e) {
+    // Crucial: prevent iOS/Android long-press download dialog and ghost drag
+    if (e.cancelable) e.preventDefault();
+    e.stopPropagation();
+
+    // Catch in mid-air if already flying
+    if (animId) {
+      cancelAnimationFrame(animId);
+      animId = null;
+    }
+    isFlying = false;
     isDragging = true;
-    startTime = Date.now();
-    startX = e.type === 'mousedown' ? e.clientX : e.touches[0].clientX;
-    startY = e.type === 'mousedown' ? e.clientY : e.touches[0].clientY;
+    totalDistance = 0;
+
+    const coords = getEventCoords(e);
+    startClientX = coords.x;
+    startClientY = coords.y;
+    startPosX = posX;
+    startPosY = posY;
+
+    history = [{ x: coords.x, y: coords.y, time: performance.now() }];
+
+    logoWrapper.classList.add('is-dragging');
     logoWrapper.style.transition = 'none';
+
+    try {
+      if (typeof playSound === 'function') playSound('pop');
+      if (navigator.vibrate) navigator.vibrate(10);
+    } catch (_) {}
   }
 
-  function drag(e) {
+  function onDrag(e) {
     if (!isDragging) return;
-    const currentX = e.type === 'mousemove' ? e.clientX : e.touches[0].clientX;
-    const currentY = e.type === 'mousemove' ? e.clientY : e.touches[0].clientY;
-    offsetX = currentX - startX;
-    offsetY = currentY - startY;
-    logoWrapper.style.transform = `translate(${offsetX}px, ${offsetY}px) scale(1.1) rotate(${offsetX * 0.1}deg)`;
+    if (e.cancelable) e.preventDefault();
+
+    const coords = getEventCoords(e);
+    const dx = coords.x - startClientX;
+    const dy = coords.y - startClientY;
+
+    totalDistance += Math.hypot(dx - (posX - startPosX), dy - (posY - startPosY));
+
+    posX = startPosX + dx;
+    posY = startPosY + dy;
+
+    // Track history for velocity calculation (keep last 5 entries)
+    const now = performance.now();
+    history.push({ x: coords.x, y: coords.y, time: now });
+    if (history.length > 5) history.shift();
+
+    // Tilt based on horizontal drag motion
+    const recentXDiff = history.length > 1 ? coords.x - history[0].x : 0;
+    const dragTilt = Math.max(-25, Math.min(25, recentXDiff * 0.8));
+
+    logoWrapper.style.transform = `translate3d(${posX.toFixed(1)}px, ${posY.toFixed(1)}px, 0) scale(1.15) rotate(${dragTilt.toFixed(1)}deg)`;
   }
 
-  function endDrag() {
+  function endDrag(e) {
     if (!isDragging) return;
     isDragging = false;
-    const elapsed = Math.max((Date.now() - startTime) / 1000, 0.1);
-    const velocityX = offsetX / elapsed;
-    const velocityY = offsetY / elapsed;
+    logoWrapper.classList.remove('is-dragging');
 
-    playSound('pop');
-    logoWrapper.style.transition = 'transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
-    logoWrapper.style.transform = `translate(${offsetX + velocityX * 0.1}px, ${offsetY + velocityY * 0.1}px) rotate(${offsetX * 0.2}deg)`;
+    // Calculate release velocity from history buffer
+    let computedVx = 0;
+    let computedVy = 0;
 
-    setTimeout(() => {
-      logoWrapper.style.transition = 'transform 0.8s cubic-bezier(0.34, 1.56, 0.64, 1)';
-      logoWrapper.style.transform = 'translate(0, 0) scale(1) rotate(0deg)';
-    }, 400);
+    if (history.length >= 2) {
+      const oldest = history[0];
+      const latest = history[history.length - 1];
+      const dt = Math.max(latest.time - oldest.time, 10);
+      computedVx = ((latest.x - oldest.x) / dt) * 16.67; // px per ~60fps frame
+      computedVy = ((latest.y - oldest.y) / dt) * 16.67;
+    }
+
+    const speed = Math.hypot(computedVx, computedVy);
+
+    // If it was just a tap or tiny drag (under 8px)
+    if (totalDistance < 8 || speed < 0.8) {
+      handleTap();
+      return;
+    }
+
+    // Cap maximum throw speed so it stays within control
+    const maxSpeed = 35;
+    if (speed > maxSpeed) {
+      computedVx = (computedVx / speed) * maxSpeed;
+      computedVy = (computedVy / speed) * maxSpeed;
+    }
+
+    vx = computedVx;
+    vy = computedVy;
+    rot = Math.max(-20, Math.min(20, vx * 1.5));
+    vRot = vx * 0.4;
+
+    try {
+      if (typeof playSound === 'function') playSound('pop');
+    } catch (_) {}
+
+    isFlying = true;
+    startPhysicsLoop();
   }
 
+  function handleTap() {
+    // Playful 360-degree flip and spring bounce on tap
+    try {
+      if (typeof playSound === 'function') playSound('pop');
+      if (navigator.vibrate) navigator.vibrate([10, 30, 10]);
+    } catch (_) {}
+
+    logoWrapper.style.transition = 'transform 0.65s cubic-bezier(0.34, 1.56, 0.64, 1)';
+    logoWrapper.style.transform = 'translate3d(0, 0, 0) scale(1.22) rotate(360deg)';
+
+    setTimeout(() => {
+      posX = 0;
+      posY = 0;
+      logoWrapper.style.transition = 'transform 0.3s ease-out';
+      logoWrapper.style.transform = 'translate3d(0, 0, 0) scale(1) rotate(0deg)';
+    }, 650);
+  }
+
+  function startPhysicsLoop() {
+    let flightStartTime = performance.now();
+    let squishX = 1;
+    let squishY = 1;
+
+    function loop() {
+      if (!isFlying) return;
+
+      const elapsed = performance.now() - flightStartTime;
+      const rect = logoWrapper.getBoundingClientRect();
+      const padding = 12;
+
+      let bounced = false;
+
+      // Viewport collision checks (elastic restitution = 0.72)
+      if (rect.left + vx < padding) {
+        vx = Math.abs(vx) * 0.72;
+        vRot = (Math.random() - 0.5) * 10;
+        bounced = true;
+        squishX = 0.85;
+        squishY = 1.15;
+      } else if (rect.right + vx > window.innerWidth - padding) {
+        vx = -Math.abs(vx) * 0.72;
+        vRot = (Math.random() - 0.5) * 10;
+        bounced = true;
+        squishX = 0.85;
+        squishY = 1.15;
+      }
+
+      if (rect.top + vy < padding) {
+        vy = Math.abs(vy) * 0.72;
+        bounced = true;
+        squishX = 1.15;
+        squishY = 0.85;
+      } else if (rect.bottom + vy > window.innerHeight - padding) {
+        vy = -Math.abs(vy) * 0.72;
+        bounced = true;
+        squishX = 1.15;
+        squishY = 0.85;
+      }
+
+      if (bounced) {
+        try {
+          if (typeof playSound === 'function') playSound('bounce');
+          if (navigator.vibrate) navigator.vibrate(12);
+        } catch (_) {}
+      }
+
+      // Restore squish smoothly
+      squishX += (1 - squishX) * 0.15;
+      squishY += (1 - squishY) * 0.15;
+
+      // Update position and rotation
+      posX += vx;
+      posY += vy;
+      rot += vRot;
+
+      // Air resistance damping
+      vx *= 0.982;
+      vy *= 0.982;
+      vRot *= 0.96;
+
+      const currentSpeed = Math.hypot(vx, vy);
+      const distFromHome = Math.hypot(posX, posY);
+
+      // Magnetic return spring to home dock after slowing down or after 1.8 seconds of flight
+      if (currentSpeed < 3 || elapsed > 1800) {
+        const springK = 0.065;
+        const springDamping = 0.84;
+        const fx = -posX * springK;
+        const fy = -posY * springK;
+
+        vx = (vx + fx) * springDamping;
+        vy = (vy + fy) * springDamping;
+        rot *= 0.9;
+        vRot = 0;
+      }
+
+      logoWrapper.style.transform = `translate3d(${posX.toFixed(1)}px, ${posY.toFixed(1)}px, 0) rotate(${rot.toFixed(1)}deg) scale(${squishX.toFixed(2)}, ${squishY.toFixed(2)})`;
+
+      // Settle condition
+      if (distFromHome < 1.5 && currentSpeed < 0.25 && elapsed > 500) {
+        isFlying = false;
+        animId = null;
+        posX = 0;
+        posY = 0;
+        rot = 0;
+        logoWrapper.style.transition = 'transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)';
+        logoWrapper.style.transform = 'translate3d(0, 0, 0) scale(1) rotate(0deg)';
+        return;
+      }
+
+      animId = requestAnimationFrame(loop);
+    }
+
+    animId = requestAnimationFrame(loop);
+  }
+
+  // Pointer / Touch / Mouse bindings with non-passive touch prevention
   logoWrapper.addEventListener('mousedown', startDrag);
-  window.addEventListener('mousemove', drag);
+  window.addEventListener('mousemove', onDrag);
   window.addEventListener('mouseup', endDrag);
 
-  logoWrapper.addEventListener('touchstart', startDrag, { passive: true });
-  window.addEventListener('touchmove', drag, { passive: true });
+  logoWrapper.addEventListener('touchstart', startDrag, { passive: false });
+  window.addEventListener('touchmove', onDrag, { passive: false });
   window.addEventListener('touchend', endDrag);
+  window.addEventListener('touchcancel', endDrag);
 }
+
 
 /* ==========================================================================
    8. Global Keyboard Shortcuts & Cheatsheet

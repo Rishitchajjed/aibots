@@ -2,7 +2,7 @@
   "admin_password_hash": "25db1abcf4f86ca6a3f1927a722063f35c46ae2986e64fe56ae2241463f6d0c0",
   "global_maintenance": false,
   "disabled_tools": [],
-  "featured_tool": "backremover",
+  "featured_tool": "bank-statement-converter",
   "announcement": {
     "enabled": false,
     "text": "",

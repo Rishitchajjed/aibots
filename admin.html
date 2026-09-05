@@ -1483,7 +1483,7 @@ const AI_BOTS_TOOLS = [
       localStorage.setItem('aibots_featured_tool', val);
       renderToolsRegistry();
       showToast(val ? `Featured Tool set to: ${val}` : 'Featured Tool cleared', 'success');
-      syncConfigToCloudOnline();
+      syncConfigToCloudOnline(true);
     }
 
     function filterToolsList() {
@@ -1935,6 +1935,7 @@ const AI_BOTS_TOOLS = [
 
       for (let i = 0; i < endpoints.length; i++) {
         const ep = endpoints[i];
+        const isPrimaryCloud = (i === 0);
         try {
           const res = await fetch(ep, { cache: 'no-store' });
           if (res.ok) {
@@ -1953,8 +1954,15 @@ const AI_BOTS_TOOLS = [
               if (cloud.disabled_tools !== undefined) {
                 localStorage.setItem('aibots_disabled_tools', JSON.stringify(cloud.disabled_tools));
               }
-              if (cloud.featured_tool !== undefined) {
-                localStorage.setItem('aibots_featured_tool', cloud.featured_tool);
+              if (isPrimaryCloud) {
+                if (cloud.featured_tool !== undefined) {
+                  localStorage.setItem('aibots_featured_tool', cloud.featured_tool || '');
+                }
+              } else {
+                // Secondary static fallback: only populate if not already present in admin localStorage
+                if (cloud.featured_tool !== undefined && localStorage.getItem('aibots_featured_tool') === null) {
+                  localStorage.setItem('aibots_featured_tool', cloud.featured_tool || '');
+                }
               }
               if (cloud.announcement && Object.keys(cloud.announcement).length > 0) {
                 localStorage.setItem('aibots_global_announcement', JSON.stringify(cloud.announcement));

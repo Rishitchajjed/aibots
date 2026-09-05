@@ -1198,34 +1198,6 @@ window.updateDonationQR = function(amt) {
       const clicks = JSON.parse(localStorage.getItem('aibots_tool_click_analytics') || '{}');
       clicks[toolId] = (Number(clicks[toolId]) || 0) + 1;
       localStorage.setItem('aibots_tool_click_analytics', JSON.stringify(clicks));
-
-      const activeHash = localStorage.getItem('aibots_admin_master_hash') || "25db1abcf4f86ca6a3f1927a722063f35c46ae2986e64fe56ae2241463f6d0c0";
-      const payload = {
-        action: 'record_click',
-        tool_id: toolId,
-        admin_password_hash: activeHash,
-        global_maintenance: localStorage.getItem('aibots_global_maintenance') === 'true',
-        disabled_tools: JSON.parse(localStorage.getItem('aibots_disabled_tools') || '[]'),
-        featured_tool: localStorage.getItem('aibots_featured_tool') || '',
-        announcement: JSON.parse(localStorage.getItem('aibots_global_announcement') || '{}'),
-        welcome_modal: JSON.parse(localStorage.getItem('aibots_welcome_modal_config') || '{}'),
-        festive_effects: JSON.parse(localStorage.getItem('aibots_festive_effects') || '{}'),
-        upi_config: JSON.parse(localStorage.getItem('aibots_custom_upi_config') || '{"id":"9384361008@mbk","name":"Rishit Chajjed","chips":"20, 50, 100, 250, 500"}'),
-        analytics_clicks: clicks,
-        analytics_searches: JSON.parse(localStorage.getItem('aibots_search_query_log') || '[]'),
-        updated_at: new Date().toISOString()
-      };
-
-      const cloudApi = localStorage.getItem('aibots_custom_cloud_endpoint') || GOOGLE_DRIVE_CLOUD_API;
-
-      // Push to Google Drive 24/7 Cloud API with keepalive
-      fetch(cloudApi, {
-        method: 'POST',
-        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-        body: JSON.stringify(payload),
-        mode: 'no-cors',
-        keepalive: true
-      }).catch(() => {});
     } catch(e) {}
   };
 
@@ -1456,8 +1428,15 @@ window.updateDonationQR = function(amt) {
             if (cloud.disabled_tools !== undefined) {
               localStorage.setItem('aibots_disabled_tools', JSON.stringify(cloud.disabled_tools));
             }
-            if (cloud.featured_tool) {
-              localStorage.setItem('aibots_featured_tool', cloud.featured_tool);
+            if (isPrimaryCloud) {
+              if (cloud.featured_tool !== undefined) {
+                localStorage.setItem('aibots_featured_tool', cloud.featured_tool || '');
+              }
+            } else {
+              // Static fallbacks (config.json) should NEVER overwrite an already-set featured tool
+              if (cloud.featured_tool !== undefined && localStorage.getItem('aibots_featured_tool') === null) {
+                localStorage.setItem('aibots_featured_tool', cloud.featured_tool || '');
+              }
             }
             if (cloud.announcement && Object.keys(cloud.announcement).length > 0) {
               localStorage.setItem('aibots_global_announcement', JSON.stringify(cloud.announcement));

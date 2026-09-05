@@ -881,6 +881,20 @@
             <div style="font-size: 0.85rem; color: var(--text-secondary);">Loading global tool rankings...</div>
           </div>
         </div>
+
+        <!-- Live Visitor Search Queries Card -->
+        <div class="admin-card" style="margin-top: 20px;">
+          <div class="admin-card-header">
+            <div>
+              <h2 class="admin-card-title"><i class="fas fa-magnifying-glass-chart" style="color: #3b82f6;"></i> Live Visitor Search Queries</h2>
+              <span style="font-size: 0.82rem; color: var(--text-secondary);">Real-time keywords & features searched by visitors in the homepage search bar and Command Palette.</span>
+            </div>
+            <button onclick="clearSearchQueriesData()" class="btn btn-secondary btn-sm"><i class="fas fa-trash"></i> Clear Searches</button>
+          </div>
+          <div id="visitorSearchQueriesContainer" style="display: flex; flex-wrap: wrap; gap: 10px; padding: 12px 0; min-height: 48px; align-items: center;">
+            <div style="font-size: 0.85rem; color: var(--text-secondary);">Loading search queries...</div>
+          </div>
+        </div>
       </div>
 
       <!-- TAB 7: Security & Master Password -->
@@ -1761,6 +1775,33 @@ const AI_BOTS_TOOLS = [
           }).join('');
         }
       }
+
+      // Visitor Search Queries Feed
+      const searchBox = document.getElementById('visitorSearchQueriesContainer');
+      if (searchBox) {
+        const searches = JSON.parse(localStorage.getItem('aibots_search_query_log') || '[]');
+        if (searches.length === 0) {
+          searchBox.innerHTML = '<div style="font-size: 0.88rem; color: var(--text-secondary); text-align: center; width: 100%; padding: 20px;">No search queries logged yet in cloud telemetry.</div>';
+        } else {
+          searchBox.innerHTML = searches.map(q => {
+            const clean = String(q).replace(/[&<>"']/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[m]);
+            return `
+              <span style="display: inline-flex; align-items: center; gap: 8px; background: var(--bg-tertiary); border: 1px solid var(--border-color); border-radius: 999px; padding: 7px 14px; font-size: 0.85rem; font-weight: 700; color: var(--text-primary); box-shadow: var(--shadow-sm); transition: transform 0.15s;" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='translateY(0)'">
+                <i class="fas fa-magnifying-glass" style="color: var(--primary); font-size: 0.8rem;"></i>
+                <span>${clean}</span>
+              </span>
+            `;
+          }).join('');
+        }
+      }
+    }
+
+    function clearSearchQueriesData() {
+      if (!confirm('Are you sure you want to clear search query logs?')) return;
+      localStorage.removeItem('aibots_search_query_log');
+      renderAnalytics();
+      showToast('Search query logs cleared.', 'info');
+      syncConfigToCloudOnline(true);
     }
 
     function clearAnalyticsData() {
@@ -1769,7 +1810,7 @@ const AI_BOTS_TOOLS = [
       localStorage.removeItem('aibots_search_query_log');
       renderAnalytics();
       showToast('Worldwide analytics reset.', 'info');
-      syncConfigToCloudOnline();
+      syncConfigToCloudOnline(true);
     }
 
     // ==========================================

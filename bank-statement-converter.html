@@ -2194,6 +2194,18 @@
       a.click();
       document.body.removeChild(a);
       URL.revokeObjectURL(url);
+
+      // Polite After-Success Coffee Modal
+      setTimeout(() => {
+        if (typeof window.showSuccessAppreciationModal === 'function') {
+          window.showSuccessAppreciationModal({
+            toolName: 'tally_converter',
+            savedTime: '30 minutes',
+            title: 'Saved you 30 minutes of work? ☕',
+            message: 'Consider buying Rishit a coffee (₹20 or ₹50) to keep AI Bots 100% free & ad-light!'
+          });
+        }
+      }, 900);
     }
 
     function escapeXml(str) {

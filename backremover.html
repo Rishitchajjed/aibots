@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <link rel="icon" href="logo.png" type="image/png">
@@ -814,6 +814,18 @@
         a.click();
         URL.revokeObjectURL(url);
         showToast(`Downloaded Full HD ${ext.toUpperCase()} (${w}×${h}px)!`, 'success');
+
+        // Polite After-Success Coffee Modal
+        setTimeout(() => {
+          if (typeof window.showSuccessAppreciationModal === 'function') {
+            window.showSuccessAppreciationModal({
+              toolName: 'backremover',
+              savedTime: '15 minutes',
+              title: 'Saved you 15 minutes of work? ☕',
+              message: 'Consider buying Rishit a coffee (₹20 or ₹50) to keep AI Bots 100% free & ad-light!'
+            });
+          }
+        }, 900);
       }, mime, quality);
     }
 

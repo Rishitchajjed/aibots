@@ -1,0 +1,3556 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+  <link rel="dns-prefetch" href="https://cdnjs.cloudflare.com">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+  <!-- Hidden private page: Do NOT index -->
+  <meta name="robots" content="noindex, nofollow, noarchive, nosnippet">
+  
+  <title>AI Bots Private Ledger & Accounting Notes</title>
+  <meta name="description" content="Private local bookkeeping, daily spending & earnings calculator, accounts manager, pending khata, and loan tracker.">
+  <link rel="icon" href="logo.png" type="image/png">
+
+  <!-- FontAwesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="css/theme.css">
+
+  <style>
+    :root {
+      --primary: #6366f1;
+      --primary-hover: #4f46e5;
+      --income: #10b981;
+      --income-bg: rgba(16, 185, 129, 0.12);
+      --expense: #f43f5e;
+      --expense-bg: rgba(244, 63, 94, 0.12);
+      --transfer: #38bdf8;
+      --transfer-bg: rgba(56, 189, 248, 0.12);
+      --pending: #f59e0b;
+      --pending-bg: rgba(245, 158, 11, 0.12);
+      --card-bg: rgba(17, 24, 39, 0.75);
+      --card-border: rgba(255, 255, 255, 0.08);
+      --card-hover: rgba(31, 41, 55, 0.85);
+    }
+
+    [data-theme="light"] {
+      --card-bg: rgba(255, 255, 255, 0.9);
+      --card-border: rgba(0, 0, 0, 0.08);
+      --card-hover: rgba(241, 245, 249, 0.95);
+      --income-bg: rgba(16, 185, 129, 0.15);
+      --expense-bg: rgba(244, 63, 94, 0.15);
+    }
+
+    body {
+      padding-bottom: 90px;
+    }
+
+    /* Secret Header & Top Bar */
+    .ledger-header {
+      background: var(--bg-glass);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border-color);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      padding: 12px 0;
+    }
+
+    .header-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .brand-area {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .brand-area img {
+      width: 36px;
+      height: 36px;
+      border-radius: 8px;
+    }
+
+    .brand-title {
+      font-size: 1.15rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .badge-private {
+      background: rgba(239, 68, 68, 0.15);
+      color: #ef4444;
+      font-size: 0.7rem;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 999px;
+      letter-spacing: 0.5px;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .btn-stealth {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border-color);
+      color: var(--text-primary);
+      padding: 6px 12px;
+      border-radius: var(--radius-md);
+      font-size: 0.82rem;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: var(--transition);
+    }
+    .btn-stealth:hover {
+      border-color: var(--primary);
+    }
+    .btn-stealth.active {
+      background: var(--primary-light);
+      color: var(--primary);
+      border-color: var(--primary);
+    }
+
+    /* Currency Select */
+    .currency-pill {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border-color);
+      color: var(--text-primary);
+      border-radius: var(--radius-md);
+      padding: 6px 10px;
+      font-size: 0.82rem;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    /* Navigation Tabs */
+    .nav-tabs-bar {
+      display: flex;
+      gap: 8px;
+      margin: 20px 0;
+      overflow-x: auto;
+      padding-bottom: 6px;
+      scrollbar-width: none;
+    }
+    .nav-tabs-bar::-webkit-scrollbar {
+      display: none;
+    }
+
+    .tab-pill {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      color: var(--text-secondary);
+      padding: 10px 18px;
+      border-radius: var(--radius-lg);
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      white-space: nowrap;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: var(--transition);
+    }
+
+    .tab-pill:hover {
+      color: var(--text-primary);
+      border-color: var(--border-color-hover);
+      transform: translateY(-1px);
+    }
+
+    .tab-pill.active {
+      background: var(--primary);
+      color: #ffffff;
+      border-color: var(--primary);
+      box-shadow: 0 4px 14px var(--primary-glow);
+    }
+
+    /* Mobile Bottom Bar */
+    .mobile-bottom-nav {
+      display: none;
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 64px;
+      background: var(--bg-glass);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-top: 1px solid var(--border-color);
+      z-index: 99;
+      justify-content: space-around;
+      align-items: center;
+      padding: 0 10px;
+    }
+
+    .bottom-nav-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 3px;
+      color: var(--text-muted);
+      font-size: 0.7rem;
+      font-weight: 600;
+      background: none;
+      border: none;
+      cursor: pointer;
+      flex: 1;
+      padding: 6px 0;
+      transition: var(--transition);
+    }
+    .bottom-nav-item i {
+      font-size: 1.15rem;
+    }
+    .bottom-nav-item.active {
+      color: var(--primary);
+    }
+
+    @media (max-width: 768px) {
+      .mobile-bottom-nav {
+        display: flex;
+      }
+      .nav-tabs-bar {
+        display: none;
+      }
+    }
+
+    /* Stats Grid */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    .stat-card {
+      background: var(--card-bg);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius-lg);
+      padding: 18px 20px;
+      position: relative;
+      overflow: hidden;
+      transition: var(--transition);
+    }
+
+    .stat-card:hover {
+      border-color: var(--border-color-hover);
+      transform: translateY(-2px);
+    }
+
+    .stat-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: var(--card-accent, var(--primary));
+    }
+
+    .stat-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      color: var(--text-muted);
+      font-size: 0.82rem;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+
+    .stat-icon {
+      width: 32px;
+      height: 32px;
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--icon-bg, var(--primary-light));
+      color: var(--card-accent, var(--primary));
+      font-size: 0.95rem;
+    }
+
+    .stat-amount {
+      font-size: 1.7rem;
+      font-weight: 800;
+      color: var(--text-primary);
+      letter-spacing: -0.5px;
+      display: flex;
+      align-items: baseline;
+      gap: 4px;
+    }
+
+    .stat-sub {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      margin-top: 6px;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    /* Cards & Containers */
+    .panel {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius-xl);
+      padding: 22px;
+      margin-bottom: 24px;
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+    }
+
+    .panel-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 18px;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .panel-title {
+      font-size: 1.15rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .panel-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    /* Quick Add Transaction Box */
+    .quick-add-box {
+      background: linear-gradient(135deg, rgba(99, 102, 241, 0.08) 0%, rgba(16, 185, 129, 0.05) 100%);
+      border: 1px solid rgba(99, 102, 241, 0.2);
+      border-radius: var(--radius-xl);
+      padding: 20px;
+      margin-bottom: 24px;
+    }
+
+    .type-switcher {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 14px;
+    }
+
+    .type-btn {
+      flex: 1;
+      padding: 10px;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border-color);
+      background: var(--bg-secondary);
+      color: var(--text-secondary);
+      font-size: 0.88rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: var(--transition);
+    }
+
+    .type-btn[data-type="expense"].active {
+      background: var(--expense);
+      color: #ffffff;
+      border-color: var(--expense);
+      box-shadow: 0 4px 12px rgba(244, 63, 94, 0.35);
+    }
+    .type-btn[data-type="income"].active {
+      background: var(--income);
+      color: #ffffff;
+      border-color: var(--income);
+      box-shadow: 0 4px 12px rgba(16, 185, 129, 0.35);
+    }
+    .type-btn[data-type="transfer"].active {
+      background: var(--transfer);
+      color: #ffffff;
+      border-color: var(--transfer);
+      box-shadow: 0 4px 12px rgba(56, 189, 248, 0.35);
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .form-label {
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .input-field, .select-field {
+      width: 100%;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      color: var(--text-primary);
+      padding: 10px 14px;
+      border-radius: var(--radius-md);
+      font-size: 0.92rem;
+      outline: none;
+      transition: var(--transition);
+      font-family: inherit;
+    }
+
+    .input-field:focus, .select-field:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px var(--primary-glow);
+    }
+
+    .amount-calc-wrap {
+      position: relative;
+    }
+
+    .calc-indicator {
+      position: absolute;
+      right: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 0.72rem;
+      color: var(--text-muted);
+      background: var(--bg-tertiary);
+      padding: 2px 6px;
+      border-radius: 4px;
+      pointer-events: none;
+    }
+
+    .quick-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 6px;
+    }
+
+    .quick-chip {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      color: var(--text-secondary);
+      padding: 4px 10px;
+      border-radius: var(--radius-full);
+      font-size: 0.75rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .quick-chip:hover {
+      border-color: var(--primary);
+      color: var(--primary);
+    }
+
+    .btn-submit-tx {
+      width: 100%;
+      background: var(--primary);
+      color: #ffffff;
+      border: none;
+      padding: 12px;
+      border-radius: var(--radius-md);
+      font-size: 0.95rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: var(--transition);
+      box-shadow: 0 4px 14px var(--primary-glow);
+    }
+
+    .btn-submit-tx:hover {
+      background: var(--primary-hover);
+      transform: translateY(-1px);
+    }
+
+    /* Accounts Cards */
+    .accounts-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 16px;
+    }
+
+    .account-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius-xl);
+      padding: 20px;
+      position: relative;
+      transition: var(--transition);
+    }
+
+    .account-card:hover {
+      border-color: var(--border-color-hover);
+      transform: translateY(-2px);
+    }
+
+    .account-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 12px;
+    }
+
+    .account-info {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .account-badge-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: var(--radius-lg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.25rem;
+      color: #ffffff;
+    }
+
+    .account-name {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+
+    .account-type {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      text-transform: capitalize;
+    }
+
+    .account-balance-area {
+      margin: 16px 0;
+    }
+
+    .account-balance-label {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      font-weight: 600;
+    }
+
+    .account-balance {
+      font-size: 1.85rem;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+      color: var(--text-primary);
+    }
+
+    /* Granular Increment/Decrement Controls */
+    .stepper-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      padding: 8px;
+    }
+
+    .btn-step-minus, .btn-step-plus {
+      flex: 1;
+      padding: 8px 12px;
+      border-radius: var(--radius-md);
+      border: none;
+      font-size: 0.85rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      transition: var(--transition);
+    }
+
+    .btn-step-minus {
+      background: rgba(244, 63, 94, 0.15);
+      color: #f43f5e;
+    }
+    .btn-step-minus:hover {
+      background: #f43f5e;
+      color: #ffffff;
+    }
+
+    .btn-step-plus {
+      background: rgba(16, 185, 129, 0.15);
+      color: #10b981;
+    }
+    .btn-step-plus:hover {
+      background: #10b981;
+      color: #ffffff;
+    }
+
+    .btn-card-menu {
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      cursor: pointer;
+      font-size: 1rem;
+      padding: 6px;
+      border-radius: 6px;
+    }
+    .btn-card-menu:hover {
+      color: var(--text-primary);
+      background: var(--bg-tertiary);
+    }
+
+    /* Transactions Timeline */
+    .filters-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 16px;
+      flex-wrap: wrap;
+    }
+
+    .search-input-wrap {
+      flex: 1;
+      min-width: 220px;
+      position: relative;
+    }
+
+    .search-input-wrap i {
+      position: absolute;
+      left: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-muted);
+    }
+
+    .search-input-wrap input {
+      padding-left: 36px;
+    }
+
+    .filter-chips {
+      display: flex;
+      gap: 6px;
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+    .filter-chips::-webkit-scrollbar {
+      display: none;
+    }
+
+    .filter-chip {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      color: var(--text-secondary);
+      padding: 6px 14px;
+      border-radius: var(--radius-full);
+      font-size: 0.8rem;
+      font-weight: 600;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: var(--transition);
+    }
+    .filter-chip.active {
+      background: var(--primary);
+      color: #ffffff;
+      border-color: var(--primary);
+    }
+
+    .tx-group {
+      margin-bottom: 20px;
+    }
+
+    .tx-group-date {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      padding: 6px 10px;
+      background: var(--bg-tertiary);
+      border-radius: var(--radius-md);
+      margin-bottom: 8px;
+    }
+
+    .tx-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 14px;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      margin-bottom: 8px;
+      transition: var(--transition);
+      gap: 12px;
+    }
+
+    .tx-item:hover {
+      border-color: var(--border-color-hover);
+      transform: translateX(2px);
+    }
+
+    .tx-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex: 1;
+      min-width: 0;
+    }
+
+    .tx-cat-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: var(--radius-md);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.1rem;
+      flex-shrink: 0;
+    }
+
+    .tx-details {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .tx-desc {
+      font-weight: 600;
+      font-size: 0.92rem;
+      color: var(--text-primary);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .tx-meta {
+      font-size: 0.76rem;
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 2px;
+      flex-wrap: wrap;
+    }
+
+    .tx-amount-wrap {
+      text-align: right;
+      flex-shrink: 0;
+    }
+
+    .tx-amount {
+      font-size: 1.05rem;
+      font-weight: 800;
+    }
+
+    .tx-amount.expense {
+      color: var(--expense);
+    }
+    .tx-amount.income {
+      color: var(--income);
+    }
+    .tx-amount.transfer {
+      color: var(--transfer);
+    }
+
+    .tx-del-btn {
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      cursor: pointer;
+      padding: 6px;
+      border-radius: 4px;
+      transition: var(--transition);
+    }
+    .tx-del-btn:hover {
+      color: #ef4444;
+      background: rgba(239, 68, 68, 0.1);
+    }
+
+    /* Pending Khata / Udhar Cards */
+    .pending-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 16px;
+    }
+
+    .pending-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius-xl);
+      padding: 18px;
+      transition: var(--transition);
+    }
+
+    .pending-card:hover {
+      border-color: var(--border-color-hover);
+    }
+
+    .pending-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 12px;
+    }
+
+    .person-name {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .badge-pending-type {
+      font-size: 0.72rem;
+      font-weight: 700;
+      padding: 3px 8px;
+      border-radius: 999px;
+      text-transform: uppercase;
+    }
+
+    .badge-pending-type.receive {
+      background: var(--income-bg);
+      color: var(--income);
+    }
+    .badge-pending-type.pay {
+      background: var(--expense-bg);
+      color: var(--expense);
+    }
+
+    .pending-amount-box {
+      background: var(--bg-tertiary);
+      border-radius: var(--radius-md);
+      padding: 12px;
+      margin-bottom: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .pending-amount-val {
+      font-size: 1.45rem;
+      font-weight: 800;
+    }
+
+    /* Progress bar for Loan / Pending */
+    .progress-bar-wrap {
+      height: 6px;
+      background: var(--border-color);
+      border-radius: 999px;
+      overflow: hidden;
+      margin: 8px 0 14px 0;
+    }
+
+    .progress-bar-fill {
+      height: 100%;
+      background: var(--primary);
+      border-radius: 999px;
+      transition: width 0.4s ease;
+    }
+
+    /* Modal Styling */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.75);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      padding: 16px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.25s ease;
+    }
+
+    .modal-overlay.open {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .modal-card {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-xl);
+      max-width: 480px;
+      width: 100%;
+      padding: 24px;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+      max-height: 90vh;
+      overflow-y: auto;
+      transform: translateY(20px) scale(0.97);
+      transition: transform 0.25s ease;
+    }
+
+    .modal-overlay.open .modal-card {
+      transform: translateY(0) scale(1);
+    }
+
+    .modal-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 18px;
+    }
+
+    .modal-title {
+      font-size: 1.2rem;
+      font-weight: 700;
+    }
+
+    .modal-close {
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      font-size: 1.25rem;
+      cursor: pointer;
+      padding: 4px 8px;
+      border-radius: 6px;
+    }
+
+    .modal-close:hover {
+      color: var(--text-primary);
+      background: var(--bg-tertiary);
+    }
+
+    /* PIN Lock Screen */
+    #pinLockOverlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: var(--bg-primary);
+      z-index: 99999;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .pin-box {
+      max-width: 320px;
+      width: 100%;
+      text-align: center;
+    }
+
+    .pin-dots {
+      display: flex;
+      justify-content: center;
+      gap: 14px;
+      margin: 24px 0 32px 0;
+    }
+
+    .pin-dot {
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      border: 2px solid var(--border-color-hover);
+      transition: all 0.2s ease;
+    }
+    .pin-dot.filled {
+      background: var(--primary);
+      border-color: var(--primary);
+      box-shadow: 0 0 10px var(--primary-glow);
+    }
+
+    .pin-keypad {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+    }
+
+    .pin-key {
+      height: 60px;
+      border-radius: var(--radius-lg);
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      color: var(--text-primary);
+      font-size: 1.4rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: var(--transition);
+    }
+
+    .pin-key:hover {
+      background: var(--bg-tertiary);
+      border-color: var(--primary);
+      transform: scale(1.05);
+    }
+
+    .pin-key:active {
+      transform: scale(0.95);
+    }
+
+    /* Empty State */
+    .empty-state {
+      text-align: center;
+      padding: 40px 20px;
+      color: var(--text-muted);
+    }
+    .empty-state i {
+      font-size: 2.8rem;
+      margin-bottom: 12px;
+      opacity: 0.5;
+    }
+    .empty-state p {
+      font-size: 0.92rem;
+    }
+
+    /* Toast Notification */
+    .toast-msg {
+      position: fixed;
+      bottom: 80px;
+      left: 50%;
+      transform: translateX(-50%) translateY(20px);
+      background: #1e293b;
+      color: #ffffff;
+      padding: 10px 20px;
+      border-radius: var(--radius-full);
+      font-size: 0.85rem;
+      font-weight: 600;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+      opacity: 0;
+      pointer-events: none;
+      transition: all 0.25s ease;
+      z-index: 10000;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .toast-msg.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+
+    /* Stealth Mode mask */
+    body.stealth-active .stealth-mask {
+      filter: blur(5px);
+      user-select: none;
+      letter-spacing: 2px;
+    }
+  </style>
+</head>
+<body>
+  <!-- PIN Lock Overlay (Optional Master Password) -->
+  <div id="pinLockOverlay" style="display: none;">
+    <div class="pin-box">
+      <div style="font-size: 2.2rem; color: var(--primary); margin-bottom: 8px;">
+        <i class="fa-solid fa-vault"></i>
+      </div>
+      <h2 style="font-size: 1.4rem; font-weight: 800; margin-bottom: 4px;">Private Vault Locked</h2>
+      <p style="font-size: 0.82rem; color: var(--text-muted);">Enter your master PIN to access ledger</p>
+      
+      <div class="pin-dots">
+        <div class="pin-dot" id="dot-0"></div>
+        <div class="pin-dot" id="dot-1"></div>
+        <div class="pin-dot" id="dot-2"></div>
+        <div class="pin-dot" id="dot-3"></div>
+      </div>
+
+      <div class="pin-keypad">
+        <button class="pin-key" onclick="enterPinDigit(1)">1</button>
+        <button class="pin-key" onclick="enterPinDigit(2)">2</button>
+        <button class="pin-key" onclick="enterPinDigit(3)">3</button>
+        <button class="pin-key" onclick="enterPinDigit(4)">4</button>
+        <button class="pin-key" onclick="enterPinDigit(5)">5</button>
+        <button class="pin-key" onclick="enterPinDigit(6)">6</button>
+        <button class="pin-key" onclick="enterPinDigit(7)">7</button>
+        <button class="pin-key" onclick="enterPinDigit(8)">8</button>
+        <button class="pin-key" onclick="enterPinDigit(9)">9</button>
+        <button class="pin-key" style="font-size: 1.1rem;" onclick="clearPin()"><i class="fa-solid fa-xmark"></i></button>
+        <button class="pin-key" onclick="enterPinDigit(0)">0</button>
+        <button class="pin-key" style="font-size: 1.1rem;" onclick="backspacePin()"><i class="fa-solid fa-delete-left"></i></button>
+      </div>
+
+      <div style="margin-top: 24px;">
+        <a href="index.html" style="color: var(--text-muted); font-size: 0.8rem; text-decoration: none;">
+          <i class="fa-solid fa-arrow-left"></i> Return to Studio
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Header -->
+  <header class="ledger-header">
+    <div class="app-container">
+      <div class="header-inner">
+        <div class="brand-area">
+          <img src="logo.png" alt="AI Bots Logo" onerror="this.style.display='none'">
+          <div>
+            <div class="brand-title">
+              <span id="pageTitleText">Private Ledger</span>
+              <span class="badge-private"><i class="fa-solid fa-lock"></i> Hidden</span>
+            </div>
+            <div style="font-size: 0.72rem; color: var(--text-muted);">
+              100% Local Browser Storage • Never Uploaded
+            </div>
+          </div>
+        </div>
+
+        <div class="header-actions">
+          <!-- Stealth Mode Toggle -->
+          <button class="btn-stealth" id="btnStealthToggle" onclick="toggleStealthMode()" title="Mask numbers for privacy in public">
+            <i class="fa-solid fa-eye-slash"></i>
+            <span class="stealth-btn-label">Stealth</span>
+          </button>
+
+          <!-- Currency Selector -->
+          <select class="currency-pill" id="currencySelect" onchange="changeCurrency(this.value)">
+            <option value="₹">₹ INR</option>
+            <option value="$">$ USD</option>
+            <option value="€">€ EUR</option>
+            <option value="£">£ GBP</option>
+            <option value="AED">AED</option>
+            <option value="¥">¥ JPY</option>
+          </select>
+
+          <!-- Security & PIN Setup -->
+          <button class="icon-btn" onclick="openSecurityModal()" title="Security & PIN Settings">
+            <i class="fa-solid fa-shield-halved"></i>
+          </button>
+
+          <!-- Backup / Restore -->
+          <button class="icon-btn" onclick="openBackupModal()" title="Backup & Restore Data">
+            <i class="fa-solid fa-cloud-arrow-up"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="app-container">
+    <!-- Desktop / Tablet Nav Tabs -->
+    <div class="nav-tabs-bar">
+      <button class="tab-pill active" onclick="switchView('daily')" id="tab-daily">
+        <i class="fa-solid fa-wallet"></i> Daily & Spending
+      </button>
+      <button class="tab-pill" onclick="switchView('accounts')" id="tab-accounts">
+        <i class="fa-solid fa-building-columns"></i> Accounts (<span id="accCountBadge">0</span>)
+      </button>
+      <button class="tab-pill" onclick="switchView('pending')" id="tab-pending">
+        <i class="fa-solid fa-hand-holding-dollar"></i> Pending Khata (<span id="pendingCountBadge">0</span>)
+      </button>
+      <button class="tab-pill" onclick="switchView('loans')" id="tab-loans">
+        <i class="fa-solid fa-landmark"></i> Loans & EMI (<span id="loanCountBadge">0</span>)
+      </button>
+      <button class="tab-pill" onclick="switchView('analytics')" id="tab-analytics">
+        <i class="fa-solid fa-chart-pie"></i> Insights & Reports
+      </button>
+    </div>
+
+    <!-- VIEW 1: DAILY & SPENDING -->
+    <section id="view-daily" class="tab-view">
+      <!-- High-Level Financial Snapshot Cards -->
+      <div class="stats-grid">
+        <!-- Today's Earnings -->
+        <div class="stat-card" style="--card-accent: var(--income); --icon-bg: var(--income-bg);">
+          <div class="stat-head">
+            <span>TODAY'S EARNINGS</span>
+            <div class="stat-icon"><i class="fa-solid fa-arrow-trend-up"></i></div>
+          </div>
+          <div class="stat-amount stealth-mask" id="statTodayIncome">₹0.00</div>
+          <div class="stat-sub">
+            <span id="statTodayIncomeCount">0</span> income entries today
+          </div>
+        </div>
+
+        <!-- Today's Spending -->
+        <div class="stat-card" style="--card-accent: var(--expense); --icon-bg: var(--expense-bg);">
+          <div class="stat-head">
+            <span>TODAY'S SPENDING</span>
+            <div class="stat-icon"><i class="fa-solid fa-arrow-trend-down"></i></div>
+          </div>
+          <div class="stat-amount stealth-mask" id="statTodayExpense">₹0.00</div>
+          <div class="stat-sub">
+            <span id="statTodayExpenseCount">0</span> expenses today
+          </div>
+        </div>
+
+        <!-- Today's Net Balance -->
+        <div class="stat-card" style="--card-accent: var(--primary); --icon-bg: var(--primary-light);">
+          <div class="stat-head">
+            <span>TODAY'S NET SAVINGS</span>
+            <div class="stat-icon"><i class="fa-solid fa-scale-balanced"></i></div>
+          </div>
+          <div class="stat-amount stealth-mask" id="statTodayNet">₹0.00</div>
+          <div class="stat-sub" id="statTodayNetStatus">
+            Balanced
+          </div>
+        </div>
+
+        <!-- Total Liquid Balance -->
+        <div class="stat-card" style="--card-accent: #38bdf8; --icon-bg: rgba(56, 189, 248, 0.15);">
+          <div class="stat-head">
+            <span>TOTAL LIQUID ASSETS</span>
+            <div class="stat-icon"><i class="fa-solid fa-vault"></i></div>
+          </div>
+          <div class="stat-amount stealth-mask" id="statTotalNetWorth">₹0.00</div>
+          <div class="stat-sub">
+            Across all active accounts
+          </div>
+        </div>
+      </div>
+
+      <!-- Quick Add Transaction Box -->
+      <div class="quick-add-box">
+        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px;">
+          <h3 style="font-size: 1.05rem; font-weight: 700; display: flex; align-items: center; gap: 8px;">
+            <i class="fa-solid fa-plus-circle" style="color: var(--primary);"></i>
+            Record Transaction & Note
+          </h3>
+          <span style="font-size: 0.75rem; color: var(--text-muted);">Supports expressions e.g. 150+40*2</span>
+        </div>
+
+        <!-- Type Selector -->
+        <div class="type-switcher">
+          <button type="button" class="type-btn active" data-type="expense" onclick="setQuickTxType('expense')">
+            <i class="fa-solid fa-arrow-down"></i> Expense (Spend)
+          </button>
+          <button type="button" class="type-btn" data-type="income" onclick="setQuickTxType('income')">
+            <i class="fa-solid fa-arrow-up"></i> Income (Earn)
+          </button>
+          <button type="button" class="type-btn" data-type="transfer" onclick="setQuickTxType('transfer')">
+            <i class="fa-solid fa-right-left"></i> Transfer
+          </button>
+        </div>
+
+        <!-- Form Rows -->
+        <form id="quickTxForm" onsubmit="handleQuickTxSubmit(event)">
+          <div class="form-row">
+            <!-- Amount with inline math evaluation -->
+            <div class="form-group" style="flex: 1.2;">
+              <label class="form-label">Amount (<span class="currency-sym">₹</span>)</label>
+              <div class="amount-calc-wrap">
+                <input type="text" id="txAmountInput" class="input-field" placeholder="0 or 150+40" required autocomplete="off" oninput="liveEvalAmount(this.value)">
+                <span class="calc-indicator" id="liveAmountEval">= ₹0</span>
+              </div>
+              <!-- Quick Chips -->
+              <div class="quick-chips">
+                <button type="button" class="quick-chip" onclick="addAmountChip(50)">+50</button>
+                <button type="button" class="quick-chip" onclick="addAmountChip(100)">+100</button>
+                <button type="button" class="quick-chip" onclick="addAmountChip(500)">+500</button>
+                <button type="button" class="quick-chip" onclick="addAmountChip(1000)">+1000</button>
+                <button type="button" class="quick-chip" onclick="addAmountChip(5000)">+5000</button>
+              </div>
+            </div>
+
+            <!-- Category -->
+            <div class="form-group" id="groupCategory">
+              <label class="form-label">Category</label>
+              <select id="txCategorySelect" class="select-field" required>
+                <!-- Filled dynamically based on type -->
+              </select>
+            </div>
+
+            <!-- Account Linked -->
+            <div class="form-group" id="groupAccount">
+              <label class="form-label" id="lblAccount">Payment Account</label>
+              <select id="txAccountSelect" class="select-field" required>
+                <!-- Populated dynamically -->
+              </select>
+            </div>
+
+            <!-- Transfer Target Account (Shown only when type === 'transfer') -->
+            <div class="form-group" id="groupToAccount" style="display: none;">
+              <label class="form-label">Destination Account</label>
+              <select id="txToAccountSelect" class="select-field">
+                <!-- Populated dynamically -->
+              </select>
+            </div>
+
+            <!-- Date -->
+            <div class="form-group" style="flex: 0.9;">
+              <label class="form-label">Date & Time</label>
+              <input type="datetime-local" id="txDateInput" class="input-field" required>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group" style="flex: 2;">
+              <label class="form-label">Description / Note</label>
+              <input type="text" id="txNoteInput" class="input-field" placeholder="e.g. Grocery at Supermarket, Client Invoice #42, Lunch with Alex..." autocomplete="off">
+            </div>
+            <div class="form-group" style="flex: 1;">
+              <label class="form-label">Tag (Optional)</label>
+              <input type="text" id="txTagInput" class="input-field" placeholder="#personal, #work, #grocery" autocomplete="off">
+            </div>
+          </div>
+
+          <button type="submit" class="btn-submit-tx">
+            <i class="fa-solid fa-check"></i> Save Transaction to Local Ledger
+          </button>
+        </form>
+      </div>
+
+      <!-- Filter & Search Bar -->
+      <div class="panel">
+        <div class="filters-bar">
+          <div class="search-input-wrap">
+            <i class="fa-solid fa-magnifying-glass"></i>
+            <input type="text" id="txSearchInput" class="input-field" placeholder="Search notes, category, amount..." oninput="renderTransactionsTimeline()">
+          </div>
+
+          <div class="filter-chips">
+            <button class="filter-chip active" onclick="setTxFilter('all', this)">All</button>
+            <button class="filter-chip" onclick="setTxFilter('today', this)">Today</button>
+            <button class="filter-chip" onclick="setTxFilter('yesterday', this)">Yesterday</button>
+            <button class="filter-chip" onclick="setTxFilter('week', this)">Last 7 Days</button>
+            <button class="filter-chip" onclick="setTxFilter('month', this)">This Month</button>
+            <button class="filter-chip" onclick="setTxFilter('expense', this)">Expenses Only</button>
+            <button class="filter-chip" onclick="setTxFilter('income', this)">Income Only</button>
+          </div>
+        </div>
+
+        <!-- Transactions Timeline List -->
+        <div id="txTimelineContainer">
+          <!-- Populated by JavaScript -->
+        </div>
+      </div>
+    </section>
+
+    <!-- VIEW 2: ACCOUNTS MANAGER -->
+    <section id="view-accounts" class="tab-view" style="display: none;">
+      <div class="panel">
+        <div class="panel-header">
+          <div>
+            <h2 class="panel-title"><i class="fa-solid fa-building-columns" style="color: var(--primary);"></i> Your Financial Accounts</h2>
+            <p style="font-size: 0.82rem; color: var(--text-muted); margin-top: 4px;">
+              Easily increment (+) or decrement (-) balance with instant records
+            </p>
+          </div>
+          <div class="panel-actions">
+            <button class="btn-submit-tx" style="width: auto; padding: 8px 16px; font-size: 0.85rem;" onclick="openAddAccountModal()">
+              <i class="fa-solid fa-plus"></i> New Account
+            </button>
+          </div>
+        </div>
+
+        <div class="accounts-grid" id="accountsListGrid">
+          <!-- Rendered via JS -->
+        </div>
+      </div>
+    </section>
+
+    <!-- VIEW 3: PENDING KHATA (UDHAR / RECEIVABLES & PAYABLES) -->
+    <section id="view-pending" class="tab-view" style="display: none;">
+      <div class="stats-grid">
+        <div class="stat-card" style="--card-accent: var(--income); --icon-bg: var(--income-bg);">
+          <div class="stat-head">
+            <span>MONEY TO RECEIVE (UDHAR GIVEN)</span>
+            <div class="stat-icon"><i class="fa-solid fa-hand-holding-dollar"></i></div>
+          </div>
+          <div class="stat-amount stealth-mask" id="statPendingReceive">₹0.00</div>
+          <div class="stat-sub">People owe you this amount</div>
+        </div>
+
+        <div class="stat-card" style="--card-accent: var(--expense); --icon-bg: var(--expense-bg);">
+          <div class="stat-head">
+            <span>MONEY TO PAY (UDHAR TAKEN)</span>
+            <div class="stat-icon"><i class="fa-solid fa-money-bill-transfer"></i></div>
+          </div>
+          <div class="stat-amount stealth-mask" id="statPendingPay">₹0.00</div>
+          <div class="stat-sub">You have to pay this amount</div>
+        </div>
+
+        <div class="stat-card" style="--card-accent: #38bdf8; --icon-bg: rgba(56, 189, 248, 0.15);">
+          <div class="stat-head">
+            <span>NET PENDING POSITION</span>
+            <div class="stat-icon"><i class="fa-solid fa-scale-balanced"></i></div>
+          </div>
+          <div class="stat-amount stealth-mask" id="statPendingNet">₹0.00</div>
+          <div class="stat-sub">Net receivable balance</div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-header">
+          <div>
+            <h2 class="panel-title"><i class="fa-solid fa-book-open" style="color: var(--pending);"></i> Pending Khata & Udhar Ledger</h2>
+            <p style="font-size: 0.82rem; color: var(--text-muted); margin-top: 4px;">
+              Increment when money is borrowed/lent, decrement when settled
+            </p>
+          </div>
+          <div class="panel-actions">
+            <button class="btn-submit-tx" style="width: auto; padding: 8px 16px; font-size: 0.85rem;" onclick="openAddPendingModal()">
+              <i class="fa-solid fa-plus"></i> Add Person / Udhar
+            </button>
+          </div>
+        </div>
+
+        <!-- Filter Sub-tabs -->
+        <div class="filter-chips" style="margin-bottom: 16px;">
+          <button class="filter-chip active" onclick="setPendingFilter('all', this)">All Records</button>
+          <button class="filter-chip" onclick="setPendingFilter('to_receive', this)">To Receive</button>
+          <button class="filter-chip" onclick="setPendingFilter('to_pay', this)">To Pay</button>
+          <button class="filter-chip" onclick="setPendingFilter('settled', this)">Completed / Settled</button>
+        </div>
+
+        <div class="pending-grid" id="pendingListGrid">
+          <!-- Rendered via JS -->
+        </div>
+      </div>
+    </section>
+
+    <!-- VIEW 4: LOANS & EMI MANAGER -->
+    <section id="view-loans" class="tab-view" style="display: none;">
+      <div class="stats-grid">
+        <div class="stat-card" style="--card-accent: var(--expense); --icon-bg: var(--expense-bg);">
+          <div class="stat-head">
+            <span>TOTAL BORROWED LOANS</span>
+            <div class="stat-icon"><i class="fa-solid fa-hand-holding-hand"></i></div>
+          </div>
+          <div class="stat-amount stealth-mask" id="statTotalBorrowed">₹0.00</div>
+          <div class="stat-sub">Current outstanding debt</div>
+        </div>
+
+        <div class="stat-card" style="--card-accent: var(--income); --icon-bg: var(--income-bg);">
+          <div class="stat-head">
+            <span>TOTAL LENT OUT</span>
+            <div class="stat-icon"><i class="fa-solid fa-sack-dollar"></i></div>
+          </div>
+          <div class="stat-amount stealth-mask" id="statTotalLent">₹0.00</div>
+          <div class="stat-sub">Total lent with/without interest</div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-header">
+          <div>
+            <h2 class="panel-title"><i class="fa-solid fa-landmark" style="color: #a855f7;"></i> Loans & EMI Tracker</h2>
+            <p style="font-size: 0.82rem; color: var(--text-muted); margin-top: 4px;">
+              Increment when taking loans, decrement when paying EMIs
+            </p>
+          </div>
+          <div class="panel-actions">
+            <button class="btn-submit-tx" style="width: auto; padding: 8px 16px; font-size: 0.85rem;" onclick="openAddLoanModal()">
+              <i class="fa-solid fa-plus"></i> New Loan / Debt
+            </button>
+          </div>
+        </div>
+
+        <div class="pending-grid" id="loansListGrid">
+          <!-- Rendered via JS -->
+        </div>
+      </div>
+    </section>
+
+    <!-- VIEW 5: INSIGHTS & REPORTS -->
+    <section id="view-analytics" class="tab-view" style="display: none;">
+      <div class="panel">
+        <div class="panel-header">
+          <div>
+            <h2 class="panel-title"><i class="fa-solid fa-chart-pie" style="color: var(--primary);"></i> Spending & Earnings Insights</h2>
+            <p style="font-size: 0.82rem; color: var(--text-muted); margin-top: 4px;">Category breakdown and daily trends</p>
+          </div>
+          <div>
+            <button class="btn-stealth" onclick="exportToCSV()"><i class="fa-solid fa-file-csv"></i> Download CSV Spreadsheet</button>
+          </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px;">
+          <!-- Category Spending Breakdown -->
+          <div style="background: var(--bg-tertiary); border-radius: var(--radius-lg); padding: 18px;">
+            <h3 style="font-size: 0.95rem; font-weight: 700; margin-bottom: 14px; display: flex; align-items: center; gap: 8px;">
+              <i class="fa-solid fa-pie-chart" style="color: var(--expense);"></i> Top Expense Categories
+            </h3>
+            <div id="analyticsCatBars">
+              <!-- Populated via JS -->
+            </div>
+          </div>
+
+          <!-- Monthly Overview & Averages -->
+          <div style="background: var(--bg-tertiary); border-radius: var(--radius-lg); padding: 18px;">
+            <h3 style="font-size: 0.95rem; font-weight: 700; margin-bottom: 14px; display: flex; align-items: center; gap: 8px;">
+              <i class="fa-solid fa-calendar-check" style="color: var(--income);"></i> Averages & Running Totals
+            </h3>
+            <div style="display: flex; flex-direction: column; gap: 12px;" id="analyticsSummaryStats">
+              <!-- Populated via JS -->
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Mobile Bottom Nav -->
+  <nav class="mobile-bottom-nav">
+    <button class="bottom-nav-item active" onclick="switchView('daily')" id="bnav-daily">
+      <i class="fa-solid fa-wallet"></i>
+      <span>Daily</span>
+    </button>
+    <button class="bottom-nav-item" onclick="switchView('accounts')" id="bnav-accounts">
+      <i class="fa-solid fa-building-columns"></i>
+      <span>Accounts</span>
+    </button>
+    <button class="bottom-nav-item" onclick="switchView('pending')" id="bnav-pending">
+      <i class="fa-solid fa-hand-holding-dollar"></i>
+      <span>Pending</span>
+    </button>
+    <button class="bottom-nav-item" onclick="switchView('loans')" id="bnav-loans">
+      <i class="fa-solid fa-landmark"></i>
+      <span>Loans</span>
+    </button>
+    <button class="bottom-nav-item" onclick="switchView('analytics')" id="bnav-analytics">
+      <i class="fa-solid fa-chart-pie"></i>
+      <span>Reports</span>
+    </button>
+  </nav>
+
+  <!-- ==================== MODALS ==================== -->
+
+  <!-- Modal: Granular Account Adjustment (+ / -) -->
+  <div class="modal-overlay" id="modalAdjustAccount">
+    <div class="modal-card">
+      <div class="modal-head">
+        <h3 class="modal-title" id="adjustAccTitle">Adjust Balance</h3>
+        <button class="modal-close" onclick="closeModal('modalAdjustAccount')">&times;</button>
+      </div>
+      <form id="formAdjustAccount" onsubmit="handleAccountAdjustSubmit(event)">
+        <input type="hidden" id="adjustAccId">
+        <input type="hidden" id="adjustAccMode" value="increment">
+
+        <div style="text-align: center; margin-bottom: 18px;">
+          <div style="font-size: 0.85rem; color: var(--text-muted);" id="adjustAccCurrentText">Current Balance</div>
+          <div style="font-size: 1.6rem; font-weight: 800; margin-top: 4px;" id="adjustAccCurrentVal" class="stealth-mask">₹0.00</div>
+        </div>
+
+        <div class="form-group" style="margin-bottom: 14px;">
+          <label class="form-label" id="adjustAccAmountLabel">Amount to Add</label>
+          <input type="number" step="any" id="adjustAccAmountInput" class="input-field" placeholder="0.00" required autofocus>
+          <div class="quick-chips">
+            <button type="button" class="quick-chip" onclick="setAdjustChip(100)">+100</button>
+            <button type="button" class="quick-chip" onclick="setAdjustChip(500)">+500</button>
+            <button type="button" class="quick-chip" onclick="setAdjustChip(1000)">+1000</button>
+            <button type="button" class="quick-chip" onclick="setAdjustChip(5000)">+5000</button>
+          </div>
+        </div>
+
+        <div class="form-group" style="margin-bottom: 14px;">
+          <label class="form-label">Reason / Note</label>
+          <input type="text" id="adjustAccNoteInput" class="input-field" placeholder="e.g. ATM Withdrawal, Cash deposit, Correction">
+        </div>
+
+        <div style="margin-bottom: 18px;">
+          <label style="display: flex; align-items: center; gap: 8px; font-size: 0.85rem; cursor: pointer; color: var(--text-secondary);">
+            <input type="checkbox" id="adjustAccRecordTx" checked>
+            Also record as daily transaction in spending/earnings history
+          </label>
+        </div>
+
+        <button type="submit" class="btn-submit-tx" id="adjustAccSubmitBtn">
+          Apply Adjustment
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal: Add New Account -->
+  <div class="modal-overlay" id="modalAddAccount">
+    <div class="modal-card">
+      <div class="modal-head">
+        <h3 class="modal-title">Create New Account</h3>
+        <button class="modal-close" onclick="closeModal('modalAddAccount')">&times;</button>
+      </div>
+      <form id="formAddAccount" onsubmit="handleAddAccountSubmit(event)">
+        <div class="form-group" style="margin-bottom: 12px;">
+          <label class="form-label">Account Name</label>
+          <input type="text" id="newAccName" class="input-field" placeholder="e.g. HDFC Bank, Cash Wallet, GPay, Credit Card" required>
+        </div>
+
+        <div class="form-group" style="margin-bottom: 12px;">
+          <label class="form-label">Account Type</label>
+          <select id="newAccType" class="select-field" required>
+            <option value="bank">Bank Account</option>
+            <option value="cash">Cash in Hand</option>
+            <option value="wallet">Digital Wallet / UPI</option>
+            <option value="card">Credit Card</option>
+            <option value="savings">Savings / Investment</option>
+          </select>
+        </div>
+
+        <div class="form-group" style="margin-bottom: 12px;">
+          <label class="form-label">Starting Balance (<span class="currency-sym">₹</span>)</label>
+          <input type="number" step="any" id="newAccBalance" class="input-field" value="0.00" required>
+        </div>
+
+        <div class="form-group" style="margin-bottom: 18px;">
+          <label class="form-label">Theme Color</label>
+          <div style="display: flex; gap: 10px; margin-top: 4px;">
+            <label><input type="radio" name="accColor" value="#6366f1" checked> 🟣 Indigo</label>
+            <label><input type="radio" name="accColor" value="#10b981"> 🟢 Emerald</label>
+            <label><input type="radio" name="accColor" value="#f59e0b"> 🟠 Amber</label>
+            <label><input type="radio" name="accColor" value="#ec4899"> 🌸 Pink</label>
+            <label><input type="radio" name="accColor" value="#38bdf8"> 🔵 Cyan</label>
+          </div>
+        </div>
+
+        <button type="submit" class="btn-submit-tx">Create Account</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal: Add / Settle Pending Khata -->
+  <div class="modal-overlay" id="modalAddPending">
+    <div class="modal-card">
+      <div class="modal-head">
+        <h3 class="modal-title" id="pendingModalTitle">Add Person / Pending Record</h3>
+        <button class="modal-close" onclick="closeModal('modalAddPending')">&times;</button>
+      </div>
+      <form id="formAddPending" onsubmit="handleAddPendingSubmit(event)">
+        <input type="hidden" id="pendingEditId">
+
+        <div class="form-group" style="margin-bottom: 12px;">
+          <label class="form-label">Record Type</label>
+          <select id="pendingType" class="select-field" required>
+            <option value="to_receive">To Receive (Someone owes you)</option>
+            <option value="to_pay">To Pay (You owe someone)</option>
+          </select>
+        </div>
+
+        <div class="form-group" style="margin-bottom: 12px;">
+          <label class="form-label">Person / Entity Name</label>
+          <input type="text" id="pendingPerson" class="input-field" placeholder="e.g. John Doe, Landlord, Office Colleague" required>
+        </div>
+
+        <div class="form-group" style="margin-bottom: 12px;">
+          <label class="form-label">Pending Amount (<span class="currency-sym">₹</span>)</label>
+          <input type="number" step="any" id="pendingAmount" class="input-field" placeholder="0.00" required>
+        </div>
+
+        <div class="form-group" style="margin-bottom: 12px;">
+          <label class="form-label">Due Date (Optional)</label>
+          <input type="date" id="pendingDueDate" class="input-field">
+        </div>
+
+        <div class="form-group" style="margin-bottom: 18px;">
+          <label class="form-label">Notes / Description</label>
+          <input type="text" id="pendingNotes" class="input-field" placeholder="e.g. Dinner bill split, Freelance project advance">
+        </div>
+
+        <button type="submit" class="btn-submit-tx">Save Record</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal: Settle Pending (Partial or Full) -->
+  <div class="modal-overlay" id="modalSettlePending">
+    <div class="modal-card">
+      <div class="modal-head">
+        <h3 class="modal-title">Settle Pending Balance</h3>
+        <button class="modal-close" onclick="closeModal('modalSettlePending')">&times;</button>
+      </div>
+      <form id="formSettlePending" onsubmit="handleSettlePendingSubmit(event)">
+        <input type="hidden" id="settlePendingId">
+
+        <div style="background: var(--bg-tertiary); border-radius: var(--radius-md); padding: 12px; margin-bottom: 16px; text-align: center;">
+          <div style="font-size: 0.85rem; color: var(--text-muted);" id="settlePersonName">Person</div>
+          <div style="font-size: 1.4rem; font-weight: 800; margin-top: 4px;" id="settleRemainingVal" class="stealth-mask">₹0.00</div>
+        </div>
+
+        <div class="form-group" style="margin-bottom: 14px;">
+          <label class="form-label">Amount Settled / Paid</label>
+          <input type="number" step="any" id="settleAmountInput" class="input-field" placeholder="0.00" required>
+        </div>
+
+        <div class="form-group" style="margin-bottom: 14px;">
+          <label class="form-label">Account Used</label>
+          <select id="settleAccountSelect" class="select-field">
+            <!-- Dynamically populated -->
+          </select>
+        </div>
+
+        <div class="form-group" style="margin-bottom: 18px;">
+          <label class="form-label">Settlement Note</label>
+          <input type="text" id="settleNoteInput" class="input-field" placeholder="e.g. Paid via GPay, Received cash">
+        </div>
+
+        <button type="submit" class="btn-submit-tx">Record Settlement</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal: Add Loan / Debt -->
+  <div class="modal-overlay" id="modalAddLoan">
+    <div class="modal-card">
+      <div class="modal-head">
+        <h3 class="modal-title">New Loan / Debt Tracker</h3>
+        <button class="modal-close" onclick="closeModal('modalAddLoan')">&times;</button>
+      </div>
+      <form id="formAddLoan" onsubmit="handleAddLoanSubmit(event)">
+        <div class="form-group" style="margin-bottom: 12px;">
+          <label class="form-label">Loan Type</label>
+          <select id="loanType" class="select-field" required>
+            <option value="borrowed">Borrowed (You took a loan to repay)</option>
+            <option value="lent">Lent (You gave out a loan to collect)</option>
+          </select>
+        </div>
+
+        <div class="form-group" style="margin-bottom: 12px;">
+          <label class="form-label">Lender / Loan Title</label>
+          <input type="text" id="loanTitle" class="input-field" placeholder="e.g. SBI Home Loan, Car EMI, Friendly Loan" required>
+        </div>
+
+        <div class="form-group" style="margin-bottom: 12px;">
+          <label class="form-label">Principal Amount (<span class="currency-sym">₹</span>)</label>
+          <input type="number" step="any" id="loanPrincipal" class="input-field" placeholder="0.00" required>
+        </div>
+
+        <div class="form-group" style="margin-bottom: 12px;">
+          <label class="form-label">Monthly EMI / Installment (Optional)</label>
+          <input type="number" step="any" id="loanEmi" class="input-field" placeholder="0.00">
+        </div>
+
+        <div class="form-group" style="margin-bottom: 18px;">
+          <label class="form-label">Interest Rate % / Notes</label>
+          <input type="text" id="loanNotes" class="input-field" placeholder="e.g. 8.5% annual, 10th of every month">
+        </div>
+
+        <button type="submit" class="btn-submit-tx">Track Loan</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal: Settle Loan Installment -->
+  <div class="modal-overlay" id="modalPayLoan">
+    <div class="modal-card">
+      <div class="modal-head">
+        <h3 class="modal-title">Pay Loan EMI / Installment</h3>
+        <button class="modal-close" onclick="closeModal('modalPayLoan')">&times;</button>
+      </div>
+      <form id="formPayLoan" onsubmit="handlePayLoanSubmit(event)">
+        <input type="hidden" id="payLoanId">
+
+        <div style="background: var(--bg-tertiary); border-radius: var(--radius-md); padding: 12px; margin-bottom: 16px; text-align: center;">
+          <div style="font-size: 0.85rem; color: var(--text-muted);" id="payLoanTitle">Loan</div>
+          <div style="font-size: 1.4rem; font-weight: 800; margin-top: 4px;" id="payLoanRemainingVal" class="stealth-mask">₹0.00</div>
+        </div>
+
+        <div class="form-group" style="margin-bottom: 14px;">
+          <label class="form-label">Payment Amount</label>
+          <input type="number" step="any" id="payLoanAmountInput" class="input-field" placeholder="0.00" required>
+        </div>
+
+        <div class="form-group" style="margin-bottom: 14px;">
+          <label class="form-label">Deduct From Account</label>
+          <select id="payLoanAccountSelect" class="select-field">
+            <!-- Dynamically populated -->
+          </select>
+        </div>
+
+        <div class="form-group" style="margin-bottom: 18px;">
+          <label class="form-label">Payment Note</label>
+          <input type="text" id="payLoanNoteInput" class="input-field" placeholder="e.g. Monthly EMI for September">
+        </div>
+
+        <button type="submit" class="btn-submit-tx">Record Payment</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal: Security & PIN Settings -->
+  <div class="modal-overlay" id="modalSecurity">
+    <div class="modal-card">
+      <div class="modal-head">
+        <h3 class="modal-title"><i class="fa-solid fa-shield-halved" style="color: var(--primary);"></i> Security & Privacy</h3>
+        <button class="modal-close" onclick="closeModal('modalSecurity')">&times;</button>
+      </div>
+      <div style="margin-bottom: 20px;">
+        <h4 style="font-size: 0.95rem; font-weight: 700; margin-bottom: 6px;">Master PIN Protection</h4>
+        <p style="font-size: 0.82rem; color: var(--text-muted); margin-bottom: 14px;">
+          Require a 4-digit PIN every time this ledger is opened on this phone or laptop.
+        </p>
+
+        <div id="pinStatusText" style="font-size: 0.88rem; font-weight: 600; margin-bottom: 14px;">
+          Status: <span style="color: #ef4444;">No PIN Set (Unlocked)</span>
+        </div>
+
+        <div class="form-group" style="margin-bottom: 14px;">
+          <label class="form-label">New 4-Digit PIN</label>
+          <input type="password" maxlength="4" pattern="[0-9]{4}" id="inputNewPin" class="input-field" placeholder="e.g. 1234">
+        </div>
+
+        <div style="display: flex; gap: 8px;">
+          <button class="btn-submit-tx" style="flex: 1;" onclick="saveNewPin()">
+            <i class="fa-solid fa-key"></i> Set / Change PIN
+          </button>
+          <button class="btn-stealth" style="flex: 0.8; justify-content: center;" onclick="removePin()" id="btnRemovePin">
+            Disable PIN
+          </button>
+        </div>
+      </div>
+
+      <hr style="border: none; border-top: 1px solid var(--border-color); margin: 20px 0;">
+
+      <div>
+        <h4 style="font-size: 0.95rem; font-weight: 700; margin-bottom: 6px;">Disguise Page Mode</h4>
+        <p style="font-size: 0.82rem; color: var(--text-muted); margin-bottom: 12px;">
+          Renames the tab title to "Personal Notes" for stealth browsing.
+        </p>
+        <button class="btn-stealth" onclick="toggleStealthTitle()" id="btnToggleDisguiseTitle">
+          <i class="fa-solid fa-mask"></i> Disguise Tab Title
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: Backup & Restore -->
+  <div class="modal-overlay" id="modalBackup">
+    <div class="modal-card">
+      <div class="modal-head">
+        <h3 class="modal-title"><i class="fa-solid fa-cloud-arrow-up" style="color: var(--primary);"></i> Backup & Restore</h3>
+        <button class="modal-close" onclick="closeModal('modalBackup')">&times;</button>
+      </div>
+      
+      <p style="font-size: 0.82rem; color: var(--text-muted); margin-bottom: 18px;">
+        Transfer your financial notes between phone and laptop anytime with 1-click JSON files.
+      </p>
+
+      <!-- Export Backup -->
+      <div style="background: var(--bg-tertiary); border-radius: var(--radius-md); padding: 14px; margin-bottom: 16px;">
+        <h4 style="font-size: 0.9rem; font-weight: 700; margin-bottom: 6px;">Download Complete Backup</h4>
+        <p style="font-size: 0.78rem; color: var(--text-muted); margin-bottom: 10px;">
+          Exports all accounts, transactions, pending khata, and loans into a safe `.json` file.
+        </p>
+        <button class="btn-submit-tx" style="background: #0ea5e9;" onclick="exportJSONBackup()">
+          <i class="fa-solid fa-download"></i> Export Backup (.json)
+        </button>
+      </div>
+
+      <!-- Import Restore -->
+      <div style="background: var(--bg-tertiary); border-radius: var(--radius-md); padding: 14px; margin-bottom: 16px;">
+        <h4 style="font-size: 0.9rem; font-weight: 700; margin-bottom: 6px;">Restore from Backup File</h4>
+        <p style="font-size: 0.78rem; color: var(--text-muted); margin-bottom: 10px;">
+          Select your exported `.json` file to restore or sync across devices.
+        </p>
+        <input type="file" id="importJsonInput" accept=".json" style="display: none;" onchange="handleImportFile(event)">
+        <button class="btn-stealth" style="width: 100%; justify-content: center;" onclick="document.getElementById('importJsonInput').click()">
+          <i class="fa-solid fa-upload"></i> Choose JSON File to Restore
+        </button>
+      </div>
+
+      <!-- Danger Zone -->
+      <div style="border-top: 1px solid var(--border-color); padding-top: 14px;">
+        <button class="btn-stealth" style="color: #ef4444; border-color: rgba(239, 68, 68, 0.3); width: 100%; justify-content: center;" onclick="confirmResetAllData()">
+          <i class="fa-solid fa-trash"></i> Reset All Ledger Data
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification element -->
+  <div class="toast-msg" id="toastMsg">
+    <i class="fa-solid fa-circle-check" style="color: #10b981;"></i>
+    <span id="toastText">Action completed</span>
+  </div>
+
+  <!-- Application Logic -->
+  <script>
+    /* ==========================================================================
+       AI BOTS PRIVATE LEDGER - STORAGE & DATA CONTROLLER
+       Dedicated LocalStorage Keys (Zero pollution of site storage):
+       - aibots_ledger_accounts
+       - aibots_ledger_transactions
+       - aibots_ledger_pendings
+       - aibots_ledger_loans
+       - aibots_ledger_settings
+       ========================================================================== */
+
+    const STORAGE_KEYS = {
+      ACCOUNTS: 'aibots_ledger_accounts_v1',
+      TRANSACTIONS: 'aibots_ledger_transactions_v1',
+      PENDINGS: 'aibots_ledger_pendings_v1',
+      LOANS: 'aibots_ledger_loans_v1',
+      SETTINGS: 'aibots_ledger_settings_v1'
+    };
+
+    // Default Expense Categories
+    const CATEGORIES = {
+      expense: [
+        { id: 'food', name: 'Food & Dining', icon: 'fa-utensils', color: '#f97316' },
+        { id: 'groceries', name: 'Groceries & Mart', icon: 'fa-basket-shopping', color: '#10b981' },
+        { id: 'travel', name: 'Travel & Commute', icon: 'fa-car', color: '#06b6d4' },
+        { id: 'bills', name: 'Bills & Utilities', icon: 'fa-bolt', color: '#eab308' },
+        { id: 'shopping', name: 'Shopping & Retail', icon: 'fa-bag-shopping', color: '#ec4899' },
+        { id: 'health', name: 'Health & Pharmacy', icon: 'fa-heart-pulse', color: '#ef4444' },
+        { id: 'entertainment', name: 'Entertainment & OTT', icon: 'fa-film', color: '#a855f7' },
+        { id: 'education', name: 'Education & Courses', icon: 'fa-graduation-cap', color: '#3b82f6' },
+        { id: 'business', name: 'Business & Office', icon: 'fa-briefcase', color: '#6366f1' },
+        { id: 'other_exp', name: 'Other Expenses', icon: 'fa-receipt', color: '#64748b' }
+      ],
+      income: [
+        { id: 'salary', name: 'Salary & Wages', icon: 'fa-money-bill-wave', color: '#10b981' },
+        { id: 'business_inc', name: 'Business / Sales', icon: 'fa-chart-line', color: '#059669' },
+        { id: 'freelance', name: 'Freelance & Contract', icon: 'fa-laptop-code', color: '#0284c7' },
+        { id: 'investment', name: 'Investments & Returns', icon: 'fa-arrow-trend-up', color: '#8b5cf6' },
+        { id: 'cashback', name: 'Gifts & Cashback', icon: 'fa-gift', color: '#f59e0b' },
+        { id: 'other_inc', name: 'Other Earnings', icon: 'fa-coins', color: '#64748b' }
+      ],
+      transfer: [
+        { id: 'transfer', name: 'Inter-Account Transfer', icon: 'fa-right-left', color: '#38bdf8' }
+      ]
+    };
+
+    // App State
+    let currentTab = 'daily';
+    let quickTxType = 'expense';
+    let txFilterMode = 'all';
+    let pendingFilterMode = 'all';
+    let enteredPinDigits = [];
+
+    /* --------------------------------------------------------------------------
+       LOCAL STORAGE INITIALIZATION & REPOSITORIES
+       -------------------------------------------------------------------------- */
+    function getStoredJSON(key, defaultVal) {
+      try {
+        const item = localStorage.getItem(key);
+        return item ? JSON.parse(item) : defaultVal;
+      } catch (e) {
+        console.error('Error reading localStorage for ' + key, e);
+        return defaultVal;
+      }
+    }
+
+    function setStoredJSON(key, val) {
+      try {
+        localStorage.setItem(key, JSON.stringify(val));
+      } catch (e) {
+        console.error('Error writing localStorage for ' + key, e);
+        showToast('Storage write error: Local storage might be full', true);
+      }
+    }
+
+    function initDefaultsIfEmpty() {
+      // Default Settings
+      let settings = getStoredJSON(STORAGE_KEYS.SETTINGS, null);
+      if (!settings) {
+        settings = {
+          currency: '₹',
+          pin: '',
+          pinEnabled: false,
+          stealth: false,
+          disguiseTitle: false
+        };
+        setStoredJSON(STORAGE_KEYS.SETTINGS, settings);
+      }
+
+      // Default Accounts (Clean starting balance)
+      let accounts = getStoredJSON(STORAGE_KEYS.ACCOUNTS, null);
+      if (!accounts || accounts.length === 0) {
+        accounts = [
+          { id: 'acc_cash', name: 'Cash in Hand', type: 'cash', balance: 0, color: '#10b981', icon: 'fa-money-bill-1' },
+          { id: 'acc_bank', name: 'Primary Bank Account', type: 'bank', balance: 0, color: '#6366f1', icon: 'fa-building-columns' },
+          { id: 'acc_upi', name: 'UPI / Digital Wallet', type: 'wallet', balance: 0, color: '#38bdf8', icon: 'fa-mobile-screen-button' }
+        ];
+        setStoredJSON(STORAGE_KEYS.ACCOUNTS, accounts);
+      }
+
+      // Default Transactions
+      if (!localStorage.getItem(STORAGE_KEYS.TRANSACTIONS)) {
+        setStoredJSON(STORAGE_KEYS.TRANSACTIONS, []);
+      }
+
+      // Default Pendings (Khata)
+      if (!localStorage.getItem(STORAGE_KEYS.PENDINGS)) {
+        setStoredJSON(STORAGE_KEYS.PENDINGS, []);
+      }
+
+      // Default Loans
+      if (!localStorage.getItem(STORAGE_KEYS.LOANS)) {
+        setStoredJSON(STORAGE_KEYS.LOANS, []);
+      }
+    }
+
+    /* --------------------------------------------------------------------------
+       CURRENCY & FORMATTING
+       -------------------------------------------------------------------------- */
+    function getCurrency() {
+      const settings = getStoredJSON(STORAGE_KEYS.SETTINGS, { currency: '₹' });
+      return settings.currency || '₹';
+    }
+
+    function formatMoney(amount) {
+      const sym = getCurrency();
+      const num = Number(amount) || 0;
+      const formatted = num.toLocaleString('en-IN', {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+      });
+      return `${sym}${formatted}`;
+    }
+
+    function changeCurrency(sym) {
+      const settings = getStoredJSON(STORAGE_KEYS.SETTINGS, {});
+      settings.currency = sym;
+      setStoredJSON(STORAGE_KEYS.SETTINGS, settings);
+      document.querySelectorAll('.currency-sym').forEach(el => el.textContent = sym);
+      renderAllViews();
+      showToast(`Currency updated to ${sym}`);
+    }
+
+    /* --------------------------------------------------------------------------
+       PIN LOCK & PRIVACY
+       -------------------------------------------------------------------------- */
+    function checkPinLock() {
+      const settings = getStoredJSON(STORAGE_KEYS.SETTINGS, {});
+      if (settings.pinEnabled && settings.pin) {
+        const sessionUnlocked = sessionStorage.getItem('aibots_ledger_unlocked');
+        if (sessionUnlocked !== 'true') {
+          document.getElementById('pinLockOverlay').style.display = 'flex';
+          enteredPinDigits = [];
+          updatePinDots();
+        } else {
+          document.getElementById('pinLockOverlay').style.display = 'none';
+        }
+      } else {
+        document.getElementById('pinLockOverlay').style.display = 'none';
+      }
+    }
+
+    function enterPinDigit(d) {
+      if (enteredPinDigits.length < 4) {
+        enteredPinDigits.push(d);
+        updatePinDots();
+      }
+      if (enteredPinDigits.length === 4) {
+        const entered = enteredPinDigits.join('');
+        const settings = getStoredJSON(STORAGE_KEYS.SETTINGS, {});
+        if (entered === settings.pin) {
+          sessionStorage.setItem('aibots_ledger_unlocked', 'true');
+          document.getElementById('pinLockOverlay').style.display = 'none';
+          showToast('Vault unlocked');
+        } else {
+          showToast('Incorrect PIN! Try again', true);
+          enteredPinDigits = [];
+          setTimeout(updatePinDots, 200);
+        }
+      }
+    }
+
+    function updatePinDots() {
+      for (let i = 0; i < 4; i++) {
+        const dot = document.getElementById(`dot-${i}`);
+        if (dot) {
+          if (i < enteredPinDigits.length) dot.classList.add('filled');
+          else dot.classList.remove('filled');
+        }
+      }
+    }
+
+    function clearPin() {
+      enteredPinDigits = [];
+      updatePinDots();
+    }
+
+    function backspacePin() {
+      enteredPinDigits.pop();
+      updatePinDots();
+    }
+
+    function saveNewPin() {
+      const pin = document.getElementById('inputNewPin').value.trim();
+      if (!/^\d{4}$/.test(pin)) {
+        alert('Please enter exactly 4 digits (e.g. 1234)');
+        return;
+      }
+      const settings = getStoredJSON(STORAGE_KEYS.SETTINGS, {});
+      settings.pin = pin;
+      settings.pinEnabled = true;
+      setStoredJSON(STORAGE_KEYS.SETTINGS, settings);
+      sessionStorage.setItem('aibots_ledger_unlocked', 'true');
+      updateSecurityModalView();
+      showToast('Master PIN set successfully!');
+      document.getElementById('inputNewPin').value = '';
+    }
+
+    function removePin() {
+      if (confirm('Are you sure you want to disable PIN lock?')) {
+        const settings = getStoredJSON(STORAGE_KEYS.SETTINGS, {});
+        settings.pin = '';
+        settings.pinEnabled = false;
+        setStoredJSON(STORAGE_KEYS.SETTINGS, settings);
+        updateSecurityModalView();
+        showToast('PIN Lock disabled');
+      }
+    }
+
+    function updateSecurityModalView() {
+      const settings = getStoredJSON(STORAGE_KEYS.SETTINGS, {});
+      const statusEl = document.getElementById('pinStatusText');
+      const removeBtn = document.getElementById('btnRemovePin');
+      if (settings.pinEnabled && settings.pin) {
+        statusEl.innerHTML = 'Status: <span style="color: #10b981;">PIN Protected (Active)</span>';
+        removeBtn.style.display = 'inline-flex';
+      } else {
+        statusEl.innerHTML = 'Status: <span style="color: #ef4444;">No PIN Set (Unlocked)</span>';
+        removeBtn.style.display = 'none';
+      }
+    }
+
+    // Stealth Mode
+    function toggleStealthMode() {
+      document.body.classList.toggle('stealth-active');
+      const isStealth = document.body.classList.contains('stealth-active');
+      const btn = document.getElementById('btnStealthToggle');
+      if (btn) btn.classList.toggle('active', isStealth);
+      
+      const settings = getStoredJSON(STORAGE_KEYS.SETTINGS, {});
+      settings.stealth = isStealth;
+      setStoredJSON(STORAGE_KEYS.SETTINGS, settings);
+      
+      showToast(isStealth ? 'Stealth Mode ON: Numbers hidden' : 'Stealth Mode OFF');
+    }
+
+    function toggleStealthTitle() {
+      const settings = getStoredJSON(STORAGE_KEYS.SETTINGS, {});
+      settings.disguiseTitle = !settings.disguiseTitle;
+      setStoredJSON(STORAGE_KEYS.SETTINGS, settings);
+      applyTitleState();
+    }
+
+    function applyTitleState() {
+      const settings = getStoredJSON(STORAGE_KEYS.SETTINGS, {});
+      if (settings.disguiseTitle) {
+        document.title = "Personal Notes — Quick Notes";
+        document.getElementById('pageTitleText').textContent = "Quick Notes";
+      } else {
+        document.title = "AI Bots Private Ledger & Accounting Notes";
+        document.getElementById('pageTitleText').textContent = "Private Ledger";
+      }
+    }
+
+    /* --------------------------------------------------------------------------
+       VIEW NAVIGATION
+       -------------------------------------------------------------------------- */
+    function switchView(viewName) {
+      currentTab = viewName;
+      document.querySelectorAll('.tab-view').forEach(el => el.style.display = 'none');
+      document.querySelectorAll('.tab-pill').forEach(el => el.classList.remove('active'));
+      document.querySelectorAll('.bottom-nav-item').forEach(el => el.classList.remove('active'));
+
+      const target = document.getElementById(`view-${viewName}`);
+      if (target) target.style.display = 'block';
+
+      const tabBtn = document.getElementById(`tab-${viewName}`);
+      if (tabBtn) tabBtn.classList.add('active');
+
+      const bnavBtn = document.getElementById(`bnav-${viewName}`);
+      if (bnavBtn) bnavBtn.classList.add('active');
+
+      renderAllViews();
+    }
+
+    /* --------------------------------------------------------------------------
+       ARITHMETIC EXPRESSION PARSER
+       -------------------------------------------------------------------------- */
+    function evaluateExpression(str) {
+      if (!str) return 0;
+      // Sanitize: allow only numbers, decimals, and basic math (+ - * / ( ))
+      const sanitized = str.replace(/[^0-9\+\-\*\/\.\(\)]/g, '');
+      if (!sanitized) return 0;
+      try {
+        // Safe evaluation via Function constructor with math boundary
+        const result = Function(`'use strict'; return (${sanitized})`)();
+        return isFinite(result) && !isNaN(result) ? Number(result) : 0;
+      } catch (e) {
+        return 0;
+      }
+    }
+
+    function liveEvalAmount(val) {
+      const res = evaluateExpression(val);
+      document.getElementById('liveAmountEval').textContent = `= ${formatMoney(res)}`;
+    }
+
+    function addAmountChip(amt) {
+      const input = document.getElementById('txAmountInput');
+      const current = evaluateExpression(input.value);
+      const updated = current + amt;
+      input.value = updated;
+      liveEvalAmount(String(updated));
+    }
+
+    /* --------------------------------------------------------------------------
+       POPULATE SELECTORS
+       -------------------------------------------------------------------------- */
+    function populateCategories(type) {
+      const select = document.getElementById('txCategorySelect');
+      select.innerHTML = '';
+      const list = CATEGORIES[type] || CATEGORIES.expense;
+      list.forEach(cat => {
+        const opt = document.createElement('option');
+        opt.value = cat.id;
+        opt.textContent = `${cat.name}`;
+        select.appendChild(opt);
+      });
+    }
+
+    function populateAccountSelectors() {
+      const accounts = getStoredJSON(STORAGE_KEYS.ACCOUNTS, []);
+      const selects = [
+        document.getElementById('txAccountSelect'),
+        document.getElementById('txToAccountSelect'),
+        document.getElementById('settleAccountSelect'),
+        document.getElementById('payLoanAccountSelect')
+      ];
+
+      selects.forEach(sel => {
+        if (!sel) return;
+        sel.innerHTML = '';
+        accounts.forEach(acc => {
+          const opt = document.createElement('option');
+          opt.value = acc.id;
+          opt.textContent = `${acc.name} (${formatMoney(acc.balance)})`;
+          sel.appendChild(opt);
+        });
+      });
+    }
+
+    function setQuickTxType(type) {
+      quickTxType = type;
+      document.querySelectorAll('.type-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.type === type);
+      });
+
+      populateCategories(type);
+
+      const groupCategory = document.getElementById('groupCategory');
+      const groupToAccount = document.getElementById('groupToAccount');
+      const lblAccount = document.getElementById('lblAccount');
+
+      if (type === 'transfer') {
+        groupCategory.style.display = 'none';
+        groupToAccount.style.display = 'flex';
+        lblAccount.textContent = 'From Account';
+      } else {
+        groupCategory.style.display = 'flex';
+        groupToAccount.style.display = 'none';
+        lblAccount.textContent = type === 'income' ? 'Deposit Into' : 'Payment Account';
+      }
+    }
+
+    /* --------------------------------------------------------------------------
+       RECORD TRANSACTIONS (SPENDING / EARNINGS / TRANSFER)
+       -------------------------------------------------------------------------- */
+    function handleQuickTxSubmit(e) {
+      e.preventDefault();
+      const amountStr = document.getElementById('txAmountInput').value.trim();
+      const amount = evaluateExpression(amountStr);
+      if (amount <= 0) {
+        alert('Please enter a valid positive amount.');
+        return;
+      }
+
+      const accountId = document.getElementById('txAccountSelect').value;
+      const dateVal = document.getElementById('txDateInput').value;
+      const dateISO = dateVal ? new Date(dateVal).toISOString() : new Date().toISOString();
+      const note = document.getElementById('txNoteInput').value.trim() || (quickTxType === 'income' ? 'Income Deposit' : 'General Expense');
+      const tag = document.getElementById('txTagInput').value.trim();
+
+      const txs = getStoredJSON(STORAGE_KEYS.TRANSACTIONS, []);
+      const accounts = getStoredJSON(STORAGE_KEYS.ACCOUNTS, []);
+
+      const targetAcc = accounts.find(a => a.id === accountId);
+      if (!targetAcc) {
+        alert('Selected account not found!');
+        return;
+      }
+
+      const newTx = {
+        id: 'tx_' + Date.now() + '_' + Math.random().toString(36).substr(2, 4),
+        type: quickTxType,
+        amount: Number(amount.toFixed(2)),
+        accountId: accountId,
+        date: dateISO,
+        note: note,
+        tag: tag
+      };
+
+      if (quickTxType === 'transfer') {
+        const toAccountId = document.getElementById('txToAccountSelect').value;
+        if (toAccountId === accountId) {
+          alert('Destination account must be different from source account!');
+          return;
+        }
+        const toAcc = accounts.find(a => a.id === toAccountId);
+        if (!toAcc) {
+          alert('Destination account not found!');
+          return;
+        }
+
+        // Decrement source, increment destination
+        targetAcc.balance = Number((targetAcc.balance - amount).toFixed(2));
+        toAcc.balance = Number((toAcc.balance + amount).toFixed(2));
+        newTx.toAccountId = toAccountId;
+        newTx.category = 'transfer';
+      } else if (quickTxType === 'expense') {
+        newTx.category = document.getElementById('txCategorySelect').value;
+        // Decrement account
+        targetAcc.balance = Number((targetAcc.balance - amount).toFixed(2));
+      } else if (quickTxType === 'income') {
+        newTx.category = document.getElementById('txCategorySelect').value;
+        // Increment account
+        targetAcc.balance = Number((targetAcc.balance + amount).toFixed(2));
+      }
+
+      txs.unshift(newTx);
+
+      // Save safely
+      setStoredJSON(STORAGE_KEYS.ACCOUNTS, accounts);
+      setStoredJSON(STORAGE_KEYS.TRANSACTIONS, txs);
+
+      // Reset form fields
+      document.getElementById('txAmountInput').value = '';
+      document.getElementById('txNoteInput').value = '';
+      document.getElementById('txTagInput').value = '';
+      liveEvalAmount('');
+
+      // Refresh Views
+      renderAllViews();
+      showToast(`Recorded ${quickTxType}: ${formatMoney(amount)}`);
+    }
+
+    function deleteTransaction(txId) {
+      if (!confirm('Delete this transaction and reverse its balance impact?')) return;
+      const txs = getStoredJSON(STORAGE_KEYS.TRANSACTIONS, []);
+      const accounts = getStoredJSON(STORAGE_KEYS.ACCOUNTS, []);
+
+      const idx = txs.findIndex(t => t.id === txId);
+      if (idx === -1) return;
+      const tx = txs[idx];
+
+      // Reverse account balance effect
+      if (tx.type === 'expense') {
+        const acc = accounts.find(a => a.id === tx.accountId);
+        if (acc) acc.balance = Number((acc.balance + tx.amount).toFixed(2));
+      } else if (tx.type === 'income') {
+        const acc = accounts.find(a => a.id === tx.accountId);
+        if (acc) acc.balance = Number((acc.balance - tx.amount).toFixed(2));
+      } else if (tx.type === 'transfer') {
+        const fromAcc = accounts.find(a => a.id === tx.accountId);
+        const toAcc = accounts.find(a => a.id === tx.toAccountId);
+        if (fromAcc) fromAcc.balance = Number((fromAcc.balance + tx.amount).toFixed(2));
+        if (toAcc) toAcc.balance = Number((toAcc.balance - tx.amount).toFixed(2));
+      }
+
+      txs.splice(idx, 1);
+      setStoredJSON(STORAGE_KEYS.ACCOUNTS, accounts);
+      setStoredJSON(STORAGE_KEYS.TRANSACTIONS, txs);
+
+      renderAllViews();
+      showToast('Transaction deleted and balance reversed');
+    }
+
+    /* --------------------------------------------------------------------------
+       RENDER DASHBOARD & TRANSACTIONS
+       -------------------------------------------------------------------------- */
+    function renderDailyDashboard() {
+      const txs = getStoredJSON(STORAGE_KEYS.TRANSACTIONS, []);
+      const accounts = getStoredJSON(STORAGE_KEYS.ACCOUNTS, []);
+
+      const todayStr = new Date().toISOString().slice(0, 10);
+
+      let todayIncome = 0;
+      let todayIncomeCount = 0;
+      let todayExpense = 0;
+      let todayExpenseCount = 0;
+
+      txs.forEach(t => {
+        const tDate = t.date.slice(0, 10);
+        if (tDate === todayStr) {
+          if (t.type === 'income') {
+            todayIncome += t.amount;
+            todayIncomeCount++;
+          } else if (t.type === 'expense') {
+            todayExpense += t.amount;
+            todayExpenseCount++;
+          }
+        }
+      });
+
+      const todayNet = todayIncome - todayExpense;
+      let totalLiquid = accounts.reduce((sum, a) => sum + (Number(a.balance) || 0), 0);
+
+      document.getElementById('statTodayIncome').textContent = formatMoney(todayIncome);
+      document.getElementById('statTodayIncomeCount').textContent = todayIncomeCount;
+
+      document.getElementById('statTodayExpense').textContent = formatMoney(todayExpense);
+      document.getElementById('statTodayExpenseCount').textContent = todayExpenseCount;
+
+      const netEl = document.getElementById('statTodayNet');
+      netEl.textContent = formatMoney(todayNet);
+      if (todayNet > 0) {
+        netEl.style.color = 'var(--income)';
+        document.getElementById('statTodayNetStatus').innerHTML = '<i class="fa-solid fa-arrow-up" style="color:var(--income)"></i> Net Positive Savings';
+      } else if (todayNet < 0) {
+        netEl.style.color = 'var(--expense)';
+        document.getElementById('statTodayNetStatus').innerHTML = '<i class="fa-solid fa-arrow-down" style="color:var(--expense)"></i> Net Spend Over Income';
+      } else {
+        netEl.style.color = 'var(--text-primary)';
+        document.getElementById('statTodayNetStatus').textContent = 'Balanced';
+      }
+
+      document.getElementById('statTotalNetWorth').textContent = formatMoney(totalLiquid);
+    }
+
+    function setTxFilter(filter, btn) {
+      txFilterMode = filter;
+      document.querySelectorAll('.filter-chips .filter-chip').forEach(c => c.classList.remove('active'));
+      if (btn) btn.classList.add('active');
+      renderTransactionsTimeline();
+    }
+
+    function renderTransactionsTimeline() {
+      const container = document.getElementById('txTimelineContainer');
+      const txs = getStoredJSON(STORAGE_KEYS.TRANSACTIONS, []);
+      const accounts = getStoredJSON(STORAGE_KEYS.ACCOUNTS, []);
+      const query = (document.getElementById('txSearchInput')?.value || '').toLowerCase().trim();
+
+      const accMap = {};
+      accounts.forEach(a => accMap[a.id] = a.name);
+
+      const catMap = {};
+      Object.values(CATEGORIES).flat().forEach(c => catMap[c.id] = c);
+
+      // Filtering
+      const now = new Date();
+      const todayStr = now.toISOString().slice(0, 10);
+      const yesterday = new Date(now.getTime() - 86400000).toISOString().slice(0, 10);
+      const sevenDaysAgo = new Date(now.getTime() - 7 * 86400000).toISOString().slice(0, 10);
+      const monthStartStr = now.toISOString().slice(0, 7);
+
+      const filtered = txs.filter(t => {
+        const tDate = t.date.slice(0, 10);
+
+        if (txFilterMode === 'today' && tDate !== todayStr) return false;
+        if (txFilterMode === 'yesterday' && tDate !== yesterday) return false;
+        if (txFilterMode === 'week' && tDate < sevenDaysAgo) return false;
+        if (txFilterMode === 'month' && !tDate.startsWith(monthStartStr)) return false;
+        if (txFilterMode === 'expense' && t.type !== 'expense') return false;
+        if (txFilterMode === 'income' && t.type !== 'income') return false;
+
+        if (query) {
+          const noteMatch = (t.note || '').toLowerCase().includes(query);
+          const tagMatch = (t.tag || '').toLowerCase().includes(query);
+          const amountMatch = String(t.amount).includes(query);
+          const cat = catMap[t.category];
+          const catMatch = cat && cat.name.toLowerCase().includes(query);
+          if (!noteMatch && !tagMatch && !amountMatch && !catMatch) return false;
+        }
+
+        return true;
+      });
+
+      if (filtered.length === 0) {
+        container.innerHTML = `
+          <div class="empty-state">
+            <i class="fa-solid fa-receipt"></i>
+            <p>No transactions found matching your filter.</p>
+          </div>
+        `;
+        return;
+      }
+
+      // Group by Date
+      const groups = {};
+      filtered.forEach(t => {
+        const dateKey = t.date.slice(0, 10);
+        if (!groups[dateKey]) groups[dateKey] = [];
+        groups[dateKey].push(t);
+      });
+
+      let html = '';
+      const sortedDates = Object.keys(groups).sort((a, b) => b.localeCompare(a));
+
+      sortedDates.forEach(dateKey => {
+        let label = dateKey;
+        if (dateKey === todayStr) label = 'Today';
+        else if (dateKey === yesterday) label = 'Yesterday';
+        else {
+          const d = new Date(dateKey);
+          label = d.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' });
+        }
+
+        // Subtotals for the day
+        let dayInc = 0;
+        let dayExp = 0;
+        groups[dateKey].forEach(item => {
+          if (item.type === 'income') dayInc += item.amount;
+          else if (item.type === 'expense') dayExp += item.amount;
+        });
+
+        html += `
+          <div class="tx-group">
+            <div class="tx-group-date">
+              <span><i class="fa-regular fa-calendar" style="margin-right: 6px;"></i> ${label}</span>
+              <span class="stealth-mask">
+                ${dayExp > 0 ? `<span style="color: var(--expense); margin-right: 8px;">-${formatMoney(dayExp)}</span>` : ''}
+                ${dayInc > 0 ? `<span style="color: var(--income);">+${formatMoney(dayInc)}</span>` : ''}
+              </span>
+            </div>
+        `;
+
+        groups[dateKey].forEach(t => {
+          const cat = catMap[t.category] || { name: 'General', icon: 'fa-tag', color: '#6366f1' };
+          const accName = accMap[t.accountId] || 'Account';
+          const toAccName = t.toAccountId ? (accMap[t.toAccountId] || 'Account') : '';
+          const timeStr = new Date(t.date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+          const sign = t.type === 'income' ? '+' : (t.type === 'expense' ? '-' : '');
+
+          html += `
+            <div class="tx-item">
+              <div class="tx-left">
+                <div class="tx-cat-icon" style="background: ${cat.color}20; color: ${cat.color};">
+                  <i class="fa-solid ${cat.icon}"></i>
+                </div>
+                <div class="tx-details">
+                  <div class="tx-desc">${escapeHtml(t.note)}</div>
+                  <div class="tx-meta">
+                    <span><i class="fa-regular fa-clock"></i> ${timeStr}</span>
+                    <span>•</span>
+                    <span><i class="fa-solid fa-wallet"></i> ${escapeHtml(accName)}${toAccName ? ` → ${escapeHtml(toAccName)}` : ''}</span>
+                    ${t.tag ? `<span>•</span><span style="color: var(--primary);"><i class="fa-solid fa-hashtag"></i>${escapeHtml(t.tag)}</span>` : ''}
+                  </div>
+                </div>
+              </div>
+
+              <div class="tx-amount-wrap">
+                <div class="tx-amount ${t.type} stealth-mask">${sign}${formatMoney(t.amount)}</div>
+              </div>
+
+              <button class="tx-del-btn" onclick="deleteTransaction('${t.id}')" title="Delete & reverse balance">
+                <i class="fa-regular fa-trash-can"></i>
+              </button>
+            </div>
+          `;
+        });
+
+        html += `</div>`;
+      });
+
+      container.innerHTML = html;
+    }
+
+    /* --------------------------------------------------------------------------
+       ACCOUNTS MANAGER (GRANULAR INCREMENT & DECREMENT)
+       -------------------------------------------------------------------------- */
+    function renderAccountsView() {
+      const grid = document.getElementById('accountsListGrid');
+      const accounts = getStoredJSON(STORAGE_KEYS.ACCOUNTS, []);
+      document.getElementById('accCountBadge').textContent = accounts.length;
+
+      if (accounts.length === 0) {
+        grid.innerHTML = `
+          <div class="empty-state" style="grid-column: 1/-1;">
+            <i class="fa-solid fa-building-columns"></i>
+            <p>No accounts found. Click "New Account" to add one.</p>
+          </div>
+        `;
+        return;
+      }
+
+      let html = '';
+      accounts.forEach(acc => {
+        const typeIcons = {
+          bank: 'fa-building-columns',
+          cash: 'fa-money-bill-1',
+          wallet: 'fa-mobile-screen-button',
+          card: 'fa-credit-card',
+          savings: 'fa-piggy-bank'
+        };
+        const iconClass = acc.icon || typeIcons[acc.type] || 'fa-vault';
+
+        html += `
+          <div class="account-card" style="--card-border: ${acc.color}40;">
+            <div class="account-top">
+              <div class="account-info">
+                <div class="account-badge-icon" style="background: ${acc.color};">
+                  <i class="fa-solid ${iconClass}"></i>
+                </div>
+                <div>
+                  <div class="account-name">${escapeHtml(acc.name)}</div>
+                  <div class="account-type">${escapeHtml(acc.type)}</div>
+                </div>
+              </div>
+              <button class="btn-card-menu" onclick="deleteAccount('${acc.id}')" title="Delete account">
+                <i class="fa-solid fa-trash-can"></i>
+              </button>
+            </div>
+
+            <div class="account-balance-area">
+              <div class="account-balance-label">Current Balance</div>
+              <div class="account-balance stealth-mask" style="color: ${acc.color};">${formatMoney(acc.balance)}</div>
+            </div>
+
+            <!-- Tactile Increment / Decrement Steppers -->
+            <div class="stepper-actions">
+              <button class="btn-step-minus" onclick="openAdjustAccountModal('${acc.id}', 'decrement')" title="Withdraw or Deduct">
+                <i class="fa-solid fa-minus"></i> Deduct (-)
+              </button>
+              <button class="btn-step-plus" onclick="openAdjustAccountModal('${acc.id}', 'increment')" title="Deposit or Add">
+                <i class="fa-solid fa-plus"></i> Add Funds (+)
+              </button>
+            </div>
+          </div>
+        `;
+      });
+
+      grid.innerHTML = html;
+    }
+
+    function openAdjustAccountModal(accId, mode) {
+      const accounts = getStoredJSON(STORAGE_KEYS.ACCOUNTS, []);
+      const acc = accounts.find(a => a.id === accId);
+      if (!acc) return;
+
+      document.getElementById('adjustAccId').value = accId;
+      document.getElementById('adjustAccMode').value = mode;
+
+      document.getElementById('adjustAccTitle').textContent = mode === 'increment' 
+        ? `Deposit / Add to ${acc.name}` 
+        : `Withdraw / Deduct from ${acc.name}`;
+
+      document.getElementById('adjustAccAmountLabel').textContent = mode === 'increment' 
+        ? 'Amount to Add (+)' 
+        : 'Amount to Deduct (-)';
+
+      document.getElementById('adjustAccCurrentText').textContent = `${acc.name} Balance`;
+      document.getElementById('adjustAccCurrentVal').textContent = formatMoney(acc.balance);
+
+      document.getElementById('adjustAccSubmitBtn').textContent = mode === 'increment' 
+        ? 'Confirm Deposit (+)' 
+        : 'Confirm Deduction (-)';
+
+      document.getElementById('adjustAccAmountInput').value = '';
+      document.getElementById('adjustAccNoteInput').value = '';
+
+      openModal('modalAdjustAccount');
+    }
+
+    function setAdjustChip(val) {
+      document.getElementById('adjustAccAmountInput').value = val;
+    }
+
+    function handleAccountAdjustSubmit(e) {
+      e.preventDefault();
+      const accId = document.getElementById('adjustAccId').value;
+      const mode = document.getElementById('adjustAccMode').value;
+      const amount = Number(document.getElementById('adjustAccAmountInput').value);
+      const note = document.getElementById('adjustAccNoteInput').value.trim() || (mode === 'increment' ? 'Manual Deposit' : 'Manual Deduction');
+      const recordTx = document.getElementById('adjustAccRecordTx').checked;
+
+      if (amount <= 0 || isNaN(amount)) {
+        alert('Please enter a valid amount.');
+        return;
+      }
+
+      const accounts = getStoredJSON(STORAGE_KEYS.ACCOUNTS, []);
+      const acc = accounts.find(a => a.id === accId);
+      if (!acc) return;
+
+      // Granular Increment / Decrement
+      if (mode === 'increment') {
+        acc.balance = Number((acc.balance + amount).toFixed(2));
+      } else {
+        acc.balance = Number((acc.balance - amount).toFixed(2));
+      }
+      setStoredJSON(STORAGE_KEYS.ACCOUNTS, accounts);
+
+      // Record daily transaction audit log if checked
+      if (recordTx) {
+        const txs = getStoredJSON(STORAGE_KEYS.TRANSACTIONS, []);
+        txs.unshift({
+          id: 'tx_' + Date.now() + '_' + Math.random().toString(36).substr(2, 4),
+          type: mode === 'increment' ? 'income' : 'expense',
+          amount: amount,
+          accountId: accId,
+          category: mode === 'increment' ? 'other_inc' : 'other_exp',
+          date: new Date().toISOString(),
+          note: note,
+          tag: 'account-adjust'
+        });
+        setStoredJSON(STORAGE_KEYS.TRANSACTIONS, txs);
+      }
+
+      closeModal('modalAdjustAccount');
+      renderAllViews();
+      showToast(`${acc.name} adjusted by ${formatMoney(amount)}`);
+    }
+
+    function openAddAccountModal() {
+      document.getElementById('newAccName').value = '';
+      document.getElementById('newAccBalance').value = '0.00';
+      openModal('modalAddAccount');
+    }
+
+    function handleAddAccountSubmit(e) {
+      e.preventDefault();
+      const name = document.getElementById('newAccName').value.trim();
+      const type = document.getElementById('newAccType').value;
+      const balance = Number(document.getElementById('newAccBalance').value) || 0;
+      const colorRadio = document.querySelector('input[name="accColor"]:checked');
+      const color = colorRadio ? colorRadio.value : '#6366f1';
+
+      if (!name) return;
+
+      const accounts = getStoredJSON(STORAGE_KEYS.ACCOUNTS, []);
+      const newAcc = {
+        id: 'acc_' + Date.now(),
+        name: name,
+        type: type,
+        balance: Number(balance.toFixed(2)),
+        color: color
+      };
+      accounts.push(newAcc);
+      setStoredJSON(STORAGE_KEYS.ACCOUNTS, accounts);
+
+      closeModal('modalAddAccount');
+      populateAccountSelectors();
+      renderAllViews();
+      showToast(`Account "${name}" created!`);
+    }
+
+    function deleteAccount(accId) {
+      const accounts = getStoredJSON(STORAGE_KEYS.ACCOUNTS, []);
+      if (accounts.length <= 1) {
+        alert('You must keep at least one account!');
+        return;
+      }
+      const acc = accounts.find(a => a.id === accId);
+      if (!confirm(`Delete account "${acc?.name}"? Transactions already recorded will remain in history.`)) return;
+
+      const updated = accounts.filter(a => a.id !== accId);
+      setStoredJSON(STORAGE_KEYS.ACCOUNTS, updated);
+      populateAccountSelectors();
+      renderAllViews();
+      showToast(`Account deleted`);
+    }
+
+    /* --------------------------------------------------------------------------
+       PENDING KHATA (UDHAR / RECEIVABLES & PAYABLES)
+       -------------------------------------------------------------------------- */
+    function renderPendingView() {
+      const grid = document.getElementById('pendingListGrid');
+      const pendings = getStoredJSON(STORAGE_KEYS.PENDINGS, []);
+
+      let totalReceive = 0;
+      let totalPay = 0;
+
+      pendings.forEach(p => {
+        const remaining = p.totalAmount - (p.settledAmount || 0);
+        if (remaining > 0) {
+          if (p.type === 'to_receive') totalReceive += remaining;
+          else totalPay += remaining;
+        }
+      });
+
+      const netPending = totalReceive - totalPay;
+      document.getElementById('statPendingReceive').textContent = formatMoney(totalReceive);
+      document.getElementById('statPendingPay').textContent = formatMoney(totalPay);
+      document.getElementById('statPendingNet').textContent = formatMoney(netPending);
+      document.getElementById('pendingCountBadge').textContent = pendings.filter(p => (p.totalAmount - (p.settledAmount || 0)) > 0).length;
+
+      // Filter
+      const filtered = pendings.filter(p => {
+        const remaining = p.totalAmount - (p.settledAmount || 0);
+        if (pendingFilterMode === 'to_receive') return p.type === 'to_receive' && remaining > 0;
+        if (pendingFilterMode === 'to_pay') return p.type === 'to_pay' && remaining > 0;
+        if (pendingFilterMode === 'settled') return remaining <= 0;
+        return true;
+      });
+
+      if (filtered.length === 0) {
+        grid.innerHTML = `
+          <div class="empty-state" style="grid-column: 1/-1;">
+            <i class="fa-solid fa-hand-holding-dollar"></i>
+            <p>No pending khata records found in this view.</p>
+          </div>
+        `;
+        return;
+      }
+
+      let html = '';
+      filtered.forEach(p => {
+        const remaining = Math.max(0, p.totalAmount - (p.settledAmount || 0));
+        const isSettled = remaining <= 0;
+        const pct = p.totalAmount > 0 ? Math.min(100, Math.round(((p.settledAmount || 0) / p.totalAmount) * 100)) : 100;
+
+        html += `
+          <div class="pending-card">
+            <div class="pending-head">
+              <div class="person-name">
+                <i class="fa-solid ${p.type === 'to_receive' ? 'fa-arrow-down-left' : 'fa-arrow-up-right'}" style="color: ${p.type === 'to_receive' ? 'var(--income)' : 'var(--expense)'}"></i>
+                ${escapeHtml(p.person)}
+              </div>
+              <span class="badge-pending-type ${p.type === 'to_receive' ? 'receive' : 'pay'}">
+                ${p.type === 'to_receive' ? 'To Receive' : 'To Pay'}
+              </span>
+            </div>
+
+            <div class="pending-amount-box">
+              <div>
+                <div style="font-size: 0.72rem; color: var(--text-muted); text-transform: uppercase;">Remaining Pending</div>
+                <div class="pending-amount-val stealth-mask" style="color: ${p.type === 'to_receive' ? 'var(--income)' : 'var(--expense)'};">
+                  ${formatMoney(remaining)}
+                </div>
+              </div>
+              <div style="text-align: right;">
+                <div style="font-size: 0.72rem; color: var(--text-muted);">Total Original</div>
+                <div style="font-size: 0.95rem; font-weight: 700;" class="stealth-mask">${formatMoney(p.totalAmount)}</div>
+              </div>
+            </div>
+
+            <div class="progress-bar-wrap">
+              <div class="progress-bar-fill" style="width: ${pct}%; background: ${isSettled ? 'var(--income)' : 'var(--pending)'};"></div>
+            </div>
+
+            <div style="display: flex; justify-content: space-between; font-size: 0.76rem; color: var(--text-muted); margin-bottom: 12px;">
+              <span>Settled: <strong class="stealth-mask">${formatMoney(p.settledAmount || 0)}</strong> (${pct}%)</span>
+              ${p.dueDate ? `<span>Due: ${p.dueDate}</span>` : ''}
+            </div>
+
+            ${p.notes ? `<div style="font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 12px; background: var(--bg-tertiary); padding: 6px 10px; border-radius: 6px;"><i class="fa-solid fa-note-sticky" style="margin-right: 6px; color: var(--text-muted);"></i>${escapeHtml(p.notes)}</div>` : ''}
+
+            <!-- Granular Settle / Increment Buttons -->
+            <div style="display: flex; gap: 8px;">
+              ${!isSettled ? `
+                <button class="btn-step-plus" style="background: rgba(99, 102, 241, 0.15); color: var(--primary);" onclick="openSettlePendingModal('${p.id}')">
+                  <i class="fa-solid fa-hand-holding-dollar"></i> Settle / Pay (-)
+                </button>
+              ` : `
+                <span style="flex: 1; text-align: center; font-size: 0.82rem; font-weight: 700; color: var(--income); padding: 6px;">
+                  <i class="fa-solid fa-circle-check"></i> Fully Settled
+                </span>
+              `}
+
+              <button class="icon-btn" onclick="openIncrementPendingPrompt('${p.id}')" title="Add more pending amount (+)">
+                <i class="fa-solid fa-plus"></i>
+              </button>
+              <button class="icon-btn" onclick="deletePending('${p.id}')" title="Delete record">
+                <i class="fa-solid fa-trash-can"></i>
+              </button>
+            </div>
+          </div>
+        `;
+      });
+
+      grid.innerHTML = html;
+    }
+
+    function setPendingFilter(filter, btn) {
+      pendingFilterMode = filter;
+      document.querySelectorAll('#view-pending .filter-chip').forEach(c => c.classList.remove('active'));
+      if (btn) btn.classList.add('active');
+      renderPendingView();
+    }
+
+    function openAddPendingModal() {
+      document.getElementById('pendingPerson').value = '';
+      document.getElementById('pendingAmount').value = '';
+      document.getElementById('pendingDueDate').value = '';
+      document.getElementById('pendingNotes').value = '';
+      openModal('modalAddPending');
+    }
+
+    function handleAddPendingSubmit(e) {
+      e.preventDefault();
+      const person = document.getElementById('pendingPerson').value.trim();
+      const type = document.getElementById('pendingType').value;
+      const amount = Number(document.getElementById('pendingAmount').value);
+      const dueDate = document.getElementById('pendingDueDate').value;
+      const notes = document.getElementById('pendingNotes').value.trim();
+
+      if (!person || amount <= 0) {
+        alert('Please provide person name and valid amount.');
+        return;
+      }
+
+      const pendings = getStoredJSON(STORAGE_KEYS.PENDINGS, []);
+      pendings.unshift({
+        id: 'pend_' + Date.now(),
+        person: person,
+        type: type,
+        totalAmount: Number(amount.toFixed(2)),
+        settledAmount: 0,
+        dueDate: dueDate,
+        notes: notes,
+        createdAt: new Date().toISOString(),
+        history: []
+      });
+
+      setStoredJSON(STORAGE_KEYS.PENDINGS, pendings);
+      closeModal('modalAddPending');
+      renderAllViews();
+      showToast(`Added pending record for ${person}`);
+    }
+
+    function openSettlePendingModal(pendingId) {
+      const pendings = getStoredJSON(STORAGE_KEYS.PENDINGS, []);
+      const p = pendings.find(item => item.id === pendingId);
+      if (!p) return;
+
+      const remaining = Math.max(0, p.totalAmount - (p.settledAmount || 0));
+      document.getElementById('settlePendingId').value = pendingId;
+      document.getElementById('settlePersonName').textContent = `${p.person} (${p.type === 'to_receive' ? 'To Receive' : 'To Pay'})`;
+      document.getElementById('settleRemainingVal').textContent = formatMoney(remaining);
+      document.getElementById('settleAmountInput').value = remaining;
+      document.getElementById('settleNoteInput').value = '';
+
+      openModal('modalSettlePending');
+    }
+
+    function handleSettlePendingSubmit(e) {
+      e.preventDefault();
+      const pendingId = document.getElementById('settlePendingId').value;
+      const amount = Number(document.getElementById('settleAmountInput').value);
+      const accountId = document.getElementById('settleAccountSelect').value;
+      const note = document.getElementById('settleNoteInput').value.trim() || 'Settlement payment';
+
+      if (amount <= 0 || isNaN(amount)) {
+        alert('Please enter a valid settlement amount.');
+        return;
+      }
+
+      const pendings = getStoredJSON(STORAGE_KEYS.PENDINGS, []);
+      const accounts = getStoredJSON(STORAGE_KEYS.ACCOUNTS, []);
+      const txs = getStoredJSON(STORAGE_KEYS.TRANSACTIONS, []);
+
+      const p = pendings.find(item => item.id === pendingId);
+      if (!p) return;
+
+      // Granular settlement decrement
+      p.settledAmount = Number(((p.settledAmount || 0) + amount).toFixed(2));
+      if (!p.history) p.history = [];
+      p.history.push({
+        date: new Date().toISOString(),
+        amount: amount,
+        note: note
+      });
+
+      // Update associated Account balance
+      const acc = accounts.find(a => a.id === accountId);
+      if (acc) {
+        if (p.type === 'to_receive') {
+          // Received money -> increments account
+          acc.balance = Number((acc.balance + amount).toFixed(2));
+          txs.unshift({
+            id: 'tx_' + Date.now(),
+            type: 'income',
+            amount: amount,
+            accountId: accountId,
+            category: 'other_inc',
+            date: new Date().toISOString(),
+            note: `Udhar Received from ${p.person} - ${note}`,
+            tag: 'khata-settle'
+          });
+        } else {
+          // Paid money -> decrements account
+          acc.balance = Number((acc.balance - amount).toFixed(2));
+          txs.unshift({
+            id: 'tx_' + Date.now(),
+            type: 'expense',
+            amount: amount,
+            accountId: accountId,
+            category: 'other_exp',
+            date: new Date().toISOString(),
+            note: `Udhar Paid to ${p.person} - ${note}`,
+            tag: 'khata-settle'
+          });
+        }
+      }
+
+      setStoredJSON(STORAGE_KEYS.PENDINGS, pendings);
+      setStoredJSON(STORAGE_KEYS.ACCOUNTS, accounts);
+      setStoredJSON(STORAGE_KEYS.TRANSACTIONS, txs);
+
+      closeModal('modalSettlePending');
+      renderAllViews();
+      showToast(`Settled ${formatMoney(amount)} for ${p.person}`);
+    }
+
+    function openIncrementPendingPrompt(pendingId) {
+      const pendings = getStoredJSON(STORAGE_KEYS.PENDINGS, []);
+      const p = pendings.find(item => item.id === pendingId);
+      if (!p) return;
+
+      const addStr = prompt(`Add additional pending amount for ${p.person}:`, "0");
+      if (!addStr) return;
+      const addVal = evaluateExpression(addStr);
+      if (addVal <= 0) return;
+
+      p.totalAmount = Number((p.totalAmount + addVal).toFixed(2));
+      setStoredJSON(STORAGE_KEYS.PENDINGS, pendings);
+      renderAllViews();
+      showToast(`Added ${formatMoney(addVal)} to ${p.person}'s pending balance`);
+    }
+
+    function deletePending(pendingId) {
+      if (!confirm('Delete this pending khata record?')) return;
+      const pendings = getStoredJSON(STORAGE_KEYS.PENDINGS, []);
+      const updated = pendings.filter(p => p.id !== pendingId);
+      setStoredJSON(STORAGE_KEYS.PENDINGS, updated);
+      renderAllViews();
+      showToast('Record deleted');
+    }
+
+    /* --------------------------------------------------------------------------
+       LOANS & EMI TRACKER
+       -------------------------------------------------------------------------- */
+    function renderLoansView() {
+      const grid = document.getElementById('loansListGrid');
+      const loans = getStoredJSON(STORAGE_KEYS.LOANS, []);
+
+      let totalBorrowed = 0;
+      let totalLent = 0;
+
+      loans.forEach(l => {
+        const remaining = Math.max(0, l.principal - (l.repaidAmount || 0));
+        if (l.type === 'borrowed') totalBorrowed += remaining;
+        else totalLent += remaining;
+      });
+
+      document.getElementById('statTotalBorrowed').textContent = formatMoney(totalBorrowed);
+      document.getElementById('statTotalLent').textContent = formatMoney(totalLent);
+      document.getElementById('loanCountBadge').textContent = loans.length;
+
+      if (loans.length === 0) {
+        grid.innerHTML = `
+          <div class="empty-state" style="grid-column: 1/-1;">
+            <i class="fa-solid fa-landmark"></i>
+            <p>No loans or EMIs tracked yet. Click "New Loan / Debt" to add one.</p>
+          </div>
+        `;
+        return;
+      }
+
+      let html = '';
+      loans.forEach(l => {
+        const remaining = Math.max(0, l.principal - (l.repaidAmount || 0));
+        const pct = l.principal > 0 ? Math.min(100, Math.round(((l.repaidAmount || 0) / l.principal) * 100)) : 100;
+        const isPaidOff = remaining <= 0;
+
+        html += `
+          <div class="pending-card">
+            <div class="pending-head">
+              <div class="person-name">
+                <i class="fa-solid fa-landmark" style="color: #a855f7;"></i>
+                ${escapeHtml(l.title)}
+              </div>
+              <span class="badge-pending-type ${l.type === 'borrowed' ? 'pay' : 'receive'}">
+                ${l.type === 'borrowed' ? 'Borrowed Debt' : 'Lent Loan'}
+              </span>
+            </div>
+
+            <div class="pending-amount-box">
+              <div>
+                <div style="font-size: 0.72rem; color: var(--text-muted); text-transform: uppercase;">Outstanding Principal</div>
+                <div class="pending-amount-val stealth-mask" style="color: #a855f7;">
+                  ${formatMoney(remaining)}
+                </div>
+              </div>
+              <div style="text-align: right;">
+                <div style="font-size: 0.72rem; color: var(--text-muted);">Total Principal</div>
+                <div style="font-size: 0.95rem; font-weight: 700;" class="stealth-mask">${formatMoney(l.principal)}</div>
+              </div>
+            </div>
+
+            <div class="progress-bar-wrap">
+              <div class="progress-bar-fill" style="width: ${pct}%; background: ${isPaidOff ? 'var(--income)' : '#a855f7'};"></div>
+            </div>
+
+            <div style="display: flex; justify-content: space-between; font-size: 0.76rem; color: var(--text-muted); margin-bottom: 12px;">
+              <span>Repaid: <strong class="stealth-mask">${formatMoney(l.repaidAmount || 0)}</strong> (${pct}%)</span>
+              ${l.emi ? `<span>EMI: <strong class="stealth-mask">${formatMoney(l.emi)}</strong>/mo</span>` : ''}
+            </div>
+
+            ${l.notes ? `<div style="font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 12px; background: var(--bg-tertiary); padding: 6px 10px; border-radius: 6px;"><i class="fa-solid fa-info-circle" style="margin-right: 6px; color: var(--text-muted);"></i>${escapeHtml(l.notes)}</div>` : ''}
+
+            <!-- Granular Buttons -->
+            <div style="display: flex; gap: 8px;">
+              ${!isPaidOff ? `
+                <button class="btn-step-plus" style="background: rgba(168, 85, 247, 0.15); color: #a855f7;" onclick="openPayLoanModal('${l.id}')">
+                  <i class="fa-solid fa-credit-card"></i> Pay EMI / Installment (-)
+                </button>
+              ` : `
+                <span style="flex: 1; text-align: center; font-size: 0.82rem; font-weight: 700; color: var(--income); padding: 6px;">
+                  <i class="fa-solid fa-check-double"></i> 100% Repaid
+                </span>
+              `}
+
+              <button class="icon-btn" onclick="openIncrementLoanPrompt('${l.id}')" title="Borrow more / Increase loan (+)">
+                <i class="fa-solid fa-plus"></i>
+              </button>
+              <button class="icon-btn" onclick="deleteLoan('${l.id}')" title="Delete loan">
+                <i class="fa-solid fa-trash-can"></i>
+              </button>
+            </div>
+          </div>
+        `;
+      });
+
+      grid.innerHTML = html;
+    }
+
+    function openAddLoanModal() {
+      document.getElementById('loanTitle').value = '';
+      document.getElementById('loanPrincipal').value = '';
+      document.getElementById('loanEmi').value = '';
+      document.getElementById('loanNotes').value = '';
+      openModal('modalAddLoan');
+    }
+
+    function handleAddLoanSubmit(e) {
+      e.preventDefault();
+      const type = document.getElementById('loanType').value;
+      const title = document.getElementById('loanTitle').value.trim();
+      const principal = Number(document.getElementById('loanPrincipal').value);
+      const emi = Number(document.getElementById('loanEmi').value) || 0;
+      const notes = document.getElementById('loanNotes').value.trim();
+
+      if (!title || principal <= 0) {
+        alert('Please fill loan title and positive principal amount.');
+        return;
+      }
+
+      const loans = getStoredJSON(STORAGE_KEYS.LOANS, []);
+      loans.unshift({
+        id: 'loan_' + Date.now(),
+        type: type,
+        title: title,
+        principal: Number(principal.toFixed(2)),
+        repaidAmount: 0,
+        emi: Number(emi.toFixed(2)),
+        notes: notes,
+        createdAt: new Date().toISOString()
+      });
+
+      setStoredJSON(STORAGE_KEYS.LOANS, loans);
+      closeModal('modalAddLoan');
+      renderAllViews();
+      showToast(`Tracked loan "${title}"`);
+    }
+
+    function openPayLoanModal(loanId) {
+      const loans = getStoredJSON(STORAGE_KEYS.LOANS, []);
+      const l = loans.find(item => item.id === loanId);
+      if (!l) return;
+
+      const remaining = Math.max(0, l.principal - (l.repaidAmount || 0));
+      document.getElementById('payLoanId').value = loanId;
+      document.getElementById('payLoanTitle').textContent = `${l.title} (${l.type === 'borrowed' ? 'Debt' : 'Lent Loan'})`;
+      document.getElementById('payLoanRemainingVal').textContent = formatMoney(remaining);
+      document.getElementById('payLoanAmountInput').value = l.emi > 0 && l.emi <= remaining ? l.emi : remaining;
+      document.getElementById('payLoanNoteInput').value = '';
+
+      openModal('modalPayLoan');
+    }
+
+    function handlePayLoanSubmit(e) {
+      e.preventDefault();
+      const loanId = document.getElementById('payLoanId').value;
+      const amount = Number(document.getElementById('payLoanAmountInput').value);
+      const accountId = document.getElementById('payLoanAccountSelect').value;
+      const note = document.getElementById('payLoanNoteInput').value.trim() || 'Loan installment payment';
+
+      if (amount <= 0 || isNaN(amount)) {
+        alert('Please enter valid amount.');
+        return;
+      }
+
+      const loans = getStoredJSON(STORAGE_KEYS.LOANS, []);
+      const accounts = getStoredJSON(STORAGE_KEYS.ACCOUNTS, []);
+      const txs = getStoredJSON(STORAGE_KEYS.TRANSACTIONS, []);
+
+      const l = loans.find(item => item.id === loanId);
+      if (!l) return;
+
+      // Granular loan repayment decrement
+      l.repaidAmount = Number(((l.repaidAmount || 0) + amount).toFixed(2));
+
+      // Decrement source account
+      const acc = accounts.find(a => a.id === accountId);
+      if (acc) {
+        acc.balance = Number((acc.balance - amount).toFixed(2));
+        txs.unshift({
+          id: 'tx_' + Date.now(),
+          type: 'expense',
+          amount: amount,
+          accountId: accountId,
+          category: 'bills',
+          date: new Date().toISOString(),
+          note: `Loan EMI Payment: ${l.title} - ${note}`,
+          tag: 'loan-repayment'
+        });
+      }
+
+      setStoredJSON(STORAGE_KEYS.LOANS, loans);
+      setStoredJSON(STORAGE_KEYS.ACCOUNTS, accounts);
+      setStoredJSON(STORAGE_KEYS.TRANSACTIONS, txs);
+
+      closeModal('modalPayLoan');
+      renderAllViews();
+      showToast(`Repaid ${formatMoney(amount)} for ${l.title}`);
+    }
+
+    function openIncrementLoanPrompt(loanId) {
+      const loans = getStoredJSON(STORAGE_KEYS.LOANS, []);
+      const l = loans.find(item => item.id === loanId);
+      if (!l) return;
+
+      const addStr = prompt(`Add additional borrowed amount for ${l.title}:`, "0");
+      if (!addStr) return;
+      const addVal = evaluateExpression(addStr);
+      if (addVal <= 0) return;
+
+      l.principal = Number((l.principal + addVal).toFixed(2));
+      setStoredJSON(STORAGE_KEYS.LOANS, loans);
+      renderAllViews();
+      showToast(`Added ${formatMoney(addVal)} to ${l.title}`);
+    }
+
+    function deleteLoan(loanId) {
+      if (!confirm('Delete this loan tracker?')) return;
+      const loans = getStoredJSON(STORAGE_KEYS.LOANS, []);
+      const updated = loans.filter(l => l.id !== loanId);
+      setStoredJSON(STORAGE_KEYS.LOANS, updated);
+      renderAllViews();
+      showToast('Loan deleted');
+    }
+
+    /* --------------------------------------------------------------------------
+       ANALYTICS & REPORTS
+       -------------------------------------------------------------------------- */
+    function renderAnalyticsView() {
+      const txs = getStoredJSON(STORAGE_KEYS.TRANSACTIONS, []);
+      const catBars = document.getElementById('analyticsCatBars');
+      const statsBox = document.getElementById('analyticsSummaryStats');
+
+      const catMap = {};
+      Object.values(CATEGORIES).flat().forEach(c => catMap[c.id] = c);
+
+      // Total expense by category
+      const expTotals = {};
+      let totalExp = 0;
+      let totalInc = 0;
+
+      txs.forEach(t => {
+        if (t.type === 'expense') {
+          expTotals[t.category] = (expTotals[t.category] || 0) + t.amount;
+          totalExp += t.amount;
+        } else if (t.type === 'income') {
+          totalInc += t.amount;
+        }
+      });
+
+      // Render category progress bars
+      const sortedCats = Object.keys(expTotals).sort((a, b) => expTotals[b] - expTotals[a]);
+
+      if (sortedCats.length === 0) {
+        catBars.innerHTML = '<p style="color: var(--text-muted); font-size: 0.85rem;">No expenses recorded yet.</p>';
+      } else {
+        let barsHtml = '';
+        sortedCats.slice(0, 6).forEach(catId => {
+          const amt = expTotals[catId];
+          const pct = totalExp > 0 ? Math.round((amt / totalExp) * 100) : 0;
+          const cat = catMap[catId] || { name: catId, color: '#6366f1', icon: 'fa-tag' };
+
+          barsHtml += `
+            <div style="margin-bottom: 12px;">
+              <div style="display: flex; justify-content: space-between; font-size: 0.82rem; font-weight: 600; margin-bottom: 4px;">
+                <span><i class="fa-solid ${cat.icon}" style="color: ${cat.color}; margin-right: 6px;"></i>${cat.name}</span>
+                <span class="stealth-mask">${formatMoney(amt)} (${pct}%)</span>
+              </div>
+              <div class="progress-bar-wrap" style="margin: 0;">
+                <div class="progress-bar-fill" style="width: ${pct}%; background: ${cat.color};"></div>
+              </div>
+            </div>
+          `;
+        });
+        catBars.innerHTML = barsHtml;
+      }
+
+      // Summary stats
+      const txCount = txs.length;
+      const avgTx = txCount > 0 ? (totalExp / (txs.filter(t => t.type === 'expense').length || 1)) : 0;
+
+      statsBox.innerHTML = `
+        <div style="display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid var(--border-color);">
+          <span style="color: var(--text-muted); font-size: 0.85rem;">All-Time Earnings</span>
+          <span style="font-weight: 700; color: var(--income);" class="stealth-mask">${formatMoney(totalInc)}</span>
+        </div>
+        <div style="display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid var(--border-color);">
+          <span style="color: var(--text-muted); font-size: 0.85rem;">All-Time Spending</span>
+          <span style="font-weight: 700; color: var(--expense);" class="stealth-mask">${formatMoney(totalExp)}</span>
+        </div>
+        <div style="display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid var(--border-color);">
+          <span style="color: var(--text-muted); font-size: 0.85rem;">Average Expense Ticket</span>
+          <span style="font-weight: 700;" class="stealth-mask">${formatMoney(avgTx)}</span>
+        </div>
+        <div style="display: flex; justify-content: space-between; padding: 8px 0;">
+          <span style="color: var(--text-muted); font-size: 0.85rem;">Total Transactions Logged</span>
+          <span style="font-weight: 700;">${txCount} entries</span>
+        </div>
+      `;
+    }
+
+    /* --------------------------------------------------------------------------
+       DATA BACKUP & RESTORE (JSON & CSV)
+       -------------------------------------------------------------------------- */
+    function exportJSONBackup() {
+      const data = {
+        app: 'AI-Bots-Private-Ledger',
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        settings: getStoredJSON(STORAGE_KEYS.SETTINGS, {}),
+        accounts: getStoredJSON(STORAGE_KEYS.ACCOUNTS, []),
+        transactions: getStoredJSON(STORAGE_KEYS.TRANSACTIONS, []),
+        pendings: getStoredJSON(STORAGE_KEYS.PENDINGS, []),
+        loans: getStoredJSON(STORAGE_KEYS.LOANS, [])
+      };
+
+      const jsonStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(data, null, 2));
+      const downloadAnchor = document.createElement('a');
+      const dateStr = new Date().toISOString().slice(0, 10);
+      downloadAnchor.setAttribute("href", jsonStr);
+      downloadAnchor.setAttribute("download", `aibots_ledger_backup_${dateStr}.json`);
+      document.body.appendChild(downloadAnchor);
+      downloadAnchor.click();
+      downloadAnchor.remove();
+
+      showToast('Backup JSON downloaded safely!');
+    }
+
+    function handleImportFile(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        try {
+          const imported = JSON.parse(e.target.result);
+          if (!imported || !imported.accounts || !imported.transactions) {
+            alert('Invalid ledger backup file format!');
+            return;
+          }
+
+          if (confirm(`Restore data from backup created at ${imported.exportedAt || 'unknown date'}? This will safely load your accounts, pendings, loans, and transactions.`)) {
+            if (imported.accounts) setStoredJSON(STORAGE_KEYS.ACCOUNTS, imported.accounts);
+            if (imported.transactions) setStoredJSON(STORAGE_KEYS.TRANSACTIONS, imported.transactions);
+            if (imported.pendings) setStoredJSON(STORAGE_KEYS.PENDINGS, imported.pendings);
+            if (imported.loans) setStoredJSON(STORAGE_KEYS.LOANS, imported.loans);
+            if (imported.settings) {
+              const currentSettings = getStoredJSON(STORAGE_KEYS.SETTINGS, {});
+              setStoredJSON(STORAGE_KEYS.SETTINGS, { ...currentSettings, ...imported.settings });
+            }
+
+            closeModal('modalBackup');
+            populateAccountSelectors();
+            renderAllViews();
+            showToast('Backup restored successfully!');
+          }
+        } catch (err) {
+          console.error(err);
+          alert('Could not parse the selected backup file.');
+        }
+      };
+      reader.readAsText(file);
+      event.target.value = '';
+    }
+
+    function exportToCSV() {
+      const txs = getStoredJSON(STORAGE_KEYS.TRANSACTIONS, []);
+      const accounts = getStoredJSON(STORAGE_KEYS.ACCOUNTS, []);
+      const accMap = {};
+      accounts.forEach(a => accMap[a.id] = a.name);
+
+      let csv = "ID,Date,Time,Type,Category,Account,Amount,Note,Tag\n";
+
+      txs.forEach(t => {
+        const d = new Date(t.date);
+        const dateStr = d.toISOString().slice(0, 10);
+        const timeStr = d.toTimeString().slice(0, 8);
+        const acc = (accMap[t.accountId] || '').replace(/"/g, '""');
+        const note = (t.note || '').replace(/"/g, '""');
+        const tag = (t.tag || '').replace(/"/g, '""');
+
+        csv += `"${t.id}","${dateStr}","${timeStr}","${t.type}","${t.category}","${acc}",${t.amount},"${note}","${tag}"\n`;
+      });
+
+      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.setAttribute("href", url);
+      link.setAttribute("download", `aibots_ledger_${new Date().toISOString().slice(0, 10)}.csv`);
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+
+      showToast('CSV Spreadsheet downloaded!');
+    }
+
+    function confirmResetAllData() {
+      if (confirm('WARNING: Are you sure you want to completely erase your ledger, accounts, pendings, and loans? This cannot be undone unless you have a JSON backup!')) {
+        const pin = prompt('Type RESET to confirm complete wipe:');
+        if (pin === 'RESET') {
+          localStorage.removeItem(STORAGE_KEYS.ACCOUNTS);
+          localStorage.removeItem(STORAGE_KEYS.TRANSACTIONS);
+          localStorage.removeItem(STORAGE_KEYS.PENDINGS);
+          localStorage.removeItem(STORAGE_KEYS.LOANS);
+          initDefaultsIfEmpty();
+          closeModal('modalBackup');
+          populateAccountSelectors();
+          renderAllViews();
+          showToast('Ledger reset to defaults');
+        }
+      }
+    }
+
+    /* --------------------------------------------------------------------------
+       MODAL CONTROLLERS & HELPERS
+       -------------------------------------------------------------------------- */
+    function openModal(modalId) {
+      const m = document.getElementById(modalId);
+      if (m) m.classList.add('open');
+    }
+
+    function closeModal(modalId) {
+      const m = document.getElementById(modalId);
+      if (m) m.classList.remove('open');
+    }
+
+    function openSecurityModal() {
+      updateSecurityModalView();
+      openModal('modalSecurity');
+    }
+
+    function openBackupModal() {
+      openModal('modalBackup');
+    }
+
+    function showToast(msg, isError = false) {
+      const t = document.getElementById('toastMsg');
+      const txt = document.getElementById('toastText');
+      if (!t || !txt) return;
+      txt.textContent = msg;
+      const icon = t.querySelector('i');
+      if (icon) {
+        icon.className = isError ? 'fa-solid fa-circle-exclamation' : 'fa-solid fa-circle-check';
+        icon.style.color = isError ? '#ef4444' : '#10b981';
+      }
+      t.classList.add('show');
+      setTimeout(() => t.classList.remove('show'), 3000);
+    }
+
+    function escapeHtml(str) {
+      if (!str) return '';
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+    }
+
+    function renderAllViews() {
+      renderDailyDashboard();
+      renderTransactionsTimeline();
+      renderAccountsView();
+      renderPendingView();
+      renderLoansView();
+      renderAnalyticsView();
+    }
+
+    /* --------------------------------------------------------------------------
+       APP INITIALIZATION
+       -------------------------------------------------------------------------- */
+    document.addEventListener('DOMContentLoaded', () => {
+      initDefaultsIfEmpty();
+
+      // Load settings
+      const settings = getStoredJSON(STORAGE_KEYS.SETTINGS, {});
+      if (settings.currency) {
+        const currSelect = document.getElementById('currencySelect');
+        if (currSelect) currSelect.value = settings.currency;
+        document.querySelectorAll('.currency-sym').forEach(el => el.textContent = settings.currency);
+      }
+
+      if (settings.stealth) {
+        document.body.classList.add('stealth-active');
+        const btn = document.getElementById('btnStealthToggle');
+        if (btn) btn.classList.add('active');
+      }
+
+      applyTitleState();
+
+      // Populate form defaults
+      setQuickTxType('expense');
+      populateAccountSelectors();
+
+      // Set default datetime to now
+      const now = new Date();
+      now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
+      const nowIso = now.toISOString().slice(0, 16);
+      const dtInput = document.getElementById('txDateInput');
+      if (dtInput) dtInput.value = nowIso;
+
+      // Close modal on outside click
+      document.querySelectorAll('.modal-overlay').forEach(modal => {
+        modal.addEventListener('click', (e) => {
+          if (e.target === modal) modal.classList.remove('open');
+        });
+      });
+
+      // Keyboard Esc to close modals
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+          document.querySelectorAll('.modal-overlay.open').forEach(m => m.classList.remove('open'));
+        }
+      });
+
+      renderAllViews();
+      checkPinLock();
+    });
+  </script>
+</body>
+</html>

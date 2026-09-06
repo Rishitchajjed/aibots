@@ -9,7 +9,7 @@
   <meta name="robots" content="noindex, nofollow, noarchive, nosnippet">
   
   <title>AI Bots Private Cash Ledger & Notes</title>
-  <meta name="description" content="Simple private local cash ledger, daily spending, earnings, and person-to-person receivables & payables.">
+  <meta name="description" content="Simple private local cash ledger, daily spending, earnings, bill splitting, and person-to-person khata.">
   <link rel="icon" href="logo.png" type="image/png">
 
   <!-- FontAwesome & Theme -->
@@ -28,7 +28,9 @@
       --receive-bg: rgba(14, 165, 233, 0.12);
       --pay: #f59e0b;
       --pay-bg: rgba(245, 158, 11, 0.12);
-      --card-bg: rgba(17, 24, 39, 0.82);
+      --contri: #a855f7;
+      --contri-bg: rgba(168, 85, 247, 0.12);
+      --card-bg: rgba(17, 24, 39, 0.85);
       --card-border: rgba(255, 255, 255, 0.08);
       --card-hover: rgba(31, 41, 55, 0.95);
     }
@@ -39,6 +41,7 @@
       --card-hover: rgba(241, 245, 249, 0.98);
       --income-bg: rgba(16, 185, 129, 0.15);
       --expense-bg: rgba(244, 63, 94, 0.15);
+      --contri-bg: rgba(168, 85, 247, 0.15);
     }
 
     body {
@@ -319,25 +322,31 @@
       margin-bottom: 20px;
     }
 
+    /* 5 Action Mode Buttons (Spend, Earn, Split/Contri, Give Udhar, Take Udhar) */
     .entry-types {
       display: grid;
-      grid-template-columns: repeat(4, 1fr);
+      grid-template-columns: repeat(5, 1fr);
       gap: 6px;
       margin-bottom: 14px;
     }
-    @media (max-width: 500px) {
+    @media (max-width: 640px) {
+      .entry-types {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+    @media (max-width: 400px) {
       .entry-types {
         grid-template-columns: repeat(2, 1fr);
       }
     }
 
     .entry-type-btn {
-      padding: 10px 8px;
+      padding: 10px 6px;
       border-radius: var(--radius-md);
       border: 1px solid var(--border-color);
       background: var(--bg-secondary);
       color: var(--text-secondary);
-      font-size: 0.8rem;
+      font-size: 0.78rem;
       font-weight: 700;
       cursor: pointer;
       display: flex;
@@ -346,9 +355,10 @@
       justify-content: center;
       gap: 4px;
       transition: var(--transition);
+      text-align: center;
     }
     .entry-type-btn i {
-      font-size: 1.05rem;
+      font-size: 1.1rem;
     }
 
     .entry-type-btn[data-mode="expense"].active {
@@ -362,6 +372,12 @@
       color: #ffffff;
       border-color: var(--income);
       box-shadow: 0 4px 12px rgba(16, 185, 129, 0.35);
+    }
+    .entry-type-btn[data-mode="split_contri"].active {
+      background: var(--contri);
+      color: #ffffff;
+      border-color: var(--contri);
+      box-shadow: 0 4px 12px rgba(168, 85, 247, 0.35);
     }
     .entry-type-btn[data-mode="give_udhar"].active {
       background: var(--receive);
@@ -378,9 +394,9 @@
 
     .form-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
       gap: 10px;
-      margin-bottom: 12px;
+      margin-bottom: 10px;
     }
 
     .form-group {
@@ -429,10 +445,57 @@
       font-size: 0.72rem;
       font-weight: 700;
       cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 3px;
+      transition: var(--transition);
     }
     .quick-chip:hover {
       border-color: var(--primary);
       color: var(--primary);
+    }
+    .quick-chip.active {
+      background: var(--primary);
+      color: #ffffff;
+      border-color: var(--primary);
+    }
+
+    /* Split Bill Box Details */
+    .split-config-panel {
+      background: var(--bg-tertiary);
+      border: 1px solid rgba(168, 85, 247, 0.3);
+      border-radius: var(--radius-md);
+      padding: 12px;
+      margin-bottom: 12px;
+    }
+
+    .split-preview-banner {
+      background: rgba(168, 85, 247, 0.12);
+      border-left: 3px solid #a855f7;
+      padding: 8px 12px;
+      border-radius: 6px;
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-top: 8px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    /* Borrow & Spend Fast Option */
+    .spent-option-banner {
+      background: rgba(245, 158, 11, 0.1);
+      border: 1px dashed rgba(245, 158, 11, 0.35);
+      border-radius: var(--radius-md);
+      padding: 8px 12px;
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.82rem;
+      cursor: pointer;
+      color: var(--text-primary);
     }
 
     .btn-save-action {
@@ -453,10 +516,10 @@
       box-shadow: 0 4px 14px var(--primary-glow);
     }
     .btn-save-action:hover {
-      background: var(--primary-hover);
+      filter: brightness(1.1);
     }
 
-    /* List & Timeline */
+    /* Timeline & List */
     .timeline-header {
       display: flex;
       align-items: center;
@@ -583,7 +646,7 @@
       background: rgba(239, 68, 68, 0.1);
     }
 
-    /* Person Khata Cards (Simple Increment / Decrement) */
+    /* People Khata Cards */
     .people-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -740,7 +803,7 @@
       cursor: pointer;
     }
 
-    /* PIN Lock Screen */
+    /* PIN Lock */
     #pinLockOverlay {
       position: fixed;
       top: 0;
@@ -824,7 +887,6 @@
       transform: translateX(-50%) translateY(0);
     }
 
-    /* Stealth mask */
     body.stealth-active .stealth-mask {
       filter: blur(5px);
       user-select: none;
@@ -832,7 +894,7 @@
   </style>
 </head>
 <body>
-  <!-- PIN Lock Overlay -->
+  <!-- PIN Lock Screen -->
   <div id="pinLockOverlay" style="display: none;">
     <div class="pin-box">
       <div style="font-size: 2rem; color: var(--primary); margin-bottom: 6px;">
@@ -991,6 +1053,7 @@
     <div id="section-daily">
       <!-- Fast Single-Card Entry Box -->
       <div class="entry-card">
+        <!-- 5 Action Mode Buttons -->
         <div class="entry-types">
           <button type="button" class="entry-type-btn active" data-mode="expense" onclick="setEntryMode('expense')">
             <i class="fa-solid fa-arrow-down" style="color: #f43f5e;"></i>
@@ -999,6 +1062,10 @@
           <button type="button" class="entry-type-btn" data-mode="income" onclick="setEntryMode('income')">
             <i class="fa-solid fa-arrow-up" style="color: #10b981;"></i>
             <span>Earn (In)</span>
+          </button>
+          <button type="button" class="entry-type-btn" data-mode="split_contri" onclick="setEntryMode('split_contri')">
+            <i class="fa-solid fa-users-between-lines" style="color: #a855f7;"></i>
+            <span>🤝 Contri / Split</span>
           </button>
           <button type="button" class="entry-type-btn" data-mode="give_udhar" onclick="setEntryMode('give_udhar')">
             <i class="fa-solid fa-user-minus" style="color: #0ea5e9;"></i>
@@ -1011,11 +1078,41 @@
         </div>
 
         <form id="entryForm" onsubmit="handleEntrySubmit(event)">
+          <!-- Option for Take Udhar: "Already spent on eatables right away" -->
+          <div id="spentDirectlyBox" class="spent-option-banner" style="display: none;" onclick="toggleSpentCheckbox()">
+            <input type="checkbox" id="chkSpentDirectly" style="pointer-events: none;">
+            <span><strong style="color: var(--expense);">Spent on eatables/food right now?</strong> Automatically log food expense too</span>
+          </div>
+
+          <!-- Special Split Bill Helper Config Box -->
+          <div id="splitConfigBox" class="split-config-panel" style="display: none;">
+            <div style="font-size: 0.78rem; font-weight: 800; color: var(--contri); margin-bottom: 8px; text-transform: uppercase;">
+              <i class="fa-solid fa-wand-magic-sparkles"></i> 1-Tap Bill Split Helper
+            </div>
+            
+            <div style="display: flex; gap: 8px; margin-bottom: 8px; flex-wrap: wrap;">
+              <span style="font-size: 0.78rem; font-weight: 700; color: var(--text-muted); align-self: center;">Split Mode:</span>
+              <button type="button" class="quick-chip active" id="chipSplit2" onclick="setSplitCount(2, this)">50 / 50 (2 People)</button>
+              <button type="button" class="quick-chip" id="chipSplit3" onclick="setSplitCount(3, this)">1/3 (3 People)</button>
+              <button type="button" class="quick-chip" id="chipSplit4" onclick="setSplitCount(4, this)">1/4 (4 People)</button>
+            </div>
+
+            <div style="display: flex; gap: 8px; margin-bottom: 8px; flex-wrap: wrap;">
+              <span style="font-size: 0.78rem; font-weight: 700; color: var(--text-muted); align-self: center;">Who Paid?</span>
+              <button type="button" class="quick-chip active" id="chipPaidMe" onclick="setWhoPaid('me', this)">🟢 I Paid Full Bill</button>
+              <button type="button" class="quick-chip" id="chipPaidFriend" onclick="setWhoPaid('friend', this)">🟠 Friend Paid Full Bill</button>
+            </div>
+
+            <div class="split-preview-banner" id="splitPreviewText">
+              Enter total bill & person to preview split...
+            </div>
+          </div>
+
           <div class="form-grid">
             <!-- Amount Input with live math -->
             <div class="form-group" style="flex: 1.2;">
-              <label class="form-label">Amount (<span class="currency-sym">₹</span>)</label>
-              <input type="text" id="entryAmount" class="input-box" placeholder="0 or 150+40" required autocomplete="off" oninput="liveEvalEntry(this.value)">
+              <label class="form-label" id="lblAmount">Amount (<span class="currency-sym">₹</span>)</label>
+              <input type="text" id="entryAmount" class="input-box" placeholder="0 or 150+40" required autocomplete="off" oninput="handleAmountInput(this.value)">
               <div class="quick-chips">
                 <button type="button" class="quick-chip" onclick="addChipAmt(50)">+50</button>
                 <button type="button" class="quick-chip" onclick="addChipAmt(100)">+100</button>
@@ -1024,17 +1121,25 @@
               </div>
             </div>
 
-            <!-- Person Name Field (Prominent & Direct!) -->
+            <!-- Person Name Field -->
             <div class="form-group" style="flex: 1.2;" id="groupPerson">
               <label class="form-label" id="lblPerson">Person Name</label>
-              <input type="text" id="entryPerson" class="input-box" placeholder="e.g. Rahul, Shopkeeper, Client..." list="existingPeopleDatalist" autocomplete="off">
+              <input type="text" id="entryPerson" class="input-box" placeholder="e.g. Rahul, Shopkeeper..." list="existingPeopleDatalist" autocomplete="off" oninput="updateSplitPreview()">
               <datalist id="existingPeopleDatalist"></datalist>
             </div>
 
-            <!-- Description / Note -->
+            <!-- Description / Note Field -->
             <div class="form-group" style="flex: 1.5;">
               <label class="form-label">Note / Purpose</label>
-              <input type="text" id="entryNote" class="input-box" placeholder="e.g. Groceries, Tea, Freelance advance" autocomplete="off">
+              <input type="text" id="entryNote" class="input-box" placeholder="e.g. Dinner, Chai, Groceries" autocomplete="off">
+              <!-- Quick 1-Tap Category Buttons -->
+              <div class="quick-chips">
+                <button type="button" class="quick-chip" onclick="setQuickNote('🍔 Dinner / Food')">🍔 Food</button>
+                <button type="button" class="quick-chip" onclick="setQuickNote('☕ Chai & Snacks')">☕ Chai</button>
+                <button type="button" class="quick-chip" onclick="setQuickNote('🚗 Auto / Travel')">🚗 Travel</button>
+                <button type="button" class="quick-chip" onclick="setQuickNote('🛒 Grocery')">🛒 Grocery</button>
+                <button type="button" class="quick-chip" onclick="setQuickNote('💡 Bills / Recharge')">💡 Bills</button>
+              </div>
             </div>
           </div>
 
@@ -1245,13 +1350,7 @@
   <script>
     /* ==========================================================================
        AI BOTS SIMPLE CASH LEDGER & PERSON KHATA
-       Dedicated Namespaced Keys:
-       - aibots_simple_cash_v2 (Single cash in hand float)
-       - aibots_simple_logs_v2 (Unified daily spending, earnings, and udhar logs)
-       - aibots_simple_people_v2 (Dictionary of people with balance: + for to_receive, - for to_pay)
-       - aibots_simple_settings_v2 (Currency, PIN, Stealth)
        ========================================================================== */
-
     const KEYS = {
       CASH: 'aibots_simple_cash_v2',
       LOGS: 'aibots_simple_logs_v2',
@@ -1262,6 +1361,8 @@
     let entryMode = 'expense';
     let currentView = 'daily';
     let khataFilter = 'all';
+    let splitCount = 2;
+    let whoPaid = 'me';
     let enteredPinDigits = [];
 
     /* Storage Helpers */
@@ -1331,13 +1432,18 @@
       }
     }
 
-    function liveEvalEntry(val) {
+    function handleAmountInput(val) {
       const res = evalMath(val);
       const btn = document.getElementById('btnSaveAction');
-      if (res > 0) {
-        btn.innerHTML = `<i class="fa-solid fa-check"></i> Save ${formatMoney(res)}`;
+
+      if (entryMode === 'split_contri') {
+        updateSplitPreview();
       } else {
-        btn.innerHTML = `<i class="fa-solid fa-check"></i> Save Record`;
+        if (res > 0) {
+          btn.innerHTML = `<i class="fa-solid fa-check"></i> Save ${formatMoney(res)}`;
+        } else {
+          btn.innerHTML = `<i class="fa-solid fa-check"></i> Save Record`;
+        }
       }
     }
 
@@ -1346,7 +1452,12 @@
       const cur = evalMath(inp.value);
       const updated = cur + val;
       inp.value = updated;
-      liveEvalEntry(String(updated));
+      handleAmountInput(String(updated));
+    }
+
+    function setQuickNote(text) {
+      document.getElementById('entryNote').value = text;
+      showToast(`Note set: ${text}`);
     }
 
     /* Entry Mode Switcher */
@@ -1358,24 +1469,96 @@
 
       const lblPerson = document.getElementById('lblPerson');
       const entryPerson = document.getElementById('entryPerson');
+      const lblAmount = document.getElementById('lblAmount');
       const btn = document.getElementById('btnSaveAction');
+      const splitBox = document.getElementById('splitConfigBox');
+      const spentDirectlyBox = document.getElementById('spentDirectlyBox');
+
+      // Default hide special banners
+      splitBox.style.display = 'none';
+      spentDirectlyBox.style.display = 'none';
 
       if (mode === 'expense') {
+        lblAmount.innerHTML = `Amount (<span class="currency-sym">${getCurrency()}</span>)`;
         lblPerson.textContent = 'Paid To / Person (Optional)';
         entryPerson.placeholder = 'e.g. Shop, Auto driver, Restaurant...';
         btn.style.background = 'var(--expense)';
+        btn.innerHTML = '<i class="fa-solid fa-check"></i> Save Expense';
       } else if (mode === 'income') {
+        lblAmount.innerHTML = `Amount (<span class="currency-sym">${getCurrency()}</span>)`;
         lblPerson.textContent = 'Received From / Person (Optional)';
         entryPerson.placeholder = 'e.g. Boss, Client, Friend...';
         btn.style.background = 'var(--income)';
+        btn.innerHTML = '<i class="fa-solid fa-check"></i> Save Income';
+      } else if (mode === 'split_contri') {
+        splitBox.style.display = 'block';
+        lblAmount.innerHTML = `Total Bill (<span class="currency-sym">${getCurrency()}</span>)`;
+        lblPerson.textContent = 'Split with Person (Required)';
+        entryPerson.placeholder = 'e.g. Rahul, Suresh, Aman...';
+        btn.style.background = 'var(--contri)';
+        btn.innerHTML = '<i class="fa-solid fa-users-between-lines"></i> Split & Save Contri';
+        updateSplitPreview();
       } else if (mode === 'give_udhar') {
+        lblAmount.innerHTML = `Amount (<span class="currency-sym">${getCurrency()}</span>)`;
         lblPerson.textContent = 'Person Given Udhar (Required)';
         entryPerson.placeholder = 'e.g. Rahul, Suresh...';
         btn.style.background = 'var(--receive)';
+        btn.innerHTML = '<i class="fa-solid fa-check"></i> Give Udhar';
       } else if (mode === 'take_udhar') {
+        spentDirectlyBox.style.display = 'flex';
+        lblAmount.innerHTML = `Amount (<span class="currency-sym">${getCurrency()}</span>)`;
         lblPerson.textContent = 'Person Taken Udhar From (Required)';
-        entryPerson.placeholder = 'e.g. Shopkeeper, Colleague...';
+        entryPerson.placeholder = 'e.g. Shopkeeper, Colleague, Friend...';
         btn.style.background = 'var(--pay)';
+        btn.innerHTML = '<i class="fa-solid fa-check"></i> Take Udhar';
+      }
+    }
+
+    function toggleSpentCheckbox() {
+      const chk = document.getElementById('chkSpentDirectly');
+      chk.checked = !chk.checked;
+    }
+
+    /* Split Bill Functions */
+    function setSplitCount(cnt, btn) {
+      splitCount = cnt;
+      document.querySelectorAll('#splitConfigBox .quick-chip').forEach(c => {
+        if (c.id.startsWith('chipSplit')) c.classList.remove('active');
+      });
+      if (btn) btn.classList.add('active');
+      updateSplitPreview();
+    }
+
+    function setWhoPaid(payer, btn) {
+      whoPaid = payer;
+      document.getElementById('chipPaidMe').classList.toggle('active', payer === 'me');
+      document.getElementById('chipPaidFriend').classList.toggle('active', payer === 'friend');
+      updateSplitPreview();
+    }
+
+    function updateSplitPreview() {
+      if (entryMode !== 'split_contri') return;
+      const totalStr = document.getElementById('entryAmount').value.trim();
+      const total = evalMath(totalStr);
+      const person = document.getElementById('entryPerson').value.trim() || 'Friend';
+      const previewEl = document.getElementById('splitPreviewText');
+
+      if (total <= 0) {
+        previewEl.innerHTML = `Enter total bill amount & person name above...`;
+        return;
+      }
+
+      const friendShare = Number((total / splitCount).toFixed(2));
+      const myShare = Number((total - friendShare).toFixed(2));
+
+      if (whoPaid === 'me') {
+        previewEl.innerHTML = `
+          <span>💡 <strong>You paid full ${formatMoney(total)}:</strong> Your food expense = <strong>${formatMoney(myShare)}</strong> | <strong>${person}</strong> owes you <strong>${formatMoney(friendShare)}</strong> (auto added to Khata)</span>
+        `;
+      } else {
+        previewEl.innerHTML = `
+          <span>💡 <strong>${person} paid full ${formatMoney(total)}:</strong> Your food expense = <strong>${formatMoney(myShare)}</strong> | You owe <strong>${person}</strong> <strong>${formatMoney(myShare)}</strong> (auto added to Khata)</span>
+        `;
       }
     }
 
@@ -1391,7 +1574,7 @@
       renderAll();
     }
 
-    /* Submit Entry */
+    /* Submit Entry Handler */
     function handleEntrySubmit(e) {
       e.preventDefault();
       const amountStr = document.getElementById('entryAmount').value.trim();
@@ -1404,8 +1587,8 @@
       const person = document.getElementById('entryPerson').value.trim();
       const note = document.getElementById('entryNote').value.trim();
 
-      if ((entryMode === 'give_udhar' || entryMode === 'take_udhar') && !person) {
-        alert('Please enter the person name for Udhar / Khata.');
+      if ((entryMode === 'give_udhar' || entryMode === 'take_udhar' || entryMode === 'split_contri') && !person) {
+        alert('Please enter the person name.');
         return;
       }
 
@@ -1413,36 +1596,131 @@
       const logs = getStored(KEYS.LOGS, []);
       const people = getStored(KEYS.PEOPLE, {});
 
-      const newLog = {
-        id: 'log_' + Date.now(),
-        date: new Date().toISOString(),
-        mode: entryMode,
-        amount: Number(amount.toFixed(2)),
-        person: person || '',
-        note: note || ''
-      };
+      if (entryMode === 'split_contri') {
+        // ==================== 1-TAP BILL SPLIT / CONTRI ====================
+        const friendShare = Number((amount / splitCount).toFixed(2));
+        const myShare = Number((amount - friendShare).toFixed(2));
 
-      if (entryMode === 'expense') {
-        // Spend out of cash
-        cash = Number((cash - amount).toFixed(2));
-        newLog.type = 'expense';
-      } else if (entryMode === 'income') {
-        // Earn into cash
-        cash = Number((cash + amount).toFixed(2));
-        newLog.type = 'income';
-      } else if (entryMode === 'give_udhar') {
-        // Gave cash to person -> Cash decreases, person's receivable balance increases
-        cash = Number((cash - amount).toFixed(2));
-        people[person] = Number(((people[person] || 0) + amount).toFixed(2));
-        newLog.type = 'give_udhar';
+        if (whoPaid === 'me') {
+          // You paid full amount from cash
+          cash = Number((cash - amount).toFixed(2));
+
+          // 1. Log your expense
+          logs.unshift({
+            id: 'log_' + Date.now() + '_exp',
+            date: new Date().toISOString(),
+            mode: 'expense',
+            type: 'expense',
+            amount: myShare,
+            person: person,
+            note: (note ? note : 'Bill Split') + ' (My Share)'
+          });
+
+          // 2. Log friend's share as Udhar to receive
+          people[person] = Number(((people[person] || 0) + friendShare).toFixed(2));
+          logs.unshift({
+            id: 'log_' + Date.now() + '_udh',
+            date: new Date().toISOString(),
+            mode: 'give_udhar',
+            type: 'give_udhar',
+            amount: friendShare,
+            person: person,
+            note: (note ? note : 'Bill Contri') + ` (${person}'s Share)`
+          });
+
+          showToast(`Split bill: Your share ${formatMoney(myShare)}, ${person} owes ${formatMoney(friendShare)}`);
+        } else {
+          // Friend paid the restaurant
+          // You owe friend your share (doesn't deduct cash right now, adds to debt)
+          people[person] = Number(((people[person] || 0) - myShare).toFixed(2));
+
+          // Log expense
+          logs.unshift({
+            id: 'log_' + Date.now() + '_debt',
+            date: new Date().toISOString(),
+            mode: 'take_udhar',
+            type: 'take_udhar',
+            amount: myShare,
+            person: person,
+            note: (note ? note : 'Bill Contri') + ' (Paid by ' + person + ')'
+          });
+
+          showToast(`Contri saved: You owe ${person} ${formatMoney(myShare)}`);
+        }
       } else if (entryMode === 'take_udhar') {
-        // Took cash from person -> Cash increases, person's payable balance increases (stored negative)
-        cash = Number((cash + amount).toFixed(2));
-        people[person] = Number(((people[person] || 0) - amount).toFixed(2));
-        newLog.type = 'take_udhar';
-      }
+        // ==================== TAKE UDHAR (WITH BORROW & SPEND OPTION) ====================
+        const isDirectlySpent = document.getElementById('chkSpentDirectly').checked;
 
-      logs.unshift(newLog);
+        if (isDirectlySpent) {
+          // Taken money and spent on food/eatables right away:
+          // Net cash stays neutral (+amount borrowed, -amount spent)
+          // Person gets added to Khata as money to pay
+          people[person] = Number(((people[person] || 0) - amount).toFixed(2));
+
+          // Log Udhar Taken
+          logs.unshift({
+            id: 'log_' + Date.now() + '_borrow',
+            date: new Date().toISOString(),
+            mode: 'take_udhar',
+            type: 'take_udhar',
+            amount: amount,
+            person: person,
+            note: `Borrowed from ${person}`
+          });
+
+          // Log Food Expense
+          logs.unshift({
+            id: 'log_' + Date.now() + '_spent',
+            date: new Date().toISOString(),
+            mode: 'expense',
+            type: 'expense',
+            amount: amount,
+            person: person,
+            note: note || 'Spent on eatables/food'
+          });
+
+          showToast(`Recorded: Borrowed & spent ${formatMoney(amount)} on eatables`);
+        } else {
+          // Normal Take Udhar: Cash increases, debt increases
+          cash = Number((cash + amount).toFixed(2));
+          people[person] = Number(((people[person] || 0) - amount).toFixed(2));
+          logs.unshift({
+            id: 'log_' + Date.now(),
+            date: new Date().toISOString(),
+            mode: 'take_udhar',
+            type: 'take_udhar',
+            amount: amount,
+            person: person,
+            note: note || `Borrowed cash from ${person}`
+          });
+          showToast(`Cash added (+${formatMoney(amount)}), To Pay to ${person}`);
+        }
+      } else {
+        // Standard Expense, Income, or Give Udhar
+        const newLog = {
+          id: 'log_' + Date.now(),
+          date: new Date().toISOString(),
+          mode: entryMode,
+          amount: Number(amount.toFixed(2)),
+          person: person || '',
+          note: note || ''
+        };
+
+        if (entryMode === 'expense') {
+          cash = Number((cash - amount).toFixed(2));
+          newLog.type = 'expense';
+        } else if (entryMode === 'income') {
+          cash = Number((cash + amount).toFixed(2));
+          newLog.type = 'income';
+        } else if (entryMode === 'give_udhar') {
+          cash = Number((cash - amount).toFixed(2));
+          people[person] = Number(((people[person] || 0) + amount).toFixed(2));
+          newLog.type = 'give_udhar';
+        }
+
+        logs.unshift(newLog);
+        showToast(`Saved ${entryMode}: ${formatMoney(amount)}`);
+      }
 
       // Save
       setStored(KEYS.CASH, cash);
@@ -1453,10 +1731,10 @@
       document.getElementById('entryAmount').value = '';
       document.getElementById('entryPerson').value = '';
       document.getElementById('entryNote').value = '';
-      liveEvalEntry('');
+      document.getElementById('chkSpentDirectly').checked = false;
+      handleAmountInput('');
 
       renderAll();
-      showToast(`Saved ${entryMode}: ${formatMoney(amount)}`);
     }
 
     /* Delete Log Entry */
@@ -1486,7 +1764,6 @@
           people[l.person] = Number((people[l.person] + l.amount).toFixed(2));
         }
       } else if (l.mode === 'person_settle') {
-        // Settle reversal
         if (l.settleType === 'received_from_person') {
           cash = Number((cash - l.amount).toFixed(2));
           people[l.person] = Number(((people[l.person] || 0) + l.amount).toFixed(2));
@@ -1609,7 +1886,6 @@
 
       if (action === 'settle') {
         if (curBal > 0) {
-          // Received cash from person -> cash increases, pending decreases
           cash = Number((cash + amt).toFixed(2));
           people[person] = Number((curBal - amt).toFixed(2));
           logs.unshift({
@@ -1623,7 +1899,6 @@
             note: note || `Received payment from ${person}`
           });
         } else {
-          // Paid cash to person -> cash decreases, debt decreases
           cash = Number((cash - amt).toFixed(2));
           people[person] = Number((curBal + amt).toFixed(2));
           logs.unshift({
@@ -1638,9 +1913,7 @@
           });
         }
       } else {
-        // Add more
         if (curBal >= 0) {
-          // Gave more cash
           cash = Number((cash - amt).toFixed(2));
           people[person] = Number((curBal + amt).toFixed(2));
           logs.unshift({
@@ -1653,7 +1926,6 @@
             note: note || `Additional Udhar given to ${person}`
           });
         } else {
-          // Took more cash
           cash = Number((cash + amt).toFixed(2));
           people[person] = Number((curBal - amt).toFixed(2));
           logs.unshift({
@@ -1868,7 +2140,7 @@
         grid.innerHTML = `
           <div style="grid-column: 1/-1; text-align: center; padding: 30px; color: var(--text-muted); font-size: 0.85rem;">
             <i class="fa-solid fa-users" style="font-size: 2rem; opacity: 0.5; margin-bottom: 8px;"></i>
-            <p>No people in khata yet. Give or take Udhar in Daily tab to add people automatically!</p>
+            <p>No people in khata yet. Give or take Udhar or Split a bill to add people automatically!</p>
           </div>
         `;
         return;

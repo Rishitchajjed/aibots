@@ -1087,20 +1087,34 @@
           <!-- Special Split Bill Helper Config Box -->
           <div id="splitConfigBox" class="split-config-panel" style="display: none;">
             <div style="font-size: 0.78rem; font-weight: 800; color: var(--contri); margin-bottom: 8px; text-transform: uppercase;">
-              <i class="fa-solid fa-wand-magic-sparkles"></i> 1-Tap Bill Split Helper
+              <i class="fa-solid fa-wand-magic-sparkles"></i> Group Contri & Bill Split Options
             </div>
             
-            <div style="display: flex; gap: 8px; margin-bottom: 8px; flex-wrap: wrap;">
+            <!-- Contri Flow Selector -->
+            <div style="margin-bottom: 10px;">
+              <div style="font-size: 0.74rem; font-weight: 700; color: var(--text-muted); margin-bottom: 6px;">CONTRI SCENARIO:</div>
+              <div style="display: flex; gap: 6px; flex-wrap: wrap;">
+                <button type="button" class="quick-chip active" id="flowPaidMeOwes" onclick="setContriFlow('me_owes', this)">
+                  🟢 I Paid Full (He Owes Later)
+                </button>
+                <button type="button" class="quick-chip" id="flowPaidMeSpot" onclick="setContriFlow('me_spot', this)">
+                  💵 I Paid Full (He Gave Cash on Spot)
+                </button>
+                <button type="button" class="quick-chip" id="flowHeGaveCash" onclick="setContriFlow('he_gave', this)">
+                  💰 He Gave Contri to Me (+Cash)
+                </button>
+                <button type="button" class="quick-chip" id="flowFriendPaid" onclick="setContriFlow('friend_paid', this)">
+                  🟠 He Paid Full (I Owe Him)
+                </button>
+              </div>
+            </div>
+
+            <!-- Split Count (Shown when not direct 'he_gave') -->
+            <div id="splitCountRow" style="display: flex; gap: 8px; margin-bottom: 8px; flex-wrap: wrap;">
               <span style="font-size: 0.78rem; font-weight: 700; color: var(--text-muted); align-self: center;">Split Mode:</span>
               <button type="button" class="quick-chip active" id="chipSplit2" onclick="setSplitCount(2, this)">50 / 50 (2 People)</button>
               <button type="button" class="quick-chip" id="chipSplit3" onclick="setSplitCount(3, this)">1/3 (3 People)</button>
               <button type="button" class="quick-chip" id="chipSplit4" onclick="setSplitCount(4, this)">1/4 (4 People)</button>
-            </div>
-
-            <div style="display: flex; gap: 8px; margin-bottom: 8px; flex-wrap: wrap;">
-              <span style="font-size: 0.78rem; font-weight: 700; color: var(--text-muted); align-self: center;">Who Paid?</span>
-              <button type="button" class="quick-chip active" id="chipPaidMe" onclick="setWhoPaid('me', this)">🟢 I Paid Full Bill</button>
-              <button type="button" class="quick-chip" id="chipPaidFriend" onclick="setWhoPaid('friend', this)">🟠 Friend Paid Full Bill</button>
             </div>
 
             <div class="split-preview-banner" id="splitPreviewText">
@@ -1351,18 +1365,19 @@
     /* ==========================================================================
        AI BOTS SIMPLE CASH LEDGER & PERSON KHATA
        ========================================================================== */
-    const KEYS = {
+    window.KEYS = {
       CASH: 'aibots_simple_cash_v2',
       LOGS: 'aibots_simple_logs_v2',
       PEOPLE: 'aibots_simple_people_v2',
       SETTINGS: 'aibots_simple_settings_v2'
     };
+    const KEYS = window.KEYS;
 
     let entryMode = 'expense';
     let currentView = 'daily';
     let khataFilter = 'all';
     let splitCount = 2;
-    let whoPaid = 'me';
+    let contriFlow = 'me_owes'; // 'me_owes', 'me_spot', 'he_gave', 'friend_paid'
     let enteredPinDigits = [];
 
     /* Storage Helpers */
@@ -1374,6 +1389,7 @@
         return def;
       }
     }
+    window.getStored = getStored;
 
     function setStored(key, val) {
       try {
@@ -1382,6 +1398,7 @@
         showToast('Storage write error', true);
       }
     }
+    window.setStored = setStored;
 
     function initDefaults() {
       if (localStorage.getItem(KEYS.CASH) === null) {
@@ -1457,7 +1474,7 @@
 
     function setQuickNote(text) {
       document.getElementById('entryNote').value = text;
-      showToast(`Note set: ${text}`);
+      showToast(`Note: ${text}`);
     }
 
     /* Entry Mode Switcher */
@@ -1492,12 +1509,8 @@
         btn.innerHTML = '<i class="fa-solid fa-check"></i> Save Income';
       } else if (mode === 'split_contri') {
         splitBox.style.display = 'block';
-        lblAmount.innerHTML = `Total Bill (<span class="currency-sym">${getCurrency()}</span>)`;
-        lblPerson.textContent = 'Split with Person (Required)';
-        entryPerson.placeholder = 'e.g. Rahul, Suresh, Aman...';
         btn.style.background = 'var(--contri)';
-        btn.innerHTML = '<i class="fa-solid fa-users-between-lines"></i> Split & Save Contri';
-        updateSplitPreview();
+        setContriFlow(contriFlow);
       } else if (mode === 'give_udhar') {
         lblAmount.innerHTML = `Amount (<span class="currency-sym">${getCurrency()}</span>)`;
         lblPerson.textContent = 'Person Given Udhar (Required)';
@@ -1519,20 +1532,54 @@
       chk.checked = !chk.checked;
     }
 
-    /* Split Bill Functions */
-    function setSplitCount(cnt, btn) {
-      splitCount = cnt;
+    /* Contri Flow & Split Helpers */
+    function setContriFlow(flow, btnEl) {
+      contriFlow = flow;
+      
+      const chipMap = {
+        'me_owes': 'flowPaidMeOwes',
+        'me_spot': 'flowPaidMeSpot',
+        'he_gave': 'flowHeGaveCash',
+        'friend_paid': 'flowFriendPaid'
+      };
+
       document.querySelectorAll('#splitConfigBox .quick-chip').forEach(c => {
-        if (c.id.startsWith('chipSplit')) c.classList.remove('active');
+        if (c.id && c.id.startsWith('flow')) c.classList.remove('active');
       });
-      if (btn) btn.classList.add('active');
+
+      const activeChip = btnEl || document.getElementById(chipMap[flow]);
+      if (activeChip) activeChip.classList.add('active');
+
+      const splitRow = document.getElementById('splitCountRow');
+      const lblAmount = document.getElementById('lblAmount');
+      const lblPerson = document.getElementById('lblPerson');
+      const entryPerson = document.getElementById('entryPerson');
+      const saveBtn = document.getElementById('btnSaveAction');
+
+      if (flow === 'he_gave') {
+        // Direct contri handed to you in cash
+        splitRow.style.display = 'none';
+        lblAmount.innerHTML = `Contri Amount Given by Him (<span class="currency-sym">${getCurrency()}</span>)`;
+        lblPerson.textContent = 'Friend Name Who Gave Contri';
+        entryPerson.placeholder = 'e.g. Rahul, Aman...';
+        saveBtn.innerHTML = '<i class="fa-solid fa-hand-holding-dollar"></i> Receive Contri (+Cash)';
+      } else {
+        splitRow.style.display = 'flex';
+        lblAmount.innerHTML = `Total Bill Amount (<span class="currency-sym">${getCurrency()}</span>)`;
+        lblPerson.textContent = 'Split with Person';
+        entryPerson.placeholder = 'e.g. Rahul, Aman...';
+        saveBtn.innerHTML = '<i class="fa-solid fa-users-between-lines"></i> Split & Save Contri';
+      }
+
       updateSplitPreview();
     }
 
-    function setWhoPaid(payer, btn) {
-      whoPaid = payer;
-      document.getElementById('chipPaidMe').classList.toggle('active', payer === 'me');
-      document.getElementById('chipPaidFriend').classList.toggle('active', payer === 'friend');
+    function setSplitCount(cnt, btn) {
+      splitCount = cnt;
+      document.querySelectorAll('#splitConfigBox .quick-chip').forEach(c => {
+        if (c.id && c.id.startsWith('chipSplit')) c.classList.remove('active');
+      });
+      if (btn) btn.classList.add('active');
       updateSplitPreview();
     }
 
@@ -1544,21 +1591,31 @@
       const previewEl = document.getElementById('splitPreviewText');
 
       if (total <= 0) {
-        previewEl.innerHTML = `Enter total bill amount & person name above...`;
+        previewEl.innerHTML = `Enter amount & person name above to preview...`;
         return;
       }
 
-      const friendShare = Number((total / splitCount).toFixed(2));
-      const myShare = Number((total - friendShare).toFixed(2));
-
-      if (whoPaid === 'me') {
+      if (contriFlow === 'he_gave') {
         previewEl.innerHTML = `
-          <span>💡 <strong>You paid full ${formatMoney(total)}:</strong> Your food expense = <strong>${formatMoney(myShare)}</strong> | <strong>${person}</strong> owes you <strong>${formatMoney(friendShare)}</strong> (auto added to Khata)</span>
+          <span>💡 <strong>${person} gave you ${formatMoney(total)} contri:</strong> Directly adds <strong>+${formatMoney(total)} to your Cash in Hand</strong> (Zero debt created)</span>
         `;
       } else {
-        previewEl.innerHTML = `
-          <span>💡 <strong>${person} paid full ${formatMoney(total)}:</strong> Your food expense = <strong>${formatMoney(myShare)}</strong> | You owe <strong>${person}</strong> <strong>${formatMoney(myShare)}</strong> (auto added to Khata)</span>
-        `;
+        const friendShare = Number((total / splitCount).toFixed(2));
+        const myShare = Number((total - friendShare).toFixed(2));
+
+        if (contriFlow === 'me_owes') {
+          previewEl.innerHTML = `
+            <span>💡 <strong>You paid full ${formatMoney(total)}:</strong> Your food expense = <strong>${formatMoney(myShare)}</strong> | <strong>${person}</strong> owes you <strong>${formatMoney(friendShare)}</strong> (auto added to Khata)</span>
+          `;
+        } else if (contriFlow === 'me_spot') {
+          previewEl.innerHTML = `
+            <span>💡 <strong>You paid full ${formatMoney(total)}, ${person} gave ${formatMoney(friendShare)} cash on spot:</strong> Net cash out = <strong>${formatMoney(myShare)}</strong> (Khata settled on the spot!)</span>
+          `;
+        } else if (contriFlow === 'friend_paid') {
+          previewEl.innerHTML = `
+            <span>💡 <strong>${person} paid full ${formatMoney(total)}:</strong> Your food expense = <strong>${formatMoney(myShare)}</strong> | You owe <strong>${person}</strong> <strong>${formatMoney(myShare)}</strong> (added to Khata as To Pay)</span>
+          `;
+        }
       }
     }
 
@@ -1597,67 +1654,94 @@
       const people = getStored(KEYS.PEOPLE, {});
 
       if (entryMode === 'split_contri') {
-        // ==================== 1-TAP BILL SPLIT / CONTRI ====================
-        const friendShare = Number((amount / splitCount).toFixed(2));
-        const myShare = Number((amount - friendShare).toFixed(2));
-
-        if (whoPaid === 'me') {
-          // You paid full amount from cash
-          cash = Number((cash - amount).toFixed(2));
-
-          // 1. Log your expense
+        // ==================== CONTRI FLOWS ====================
+        if (contriFlow === 'he_gave') {
+          // Case: He gave contri directly to you in cash
+          cash = Number((cash + amount).toFixed(2));
           logs.unshift({
-            id: 'log_' + Date.now() + '_exp',
+            id: 'log_' + Date.now(),
             date: new Date().toISOString(),
-            mode: 'expense',
-            type: 'expense',
-            amount: myShare,
+            mode: 'income',
+            type: 'income',
+            amount: amount,
             person: person,
-            note: (note ? note : 'Bill Split') + ' (My Share)'
+            note: (note ? note : 'Contri received') + ` (From ${person})`
           });
-
-          // 2. Log friend's share as Udhar to receive
-          people[person] = Number(((people[person] || 0) + friendShare).toFixed(2));
-          logs.unshift({
-            id: 'log_' + Date.now() + '_udh',
-            date: new Date().toISOString(),
-            mode: 'give_udhar',
-            type: 'give_udhar',
-            amount: friendShare,
-            person: person,
-            note: (note ? note : 'Bill Contri') + ` (${person}'s Share)`
-          });
-
-          showToast(`Split bill: Your share ${formatMoney(myShare)}, ${person} owes ${formatMoney(friendShare)}`);
+          showToast(`Added ${formatMoney(amount)} contri from ${person} to Cash!`);
         } else {
-          // Friend paid the restaurant
-          // You owe friend your share (doesn't deduct cash right now, adds to debt)
-          people[person] = Number(((people[person] || 0) - myShare).toFixed(2));
+          const friendShare = Number((amount / splitCount).toFixed(2));
+          const myShare = Number((amount - friendShare).toFixed(2));
 
-          // Log expense
-          logs.unshift({
-            id: 'log_' + Date.now() + '_debt',
-            date: new Date().toISOString(),
-            mode: 'take_udhar',
-            type: 'take_udhar',
-            amount: myShare,
-            person: person,
-            note: (note ? note : 'Bill Contri') + ' (Paid by ' + person + ')'
-          });
+          if (contriFlow === 'me_owes') {
+            // I paid full bill, friend owes his share
+            cash = Number((cash - amount).toFixed(2));
 
-          showToast(`Contri saved: You owe ${person} ${formatMoney(myShare)}`);
+            // Log my expense
+            logs.unshift({
+              id: 'log_' + Date.now() + '_exp',
+              date: new Date().toISOString(),
+              mode: 'expense',
+              type: 'expense',
+              amount: myShare,
+              person: person,
+              note: (note ? note : 'Bill Split') + ' (My Share)'
+            });
+
+            // Log friend's share into Khata as To Receive
+            people[person] = Number(((people[person] || 0) + friendShare).toFixed(2));
+            logs.unshift({
+              id: 'log_' + Date.now() + '_udh',
+              date: new Date().toISOString(),
+              mode: 'give_udhar',
+              type: 'give_udhar',
+              amount: friendShare,
+              person: person,
+              note: (note ? note : 'Bill Contri') + ` (${person}'s Share)`
+            });
+
+            showToast(`Split bill: Your share ${formatMoney(myShare)}, ${person} owes ${formatMoney(friendShare)}`);
+          } else if (contriFlow === 'me_spot') {
+            // I paid full bill, but friend gave his share on the spot!
+            // Net cash out = your share
+            cash = Number((cash - myShare).toFixed(2));
+
+            logs.unshift({
+              id: 'log_' + Date.now() + '_spot',
+              date: new Date().toISOString(),
+              mode: 'expense',
+              type: 'expense',
+              amount: myShare,
+              person: person,
+              note: (note ? note : 'Bill Split') + ` (My Share - ${person} paid ${formatMoney(friendShare)} on spot)`
+            });
+
+            showToast(`Recorded: ${formatMoney(myShare)} your share (${person} paid his share on spot)`);
+          } else if (contriFlow === 'friend_paid') {
+            // Friend paid full bill, I owe him my share
+            people[person] = Number(((people[person] || 0) - myShare).toFixed(2));
+
+            logs.unshift({
+              id: 'log_' + Date.now() + '_debt',
+              date: new Date().toISOString(),
+              mode: 'take_udhar',
+              type: 'take_udhar',
+              amount: myShare,
+              person: person,
+              note: (note ? note : 'Bill Contri') + ' (Paid by ' + person + ')'
+            });
+
+            showToast(`Contri saved: You owe ${person} ${formatMoney(myShare)}`);
+          }
         }
       } else if (entryMode === 'take_udhar') {
         // ==================== TAKE UDHAR (WITH BORROW & SPEND OPTION) ====================
         const isDirectlySpent = document.getElementById('chkSpentDirectly').checked;
 
         if (isDirectlySpent) {
-          // Taken money and spent on food/eatables right away:
-          // Net cash stays neutral (+amount borrowed, -amount spent)
-          // Person gets added to Khata as money to pay
+          // Borrowed & spent on food right away:
+          // Net cash stays neutral
           people[person] = Number(((people[person] || 0) - amount).toFixed(2));
 
-          // Log Udhar Taken
           logs.unshift({
             id: 'log_' + Date.now() + '_borrow',
             date: new Date().toISOString(),
@@ -1668,7 +1752,6 @@
             note: `Borrowed from ${person}`
           });
 
-          // Log Food Expense
           logs.unshift({
             id: 'log_' + Date.now() + '_spent',
             date: new Date().toISOString(),

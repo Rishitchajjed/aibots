@@ -30,6 +30,7 @@ const AB_TOOLS = [
   { id:'pdfviewer',      name:'PDF Viewer',            file:'pdfviewer.html',      icon:'📖', cat:'Documents',       desc:'View PDFs in the browser, page by page.' },
   { id:'print',          name:'Print Studio',          file:'print.html',          icon:'🖨️', cat:'Documents',       desc:'Preview, watermark, and print PDFs & images.' },
   { id:'invoice',        name:'Invoice Generator',     file:'invoice.html',        icon:'🧾', cat:'Documents',       desc:'Create and download a professional invoice PDF.' },
+  { id:'ledger',         name:'Cash & Udhar Ledger',   file:'ledger.html',         icon:'📒', cat:'Documents',       desc:'Personal cash passbook, Udhar khata & daily spending tracker.', isNew:true },
   { id:'buisnesscard',   name:'Business Card Maker',  file:'buisnesscard.html',   icon:'💼', cat:'Documents',       desc:'Design a printable business card.' },
   { id:'endchanger',     name:'File Extension Changer',file:'endchanger.html',    icon:'🔄', cat:'Documents',       desc:"Rename a file's extension instantly." },
   // Fun & Learning

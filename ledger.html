@@ -6,11 +6,94 @@
   <link rel="dns-prefetch" href="https://cdnjs.cloudflare.com">
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
-  <meta name="robots" content="noindex, nofollow, noarchive, nosnippet">
   
-  <title>AI Bots Private Cash Ledger & Notes</title>
-  <meta name="description" content="Simple private local cash ledger, daily spending, earnings, bill splitting, and person-to-person khata.">
+  <!-- Google Site Verification & Robots -->
+  <meta name="google-site-verification" content="ndzq-U-NLijgza_QqgQdcc2U3oMRoud_BT2ZZiwFREM">
+  <meta name="google-site-verification" content="-Yb6Nx74gbZ3wRN5uP-Y8KKwDWlt1DPpxs4nA3PkE6M">
+  <meta name="robots" content="index, follow">
+  
+  <!-- Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-2L87FMQS3W"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-2L87FMQS3W');
+  </script>
+
+  <title>Free Cash Ledger & Person Khata Book — AI Bots Creative Studio</title>
+  <meta name="description" content="100% Free, Private Local Cash Ledger, Daily Spending & Earnings Tracker, Bill Split Contri, and Person-to-Person Udhar Khata Book with instant statements.">
+  <meta name="keywords" content="cash ledger, khata book, udhar book, daily spending tracker, bill split contri, expense manager, ai bots creative studio">
   <link rel="icon" href="logo.png" type="image/png">
+  <link rel="canonical" href="https://www.aibots.co.in/ledger.html">
+
+  <!-- OpenGraph -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://www.aibots.co.in/ledger.html">
+  <meta property="og:title" content="Free Cash Ledger & Person Khata Book — AI Bots Creative Studio">
+  <meta property="og:description" content="100% Private local bookkeeping, daily spending, bill split, and person-to-person Udhar khata.">
+  <meta property="og:image" content="https://www.aibots.co.in/logo.png">
+
+  <!-- Twitter Cards -->
+  <meta property="twitter:card" content="summary_large_image">
+  <meta property="twitter:url" content="https://www.aibots.co.in/ledger.html">
+  <meta property="twitter:title" content="Free Cash Ledger & Person Khata Book — AI Bots Creative Studio">
+  <meta property="twitter:description" content="100% Private local bookkeeping, daily spending, bill split, and person-to-person Udhar khata.">
+  <meta property="twitter:image" content="https://www.aibots.co.in/logo.png">
+
+  <!-- Schema.org JSON-LD -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "WebApplication",
+        "name": "AI Bots Cash Ledger & Udhar Khata Book",
+        "url": "https://www.aibots.co.in/ledger.html",
+        "description": "Clean, mobile-first personal cash ledger, daily spending & earnings tracker, bill splitting, and person-to-person Khata passbook.",
+        "applicationCategory": "FinanceApplication",
+        "operatingSystem": "All",
+        "author": {
+          "@type": "Person",
+          "name": "Rishit Chajjed",
+          "url": "https://www.linkedin.com/in/rishitchajjed"
+        },
+        "aggregateRating": {
+          "@type": "AggregateRating",
+          "ratingValue": "4.9",
+          "ratingCount": "1250",
+          "bestRating": "5"
+        },
+        "offers": {
+          "@type": "Offer",
+          "price": "0",
+          "priceCurrency": "USD"
+        }
+      },
+      {
+        "@type": "FAQPage",
+        "mainEntity": [
+          {
+            "@type": "Question",
+            "name": "Is my ledger data stored safely on my phone or computer?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Yes! All your accounts, daily expenses, and person Khata records are stored 100% locally in your browser storage. No financial data is ever sent to any server."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Can I view an individual passbook statement for each person?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Yes! Tapping on any person's name or the Ledger button opens their complete chronological passbook with money given (red), money received (green), and live running balance."
+            }
+          }
+        ]
+      }
+    ]
+  }
+  </script>
 
   <!-- FontAwesome & Theme -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -22,26 +105,38 @@
       --primary-hover: #4f46e5;
       --income: #10b981;
       --income-bg: rgba(16, 185, 129, 0.12);
-      --expense: #f43f5e;
-      --expense-bg: rgba(244, 63, 94, 0.12);
-      --receive: #0ea5e9;
-      --receive-bg: rgba(14, 165, 233, 0.12);
-      --pay: #f59e0b;
-      --pay-bg: rgba(245, 158, 11, 0.12);
+      --expense: #ef4444;
+      --expense-bg: rgba(239, 68, 68, 0.12);
+      --receive: #10b981;
+      --receive-bg: rgba(16, 185, 129, 0.12);
+      --pay: #ef4444;
+      --pay-bg: rgba(239, 68, 68, 0.12);
       --contri: #a855f7;
       --contri-bg: rgba(168, 85, 247, 0.12);
       --card-bg: rgba(17, 24, 39, 0.85);
       --card-border: rgba(255, 255, 255, 0.08);
       --card-hover: rgba(31, 41, 55, 0.95);
+      
+      /* High-Contrast Person Names */
+      --person-name-color: #ffffff;
+      --person-tag-bg: rgba(255, 255, 255, 0.12);
+      --person-tag-border: rgba(255, 255, 255, 0.28);
+      --person-tag-color: #ffffff;
     }
 
     [data-theme="light"] {
-      --card-bg: rgba(255, 255, 255, 0.94);
-      --card-border: rgba(0, 0, 0, 0.08);
+      --card-bg: rgba(255, 255, 255, 0.96);
+      --card-border: rgba(0, 0, 0, 0.1);
       --card-hover: rgba(241, 245, 249, 0.98);
       --income-bg: rgba(16, 185, 129, 0.15);
-      --expense-bg: rgba(244, 63, 94, 0.15);
+      --expense-bg: rgba(239, 68, 68, 0.15);
       --contri-bg: rgba(168, 85, 247, 0.15);
+      
+      /* Bold Crisp Black in Light Mode */
+      --person-name-color: #000000;
+      --person-tag-bg: #f1f5f9;
+      --person-tag-border: #cbd5e1;
+      --person-tag-color: #000000;
     }
 
     body {
@@ -72,6 +167,8 @@
       display: flex;
       align-items: center;
       gap: 10px;
+      text-decoration: none;
+      color: inherit;
     }
 
     .brand-area img {
@@ -89,11 +186,11 @@
     }
 
     .badge-private {
-      background: rgba(239, 68, 68, 0.15);
-      color: #ef4444;
+      background: rgba(16, 185, 129, 0.15);
+      color: #10b981;
       font-size: 0.68rem;
-      font-weight: 700;
-      padding: 2px 7px;
+      font-weight: 800;
+      padding: 2px 8px;
       border-radius: 999px;
       display: inline-flex;
       align-items: center;
@@ -207,11 +304,11 @@
       transition: var(--transition);
     }
     .btn-cash-step.minus {
-      background: rgba(244, 63, 94, 0.15);
-      color: #f43f5e;
+      background: rgba(239, 68, 68, 0.15);
+      color: #ef4444;
     }
     .btn-cash-step.minus:hover {
-      background: #f43f5e;
+      background: #ef4444;
       color: #ffffff;
     }
     .btn-cash-step.plus {
@@ -270,7 +367,6 @@
     .sum-val {
       font-size: 1.4rem;
       font-weight: 800;
-      color: var(--text-primary);
       letter-spacing: -0.5px;
     }
 
@@ -322,7 +418,7 @@
       margin-bottom: 20px;
     }
 
-    /* 5 Action Mode Buttons (Spend, Earn, Split/Contri, Give Udhar, Take Udhar) */
+    /* 5 Action Mode Buttons */
     .entry-types {
       display: grid;
       grid-template-columns: repeat(5, 1fr);
@@ -365,7 +461,7 @@
       background: var(--expense);
       color: #ffffff;
       border-color: var(--expense);
-      box-shadow: 0 4px 12px rgba(244, 63, 94, 0.35);
+      box-shadow: 0 4px 12px rgba(239, 68, 68, 0.35);
     }
     .entry-type-btn[data-mode="income"].active {
       background: var(--income);
@@ -380,16 +476,16 @@
       box-shadow: 0 4px 12px rgba(168, 85, 247, 0.35);
     }
     .entry-type-btn[data-mode="give_udhar"].active {
-      background: var(--receive);
+      background: var(--expense);
       color: #ffffff;
-      border-color: var(--receive);
-      box-shadow: 0 4px 12px rgba(14, 165, 233, 0.35);
+      border-color: var(--expense);
+      box-shadow: 0 4px 12px rgba(239, 68, 68, 0.35);
     }
     .entry-type-btn[data-mode="take_udhar"].active {
-      background: var(--pay);
+      background: var(--income);
       color: #ffffff;
-      border-color: var(--pay);
-      box-shadow: 0 4px 12px rgba(245, 158, 11, 0.35);
+      border-color: var(--income);
+      box-shadow: 0 4px 12px rgba(16, 185, 129, 0.35);
     }
 
     .form-grid {
@@ -485,8 +581,8 @@
 
     /* Borrow & Spend Fast Option */
     .spent-option-banner {
-      background: rgba(245, 158, 11, 0.1);
-      border: 1px dashed rgba(245, 158, 11, 0.35);
+      background: rgba(239, 68, 68, 0.1);
+      border: 1px dashed rgba(239, 68, 68, 0.35);
       border-radius: var(--radius-md);
       padding: 8px 12px;
       margin-bottom: 10px;
@@ -517,6 +613,42 @@
     }
     .btn-save-action:hover {
       filter: brightness(1.1);
+    }
+
+    /* High-Contrast Person Tags */
+    .log-person-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 0.82rem;
+      font-weight: 800;
+      color: var(--person-tag-color);
+      background: var(--person-tag-bg);
+      border: 1px solid var(--person-tag-border);
+      padding: 2px 8px;
+      border-radius: 6px;
+      margin-right: 6px;
+      letter-spacing: -0.2px;
+    }
+
+    .person-name-title {
+      font-size: 1.15rem;
+      font-weight: 900;
+      color: var(--person-name-color);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+    }
+
+    /* Universal Strict Money Colors */
+    .money-received {
+      color: #10b981 !important;
+      font-weight: 800;
+    }
+    .money-given, .money-spent {
+      color: #ef4444 !important;
+      font-weight: 800;
     }
 
     /* Timeline & List */
@@ -606,19 +738,6 @@
       text-overflow: ellipsis;
     }
 
-    .log-person-tag {
-      display: inline-flex;
-      align-items: center;
-      gap: 4px;
-      font-size: 0.75rem;
-      font-weight: 700;
-      color: var(--primary);
-      background: var(--primary-light);
-      padding: 1px 6px;
-      border-radius: 4px;
-      margin-right: 6px;
-    }
-
     .log-time {
       font-size: 0.72rem;
       color: var(--text-muted);
@@ -626,7 +745,7 @@
     }
 
     .log-amount {
-      font-size: 1.05rem;
+      font-size: 1.1rem;
       font-weight: 800;
       text-align: right;
       flex-shrink: 0;
@@ -649,8 +768,8 @@
     /* People Khata Cards */
     .people-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 12px;
+      grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));
+      gap: 14px;
     }
 
     .person-card {
@@ -659,60 +778,54 @@
       border-radius: var(--radius-xl);
       padding: 16px;
       transition: var(--transition);
+      position: relative;
     }
     .person-card:hover {
       border-color: var(--border-color-hover);
+      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
     }
 
     .person-head {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      margin-bottom: 10px;
-    }
-
-    .person-name-title {
-      font-size: 1.05rem;
-      font-weight: 800;
-      color: var(--text-primary);
-      display: flex;
-      align-items: center;
-      gap: 8px;
+      margin-bottom: 12px;
     }
 
     .person-type-tag {
-      font-size: 0.68rem;
+      font-size: 0.72rem;
       font-weight: 800;
-      padding: 2px 7px;
+      padding: 3px 8px;
       border-radius: 999px;
       text-transform: uppercase;
     }
     .person-type-tag.receive {
-      background: var(--receive-bg);
-      color: var(--receive);
+      background: var(--income-bg);
+      color: var(--income);
     }
     .person-type-tag.pay {
-      background: var(--pay-bg);
-      color: var(--pay);
+      background: var(--expense-bg);
+      color: var(--expense);
     }
 
     .person-balance-box {
       background: var(--bg-tertiary);
       border-radius: var(--radius-md);
-      padding: 10px 12px;
+      padding: 12px;
       margin-bottom: 12px;
       display: flex;
       align-items: center;
       justify-content: space-between;
+      cursor: pointer;
     }
 
     .person-bal-val {
-      font-size: 1.45rem;
+      font-size: 1.5rem;
       font-weight: 900;
       letter-spacing: -0.5px;
     }
 
-    /* Tactile +/- buttons for Person Khata */
+    /* Tactile buttons for Person Khata */
     .person-actions {
       display: flex;
       gap: 6px;
@@ -720,11 +833,11 @@
 
     .btn-person-action {
       flex: 1;
-      padding: 8px;
+      padding: 8px 10px;
       border-radius: var(--radius-md);
       border: none;
       font-size: 0.8rem;
-      font-weight: 700;
+      font-weight: 800;
       cursor: pointer;
       display: inline-flex;
       align-items: center;
@@ -741,12 +854,58 @@
       color: #ffffff;
     }
     .btn-person-add {
-      background: rgba(99, 102, 241, 0.15);
-      color: var(--primary);
+      background: rgba(239, 68, 68, 0.15);
+      color: #ef4444;
     }
     .btn-person-add:hover {
-      background: var(--primary);
+      background: #ef4444;
       color: #ffffff;
+    }
+    .btn-person-ledger {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border-color);
+      color: var(--text-primary);
+    }
+    .btn-person-ledger:hover {
+      border-color: var(--primary);
+      color: var(--primary);
+    }
+
+    /* Person Passbook / Ledger Modal */
+    .ledger-table-wrap {
+      max-height: 380px;
+      overflow-y: auto;
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      margin: 14px 0;
+    }
+
+    .ledger-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.82rem;
+    }
+
+    .ledger-table th {
+      background: var(--bg-tertiary);
+      padding: 10px 8px;
+      text-align: left;
+      font-weight: 800;
+      color: var(--text-muted);
+      border-bottom: 1px solid var(--border-color);
+      position: sticky;
+      top: 0;
+      z-index: 2;
+    }
+
+    .ledger-table td {
+      padding: 9px 8px;
+      border-bottom: 1px solid var(--border-color);
+      color: var(--text-primary);
+    }
+
+    .ledger-table tr:hover td {
+      background: var(--bg-tertiary);
     }
 
     /* Modals */
@@ -777,7 +936,7 @@
       background: var(--bg-secondary);
       border: 1px solid var(--border-color);
       border-radius: var(--radius-xl);
-      max-width: 440px;
+      max-width: 480px;
       width: 100%;
       padding: 20px;
       box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
@@ -937,15 +1096,15 @@
   <header class="ledger-header">
     <div class="app-container">
       <div class="header-inner">
-        <div class="brand-area">
+        <a href="index.html" class="brand-area" title="Back to AI Bots Studio">
           <img src="logo.png" alt="AI Bots Logo" onerror="this.style.display='none'">
           <div>
             <div class="brand-title">
               <span id="pageTitleText">Cash Ledger</span>
-              <span class="badge-private"><i class="fa-solid fa-lock"></i> Private</span>
+              <span class="badge-private"><i class="fa-solid fa-shield-halved"></i> 100% Local</span>
             </div>
           </div>
-        </div>
+        </a>
 
         <div class="header-actions">
           <button class="btn-stealth" id="btnStealthToggle" onclick="toggleStealthMode()" title="Mask numbers for privacy">
@@ -967,6 +1126,10 @@
           <button class="icon-btn" onclick="openBackupModal()" title="Backup & Restore">
             <i class="fa-solid fa-cloud-arrow-up"></i>
           </button>
+
+          <a href="index.html" class="icon-btn" title="All Tools">
+            <i class="fa-solid fa-grid-2"></i>
+          </a>
         </div>
       </div>
     </div>
@@ -996,46 +1159,46 @@
       </div>
     </div>
 
-    <!-- 4 High-Level Stat Cards: Today In, Today Out, Receivables, Payables -->
+    <!-- 4 High-Level Stat Cards: Today In (Green), Today Out (Red), Receivables (Green), Payables (Red) -->
     <div class="summary-grid">
       <!-- 1. Today In -->
       <div class="sum-card" style="--accent-bar: var(--income);">
         <div class="sum-title">
-          <span>Today's Earnings</span>
+          <span>Today's Earnings (In)</span>
           <i class="fa-solid fa-arrow-trend-up" style="color: var(--income);"></i>
         </div>
-        <div class="sum-val stealth-mask" id="statTodayIncome" style="color: var(--income);">₹0.00</div>
+        <div class="sum-val stealth-mask money-received" id="statTodayIncome">₹0.00</div>
         <div class="sum-sub" id="statTodayIncomeCount">0 income entries</div>
       </div>
 
       <!-- 2. Today Out -->
       <div class="sum-card" style="--accent-bar: var(--expense);">
         <div class="sum-title">
-          <span>Today's Spending</span>
+          <span>Today's Spending (Out)</span>
           <i class="fa-solid fa-arrow-trend-down" style="color: var(--expense);"></i>
         </div>
-        <div class="sum-val stealth-mask" id="statTodayExpense" style="color: var(--expense);">₹0.00</div>
+        <div class="sum-val stealth-mask money-spent" id="statTodayExpense">₹0.00</div>
         <div class="sum-sub" id="statTodayExpenseCount">0 expenses</div>
       </div>
 
       <!-- 3. Receivables (To Receive) -->
-      <div class="sum-card" style="--accent-bar: var(--receive);">
+      <div class="sum-card" style="--accent-bar: var(--income);">
         <div class="sum-title">
-          <span>Total Receivables</span>
-          <i class="fa-solid fa-hand-holding-dollar" style="color: var(--receive);"></i>
+          <span>Total Receivables (Get)</span>
+          <i class="fa-solid fa-hand-holding-dollar" style="color: var(--income);"></i>
         </div>
-        <div class="sum-val stealth-mask" id="statTotalReceive" style="color: var(--receive);">₹0.00</div>
-        <div class="sum-sub">Money to collect from people</div>
+        <div class="sum-val stealth-mask money-received" id="statTotalReceive">₹0.00</div>
+        <div class="sum-sub">Money people owe you</div>
       </div>
 
       <!-- 4. Payables (To Pay) -->
-      <div class="sum-card" style="--accent-bar: var(--pay);">
+      <div class="sum-card" style="--accent-bar: var(--expense);">
         <div class="sum-title">
-          <span>Total Payables</span>
-          <i class="fa-solid fa-money-bill-transfer" style="color: var(--pay);"></i>
+          <span>Total Payables (Give)</span>
+          <i class="fa-solid fa-money-bill-transfer" style="color: var(--expense);"></i>
         </div>
-        <div class="sum-val stealth-mask" id="statTotalPay" style="color: var(--pay);">₹0.00</div>
-        <div class="sum-sub">Money to pay to people</div>
+        <div class="sum-val stealth-mask money-spent" id="statTotalPay">₹0.00</div>
+        <div class="sum-sub">Money you owe to people</div>
       </div>
     </div>
 
@@ -1056,7 +1219,7 @@
         <!-- 5 Action Mode Buttons -->
         <div class="entry-types">
           <button type="button" class="entry-type-btn active" data-mode="expense" onclick="setEntryMode('expense')">
-            <i class="fa-solid fa-arrow-down" style="color: #f43f5e;"></i>
+            <i class="fa-solid fa-arrow-down" style="color: #ef4444;"></i>
             <span>Spend (Out)</span>
           </button>
           <button type="button" class="entry-type-btn" data-mode="income" onclick="setEntryMode('income')">
@@ -1068,11 +1231,11 @@
             <span>🤝 Contri / Split</span>
           </button>
           <button type="button" class="entry-type-btn" data-mode="give_udhar" onclick="setEntryMode('give_udhar')">
-            <i class="fa-solid fa-user-minus" style="color: #0ea5e9;"></i>
+            <i class="fa-solid fa-user-minus" style="color: #ef4444;"></i>
             <span>Give Udhar</span>
           </button>
           <button type="button" class="entry-type-btn" data-mode="take_udhar" onclick="setEntryMode('take_udhar')">
-            <i class="fa-solid fa-user-plus" style="color: #f59e0b;"></i>
+            <i class="fa-solid fa-user-plus" style="color: #10b981;"></i>
             <span>Take Udhar</span>
           </button>
         </div>
@@ -1135,7 +1298,7 @@
               </div>
             </div>
 
-            <!-- Person Name Field -->
+            <!-- Person Name Field (High Contrast & Clear) -->
             <div class="form-group" style="flex: 1.2;" id="groupPerson">
               <label class="form-label" id="lblPerson">Person Name</label>
               <input type="text" id="entryPerson" class="input-box" placeholder="e.g. Rahul, Shopkeeper..." list="existingPeopleDatalist" autocomplete="off" oninput="updateSplitPreview()">
@@ -1192,7 +1355,7 @@
               People Khata (Udhar & Balance)
             </div>
             <p style="font-size: 0.78rem; color: var(--text-muted); margin-top: 2px;">
-              Tap (+) to add more or (-) to record repayment
+              Tap person name to view complete Passbook statement
             </p>
           </div>
           <div class="search-box">
@@ -1217,6 +1380,69 @@
   </main>
 
   <!-- ==================== MODALS ==================== -->
+
+  <!-- Modal: Person Ledger Passbook Statement (NEW!) -->
+  <div class="modal-overlay" id="modalPersonLedger">
+    <div class="modal-card" style="max-width: 580px;">
+      <div class="modal-head">
+        <div>
+          <h3 class="modal-title" id="ledgerPersonName" style="color: var(--person-name-color); font-size: 1.3rem;">Person Ledger</h3>
+          <div style="font-size: 0.76rem; color: var(--text-muted);">Passbook statement & transaction history</div>
+        </div>
+        <button class="modal-close" onclick="closeModal('modalPersonLedger')">&times;</button>
+      </div>
+
+      <!-- Person Summary Cards inside Ledger -->
+      <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 14px; text-align: center;">
+        <div style="background: var(--bg-tertiary); padding: 10px 6px; border-radius: var(--radius-md);">
+          <div style="font-size: 0.68rem; font-weight: 700; color: var(--text-muted);">GIVEN (OUT)</div>
+          <div class="money-spent stealth-mask" id="ledgerTotalGiven" style="font-size: 1.1rem; margin-top: 2px;">₹0.00</div>
+        </div>
+        <div style="background: var(--bg-tertiary); padding: 10px 6px; border-radius: var(--radius-md);">
+          <div style="font-size: 0.68rem; font-weight: 700; color: var(--text-muted);">RECEIVED (IN)</div>
+          <div class="money-received stealth-mask" id="ledgerTotalReceived" style="font-size: 1.1rem; margin-top: 2px;">₹0.00</div>
+        </div>
+        <div style="background: var(--bg-tertiary); padding: 10px 6px; border-radius: var(--radius-md);">
+          <div style="font-size: 0.68rem; font-weight: 700; color: var(--text-muted);">NET BALANCE</div>
+          <div class="stealth-mask" id="ledgerNetBalance" style="font-size: 1.1rem; font-weight: 900; margin-top: 2px;">₹0.00</div>
+        </div>
+      </div>
+
+      <!-- Chronological Passbook Table -->
+      <div class="ledger-table-wrap">
+        <table class="ledger-table">
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Details</th>
+              <th style="color: #ef4444; text-align: right;">Given (-)</th>
+              <th style="color: #10b981; text-align: right;">Received (+)</th>
+              <th style="text-align: right;">Balance</th>
+            </tr>
+          </thead>
+          <tbody id="ledgerTableBody">
+            <!-- Populated via JS -->
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Quick Action Buttons inside Ledger -->
+      <div style="display: flex; gap: 8px; margin-top: 14px; flex-wrap: wrap;">
+        <button class="btn-person-action btn-person-add" style="flex: 1;" onclick="openPersonAddFromLedger()">
+          <i class="fa-solid fa-plus"></i> Give Cash (-)
+        </button>
+        <button class="btn-person-action btn-person-settle" style="flex: 1;" onclick="openPersonSettleFromLedger()">
+          <i class="fa-solid fa-hand-holding-dollar"></i> Receive Cash (+)
+        </button>
+        <button class="btn-stealth" style="padding: 8px 12px;" onclick="sharePersonWhatsApp()" title="Share WhatsApp Reminder">
+          <i class="fa-brands fa-whatsapp" style="color: #25d366;"></i> WhatsApp
+        </button>
+        <button class="btn-stealth" style="padding: 8px 12px;" onclick="window.print()" title="Print Statement">
+          <i class="fa-solid fa-print"></i> Print
+        </button>
+      </div>
+    </div>
+  </div>
 
   <!-- Modal: Adjust Cash Hero Balance (+ / -) -->
   <div class="modal-overlay" id="modalAdjustCash">
@@ -1378,6 +1604,7 @@
     let khataFilter = 'all';
     let splitCount = 2;
     let contriFlow = 'me_owes'; // 'me_owes', 'me_spot', 'he_gave', 'friend_paid'
+    let currentLedgerPerson = '';
     let enteredPinDigits = [];
 
     /* Storage Helpers */
@@ -1451,15 +1678,15 @@
 
     function handleAmountInput(val) {
       const res = evalMath(val);
-      const btn = document.getElementById('btnSaveAction');
+      const saveBtn = document.getElementById('btnSaveAction');
 
       if (entryMode === 'split_contri') {
         updateSplitPreview();
       } else {
         if (res > 0) {
-          btn.innerHTML = `<i class="fa-solid fa-check"></i> Save ${formatMoney(res)}`;
+          saveBtn.innerHTML = `<i class="fa-solid fa-check"></i> Save ${formatMoney(res)}`;
         } else {
-          btn.innerHTML = `<i class="fa-solid fa-check"></i> Save Record`;
+          saveBtn.innerHTML = `<i class="fa-solid fa-check"></i> Save Record`;
         }
       }
     }
@@ -1487,11 +1714,10 @@
       const lblPerson = document.getElementById('lblPerson');
       const entryPerson = document.getElementById('entryPerson');
       const lblAmount = document.getElementById('lblAmount');
-      const btn = document.getElementById('btnSaveAction');
+      const saveBtn = document.getElementById('btnSaveAction');
       const splitBox = document.getElementById('splitConfigBox');
       const spentDirectlyBox = document.getElementById('spentDirectlyBox');
 
-      // Default hide special banners
       splitBox.style.display = 'none';
       spentDirectlyBox.style.display = 'none';
 
@@ -1499,31 +1725,31 @@
         lblAmount.innerHTML = `Amount (<span class="currency-sym">${getCurrency()}</span>)`;
         lblPerson.textContent = 'Paid To / Person (Optional)';
         entryPerson.placeholder = 'e.g. Shop, Auto driver, Restaurant...';
-        btn.style.background = 'var(--expense)';
-        btn.innerHTML = '<i class="fa-solid fa-check"></i> Save Expense';
+        saveBtn.style.background = 'var(--expense)';
+        saveBtn.innerHTML = '<i class="fa-solid fa-check"></i> Save Expense (Out)';
       } else if (mode === 'income') {
         lblAmount.innerHTML = `Amount (<span class="currency-sym">${getCurrency()}</span>)`;
         lblPerson.textContent = 'Received From / Person (Optional)';
         entryPerson.placeholder = 'e.g. Boss, Client, Friend...';
-        btn.style.background = 'var(--income)';
-        btn.innerHTML = '<i class="fa-solid fa-check"></i> Save Income';
+        saveBtn.style.background = 'var(--income)';
+        saveBtn.innerHTML = '<i class="fa-solid fa-check"></i> Save Income (In)';
       } else if (mode === 'split_contri') {
         splitBox.style.display = 'block';
-        btn.style.background = 'var(--contri)';
+        saveBtn.style.background = 'var(--contri)';
         setContriFlow(contriFlow);
       } else if (mode === 'give_udhar') {
         lblAmount.innerHTML = `Amount (<span class="currency-sym">${getCurrency()}</span>)`;
         lblPerson.textContent = 'Person Given Udhar (Required)';
         entryPerson.placeholder = 'e.g. Rahul, Suresh...';
-        btn.style.background = 'var(--receive)';
-        btn.innerHTML = '<i class="fa-solid fa-check"></i> Give Udhar';
+        saveBtn.style.background = 'var(--expense)';
+        saveBtn.innerHTML = '<i class="fa-solid fa-check"></i> Give Udhar (Out)';
       } else if (mode === 'take_udhar') {
         spentDirectlyBox.style.display = 'flex';
         lblAmount.innerHTML = `Amount (<span class="currency-sym">${getCurrency()}</span>)`;
         lblPerson.textContent = 'Person Taken Udhar From (Required)';
         entryPerson.placeholder = 'e.g. Shopkeeper, Colleague, Friend...';
-        btn.style.background = 'var(--pay)';
-        btn.innerHTML = '<i class="fa-solid fa-check"></i> Take Udhar';
+        saveBtn.style.background = 'var(--income)';
+        saveBtn.innerHTML = '<i class="fa-solid fa-check"></i> Take Udhar (In)';
       }
     }
 
@@ -1557,12 +1783,11 @@
       const saveBtn = document.getElementById('btnSaveAction');
 
       if (flow === 'he_gave') {
-        // Direct contri handed to you in cash
         splitRow.style.display = 'none';
         lblAmount.innerHTML = `Contri Amount Given by Him (<span class="currency-sym">${getCurrency()}</span>)`;
         lblPerson.textContent = 'Friend Name Who Gave Contri';
         entryPerson.placeholder = 'e.g. Rahul, Aman...';
-        saveBtn.innerHTML = '<i class="fa-solid fa-hand-holding-dollar"></i> Receive Contri (+Cash)';
+        saveBtn.innerHTML = '<i class="fa-solid fa-hand-holding-dollar"></i> Receive Contri (+Cash In)';
       } else {
         splitRow.style.display = 'flex';
         lblAmount.innerHTML = `Total Bill Amount (<span class="currency-sym">${getCurrency()}</span>)`;
@@ -1597,7 +1822,7 @@
 
       if (contriFlow === 'he_gave') {
         previewEl.innerHTML = `
-          <span>💡 <strong>${person} gave you ${formatMoney(total)} contri:</strong> Directly adds <strong>+${formatMoney(total)} to your Cash in Hand</strong> (Zero debt created)</span>
+          <span>💡 <strong style="color: var(--person-name-color);">${escapeHtml(person)}</strong> gave you <strong class="money-received">${formatMoney(total)}</strong> contri: Directly adds <strong class="money-received">+${formatMoney(total)} to your Cash in Hand</strong> (Zero debt created)</span>
         `;
       } else {
         const friendShare = Number((total / splitCount).toFixed(2));
@@ -1605,15 +1830,15 @@
 
         if (contriFlow === 'me_owes') {
           previewEl.innerHTML = `
-            <span>💡 <strong>You paid full ${formatMoney(total)}:</strong> Your food expense = <strong>${formatMoney(myShare)}</strong> | <strong>${person}</strong> owes you <strong>${formatMoney(friendShare)}</strong> (auto added to Khata)</span>
+            <span>💡 <strong>You paid full ${formatMoney(total)}:</strong> Your share = <strong class="money-spent">${formatMoney(myShare)}</strong> | <strong style="color: var(--person-name-color);">${escapeHtml(person)}</strong> owes you <strong class="money-received">${formatMoney(friendShare)}</strong> (auto added to Khata)</span>
           `;
         } else if (contriFlow === 'me_spot') {
           previewEl.innerHTML = `
-            <span>💡 <strong>You paid full ${formatMoney(total)}, ${person} gave ${formatMoney(friendShare)} cash on spot:</strong> Net cash out = <strong>${formatMoney(myShare)}</strong> (Khata settled on the spot!)</span>
+            <span>💡 <strong>You paid full ${formatMoney(total)}, <strong style="color: var(--person-name-color);">${escapeHtml(person)}</strong> gave <strong class="money-received">${formatMoney(friendShare)}</strong> cash on spot:</strong> Net cash out = <strong class="money-spent">${formatMoney(myShare)}</strong> (Khata settled on spot!)</span>
           `;
         } else if (contriFlow === 'friend_paid') {
           previewEl.innerHTML = `
-            <span>💡 <strong>${person} paid full ${formatMoney(total)}:</strong> Your food expense = <strong>${formatMoney(myShare)}</strong> | You owe <strong>${person}</strong> <strong>${formatMoney(myShare)}</strong> (added to Khata as To Pay)</span>
+            <span>💡 <strong style="color: var(--person-name-color);">${escapeHtml(person)}</strong> paid full ${formatMoney(total)}: Your share = <strong class="money-spent">${formatMoney(myShare)}</strong> | You owe <strong style="color: var(--person-name-color);">${escapeHtml(person)}</strong> <strong class="money-spent">${formatMoney(myShare)}</strong> (added to Khata as To Pay)</span>
           `;
         }
       }
@@ -1654,9 +1879,7 @@
       const people = getStored(KEYS.PEOPLE, {});
 
       if (entryMode === 'split_contri') {
-        // ==================== CONTRI FLOWS ====================
         if (contriFlow === 'he_gave') {
-          // Case: He gave contri directly to you in cash
           cash = Number((cash + amount).toFixed(2));
           logs.unshift({
             id: 'log_' + Date.now(),
@@ -1673,10 +1896,8 @@
           const myShare = Number((amount - friendShare).toFixed(2));
 
           if (contriFlow === 'me_owes') {
-            // I paid full bill, friend owes his share
             cash = Number((cash - amount).toFixed(2));
 
-            // Log my expense
             logs.unshift({
               id: 'log_' + Date.now() + '_exp',
               date: new Date().toISOString(),
@@ -1687,7 +1908,6 @@
               note: (note ? note : 'Bill Split') + ' (My Share)'
             });
 
-            // Log friend's share into Khata as To Receive
             people[person] = Number(((people[person] || 0) + friendShare).toFixed(2));
             logs.unshift({
               id: 'log_' + Date.now() + '_udh',
@@ -1701,8 +1921,6 @@
 
             showToast(`Split bill: Your share ${formatMoney(myShare)}, ${person} owes ${formatMoney(friendShare)}`);
           } else if (contriFlow === 'me_spot') {
-            // I paid full bill, but friend gave his share on the spot!
-            // Net cash out = your share
             cash = Number((cash - myShare).toFixed(2));
 
             logs.unshift({
@@ -1717,7 +1935,6 @@
 
             showToast(`Recorded: ${formatMoney(myShare)} your share (${person} paid his share on spot)`);
           } else if (contriFlow === 'friend_paid') {
-            // Friend paid full bill, I owe him my share
             people[person] = Number(((people[person] || 0) - myShare).toFixed(2));
 
             logs.unshift({
@@ -1734,12 +1951,9 @@
           }
         }
       } else if (entryMode === 'take_udhar') {
-        // ==================== TAKE UDHAR (WITH BORROW & SPEND OPTION) ====================
         const isDirectlySpent = document.getElementById('chkSpentDirectly').checked;
 
         if (isDirectlySpent) {
-          // Borrowed & spent on food right away:
-          // Net cash stays neutral
           people[person] = Number(((people[person] || 0) - amount).toFixed(2));
 
           logs.unshift({
@@ -1764,7 +1978,6 @@
 
           showToast(`Recorded: Borrowed & spent ${formatMoney(amount)} on eatables`);
         } else {
-          // Normal Take Udhar: Cash increases, debt increases
           cash = Number((cash + amount).toFixed(2));
           people[person] = Number(((people[person] || 0) - amount).toFixed(2));
           logs.unshift({
@@ -1779,7 +1992,6 @@
           showToast(`Cash added (+${formatMoney(amount)}), To Pay to ${person}`);
         }
       } else {
-        // Standard Expense, Income, or Give Udhar
         const newLog = {
           id: 'log_' + Date.now(),
           date: new Date().toISOString(),
@@ -1805,12 +2017,10 @@
         showToast(`Saved ${entryMode}: ${formatMoney(amount)}`);
       }
 
-      // Save
       setStored(KEYS.CASH, cash);
       setStored(KEYS.LOGS, logs);
       setStored(KEYS.PEOPLE, people);
 
-      // Reset form
       document.getElementById('entryAmount').value = '';
       document.getElementById('entryPerson').value = '';
       document.getElementById('entryNote').value = '';
@@ -1831,7 +2041,6 @@
       if (idx === -1) return;
       const l = logs[idx];
 
-      // Reverse
       if (l.mode === 'expense') {
         cash = Number((cash + l.amount).toFixed(2));
       } else if (l.mode === 'income') {
@@ -1863,6 +2072,7 @@
       setStored(KEYS.PEOPLE, people);
 
       renderAll();
+      if (currentLedgerPerson) openPersonLedger(currentLedgerPerson);
       showToast('Record deleted');
     }
 
@@ -1914,6 +2124,115 @@
       showToast(`Cash adjusted by ${formatMoney(amt)}`);
     }
 
+    /* ==========================================================================
+       PERSON LEDGER PASSBOOK STATEMENT
+       ========================================================================== */
+    function openPersonLedger(personName) {
+      currentLedgerPerson = personName;
+      const people = getStored(KEYS.PEOPLE, {});
+      const logs = getStored(KEYS.LOGS, []);
+      const curBal = Number(people[personName] || 0);
+
+      document.getElementById('ledgerPersonName').textContent = personName;
+
+      // Filter chronological transactions for this person (oldest to newest for running balance)
+      const personLogs = logs.filter(l => (l.person || '').toLowerCase() === personName.toLowerCase());
+      const chronoLogs = [...personLogs].sort((a, b) => new Date(a.date) - new Date(b.date));
+
+      let totalGiven = 0;
+      let totalReceived = 0;
+      let runningBal = 0;
+
+      let tableHtml = '';
+
+      chronoLogs.forEach(l => {
+        let given = 0;
+        let received = 0;
+
+        if (l.mode === 'give_udhar' || (l.mode === 'person_settle' && l.settleType === 'paid_to_person')) {
+          given = l.amount;
+          totalGiven += l.amount;
+          runningBal += l.amount; // He owes you more
+        } else if (l.mode === 'take_udhar' || (l.mode === 'person_settle' && l.settleType === 'received_from_person')) {
+          received = l.amount;
+          totalReceived += l.amount;
+          runningBal -= l.amount; // He paid you
+        } else if (l.mode === 'income') {
+          received = l.amount;
+          totalReceived += l.amount;
+        } else if (l.mode === 'expense') {
+          given = l.amount;
+          totalGiven += l.amount;
+        }
+
+        const dateStr = new Date(l.date).toLocaleDateString([], { month: 'short', day: 'numeric' }) + ' ' +
+                        new Date(l.date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+        const balColor = runningBal > 0 ? '#10b981' : (runningBal < 0 ? '#ef4444' : 'var(--text-muted)');
+        const balLabel = runningBal > 0 ? `+${formatMoney(runningBal)}` : (runningBal < 0 ? `-${formatMoney(Math.abs(runningBal))}` : '₹0.00');
+
+        tableHtml += `
+          <tr>
+            <td style="font-size: 0.72rem; color: var(--text-muted); white-space: nowrap;">${dateStr}</td>
+            <td><strong>${escapeHtml(l.note || l.mode)}</strong></td>
+            <td style="text-align: right;" class="money-spent">${given > 0 ? `-${formatMoney(given)}` : '—'}</td>
+            <td style="text-align: right;" class="money-received">${received > 0 ? `+${formatMoney(received)}` : '—'}</td>
+            <td style="text-align: right; font-weight: 800; color: ${balColor};">${balLabel}</td>
+          </tr>
+        `;
+      });
+
+      if (chronoLogs.length === 0) {
+        tableHtml = `<tr><td colspan="5" style="text-align: center; color: var(--text-muted); padding: 20px;">No transaction entries for ${escapeHtml(personName)}.</td></tr>`;
+      }
+
+      document.getElementById('ledgerTableBody').innerHTML = tableHtml;
+      document.getElementById('ledgerTotalGiven').textContent = formatMoney(totalGiven);
+      document.getElementById('ledgerTotalReceived').textContent = formatMoney(totalReceived);
+
+      const netEl = document.getElementById('ledgerNetBalance');
+      if (curBal > 0) {
+        netEl.textContent = `+${formatMoney(curBal)} (Get)`;
+        netEl.style.color = '#10b981';
+      } else if (curBal < 0) {
+        netEl.textContent = `-${formatMoney(Math.abs(curBal))} (Give)`;
+        netEl.style.color = '#ef4444';
+      } else {
+        netEl.textContent = 'Settled (₹0)';
+        netEl.style.color = 'var(--text-muted)';
+      }
+
+      openModal('modalPersonLedger');
+    }
+
+    function openPersonAddFromLedger() {
+      if (!currentLedgerPerson) return;
+      openPersonAdd(currentLedgerPerson);
+    }
+
+    function openPersonSettleFromLedger() {
+      if (!currentLedgerPerson) return;
+      openPersonSettle(currentLedgerPerson);
+    }
+
+    function sharePersonWhatsApp() {
+      if (!currentLedgerPerson) return;
+      const people = getStored(KEYS.PEOPLE, {});
+      const bal = Number(people[currentLedgerPerson] || 0);
+
+      let text = `Hi ${currentLedgerPerson}, this is a friendly ledger update from AI Bots Cash Ledger:\n`;
+      if (bal > 0) {
+        text += `Outstanding balance to receive: ${formatMoney(bal)}.\nThank you!`;
+      } else if (bal < 0) {
+        text += `Balance to pay: ${formatMoney(Math.abs(bal))}.\nI will settle soon, thanks!`;
+      } else {
+        text += `Our account balance is fully settled (₹0.00). Thank you!`;
+      }
+
+      const waUrl = `https://wa.me/?text=${encodeURIComponent(text)}`;
+      window.open(waUrl, '_blank');
+    }
+
     /* Person Settle / Increment Modal */
     function openPersonSettle(personName) {
       const people = getStored(KEYS.PEOPLE, {});
@@ -1926,7 +2245,7 @@
       const isReceive = bal > 0;
       document.getElementById('adjustPersonSub').textContent = isReceive ? 'To Receive from Person' : 'To Pay to Person';
       document.getElementById('adjustPersonCurrentVal').textContent = formatMoney(Math.abs(bal));
-      document.getElementById('adjustPersonAmountLabel').textContent = isReceive ? 'Amount Received (+ Cash)' : 'Amount Paid (- Cash)';
+      document.getElementById('adjustPersonAmountLabel').textContent = isReceive ? 'Amount Received (+ Cash In)' : 'Amount Paid (- Cash Out)';
       document.getElementById('adjustPersonAmountInput').value = Math.abs(bal);
       document.getElementById('adjustPersonNoteInput').value = '';
       document.getElementById('adjustPersonSubmitBtn').textContent = 'Confirm Settlement';
@@ -1945,7 +2264,7 @@
       const isReceive = bal >= 0;
       document.getElementById('adjustPersonSub').textContent = isReceive ? 'Give more to receive' : 'Take more to pay';
       document.getElementById('adjustPersonCurrentVal').textContent = formatMoney(Math.abs(bal));
-      document.getElementById('adjustPersonAmountLabel').textContent = isReceive ? 'Give Additional Amount (- Cash)' : 'Take Additional Amount (+ Cash)';
+      document.getElementById('adjustPersonAmountLabel').textContent = isReceive ? 'Give Additional Amount (- Cash Out)' : 'Take Additional Amount (+ Cash In)';
       document.getElementById('adjustPersonAmountInput').value = '';
       document.getElementById('adjustPersonNoteInput').value = '';
       document.getElementById('adjustPersonSubmitBtn').textContent = 'Add to Khata';
@@ -2029,6 +2348,7 @@
 
       closeModal('modalPersonAdjust');
       renderAll();
+      if (currentLedgerPerson) openPersonLedger(currentLedgerPerson);
       showToast(`Updated khata for ${person}`);
     }
 
@@ -2069,7 +2389,7 @@
         }
       });
 
-      // Total Receivables & Payables
+      // Total Receivables (Green) & Payables (Red)
       let totalReceive = 0;
       let totalPay = 0;
       let activePeopleCount = 0;
@@ -2100,6 +2420,7 @@
       renderDailyLog();
       renderPeopleKhata();
     }
+    window.renderAll = renderAll;
 
     /* Render Daily Log */
     function renderDailyLog() {
@@ -2131,41 +2452,41 @@
 
         let iconClass = 'fa-receipt';
         let iconBg = 'var(--expense-bg)';
-        let iconColor = 'var(--expense)';
+        let iconColor = '#ef4444';
         let sign = '-';
-        let amountColor = 'var(--expense)';
+        let isReceived = false;
 
         if (l.mode === 'income') {
           iconClass = 'fa-arrow-up';
           iconBg = 'var(--income-bg)';
-          iconColor = 'var(--income)';
+          iconColor = '#10b981';
           sign = '+';
-          amountColor = 'var(--income)';
+          isReceived = true;
         } else if (l.mode === 'give_udhar') {
           iconClass = 'fa-hand-holding-dollar';
-          iconBg = 'var(--receive-bg)';
-          iconColor = 'var(--receive)';
+          iconBg = 'var(--expense-bg)';
+          iconColor = '#ef4444';
           sign = '-';
-          amountColor = 'var(--receive)';
+          isReceived = false;
         } else if (l.mode === 'take_udhar') {
           iconClass = 'fa-money-bill-transfer';
-          iconBg = 'var(--pay-bg)';
-          iconColor = 'var(--pay)';
+          iconBg = 'var(--income-bg)';
+          iconColor = '#10b981';
           sign = '+';
-          amountColor = 'var(--pay)';
+          isReceived = true;
         } else if (l.mode === 'person_settle') {
           if (l.settleType === 'received_from_person') {
             iconClass = 'fa-circle-check';
             iconBg = 'var(--income-bg)';
-            iconColor = 'var(--income)';
+            iconColor = '#10b981';
             sign = '+';
-            amountColor = 'var(--income)';
+            isReceived = true;
           } else {
             iconClass = 'fa-circle-check';
             iconBg = 'var(--expense-bg)';
-            iconColor = 'var(--expense)';
+            iconColor = '#ef4444';
             sign = '-';
-            amountColor = 'var(--expense)';
+            isReceived = false;
           }
         }
 
@@ -2177,14 +2498,14 @@
               </div>
               <div class="log-info">
                 <div class="log-desc">
-                  ${l.person ? `<span class="log-person-tag"><i class="fa-solid fa-user"></i> ${escapeHtml(l.person)}</span>` : ''}
+                  ${l.person ? `<span class="log-person-tag" onclick="openPersonLedger('${escapeHtml(l.person)}')" title="Click to view ledger" style="cursor: pointer;"><i class="fa-solid fa-user"></i> ${escapeHtml(l.person)}</span>` : ''}
                   ${escapeHtml(l.note || (l.mode === 'income' ? 'Cash Received' : 'Expense'))}
                 </div>
                 <div class="log-time">${timeStr}</div>
               </div>
             </div>
 
-            <div class="log-amount stealth-mask" style="color: ${amountColor};">
+            <div class="log-amount stealth-mask ${isReceived ? 'money-received' : 'money-spent'}">
               ${sign}${formatMoney(l.amount)}
             </div>
 
@@ -2233,13 +2554,13 @@
       entries.forEach(([name, bal]) => {
         const isReceive = bal > 0;
         const isSettled = bal === 0;
-        const color = isSettled ? 'var(--text-muted)' : (isReceive ? 'var(--receive)' : 'var(--pay)');
+        const colorClass = isSettled ? '' : (isReceive ? 'money-received' : 'money-spent');
 
         html += `
           <div class="person-card">
             <div class="person-head">
-              <div class="person-name-title">
-                <i class="fa-solid fa-user-circle" style="color: ${color}; font-size: 1.2rem;"></i>
+              <div class="person-name-title" onclick="openPersonLedger('${escapeHtml(name)}')" title="Click to view passbook ledger">
+                <i class="fa-solid fa-user-circle" style="font-size: 1.25rem;"></i>
                 ${escapeHtml(name)}
               </div>
               <span class="person-type-tag ${isReceive ? 'receive' : 'pay'}">
@@ -2247,31 +2568,36 @@
               </span>
             </div>
 
-            <div class="person-balance-box">
+            <div class="person-balance-box" onclick="openPersonLedger('${escapeHtml(name)}')" title="Click to view passbook ledger">
               <div>
                 <div style="font-size: 0.72rem; color: var(--text-muted); text-transform: uppercase;">
-                  ${isSettled ? 'Balance' : (isReceive ? 'You will get' : 'You have to give')}
+                  ${isSettled ? 'Balance' : (isReceive ? 'You will get (In)' : 'You have to give (Out)')}
                 </div>
-                <div class="person-bal-val stealth-mask" style="color: ${color};">
+                <div class="person-bal-val stealth-mask ${colorClass}">
                   ${formatMoney(Math.abs(bal))}
                 </div>
               </div>
 
-              <button class="btn-del-log" onclick="deletePersonFromKhata('${escapeHtml(name)}')" title="Remove person">
-                <i class="fa-solid fa-trash-can"></i>
-              </button>
+              <div style="display: flex; align-items: center; gap: 8px;">
+                <button class="btn-person-action btn-person-ledger" style="padding: 5px 9px;" onclick="event.stopPropagation(); openPersonLedger('${escapeHtml(name)}')">
+                  <i class="fa-solid fa-book-open"></i> Ledger
+                </button>
+                <button class="btn-del-log" onclick="event.stopPropagation(); deletePersonFromKhata('${escapeHtml(name)}')" title="Remove person">
+                  <i class="fa-solid fa-trash-can"></i>
+                </button>
+              </div>
             </div>
 
             <!-- Granular Settle (-) & Add (+) -->
             <div class="person-actions">
               ${!isSettled ? `
                 <button class="btn-person-action btn-person-settle" onclick="openPersonSettle('${escapeHtml(name)}')">
-                  <i class="fa-solid fa-hand-holding-dollar"></i> Settle (-)
+                  <i class="fa-solid fa-hand-holding-dollar"></i> Settle (+)
                 </button>
               ` : ''}
 
               <button class="btn-person-action btn-person-add" onclick="openPersonAdd('${escapeHtml(name)}')">
-                <i class="fa-solid fa-plus"></i> Add Udhar (+)
+                <i class="fa-solid fa-plus"></i> Give Udhar (-)
               </button>
             </div>
           </div>

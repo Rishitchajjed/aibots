@@ -86,6 +86,16 @@ const AI_BOTS_TOOLS = [
     color: '#10b981'
   },
   {
+    id: 'ledger',
+    title: 'Cash & Udhar Ledger',
+    description: 'Personal passbook, Udhar khata & daily cash spending tracker with WhatsApp statements and offline local storage.',
+    icon: 'fa-book-open',
+    url: 'ledger.html',
+    category: 'business',
+    badge: 'OFFLINE / FREE',
+    color: '#10b981'
+  },
+  {
     id: 'buisnesscard',
     title: 'Business Card Maker',
     description: 'Design sleek, professional business cards with custom branding, themes, typography, and print export.',

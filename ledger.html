@@ -1156,6 +1156,25 @@
         <button class="btn-cash-step plus" onclick="openAdjustCashModal('increment')">
           <i class="fa-solid fa-plus"></i> Add Cash
         </button>
+        <button class="btn-cash-step" style="background: rgba(99, 102, 241, 0.12); color: var(--primary); border: 1px solid rgba(99, 102, 241, 0.25);" onclick="openAdjustCashModal('set')" title="Set exact balance or reset">
+          <i class="fa-solid fa-sliders"></i> Set / Reset
+        </button>
+      </div>
+    </div>
+
+    <!-- Self-Healing / Zero Transaction Negative Balance Alert Banner -->
+    <div id="cashGlitchAlert" style="display: none; background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.3); border-radius: var(--radius-md); padding: 10px 14px; margin-bottom: 12px; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px;">
+      <div style="display: flex; align-items: center; gap: 8px; font-size: 0.85rem; color: #ef4444; font-weight: 600;">
+        <i class="fa-solid fa-circle-exclamation" style="font-size: 1.1rem;"></i>
+        <span>Negative cash balance (<strong id="glitchCashVal">₹0.00</strong>) with 0 active records detected.</span>
+      </div>
+      <div style="display: flex; gap: 8px;">
+        <button class="btn-cash-step" style="background: #ef4444; color: #ffffff; border: none; padding: 6px 14px; font-size: 0.8rem; font-weight: 700;" onclick="resetCashToZero()">
+          <i class="fa-solid fa-rotate-left"></i> Reset to ₹0.00
+        </button>
+        <button class="btn-cash-step" style="background: var(--bg-tertiary); color: var(--text-primary); border: 1px solid var(--border-color); padding: 6px 12px; font-size: 0.8rem;" onclick="openAdjustCashModal('set')">
+          Set Balance
+        </button>
       </div>
     </div>
 
@@ -1444,13 +1463,21 @@
     </div>
   </div>
 
-  <!-- Modal: Adjust Cash Hero Balance (+ / -) -->
+  <!-- Modal: Adjust Cash Hero Balance (+ / - / Set) -->
   <div class="modal-overlay" id="modalAdjustCash">
     <div class="modal-card">
       <div class="modal-head">
         <h3 class="modal-title" id="adjustCashTitle">Adjust Cash</h3>
         <button class="modal-close" onclick="closeModal('modalAdjustCash')">&times;</button>
       </div>
+
+      <!-- Mode Selector Tabs: Add, Deduct, Set -->
+      <div style="display: flex; gap: 6px; margin-bottom: 14px; background: var(--bg-tertiary); padding: 4px; border-radius: var(--radius-md);">
+        <button type="button" class="quick-chip" id="tabCashAdd" style="flex: 1; text-align: center; justify-content: center; font-weight: 700;" onclick="setAdjustCashTab('increment')"><i class="fa-solid fa-plus"></i> Add</button>
+        <button type="button" class="quick-chip" id="tabCashDeduct" style="flex: 1; text-align: center; justify-content: center; font-weight: 700;" onclick="setAdjustCashTab('decrement')"><i class="fa-solid fa-minus"></i> Deduct</button>
+        <button type="button" class="quick-chip" id="tabCashSet" style="flex: 1.2; text-align: center; justify-content: center; font-weight: 700;" onclick="setAdjustCashTab('set')"><i class="fa-solid fa-sliders"></i> Set / Reset</button>
+      </div>
+
       <form id="formAdjustCash" onsubmit="handleAdjustCashSubmit(event)">
         <input type="hidden" id="adjustCashMode" value="increment">
 
@@ -1462,7 +1489,7 @@
         <div class="form-group" style="margin-bottom: 12px;">
           <label class="form-label" id="adjustCashAmountLabel">Amount</label>
           <input type="number" step="any" id="adjustCashAmountInput" class="input-box" placeholder="0.00" required autofocus>
-          <div class="quick-chips">
+          <div class="quick-chips" id="adjustCashChips">
             <button type="button" class="quick-chip" onclick="document.getElementById('adjustCashAmountInput').value = 100">+100</button>
             <button type="button" class="quick-chip" onclick="document.getElementById('adjustCashAmountInput').value = 500">+500</button>
             <button type="button" class="quick-chip" onclick="document.getElementById('adjustCashAmountInput').value = 1000">+1000</button>
@@ -1629,6 +1656,12 @@
 
     function initDefaults() {
       if (localStorage.getItem(KEYS.CASH) === null) {
+        setStored(KEYS.CASH, 0);
+      }
+      // Self-healing check: if 0 transactions but cash became negative from past delete glitch, auto-fix to 0
+      const initLogs = getStored(KEYS.LOGS, []);
+      const initCash = Number(getStored(KEYS.CASH, 0));
+      if (initLogs.length === 0 && initCash < 0) {
         setStored(KEYS.CASH, 0);
       }
       if (!localStorage.getItem(KEYS.LOGS)) {
@@ -1878,6 +1911,8 @@
       const logs = getStored(KEYS.LOGS, []);
       const people = getStored(KEYS.PEOPLE, {});
 
+      const commonGroupId = 'grp_' + Date.now() + '_' + Math.random().toString(36).substring(2, 7);
+
       if (entryMode === 'split_contri') {
         if (contriFlow === 'he_gave') {
           cash = Number((cash + amount).toFixed(2));
@@ -1887,6 +1922,9 @@
             mode: 'income',
             type: 'income',
             amount: amount,
+            cashDelta: amount,
+            personDelta: 0,
+            groupId: commonGroupId,
             person: person,
             note: (note ? note : 'Contri received') + ` (From ${person})`
           });
@@ -1904,6 +1942,9 @@
               mode: 'expense',
               type: 'expense',
               amount: myShare,
+              cashDelta: -myShare,
+              personDelta: 0,
+              groupId: commonGroupId,
               person: person,
               note: (note ? note : 'Bill Split') + ' (My Share)'
             });
@@ -1915,6 +1956,9 @@
               mode: 'give_udhar',
               type: 'give_udhar',
               amount: friendShare,
+              cashDelta: -friendShare,
+              personDelta: friendShare,
+              groupId: commonGroupId,
               person: person,
               note: (note ? note : 'Bill Contri') + ` (${person}'s Share)`
             });
@@ -1929,6 +1973,9 @@
               mode: 'expense',
               type: 'expense',
               amount: myShare,
+              cashDelta: -myShare,
+              personDelta: 0,
+              groupId: commonGroupId,
               person: person,
               note: (note ? note : 'Bill Split') + ` (My Share - ${person} paid ${formatMoney(friendShare)} on spot)`
             });
@@ -1937,12 +1984,16 @@
           } else if (contriFlow === 'friend_paid') {
             people[person] = Number(((people[person] || 0) - myShare).toFixed(2));
 
+            // Friend paid full: cash was NOT touched! cashDelta is 0
             logs.unshift({
               id: 'log_' + Date.now() + '_debt',
               date: new Date().toISOString(),
               mode: 'take_udhar',
               type: 'take_udhar',
               amount: myShare,
+              cashDelta: 0,
+              personDelta: -myShare,
+              groupId: commonGroupId,
               person: person,
               note: (note ? note : 'Bill Contri') + ' (Paid by ' + person + ')'
             });
@@ -1956,12 +2007,16 @@
         if (isDirectlySpent) {
           people[person] = Number(((people[person] || 0) - amount).toFixed(2));
 
+          // Borrowed and spent right away: cash in hand was NOT touched!
           logs.unshift({
             id: 'log_' + Date.now() + '_borrow',
             date: new Date().toISOString(),
             mode: 'take_udhar',
             type: 'take_udhar',
             amount: amount,
+            cashDelta: 0,
+            personDelta: -amount,
+            groupId: commonGroupId,
             person: person,
             note: `Borrowed from ${person}`
           });
@@ -1972,6 +2027,9 @@
             mode: 'expense',
             type: 'expense',
             amount: amount,
+            cashDelta: 0,
+            personDelta: 0,
+            groupId: commonGroupId,
             person: person,
             note: note || 'Spent on eatables/food'
           });
@@ -1986,32 +2044,45 @@
             mode: 'take_udhar',
             type: 'take_udhar',
             amount: amount,
+            cashDelta: amount,
+            personDelta: -amount,
+            groupId: commonGroupId,
             person: person,
             note: note || `Borrowed cash from ${person}`
           });
           showToast(`Cash added (+${formatMoney(amount)}), To Pay to ${person}`);
         }
       } else {
+        let cd = 0;
+        let pd = 0;
+
+        if (entryMode === 'expense') {
+          cash = Number((cash - amount).toFixed(2));
+          cd = -amount;
+          pd = 0;
+        } else if (entryMode === 'income') {
+          cash = Number((cash + amount).toFixed(2));
+          cd = amount;
+          pd = 0;
+        } else if (entryMode === 'give_udhar') {
+          cash = Number((cash - amount).toFixed(2));
+          people[person] = Number(((people[person] || 0) + amount).toFixed(2));
+          cd = -amount;
+          pd = amount;
+        }
+
         const newLog = {
           id: 'log_' + Date.now(),
           date: new Date().toISOString(),
           mode: entryMode,
+          type: entryMode,
           amount: Number(amount.toFixed(2)),
+          cashDelta: cd,
+          personDelta: pd,
+          groupId: commonGroupId,
           person: person || '',
           note: note || ''
         };
-
-        if (entryMode === 'expense') {
-          cash = Number((cash - amount).toFixed(2));
-          newLog.type = 'expense';
-        } else if (entryMode === 'income') {
-          cash = Number((cash + amount).toFixed(2));
-          newLog.type = 'income';
-        } else if (entryMode === 'give_udhar') {
-          cash = Number((cash - amount).toFixed(2));
-          people[person] = Number(((people[person] || 0) + amount).toFixed(2));
-          newLog.type = 'give_udhar';
-        }
 
         logs.unshift(newLog);
         showToast(`Saved ${entryMode}: ${formatMoney(amount)}`);
@@ -2030,98 +2101,242 @@
       renderAll();
     }
 
-    /* Delete Log Entry */
+    /* Helper: Calculate exact deltas for any log entry (with fallback for legacy records) */
+    function getLogDeltas(l) {
+      if (typeof l.cashDelta === 'number' && typeof l.personDelta === 'number') {
+        return { cashDelta: l.cashDelta, personDelta: l.personDelta };
+      }
+      let cd = 0;
+      let pd = 0;
+      const amt = Number(l.amount) || 0;
+      const idStr = String(l.id || '');
+      const noteStr = String(l.note || '').toLowerCase();
+
+      if (l.mode === 'expense') {
+        if (idStr.endsWith('_spent') || noteStr.includes('eatables')) {
+          cd = 0; // Borrowed & spent directly didn't touch cash
+        } else {
+          cd = -amt;
+        }
+      } else if (l.mode === 'income') {
+        cd = amt;
+      } else if (l.mode === 'give_udhar') {
+        cd = -amt;
+        pd = amt;
+      } else if (l.mode === 'take_udhar') {
+        if (idStr.endsWith('_debt') || idStr.endsWith('_borrow') || noteStr.includes('paid by')) {
+          cd = 0; // Contri paid by friend or direct eatables didn't touch cash
+        } else {
+          cd = amt;
+        }
+        pd = -amt;
+      } else if (l.mode === 'person_settle') {
+        if (l.settleType === 'received_from_person') {
+          cd = amt;
+          pd = -amt;
+        } else if (l.settleType === 'paid_to_person') {
+          cd = -amt;
+          pd = amt;
+        }
+      }
+      return { cashDelta: cd, personDelta: pd };
+    }
+
+    /* Delete Log Entry with Group-aware Reversal & Negative Balance Guard */
     function deleteLog(logId) {
-      if (!confirm('Delete this record and reverse its cash & khata effect?')) return;
       const logs = getStored(KEYS.LOGS, []);
+      const idx = logs.findIndex(l => l.id === logId);
+      if (idx === -1) return;
+      const target = logs[idx];
+
+      // Check if linked to other entries in a group
+      let toDelete = [target];
+      if (target.groupId) {
+        toDelete = logs.filter(item => item.groupId === target.groupId);
+      }
+
+      const confirmMsg = toDelete.length > 1
+        ? `Delete this split/linked transaction (${toDelete.length} records) and restore cash & khata?`
+        : 'Delete this record and restore cash & khata?';
+
+      if (!confirm(confirmMsg)) return;
+
       let cash = Number(getStored(KEYS.CASH, 0));
       const people = getStored(KEYS.PEOPLE, {});
 
-      const idx = logs.findIndex(l => l.id === logId);
-      if (idx === -1) return;
-      const l = logs[idx];
+      toDelete.forEach(item => {
+        const deltas = getLogDeltas(item);
+        // Reverse exact cash effect
+        cash = Number((cash - deltas.cashDelta).toFixed(2));
+        // Reverse exact person khata effect
+        if (item.person) {
+          const curPBal = Number(people[item.person] || 0);
+          const newPBal = Number((curPBal - deltas.personDelta).toFixed(2));
+          if (Math.abs(newPBal) < 0.001) {
+            delete people[item.person];
+          } else {
+            people[item.person] = newPBal;
+          }
+        }
+      });
 
-      if (l.mode === 'expense') {
-        cash = Number((cash + l.amount).toFixed(2));
-      } else if (l.mode === 'income') {
-        cash = Number((cash - l.amount).toFixed(2));
-      } else if (l.mode === 'give_udhar') {
-        cash = Number((cash + l.amount).toFixed(2));
-        if (people[l.person]) {
-          people[l.person] = Number((people[l.person] - l.amount).toFixed(2));
-        }
-      } else if (l.mode === 'take_udhar') {
-        cash = Number((cash - l.amount).toFixed(2));
-        if (people[l.person] !== undefined) {
-          people[l.person] = Number((people[l.person] + l.amount).toFixed(2));
-        }
-      } else if (l.mode === 'person_settle') {
-        if (l.settleType === 'received_from_person') {
-          cash = Number((cash - l.amount).toFixed(2));
-          people[l.person] = Number(((people[l.person] || 0) + l.amount).toFixed(2));
-        } else if (l.settleType === 'paid_to_person') {
-          cash = Number((cash + l.amount).toFixed(2));
-          people[l.person] = Number(((people[l.person] || 0) - l.amount).toFixed(2));
-        }
+      const deleteIds = new Set(toDelete.map(d => d.id));
+      const remainingLogs = logs.filter(item => !deleteIds.has(item.id));
+
+      // Sanity guard: If all transactions are gone and cash is negative, reset to 0
+      if (remainingLogs.length === 0 && cash < 0) {
+        cash = 0;
       }
 
-      logs.splice(idx, 1);
-
       setStored(KEYS.CASH, cash);
-      setStored(KEYS.LOGS, logs);
+      setStored(KEYS.LOGS, remainingLogs);
       setStored(KEYS.PEOPLE, people);
 
       renderAll();
       if (currentLedgerPerson) openPersonLedger(currentLedgerPerson);
-      showToast('Record deleted');
+      showToast('Record deleted & restored');
     }
 
-    /* Hero Cash Steppers */
+    /* Reset Cash Directly to Zero */
+    function resetCashToZero() {
+      setStored(KEYS.CASH, 0);
+      renderAll();
+      showToast('Cash in Hand reset to ₹0.00');
+    }
+    window.resetCashToZero = resetCashToZero;
+
+    /* Hero Cash Adjust & Set Balance Modal */
+    function setAdjustCashTab(mode) {
+      document.getElementById('adjustCashMode').value = mode;
+      
+      const tabAdd = document.getElementById('tabCashAdd');
+      const tabDeduct = document.getElementById('tabCashDeduct');
+      const tabSet = document.getElementById('tabCashSet');
+      
+      tabAdd.classList.remove('active');
+      tabDeduct.classList.remove('active');
+      tabSet.classList.remove('active');
+
+      const chipsBox = document.getElementById('adjustCashChips');
+      const titleEl = document.getElementById('adjustCashTitle');
+      const labelEl = document.getElementById('adjustCashAmountLabel');
+      const btnEl = document.getElementById('adjustCashSubmitBtn');
+
+      if (mode === 'increment') {
+        tabAdd.classList.add('active');
+        titleEl.textContent = 'Add Cash (+)';
+        labelEl.textContent = 'Amount to Add';
+        btnEl.style.background = 'var(--income)';
+        btnEl.textContent = 'Add to Cash';
+        chipsBox.innerHTML = `
+          <button type="button" class="quick-chip" onclick="document.getElementById('adjustCashAmountInput').value = 100">+100</button>
+          <button type="button" class="quick-chip" onclick="document.getElementById('adjustCashAmountInput').value = 500">+500</button>
+          <button type="button" class="quick-chip" onclick="document.getElementById('adjustCashAmountInput').value = 1000">+1000</button>
+          <button type="button" class="quick-chip" onclick="document.getElementById('adjustCashAmountInput').value = 5000">+5000</button>
+        `;
+      } else if (mode === 'decrement') {
+        tabDeduct.classList.add('active');
+        titleEl.textContent = 'Deduct Cash (-)';
+        labelEl.textContent = 'Amount to Deduct';
+        btnEl.style.background = 'var(--expense)';
+        btnEl.textContent = 'Deduct from Cash';
+        chipsBox.innerHTML = `
+          <button type="button" class="quick-chip" onclick="document.getElementById('adjustCashAmountInput').value = 100">-100</button>
+          <button type="button" class="quick-chip" onclick="document.getElementById('adjustCashAmountInput').value = 500">-500</button>
+          <button type="button" class="quick-chip" onclick="document.getElementById('adjustCashAmountInput').value = 1000">-1000</button>
+          <button type="button" class="quick-chip" onclick="document.getElementById('adjustCashAmountInput').value = 5000">-5000</button>
+        `;
+      } else if (mode === 'set') {
+        tabSet.classList.add('active');
+        titleEl.textContent = 'Set / Reset Cash Balance';
+        labelEl.textContent = 'Exact Cash Amount in Hand';
+        btnEl.style.background = 'var(--primary)';
+        btnEl.textContent = 'Save Cash Balance';
+        chipsBox.innerHTML = `
+          <button type="button" class="quick-chip" style="background: rgba(239, 68, 68, 0.15); color: #ef4444; border-color: rgba(239, 68, 68, 0.3);" onclick="document.getElementById('adjustCashAmountInput').value = 0"><i class="fa-solid fa-rotate-left"></i> 0 (Reset)</button>
+          <button type="button" class="quick-chip" onclick="document.getElementById('adjustCashAmountInput').value = 500">500</button>
+          <button type="button" class="quick-chip" onclick="document.getElementById('adjustCashAmountInput').value = 1000">1000</button>
+          <button type="button" class="quick-chip" onclick="document.getElementById('adjustCashAmountInput').value = 2000">2000</button>
+        `;
+      }
+    }
+    window.setAdjustCashTab = setAdjustCashTab;
+
     function openAdjustCashModal(mode) {
       const cash = Number(getStored(KEYS.CASH, 0));
-      document.getElementById('adjustCashMode').value = mode;
-      document.getElementById('adjustCashTitle').textContent = mode === 'increment' ? 'Add Cash (+)' : 'Deduct Cash (-)';
-      document.getElementById('adjustCashAmountLabel').textContent = mode === 'increment' ? 'Amount to Add' : 'Amount to Deduct';
       document.getElementById('adjustCashCurrentVal').textContent = formatMoney(cash);
       document.getElementById('adjustCashAmountInput').value = '';
       document.getElementById('adjustCashNoteInput').value = '';
-      document.getElementById('adjustCashSubmitBtn').textContent = mode === 'increment' ? 'Add to Cash' : 'Deduct from Cash';
+      setAdjustCashTab(mode || 'increment');
       openModal('modalAdjustCash');
     }
 
     function handleAdjustCashSubmit(e) {
       e.preventDefault();
       const mode = document.getElementById('adjustCashMode').value;
-      const amt = Number(document.getElementById('adjustCashAmountInput').value);
-      const note = document.getElementById('adjustCashNoteInput').value.trim() || (mode === 'increment' ? 'Cash Added' : 'Cash Deducted');
+      const amtStr = document.getElementById('adjustCashAmountInput').value.trim();
+      const amt = Number(amtStr);
+      const note = document.getElementById('adjustCashNoteInput').value.trim();
 
-      if (amt <= 0 || isNaN(amt)) return;
+      if (isNaN(amt) || amt < 0) return;
 
       let cash = Number(getStored(KEYS.CASH, 0));
       const logs = getStored(KEYS.LOGS, []);
 
       if (mode === 'increment') {
+        if (amt === 0) return;
         cash = Number((cash + amt).toFixed(2));
-      } else {
+        logs.unshift({
+          id: 'log_' + Date.now(),
+          date: new Date().toISOString(),
+          mode: 'income',
+          type: 'income',
+          amount: amt,
+          cashDelta: amt,
+          personDelta: 0,
+          person: '',
+          note: note || 'Cash Added'
+        });
+        showToast(`Added ${formatMoney(amt)} to Cash`);
+      } else if (mode === 'decrement') {
+        if (amt === 0) return;
         cash = Number((cash - amt).toFixed(2));
+        logs.unshift({
+          id: 'log_' + Date.now(),
+          date: new Date().toISOString(),
+          mode: 'expense',
+          type: 'expense',
+          amount: amt,
+          cashDelta: -amt,
+          personDelta: 0,
+          person: '',
+          note: note || 'Cash Deducted'
+        });
+        showToast(`Deducted ${formatMoney(amt)} from Cash`);
+      } else if (mode === 'set') {
+        const diff = Number((amt - cash).toFixed(2));
+        cash = Number(amt.toFixed(2));
+        if (Math.abs(diff) > 0.001) {
+          logs.unshift({
+            id: 'log_' + Date.now(),
+            date: new Date().toISOString(),
+            mode: diff > 0 ? 'income' : 'expense',
+            type: diff > 0 ? 'income' : 'expense',
+            amount: Math.abs(diff),
+            cashDelta: diff,
+            personDelta: 0,
+            person: '',
+            note: note || `Balance set to ${formatMoney(amt)}`
+          });
+        }
+        showToast(`Cash balance set to ${formatMoney(amt)}`);
       }
-
-      logs.unshift({
-        id: 'log_' + Date.now(),
-        date: new Date().toISOString(),
-        mode: mode === 'increment' ? 'income' : 'expense',
-        type: mode === 'increment' ? 'income' : 'expense',
-        amount: amt,
-        person: '',
-        note: note
-      });
 
       setStored(KEYS.CASH, cash);
       setStored(KEYS.LOGS, logs);
 
       closeModal('modalAdjustCash');
       renderAll();
-      showToast(`Cash adjusted by ${formatMoney(amt)}`);
     }
 
     /* ==========================================================================
@@ -2289,7 +2504,10 @@
       if (action === 'settle') {
         if (curBal > 0) {
           cash = Number((cash + amt).toFixed(2));
-          people[person] = Number((curBal - amt).toFixed(2));
+          const newBal = Number((curBal - amt).toFixed(2));
+          if (Math.abs(newBal) < 0.001) delete people[person];
+          else people[person] = newBal;
+
           logs.unshift({
             id: 'log_' + Date.now(),
             date: new Date().toISOString(),
@@ -2297,12 +2515,17 @@
             settleType: 'received_from_person',
             type: 'income',
             amount: amt,
+            cashDelta: amt,
+            personDelta: -amt,
             person: person,
             note: note || `Received payment from ${person}`
           });
         } else {
           cash = Number((cash - amt).toFixed(2));
-          people[person] = Number((curBal + amt).toFixed(2));
+          const newBal = Number((curBal + amt).toFixed(2));
+          if (Math.abs(newBal) < 0.001) delete people[person];
+          else people[person] = newBal;
+
           logs.unshift({
             id: 'log_' + Date.now(),
             date: new Date().toISOString(),
@@ -2310,6 +2533,8 @@
             settleType: 'paid_to_person',
             type: 'expense',
             amount: amt,
+            cashDelta: -amt,
+            personDelta: amt,
             person: person,
             note: note || `Paid debt to ${person}`
           });
@@ -2324,6 +2549,8 @@
             mode: 'give_udhar',
             type: 'give_udhar',
             amount: amt,
+            cashDelta: -amt,
+            personDelta: amt,
             person: person,
             note: note || `Additional Udhar given to ${person}`
           });
@@ -2336,6 +2563,8 @@
             mode: 'take_udhar',
             type: 'take_udhar',
             amount: amt,
+            cashDelta: amt,
+            personDelta: -amt,
             person: person,
             note: note || `Additional Udhar taken from ${person}`
           });
@@ -2407,6 +2636,18 @@
       document.getElementById('statTotalReceive').textContent = formatMoney(totalReceive);
       document.getElementById('statTotalPay').textContent = formatMoney(totalPay);
       document.getElementById('peopleBadgeCount').textContent = activePeopleCount;
+
+      // Self-healing / Alert for Zero-transaction negative cash
+      const glitchAlert = document.getElementById('cashGlitchAlert');
+      const glitchVal = document.getElementById('glitchCashVal');
+      if (glitchAlert && glitchVal) {
+        if (logs.length === 0 && cash < 0) {
+          glitchAlert.style.display = 'flex';
+          glitchVal.textContent = formatMoney(cash);
+        } else {
+          glitchAlert.style.display = 'none';
+        }
+      }
 
       // Update People Datalist for autocomplete
       const datalist = document.getElementById('existingPeopleDatalist');

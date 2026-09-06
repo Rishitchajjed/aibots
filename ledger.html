@@ -104,39 +104,61 @@
       --primary: #6366f1;
       --primary-hover: #4f46e5;
       --income: #10b981;
-      --income-bg: rgba(16, 185, 129, 0.12);
+      --income-bg: rgba(16, 185, 129, 0.15);
       --expense: #ef4444;
-      --expense-bg: rgba(239, 68, 68, 0.12);
+      --expense-bg: rgba(239, 68, 68, 0.15);
       --receive: #10b981;
-      --receive-bg: rgba(16, 185, 129, 0.12);
+      --receive-bg: rgba(16, 185, 129, 0.15);
       --pay: #ef4444;
-      --pay-bg: rgba(239, 68, 68, 0.12);
+      --pay-bg: rgba(239, 68, 68, 0.15);
       --contri: #a855f7;
-      --contri-bg: rgba(168, 85, 247, 0.12);
-      --card-bg: rgba(17, 24, 39, 0.85);
-      --card-border: rgba(255, 255, 255, 0.08);
-      --card-hover: rgba(31, 41, 55, 0.95);
-      
+      --contri-bg: rgba(168, 85, 247, 0.15);
+
+      /* Dark Theme (Default) */
+      --bg-primary: #090d16;
+      --bg-secondary: #111827;
+      --bg-tertiary: #1f2937;
+      --bg-glass: rgba(17, 24, 39, 0.92);
+      --border-color: rgba(255, 255, 255, 0.12);
+      --border-color-hover: rgba(255, 255, 255, 0.25);
+      --card-bg: #111827;
+      --card-border: rgba(255, 255, 255, 0.12);
+      --card-hover: #1f2937;
+
+      /* Crisp Bright White Text in Dark Theme */
+      --text-primary: #f8fafc;
+      --text-secondary: #cbd5e1;
+      --text-muted: #94a3b8;
+
       /* High-Contrast Person Names */
       --person-name-color: #ffffff;
-      --person-tag-bg: rgba(255, 255, 255, 0.12);
-      --person-tag-border: rgba(255, 255, 255, 0.28);
+      --person-tag-bg: rgba(255, 255, 255, 0.15);
+      --person-tag-border: rgba(255, 255, 255, 0.32);
       --person-tag-color: #ffffff;
     }
 
     [data-theme="light"] {
-      --card-bg: rgba(255, 255, 255, 0.96);
-      --card-border: rgba(0, 0, 0, 0.1);
-      --card-hover: rgba(241, 245, 249, 0.98);
-      --income-bg: rgba(16, 185, 129, 0.15);
-      --expense-bg: rgba(239, 68, 68, 0.15);
-      --contri-bg: rgba(168, 85, 247, 0.15);
-      
+      /* Light Theme */
+      --bg-primary: #f8fafc;
+      --bg-secondary: #ffffff;
+      --bg-tertiary: #f1f5f9;
+      --bg-glass: rgba(255, 255, 255, 0.92);
+      --border-color: #e2e8f0;
+      --border-color-hover: #cbd5e1;
+      --card-bg: #ffffff;
+      --card-border: #e2e8f0;
+      --card-hover: #f8fafc;
+
+      /* Crisp Deep Black Text in Light Theme */
+      --text-primary: #0f172a;
+      --text-secondary: #334155;
+      --text-muted: #64748b;
+
       /* Bold Crisp Black in Light Mode */
-      --person-name-color: #000000;
-      --person-tag-bg: #f1f5f9;
+      --person-name-color: #0f172a;
+      --person-tag-bg: #e2e8f0;
       --person-tag-border: #cbd5e1;
-      --person-tag-color: #000000;
+      --person-tag-color: #0f172a;
     }
 
     body {
@@ -731,16 +753,20 @@
 
     .log-desc {
       font-weight: 700;
-      font-size: 0.92rem;
-      color: var(--text-primary);
+      font-size: 0.94rem;
+      color: var(--text-primary) !important;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
     }
 
+    .log-desc strong, .log-desc span.log-note-text {
+      color: var(--text-primary) !important;
+    }
+
     .log-time {
-      font-size: 0.72rem;
-      color: var(--text-muted);
+      font-size: 0.75rem;
+      color: var(--text-muted) !important;
       margin-top: 2px;
     }
 
@@ -1125,6 +1151,10 @@
 
           <button class="icon-btn" onclick="openBackupModal()" title="Backup & Restore">
             <i class="fa-solid fa-cloud-arrow-up"></i>
+          </button>
+
+          <button class="icon-btn" id="btnThemeToggle" onclick="toggleAppTheme()" title="Toggle Dark / Light Mode">
+            <i class="fa-solid fa-sun" id="themeIcon" style="color: #f59e0b;"></i>
           </button>
 
           <a href="index.html" class="icon-btn" title="All Tools">
@@ -1654,7 +1684,37 @@
     }
     window.setStored = setStored;
 
+    /* Theme Toggle & Initialization */
+    function setAppTheme(theme) {
+      document.documentElement.setAttribute('data-theme', theme);
+      localStorage.setItem('ab-theme', theme);
+      const icon = document.getElementById('themeIcon');
+      if (icon) {
+        if (theme === 'light') {
+          icon.className = 'fa-solid fa-moon';
+          icon.style.color = 'inherit';
+        } else {
+          icon.className = 'fa-solid fa-sun';
+          icon.style.color = '#f59e0b';
+        }
+      }
+    }
+    window.setAppTheme = setAppTheme;
+
+    function toggleAppTheme() {
+      const cur = document.documentElement.getAttribute('data-theme') || 'dark';
+      const next = cur === 'dark' ? 'light' : 'dark';
+      setAppTheme(next);
+    }
+    window.toggleAppTheme = toggleAppTheme;
+
+    function initTheme() {
+      const saved = localStorage.getItem('ab-theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+      setAppTheme(saved);
+    }
+
     function initDefaults() {
+      initTheme();
       if (localStorage.getItem(KEYS.CASH) === null) {
         setStored(KEYS.CASH, 0);
       }
@@ -1945,8 +2005,8 @@
               cashDelta: -myShare,
               personDelta: 0,
               groupId: commonGroupId,
-              person: person,
-              note: (note ? note : 'Bill Split') + ' (My Share)'
+              person: '', // Personal expense share, not a debt to friend
+              note: (note ? note : 'Bill Split') + ` (My Share - split with ${person})`
             });
 
             people[person] = Number(((people[person] || 0) + friendShare).toFixed(2));
@@ -1976,7 +2036,7 @@
               cashDelta: -myShare,
               personDelta: 0,
               groupId: commonGroupId,
-              person: person,
+              person: '', // Personal expense share
               note: (note ? note : 'Bill Split') + ` (My Share - ${person} paid ${formatMoney(friendShare)} on spot)`
             });
 
@@ -2030,8 +2090,8 @@
             cashDelta: 0,
             personDelta: 0,
             groupId: commonGroupId,
-            person: person,
-            note: note || 'Spent on eatables/food'
+            person: '', // Food expense, not a debt to friend
+            note: note || `Spent on eatables (borrowed from ${person})`
           });
 
           showToast(`Recorded: Borrowed & spent ${formatMoney(amount)} on eatables`);
@@ -2351,7 +2411,15 @@
       document.getElementById('ledgerPersonName').textContent = personName;
 
       // Filter chronological transactions for this person (oldest to newest for running balance)
-      const personLogs = logs.filter(l => (l.person || '').toLowerCase() === personName.toLowerCase());
+      // Filter out personal expense shares (e.g. My Share) so they don't appear in the other person's passbook!
+      const personLogs = logs.filter(l => {
+        if ((l.person || '').toLowerCase() !== personName.toLowerCase()) return false;
+        // Exclude personal expenses that have no personDelta or were personal share
+        if (l.mode === 'expense' && (l.personDelta === 0 || (l.id && (l.id.endsWith('_exp') || l.id.endsWith('_spent'))) || (l.note && l.note.includes('(My Share)')))) {
+          return false;
+        }
+        return true;
+      });
       const chronoLogs = [...personLogs].sort((a, b) => new Date(a.date) - new Date(b.date));
 
       let totalGiven = 0;
@@ -2367,17 +2435,11 @@
         if (l.mode === 'give_udhar' || (l.mode === 'person_settle' && l.settleType === 'paid_to_person')) {
           given = l.amount;
           totalGiven += l.amount;
-          runningBal += l.amount; // He owes you more
+          runningBal += l.amount; // He owes you more (or you paid debt back)
         } else if (l.mode === 'take_udhar' || (l.mode === 'person_settle' && l.settleType === 'received_from_person')) {
           received = l.amount;
           totalReceived += l.amount;
-          runningBal -= l.amount; // He paid you
-        } else if (l.mode === 'income') {
-          received = l.amount;
-          totalReceived += l.amount;
-        } else if (l.mode === 'expense') {
-          given = l.amount;
-          totalGiven += l.amount;
+          runningBal -= l.amount; // He paid you (or you borrowed)
         }
 
         const dateStr = new Date(l.date).toLocaleDateString([], { month: 'short', day: 'numeric' }) + ' ' +
@@ -2740,7 +2802,7 @@
               <div class="log-info">
                 <div class="log-desc">
                   ${l.person ? `<span class="log-person-tag" onclick="openPersonLedger('${escapeHtml(l.person)}')" title="Click to view ledger" style="cursor: pointer;"><i class="fa-solid fa-user"></i> ${escapeHtml(l.person)}</span>` : ''}
-                  ${escapeHtml(l.note || (l.mode === 'income' ? 'Cash Received' : 'Expense'))}
+                  <span class="log-note-text">${escapeHtml(l.note || (l.mode === 'income' ? 'Cash Received' : 'Expense'))}</span>
                 </div>
                 <div class="log-time">${timeStr}</div>
               </div>

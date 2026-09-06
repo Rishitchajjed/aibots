@@ -1178,7 +1178,7 @@
         </div>
       </div>
 
-      <!-- Quick Cash Adjust Steppers -->
+      <!-- Quick Cash Adjust Steppers & Reset -->
       <div class="cash-quick-steppers">
         <button class="btn-cash-step minus" onclick="openAdjustCashModal('decrement')">
           <i class="fa-solid fa-minus"></i> Deduct Cash
@@ -1186,24 +1186,8 @@
         <button class="btn-cash-step plus" onclick="openAdjustCashModal('increment')">
           <i class="fa-solid fa-plus"></i> Add Cash
         </button>
-        <button class="btn-cash-step" style="background: rgba(99, 102, 241, 0.12); color: var(--primary); border: 1px solid rgba(99, 102, 241, 0.25);" onclick="openAdjustCashModal('set')" title="Set exact balance or reset">
-          <i class="fa-solid fa-sliders"></i> Set / Reset
-        </button>
-      </div>
-    </div>
-
-    <!-- Self-Healing / Zero Transaction Negative Balance Alert Banner -->
-    <div id="cashGlitchAlert" style="display: none; background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.3); border-radius: var(--radius-md); padding: 10px 14px; margin-bottom: 12px; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px;">
-      <div style="display: flex; align-items: center; gap: 8px; font-size: 0.85rem; color: #ef4444; font-weight: 600;">
-        <i class="fa-solid fa-circle-exclamation" style="font-size: 1.1rem;"></i>
-        <span>Negative cash balance (<strong id="glitchCashVal">₹0.00</strong>) with 0 active records detected.</span>
-      </div>
-      <div style="display: flex; gap: 8px;">
-        <button class="btn-cash-step" style="background: #ef4444; color: #ffffff; border: none; padding: 6px 14px; font-size: 0.8rem; font-weight: 700;" onclick="resetCashToZero()">
-          <i class="fa-solid fa-rotate-left"></i> Reset to ₹0.00
-        </button>
-        <button class="btn-cash-step" style="background: var(--bg-tertiary); color: var(--text-primary); border: 1px solid var(--border-color); padding: 6px 12px; font-size: 0.8rem;" onclick="openAdjustCashModal('set')">
-          Set Balance
+        <button class="btn-cash-step" style="background: rgba(239, 68, 68, 0.12); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.25);" onclick="resetEverything()" title="Reset full history, cash, and Khata ledger">
+          <i class="fa-solid fa-rotate-left"></i> Reset
         </button>
       </div>
     </div>
@@ -1501,11 +1485,10 @@
         <button class="modal-close" onclick="closeModal('modalAdjustCash')">&times;</button>
       </div>
 
-      <!-- Mode Selector Tabs: Add, Deduct, Set -->
+      <!-- Mode Selector Tabs: Add, Deduct -->
       <div style="display: flex; gap: 6px; margin-bottom: 14px; background: var(--bg-tertiary); padding: 4px; border-radius: var(--radius-md);">
-        <button type="button" class="quick-chip" id="tabCashAdd" style="flex: 1; text-align: center; justify-content: center; font-weight: 700;" onclick="setAdjustCashTab('increment')"><i class="fa-solid fa-plus"></i> Add</button>
-        <button type="button" class="quick-chip" id="tabCashDeduct" style="flex: 1; text-align: center; justify-content: center; font-weight: 700;" onclick="setAdjustCashTab('decrement')"><i class="fa-solid fa-minus"></i> Deduct</button>
-        <button type="button" class="quick-chip" id="tabCashSet" style="flex: 1.2; text-align: center; justify-content: center; font-weight: 700;" onclick="setAdjustCashTab('set')"><i class="fa-solid fa-sliders"></i> Set / Reset</button>
+        <button type="button" class="quick-chip active" id="tabCashAdd" style="flex: 1; text-align: center; justify-content: center; font-weight: 700;" onclick="setAdjustCashTab('increment')"><i class="fa-solid fa-plus"></i> Add Cash</button>
+        <button type="button" class="quick-chip" id="tabCashDeduct" style="flex: 1; text-align: center; justify-content: center; font-weight: 700;" onclick="setAdjustCashTab('decrement')"><i class="fa-solid fa-minus"></i> Deduct Cash</button>
       </div>
 
       <form id="formAdjustCash" onsubmit="handleAdjustCashSubmit(event)">
@@ -2259,25 +2242,36 @@
       showToast('Record deleted & restored');
     }
 
-    /* Reset Cash Directly to Zero */
-    function resetCashToZero() {
-      setStored(KEYS.CASH, 0);
-      renderAll();
-      showToast('Cash in Hand reset to ₹0.00');
-    }
-    window.resetCashToZero = resetCashToZero;
+    /* Reset Everything: Cash, Logs, People and Khata Ledger with Confirmation */
+    function resetEverything() {
+      const confirmed = confirm(
+        "⚠️ RESET EVERYTHING CONFIRMATION:\n\n" +
+        "Are you sure you want to reset EVERYTHING?\n\n" +
+        "• Cash in Hand will be reset to ₹0.00\n" +
+        "• All spending & earning history will be erased\n" +
+        "• All people & Khata ledgers will be erased\n\n" +
+        "This action cannot be undone! Click OK to proceed."
+      );
+      if (!confirmed) return;
 
-    /* Hero Cash Adjust & Set Balance Modal */
+      setStored(KEYS.CASH, 0);
+      setStored(KEYS.LOGS, []);
+      setStored(KEYS.PEOPLE, {});
+
+      renderAll();
+      showToast('All history, cash, and Khata have been reset to ₹0.00');
+    }
+    window.resetEverything = resetEverything;
+
+    /* Hero Cash Adjust Modal (Add / Deduct) */
     function setAdjustCashTab(mode) {
       document.getElementById('adjustCashMode').value = mode;
       
       const tabAdd = document.getElementById('tabCashAdd');
       const tabDeduct = document.getElementById('tabCashDeduct');
-      const tabSet = document.getElementById('tabCashSet');
       
-      tabAdd.classList.remove('active');
-      tabDeduct.classList.remove('active');
-      tabSet.classList.remove('active');
+      if (tabAdd) tabAdd.classList.remove('active');
+      if (tabDeduct) tabDeduct.classList.remove('active');
 
       const chipsBox = document.getElementById('adjustCashChips');
       const titleEl = document.getElementById('adjustCashTitle');
@@ -2285,7 +2279,7 @@
       const btnEl = document.getElementById('adjustCashSubmitBtn');
 
       if (mode === 'increment') {
-        tabAdd.classList.add('active');
+        if (tabAdd) tabAdd.classList.add('active');
         titleEl.textContent = 'Add Cash (+)';
         labelEl.textContent = 'Amount to Add';
         btnEl.style.background = 'var(--income)';
@@ -2296,8 +2290,8 @@
           <button type="button" class="quick-chip" onclick="document.getElementById('adjustCashAmountInput').value = 1000">+1000</button>
           <button type="button" class="quick-chip" onclick="document.getElementById('adjustCashAmountInput').value = 5000">+5000</button>
         `;
-      } else if (mode === 'decrement') {
-        tabDeduct.classList.add('active');
+      } else {
+        if (tabDeduct) tabDeduct.classList.add('active');
         titleEl.textContent = 'Deduct Cash (-)';
         labelEl.textContent = 'Amount to Deduct';
         btnEl.style.background = 'var(--expense)';
@@ -2307,18 +2301,6 @@
           <button type="button" class="quick-chip" onclick="document.getElementById('adjustCashAmountInput').value = 500">-500</button>
           <button type="button" class="quick-chip" onclick="document.getElementById('adjustCashAmountInput').value = 1000">-1000</button>
           <button type="button" class="quick-chip" onclick="document.getElementById('adjustCashAmountInput').value = 5000">-5000</button>
-        `;
-      } else if (mode === 'set') {
-        tabSet.classList.add('active');
-        titleEl.textContent = 'Set / Reset Cash Balance';
-        labelEl.textContent = 'Exact Cash Amount in Hand';
-        btnEl.style.background = 'var(--primary)';
-        btnEl.textContent = 'Save Cash Balance';
-        chipsBox.innerHTML = `
-          <button type="button" class="quick-chip" style="background: rgba(239, 68, 68, 0.15); color: #ef4444; border-color: rgba(239, 68, 68, 0.3);" onclick="document.getElementById('adjustCashAmountInput').value = 0"><i class="fa-solid fa-rotate-left"></i> 0 (Reset)</button>
-          <button type="button" class="quick-chip" onclick="document.getElementById('adjustCashAmountInput').value = 500">500</button>
-          <button type="button" class="quick-chip" onclick="document.getElementById('adjustCashAmountInput').value = 1000">1000</button>
-          <button type="button" class="quick-chip" onclick="document.getElementById('adjustCashAmountInput').value = 2000">2000</button>
         `;
       }
     }
@@ -2375,23 +2357,6 @@
           note: note || 'Cash Deducted'
         });
         showToast(`Deducted ${formatMoney(amt)} from Cash`);
-      } else if (mode === 'set') {
-        const diff = Number((amt - cash).toFixed(2));
-        cash = Number(amt.toFixed(2));
-        if (Math.abs(diff) > 0.001) {
-          logs.unshift({
-            id: 'log_' + Date.now(),
-            date: new Date().toISOString(),
-            mode: diff > 0 ? 'income' : 'expense',
-            type: diff > 0 ? 'income' : 'expense',
-            amount: Math.abs(diff),
-            cashDelta: diff,
-            personDelta: 0,
-            person: '',
-            note: note || `Balance set to ${formatMoney(amt)}`
-          });
-        }
-        showToast(`Cash balance set to ${formatMoney(amt)}`);
       }
 
       setStored(KEYS.CASH, cash);
@@ -2726,16 +2691,11 @@
       document.getElementById('statTotalPay').textContent = formatMoney(totalPay);
       document.getElementById('peopleBadgeCount').textContent = activePeopleCount;
 
-      // Self-healing / Alert for Zero-transaction negative cash
-      const glitchAlert = document.getElementById('cashGlitchAlert');
-      const glitchVal = document.getElementById('glitchCashVal');
-      if (glitchAlert && glitchVal) {
-        if (logs.length === 0 && cash < 0) {
-          glitchAlert.style.display = 'flex';
-          glitchVal.textContent = formatMoney(cash);
-        } else {
-          glitchAlert.style.display = 'none';
-        }
+      // If zero logs and cash is negative, self-heal to zero
+      if (logs.length === 0 && cash < 0) {
+        cash = 0;
+        setStored(KEYS.CASH, 0);
+        document.getElementById('heroCashBalance').textContent = formatMoney(0);
       }
 
       // Update People Datalist for autocomplete

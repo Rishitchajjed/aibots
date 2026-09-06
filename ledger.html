@@ -1995,67 +1995,64 @@
 
           if (contriFlow === 'me_owes') {
             cash = Number((cash - amount).toFixed(2));
-
-            logs.unshift({
-              id: 'log_' + Date.now() + '_exp',
-              date: new Date().toISOString(),
-              mode: 'expense',
-              type: 'expense',
-              amount: myShare,
-              cashDelta: -myShare,
-              personDelta: 0,
-              groupId: commonGroupId,
-              person: '', // Personal expense share, not a debt to friend
-              note: (note ? note : 'Bill Split') + ` (My Share - split with ${person})`
-            });
-
             people[person] = Number(((people[person] || 0) + friendShare).toFixed(2));
+
+            // ONE Single Unified Log Entry for Split Bill!
             logs.unshift({
-              id: 'log_' + Date.now() + '_udh',
+              id: 'log_' + Date.now(),
               date: new Date().toISOString(),
-              mode: 'give_udhar',
-              type: 'give_udhar',
-              amount: friendShare,
-              cashDelta: -friendShare,
+              mode: 'split_contri',
+              flow: 'me_owes',
+              type: 'expense',
+              amount: amount, // Full cash amount paid out
+              myShare: myShare,
+              friendShare: friendShare,
+              splitCount: splitCount,
+              cashDelta: -amount,
               personDelta: friendShare,
               groupId: commonGroupId,
               person: person,
-              note: (note ? note : 'Bill Contri') + ` (${person}'s Share)`
+              note: note ? note : 'Bill Split'
             });
 
-            showToast(`Split bill: Your share ${formatMoney(myShare)}, ${person} owes ${formatMoney(friendShare)}`);
+            showToast(`Split bill: Paid ${formatMoney(amount)} (Your share ${formatMoney(myShare)}, ${person} owes ${formatMoney(friendShare)})`);
           } else if (contriFlow === 'me_spot') {
             cash = Number((cash - myShare).toFixed(2));
 
             logs.unshift({
-              id: 'log_' + Date.now() + '_spot',
+              id: 'log_' + Date.now(),
               date: new Date().toISOString(),
-              mode: 'expense',
+              mode: 'split_contri',
+              flow: 'me_spot',
               type: 'expense',
               amount: myShare,
+              myShare: myShare,
+              friendShare: friendShare,
               cashDelta: -myShare,
               personDelta: 0,
               groupId: commonGroupId,
-              person: '', // Personal expense share
-              note: (note ? note : 'Bill Split') + ` (My Share - ${person} paid ${formatMoney(friendShare)} on spot)`
+              person: person,
+              note: (note ? note : 'Bill Split') + ` (${person} paid his share on spot)`
             });
 
             showToast(`Recorded: ${formatMoney(myShare)} your share (${person} paid his share on spot)`);
           } else if (contriFlow === 'friend_paid') {
             people[person] = Number(((people[person] || 0) - myShare).toFixed(2));
 
-            // Friend paid full: cash was NOT touched! cashDelta is 0
             logs.unshift({
-              id: 'log_' + Date.now() + '_debt',
+              id: 'log_' + Date.now(),
               date: new Date().toISOString(),
-              mode: 'take_udhar',
+              mode: 'split_contri',
+              flow: 'friend_paid',
               type: 'take_udhar',
               amount: myShare,
+              myShare: myShare,
+              friendShare: friendShare,
               cashDelta: 0,
               personDelta: -myShare,
               groupId: commonGroupId,
               person: person,
-              note: (note ? note : 'Bill Contri') + ' (Paid by ' + person + ')'
+              note: (note ? note : 'Bill Contri') + ` (Paid by ${person})`
             });
 
             showToast(`Contri saved: You owe ${person} ${formatMoney(myShare)}`);
@@ -2067,31 +2064,19 @@
         if (isDirectlySpent) {
           people[person] = Number(((people[person] || 0) - amount).toFixed(2));
 
-          // Borrowed and spent right away: cash in hand was NOT touched!
+          // ONE Single Unified Log Entry for Eatables Borrow!
           logs.unshift({
-            id: 'log_' + Date.now() + '_borrow',
+            id: 'log_' + Date.now(),
             date: new Date().toISOString(),
             mode: 'take_udhar',
-            type: 'take_udhar',
+            isDirectlySpent: true,
+            type: 'expense',
             amount: amount,
             cashDelta: 0,
             personDelta: -amount,
             groupId: commonGroupId,
             person: person,
-            note: `Borrowed from ${person}`
-          });
-
-          logs.unshift({
-            id: 'log_' + Date.now() + '_spent',
-            date: new Date().toISOString(),
-            mode: 'expense',
-            type: 'expense',
-            amount: amount,
-            cashDelta: 0,
-            personDelta: 0,
-            groupId: commonGroupId,
-            person: '', // Food expense, not a debt to friend
-            note: note || `Spent on eatables (borrowed from ${person})`
+            note: note ? `${note} (Borrowed from ${person})` : `Spent on eatables (Borrowed from ${person})`
           });
 
           showToast(`Recorded: Borrowed & spent ${formatMoney(amount)} on eatables`);
@@ -2171,6 +2156,23 @@
       const amt = Number(l.amount) || 0;
       const idStr = String(l.id || '');
       const noteStr = String(l.note || '').toLowerCase();
+
+      if (l.mode === 'split_contri') {
+        if (l.flow === 'me_owes') {
+          cd = -amt;
+          pd = l.friendShare !== undefined ? l.friendShare : Number((amt / 2).toFixed(2));
+        } else if (l.flow === 'me_spot') {
+          cd = -(l.myShare !== undefined ? l.myShare : amt);
+          pd = 0;
+        } else if (l.flow === 'friend_paid') {
+          cd = 0;
+          pd = -(l.myShare !== undefined ? l.myShare : amt);
+        } else if (l.flow === 'he_gave') {
+          cd = amt;
+          pd = 0;
+        }
+        return { cashDelta: cd, personDelta: pd };
+      }
 
       if (l.mode === 'expense') {
         if (idStr.endsWith('_spent') || noteStr.includes('eatables')) {
@@ -2435,11 +2437,28 @@
         if (l.mode === 'give_udhar' || (l.mode === 'person_settle' && l.settleType === 'paid_to_person')) {
           given = l.amount;
           totalGiven += l.amount;
-          runningBal += l.amount; // He owes you more (or you paid debt back)
+          runningBal += l.amount;
+        } else if (l.mode === 'split_contri') {
+          if (l.flow === 'me_owes') {
+            // Friend owes his share
+            const frShare = l.friendShare !== undefined ? l.friendShare : Number((l.amount / 2).toFixed(2));
+            given = frShare;
+            totalGiven += frShare;
+            runningBal += frShare;
+          } else if (l.flow === 'friend_paid') {
+            // You owe your share
+            const mySh = l.myShare !== undefined ? l.myShare : l.amount;
+            received = mySh;
+            totalReceived += mySh;
+            runningBal -= mySh;
+          } else if (l.flow === 'he_gave') {
+            received = l.amount;
+            totalReceived += l.amount;
+          }
         } else if (l.mode === 'take_udhar' || (l.mode === 'person_settle' && l.settleType === 'received_from_person')) {
           received = l.amount;
           totalReceived += l.amount;
-          runningBal -= l.amount; // He paid you (or you borrowed)
+          runningBal -= l.amount;
         }
 
         const dateStr = new Date(l.date).toLocaleDateString([], { month: 'short', day: 'numeric' }) + ' ' +
@@ -2673,6 +2692,14 @@
           if (l.type === 'income') {
             todayInc += l.amount;
             todayIncCount++;
+          } else if (l.mode === 'split_contri') {
+            if (l.flow === 'me_owes' || l.flow === 'me_spot') {
+              todayExp += (l.myShare !== undefined ? l.myShare : l.amount);
+              todayExpCount++;
+            } else if (l.flow === 'friend_paid') {
+              todayExp += l.amount;
+              todayExpCount++;
+            }
           } else if (l.type === 'expense' || l.mode === 'give_udhar') {
             todayExp += l.amount;
             todayExpCount++;
@@ -2731,7 +2758,48 @@
       const logs = getStored(KEYS.LOGS, []);
       const query = (document.getElementById('logSearchInput')?.value || '').toLowerCase().trim();
 
-      const filtered = logs.filter(l => {
+      // Automatically merge legacy paired logs (e.g. _exp and _udh) so history displays ONE clean card per transaction!
+      const mergedLogs = [];
+      const seenGroups = new Set();
+
+      logs.forEach(l => {
+        if (l.groupId && (l.id.endsWith('_exp') || l.id.endsWith('_udh') || l.id.endsWith('_spent') || l.id.endsWith('_borrow'))) {
+          if (seenGroups.has(l.groupId)) return;
+          seenGroups.add(l.groupId);
+
+          const groupItems = logs.filter(item => item.groupId === l.groupId);
+          const expItem = groupItems.find(item => item.mode === 'expense' || item.id.endsWith('_exp') || item.id.endsWith('_spent'));
+          const udhItem = groupItems.find(item => item.mode === 'give_udhar' || item.mode === 'take_udhar' || item.id.endsWith('_udh') || item.id.endsWith('_borrow'));
+
+          if (expItem && udhItem) {
+            const personName = udhItem.person || expItem.person;
+            const isDirectEatables = udhItem.mode === 'take_udhar';
+            const totalAmt = isDirectEatables ? expItem.amount : Number((expItem.amount + udhItem.amount).toFixed(2));
+            const cleanNote = expItem.note.replace(/\s*\(My Share.*?\)/i, '').replace(/\s*\(Spent on eatables.*?\)/i, '').trim();
+
+            mergedLogs.push({
+              id: udhItem.id,
+              groupId: l.groupId,
+              date: expItem.date || udhItem.date,
+              mode: isDirectEatables ? 'take_udhar' : 'split_contri',
+              flow: isDirectEatables ? 'borrow_eatables' : 'me_owes',
+              type: 'expense',
+              amount: totalAmt,
+              myShare: expItem.amount,
+              friendShare: udhItem.amount,
+              person: personName,
+              note: cleanNote || 'Bill Split',
+              isDirectlySpent: isDirectEatables,
+              isUnifiedGroup: true,
+              originalItems: groupItems
+            });
+            return;
+          }
+        }
+        mergedLogs.push(l);
+      });
+
+      const filtered = mergedLogs.filter(l => {
         if (!query) return true;
         return (l.person || '').toLowerCase().includes(query) ||
                (l.note || '').toLowerCase().includes(query) ||
@@ -2758,8 +2826,34 @@
         let iconColor = '#ef4444';
         let sign = '-';
         let isReceived = false;
+        let subDetails = '';
 
-        if (l.mode === 'income') {
+        if (l.mode === 'split_contri') {
+          iconClass = 'fa-users-between-lines';
+          iconBg = 'var(--contri-bg)';
+          iconColor = 'var(--contri)';
+          if (l.flow === 'me_owes') {
+            sign = '-';
+            isReceived = false;
+            subDetails = `<span style="color: var(--contri); font-weight: 600;">Split:</span> You paid ${formatMoney(l.myShare || l.amount / 2)} • ${escapeHtml(l.person)} owes ${formatMoney(l.friendShare || l.amount / 2)}`;
+          } else if (l.flow === 'friend_paid') {
+            sign = '-';
+            isReceived = false;
+            iconColor = '#ef4444';
+            iconBg = 'var(--expense-bg)';
+            subDetails = `<span style="color: #ef4444; font-weight: 600;">Contri:</span> Paid by ${escapeHtml(l.person)} • You owe ${formatMoney(l.amount)}`;
+          } else if (l.flow === 'he_gave') {
+            sign = '+';
+            isReceived = true;
+            iconColor = '#10b981';
+            iconBg = 'var(--income-bg)';
+            subDetails = `<span style="color: #10b981; font-weight: 600;">Contri Received</span> from ${escapeHtml(l.person)}`;
+          } else if (l.flow === 'me_spot') {
+            sign = '-';
+            isReceived = false;
+            subDetails = `<span style="color: var(--contri); font-weight: 600;">Spot Split:</span> Your share (${escapeHtml(l.person)} paid spot)`;
+          }
+        } else if (l.mode === 'income') {
           iconClass = 'fa-arrow-up';
           iconBg = 'var(--income-bg)';
           iconColor = '#10b981';
@@ -2804,7 +2898,7 @@
                   ${l.person ? `<span class="log-person-tag" onclick="openPersonLedger('${escapeHtml(l.person)}')" title="Click to view ledger" style="cursor: pointer;"><i class="fa-solid fa-user"></i> ${escapeHtml(l.person)}</span>` : ''}
                   <span class="log-note-text">${escapeHtml(l.note || (l.mode === 'income' ? 'Cash Received' : 'Expense'))}</span>
                 </div>
-                <div class="log-time">${timeStr}</div>
+                <div class="log-time">${timeStr}${subDetails ? ' • ' + subDetails : ''}</div>
               </div>
             </div>
 

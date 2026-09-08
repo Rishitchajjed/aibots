@@ -4,28 +4,31 @@
   <meta charset="UTF-8">
   <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
   <link rel="dns-prefetch" href="https://cdnjs.cloudflare.com">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="google-site-verification" content="ndzq-U-NLijgza_QqgQdcc2U3oMRoud_BT2ZZiwFREM">
   <meta name="google-site-verification" content="-Yb6Nx74gbZ3wRN5uP-Y8KKwDWlt1DPpxs4nA3PkE6M">
   <meta name="robots" content="index, follow">
-  <title>Pro Business Card Maker (2-Sided with QR) — AI Bots</title>
-  <meta name="description" content="Design stunning dual-sided business cards online for free. Custom templates, live scannable QR codes, luxury fonts, 300 DPI print-ready PDF, and PNG export.">
-  <meta name="keywords" content="business card maker, visiting card generator, free business card design, print ready business card, qr code business card, ai bots business card">
+  <title>Pro Business Card Maker (2-Sided with QR & Print Sheet) — AI Bots</title>
+  <meta name="description" content="Design luxury dual-sided business cards online for free. 12+ industry themes, landscape & vertical cards, smart vCard phone-contact QR codes, 8-card A4 printable PDF sheets with cutting crop marks, and 300 DPI HD export.">
+  <meta name="keywords" content="business card maker, visiting card generator, free business card design, vertical business card, print ready business card, qr code business card, vcard generator, ai bots business card">
   <link rel="icon" href="logo.png" type="image/png">
   <link rel="canonical" href="https://www.aibots.co.in/buisnesscard.html">
+  
   <!-- Open Graph / Social Cards -->
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="AI Bots">
   <meta property="og:url" content="https://www.aibots.co.in/buisnesscard.html">
-  <meta property="og:title" content="Pro Business Card Maker (2-Sided with QR) — AI Bots">
-  <meta property="og:description" content="Design stunning dual-sided business cards online for free. Custom templates, live scannable QR codes, luxury fonts, 300 DPI print-ready PDF, and PNG export.">
+  <meta property="og:title" content="Pro Business Card Maker (2-Sided with QR & Print Sheet) — AI Bots">
+  <meta property="og:description" content="Design luxury dual-sided business cards online for free. 12+ industry themes, landscape & vertical cards, smart vCard phone-contact QR codes, 8-card A4 printable PDF sheets with cutting crop marks, and 300 DPI HD export.">
   <meta property="og:image" content="https://www.aibots.co.in/logo.png">
   <!-- Twitter Cards -->
   <meta property="twitter:card" content="summary_large_image">
   <meta property="twitter:url" content="https://www.aibots.co.in/buisnesscard.html">
-  <meta property="twitter:title" content="Pro Business Card Maker (2-Sided with QR) — AI Bots">
-  <meta property="twitter:description" content="Design stunning dual-sided business cards online for free. Custom templates, live scannable QR codes, luxury fonts, 300 DPI print-ready PDF, and PNG export.">
+  <meta property="twitter:title" content="Pro Business Card Maker (2-Sided with QR & Print Sheet) — AI Bots">
+  <meta property="twitter:description" content="Design luxury dual-sided business cards online for free. 12+ industry themes, landscape & vertical cards, smart vCard phone-contact QR codes, 8-card A4 printable PDF sheets with cutting crop marks, and 300 DPI HD export.">
   <meta property="twitter:image" content="https://www.aibots.co.in/logo.png">
 
   <!-- Google Analytics -->
@@ -37,73 +40,168 @@
     gtag('config', 'G-2L87FMQS3W');
   </script>
 
+  <!-- Luxury Google Fonts & FontAwesome -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,600;0,800;1,400&family=Cinzel:wght@600;700;800;900&family=Montserrat:wght@400;600;700;800&family=Outfit:wght@400;600;700;800&family=JetBrains+Mono:wght@500;700&family=Inter:wght@400;600;700;800&display=swap">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link rel="stylesheet" href="css/theme.css">
+
   <!-- Libraries for QR Code and PDF generation -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrious/4.0.2/qrious.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
   <style>
+    body {
+      overflow-x: hidden;
+    }
+    .app-container {
+      box-sizing: border-box;
+      max-width: 100%;
+    }
+    /* Global Tool Layout */
     .bc-workspace {
       display: grid;
-      grid-template-columns: 380px 1fr;
+      grid-template-columns: 440px 1fr;
       gap: 32px;
       align-items: start;
+      margin-bottom: 40px;
     }
-    @media (max-width: 960px) {
-      .bc-workspace { grid-template-columns: 1fr; }
+    @media (max-width: 1024px) {
+      .bc-workspace {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        max-width: 100%;
+        gap: 24px;
+      }
+      .bc-panel {
+        width: 100%;
+        max-width: 100%;
+        box-sizing: border-box;
+      }
     }
 
-    /* Left Form Tabs */
+    /* Left Control Panel */
     .bc-panel {
       background: var(--bg-secondary);
       border: 1px solid var(--border-color);
-      border-radius: var(--radius-lg);
-      padding: 24px;
+      border-radius: var(--radius-xl);
+      padding: 22px;
       display: flex;
       flex-direction: column;
       gap: 16px;
+      box-shadow: var(--shadow-sm);
     }
+
+    /* Tab Switcher */
     .form-tabs {
-      display: flex;
-      gap: 6px;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 4px;
       background: var(--bg-primary);
       border: 1px solid var(--border-color);
-      border-radius: 10px;
+      border-radius: 12px;
       padding: 4px;
-      margin-bottom: 8px;
     }
     .form-tab {
-      flex: 1;
-      padding: 7px 10px;
-      font-size: 0.78rem;
+      padding: 8px 4px;
+      font-size: 0.74rem;
       font-weight: 700;
       border: none;
       background: transparent;
       color: var(--text-secondary);
-      border-radius: 7px;
+      border-radius: 8px;
       cursor: pointer;
       display: flex;
+      flex-direction: column;
       align-items: center;
-      justify-content: center;
-      gap: 6px;
-      transition: all 0.15s;
+      gap: 3px;
+      transition: all 0.2s ease;
+      white-space: nowrap;
     }
+    .form-tab i { font-size: 0.95rem; }
     .form-tab.active {
-      background: var(--bg-secondary);
-      color: var(--primary);
-      box-shadow: var(--shadow-sm);
+      background: var(--primary);
+      color: #ffffff;
+      box-shadow: 0 2px 8px var(--primary-glow);
     }
 
-    /* Template Cards Selector */
+    /* Quick Preset Samples Bar */
+    .preset-chips {
+      display: flex;
+      gap: 6px;
+      overflow-x: auto;
+      padding-bottom: 4px;
+      margin-bottom: 8px;
+      scrollbar-width: thin;
+    }
+    .preset-chip {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border-color);
+      color: var(--text-secondary);
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-size: 0.72rem;
+      font-weight: 700;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.15s;
+    }
+    .preset-chip:hover {
+      border-color: var(--primary);
+      color: var(--primary);
+    }
+
+    /* Form Fields Styling */
+    .form-row {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+    .form-group {
+      flex: 1;
+      margin-bottom: 12px;
+    }
+    .form-label {
+      font-size: 0.7rem;
+      font-weight: 800;
+      letter-spacing: 0.6px;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: 5px;
+      display: block;
+    }
+    .form-control {
+      width: 100%;
+      box-sizing: border-box;
+      background: var(--bg-primary);
+      border: 1px solid var(--border-color);
+      color: var(--text-primary);
+      border-radius: var(--radius-md);
+      padding: 9px 12px;
+      font-size: 0.88rem;
+      font-family: inherit;
+      transition: border-color 0.2s;
+    }
+    .form-control:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px var(--primary-glow);
+    }
+
+    /* 12 Designer Templates Grid */
     .template-grid {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
       gap: 8px;
+      max-height: 280px;
+      overflow-y: auto;
+      padding-right: 4px;
+      margin-bottom: 14px;
     }
     .tpl-btn {
       padding: 10px 6px;
-      border-radius: 8px;
+      border-radius: 10px;
       border: 1.5px solid var(--border-color);
       background: var(--bg-primary);
       color: var(--text-secondary);
@@ -111,7 +209,7 @@
       font-weight: 700;
       cursor: pointer;
       text-align: center;
-      transition: all 0.15s;
+      transition: all 0.2s;
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -121,7 +219,33 @@
     .tpl-btn:hover, .tpl-btn.active {
       border-color: var(--primary);
       color: var(--primary);
-      background: color-mix(in srgb, var(--primary) 10%, transparent);
+      background: color-mix(in srgb, var(--primary) 12%, transparent);
+      box-shadow: 0 2px 10px var(--primary-glow);
+    }
+
+    /* Texture selector */
+    .texture-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 6px;
+      margin-bottom: 14px;
+    }
+    .tex-btn {
+      padding: 7px 4px;
+      font-size: 0.7rem;
+      font-weight: 700;
+      border-radius: 8px;
+      border: 1px solid var(--border-color);
+      background: var(--bg-primary);
+      color: var(--text-secondary);
+      cursor: pointer;
+      text-align: center;
+      transition: all 0.15s;
+    }
+    .tex-btn.active {
+      border-color: var(--primary);
+      background: var(--primary);
+      color: #fff;
     }
 
     /* Right Preview Stage */
@@ -131,58 +255,87 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 20px;
+      gap: 18px;
+      width: 100%;
+      max-width: 100%;
+      box-sizing: border-box;
     }
 
-    /* Side Toggle Bar */
-    .side-toggle-row {
+    /* Interactive Preview Bar */
+    .preview-control-bar {
       display: flex;
       align-items: center;
       justify-content: space-between;
       width: 100%;
-      max-width: 480px;
+      max-width: 520px;
       background: var(--bg-secondary);
       border: 1px solid var(--border-color);
-      border-radius: 12px;
+      border-radius: 14px;
       padding: 8px 14px;
+      box-shadow: var(--shadow-sm);
     }
-    .side-btn-group {
+    .preview-btn-group {
       display: flex;
       gap: 6px;
+      align-items: center;
     }
-    .side-btn {
+    .preview-pill-btn {
       padding: 6px 14px;
       border-radius: 8px;
       border: 1px solid var(--border-color);
       background: var(--bg-primary);
       color: var(--text-secondary);
-      font-size: 0.8rem;
+      font-size: 0.78rem;
       font-weight: 700;
       cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
       transition: all 0.15s;
     }
-    .side-btn.active {
+    .preview-pill-btn.active {
       background: var(--primary);
       color: white;
       border-color: var(--primary);
+      box-shadow: 0 2px 8px var(--primary-glow);
     }
 
-    /* 3D Perspective Card Container */
+    /* 3D Perspective Card Scene */
     .card-3d-scene {
+      perspective: 1400px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
       width: 100%;
-      max-width: 480px;
-      aspect-ratio: 1.75 / 1;
-      perspective: 1200px;
+      max-width: 520px;
+      min-height: 310px;
+      position: relative;
     }
+
     .card-flipper {
-      width: 100%;
-      height: 100%;
       position: relative;
       transform-style: preserve-3d;
-      transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+      transition: transform 0.65s cubic-bezier(0.34, 1.56, 0.64, 1);
+      box-shadow: 0 20px 45px rgba(0, 0, 0, 0.28);
+      border-radius: var(--card-radius, 16px);
+      cursor: pointer;
     }
     .card-flipper.flipped {
       transform: rotateY(180deg);
+    }
+
+    /* Dimensions: Landscape vs Portrait */
+    .card-flipper.orientation-landscape {
+      width: 100%;
+      max-width: 480px;
+      aspect-ratio: 1.75 / 1;
+      height: auto;
+    }
+    .card-flipper.orientation-portrait {
+      width: 100%;
+      max-width: 290px;
+      aspect-ratio: 1 / 1.75;
+      height: auto;
     }
 
     /* Card Sides */
@@ -191,120 +344,232 @@
       inset: 0;
       backface-visibility: hidden;
       -webkit-backface-visibility: hidden;
-      border-radius: 16px;
-      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.25);
-      border: 1px solid var(--border-color);
-      padding: 28px 32px;
+      border-radius: var(--card-radius, 16px);
+      padding: 24px 28px;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
       overflow: hidden;
       box-sizing: border-box;
       user-select: none;
-      transition: all 0.3s;
+      transition: background 0.3s, color 0.3s, border-color 0.3s;
     }
     .bc-card-back {
       transform: rotateY(180deg);
     }
 
-    /* Template Theme Styles */
-    /* 1. Modern Minimalist (Light/Dark auto) */
+    /* Holographic Glare Overlay */
+    .bc-card::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      background: radial-gradient(circle at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(255,255,255,0.18) 0%, rgba(255,255,255,0) 65%);
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      mix-blend-mode: overlay;
+    }
+    .card-flipper:hover .bc-card::after {
+      opacity: 1;
+    }
+
+    /* Textures */
+    .tex-matte { background-image: none !important; }
+    .tex-dots {
+      background-image: radial-gradient(rgba(128,128,128,0.15) 1px, transparent 1px) !important;
+      background-size: 10px 10px !important;
+    }
+    .tex-carbon {
+      background-image: linear-gradient(45deg, rgba(0,0,0,0.08) 25%, transparent 25%, transparent 75%, rgba(0,0,0,0.08) 75%), linear-gradient(45deg, rgba(0,0,0,0.08) 25%, transparent 25%, transparent 75%, rgba(0,0,0,0.08) 75%) !important;
+      background-size: 8px 8px !important;
+      background-position: 0 0, 4px 4px !important;
+    }
+    .tex-metal {
+      background-image: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(255,255,255,0.04) 2px, rgba(255,255,255,0.04) 4px) !important;
+    }
+    .tex-grid {
+      background-image: linear-gradient(rgba(128,128,128,0.12) 1px, transparent 1px), linear-gradient(90deg, rgba(128,128,128,0.12) 1px, transparent 1px) !important;
+      background-size: 16px 16px !important;
+    }
+
+    /* ==================== 12 LUXURY THEMES ==================== */
+    /* 1. Corporate Minimalist */
     .theme-minimal {
       background: #ffffff;
       color: #0f172a;
+      border: 1px solid #e2e8f0;
       border-left: 6px solid var(--card-accent, #4f46e5);
     }
     .theme-minimal .bc-sub { color: #64748b; }
     .theme-minimal .bc-divider { background: #e2e8f0; }
+    .theme-minimal .bc-icon-bg { background: #f1f5f9; color: var(--card-accent, #4f46e5); }
 
-    /* 2. Dark Neon Cyber */
+    /* 2. Cyber Neon */
     .theme-cyber {
       background: #090d16;
       color: #f8fafc;
-      border: 1px solid rgba(56, 189, 248, 0.4);
-      box-shadow: 0 0 30px rgba(56, 189, 248, 0.2), inset 0 0 20px rgba(99, 102, 241, 0.1);
+      border: 1.5px solid var(--card-accent, #38bdf8);
+      box-shadow: inset 0 0 25px rgba(56, 189, 248, 0.15), 0 0 20px rgba(56, 189, 248, 0.2);
     }
-    .theme-cyber .bc-sub { color: #38bdf8; }
-    .theme-cyber .bc-divider { background: rgba(56, 189, 248, 0.2); }
+    .theme-cyber .bc-sub { color: var(--card-accent, #38bdf8); }
+    .theme-cyber .bc-divider { background: rgba(56, 189, 248, 0.25); }
+    .theme-cyber .bc-icon-bg { background: rgba(56, 189, 248, 0.12); color: #38bdf8; }
 
-    /* 3. Luxury Gold & Slate */
+    /* 3. Luxury Gold & Obsidian */
     .theme-luxury {
-      background: linear-gradient(135deg, #111827 0%, #1f2937 100%);
+      background: linear-gradient(135deg, #12151c 0%, #1c2230 100%);
       color: #fef08a;
       border: 2px solid #eab308;
-      box-shadow: 0 12px 35px rgba(234, 179, 8, 0.25);
+      box-shadow: 0 10px 30px rgba(234, 179, 8, 0.2);
     }
     .theme-luxury .bc-sub { color: #fde047; }
-    .theme-luxury .bc-divider { background: rgba(234, 179, 8, 0.3); }
+    .theme-luxury .bc-divider { background: rgba(234, 179, 8, 0.35); }
+    .theme-luxury .bc-icon-bg { background: rgba(234, 179, 8, 0.15); color: #fef08a; }
 
-    /* 4. Emerald Forest */
+    /* 4. Emerald Botanical */
     .theme-emerald {
-      background: linear-gradient(135deg, #064e3b 0%, #047857 100%);
+      background: linear-gradient(135deg, #043b2d 0%, #065f46 100%);
       color: #ffffff;
       border: 1px solid #10b981;
     }
     .theme-emerald .bc-sub { color: #a7f3d0; }
     .theme-emerald .bc-divider { background: rgba(255, 255, 255, 0.2); }
+    .theme-emerald .bc-icon-bg { background: rgba(255, 255, 255, 0.12); color: #a7f3d0; }
 
-    /* 5. Creative Gradient */
+    /* 5. Sunset Gradient */
     .theme-gradient {
       background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 50%, #ec4899 100%);
       color: #ffffff;
+      border: 1px solid rgba(255, 255, 255, 0.3);
     }
-    .theme-gradient .bc-sub { color: rgba(255, 255, 255, 0.85); }
+    .theme-gradient .bc-sub { color: rgba(255, 255, 255, 0.88); }
     .theme-gradient .bc-divider { background: rgba(255, 255, 255, 0.25); }
+    .theme-gradient .bc-icon-bg { background: rgba(255, 255, 255, 0.18); color: #ffffff; }
 
     /* 6. Executive Navy */
     .theme-navy {
-      background: #0f172a;
+      background: #0b1528;
       color: #ffffff;
-      border-top: 5px solid #38bdf8;
+      border-top: 5px solid var(--card-accent, #38bdf8);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
     }
     .theme-navy .bc-sub { color: #94a3b8; }
-    .theme-navy .bc-divider { background: rgba(255, 255, 255, 0.1); }
+    .theme-navy .bc-divider { background: rgba(255, 255, 255, 0.12); }
+    .theme-navy .bc-icon-bg { background: rgba(255, 255, 255, 0.08); color: #38bdf8; }
 
-    /* Card Content Formatting */
+    /* 7. Frosted Glassmorphism */
+    .theme-glass {
+      background: rgba(30, 41, 59, 0.82);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      color: #f8fafc;
+      border: 1px solid rgba(255, 255, 255, 0.22);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.37);
+    }
+    .theme-glass .bc-sub { color: #cbd5e1; }
+    .theme-glass .bc-divider { background: rgba(255, 255, 255, 0.18); }
+    .theme-glass .bc-icon-bg { background: rgba(255, 255, 255, 0.1); color: #ffffff; }
+
+    /* 8. Medical & Healthcare */
+    .theme-health {
+      background: #f8fafc;
+      color: #0369a1;
+      border: 2px solid #0284c7;
+      border-top: 6px solid #0284c7;
+    }
+    .theme-health .bc-sub { color: #0284c7; font-weight: 700; }
+    .theme-health .bc-divider { background: #bae6fd; }
+    .theme-health .bc-icon-bg { background: #e0f2fe; color: #0284c7; }
+
+    /* 9. Legal & Finance */
+    .theme-legal {
+      background: linear-gradient(135deg, #3b0712 0%, #1f1d24 100%);
+      color: #fde68a;
+      border: 1px solid #d97706;
+      box-shadow: 0 8px 25px rgba(217, 119, 6, 0.2);
+    }
+    .theme-legal .bc-sub { color: #fef08a; }
+    .theme-legal .bc-divider { background: rgba(217, 119, 6, 0.3); }
+    .theme-legal .bc-icon-bg { background: rgba(217, 119, 6, 0.15); color: #fde68a; }
+
+    /* 10. Architect Blueprint */
+    .theme-architect {
+      background: #1e3a8a;
+      color: #ffffff;
+      border: 1.5px dashed #93c5fd;
+    }
+    .theme-architect .bc-sub { color: #93c5fd; }
+    .theme-architect .bc-divider { background: rgba(147, 197, 253, 0.3); }
+    .theme-architect .bc-icon-bg { background: rgba(147, 197, 253, 0.15); color: #ffffff; }
+
+    /* 11. Real Estate Pro */
+    .theme-realestate {
+      background: #0f172a;
+      color: #f8fafc;
+      border-left: 6px solid #f59e0b;
+      border-right: 1px solid rgba(255, 255, 255, 0.12);
+    }
+    .theme-realestate .bc-sub { color: #fbbf24; }
+    .theme-realestate .bc-divider { background: rgba(245, 158, 11, 0.25); }
+    .theme-realestate .bc-icon-bg { background: rgba(245, 158, 11, 0.12); color: #fbbf24; }
+
+    /* 12. Swiss Brutalist */
+    .theme-brutalist {
+      background: #000000;
+      color: #ffffff;
+      border: 3px solid #ffffff;
+    }
+    .theme-brutalist .bc-sub { color: #d4d4d8; font-weight: 700; }
+    .theme-brutalist .bc-divider { background: #ffffff; height: 2px; }
+    .theme-brutalist .bc-icon-bg { background: #ffffff; color: #000000; }
+
+    /* Card Typography & Elements */
     .bc-logo-img {
-      width: 48px;
-      height: 48px;
+      width: 44px;
+      height: 44px;
       border-radius: 50%;
       object-fit: cover;
       border: 2px solid currentColor;
-      box-shadow: var(--shadow-sm);
-    }
-    .bc-name {
-      font-size: 1.45rem;
-      font-weight: 800;
-      line-height: 1.15;
-      margin: 0;
-    }
-    .bc-title {
-      font-size: 0.82rem;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.06em;
-      margin-top: 3px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+      flex-shrink: 0;
     }
     .bc-company {
-      font-size: 0.85rem;
-      font-weight: 700;
-      opacity: 0.95;
+      font-size: 0.95rem;
+      font-weight: 800;
+      line-height: 1.2;
+      letter-spacing: -0.2px;
     }
     .bc-tagline {
       font-size: 0.72rem;
       font-style: italic;
-      opacity: 0.8;
+      opacity: 0.85;
+      margin-top: 2px;
+    }
+    .bc-name {
+      font-size: 1.35rem;
+      font-weight: 900;
+      line-height: 1.15;
+      letter-spacing: -0.3px;
+    }
+    .bc-title {
+      font-size: 0.78rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-top: 3px;
     }
     .bc-divider {
       height: 1px;
       margin: 8px 0;
+      width: 100%;
     }
 
+    /* Contact Details Grid */
     .bc-contact-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 6px 12px;
-      font-size: 0.76rem;
+      gap: 5px 12px;
+      font-size: 0.72rem;
     }
     .bc-contact-item {
       display: flex;
@@ -315,11 +580,27 @@
       text-overflow: ellipsis;
     }
     .bc-contact-item i {
-      width: 14px;
+      width: 13px;
       text-align: center;
       opacity: 0.85;
+      font-size: 0.74rem;
     }
 
+    /* Social Row on Card */
+    .bc-socials-row {
+      display: flex;
+      gap: 8px;
+      margin-top: 6px;
+      font-size: 0.78rem;
+    }
+    .bc-social-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      opacity: 0.9;
+    }
+
+    /* Back Side Specifics */
     .bc-back-content {
       display: flex;
       align-items: center;
@@ -329,41 +610,152 @@
     }
     .bc-qr-box {
       background: #ffffff;
-      padding: 8px;
+      padding: 7px;
       border-radius: 10px;
       display: flex;
       flex-direction: column;
       align-items: center;
-      box-shadow: var(--shadow-sm);
+      box-shadow: 0 4px 14px rgba(0,0,0,0.15);
       flex-shrink: 0;
     }
     .bc-qr-box canvas {
       display: block;
-      width: 84px !important;
-      height: 84px !important;
+      width: 82px !important;
+      height: 82px !important;
     }
     .bc-qr-lbl {
-      font-size: 0.62rem;
+      font-size: 0.6rem;
       font-weight: 800;
       color: #0f172a;
-      margin-top: 4px;
+      margin-top: 3px;
       text-transform: uppercase;
       letter-spacing: 0.05em;
+      text-align: center;
     }
 
-    /* Action Buttons Row */
-    .download-actions {
-      display: flex;
-      gap: 10px;
-      width: 100%;
-      max-width: 480px;
-      flex-wrap: wrap;
+    /* Portrait Mode Adjustments */
+    .orientation-portrait .bc-card {
+      padding: 24px 20px;
     }
-    .download-actions button {
-      flex: 1;
-      min-width: 140px;
+    .orientation-portrait .bc-contact-grid {
+      grid-template-columns: 1fr;
+      gap: 6px;
+    }
+    .orientation-portrait .bc-back-content {
+      flex-direction: column;
+      justify-content: space-between;
+      text-align: center;
+    }
+    .orientation-portrait .bc-contact-item {
+      justify-content: center;
+    }
+    .orientation-portrait .bc-socials-row {
+      justify-content: center;
+    }
+
+    /* Export & Action Buttons */
+    .download-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      width: 100%;
+      max-width: 520px;
+    }
+    .btn-action-lg {
+      padding: 12px 12px;
+      border-radius: 10px;
+      font-size: 0.84rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: all 0.2s;
+      white-space: normal;
+      text-align: center;
+      line-height: 1.35;
+      box-sizing: border-box;
+      max-width: 100%;
+    }
+    .btn-action-full {
+      grid-column: span 2;
+    }
+
+    /* Printing Tip Card */
+    .print-tip-box {
+      background: var(--bg-secondary);
+      border: 1px dashed var(--border-color);
+      border-radius: 12px;
+      padding: 12px 16px;
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      line-height: 1.5;
+      width: 100%;
+      max-width: 520px;
+      box-sizing: border-box;
+    }
+
+    /* ==========================================================================
+       MOBILE RESPONSIVENESS (<= 640px)
+       ========================================================================== */
+    @media (max-width: 640px) {
+      .tool-title {
+        font-size: 1.6rem !important;
+      }
+      .tool-desc {
+        font-size: 0.85rem !important;
+      }
+      .bc-panel {
+        padding: 14px !important;
+      }
+      .form-row {
+        flex-direction: column !important;
+        gap: 0 !important;
+        margin-bottom: 0 !important;
+      }
+      .form-group {
+        margin-bottom: 12px !important;
+      }
+      .form-tabs {
+        gap: 2px !important;
+        padding: 3px !important;
+      }
+      .form-tab {
+        padding: 7px 2px !important;
+        font-size: 0.68rem !important;
+      }
+      .form-control, input, select, textarea {
+        font-size: 16px !important; /* Strictly prevents iOS Safari zoom bug */
+        min-height: 42px !important;
+      }
+      .template-grid {
+        grid-template-columns: repeat(2, 1fr) !important;
+      }
+      .preview-control-bar {
+        flex-direction: column !important;
+        gap: 8px !important;
+        padding: 8px 10px !important;
+      }
+      .preview-btn-group {
+        width: 100% !important;
+        justify-content: center !important;
+      }
+      .preview-pill-btn {
+        flex: 1 !important;
+        justify-content: center !important;
+        padding: 7px 6px !important;
+        font-size: 0.74rem !important;
+      }
+      .download-grid {
+        grid-template-columns: 1fr !important;
+      }
+      .btn-action-full {
+        grid-column: span 1 !important;
+      }
     }
   </style>
+
   <link rel="manifest" href="manifest.json">
   <meta name="theme-color" content="#6366f1">
   <meta name="mobile-web-app-capable" content="yes">
@@ -374,14 +766,14 @@
   <meta name="author" content="Rishit Chajjed">
   <meta name="creator" content="Rishit Chajjed">
 
-  <!-- Schema.org JSON-LD -->
+  <!-- Schema.org WebApplication -->
   <script type="application/ld+json">
 {
   "@context": "https://schema.org",
   "@type": "WebApplication",
-  "name": "Pro Business Card Maker (2-Sided with QR) \u2014 AI Bots",
+  "name": "Pro Business Card Maker (2-Sided with QR & Print Sheet) — AI Bots",
   "url": "https://www.aibots.co.in/buisnesscard.html",
-  "description": "Design stunning dual-sided business cards online for free. Custom templates, live scannable QR codes, luxury fonts, 300 DPI print-ready PDF, and PNG export.",
+  "description": "Design luxury dual-sided business cards online for free. 12+ industry themes, landscape & vertical cards, smart vCard phone-contact QR codes, 8-card A4 printable PDF sheets with cutting crop marks, and 300 DPI HD export.",
   "applicationCategory": "BusinessApplication",
   "operatingSystem": "All",
   "browserRequirements": "Requires JavaScript. Requires HTML5.",
@@ -396,50 +788,22 @@
   }
 }
   </script>
-
-  <!-- Schema.org Breadcrumb -->
-  <script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "BreadcrumbList",
-  "itemListElement": [
-    {
-      "@type": "ListItem",
-      "position": 1,
-      "name": "Home",
-      "item": "https://www.aibots.co.in/"
-    },
-    {
-      "@type": "ListItem",
-      "position": 2,
-      "name": "PDF & Finance",
-      "item": "https://www.aibots.co.in/#pdf-finance"
-    },
-    {
-      "@type": "ListItem",
-      "position": 3,
-      "name": "Pro Business Card Maker (2-Sided with QR)",
-      "item": "https://www.aibots.co.in/buisnesscard"
-    }
-  ]
-}
-  </script>
 </head>
 <body>
   <div class="bg-mesh"></div>
 
-  <!-- Navbar -->
+  <!-- Header Navbar -->
   <header class="navbar">
     <div class="app-container" style="width: 100%;">
       <div class="nav-wrapper">
         <a href="index.html" class="brand-link">
           <img src="logo.png" alt="AI Bots Logo" class="brand-logo-img">
           <span>AI Bots</span>
-          <span class="brand-badge">Card Maker PRO</span>
+          <span class="brand-badge"><i class="fa-solid fa-crown" style="color: #f59e0b;"></i> Card Studio PRO</span>
         </a>
 
         <div class="nav-actions">
-          <a href="index.html" class="btn btn-secondary btn-sm"><i class="fas fa-house"></i> Hub</a>
+          <a href="index.html" class="btn btn-secondary btn-sm"><i class="fas fa-house"></i> All Tools</a>
           <button class="icon-btn theme-toggle-btn" title="Toggle Dark/Light Mode"><i class="fas fa-moon"></i></button>
         </div>
       </div>
@@ -448,147 +812,266 @@
 
   <main class="app-container tool-page-wrapper">
     <div class="tool-header">
-      <span class="tool-header-badge"><i class="fas fa-id-card"></i> Brand Identity & Print</span>
+      <span class="tool-header-badge"><i class="fas fa-id-card"></i> Brand Identity & Print Suite</span>
       <h1 class="tool-title">Pro Business Card Maker</h1>
-      <p class="tool-desc">Create dual-sided luxury business cards with real scannable QR codes, designer themes, and print-ready PDF download.</p>
+      <p class="tool-desc">Create 300 DPI dual-sided luxury cards with smart vCard QR codes (one-tap save to phone contacts), 12+ industry themes, landscape & vertical layouts, and 8-card A4 print sheets with crop marks.</p>
+    </div>
+
+    <!-- Quick Preset Chips -->
+    <div class="preset-chips">
+      <span style="font-size: 0.72rem; font-weight: 800; color: var(--text-muted); display: flex; align-items: center; gap: 4px;">
+        <i class="fa-solid fa-bolt" style="color: #f59e0b;"></i> QUICK SAMPLES:
+      </span>
+      <button type="button" class="preset-chip" onclick="loadSamplePreset('tech')">🚀 Tech Founder</button>
+      <button type="button" class="preset-chip" onclick="loadSamplePreset('luxury')">✨ Luxury Designer</button>
+      <button type="button" class="preset-chip" onclick="loadSamplePreset('doctor')">🩺 Doctor / Medical</button>
+      <button type="button" class="preset-chip" onclick="loadSamplePreset('lawyer')">⚖️ Legal & Finance</button>
+      <button type="button" class="preset-chip" onclick="loadSamplePreset('architect')">📐 Architect / Blueprint</button>
+      <button type="button" class="preset-chip" onclick="loadSamplePreset('realestate')">🏢 Real Estate</button>
     </div>
 
     <div class="bc-workspace">
       
-      <!-- Left Panel: Controls & Tabs -->
+      <!-- Left Panel: Multi-Tab Controls -->
       <div class="bc-panel">
         <div class="form-tabs">
-          <button class="form-tab active" onclick="switchFormTab('info', this)"><i class="fas fa-user-pen"></i> Details</button>
-          <button class="form-tab" onclick="switchFormTab('design', this)"><i class="fas fa-palette"></i> Themes</button>
-          <button class="form-tab" onclick="switchFormTab('qr', this)"><i class="fas fa-qrcode"></i> QR Code</button>
+          <button type="button" class="form-tab active" onclick="switchFormTab('info', this)"><i class="fas fa-user-pen"></i> Details</button>
+          <button type="button" class="form-tab" onclick="switchFormTab('socials', this)"><i class="fas fa-share-nodes"></i> Socials</button>
+          <button type="button" class="form-tab" onclick="switchFormTab('design', this)"><i class="fas fa-palette"></i> Themes</button>
+          <button type="button" class="form-tab" onclick="switchFormTab('qr', this)"><i class="fas fa-qrcode"></i> Smart QR</button>
         </div>
 
-        <!-- Tab 1: Personal / Company Details -->
+        <!-- TAB 1: PERSONAL & COMPANY DETAILS -->
         <div id="tab-info">
-          <div style="display: flex; gap: 8px; margin-bottom: 12px;">
-            <div style="flex: 1;">
-              <label class="form-label">FULL NAME</label>
+          <div class="form-row">
+            <div style="flex: 1.4;">
+              <label class="form-label">Full Name</label>
               <input type="text" id="inpName" class="form-control" value="Rishit Chajjed" placeholder="e.g. Rishit Chajjed" oninput="updateCards()">
             </div>
-            <div style="width: 110px;">
-              <label class="form-label">LOGO / PHOTO</label>
-              <input type="file" id="inpLogo" class="form-control" accept="image/*" style="padding: 5px; font-size: 0.72rem;" onchange="handleLogo(event)">
+            <div style="flex: 1;">
+              <label class="form-label">Logo / Photo</label>
+              <input type="file" id="inpLogo" class="form-control" accept="image/*" style="padding: 6px; font-size: 0.72rem;" onchange="handleLogo(event)">
             </div>
           </div>
 
-          <div style="margin-bottom: 12px;">
-            <label class="form-label">JOB TITLE / ROLE</label>
-            <input type="text" id="inpTitle" class="form-control" value="Founder & Lead Architect" placeholder="e.g. Creative Director" oninput="updateCards()">
+          <div class="form-group">
+            <label class="form-label">Job Title / Role</label>
+            <input type="text" id="inpTitle" class="form-control" value="Founder & Lead Architect" placeholder="e.g. Chief Executive Officer" oninput="updateCards()">
           </div>
 
-          <div style="display: flex; gap: 8px; margin-bottom: 12px;">
-            <div style="flex: 1;">
-              <label class="form-label">COMPANY / BRAND</label>
+          <div class="form-row">
+            <div class="form-group" style="margin-bottom: 0;">
+              <label class="form-label">Company / Brand</label>
               <input type="text" id="inpCompany" class="form-control" value="AI Bots Creative Studio" placeholder="Company Name" oninput="updateCards()">
             </div>
-            <div style="flex: 1;">
-              <label class="form-label">SLOGAN / TAGLINE</label>
-              <input type="text" id="inpTagline" class="form-control" value="Empowering Free Creativity" placeholder="e.g. Innovate & Inspire" oninput="updateCards()">
+            <div class="form-group" style="margin-bottom: 0;">
+              <label class="form-label">Tagline / Slogan</label>
+              <input type="text" id="inpTagline" class="form-control" value="Empowering Free Creativity" placeholder="e.g. Innovate & Build" oninput="updateCards()">
             </div>
           </div>
 
-          <div style="display: flex; gap: 8px; margin-bottom: 12px;">
-            <div style="flex: 1;">
-              <label class="form-label">PHONE NUMBER</label>
+          <div class="form-row" style="margin-top: 12px;">
+            <div class="form-group" style="margin-bottom: 0;">
+              <label class="form-label">Primary Phone</label>
               <input type="text" id="inpPhone" class="form-control" value="+91 98765 43210" placeholder="+1 234 567 890" oninput="updateCards()">
             </div>
-            <div style="flex: 1;">
-              <label class="form-label">EMAIL ADDRESS</label>
+            <div class="form-group" style="margin-bottom: 0;">
+              <label class="form-label">Email Address</label>
               <input type="email" id="inpEmail" class="form-control" value="contact@aibots.co.in" placeholder="name@company.com" oninput="updateCards()">
             </div>
           </div>
 
-          <div style="display: flex; gap: 8px; margin-bottom: 12px;">
-            <div style="flex: 1;">
-              <label class="form-label">WEBSITE / PORTFOLIO</label>
-              <input type="text" id="inpWebsite" class="form-control" value="www.aibots.co.in" placeholder="www.yourwebsite.com" oninput="updateCards()">
+          <div class="form-row" style="margin-top: 12px;">
+            <div class="form-group" style="margin-bottom: 0;">
+              <label class="form-label">Website / Portfolio</label>
+              <input type="text" id="inpWebsite" class="form-control" value="www.aibots.co.in" placeholder="www.yourdomain.com" oninput="updateCards()">
             </div>
-            <div style="flex: 1;">
-              <label class="form-label">LOCATION</label>
+            <div class="form-group" style="margin-bottom: 0;">
+              <label class="form-label">Location / City</label>
               <input type="text" id="inpLocation" class="form-control" value="Mumbai, India" placeholder="City, Country" oninput="updateCards()">
             </div>
           </div>
         </div>
 
-        <!-- Tab 2: Designer Themes & Styles -->
-        <div id="tab-design" style="display: none;">
-          <label class="form-label" style="margin-bottom: 8px;">CHOOSE DESIGNER TEMPLATE</label>
-          <div class="template-grid">
-            <button class="tpl-btn active" onclick="setTheme('theme-minimal', this)"><i class="fas fa-minus"></i> Minimalist</button>
-            <button class="tpl-btn" onclick="setTheme('theme-cyber', this)"><i class="fas fa-bolt"></i> Cyber Neon</button>
-            <button class="tpl-btn" onclick="setTheme('theme-luxury', this)"><i class="fas fa-crown"></i> Luxury Gold</button>
-            <button class="tpl-btn" onclick="setTheme('theme-emerald', this)"><i class="fas fa-leaf"></i> Emerald</button>
-            <button class="tpl-btn" onclick="setTheme('theme-gradient', this)"><i class="fas fa-wand-magic-sparkles"></i> Sunset</button>
-            <button class="tpl-btn" onclick="setTheme('theme-navy', this)"><i class="fas fa-building"></i> Executive</button>
-          </div>
-
-          <div style="margin-top: 16px;">
-            <label class="form-label">ACCENT COLOR</label>
-            <div style="display: flex; gap: 10px; align-items: center;">
-              <input type="color" id="accentPicker" value="#4f46e5" class="color-input" onchange="setAccentColor(this.value)">
-              <span id="accentHex" style="font-family: monospace; font-size: 0.85rem; color: var(--text-secondary);">#4f46e5</span>
+        <!-- TAB 2: SOCIAL HANDLES -->
+        <div id="tab-socials" style="display: none;">
+          <div class="form-row">
+            <div class="form-group" style="margin-bottom: 0;">
+              <label class="form-label"><i class="fab fa-linkedin" style="color: #0a66c2;"></i> LinkedIn Handle</label>
+              <input type="text" id="inpLinkedIn" class="form-control" value="in/rishitchajjed" placeholder="username" oninput="updateCards()">
+            </div>
+            <div class="form-group" style="margin-bottom: 0;">
+              <label class="form-label"><i class="fab fa-whatsapp" style="color: #25d366;"></i> WhatsApp Number</label>
+              <input type="text" id="inpWhatsApp" class="form-control" value="+919876543210" placeholder="10-digit number" oninput="updateCards()">
             </div>
           </div>
 
-          <div style="margin-top: 16px;">
-            <label class="form-label">FONT FAMILY</label>
+          <div class="form-row" style="margin-top: 12px;">
+            <div class="form-group" style="margin-bottom: 0;">
+              <label class="form-label"><i class="fab fa-instagram" style="color: #e1306c;"></i> Instagram</label>
+              <input type="text" id="inpInstagram" class="form-control" value="@aibots.co" placeholder="@handle" oninput="updateCards()">
+            </div>
+            <div class="form-group" style="margin-bottom: 0;">
+              <label class="form-label"><i class="fab fa-x-twitter"></i> X / Twitter</label>
+              <input type="text" id="inpTwitter" class="form-control" value="@aibotsco" placeholder="@handle" oninput="updateCards()">
+            </div>
+          </div>
+
+          <div class="form-group" style="margin-top: 12px;">
+            <label class="form-label"><i class="fab fa-github"></i> GitHub / Portfolio Link</label>
+            <input type="text" id="inpGitHub" class="form-control" value="github.com/rishit" placeholder="username or link" oninput="updateCards()">
+          </div>
+
+          <div style="background: var(--bg-primary); border: 1px solid var(--border-color); border-radius: 8px; padding: 10px; font-size: 0.74rem; color: var(--text-muted);">
+            💡 Social media badges appear cleanly on the back side of your card alongside the QR code.
+          </div>
+        </div>
+
+        <!-- TAB 3: 12 THEMES & STYLING -->
+        <div id="tab-design" style="display: none;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+            <label class="form-label" style="margin-bottom: 0;">Select Theme (12 Styles)</label>
+            <span style="font-size: 0.72rem; color: var(--text-muted);" id="activeThemeName">Minimalist</span>
+          </div>
+
+          <div class="template-grid">
+            <button type="button" class="tpl-btn active" onclick="setTheme('theme-minimal', 'Corporate Minimal', this)"><i class="fas fa-minus"></i> Minimalist</button>
+            <button type="button" class="tpl-btn" onclick="setTheme('theme-luxury', 'Luxury Gold', this)"><i class="fas fa-crown"></i> Gold Luxury</button>
+            <button type="button" class="tpl-btn" onclick="setTheme('theme-cyber', 'Cyber Neon', this)"><i class="fas fa-bolt"></i> Cyber Neon</button>
+            <button type="button" class="tpl-btn" onclick="setTheme('theme-navy', 'Executive Navy', this)"><i class="fas fa-building"></i> Exec Navy</button>
+            <button type="button" class="tpl-btn" onclick="setTheme('theme-gradient', 'Sunset Flow', this)"><i class="fas fa-wand-magic-sparkles"></i> Sunset</button>
+            <button type="button" class="tpl-btn" onclick="setTheme('theme-emerald', 'Emerald Eco', this)"><i class="fas fa-leaf"></i> Emerald</button>
+            <button type="button" class="tpl-btn" onclick="setTheme('theme-glass', 'Frosted Glass', this)"><i class="fas fa-snowflake"></i> Frosted Glass</button>
+            <button type="button" class="tpl-btn" onclick="setTheme('theme-health', 'Medical Trust', this)"><i class="fas fa-heart-pulse"></i> Healthcare</button>
+            <button type="button" class="tpl-btn" onclick="setTheme('theme-legal', 'Legal & Finance', this)"><i class="fas fa-scale-balanced"></i> Legal/Law</button>
+            <button type="button" class="tpl-btn" onclick="setTheme('theme-architect', 'Blueprint', this)"><i class="fas fa-compass-drafting"></i> Blueprint</button>
+            <button type="button" class="tpl-btn" onclick="setTheme('theme-realestate', 'Real Estate', this)"><i class="fas fa-city"></i> Real Estate</button>
+            <button type="button" class="tpl-btn" onclick="setTheme('theme-brutalist', 'Swiss Monochrome', this)"><i class="fas fa-square"></i> Brutalist</button>
+          </div>
+
+          <label class="form-label">Card Texture Overlay</label>
+          <div class="texture-grid">
+            <button type="button" class="tex-btn active" onclick="setTexture('tex-matte', this)">Matte</button>
+            <button type="button" class="tex-btn" onclick="setTexture('tex-dots', this)">Dots</button>
+            <button type="button" class="tex-btn" onclick="setTexture('tex-carbon', this)">Carbon</button>
+            <button type="button" class="tex-btn" onclick="setTexture('tex-metal', this)">Metal</button>
+            <button type="button" class="tex-btn" onclick="setTexture('tex-grid', this)">Grid</button>
+          </div>
+
+          <div class="form-row">
+            <div style="flex: 1;">
+              <label class="form-label">Accent Color</label>
+              <div style="display: flex; gap: 8px; align-items: center;">
+                <input type="color" id="accentPicker" value="#4f46e5" style="width: 42px; height: 38px; border: 1px solid var(--border-color); border-radius: 8px; cursor: pointer; background: transparent;" onchange="setAccentColor(this.value)">
+                <span id="accentHex" style="font-family: monospace; font-size: 0.8rem; color: var(--text-secondary);">#4f46e5</span>
+              </div>
+            </div>
+            <div style="flex: 1;">
+              <label class="form-label">Corner Style</label>
+              <select id="cornerPicker" class="form-control" onchange="setCornerRadius(this.value)">
+                <option value="16px">Modern (16px)</option>
+                <option value="8px">Subtle (8px)</option>
+                <option value="0px">Sharp Classic (0px)</option>
+                <option value="26px">Curved Pill (26px)</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group" style="margin-top: 8px;">
+            <label class="form-label">Typography / Font Pairing</label>
             <select id="fontPicker" class="form-control" onchange="setFontFamily(this.value)">
-              <option value="'Plus Jakarta Sans', sans-serif">Modern Sans (Plus Jakarta Sans)</option>
-              <option value="Georgia, serif">Classic Luxury (Georgia Serif)</option>
-              <option value="'JetBrains Mono', monospace">Tech Mono (JetBrains Mono)</option>
+              <option value="'Plus Jakarta Sans', sans-serif">Plus Jakarta Sans (Modern Executive)</option>
+              <option value="'Cinzel', serif">Cinzel (High Luxury & Heritage)</option>
+              <option value="'Playfair Display', serif">Playfair Display (Editorial Elegance)</option>
+              <option value="'Outfit', sans-serif">Outfit (Clean Geometric Tech)</option>
+              <option value="'Montserrat', sans-serif">Montserrat (Bold Studio)</option>
+              <option value="'JetBrains Mono', monospace">JetBrains Mono (Developer & Architect)</option>
             </select>
           </div>
         </div>
 
-        <!-- Tab 3: QR Code Settings -->
+        <!-- TAB 4: SMART LIVE QR CODE -->
         <div id="tab-qr" style="display: none;">
-          <div style="margin-bottom: 12px;">
-            <label class="form-label">QR CODE LINK TARGET</label>
+          <div class="form-group">
+            <label class="form-label">QR Code Action</label>
             <select id="qrTarget" class="form-control" onchange="updateQr()">
-              <option value="website">Website (www.aibots.co.in)</option>
-              <option value="vcard">Contact vCard (Phone + Email)</option>
-              <option value="email">Direct Email Link</option>
-              <option value="phone">Direct Phone Call Link</option>
+              <option value="vcard">📱 Instant Phone Contact (vCard .vcf Save)</option>
+              <option value="website">🌐 Website / Portfolio URL</option>
+              <option value="whatsapp">💬 Direct WhatsApp Chat</option>
+              <option value="email">✉️ Direct Email Compose</option>
+              <option value="phone">📞 Direct Phone Call</option>
             </select>
           </div>
-          <div style="margin-bottom: 12px;">
-            <label class="form-label">QR CODE BOTTOM LABEL</label>
-            <input type="text" id="qrLabelInput" class="form-control" value="SCAN TO CONNECT" oninput="document.getElementById('cardQrLabel').textContent = this.value">
+
+          <div class="form-group">
+            <label class="form-label">QR Bottom Label</label>
+            <input type="text" id="qrLabelInput" class="form-control" value="SCAN TO SAVE CONTACT" oninput="document.getElementById('cardQrLabel').textContent = this.value">
           </div>
-          <p style="font-size: 0.8rem; color: var(--text-muted); line-height: 1.5; margin: 0;">
-            💡 The QR code is generated live with zero server lag. Anyone scanning it with their camera will open your chosen destination instantly.
-          </p>
+
+          <div class="form-row">
+            <div style="flex: 1;">
+              <label class="form-label">QR Dark Color</label>
+              <input type="color" id="qrColorPicker" value="#0f172a" style="width: 100%; height: 36px; border: 1px solid var(--border-color); border-radius: 8px; cursor: pointer; background: transparent;" onchange="updateQr()">
+            </div>
+            <div style="flex: 1;">
+              <label class="form-label">QR Background</label>
+              <input type="color" id="qrBgPicker" value="#ffffff" style="width: 100%; height: 36px; border: 1px solid var(--border-color); border-radius: 8px; cursor: pointer; background: transparent;" onchange="updateQr()">
+            </div>
+          </div>
+
+          <div style="background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.25); border-radius: 10px; padding: 12px; margin-top: 10px;">
+            <div style="font-size: 0.8rem; font-weight: 800; color: #10b981; margin-bottom: 3px;">
+              <i class="fa-solid fa-circle-check"></i> Universal Phone Contact (vCard 3.0)
+            </div>
+            <p style="font-size: 0.74rem; color: var(--text-secondary); margin: 0; line-height: 1.4;">
+              When anyone points their iPhone or Android camera at your QR code, a banner instantly pops up: <strong>"Add to Contacts"</strong> with your name, phone, email, company, and title already filled in!
+            </p>
+          </div>
         </div>
 
-        <button class="btn btn-secondary btn-sm" onclick="resetDefaults()" style="margin-top: 4px;">
-          <i class="fas fa-rotate-left"></i> Reset to Defaults
-        </button>
+        <div style="display: flex; justify-content: space-between; align-items: center; padding-top: 6px; border-top: 1px solid var(--border-color);">
+          <button type="button" class="btn btn-secondary btn-sm" onclick="resetDefaults()">
+            <i class="fas fa-rotate-left"></i> Reset Defaults
+          </button>
+          <button type="button" class="btn btn-secondary btn-sm" onclick="downloadVCardFile()">
+            <i class="fa-solid fa-address-card"></i> Export .VCF Contact
+          </button>
+        </div>
       </div>
 
-      <!-- Right Panel: Live 3D Interactive Card Preview -->
+      <!-- Right Panel: Live 3D Interactive Card Stage -->
       <div class="preview-stage">
         
-        <div class="side-toggle-row">
-          <span style="font-size: 0.85rem; font-weight: 700; color: var(--text-primary);">
-            <i class="fas fa-eye" style="color: var(--primary); margin-right: 6px;"></i>Interactive Preview
-          </span>
-          <div class="side-btn-group">
-            <button class="side-btn active" id="btnSideFront" onclick="showSide('front')">Front Side</button>
-            <button class="side-btn" id="btnSideBack" onclick="showSide('back')">Back Side (QR)</button>
+        <!-- Controls: Flip Side & Orientation Switchers -->
+        <div class="preview-control-bar">
+          <div class="preview-btn-group">
+            <button type="button" class="preview-pill-btn active" id="btnSideFront" onclick="showSide('front')">
+              <i class="fa-regular fa-square"></i> Front Side
+            </button>
+            <button type="button" class="preview-pill-btn" id="btnSideBack" onclick="showSide('back')">
+              <i class="fa-solid fa-qrcode"></i> Back Side (QR)
+            </button>
+            <button type="button" class="preview-pill-btn" onclick="toggleFlip()" title="Flip card (Spacebar)">
+              <i class="fa-solid fa-arrows-rotate"></i>
+            </button>
+          </div>
+
+          <div class="preview-btn-group">
+            <button type="button" class="preview-pill-btn active" id="btnOrientLandscape" onclick="setOrientation('landscape')" title="Standard 3.5x2 inch Landscape">
+              <i class="fa-solid fa-grip-lines"></i> Landscape
+            </button>
+            <button type="button" class="preview-pill-btn" id="btnOrientPortrait" onclick="setOrientation('portrait')" title="Modern 2x3.5 inch Vertical">
+              <i class="fa-solid fa-grip-lines-vertical"></i> Portrait
+            </button>
           </div>
         </div>
 
         <!-- 3D Card Scene -->
-        <div class="card-3d-scene">
-          <div class="card-flipper" id="cardFlipper">
+        <div class="card-3d-scene" id="cardScene">
+          <div class="card-flipper orientation-landscape" id="cardFlipper" onclick="toggleFlip()" title="Click to flip card">
             
-            <!-- FRONT SIDE -->
-            <div class="bc-card theme-minimal" id="cardFront">
+            <!-- ==================== FRONT SIDE ==================== -->
+            <div class="bc-card theme-minimal tex-matte" id="cardFront">
               <!-- Top Row: Logo & Company -->
               <div style="display: flex; justify-content: space-between; align-items: flex-start;">
                 <div style="display: flex; align-items: center; gap: 12px;">
@@ -598,40 +1081,54 @@
                     <div class="bc-tagline" id="frontTagline">Empowering Free Creativity</div>
                   </div>
                 </div>
-                <i class="fas fa-sparkles" style="opacity: 0.4;"></i>
+                <div class="bc-icon-bg" style="width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.8rem;">
+                  <i class="fas fa-sparkles"></i>
+                </div>
               </div>
 
               <!-- Bottom Row: Person Name & Title -->
               <div>
                 <div class="bc-divider"></div>
-                <div class="bc-name" id="frontName">Rishit Chajjed</div>
-                <div class="bc-title bc-sub" id="frontTitle">Founder & Lead Architect</div>
+                <div style="display: flex; justify-content: space-between; align-items: flex-end;">
+                  <div>
+                    <div class="bc-name" id="frontName">Rishit Chajjed</div>
+                    <div class="bc-title bc-sub" id="frontTitle">Founder & Lead Architect</div>
+                  </div>
+                  <div style="font-size: 0.68rem; font-weight: 700; opacity: 0.8;" id="frontWebsiteText">www.aibots.co.in</div>
+                </div>
               </div>
             </div>
 
-            <!-- BACK SIDE -->
-            <div class="bc-card bc-card-back theme-minimal" id="cardBack">
+            <!-- ==================== BACK SIDE ==================== -->
+            <div class="bc-card bc-card-back theme-minimal tex-matte" id="cardBack">
               <div class="bc-back-content">
-                <!-- Left: Contact Details -->
+                <!-- Left Details -->
                 <div style="flex: 1; display: flex; flex-direction: column; justify-content: space-between; height: 100%;">
                   <div>
-                    <div style="font-size: 1.1rem; font-weight: 800;" id="backName">Rishit Chajjed</div>
+                    <div style="font-size: 1.15rem; font-weight: 900;" id="backName">Rishit Chajjed</div>
                     <div style="font-size: 0.72rem; font-weight: 700;" class="bc-sub" id="backTitle">Founder & Lead Architect</div>
                     <div class="bc-divider"></div>
                   </div>
 
+                  <!-- 4-Item Contact Grid -->
                   <div class="bc-contact-grid">
                     <div class="bc-contact-item"><i class="fas fa-phone"></i> <span id="backPhone">+91 98765 43210</span></div>
                     <div class="bc-contact-item"><i class="fas fa-envelope"></i> <span id="backEmail">contact@aibots.co.in</span></div>
                     <div class="bc-contact-item"><i class="fas fa-globe"></i> <span id="backWebsite">www.aibots.co.in</span></div>
                     <div class="bc-contact-item"><i class="fas fa-location-dot"></i> <span id="backLocation">Mumbai, India</span></div>
                   </div>
+
+                  <!-- Social Badges Row -->
+                  <div class="bc-socials-row" id="backSocialsRow">
+                    <span class="bc-social-pill" id="badgeLinkedIn"><i class="fab fa-linkedin"></i> <span id="textLinkedIn">in/rishitchajjed</span></span>
+                    <span class="bc-social-pill" id="badgeWhatsApp"><i class="fab fa-whatsapp"></i> <span id="textWhatsApp">+919876543210</span></span>
+                  </div>
                 </div>
 
-                <!-- Right: Scannable QR Box -->
+                <!-- Right: Scannable QR Code Box -->
                 <div class="bc-qr-box">
                   <canvas id="cardQrCanvas"></canvas>
-                  <div class="bc-qr-lbl" id="cardQrLabel">SCAN TO CONNECT</div>
+                  <div class="bc-qr-lbl" id="cardQrLabel">SCAN TO SAVE CONTACT</div>
                 </div>
               </div>
             </div>
@@ -639,17 +1136,23 @@
           </div>
         </div>
 
-        <!-- Download Buttons -->
-        <div class="download-actions">
-          <button class="btn btn-primary" onclick="downloadSide('front')">
-            <i class="fas fa-download"></i> Front (HD PNG)
+        <!-- Download & Print Actions -->
+        <div class="download-grid">
+          <button type="button" class="btn btn-primary btn-action-lg" onclick="downloadSide('front')">
+            <i class="fas fa-download"></i> Front (300 DPI PNG)
           </button>
-          <button class="btn btn-secondary" onclick="downloadSide('back')">
-            <i class="fas fa-download"></i> Back (HD PNG)
+          <button type="button" class="btn btn-secondary btn-action-lg" onclick="downloadSide('back')">
+            <i class="fas fa-download"></i> Back (300 DPI PNG)
           </button>
-          <button class="btn btn-secondary" style="flex-basis: 100%;" onclick="downloadPrintPDF()">
-            <i class="fas fa-file-pdf"></i> Print-Ready 2-Sided PDF (A4 Sheet)
+          <button type="button" class="btn btn-primary btn-action-lg btn-action-full" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); border: none;" onclick="downloadPrintSheetPDF()">
+            <i class="fas fa-print"></i> Download 8-Card Printable A4 Sheet with Crop Marks (PDF)
           </button>
+        </div>
+
+        <!-- Print Instructions Box -->
+        <div class="print-tip-box">
+          <strong><i class="fa-solid fa-circle-info" style="color: var(--primary);"></i> Pro Print Advice:</strong>
+          The <strong>Printable A4 Sheet (PDF)</strong> contains 8 standard 3.5" × 2" (89 × 51 mm) cards with professional corner crop/cutting marks. Simply print on 300 GSM cardstock paper at 100% scale (no fit-to-page) and cut along the guide marks!
         </div>
 
       </div>
@@ -657,32 +1160,33 @@
   </main>
 
   <!-- Related Tools Cross-Links -->
-  <section class="app-container" style="max-width: 900px; margin: 20px auto 40px; padding: 0 16px;">
+  <section class="app-container" style="max-width: 960px; margin: 20px auto 40px; padding: 0 16px;">
     <div style="background: var(--bg-secondary, #ffffff); border: 1px solid var(--border-color, #e2e8f0); border-radius: 16px; padding: 24px 28px; box-shadow: 0 4px 20px rgba(0,0,0,0.03);">
       <h3 style="font-size: 1.05rem; font-weight: 800; margin-bottom: 16px; color: var(--text-primary); display: flex; align-items: center; gap: 8px;">
-        <i class="fas fa-sparkles" style="color: #f59e0b;"></i> Explore Related Free Tools
+        <i class="fas fa-sparkles" style="color: #f59e0b;"></i> Explore Related Free Creative Tools
       </h3>
       <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px;">
-        <a href="logomaker.html" style="display: flex; align-items: center; gap: 10px; padding: 12px 16px; background: var(--bg-tertiary, #f8fafc); border: 1px solid var(--border-color, #e2e8f0); border-radius: 12px; text-decoration: none; color: var(--text-primary); font-size: 0.86rem; font-weight: 700; transition: transform 0.2s ease, border-color 0.2s ease;">
+        <a href="logomaker.html" style="display: flex; align-items: center; gap: 10px; padding: 12px 16px; background: var(--bg-tertiary, #f8fafc); border: 1px solid var(--border-color, #e2e8f0); border-radius: 12px; text-decoration: none; color: var(--text-primary); font-size: 0.86rem; font-weight: 700; transition: transform 0.2s ease;">
           <i class="fas fa-shapes" style="color: var(--primary, #6366f1); font-size: 1.1rem;"></i>
           <span>SVG Logo Studio</span>
         </a>
-        <a href="invoice.html" style="display: flex; align-items: center; gap: 10px; padding: 12px 16px; background: var(--bg-tertiary, #f8fafc); border: 1px solid var(--border-color, #e2e8f0); border-radius: 12px; text-decoration: none; color: var(--text-primary); font-size: 0.86rem; font-weight: 700; transition: transform 0.2s ease, border-color 0.2s ease;">
+        <a href="invoice.html" style="display: flex; align-items: center; gap: 10px; padding: 12px 16px; background: var(--bg-tertiary, #f8fafc); border: 1px solid var(--border-color, #e2e8f0); border-radius: 12px; text-decoration: none; color: var(--text-primary); font-size: 0.86rem; font-weight: 700; transition: transform 0.2s ease;">
           <i class="fas fa-file-invoice-dollar" style="color: var(--primary, #6366f1); font-size: 1.1rem;"></i>
           <span>Pro Invoice Generator</span>
         </a>
-        <a href="qrcode.html" style="display: flex; align-items: center; gap: 10px; padding: 12px 16px; background: var(--bg-tertiary, #f8fafc); border: 1px solid var(--border-color, #e2e8f0); border-radius: 12px; text-decoration: none; color: var(--text-primary); font-size: 0.86rem; font-weight: 700; transition: transform 0.2s ease, border-color 0.2s ease;">
+        <a href="qrcode.html" style="display: flex; align-items: center; gap: 10px; padding: 12px 16px; background: var(--bg-tertiary, #f8fafc); border: 1px solid var(--border-color, #e2e8f0); border-radius: 12px; text-decoration: none; color: var(--text-primary); font-size: 0.86rem; font-weight: 700; transition: transform 0.2s ease;">
           <i class="fas fa-qrcode" style="color: var(--primary, #6366f1); font-size: 1.1rem;"></i>
           <span>Custom QR Code Studio</span>
         </a>
-        <a href="print.html" style="display: flex; align-items: center; gap: 10px; padding: 12px 16px; background: var(--bg-tertiary, #f8fafc); border: 1px solid var(--border-color, #e2e8f0); border-radius: 12px; text-decoration: none; color: var(--text-primary); font-size: 0.86rem; font-weight: 700; transition: transform 0.2s ease, border-color 0.2s ease;">
-          <i class="fas fa-print" style="color: var(--primary, #6366f1); font-size: 1.1rem;"></i>
-          <span>Pro Print Studio</span>
+        <a href="ledger.html" style="display: flex; align-items: center; gap: 10px; padding: 12px 16px; background: var(--bg-tertiary, #f8fafc); border: 1px solid var(--border-color, #e2e8f0); border-radius: 12px; text-decoration: none; color: var(--text-primary); font-size: 0.86rem; font-weight: 700; transition: transform 0.2s ease;">
+          <i class="fa-solid fa-wallet" style="color: #10b981; font-size: 1.1rem;"></i>
+          <span>Cash & Udhar Ledger</span>
         </a>
       </div>
     </div>
   </section>
 
+  <!-- Footer -->
   <footer class="app-footer">
     <div class="app-container">
       <p class="footer-text">&copy; 2026 AI Bots. All rights reserved.</p>
@@ -692,18 +1196,24 @@
 
   <script src="js/app.js"></script>
   <script>
+    // State management
     let currentTheme = 'theme-minimal';
+    let currentTexture = 'tex-matte';
+    let currentOrientation = 'landscape';
     let qrGenerator = null;
     let logoDataUrl = "logo.png";
 
+    // Tab switching
     function switchFormTab(tabName, btn) {
       document.querySelectorAll('.form-tab').forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
-      ['info', 'design', 'qr'].forEach(t => {
-        document.getElementById(`tab-${t}`).style.display = t === tabName ? 'block' : 'none';
+      ['info', 'socials', 'design', 'qr'].forEach(t => {
+        const el = document.getElementById(`tab-${t}`);
+        if (el) el.style.display = t === tabName ? 'block' : 'none';
       });
     }
 
+    // Flip Card logic
     function showSide(side) {
       const flipper = document.getElementById('cardFlipper');
       const btnF = document.getElementById('btnSideFront');
@@ -720,16 +1230,57 @@
       }
     }
 
-    function setTheme(themeName, btn) {
-      currentTheme = themeName;
-      document.querySelectorAll('.tpl-btn').forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
+    function toggleFlip() {
+      const flipper = document.getElementById('cardFlipper');
+      const isFlipped = flipper.classList.toggle('flipped');
+      document.getElementById('btnSideFront').classList.toggle('active', !isFlipped);
+      document.getElementById('btnSideBack').classList.toggle('active', isFlipped);
+    }
 
+    // Space key to flip
+    document.addEventListener('keydown', (e) => {
+      if (e.code === 'Space' && !['INPUT', 'SELECT', 'TEXTAREA'].includes(document.activeElement.tagName)) {
+        e.preventDefault();
+        toggleFlip();
+      }
+    });
+
+    // Orientation toggle
+    function setOrientation(orient) {
+      currentOrientation = orient;
+      document.getElementById('btnOrientLandscape').classList.toggle('active', orient === 'landscape');
+      document.getElementById('btnOrientPortrait').classList.toggle('active', orient === 'portrait');
+      
+      const flipper = document.getElementById('cardFlipper');
+      flipper.classList.remove('orientation-landscape', 'orientation-portrait');
+      flipper.classList.add(`orientation-${orient}`);
+    }
+
+    // Theme selector
+    function setTheme(themeClass, themeLabel, btn) {
+      currentTheme = themeClass;
+      if (themeLabel) document.getElementById('activeThemeName').textContent = themeLabel;
+      document.querySelectorAll('.tpl-btn').forEach(b => b.classList.remove('active'));
+      if (btn) btn.classList.add('active');
+
+      applyThemeAndTexture();
+    }
+
+    // Texture selector
+    function setTexture(texClass, btn) {
+      currentTexture = texClass;
+      document.querySelectorAll('.tex-btn').forEach(b => b.classList.remove('active'));
+      if (btn) btn.classList.add('active');
+
+      applyThemeAndTexture();
+    }
+
+    function applyThemeAndTexture() {
       const front = document.getElementById('cardFront');
       const back = document.getElementById('cardBack');
 
-      front.className = `bc-card ${themeName}`;
-      back.className = `bc-card bc-card-back ${themeName}`;
+      front.className = `bc-card ${currentTheme} ${currentTexture}`;
+      back.className = `bc-card bc-card-back ${currentTheme} ${currentTexture}`;
     }
 
     function setAccentColor(color) {
@@ -738,11 +1289,18 @@
       document.getElementById('cardBack').style.setProperty('--card-accent', color);
     }
 
+    function setCornerRadius(radius) {
+      document.getElementById('cardFront').style.setProperty('--card-radius', radius);
+      document.getElementById('cardBack').style.setProperty('--card-radius', radius);
+      document.getElementById('cardFlipper').style.setProperty('--card-radius', radius);
+    }
+
     function setFontFamily(font) {
       document.getElementById('cardFront').style.fontFamily = font;
       document.getElementById('cardBack').style.fontFamily = font;
     }
 
+    // Logo image upload
     function handleLogo(e) {
       const file = e.target.files[0];
       if (file) {
@@ -755,6 +1313,7 @@
       }
     }
 
+    // Update Card Contents live
     function updateCards() {
       const name = document.getElementById('inpName').value || 'Your Name';
       const title = document.getElementById('inpTitle').value || 'Job Title';
@@ -765,11 +1324,14 @@
       const website = document.getElementById('inpWebsite').value || 'www.example.com';
       const location = document.getElementById('inpLocation').value || 'City, Country';
 
+      // Front
       document.getElementById('frontName').textContent = name;
       document.getElementById('frontTitle').textContent = title;
       document.getElementById('frontCompany').textContent = company;
       document.getElementById('frontTagline').textContent = tagline;
+      document.getElementById('frontWebsiteText').textContent = website;
 
+      // Back
       document.getElementById('backName').textContent = name;
       document.getElementById('backTitle').textContent = title;
       document.getElementById('backPhone').textContent = phone;
@@ -777,15 +1339,37 @@
       document.getElementById('backWebsite').textContent = website;
       document.getElementById('backLocation').textContent = location;
 
+      // Social handles
+      const li = document.getElementById('inpLinkedIn').value.trim();
+      const wa = document.getElementById('inpWhatsApp').value.trim();
+      const ig = document.getElementById('inpInstagram').value.trim();
+
+      const badgeLi = document.getElementById('badgeLinkedIn');
+      if (li) {
+        badgeLi.style.display = 'inline-flex';
+        document.getElementById('textLinkedIn').textContent = li;
+      } else {
+        badgeLi.style.display = 'none';
+      }
+
+      const badgeWa = document.getElementById('badgeWhatsApp');
+      if (wa) {
+        badgeWa.style.display = 'inline-flex';
+        document.getElementById('textWhatsApp').textContent = wa;
+      } else {
+        badgeWa.style.display = 'none';
+      }
+
       updateQr();
     }
 
+    // QR Code Generator
     function initQr() {
       const canvas = document.getElementById('cardQrCanvas');
       qrGenerator = new QRious({
         element: canvas,
         value: 'https://www.aibots.co.in',
-        size: 160,
+        size: 180,
         level: 'M',
         foreground: '#0f172a',
         background: '#ffffff'
@@ -793,27 +1377,182 @@
       updateQr();
     }
 
+    function buildVCardData() {
+      const name = document.getElementById('inpName').value.trim() || 'Contact';
+      const phone = document.getElementById('inpPhone').value.trim();
+      const email = document.getElementById('inpEmail').value.trim();
+      const company = document.getElementById('inpCompany').value.trim();
+      const title = document.getElementById('inpTitle').value.trim();
+      const website = document.getElementById('inpWebsite').value.trim();
+      const location = document.getElementById('inpLocation').value.trim();
+
+      let web = website;
+      if (web && !web.startsWith('http')) web = 'https://' + web;
+
+      return `BEGIN:VCARD
+VERSION:3.0
+N:${name};;;;
+FN:${name}
+ORG:${company}
+TITLE:${title}
+TEL;TYPE=CELL:${phone}
+EMAIL;TYPE=INTERNET:${email}
+URL:${web}
+ADR;TYPE=WORK:;;${location};;;;
+END:VCARD`.trim();
+    }
+
     function updateQr() {
       if (!qrGenerator) return;
       const targetType = document.getElementById('qrTarget').value;
+      const fgColor = document.getElementById('qrColorPicker').value || '#0f172a';
+      const bgColor = document.getElementById('qrBgPicker').value || '#ffffff';
+
       let val = 'https://www.aibots.co.in';
 
-      if (targetType === 'website') {
+      if (targetType === 'vcard') {
+        val = buildVCardData();
+      } else if (targetType === 'website') {
         val = document.getElementById('inpWebsite').value || 'https://www.aibots.co.in';
         if (!val.startsWith('http')) val = 'https://' + val;
+      } else if (targetType === 'whatsapp') {
+        let waNum = document.getElementById('inpWhatsApp').value.replace(/[^0-9]/g, '') || document.getElementById('inpPhone').value.replace(/[^0-9]/g, '');
+        val = `https://wa.me/${waNum}`;
       } else if (targetType === 'email') {
         val = `mailto:${document.getElementById('inpEmail').value}`;
       } else if (targetType === 'phone') {
         val = `tel:${document.getElementById('inpPhone').value}`;
-      } else if (targetType === 'vcard') {
-        const n = document.getElementById('inpName').value;
-        const p = document.getElementById('inpPhone').value;
-        const e = document.getElementById('inpEmail').value;
-        const c = document.getElementById('inpCompany').value;
-        val = `BEGIN:VCARD\nVERSION:3.0\nN:${n}\nORG:${c}\nTEL:${p}\nEMAIL:${e}\nEND:VCARD`;
       }
 
-      qrGenerator.set({ value: val });
+      qrGenerator.set({
+        value: val,
+        foreground: fgColor,
+        background: bgColor
+      });
+    }
+
+    // Export .VCF Contact file
+    function downloadVCardFile() {
+      const vcfData = buildVCardData();
+      const blob = new Blob([vcfData], { type: 'text/vcard;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      const filename = (document.getElementById('inpName').value.trim() || 'contact').replace(/\s+/g, '_') + '.vcf';
+      a.href = url;
+      a.download = filename;
+      a.click();
+      URL.revokeObjectURL(url);
+    }
+
+    // Quick Sample Presets
+    const samplePresets = {
+      tech: {
+        theme: 'theme-cyber',
+        label: 'Cyber Neon',
+        accent: '#38bdf8',
+        font: "'Outfit', sans-serif",
+        name: 'Alex Vance',
+        title: 'Chief Technology Officer',
+        company: 'Vance AI Systems',
+        tagline: 'Autonomous Intelligence at Scale',
+        phone: '+1 (415) 890-2341',
+        email: 'alex@vanceai.io',
+        website: 'vanceai.io',
+        location: 'San Francisco, CA'
+      },
+      luxury: {
+        theme: 'theme-luxury',
+        label: 'Luxury Gold',
+        accent: '#eab308',
+        font: "'Cinzel', serif",
+        name: 'Elena Rostova',
+        title: 'Haute Horlogerie Director',
+        company: 'Maison de Rostova',
+        tagline: 'Timeless Swiss Craftsmanship',
+        phone: '+41 22 819 9000',
+        email: 'elena@rostovawatch.ch',
+        website: 'rostovawatch.ch',
+        location: 'Geneva, Switzerland'
+      },
+      doctor: {
+        theme: 'theme-health',
+        label: 'Medical Trust',
+        accent: '#0284c7',
+        font: "'Plus Jakarta Sans', sans-serif",
+        name: 'Dr. Sarah Jenkins, MD',
+        title: 'Senior Cardiologist & Surgeon',
+        company: 'Metropolitan Heart Institute',
+        tagline: 'Excellence in Cardiovascular Care',
+        phone: '+1 (212) 555-0198',
+        email: 'dr.jenkins@metrohealth.org',
+        website: 'metrohealth.org',
+        location: 'New York, NY'
+      },
+      lawyer: {
+        theme: 'theme-legal',
+        label: 'Legal & Finance',
+        accent: '#d97706',
+        font: "'Playfair Display', serif",
+        name: 'Marcus Sterling, Esq.',
+        title: 'Managing Partner',
+        company: 'Sterling, Cross & Partners',
+        tagline: 'Corporate Litigation & Arbitrage',
+        phone: '+44 20 7946 0912',
+        email: 'm.sterling@sterlingcross.com',
+        website: 'sterlingcross.com',
+        location: 'London, UK'
+      },
+      architect: {
+        theme: 'theme-architect',
+        label: 'Blueprint',
+        accent: '#93c5fd',
+        font: "'JetBrains Mono', monospace",
+        name: 'Kenji Takahashi',
+        title: 'Principal Architect & Urbanist',
+        company: 'K-Atelier Spatial Design',
+        tagline: 'Sustainable Structural Art',
+        phone: '+81 3 5555 0143',
+        email: 'kenji@katelier-tokyo.jp',
+        website: 'katelier-tokyo.jp',
+        location: 'Tokyo, Japan'
+      },
+      realestate: {
+        theme: 'theme-realestate',
+        label: 'Real Estate',
+        accent: '#f59e0b',
+        font: "'Montserrat', sans-serif",
+        name: 'Julian Montgomery',
+        title: 'Luxury Estate Broker',
+        company: 'Sotheby & Montgomery Estates',
+        tagline: 'Ultra-Prime Waterfront Residences',
+        phone: '+1 (305) 789-4321',
+        email: 'julian@montgomeryluxury.com',
+        website: 'montgomeryluxury.com',
+        location: 'Miami Beach, FL'
+      }
+    };
+
+    function loadSamplePreset(key) {
+      const p = samplePresets[key];
+      if (!p) return;
+
+      document.getElementById('inpName').value = p.name;
+      document.getElementById('inpTitle').value = p.title;
+      document.getElementById('inpCompany').value = p.company;
+      document.getElementById('inpTagline').value = p.tagline;
+      document.getElementById('inpPhone').value = p.phone;
+      document.getElementById('inpEmail').value = p.email;
+      document.getElementById('inpWebsite').value = p.website;
+      document.getElementById('inpLocation').value = p.location;
+
+      document.getElementById('accentPicker').value = p.accent;
+      setAccentColor(p.accent);
+
+      document.getElementById('fontPicker').value = p.font;
+      setFontFamily(p.font);
+
+      setTheme(p.theme, p.label);
+      updateCards();
     }
 
     function resetDefaults() {
@@ -825,34 +1564,63 @@
       document.getElementById('inpEmail').value = 'contact@aibots.co.in';
       document.getElementById('inpWebsite').value = 'www.aibots.co.in';
       document.getElementById('inpLocation').value = 'Mumbai, India';
+      document.getElementById('inpLinkedIn').value = 'in/rishitchajjed';
+      document.getElementById('inpWhatsApp').value = '+919876543210';
+
+      setTheme('theme-minimal', 'Corporate Minimal');
+      setTexture('tex-matte');
+      setAccentColor('#4f46e5');
+      setFontFamily("'Plus Jakarta Sans', sans-serif");
+      setOrientation('landscape');
+
       logoDataUrl = "logo.png";
       document.getElementById('frontLogo').src = logoDataUrl;
       updateCards();
     }
 
+    // 3D Parallax Glare tracking
+    const cardScene = document.getElementById('cardScene');
+    cardScene.addEventListener('mousemove', (e) => {
+      const rect = cardScene.getBoundingClientRect();
+      const x = ((e.clientX - rect.left) / rect.width) * 100;
+      const y = ((e.clientY - rect.top) / rect.height) * 100;
+
+      document.getElementById('cardFront').style.setProperty('--mouse-x', `${x}%`);
+      document.getElementById('cardFront').style.setProperty('--mouse-y', `${y}%`);
+      document.getElementById('cardBack').style.setProperty('--mouse-x', `${x}%`);
+      document.getElementById('cardBack').style.setProperty('--mouse-y', `${y}%`);
+    });
+
+    // 300 DPI High Resolution Download
     async function downloadSide(side) {
       const cardEl = side === 'front' ? document.getElementById('cardFront') : document.getElementById('cardBack');
       const name = (document.getElementById('inpName').value.trim() || 'business').replace(/\s+/g, '_');
 
-      // Temporarily ensure card is visible for rendering
       const isBack = side === 'back';
       const origTransform = cardEl.style.transform;
       if (isBack) cardEl.style.transform = 'none';
 
       try {
-        const canvas = await html2canvas(cardEl, { scale: 3, useCORS: true, backgroundColor: null });
+        // Render at 3.5x scale for 300 DPI crisp print quality
+        const canvas = await html2canvas(cardEl, {
+          scale: 3.5,
+          useCORS: true,
+          backgroundColor: null,
+          logging: false
+        });
         const a = document.createElement('a');
         a.href = canvas.toDataURL('image/png');
-        a.download = `${name}_card_${side}.png`;
+        a.download = `${name}_card_${side}_300dpi.png`;
         a.click();
-      } catch(err) {
-        alert("Error saving image: " + err.message);
+      } catch (err) {
+        alert("Error generating card image: " + err.message);
       } finally {
         if (isBack) cardEl.style.transform = origTransform;
       }
     }
 
-    async function downloadPrintPDF() {
+    // Professional 8-Card Printable A4 Sheet with Crop Marks (PDF)
+    async function downloadPrintSheetPDF() {
       const frontEl = document.getElementById('cardFront');
       const backEl = document.getElementById('cardBack');
       const name = (document.getElementById('inpName').value.trim() || 'business').replace(/\s+/g, '_');
@@ -864,40 +1632,95 @@
         const frontCanvas = await html2canvas(frontEl, { scale: 3, useCORS: true });
         const backCanvas = await html2canvas(backEl, { scale: 3, useCORS: true });
 
+        const frontImgData = frontCanvas.toDataURL('image/jpeg', 0.95);
+        const backImgData = backCanvas.toDataURL('image/jpeg', 0.95);
+
         const { jsPDF } = window.jspdf;
         const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
 
-        // A4 page setup with standard 89x51mm business card placement
-        doc.setFontSize(16);
-        doc.setTextColor(15, 23, 42);
-        doc.text("AI Bots — Print-Ready Business Card", 105, 25, { align: 'center' });
-        doc.setFontSize(10);
-        doc.setTextColor(100, 116, 139);
-        doc.text("Standard Size: 3.5\" × 2.0\" (89 mm × 51 mm) · Front & Back Layout", 105, 32, { align: 'center' });
+        // A4 page dimensions: 210mm x 297mm
+        // Card size: 89mm x 51mm (3.5" x 2")
+        const cardW = currentOrientation === 'landscape' ? 89 : 51;
+        const cardH = currentOrientation === 'landscape' ? 51 : 89;
 
-        // Draw Front
-        doc.addImage(frontCanvas.toDataURL('image/jpeg', 0.95), 'JPEG', 60, 45, 89, 51);
-        doc.setFontSize(9);
-        doc.text("▲ FRONT SIDE", 105, 102, { align: 'center' });
+        // PAGE 1: 8x FRONT SIDES WITH CROP MARKS
+        renderCardGridPage(doc, frontImgData, cardW, cardH, "FRONT SIDE — 8x PRINT SHEET WITH CROP MARKS");
 
-        // Draw Back
-        doc.addImage(backCanvas.toDataURL('image/jpeg', 0.95), 'JPEG', 60, 115, 89, 51);
-        doc.text("▲ BACK SIDE (SCANNABLE QR)", 105, 172, { align: 'center' });
+        // PAGE 2: 8x BACK SIDES WITH CROP MARKS (Mirrored alignment for double-sided printing)
+        doc.addPage();
+        renderCardGridPage(doc, backImgData, cardW, cardH, "BACK SIDE (QR CODES) — 8x PRINT SHEET (DOUBLE-SIDED)");
 
-        doc.save(`${name}_card_printable_sheet.pdf`);
-      } catch(err) {
-        alert("Error creating PDF: " + err.message);
+        doc.save(`${name}_8_card_printable_sheet_a4.pdf`);
+      } catch (err) {
+        alert("Error generating printable PDF: " + err.message);
       } finally {
         backEl.style.transform = origBackTransform;
       }
     }
 
+    function renderCardGridPage(doc, imgData, cardW, cardH, headerTitle) {
+      // Header Info
+      doc.setFontSize(13);
+      doc.setFont('helvetica', 'bold');
+      doc.setTextColor(15, 23, 42);
+      doc.text("AI Bots — Professional Business Card Print Sheet", 105, 14, { align: 'center' });
+
+      doc.setFontSize(8);
+      doc.setFont('helvetica', 'normal');
+      doc.setTextColor(100, 116, 139);
+      doc.text(`${headerTitle} · Standard Size: ${cardW}mm × ${cardH}mm · Print at 100% Scale`, 105, 19, { align: 'center' });
+
+      // Layout Grid: 2 columns x 4 rows = 8 cards
+      const cols = currentOrientation === 'landscape' ? 2 : 3;
+      const rows = currentOrientation === 'landscape' ? 4 : 2;
+      const gapX = 8;
+      const gapY = 8;
+
+      const totalGridW = (cols * cardW) + ((cols - 1) * gapX);
+      const totalGridH = (rows * cardH) + ((rows - 1) * gapY);
+
+      const startX = (210 - totalGridW) / 2;
+      const startY = 26;
+
+      doc.setDrawColor(180, 190, 205);
+      doc.setLineWidth(0.2);
+
+      for (let r = 0; r < rows; r++) {
+        for (let c = 0; c < cols; c++) {
+          const x = startX + c * (cardW + gapX);
+          const y = startY + r * (cardH + gapY);
+
+          // Draw the card
+          doc.addImage(imgData, 'JPEG', x, y, cardW, cardH);
+
+          // Draw Professional Cutting Guides / Crop Marks (5mm lines at each of 4 corners)
+          const markLen = 4;
+          // Top-Left
+          doc.line(x - markLen - 1, y, x - 1, y);
+          doc.line(x, y - markLen - 1, x, y - 1);
+          // Top-Right
+          doc.line(x + cardW + 1, y, x + cardW + markLen + 1, y);
+          doc.line(x + cardW, y - markLen - 1, x + cardW, y - 1);
+          // Bottom-Left
+          doc.line(x - markLen - 1, y + cardH, x - 1, y + cardH);
+          doc.line(x, y + cardH + 1, x, y + cardH + markLen + 1);
+          // Bottom-Right
+          doc.line(x + cardW + 1, y + cardH, x + cardW + markLen + 1, y + cardH);
+          doc.line(x + cardW, y + cardH + 1, x + cardW, y + cardH + markLen + 1);
+        }
+      }
+
+      // Footer cut note
+      doc.setFontSize(7.5);
+      doc.setTextColor(148, 163, 184);
+      doc.text("✂️ Cut along corner crop marks with a ruler and paper trimmer. Designed with AI Bots (www.aibots.co.in)", 105, 290, { align: 'center' });
+    }
+
+    // Initialization
     window.addEventListener('DOMContentLoaded', () => {
       initQr();
       updateCards();
     });
   </script>
-  <script src="js/app.js"></script>
 </body>
 </html>
-

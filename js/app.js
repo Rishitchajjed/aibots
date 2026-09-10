@@ -88,10 +88,11 @@ const AI_BOTS_TOOLS = [
   {
     id: 'ledger',
     title: 'Cash & Udhar Ledger',
-    description: 'Personal passbook, Udhar khata & daily cash spending tracker with WhatsApp statements and offline local storage.',
+    description: 'Personal passbook, Udhar khata, daily cash spending tracker, eatables contri, and WhatsApp statements with offline storage.',
+    keywords: 'cash udhar ledger khata khatabook hisab hisaab money finance passbook spending debt credit debit split contri balance udhari',
     icon: 'fa-book-open',
     url: 'ledger.html',
-    category: 'business',
+    category: 'finance',
     badge: 'OFFLINE / FREE',
     color: '#10b981'
   },
@@ -706,7 +707,9 @@ function initCommandPalette() {
       tool.title.toLowerCase().includes(query) ||
       tool.description.toLowerCase().includes(query) ||
       tool.category.toLowerCase().includes(query) ||
-      tool.badge.toLowerCase().includes(query)
+      tool.badge.toLowerCase().includes(query) ||
+      (tool.keywords && tool.keywords.toLowerCase().includes(query)) ||
+      tool.id.toLowerCase().includes(query)
     );
 
     if (filtered.length === 0) {

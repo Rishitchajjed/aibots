@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -17,7 +17,7 @@
       var lastSegment = cleanPath.split('/').pop();
       
       // Known valid tools list
-      var validTools = ['index', 'about', 'sitemap', 'logo-kit', 'donate', 'backremover', 'cropphoto', 'resizeimage', 'imagecombiner', 'imagelink', 'photogenerator', 'logomaker', 'videoeditor', 'videoplayer', 'video', 'bank-statement-converter', 'invoice', 'print', 'pdfmaker', 'pdfviewer', 'currency', 'buisnesscard', 'emojis', 'chatbot', 'qrcode', 'password', 'unitconverter', 'wordcounter', 'weather', 'timer', 'endchanger', 'calculator', 'cricketscore', 'cricket', 'game', 'typingpractice'];
+      var validTools = ['index', 'about', 'sitemap', 'logo-kit', 'donate', 'backremover', 'cropphoto', 'resizeimage', 'imagecombiner', 'imagelink', 'photogenerator', 'logomaker', 'videoeditor', 'videoplayer', 'video', 'bank-statement-converter', 'ledger', 'watch-bridge', 'invoice', 'print', 'pdfmaker', 'pdfviewer', 'currency', 'buisnesscard', 'emojis', 'chatbot', 'qrcode', 'password', 'unitconverter', 'wordcounter', 'weather', 'timer', 'endchanger', 'calculator', 'cricketscore', 'cricket', 'game', 'typingpractice'];
       
       if (lastSegment && validTools.indexOf(lastSegment.toLowerCase()) !== -1) {
         window.location.replace(cleanPath + '.html' + window.location.search + window.location.hash);

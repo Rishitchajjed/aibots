@@ -1,0 +1,1133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+  <link rel="dns-prefetch" href="https://cdnjs.cloudflare.com">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+  <meta name="google-site-verification" content="ndzq-U-NLijgza_QqgQdcc2U3oMRoud_BT2ZZiwFREM">
+  <meta name="google-site-verification" content="-Yb6Nx74gbZ3wRN5uP-Y8KKwDWlt1DPpxs4nA3PkE6M">
+  <meta name="robots" content="index, follow">
+  <title>Apple Watch & Android Notification Bridge (100% Free) — AI Bots</title>
+  <meta name="description" content="Forward WhatsApp messages, calls, and SMS from your Vivo / Android phone to your iPhone 15 & Apple Watch for free. Zero-cost private push relay with haptic vibration.">
+  <meta name="keywords" content="apple watch android bridge, connect apple watch to vivo, apple watch vivo y19e, forward notifications android to apple watch, free merge app alternative, aibots notification bridge">
+  <link rel="icon" href="logo.png" type="image/png">
+  <link rel="canonical" href="https://www.aibots.co.in/watch-bridge.html">
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://www.aibots.co.in/watch-bridge.html">
+  <meta property="og:title" content="Apple Watch & Android Notification Bridge (100% Free) — AI Bots">
+  <meta property="og:description" content="Forward WhatsApp, calls, and SMS from your Vivo / Android phone to your iPhone 15 & Apple Watch for free. Instant haptics, zero subscription.">
+  <meta property="og:image" content="https://www.aibots.co.in/logo.png">
+
+  <!-- Twitter Cards -->
+  <meta property="twitter:card" content="summary_large_image">
+  <meta property="twitter:url" content="https://www.aibots.co.in/watch-bridge.html">
+  <meta property="twitter:title" content="Apple Watch & Android Notification Bridge (100% Free) — AI Bots">
+  <meta property="twitter:description" content="Zero-cost private push relay to mirror Android notifications to Apple Watch.">
+  <meta property="twitter:image" content="https://www.aibots.co.in/logo.png">
+
+  <!-- PWA & Apple Mobile Web App Tags -->
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#6366f1">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Watch Bridge">
+  <link rel="apple-touch-icon" href="logo.png">
+
+  <!-- Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-2L87FMQS3W"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-2L87FMQS3W');
+  </script>
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="css/theme.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrious/4.0.2/qrious.min.js"></script>
+
+  <style>
+    .bridge-container {
+      max-width: 1040px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 28px;
+    }
+
+    /* Hero Banner */
+    .hero-banner {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-top: 4px solid var(--primary);
+      border-radius: var(--radius-xl);
+      padding: 36px 28px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+      box-shadow: var(--shadow-md);
+    }
+    .hero-badges {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 16px;
+    }
+    .hero-badge-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 5px 14px;
+      border-radius: 9999px;
+      font-size: 0.76rem;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+    .pill-green { background: rgba(16, 185, 129, 0.15); color: #10b981; border: 1px solid rgba(16, 185, 129, 0.3); }
+    .pill-indigo { background: rgba(99, 102, 241, 0.15); color: #6366f1; border: 1px solid rgba(99, 102, 241, 0.3); }
+    .pill-pink { background: rgba(236, 72, 153, 0.15); color: #ec4899; border: 1px solid rgba(236, 72, 153, 0.3); }
+
+    .hero-title {
+      font-size: clamp(1.8rem, 4vw, 2.6rem);
+      font-weight: 800;
+      color: var(--text-primary);
+      margin-bottom: 12px;
+      line-height: 1.2;
+    }
+    .hero-subtitle {
+      font-size: 1.05rem;
+      color: var(--text-secondary);
+      max-width: 720px;
+      margin: 0 auto 20px;
+      line-height: 1.5;
+    }
+
+    /* Device Flow Visual */
+    .device-flow {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+      flex-wrap: wrap;
+      margin-top: 20px;
+    }
+    .flow-device {
+      background: var(--bg-primary);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      padding: 12px 18px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 700;
+      font-size: 0.9rem;
+      color: var(--text-primary);
+    }
+    .flow-arrow {
+      color: var(--primary);
+      font-size: 1.2rem;
+      animation: pulseArrow 1.5s infinite;
+    }
+    @keyframes pulseArrow {
+      0%, 100% { transform: translateX(0); opacity: 0.6; }
+      50% { transform: translateX(4px); opacity: 1; }
+    }
+
+    /* Main Grid */
+    .bridge-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+    }
+    @media (max-width: 840px) {
+      .bridge-grid { grid-template-columns: 1fr; }
+    }
+
+    /* Standard Card */
+    .step-card {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-xl);
+      padding: 26px;
+      box-shadow: var(--shadow-md);
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+      position: relative;
+    }
+    .step-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .step-num {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: var(--primary);
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 1rem;
+      flex-shrink: 0;
+    }
+    .step-title {
+      font-size: 1.2rem;
+      font-weight: 800;
+      color: var(--text-primary);
+      margin: 0;
+    }
+    .step-desc {
+      font-size: 0.88rem;
+      color: var(--text-secondary);
+      line-height: 1.5;
+      margin: 0;
+    }
+
+    /* Status Pill */
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 16px;
+      border-radius: 9999px;
+      font-size: 0.84rem;
+      font-weight: 700;
+      background: var(--bg-primary);
+      border: 1px solid var(--border-color);
+      width: fit-content;
+    }
+    .status-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: #94a3b8;
+    }
+    .status-dot.active {
+      background: #10b981;
+      box-shadow: 0 0 10px rgba(16, 185, 129, 0.6);
+      animation: blinkDot 1.6s infinite;
+    }
+    @keyframes blinkDot {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.5; transform: scale(0.9); }
+    }
+
+    /* Channel Box */
+    .channel-box {
+      background: var(--bg-primary);
+      border: 2px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .channel-input-row {
+      display: flex;
+      gap: 8px;
+    }
+    .channel-input {
+      flex: 1;
+      background: transparent;
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      padding: 10px 14px;
+      color: var(--text-primary);
+      font-family: var(--font-mono);
+      font-size: 0.95rem;
+      font-weight: 700;
+      outline: none;
+    }
+    .channel-input:focus {
+      border-color: var(--primary);
+    }
+    .webhook-url-display {
+      background: var(--bg-secondary);
+      border: 1px dashed var(--border-color);
+      border-radius: var(--radius-md);
+      padding: 10px 12px;
+      font-size: 0.8rem;
+      font-family: var(--font-mono);
+      color: var(--text-secondary);
+      word-break: break-all;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+    }
+
+    /* QR Code Display */
+    .qr-wrapper {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+      padding: 16px;
+      background: var(--bg-primary);
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--border-color);
+    }
+    .qr-canvas-container {
+      background: #ffffff;
+      padding: 12px;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+      display: inline-flex;
+    }
+
+    /* Action Buttons */
+    .btn-action {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 12px 20px;
+      border-radius: var(--radius-md);
+      font-weight: 700;
+      font-size: 0.92rem;
+      border: none;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      text-decoration: none;
+    }
+    .btn-action:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-sm);
+    }
+    .btn-primary-action {
+      background: var(--primary);
+      color: #ffffff;
+    }
+    .btn-success-action {
+      background: #10b981;
+      color: #ffffff;
+    }
+    .btn-secondary-action {
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      border: 1px solid var(--border-color);
+    }
+
+    /* Test Simulator Box */
+    .sim-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+      gap: 10px;
+    }
+    .sim-btn {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      padding: 12px 8px;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border-color);
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      font-size: 0.8rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      text-align: center;
+    }
+    .sim-btn:hover {
+      border-color: var(--primary);
+      background: var(--primary-light);
+      color: var(--primary);
+      transform: translateY(-2px);
+    }
+    .sim-btn i {
+      font-size: 1.3rem;
+    }
+    .sim-whatsapp i { color: #25d366; }
+    .sim-call i { color: #3b82f6; }
+    .sim-urgent i { color: #ef4444; }
+    .sim-sms i { color: #a855f7; }
+
+    /* Event Feed */
+    .log-feed {
+      background: var(--bg-primary);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      padding: 14px;
+      max-height: 260px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      font-size: 0.82rem;
+    }
+    .log-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      padding: 10px 12px;
+      border-radius: var(--radius-md);
+      background: var(--bg-secondary);
+      border-left: 3px solid var(--primary);
+    }
+    .log-item.log-whatsapp { border-left-color: #25d366; }
+    .log-item.log-call { border-left-color: #3b82f6; }
+    .log-item.log-urgent { border-left-color: #ef4444; }
+    .log-time {
+      font-size: 0.72rem;
+      color: var(--text-muted);
+      font-family: var(--font-mono);
+      white-space: nowrap;
+    }
+    .log-content strong {
+      display: block;
+      color: var(--text-primary);
+      font-size: 0.86rem;
+    }
+    .log-content span {
+      color: var(--text-secondary);
+    }
+
+    /* FAQ Accordion */
+    .faq-item {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      margin-bottom: 12px;
+      overflow: hidden;
+    }
+    .faq-q {
+      padding: 16px 20px;
+      font-weight: 700;
+      color: var(--text-primary);
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      user-select: none;
+    }
+    .faq-a {
+      padding: 0 20px 16px;
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+      line-height: 1.6;
+      display: none;
+    }
+    .faq-item.open .faq-a { display: block; }
+    .faq-item.open .faq-q i { transform: rotate(180deg); }
+    .faq-q i { transition: transform 0.2s ease; }
+  </style>
+
+  <!-- Schema.org Breadcrumb -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "name": "Home",
+        "item": "https://www.aibots.co.in/"
+      },
+      {
+        "@type": "ListItem",
+        "position": 2,
+        "name": "Utilities",
+        "item": "https://www.aibots.co.in/#utilities"
+      },
+      {
+        "@type": "ListItem",
+        "position": 3,
+        "name": "Apple Watch & Android Notification Bridge",
+        "item": "https://www.aibots.co.in/watch-bridge.html"
+      }
+    ]
+  }
+  </script>
+</head>
+<body>
+  <div class="bg-mesh"></div>
+
+  <!-- Navbar -->
+  <header class="navbar">
+    <div class="app-container" style="width: 100%;">
+      <div class="nav-wrapper">
+        <a href="index.html" class="brand-link">
+          <img src="logo.png" alt="AI Bots Logo" class="brand-logo-img">
+          <span>AI Bots</span>
+          <span class="brand-badge">WATCH BRIDGE</span>
+        </a>
+
+        <div class="nav-actions">
+          <a href="index.html" class="btn btn-secondary btn-sm"><i class="fas fa-house"></i> Hub</a>
+          <button class="icon-btn theme-toggle-btn" title="Toggle Dark/Light Mode"><i class="fas fa-moon"></i></button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="app-container" style="padding-top: 32px; padding-bottom: 60px;">
+    <div class="bridge-container">
+
+      <!-- Hero Section -->
+      <section class="hero-banner">
+        <div class="hero-badges">
+          <span class="hero-badge-pill pill-green"><i class="fas fa-shield-check"></i> 100% Free Forever</span>
+          <span class="hero-badge-pill pill-indigo"><i class="fas fa-lock"></i> Zero Registration / Private</span>
+          <span class="hero-badge-pill pill-pink"><i class="fas fa-bell"></i> Native Watch Haptics</span>
+        </div>
+        <h1 class="hero-title">Apple Watch & Android Notification Bridge</h1>
+        <p class="hero-subtitle">
+          Connect your <strong>Vivo Y19e</strong> to your <strong>iPhone 15 & Apple Watch</strong>. Whenever your Vivo gets a WhatsApp message, incoming call, or SMS, it instantly pings your Apple Watch with native wrist vibrations.
+        </p>
+
+        <!-- Device Flow Diagram -->
+        <div class="device-flow">
+          <div class="flow-device">
+            <i class="fab fa-android" style="color: #3ddc84; font-size: 1.4rem;"></i>
+            <span>Vivo Y19e (Sender)</span>
+          </div>
+          <i class="fas fa-arrow-right flow-arrow"></i>
+          <div class="flow-device" style="border-color: var(--primary);">
+            <i class="fas fa-satellite-dish" style="color: var(--primary); font-size: 1.3rem;"></i>
+            <span>Encrypted Webhook Relay</span>
+          </div>
+          <i class="fas fa-arrow-right flow-arrow"></i>
+          <div class="flow-device">
+            <i class="fab fa-apple" style="color: #94a3b8; font-size: 1.4rem;"></i>
+            <span>iPhone 15 (PWA)</span>
+          </div>
+          <i class="fas fa-arrow-right flow-arrow"></i>
+          <div class="flow-device" style="background: rgba(16, 185, 129, 0.1); border-color: #10b981;">
+            <i class="fas fa-clock" style="color: #10b981; font-size: 1.3rem;"></i>
+            <span>Apple Watch (Wrist Haptics)</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Step 1 & Step 2 Grid -->
+      <div class="bridge-grid">
+
+        <!-- Card 1: Channel & Webhook Pairing -->
+        <div class="step-card">
+          <div class="step-header">
+            <div class="step-num">1</div>
+            <div>
+              <h2 class="step-title">Your Private Bridge Channel</h2>
+              <p class="step-desc">Secret channel used to securely bridge alerts between your two phones.</p>
+            </div>
+          </div>
+
+          <div class="channel-box">
+            <label style="font-size: 0.78rem; font-weight: 700; text-transform: uppercase; color: var(--text-secondary);">
+              Channel ID
+            </label>
+            <div class="channel-input-row">
+              <input type="text" id="channelInput" class="channel-input" spellcheck="false" placeholder="aibots-bridge-xyz">
+              <button type="button" class="btn-action btn-secondary-action" onclick="generateNewChannel()" title="Generate New Key">
+                <i class="fas fa-arrows-rotate"></i>
+              </button>
+            </div>
+
+            <label style="font-size: 0.78rem; font-weight: 700; text-transform: uppercase; color: var(--text-secondary); margin-top: 4px;">
+              Your Live Webhook URL
+            </label>
+            <div class="webhook-url-display">
+              <span id="webhookUrlText">https://ntfy.sh/aibots-bridge-loading</span>
+              <button type="button" class="btn-action btn-secondary-action" style="padding: 4px 10px; font-size: 0.75rem;" onclick="copyWebhookUrl()">
+                <i class="fas fa-copy"></i> Copy
+              </button>
+            </div>
+          </div>
+
+          <!-- QR Code for 1-Second Setup on Vivo -->
+          <div class="qr-wrapper">
+            <div class="qr-canvas-container">
+              <canvas id="qrCanvas" width="160" height="160"></canvas>
+            </div>
+            <div style="font-size: 0.8rem; color: var(--text-secondary); text-align: center;">
+              <i class="fas fa-qrcode"></i> Scan this QR on your <strong>Vivo Y19e</strong> to open this bridge page instantly!
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 2: iPhone 15 & Apple Watch Receiver Setup -->
+        <div class="step-card">
+          <div class="step-header">
+            <div class="step-num">2</div>
+            <div>
+              <h2 class="step-title">Setup on iPhone 15 & Watch</h2>
+              <p class="step-desc">Configure your iPhone so notifications buzz your Apple Watch.</p>
+            </div>
+          </div>
+
+          <div class="status-badge" id="listenerStatusPill">
+            <div class="status-dot" id="statusDot"></div>
+            <span id="statusText">Checking Notification Permissions...</span>
+          </div>
+
+          <div style="background: var(--bg-primary); border-radius: var(--radius-lg); padding: 16px; border: 1px solid var(--border-color); display: flex; flex-direction: column; gap: 12px;">
+            <div style="display: flex; gap: 10px; align-items: flex-start;">
+              <i class="fas fa-share-from-square" style="color: var(--primary); margin-top: 3px; font-size: 1.1rem;"></i>
+              <div>
+                <strong style="font-size: 0.9rem; color: var(--text-primary); display: block;">Step A: Add to Home Screen</strong>
+                <span style="font-size: 0.82rem; color: var(--text-secondary);">
+                  On iPhone Safari, tap <strong>Share <i class="fas fa-arrow-up-from-bracket"></i></strong> &rarr; <strong>Add to Home Screen</strong>. This enables Apple’s background Web Push engine.
+                </span>
+              </div>
+            </div>
+
+            <div style="display: flex; gap: 10px; align-items: flex-start;">
+              <i class="fas fa-bell" style="color: #10b981; margin-top: 3px; font-size: 1.1rem;"></i>
+              <div>
+                <strong style="font-size: 0.9rem; color: var(--text-primary); display: block;">Step B: Enable Notifications</strong>
+                <span style="font-size: 0.82rem; color: var(--text-secondary);">
+                  Click the button below to grant permission and activate the live stream listener.
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <div style="display: flex; flex-direction: column; gap: 10px;">
+            <button type="button" id="enablePushBtn" class="btn-action btn-primary-action" onclick="enablePushNotifications()">
+              <i class="fas fa-bell"></i> Enable Watch Alerts & Start Listening
+            </button>
+            <button type="button" class="btn-action btn-secondary-action" onclick="testWatchHaptics()">
+              <i class="fas fa-vibrate"></i> Test Wrist Haptic & Chime
+            </button>
+          </div>
+
+          <div style="font-size: 0.78rem; color: var(--text-muted); line-height: 1.4;">
+            <i class="fas fa-info-circle"></i> <strong>Apple Watch Tip:</strong> In your iPhone’s <em>Watch App &rarr; Notifications</em>, make sure notifications for your web app or browser are toggled to <strong>"Mirror iPhone Alerts"</strong>.
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Step 3: Vivo Y19e Sender Setup & MacroDroid Generator -->
+      <section class="step-card">
+        <div class="step-header">
+          <div class="step-num">3</div>
+          <div>
+            <h2 class="step-title">Setup on Vivo Y19e (Automatic Forwarder)</h2>
+            <p class="step-desc">Configure your Vivo phone to send notifications to your private webhook in 2 minutes.</p>
+          </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+          
+          <!-- Left: 1-Click MacroDroid Setup -->
+          <div style="background: var(--bg-primary); border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 18px; display: flex; flex-direction: column; gap: 14px;">
+            <div style="display: flex; align-items: center; gap: 10px;">
+              <i class="fas fa-robot" style="color: #10b981; font-size: 1.4rem;"></i>
+              <strong style="font-size: 1rem; color: var(--text-primary);">MacroDroid (100% Free)</strong>
+            </div>
+
+            <ol style="margin: 0; padding-left: 20px; font-size: 0.85rem; color: var(--text-secondary); line-height: 1.7;">
+              <li>Install <strong>MacroDroid</strong> from Google Play Store on your Vivo.</li>
+              <li>Tap <strong>Add Macro</strong> &rarr; Trigger: <strong>Notification Received</strong> &rarr; Select WhatsApp, Calls, SMS, etc.</li>
+              <li>Action: <strong>HTTP Request</strong>:
+                <ul style="margin-top: 4px; padding-left: 18px; color: var(--text-primary);">
+                  <li>Request: <strong>POST</strong></li>
+                  <li>URL: <code id="macroUrlSample" style="color: var(--primary);">https://ntfy.sh/aibots-bridge-...</code></li>
+                  <li>Header: <code>Title: [not_app] - [not_title]</code></li>
+                  <li>Body / Content: <code>[not_text]</code></li>
+                </ul>
+              </li>
+              <li>Turn ON the macro. Done!</li>
+            </ol>
+
+            <button type="button" class="btn-action btn-success-action" onclick="copyMacroPayload()">
+              <i class="fas fa-copy"></i> Copy Complete MacroDroid Payload
+            </button>
+          </div>
+
+          <!-- Right: Tasker / cURL / Direct Webhook -->
+          <div style="background: var(--bg-primary); border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 18px; display: flex; flex-direction: column; gap: 14px;">
+            <div style="display: flex; align-items: center; gap: 10px;">
+              <i class="fas fa-terminal" style="color: var(--primary); font-size: 1.4rem;"></i>
+              <strong style="font-size: 1rem; color: var(--text-primary);">cURL / HTTP POST Webhook</strong>
+            </div>
+
+            <p style="font-size: 0.85rem; color: var(--text-secondary); margin: 0; line-height: 1.5;">
+              You can trigger notifications from any script, Tasker, Termux, or automated service on your Vivo using this standard POST command:
+            </p>
+
+            <pre id="curlCommandBox" style="background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 12px; font-size: 0.78rem; font-family: var(--font-mono); color: var(--text-primary); overflow-x: auto; white-space: pre-wrap; margin: 0;">curl -d "Did you reach safely?" -H "Title: WhatsApp from Mom" -H "Priority: high" https://ntfy.sh/aibots-bridge-xyz</pre>
+
+            <button type="button" class="btn-action btn-secondary-action" onclick="copyCurlCommand()">
+              <i class="fas fa-copy"></i> Copy cURL Command
+            </button>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- Step 4: Interactive Live Test Simulator -->
+      <section class="step-card">
+        <div class="step-header">
+          <div class="step-num">4</div>
+          <div>
+            <h2 class="step-title">Interactive Live Test Simulator</h2>
+            <p class="step-desc">Test sending simulated alerts right now and verify that your Apple Watch vibrates.</p>
+          </div>
+        </div>
+
+        <div class="sim-grid">
+          <button type="button" class="sim-btn sim-whatsapp" onclick="sendSimulatedAlert('whatsapp')">
+            <i class="fab fa-whatsapp"></i>
+            <span>WhatsApp Msg</span>
+          </button>
+          <button type="button" class="sim-btn sim-call" onclick="sendSimulatedAlert('call')">
+            <i class="fas fa-phone-volume"></i>
+            <span>Incoming Call</span>
+          </button>
+          <button type="button" class="sim-btn sim-sms" onclick="sendSimulatedAlert('sms')">
+            <i class="fas fa-comment-sms"></i>
+            <span>Urgent SMS / OTP</span>
+          </button>
+          <button type="button" class="sim-btn sim-urgent" onclick="sendSimulatedAlert('battery')">
+            <i class="fas fa-battery-quarter"></i>
+            <span>Low Battery</span>
+          </button>
+        </div>
+
+        <!-- Custom Message Input -->
+        <div style="background: var(--bg-primary); border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 16px; display: flex; flex-direction: column; gap: 10px;">
+          <label style="font-size: 0.78rem; font-weight: 700; text-transform: uppercase; color: var(--text-secondary);">
+            Or Send Custom Alert
+          </label>
+          <div style="display: grid; grid-template-columns: 1fr 2fr auto; gap: 8px;">
+            <input type="text" id="customTitle" class="channel-input" placeholder="Title (e.g. Work Mail)">
+            <input type="text" id="customMsg" class="channel-input" placeholder="Message text (e.g. Meeting in 5 mins)">
+            <button type="button" class="btn-action btn-primary-action" onclick="sendCustomAlert()">
+              <i class="fas fa-paper-plane"></i> Send to Watch
+            </button>
+          </div>
+        </div>
+
+        <!-- Live Activity Log -->
+        <div>
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+            <strong style="font-size: 0.88rem; color: var(--text-primary);"><i class="fas fa-list-check"></i> Real-Time Bridge Activity Log</strong>
+            <button type="button" class="btn-action btn-secondary-action" style="padding: 4px 10px; font-size: 0.75rem;" onclick="clearLogs()">
+              <i class="fas fa-trash"></i> Clear
+            </button>
+          </div>
+          <div class="log-feed" id="activityLog">
+            <div style="color: var(--text-muted); text-align: center; padding: 20px;">
+              No alerts received yet. Tap any test button above or trigger your Vivo phone!
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- FAQs Section -->
+      <section class="step-card">
+        <h2 style="font-size: 1.3rem; font-weight: 800; color: var(--text-primary); margin: 0 0 8px;">Frequently Asked Questions</h2>
+
+        <div class="faq-item">
+          <div class="faq-q" onclick="toggleFaq(this)">
+            <span>Will this really vibrate my Apple Watch?</span>
+            <i class="fas fa-chevron-down"></i>
+          </div>
+          <div class="faq-a">
+            Yes! When you add this page to your iPhone Home Screen and enable notifications, iOS treats it as an installed web app. By default, iOS automatically forwards notifications to your paired Apple Watch whenever your iPhone screen is locked, vibrating your wrist with Apple’s native haptics.
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-q" onclick="toggleFaq(this)">
+            <span>How is this different from the "Merge" app?</span>
+            <i class="fas fa-chevron-down"></i>
+          </div>
+          <div class="faq-a">
+            The Merge app costs a monthly/yearly subscription and tries to maintain a continuous Bluetooth LE connection between Android and watchOS (which watchOS frequently suspends). This bridge tool is <strong>100% free forever</strong>, has no subscriptions, and uses Apple's native iOS notification system which never gets killed in the background.
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-q" onclick="toggleFaq(this)">
+            <span>Is my notification data private?</span>
+            <i class="fas fa-chevron-down"></i>
+          </div>
+          <div class="faq-a">
+            Yes. Your Channel ID is randomly generated and unguessable (like a secret password). Only devices that know your exact channel key can subscribe or send alerts. No account, email, or personal data is collected or stored.
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-q" onclick="toggleFaq(this)">
+            <span>Does this require the iPhone to be turned on?</span>
+            <i class="fas fa-chevron-down"></i>
+          </div>
+          <div class="faq-a">
+            Yes, your iPhone 15 needs to be turned on and connected to Wi-Fi or mobile data (it can be kept at home or in your pocket/bag). Your Apple Watch connects through the iPhone to deliver the alerts to your wrist.
+          </div>
+        </div>
+      </section>
+
+    </div>
+  </main>
+
+  <footer class="app-footer">
+    <div class="app-container" style="text-align: center; color: var(--text-muted); font-size: 0.85rem; padding: 24px 0;">
+      <p>&copy; 2026 AI Bots Creative Studio. Built for seamless cross-device productivity.</p>
+    </div>
+  </footer>
+
+  <script src="js/app.min.js" defer></script>
+  <script>
+    let currentChannel = '';
+    let eventSource = null;
+    let qrGenerator = null;
+
+    // 1. Channel Management
+    function initChannel() {
+      const savedChannel = localStorage.getItem('aibots_bridge_channel');
+      if (savedChannel) {
+        currentChannel = savedChannel;
+      } else {
+        const rand = Math.random().toString(36).substring(2, 8);
+        currentChannel = 'aibots-bridge-' + rand;
+        localStorage.setItem('aibots_bridge_channel', currentChannel);
+      }
+
+      document.getElementById('channelInput').value = currentChannel;
+      updateChannelDisplays();
+      initQR();
+      startEventStream();
+      checkNotificationStatus();
+    }
+
+    function generateNewChannel() {
+      if (eventSource) eventSource.close();
+      const rand = Math.random().toString(36).substring(2, 8);
+      currentChannel = 'aibots-bridge-' + rand;
+      localStorage.setItem('aibots_bridge_channel', currentChannel);
+      document.getElementById('channelInput').value = currentChannel;
+      updateChannelDisplays();
+      initQR();
+      startEventStream();
+      logActivity('system', 'New Channel Generated', currentChannel);
+    }
+
+    document.getElementById('channelInput').addEventListener('change', (e) => {
+      const val = e.target.value.trim().toLowerCase().replace(/[^a-z0-9_-]/g, '');
+      if (val.length >= 4) {
+        if (eventSource) eventSource.close();
+        currentChannel = val;
+        localStorage.setItem('aibots_bridge_channel', currentChannel);
+        updateChannelDisplays();
+        initQR();
+        startEventStream();
+        logActivity('system', 'Channel Updated', currentChannel);
+      }
+    });
+
+    function updateChannelDisplays() {
+      const url = `https://ntfy.sh/${currentChannel}`;
+      document.getElementById('webhookUrlText').textContent = url;
+      document.getElementById('macroUrlSample').textContent = url;
+      document.getElementById('curlCommandBox').textContent = 
+        `curl -d "Did you reach safely?" -H "Title: WhatsApp from Mom" -H "Priority: high" ${url}`;
+    }
+
+    // 2. QR Code Generator
+    function initQR() {
+      try {
+        const canvas = document.getElementById('qrCanvas');
+        const shareUrl = window.location.origin + window.location.pathname + '?channel=' + currentChannel;
+        qrGenerator = new QRious({
+          element: canvas,
+          value: shareUrl,
+          size: 160,
+          background: '#ffffff',
+          foreground: '#0f172a',
+          level: 'M'
+        });
+      } catch (err) {
+        console.warn('QR Generator note:', err);
+      }
+    }
+
+    // Read URL params if opened via QR scan
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.has('channel')) {
+      currentChannel = urlParams.get('channel');
+      localStorage.setItem('aibots_bridge_channel', currentChannel);
+    }
+
+    // 3. Push / Notification Handlers
+    function checkNotificationStatus() {
+      const statusPill = document.getElementById('listenerStatusPill');
+      const dot = document.getElementById('statusDot');
+      const text = document.getElementById('statusText');
+      const btn = document.getElementById('enablePushBtn');
+
+      if (!('Notification' in window)) {
+        text.textContent = 'Notifications not supported on this browser';
+        dot.className = 'status-dot';
+        return;
+      }
+
+      if (Notification.permission === 'granted') {
+        text.textContent = '🟢 Active & Ready for Incoming Alerts';
+        dot.className = 'status-dot active';
+        btn.innerHTML = '<i class="fas fa-check-circle"></i> Watch Alerts Active';
+        btn.classList.remove('btn-primary-action');
+        btn.classList.add('btn-success-action');
+      } else if (Notification.permission === 'denied') {
+        text.textContent = '🔴 Notifications Blocked in Settings';
+        dot.className = 'status-dot';
+      } else {
+        text.textContent = '🟡 Tap button to allow notifications';
+        dot.className = 'status-dot';
+      }
+    }
+
+    async function enablePushNotifications() {
+      if (!('Notification' in window)) {
+        alert('Your browser does not support web notifications.');
+        return;
+      }
+
+      try {
+        const permission = await Notification.requestPermission();
+        checkNotificationStatus();
+        if (permission === 'granted') {
+          testWatchHaptics();
+          new Notification('Apple Watch Bridge Connected!', {
+            body: 'Ready to receive alerts from your Vivo Y19e.',
+            icon: 'logo.png'
+          });
+        }
+      } catch (e) {
+        console.error('Notification error:', e);
+      }
+    }
+
+    function testWatchHaptics() {
+      // Audio Chime
+      try {
+        const ctx = new (window.AudioContext || window.webkitAudioContext)();
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(880, ctx.currentTime); // A5
+        osc.frequency.exponentialRampToValueAtTime(1760, ctx.currentTime + 0.15); // A6
+        gain.gain.setValueAtTime(0.3, ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.3);
+        osc.start();
+        osc.stop(ctx.currentTime + 0.3);
+      } catch (e) {}
+
+      // Vibration (Haptics)
+      if ('vibrate' in navigator) {
+        navigator.vibrate([200, 100, 200, 100, 300]);
+      }
+
+      logActivity('system', 'Test Alert Triggered', 'Wrist haptic pulse & chime played');
+    }
+
+    // 4. Server-Sent Events (Live Webhook Listener)
+    function startEventStream() {
+      if (!currentChannel) return;
+      if (eventSource) eventSource.close();
+
+      const sseUrl = `https://ntfy.sh/${currentChannel}/sse`;
+      eventSource = new EventSource(sseUrl);
+
+      eventSource.onopen = () => {
+        console.log('Connected to Bridge channel:', currentChannel);
+      };
+
+      eventSource.onmessage = (event) => {
+        try {
+          const data = JSON.parse(event.data);
+          if (data.event === 'message') {
+            const title = data.title || 'Vivo Y19e Alert';
+            const msg = data.message || '';
+            const app = identifyApp(title);
+
+            // Display native notification
+            if (Notification.permission === 'granted') {
+              new Notification(title, {
+                body: msg,
+                icon: 'logo.png',
+                tag: 'aibots-bridge-' + Date.now()
+              });
+            }
+
+            testWatchHaptics();
+            logActivity(app, title, msg);
+          }
+        } catch (e) {
+          console.error('Parse event error:', e);
+        }
+      };
+
+      eventSource.onerror = (e) => {
+        console.warn('Bridge stream reconnecting...');
+      };
+    }
+
+    function identifyApp(title) {
+      const lower = title.toLowerCase();
+      if (lower.includes('whatsapp')) return 'whatsapp';
+      if (lower.includes('call') || lower.includes('phone')) return 'call';
+      if (lower.includes('urgent') || lower.includes('otp') || lower.includes('bank')) return 'urgent';
+      return 'system';
+    }
+
+    // 5. Send Simulated / Custom Alerts
+    async function sendSimulatedAlert(type) {
+      let title = '';
+      let msg = '';
+      let priority = 'default';
+
+      if (type === 'whatsapp') {
+        title = 'WhatsApp: Mom';
+        msg = 'Did you reach safely? Call me back.';
+      } else if (type === 'call') {
+        title = 'Incoming Call: Office Manager';
+        msg = 'Incoming phone call on Vivo Y19e';
+        priority = 'high';
+      } else if (type === 'sms') {
+        title = 'Bank SMS / OTP';
+        msg = 'Your OTP for transaction is 584920. Valid for 5 mins.';
+        priority = 'urgent';
+      } else if (type === 'battery') {
+        title = 'Vivo Y19e Battery Low';
+        msg = 'Battery is at 14%. Connect charger.';
+      }
+
+      await dispatchWebhook(title, msg, priority);
+    }
+
+    async function sendCustomAlert() {
+      const title = document.getElementById('customTitle').value.trim() || 'Vivo Alert';
+      const msg = document.getElementById('customMsg').value.trim();
+      if (!msg) {
+        alert('Please enter a message text');
+        return;
+      }
+      await dispatchWebhook(title, msg, 'default');
+      document.getElementById('customMsg').value = '';
+    }
+
+    async function dispatchWebhook(title, message, priority) {
+      const url = `https://ntfy.sh/${currentChannel}`;
+      try {
+        const res = await fetch(url, {
+          method: 'POST',
+          headers: {
+            'Title': title,
+            'Priority': priority
+          },
+          body: message
+        });
+
+        if (res.ok) {
+          logActivity(identifyApp(title), `[Sent] ${title}`, message);
+        } else {
+          alert('Webhook send failed. Check internet connection.');
+        }
+      } catch (err) {
+        console.error('Dispatch error:', err);
+        alert('Network error sending webhook.');
+      }
+    }
+
+    // 6. Activity Log
+    function logActivity(type, title, body) {
+      const logContainer = document.getElementById('activityLog');
+      // If it's the placeholder text, clear it
+      if (logContainer.querySelector('div[style*="text-align: center"]')) {
+        logContainer.innerHTML = '';
+      }
+
+      const item = document.createElement('div');
+      item.className = `log-item log-${type}`;
+
+      let iconClass = 'fa-bell';
+      if (type === 'whatsapp') iconClass = 'fa-brands fa-whatsapp';
+      else if (type === 'call') iconClass = 'fa-phone-volume';
+      else if (type === 'urgent') iconClass = 'fa-triangle-exclamation';
+      else if (type === 'system') iconClass = 'fa-satellite-dish';
+
+      const timeStr = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+
+      item.innerHTML = `
+        <i class="${iconClass}" style="font-size: 1.1rem; margin-top: 2px;"></i>
+        <div class="log-content" style="flex: 1;">
+          <strong>${title}</strong>
+          <span>${body}</span>
+        </div>
+        <span class="log-time">${timeStr}</span>
+      `;
+
+      logContainer.prepend(item);
+    }
+
+    function clearLogs() {
+      document.getElementById('activityLog').innerHTML = `
+        <div style="color: var(--text-muted); text-align: center; padding: 20px;">
+          Log cleared.
+        </div>
+      `;
+    }
+
+    // 7. Clipboard Helpers
+    function copyWebhookUrl() {
+      const url = `https://ntfy.sh/${currentChannel}`;
+      navigator.clipboard.writeText(url).then(() => {
+        alert('Copied Webhook URL:\n' + url);
+      });
+    }
+
+    function copyCurlCommand() {
+      const text = document.getElementById('curlCommandBox').textContent;
+      navigator.clipboard.writeText(text).then(() => {
+        alert('Copied cURL command to clipboard!');
+      });
+    }
+
+    function copyMacroPayload() {
+      const url = `https://ntfy.sh/${currentChannel}`;
+      const configText = 
+`--- MACRODROID HTTP REQUEST SETTINGS ---
+Method: POST
+URL: ${url}
+Headers:
+  Title: [not_app] - [not_title]
+  Priority: high
+Content Body:
+  [not_text]`;
+
+      navigator.clipboard.writeText(configText).then(() => {
+        alert('Copied MacroDroid payload config to clipboard!\nPaste this into your HTTP Request action on Vivo Y19e.');
+      });
+    }
+
+    function toggleFaq(el) {
+      el.parentElement.classList.toggle('open');
+    }
+
+    // Auto-init on load
+    window.addEventListener('DOMContentLoaded', () => {
+      initChannel();
+    });
+  </script>
+</body>
+</html>

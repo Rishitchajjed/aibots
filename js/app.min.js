@@ -97,6 +97,17 @@ const AI_BOTS_TOOLS = [
     color: '#10b981'
   },
   {
+    id: 'watch-bridge',
+    title: 'Watch & Phone Bridge',
+    description: 'Forward WhatsApp messages, calls, and SMS from your Vivo / Android phone to your iPhone 15 & Apple Watch for free with native haptics.',
+    keywords: 'apple watch vivo android iphone bridge notification relay sync connect alert haptics macrodroid ntfy merge vivo y19e',
+    icon: 'fa-satellite-dish',
+    url: 'watch-bridge.html',
+    category: 'utility',
+    badge: 'FREE / PWA',
+    color: '#6366f1'
+  },
+  {
     id: 'buisnesscard',
     title: 'Business Card Maker',
     description: 'Design sleek, professional business cards with custom branding, themes, typography, and print export.',

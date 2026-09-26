@@ -4,6 +4,7 @@
 
 ## Creative & Media Tools
 
+- [Voice Recorder Studio Pro](https://www.aibots.co.in/audiorecorder.html): High-fidelity browser voice recorder with real-time waveform visualizer, 300% volume boost, and instant WAV export.
 - [Video Studio Pro](https://www.aibots.co.in/videoeditor.html): High-speed lossless HD video trimmer, cutter, audio extractor, and compressor.
 - [Video Player & Cinema](https://www.aibots.co.in/videoplayer.html): Futuristic cyber video player with 300% audio boost, screenshot frame grabber, and playback controls.
 - [Vector Logo Maker](https://www.aibots.co.in/logomaker.html): Design high-resolution vector logos, badges, and typography with instant PNG/SVG export.
@@ -27,6 +28,7 @@
 
 ## Utilities & AI Tools
 
+- [JSON Formatter & Studio](https://www.aibots.co.in/jsonformatter.html): Format, validate, auto-repair, inspect tree structures, and convert JSON to CSV, XML, or YAML with 100% local privacy.
 - [Smart Emoji Studio (1120+)](https://www.aibots.co.in/emojis.html): Search 1,120+ Unicode emojis, filter by categories, customize skin tones, and 1-click copy.
 - [AI Assistant (Gemini)](https://www.aibots.co.in/chatbot.html): Intelligent AI assistant powered by Gemini for coding, writing, and questions.
 - [Custom QR Code Studio](https://www.aibots.co.in/qrcode.html): Generate customized QR codes for URLs, text, Wi-Fi passwords, vCards, and UPI with high-res PNG/SVG download.

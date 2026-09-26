@@ -39,6 +39,11 @@
 
 ## 2. Media & Creative Studio
 
+### Voice Recorder & Audio Studio Pro
+- **URL**: https://www.aibots.co.in/audiorecorder.html
+- **Description**: High-fidelity browser voice recorder featuring real-time waveform visualizer, 300% volume booster, playback speed controls, and high-quality WAV/WebM audio export.
+- **Key Features**: Web Audio API visualizer, pause/resume recording, client-side WAV encoding, 100% private with zero file uploads.
+
 ### Video Studio Pro (NLE Editor & Trimmer)
 - **URL**: https://www.aibots.co.in/videoeditor.html
 - **Description**: High-speed, lossless browser video trimmer, cutter, audio extractor, speed changer, and compressor.
@@ -79,6 +84,11 @@
 ---
 
 ## 3. Utilities & AI Assistant
+
+### JSON Formatter, Validator & Converter Studio
+- **URL**: https://www.aibots.co.in/jsonformatter.html
+- **Description**: Client-side JSON formatter, validator, tree inspector, and converter (JSON ↔ CSV, XML, YAML) with syntax auto-repair and sample datasets.
+- **Key Features**: 2/4 spaces, minifier, interactive collapsible tree view, CSV table export, XML/YAML translation, zero server communication.
 
 ### Smart Emoji Studio (1,120+)
 - **URL**: https://www.aibots.co.in/emojis.html

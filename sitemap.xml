@@ -217,4 +217,16 @@
     <changefreq>weekly</changefreq>
     <priority>0.95</priority>
   </url>
+  <url>
+    <loc>https://www.aibots.co.in/jsonformatter.html</loc>
+    <lastmod>2026-09-26</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.95</priority>
+  </url>
+  <url>
+    <loc>https://www.aibots.co.in/audiorecorder.html</loc>
+    <lastmod>2026-09-26</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.95</priority>
+  </url>
 </urlset>

@@ -20,6 +20,8 @@ const PRECACHE_ASSETS = [
   './qrcode.html',
   './password.html',
   './ledger.html',
+  './jsonformatter.html',
+  './audiorecorder.html',
   './unitconverter.html',
   './wordcounter.html',
   './cropphoto.html',

@@ -5,6 +5,38 @@
   "version": "1.2.0",
   "tools": [
     {
+      "name": "json_formatter",
+      "description": "Formats, validates, repairs, and converts JSON to CSV, XML, and YAML with client-side privacy.",
+      "url": "https://www.aibots.co.in/jsonformatter.html",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "json": {
+            "type": "string",
+            "description": "Raw JSON string to format or convert"
+          },
+          "target_format": {
+            "type": "string",
+            "enum": ["formatted", "minified", "csv", "xml", "yaml"]
+          }
+        }
+      }
+    },
+    {
+      "name": "voice_recorder",
+      "description": "Records microphone audio with real-time waveform visualization, volume booster, and WAV/WebM export.",
+      "url": "https://www.aibots.co.in/audiorecorder.html",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "export_format": {
+            "type": "string",
+            "enum": ["wav", "webm"]
+          }
+        }
+      }
+    },
+    {
       "name": "bank_statement_to_tally",
       "description": "Converts PDF/CSV bank statements into TallyPrime / Tally.ERP 9 XML vouchers locally.",
       "url": "https://www.aibots.co.in/bank-statement-converter.html",

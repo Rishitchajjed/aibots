@@ -174,30 +174,83 @@
       max-height: 100vh !important;
       border-radius: 0 !important;
       border: none !important;
-      z-index: 999999 !important;
-      background: #000 !important;
+      z-index: 2147483647 !important;
+      background: #000000 !important;
     }
 
-    /* Mobile Landscape Auto-Cinema Mode */
-    @media (orientation: landscape) and (max-height: 520px) {
-      .navbar, .tool-header, .mobile-action-bar, .studio-controls-deck, .snapshot-gallery-card, .footer-modern {
-        display: none !important;
-      }
-      body {
+    /* Screen lock when custom fullscreen is active */
+    body.cinema-fullscreen-locked {
+      overflow: hidden !important;
+      position: fixed !important;
+      inset: 0 !important;
+      width: 100vw !important;
+      height: 100vh !important;
+      margin: 0 !important;
+      padding: 0 !important;
+      background: #000000 !important;
+    }
+    body.cinema-fullscreen-locked .navbar,
+    body.cinema-fullscreen-locked .tool-header,
+    body.cinema-fullscreen-locked .mobile-action-bar,
+    body.cinema-fullscreen-locked .studio-controls-deck,
+    body.cinema-fullscreen-locked .snapshot-gallery-card,
+    body.cinema-fullscreen-locked .footer-modern,
+    body.cinema-fullscreen-locked .faq-section,
+    body.cinema-fullscreen-locked .related-tools-section,
+    body.cinema-fullscreen-locked section.app-container,
+    body.cinema-fullscreen-locked .vp-dropzone,
+    body.cinema-fullscreen-locked .yt-playlist-sidebar,
+    body.cinema-fullscreen-locked #aibotsGlobalAnnouncementBanner {
+      display: none !important;
+    }
+
+    /* Mobile Landscape Auto-Cinema Mode (Phones/Tablets in landscape with video loaded) */
+    @media (orientation: landscape) and (max-height: 850px) and (max-width: 1024px) {
+      body.has-video-loaded {
         overflow: hidden !important;
         margin: 0 !important;
         padding: 0 !important;
+        width: 100vw !important;
+        height: 100vh !important;
+        position: fixed !important;
+        inset: 0 !important;
+        background: #000000 !important;
       }
-      main.tool-page-wrapper {
+      body.has-video-loaded .navbar,
+      body.has-video-loaded .tool-header,
+      body.has-video-loaded .mobile-action-bar,
+      body.has-video-loaded .studio-controls-deck,
+      body.has-video-loaded .snapshot-gallery-card,
+      body.has-video-loaded .footer-modern,
+      body.has-video-loaded .faq-section,
+      body.has-video-loaded .related-tools-section,
+      body.has-video-loaded section.app-container,
+      body.has-video-loaded .vp-dropzone,
+      body.has-video-loaded .yt-playlist-sidebar,
+      body.has-video-loaded #aibotsGlobalAnnouncementBanner {
+        display: none !important;
+      }
+      body.has-video-loaded main.tool-page-wrapper {
         padding: 0 !important;
         margin: 0 !important;
         max-width: 100% !important;
+        width: 100vw !important;
+        height: 100vh !important;
       }
-      .vp-card {
+      body.has-video-loaded .vp-card {
         max-width: 100% !important;
         margin: 0 !important;
+        width: 100vw !important;
+        height: 100vh !important;
       }
-      .yt-player-container {
+      body.has-video-loaded .player-layout-grid {
+        margin: 0 !important;
+        padding: 0 !important;
+        display: block !important;
+        width: 100vw !important;
+        height: 100vh !important;
+      }
+      body.has-video-loaded .yt-player-container {
         position: fixed !important;
         inset: 0 !important;
         width: 100vw !important;
@@ -205,18 +258,32 @@
         max-height: 100vh !important;
         border-radius: 0 !important;
         border: none !important;
-        z-index: 99999 !important;
+        z-index: 2147483647 !important;
+        background: #000000 !important;
       }
-      .yt-controls-overlay {
-        bottom: 10px !important;
-        left: 14px !important;
-        right: 14px !important;
+      body.has-video-loaded .yt-controls-overlay {
+        bottom: calc(8px + env(safe-area-inset-bottom, 0px)) !important;
+        left: calc(14px + env(safe-area-inset-left, 0px)) !important;
+        right: calc(14px + env(safe-area-inset-right, 0px)) !important;
+        padding: 6px 12px 8px !important;
       }
-      .hide-on-mobile-bar {
+      body.has-video-loaded .hide-on-mobile-bar {
         display: flex !important;
       }
-      .mobile-action-bar {
+      body.has-video-loaded .mobile-action-bar {
         display: none !important;
+      }
+      body.has-video-loaded .yt-settings-menu {
+        bottom: calc(65px + env(safe-area-inset-bottom, 0px)) !important;
+        right: calc(14px + env(safe-area-inset-right, 0px)) !important;
+        max-height: calc(100vh - 80px) !important;
+        overflow-y: auto !important;
+      }
+      body.has-video-loaded .yt-subtitles-overlay {
+        bottom: calc(75px + env(safe-area-inset-bottom, 0px)) !important;
+      }
+      body.has-video-loaded .yt-player-container.hide-controls .yt-subtitles-overlay {
+        bottom: calc(20px + env(safe-area-inset-bottom, 0px)) !important;
       }
     }
 
@@ -628,19 +695,30 @@
     /* Settings Menu Overlay */
     .yt-settings-menu {
       position: absolute;
-      bottom: 75px;
-      right: 12px;
+      bottom: calc(75px + env(safe-area-inset-bottom, 0px));
+      right: calc(12px + env(safe-area-inset-right, 0px));
       background: rgba(10, 15, 30, 0.96);
       backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
       border: 1px solid rgba(255, 255, 255, 0.2);
       border-radius: 16px;
       padding: 14px;
       width: 270px;
+      max-height: calc(100vh - 90px);
+      overflow-y: auto;
+      overscroll-behavior: contain;
       display: none;
       flex-direction: column;
       gap: 10px;
       z-index: 40;
       box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8), 0 0 30px rgba(99, 102, 241, 0.25);
+    }
+    .yt-settings-menu::-webkit-scrollbar {
+      width: 4px;
+    }
+    .yt-settings-menu::-webkit-scrollbar-thumb {
+      background: rgba(236, 72, 153, 0.5);
+      border-radius: 4px;
     }
     @media (max-width: 480px) {
       .yt-settings-menu {
@@ -1243,7 +1321,7 @@
   </div>
 
   <!-- SEO Frequently Asked Questions Section -->
-  <section class="app-container" style="max-width: 900px; margin: 40px auto 20px; padding: 0 16px;">
+  <section class="app-container faq-section" style="max-width: 900px; margin: 40px auto 20px; padding: 0 16px;">
     <div style="background: var(--bg-secondary, #ffffff); border: 1px solid var(--border-color, #e2e8f0); border-radius: 16px; padding: 28px; box-shadow: 0 4px 20px rgba(0,0,0,0.03);">
       <h2 style="font-size: 1.25rem; font-weight: 800; margin-bottom: 20px; display: flex; align-items: center; gap: 10px; color: var(--text-primary);">
         <i class="fas fa-circle-question" style="color: var(--primary, #6366f1);"></i> Frequently Asked Questions
@@ -1270,7 +1348,7 @@
   </section>
 
   <!-- Related Tools Cross-Links -->
-  <section class="app-container" style="max-width: 900px; margin: 20px auto 40px; padding: 0 16px;">
+  <section class="app-container related-tools-section" style="max-width: 900px; margin: 20px auto 40px; padding: 0 16px;">
     <div style="background: var(--bg-secondary, #ffffff); border: 1px solid var(--border-color, #e2e8f0); border-radius: 16px; padding: 24px 28px; box-shadow: 0 4px 20px rgba(0,0,0,0.03);">
       <h3 style="font-size: 1.05rem; font-weight: 800; margin-bottom: 16px; color: var(--text-primary); display: flex; align-items: center; gap: 8px;">
         <i class="fas fa-sparkles" style="color: #f59e0b;"></i> Explore Related Free Creative Tools
@@ -1515,8 +1593,24 @@
 
     function updateVideoTransform() {
       const scaleX = isMirrored ? -1 : 1;
-      video.style.transform = `rotate(${currentRotation}deg) scaleX(${scaleX})`;
+      if (currentRotation === 90 || currentRotation === 270) {
+        const rect = container.getBoundingClientRect();
+        if (rect.width > 0 && rect.height > 0) {
+          const scaleRatio = rect.height / rect.width;
+          video.style.transform = `rotate(${currentRotation}deg) scaleX(${scaleX}) scale(${scaleRatio})`;
+        } else {
+          video.style.transform = `rotate(${currentRotation}deg) scaleX(${scaleX}) scale(0.5625)`;
+        }
+      } else {
+        video.style.transform = `rotate(${currentRotation}deg) scaleX(${scaleX}) scale(1)`;
+      }
     }
+
+    window.addEventListener('resize', () => {
+      if (currentRotation === 90 || currentRotation === 270) {
+        updateVideoTransform();
+      }
+    }, { passive: true });
 
     // File Upload Handler
     function handleVideoUpload(e) {
@@ -1535,6 +1629,7 @@
 
       if (document.getElementById('fileInput')) document.getElementById('fileInput').value = '';
 
+      document.body.classList.add('has-video-loaded');
       playerGrid.style.display = 'grid';
       studioDecks.style.display = 'grid';
       document.getElementById('dropzone').style.display = 'none';
@@ -1565,6 +1660,7 @@
           url: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4'
         }
       ];
+      document.body.classList.add('has-video-loaded');
       playerGrid.style.display = 'grid';
       studioDecks.style.display = 'grid';
       document.getElementById('dropzone').style.display = 'none';
@@ -1642,6 +1738,7 @@
     function removePlaylistItem(idx) {
       playlist.splice(idx, 1);
       if (playlist.length === 0) {
+        document.body.classList.remove('has-video-loaded');
         playerGrid.style.display = 'none';
         studioDecks.style.display = 'none';
         document.getElementById('dropzone').style.display = 'block';
@@ -1967,9 +2064,13 @@
     }
 
     // Ambient Dynamic Backlight Loop
+    let ambientAnimId = null;
     function renderAmbientLoop() {
       if (!isAmbientOn || video.paused || video.ended) {
-        requestAnimationFrame(renderAmbientLoop);
+        if (ambientAnimId) {
+          cancelAnimationFrame(ambientAnimId);
+          ambientAnimId = null;
+        }
         return;
       }
       try {
@@ -1977,8 +2078,18 @@
           ambientCtx.drawImage(video, 0, 0, ambientCanvas.width, ambientCanvas.height);
         }
       } catch(e) {}
-      requestAnimationFrame(renderAmbientLoop);
+      ambientAnimId = requestAnimationFrame(renderAmbientLoop);
     }
+
+    video.addEventListener('play', () => {
+      if (isAmbientOn && !ambientAnimId) renderAmbientLoop();
+    });
+    video.addEventListener('pause', () => {
+      if (ambientAnimId) {
+        cancelAnimationFrame(ambientAnimId);
+        ambientAnimId = null;
+      }
+    });
 
     function toggleAmbientGlow() {
       isAmbientOn = !isAmbientOn;
@@ -1987,6 +2098,9 @@
       btn.textContent = isAmbientOn ? 'ON' : 'OFF';
       btn.style.color = isAmbientOn ? '#10b981' : '#ef4444';
       showHudToast('fa-sun', `Ambient Glow: ${isAmbientOn ? 'ON' : 'OFF'}`);
+      if (isAmbientOn && !video.paused) {
+        renderAmbientLoop();
+      }
     }
 
     // Scrubber & Timeline Progress
@@ -2106,6 +2220,57 @@
     document.getElementById('settingsMenu').addEventListener('click', (e) => e.stopPropagation());
     document.getElementById('settingsMenu').addEventListener('touchstart', (e) => e.stopPropagation(), { passive: true });
 
+    // Close Settings Menu when clicking outside
+    document.addEventListener('click', (e) => {
+      const menu = document.getElementById('settingsMenu');
+      if (menu && menu.classList.contains('open')) {
+        if (!e.target.closest('#settingsMenu') && !e.target.closest('button[onclick*="toggleSettingsMenu"]')) {
+          menu.classList.remove('open');
+        }
+      }
+    });
+
+    // Drag & Drop onto Player or Dropzone
+    ['dragenter', 'dragover'].forEach(evtName => {
+      container.addEventListener(evtName, (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+      }, false);
+    });
+    container.addEventListener('drop', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      if (e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files.length) {
+        handleVideoUpload({ target: { files: e.dataTransfer.files } });
+      }
+    }, false);
+
+    const dropzoneEl = document.getElementById('dropzone');
+    if (dropzoneEl) {
+      ['dragenter', 'dragover'].forEach(evtName => {
+        dropzoneEl.addEventListener(evtName, (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          dropzoneEl.style.borderColor = '#ec4899';
+        }, false);
+      });
+      ['dragleave', 'dragend'].forEach(evtName => {
+        dropzoneEl.addEventListener(evtName, (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          dropzoneEl.style.borderColor = 'rgba(99, 102, 241, 0.5)';
+        }, false);
+      });
+      dropzoneEl.addEventListener('drop', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        dropzoneEl.style.borderColor = 'rgba(99, 102, 241, 0.5)';
+        if (e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files.length) {
+          handleVideoUpload({ target: { files: e.dataTransfer.files } });
+        }
+      }, false);
+    }
+
     // 2X Speed Long Press Engine (YouTube Style)
     function startSpeedHold(e) {
       if (e.target.closest('#controlsOverlay') || e.target.closest('#settingsMenu') || e.target.closest('.yt-hud-toast')) {
@@ -2132,7 +2297,7 @@
       if (isHoldingSpeed) {
         isHoldingSpeed = false;
         wasHoldingSpeed = true;
-        setTimeout(() => { wasHoldingSpeed = false; }, 120);
+        setTimeout(() => { wasHoldingSpeed = false; }, 140);
         video.playbackRate = baseSpeed;
         const badge = document.getElementById('speedHoldBadge');
         if (badge) badge.style.display = 'none';
@@ -2211,6 +2376,24 @@
     }
 
     // Fullscreen (Cross-Platform / Seamless iOS & Android)
+    function syncFullscreenState() {
+      const isFs = !!(document.fullscreenElement || document.webkitFullscreenElement || container.classList.contains('is-custom-fullscreen'));
+      const fsBtn = document.getElementById('btnFullscreen');
+      if (fsBtn) {
+        fsBtn.innerHTML = isFs ? '<i class="fas fa-compress"></i>' : '<i class="fas fa-maximize"></i>';
+      }
+      if (isFs) {
+        document.body.classList.add('cinema-fullscreen-locked');
+      } else {
+        document.body.classList.remove('cinema-fullscreen-locked');
+        container.classList.remove('is-custom-fullscreen');
+      }
+    }
+
+    ['fullscreenchange', 'webkitfullscreenchange', 'mozfullscreenchange', 'MSFullscreenChange'].forEach(evt => {
+      document.addEventListener(evt, syncFullscreenState);
+    });
+
     function toggleFullscreen() {
       const fsBtn = document.getElementById('btnFullscreen');
       if (document.fullscreenElement || document.webkitFullscreenElement) {
@@ -2219,37 +2402,33 @@
         } else if (document.webkitExitFullscreen) {
           document.webkitExitFullscreen();
         }
-        if (fsBtn) fsBtn.innerHTML = '<i class="fas fa-maximize"></i>';
         container.classList.remove('is-custom-fullscreen');
+        document.body.classList.remove('cinema-fullscreen-locked');
+        if (fsBtn) fsBtn.innerHTML = '<i class="fas fa-maximize"></i>';
       } else if (container.classList.contains('is-custom-fullscreen')) {
         container.classList.remove('is-custom-fullscreen');
+        document.body.classList.remove('cinema-fullscreen-locked');
         if (fsBtn) fsBtn.innerHTML = '<i class="fas fa-maximize"></i>';
       } else if (container.requestFullscreen) {
         container.requestFullscreen().then(() => {
+          document.body.classList.add('cinema-fullscreen-locked');
           if (fsBtn) fsBtn.innerHTML = '<i class="fas fa-compress"></i>';
         }).catch(() => {
           container.classList.add('is-custom-fullscreen');
+          document.body.classList.add('cinema-fullscreen-locked');
           if (fsBtn) fsBtn.innerHTML = '<i class="fas fa-compress"></i>';
         });
       } else if (container.webkitRequestFullscreen) {
         container.webkitRequestFullscreen();
+        document.body.classList.add('cinema-fullscreen-locked');
         if (fsBtn) fsBtn.innerHTML = '<i class="fas fa-compress"></i>';
       } else {
         // iOS Safari Fullscreen fallback
         container.classList.add('is-custom-fullscreen');
+        document.body.classList.add('cinema-fullscreen-locked');
         if (fsBtn) fsBtn.innerHTML = '<i class="fas fa-compress"></i>';
       }
     }
-
-    document.addEventListener('fullscreenchange', () => {
-      const fsBtn = document.getElementById('btnFullscreen');
-      if (document.fullscreenElement) {
-        if (fsBtn) fsBtn.innerHTML = '<i class="fas fa-compress"></i>';
-      } else {
-        if (fsBtn) fsBtn.innerHTML = '<i class="fas fa-maximize"></i>';
-        container.classList.remove('is-custom-fullscreen');
-      }
-    });
 
     // Keyboard Shortcuts Modal Handlers
     function showKeyboardShortcuts() {
@@ -2262,6 +2441,14 @@
     // Keyboard Shortcuts
     window.addEventListener('keydown', (e) => {
       if (e.target.tagName === 'INPUT' || e.target.tagName === 'SELECT') return;
+      if (e.key === 'Escape') {
+        if (container.classList.contains('is-custom-fullscreen')) {
+          toggleFullscreen();
+        }
+        closeKeyboardShortcuts();
+        document.getElementById('settingsMenu').classList.remove('open');
+        return;
+      }
       if (e.key === ' ' || e.code === 'Space' || e.key === 'k' || e.key === 'K') {
         e.preventDefault();
         togglePlay();

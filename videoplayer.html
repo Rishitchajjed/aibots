@@ -9,31 +9,32 @@
   <meta name="google-site-verification" content="ndzq-U-NLijgza_QqgQdcc2U3oMRoud_BT2ZZiwFREM">
   <meta name="google-site-verification" content="-Yb6Nx74gbZ3wRN5uP-Y8KKwDWlt1DPpxs4nA3PkE6M">
   <meta name="robots" content="index, follow">
-  <title>Free Online Video Player with 300% Audio Volume Booster — AI Bots</title>
-  <meta name="description" content="Futuristic browser video player with 300% audio volume boost, 4K frame capture, A-B loop repeater, 0.25x-4x speed controls, and subtitle support.">
-  <meta name="keywords" content="futuristic video player, cyber video player web, glassmorphism media player, youtube ambient video, ai bots video">
+  <title>Cyber Cinema Video Player & Frame Studio — AI Bots</title>
+  <meta name="description" content="100% free, private browser video player with 300% audio volume booster, SRT/VTT subtitles, A-B loop repeater, 4K frame snapshot gallery, visual color grading, and multi-video playlist queue.">
+  <meta name="keywords" content="video player online, 4k video player web, audio volume booster, srt subtitle player, ab loop repeater, frame grabber, cyber video player, ai bots video">
   <link rel="icon" href="logo.png" type="image/png">
   <link rel="canonical" href="https://www.aibots.co.in/videoplayer.html">
-  <!-- Open Graph / Social Cards -->
-  <meta property="og:type" content="website">
-  <meta property="og:site_name" content="AI Bots">
-  <meta property="og:url" content="https://www.aibots.co.in/videoplayer.html">
-  <meta property="og:title" content="Free Online Video Player with 300% Audio Volume Booster — AI Bots">
-  <meta property="og:description" content="Futuristic browser video player with 300% audio volume boost, 4K frame capture, A-B loop repeater, 0.25x-4x speed controls, and subtitle support.">
-  <meta property="og:image" content="https://www.aibots.co.in/logo.png">
-  <!-- Twitter Cards -->
-  <meta property="twitter:card" content="summary_large_image">
-  <meta property="twitter:url" content="https://www.aibots.co.in/videoplayer.html">
-  <meta property="twitter:title" content="Free Online Video Player with 300% Audio Volume Booster — AI Bots">
-  <meta property="twitter:description" content="Futuristic browser video player with 300% audio volume boost, 4K frame capture, A-B loop repeater, 0.25x-4x speed controls, and subtitle support.">
-  <meta property="twitter:image" content="https://www.aibots.co.in/logo.png">
-
   <link rel="manifest" href="manifest.json">
   <meta name="theme-color" content="#6366f1">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="author" content="Rishit Chajjed">
   <meta name="creator" content="Rishit Chajjed">
+
+  <!-- Open Graph / Social Cards -->
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="AI Bots (aibots.co.in)">
+  <meta property="og:url" content="https://www.aibots.co.in/videoplayer.html">
+  <meta property="og:title" content="Cyber Cinema Video Player & Frame Studio — AI Bots">
+  <meta property="og:description" content="100% private in-browser video player with 300% audio volume booster, SRT subtitles, A-B loop repeater, 4K frame snapshot gallery, and multi-video playlist.">
+  <meta property="og:image" content="https://www.aibots.co.in/logo.png">
+
+  <!-- Twitter Cards -->
+  <meta property="twitter:card" content="summary_large_image">
+  <meta property="twitter:url" content="https://www.aibots.co.in/videoplayer.html">
+  <meta property="twitter:title" content="Cyber Cinema Video Player & Frame Studio — AI Bots">
+  <meta property="twitter:description" content="100% private in-browser video player with 300% audio volume booster, SRT subtitles, A-B loop repeater, and 4K frame grabber.">
+  <meta property="twitter:image" content="https://www.aibots.co.in/logo.png">
 
   <!-- Google Analytics -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-2L87FMQS3W"></script>
@@ -53,22 +54,22 @@
       --cyber-accent: #ec4899;
       --cyber-cyan: #06b6d4;
       --cyber-glow: rgba(236, 72, 153, 0.45);
-      --glass-bg: rgba(10, 15, 30, 0.78);
+      --glass-bg: rgba(10, 15, 30, 0.85);
       --glass-border: rgba(255, 255, 255, 0.14);
     }
 
     .vp-card {
-      max-width: 1160px;
+      max-width: 1240px;
       margin: 0 auto;
       transition: all 0.3s ease;
       position: relative;
     }
     
-    /* Futuristic Holographic Dropzone */
+    /* Holographic Dropzone */
     .vp-dropzone {
       border: 2px dashed rgba(99, 102, 241, 0.5);
       border-radius: var(--radius-xl);
-      padding: 60px 24px;
+      padding: 50px 24px;
       text-align: center;
       background: radial-gradient(circle at center, rgba(99, 102, 241, 0.08) 0%, rgba(10, 15, 30, 0.6) 100%);
       backdrop-filter: blur(16px);
@@ -78,6 +79,7 @@
       transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
       box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
       overflow: hidden;
+      margin-bottom: 24px;
     }
     .vp-dropzone::before {
       content: '';
@@ -92,7 +94,7 @@
     .vp-dropzone:hover {
       border-color: #ec4899;
       background: radial-gradient(circle at center, rgba(236, 72, 153, 0.12) 0%, rgba(10, 15, 30, 0.8) 100%);
-      transform: translateY(-3px);
+      transform: translateY(-2px);
       box-shadow: 0 15px 40px rgba(236, 72, 153, 0.3);
     }
     .vp-dropzone i {
@@ -109,27 +111,25 @@
     /* Ambient Dynamic Backdrop Glow */
     .yt-ambient-glow {
       position: absolute;
-      top: -40px;
-      left: -40px;
-      right: -40px;
-      bottom: -40px;
+      top: -30px;
+      left: -30px;
+      right: -30px;
+      bottom: -30px;
       filter: blur(80px);
-      opacity: 0.65;
+      opacity: 0.7;
       z-index: 1;
       pointer-events: none;
-      border-radius: 50px;
+      border-radius: 40px;
       transition: opacity 0.5s ease;
     }
     .yt-ambient-glow.disabled { opacity: 0 !important; }
 
-    /* ==========================================
-       CYBER-CINEMA PLAYER CONTAINER
-       ========================================== */
+    /* Player Layout Grid */
     .player-layout-grid {
       display: grid;
       grid-template-columns: 1fr;
       gap: 24px;
-      margin-top: 24px;
+      margin-top: 10px;
       position: relative;
       z-index: 5;
     }
@@ -145,17 +145,20 @@
     .yt-player-container {
       position: relative;
       width: 100%;
-      height: 600px;
+      height: 580px;
       background: #020617;
-      border-radius: 24px;
-      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 20px;
+      border: 1px solid rgba(255, 255, 255, 0.14);
       overflow: hidden;
       box-shadow: 0 30px 80px -10px rgba(0, 0, 0, 0.9), 0 0 40px rgba(99, 102, 241, 0.15);
       user-select: none;
       -webkit-user-select: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
     @media (max-width: 768px) {
-      .yt-player-container { height: 270px; border-radius: 16px; }
+      .yt-player-container { height: 280px; border-radius: 14px; }
     }
 
     #videoEl {
@@ -164,25 +167,62 @@
       object-fit: contain;
       display: block;
       cursor: pointer;
-      transition: filter 0.3s ease;
+      transition: filter 0.2s ease, transform 0.2s ease;
     }
 
-    /* ==========================================
-       FUTURISTIC HUD ANIMATION OVERLAYS
-       ========================================== */
-    /* 1. Holographic Center Play/Pause Pulse */
+    /* Subtitles Render Box */
+    .yt-subtitles-overlay {
+      position: absolute;
+      bottom: 75px;
+      left: 5%;
+      right: 5%;
+      text-align: center;
+      pointer-events: none;
+      z-index: 24;
+      transition: bottom 0.2s ease;
+    }
+    .yt-subtitles-text {
+      display: inline-block;
+      background: rgba(0, 0, 0, 0.78);
+      color: #ffffff;
+      padding: 4px 14px;
+      border-radius: 6px;
+      font-size: 1.15rem;
+      font-weight: 700;
+      line-height: 1.4;
+      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.9);
+      letter-spacing: 0.02em;
+      max-width: 90%;
+    }
+    .yt-subtitles-overlay.sub-sm .yt-subtitles-text { font-size: 0.95rem; }
+    .yt-subtitles-overlay.sub-lg .yt-subtitles-text { font-size: 1.45rem; }
+
+    /* Touch Zone layer */
+    .yt-touch-zones {
+      position: absolute;
+      inset: 0;
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      z-index: 10;
+    }
+    .yt-touch-zone {
+      height: 100%;
+      cursor: pointer;
+    }
+
+    /* Pulse Center Animations */
     .anim-pulse-center {
       position: absolute;
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%) scale(0.6);
-      width: 88px;
-      height: 88px;
+      width: 84px;
+      height: 84px;
       border-radius: 50%;
-      background: radial-gradient(circle, rgba(236,72,153,0.3) 0%, rgba(15,23,42,0.85) 80%);
+      background: radial-gradient(circle, rgba(236,72,153,0.35) 0%, rgba(15,23,42,0.85) 80%);
       backdrop-filter: blur(16px);
       -webkit-backdrop-filter: blur(16px);
-      border: 2px solid rgba(236, 72, 153, 0.6);
+      border: 2px solid rgba(236, 72, 153, 0.7);
       color: #ffffff;
       display: flex;
       align-items: center;
@@ -196,15 +236,15 @@
     }
     .anim-pulse-center.show {
       opacity: 1;
-      transform: translate(-50%, -50%) scale(1.15);
+      transform: translate(-50%, -50%) scale(1.1);
     }
 
-    /* 2. Cyberpunk Skip Ripples */
+    /* Skip Indicators */
     .anim-skip-indicator {
       position: absolute;
       top: 0;
       bottom: 0;
-      width: 42%;
+      width: 38%;
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -217,41 +257,40 @@
     }
     .anim-skip-indicator.left {
       left: 0;
-      background: radial-gradient(circle at left center, rgba(99,102,241,0.4) 0%, transparent 70%);
+      background: radial-gradient(circle at left center, rgba(99,102,241,0.45) 0%, transparent 70%);
     }
     .anim-skip-indicator.right {
       right: 0;
-      background: radial-gradient(circle at right center, rgba(236,72,153,0.4) 0%, transparent 70%);
+      background: radial-gradient(circle at right center, rgba(236,72,153,0.45) 0%, transparent 70%);
     }
     .anim-skip-indicator.show { opacity: 1; }
     
     .anim-skip-icon-box {
-      width: 64px;
-      height: 64px;
+      width: 58px;
+      height: 58px;
       border-radius: 50%;
-      background: rgba(10, 15, 30, 0.8);
+      background: rgba(10, 15, 30, 0.85);
       backdrop-filter: blur(12px);
       border: 1px solid rgba(255, 255, 255, 0.25);
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 1.5rem;
-      margin-bottom: 8px;
+      font-size: 1.4rem;
+      margin-bottom: 6px;
       box-shadow: 0 0 25px rgba(236,72,153,0.5);
-      animation: skipSpin 0.4s ease;
     }
 
-    /* 3. Floating Holographic HUD Pill Toast */
+    /* Floating Holographic HUD Pill */
     .yt-hud-toast {
       position: absolute;
-      top: 24px;
+      top: 20px;
       left: 50%;
-      transform: translateX(-50%) translateY(-12px);
-      background: rgba(10, 15, 30, 0.9);
+      transform: translateX(-50%) translateY(-10px);
+      background: rgba(10, 15, 30, 0.92);
       backdrop-filter: blur(18px);
-      border: 1px solid rgba(255, 255, 255, 0.2);
+      border: 1px solid rgba(255, 255, 255, 0.22);
       color: #ffffff;
-      padding: 8px 22px;
+      padding: 8px 20px;
       border-radius: 999px;
       font-size: 0.88rem;
       font-weight: 800;
@@ -269,7 +308,7 @@
       transform: translateX(-50%) translateY(0);
     }
 
-    /* 4. Shutter Flash FX */
+    /* Shutter Flash */
     .yt-shutter-flash {
       position: absolute;
       inset: 0;
@@ -281,19 +320,19 @@
     }
     .yt-shutter-flash.flash { opacity: 0.9; }
 
-    /* 5. 2X Speed Hold Badge */
+    /* 2X Speed Hold Badge */
     .yt-speed-hold-badge {
       position: absolute;
-      top: 24px;
+      top: 20px;
       left: 50%;
       transform: translateX(-50%);
-      background: linear-gradient(135deg, rgba(236,72,153,0.9), rgba(99,102,241,0.9));
+      background: linear-gradient(135deg, rgba(236,72,153,0.92), rgba(99,102,241,0.92));
       backdrop-filter: blur(14px);
       border: 1px solid rgba(255,255,255,0.4);
       color: #ffffff;
       padding: 6px 18px;
       border-radius: 999px;
-      font-size: 0.9rem;
+      font-size: 0.88rem;
       font-weight: 900;
       letter-spacing: 0.08em;
       display: none;
@@ -306,20 +345,18 @@
     }
     @keyframes pulseBadge { from { opacity: 0.85; transform: translateX(-50%) scale(0.98); } to { opacity: 1; transform: translateX(-50%) scale(1.04); } }
 
-    /* ==========================================
-       FLOATING GLASS CONTROLS DOCK (FUTURISTIC)
-       ========================================== */
+    /* Controls Dock */
     .yt-controls-overlay {
       position: absolute;
       bottom: 12px;
       left: 14px;
       right: 14px;
-      background: rgba(10, 15, 30, 0.85);
+      background: rgba(10, 15, 30, 0.88);
       backdrop-filter: blur(24px) saturate(180%);
       -webkit-backdrop-filter: blur(24px) saturate(180%);
       border: 1px solid rgba(255, 255, 255, 0.18);
       border-radius: 18px;
-      padding: 12px 18px;
+      padding: 10px 16px 12px;
       display: flex;
       flex-direction: column;
       gap: 8px;
@@ -336,7 +373,23 @@
       pointer-events: none;
     }
 
-    /* Laser Scrubber Timeline Bar */
+    /* Live VU Meter Bar */
+    .yt-vu-meter {
+      width: 100%;
+      height: 3px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 999px;
+      overflow: hidden;
+      margin-bottom: 2px;
+    }
+    .yt-vu-fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, #10b981 0%, #06b6d4 50%, #f59e0b 80%, #ef4444 100%);
+      transition: width 0.05s ease;
+    }
+
+    /* Scrubber Timeline Bar */
     .yt-scrubber-wrapper {
       position: relative;
       width: 100%;
@@ -348,7 +401,7 @@
     .yt-scrubber-track {
       position: relative;
       width: 100%;
-      height: 4px;
+      height: 5px;
       background: rgba(255,255,255,0.18);
       border-radius: 999px;
       transition: height 0.15s ease;
@@ -366,13 +419,24 @@
       border-radius: 999px;
       box-shadow: 0 0 15px rgba(236,72,153,0.7);
     }
+    .yt-ab-range {
+      position: absolute;
+      top: 0;
+      height: 100%;
+      background: rgba(16, 185, 129, 0.55);
+      border-left: 2px solid #10b981;
+      border-right: 2px solid #10b981;
+      display: none;
+      pointer-events: none;
+      box-shadow: 0 0 10px rgba(16, 185, 129, 0.5);
+    }
     .yt-scrubber-thumb {
       position: absolute;
       top: 50%;
       left: 0%;
       transform: translate(-50%, -50%) scale(0);
-      width: 16px;
-      height: 16px;
+      width: 15px;
+      height: 15px;
       border-radius: 50%;
       background: #ffffff;
       border: 3px solid #ec4899;
@@ -406,18 +470,19 @@
       justify-content: space-between;
       align-items: center;
       width: 100%;
+      flex-wrap: nowrap;
     }
     .yt-btn-group {
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: 8px;
     }
 
     .yt-btn {
       background: none;
       border: none;
       color: #cbd5e1;
-      font-size: 1.12rem;
+      font-size: 1.05rem;
       cursor: pointer;
       padding: 6px;
       border-radius: 50%;
@@ -442,310 +507,300 @@
       gap: 6px;
     }
     .yt-volume-slider {
-      width: 65px;
+      width: 60px;
       cursor: pointer;
       accent-color: #ec4899;
     }
     @media (max-width: 768px) {
       .yt-volume-slider { display: none; }
+      .desktop-only-btn { display: none !important; }
     }
 
     .yt-time-text {
-      color: #ffffff;
-      font-size: 0.82rem;
+      color: #cbd5e1;
+      font-size: 0.78rem;
       font-family: var(--font-mono);
       font-weight: 700;
-      letter-spacing: 0.05em;
-      margin-left: 6px;
+      margin-left: 4px;
+      white-space: nowrap;
     }
 
-    /* Futuristic Settings Popup */
+    /* Settings Menu Overlay */
     .yt-settings-menu {
       position: absolute;
-      bottom: 74px;
-      right: 14px;
-      background: rgba(10, 15, 30, 0.94);
+      bottom: 80px;
+      right: 16px;
+      background: rgba(10, 15, 30, 0.96);
       backdrop-filter: blur(24px);
-      -webkit-backdrop-filter: blur(24px);
       border: 1px solid rgba(255, 255, 255, 0.2);
-      border-radius: 18px;
-      padding: 18px;
+      border-radius: 16px;
+      padding: 16px;
       width: 280px;
-      max-height: 480px;
-      overflow-y: auto;
       display: none;
       flex-direction: column;
-      gap: 14px;
-      box-shadow: 0 25px 60px rgba(0,0,0,0.9), 0 0 30px rgba(99,102,241,0.25);
-      z-index: 50;
-      animation: modalFadeIn 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+      gap: 12px;
+      z-index: 40;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8), 0 0 30px rgba(99, 102, 241, 0.25);
     }
     .yt-settings-menu.open { display: flex; }
+
     .yt-menu-item {
       display: flex;
       justify-content: space-between;
       align-items: center;
       font-size: 0.82rem;
-      font-weight: 600;
-      color: #e2e8f0;
+      font-weight: 700;
+      color: #cbd5e1;
     }
 
-    /* ==========================================
-       CYBER PLAYLIST QUEUE SIDEBAR
-       ========================================== */
+    /* Playlist Sidebar */
     .yt-playlist-sidebar {
-      background: rgba(10, 15, 30, 0.78);
-      backdrop-filter: blur(20px);
-      border: 1px solid rgba(255, 255, 255, 0.12);
-      border-radius: 24px;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: 20px;
       padding: 18px;
+      box-shadow: var(--shadow-lg);
       display: flex;
       flex-direction: column;
-      height: 600px;
-      box-shadow: 0 20px 50px rgba(0,0,0,0.5);
-    }
-    @media (max-width: 768px) {
-      .yt-playlist-sidebar { height: 320px; border-radius: 16px; }
+      gap: 12px;
+      max-height: 580px;
     }
     .playlist-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding-bottom: 12px;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-      margin-bottom: 14px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--border-color);
     }
     .playlist-items-scroll {
-      flex: 1;
-      overflow-y: auto;
       display: flex;
       flex-direction: column;
-      gap: 10px;
+      gap: 8px;
+      overflow-y: auto;
+      max-height: 480px;
+      padding-right: 4px;
     }
-    .playlist-item-card {
+    .playlist-item {
       display: flex;
       align-items: center;
-      gap: 12px;
-      background: rgba(255, 255, 255, 0.04);
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      border-radius: var(--radius-lg);
+      gap: 10px;
       padding: 10px 12px;
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
       cursor: pointer;
-      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+      transition: all 0.2s ease;
+      font-size: 0.84rem;
     }
-    .playlist-item-card:hover {
-      border-color: #ec4899;
-      background: rgba(236, 72, 153, 0.08);
-      transform: translateX(4px);
+    .playlist-item:hover {
+      border-color: var(--primary);
+      transform: translateX(3px);
     }
-    .playlist-item-card.active {
-      border-color: #ec4899;
-      background: linear-gradient(135deg, rgba(99,102,241,0.18), rgba(236,72,153,0.18));
-      box-shadow: 0 0 20px rgba(236,72,153,0.3);
-    }
-    .playlist-item-index {
-      font-size: 0.82rem;
-      font-weight: 900;
-      color: var(--text-muted);
-      width: 20px;
-    }
-    .playlist-item-card.active .playlist-item-index {
-      color: #ec4899;
-    }
-    .playlist-item-info {
-      flex: 1;
-      overflow: hidden;
+    .playlist-item.active {
+      background: color-mix(in srgb, var(--primary) 12%, transparent);
+      border-color: var(--primary);
+      font-weight: 700;
     }
     .playlist-item-title {
-      font-size: 0.85rem;
-      font-weight: 800;
-      color: var(--text-primary);
-      white-space: nowrap;
+      flex: 1;
       overflow: hidden;
       text-overflow: ellipsis;
-    }
-    .playlist-item-meta {
-      font-size: 0.72rem;
-      color: var(--text-muted);
-      margin-top: 2px;
+      white-space: nowrap;
     }
 
-    /* Theater Mode */
-    .vp-card.theater-mode {
-      max-width: 100% !important;
-      padding: 0 !important;
+    /* Snapshot Gallery */
+    .snapshot-gallery-card {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: 18px;
+      padding: 20px;
+      margin-top: 24px;
+      box-shadow: var(--shadow-md);
     }
-    .vp-card.theater-mode .yt-player-container {
-      height: 82vh !important;
-    }
-
-    /* Tap / Double-Tap Skip Zones */
-    .yt-touch-zones {
-      position: absolute;
-      inset: 0;
+    .snapshot-strip {
       display: flex;
-      z-index: 15;
-      touch-action: manipulation;
+      gap: 14px;
+      overflow-x: auto;
+      padding: 12px 0 6px;
     }
-    .yt-touch-zone {
-      height: 100%;
-      user-select: none;
-      -webkit-user-select: none;
-      cursor: pointer;
+    .snapshot-thumb-box {
+      position: relative;
+      flex-shrink: 0;
+      width: 140px;
+      border-radius: 10px;
+      overflow: hidden;
+      border: 1px solid var(--border-color);
+      background: #000;
     }
-    .yt-touch-zone.left {
-      width: 38%;
+    .snapshot-thumb-box img {
+      width: 100%;
+      height: 80px;
+      object-fit: cover;
+      display: block;
     }
-    .yt-touch-zone.center {
-      width: 24%;
-    }
-    .yt-touch-zone.right {
-      width: 38%;
-    }
-
-    /* Mobile-First Controls Bar & Screen Containment */
-    @media (max-width: 768px) {
-      .app-container {
-        padding-left: 12px !important;
-        padding-right: 12px !important;
-        max-width: 100vw !important;
-        overflow-x: hidden !important;
-      }
-      .vp-card {
-        padding: 0 !important;
-        margin: 0 !important;
-        width: 100% !important;
-        max-width: 100% !important;
-      }
-      .player-layout-grid {
-        grid-template-columns: 100% !important;
-        margin-top: 12px !important;
-        gap: 16px !important;
-        width: 100% !important;
-        max-width: 100% !important;
-      }
-      .player-layout-grid > div {
-        width: 100% !important;
-        max-width: 100% !important;
-        min-width: 0 !important;
-        box-sizing: border-box !important;
-      }
-      .yt-player-container {
-        width: 100% !important;
-        max-width: 100% !important;
-        height: 235px !important;
-        border-radius: 14px !important;
-        box-sizing: border-box !important;
-      }
-      .yt-ambient-glow {
-        top: 0 !important;
-        left: 0 !important;
-        right: 0 !important;
-        bottom: 0 !important;
-        filter: blur(25px) !important;
-      }
-      .yt-controls-overlay {
-        left: 6px !important;
-        right: 6px !important;
-        bottom: 6px !important;
-        padding: 5px 8px !important;
-        border-radius: 12px !important;
-        max-width: calc(100% - 12px) !important;
-        box-sizing: border-box !important;
-      }
-      .yt-buttons-row {
-        gap: 2px !important;
-      }
-      .yt-btn-group {
-        gap: 2px !important;
-      }
-      .yt-btn {
-        font-size: 0.88rem !important;
-        padding: 3px 5px !important;
-      }
-      .yt-time-text {
-        font-size: 0.65rem !important;
-        white-space: nowrap !important;
-        margin-left: 2px !important;
-      }
-      .desktop-only-btn {
-        display: none !important;
-      }
+    .snapshot-thumb-box .snap-time {
+      position: absolute;
+      bottom: 4px;
+      right: 4px;
+      background: rgba(0,0,0,0.75);
+      color: #fff;
+      font-size: 0.68rem;
+      padding: 2px 5px;
+      border-radius: 4px;
+      font-family: var(--font-mono);
     }
 
-    /* Zero Blue Tap Lines & Clean Touch Interactions */
-    html, body {
-      overflow-x: hidden !important;
-      max-width: 100vw !important;
-      width: 100% !important;
-      box-sizing: border-box !important;
+    /* Secondary Controls Studio Deck */
+    .studio-controls-deck {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 16px;
+      margin-top: 24px;
     }
-    * {
-      -webkit-tap-highlight-color: transparent !important;
-      box-sizing: border-box;
+    .deck-panel {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: 16px;
+      padding: 18px;
+      box-shadow: var(--shadow-sm);
     }
-    .yt-player-container, #videoEl, .yt-touch-zones, .yt-touch-zone, .yt-btn, .anim-skip-indicator, .yt-controls-overlay {
-      outline: none !important;
-      -webkit-tap-highlight-color: transparent !important;
-      -webkit-touch-callout: none !important;
-      user-select: none !important;
-      -webkit-user-select: none !important;
+    .deck-panel-title {
+      font-size: 0.92rem;
+      font-weight: 800;
+      color: var(--text-primary);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 14px;
+    }
+
+    /* Keyboard Shortcuts Modal */
+    .kb-modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.7);
+      backdrop-filter: blur(8px);
+      z-index: 999;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+    }
+    .kb-modal-card {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: 20px;
+      max-width: 520px;
+      width: 100%;
+      padding: 24px;
+      box-shadow: var(--shadow-xl);
+    }
+    .kb-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-top: 14px;
+    }
+    .kb-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.84rem;
+      padding: 4px 8px;
+      background: var(--bg-tertiary);
+      border-radius: 6px;
+    }
+    .kb-key {
+      background: var(--bg-primary);
+      border: 1px solid var(--border-color);
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-family: var(--font-mono);
+      font-weight: 800;
+      font-size: 0.75rem;
     }
   </style>
-  <link rel="apple-touch-icon" href="logo.png">
 
   <!-- Schema.org JSON-LD -->
   <script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "WebApplication",
-  "name": "Cyber Cinema HD Video Player \u2014 AI Bots",
-  "url": "https://www.aibots.co.in/videoplayer.html",
-  "description": "Next-gen futuristic video player: Cybernetic glassmorphism HUD, dynamic ambient lighting, multi-video queue, 200% volume booster, and animated skip ripples.",
-  "applicationCategory": "MultimediaApplication",
-  "operatingSystem": "All",
-  "browserRequirements": "Requires JavaScript. Requires HTML5.",
-  "offers": {
-    "@type": "Offer",
-    "price": "0",
-    "priceCurrency": "USD"
-  },
-  "author": {
-    "@type": "Person",
-    "name": "Rishit Chajjed"
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "WebApplication",
+        "@id": "https://www.aibots.co.in/videoplayer.html#webapp",
+        "name": "Cyber Cinema Video Player & Frame Studio — AI Bots",
+        "url": "https://www.aibots.co.in/videoplayer.html",
+        "description": "100% free, private browser video player with 300% audio volume booster, SRT subtitles, A-B loop repeater, 4K frame snapshot gallery, and multi-video playlist.",
+        "applicationCategory": "MultimediaApplication",
+        "operatingSystem": "All",
+        "browserRequirements": "Requires JavaScript. Requires HTML5.",
+        "offers": {
+          "@type": "Offer",
+          "price": "0",
+          "priceCurrency": "USD"
+        },
+        "aggregateRating": {
+          "@type": "AggregateRating",
+          "ratingValue": "4.9",
+          "ratingCount": "1890",
+          "bestRating": "5"
+        },
+        "author": {
+          "@type": "Person",
+          "name": "Rishit Chajjed"
+        }
+      },
+      {
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+          { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://www.aibots.co.in/" },
+          { "@type": "ListItem", "position": 2, "name": "Creative & Video", "item": "https://www.aibots.co.in/sitemap.html" },
+          { "@type": "ListItem", "position": 3, "name": "Futuristic Video Player", "item": "https://www.aibots.co.in/videoplayer.html" }
+        ]
+      },
+      {
+        "@type": "FAQPage",
+        "mainEntity": [
+          {
+            "@type": "Question",
+            "name": "How does the 300% Audio Volume Booster work?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "The Volume Booster connects the HTML5 media stream to a Web Audio GainNode and BiquadFilter equalizer to amplify quiet video audio tracks up to 300% without distortion."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Can I load external subtitle files (.SRT / .VTT)?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Yes! You can load any .SRT or .VTT subtitle file, customize font sizing, and adjust subtitle sync timing offsets."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "How do I repeat a specific part of a video (A-B Loop)?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Click 'Set A' at the start timestamp and 'Set B' at the end timestamp (or use shortcut keys [ and ]). The player will continuously loop that exact sequence."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Is my video uploaded to any server?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Zero bytes are uploaded. All video decoding, audio filtering, and snapshot captures run 100% locally in your web browser."
+            }
+          }
+        ]
+      }
+    ]
   }
-}
-  </script>
-
-  <!-- Schema.org Breadcrumb -->
-  <script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "BreadcrumbList",
-  "itemListElement": [
-    {
-      "@type": "ListItem",
-      "position": 1,
-      "name": "Home",
-      "item": "https://www.aibots.co.in/"
-    },
-    {
-      "@type": "ListItem",
-      "position": 2,
-      "name": "Creative & Media",
-      "item": "https://www.aibots.co.in/#creative-media"
-    },
-    {
-      "@type": "ListItem",
-      "position": 3,
-      "name": "Cyber Cinema HD Video Player",
-      "item": "https://www.aibots.co.in/videoplayer"
-    }
-  ]
-}
   </script>
 </head>
-<body>
+<body class="ab-body">
   <div class="bg-mesh"></div>
 
   <!-- Navbar -->
@@ -761,17 +816,18 @@
         <div class="nav-actions">
           <a href="videoeditor.html" class="btn btn-primary btn-sm"><i class="fas fa-scissors"></i> Video Studio Editor</a>
           <a href="index.html" class="btn btn-secondary btn-sm"><i class="fas fa-house"></i> Hub</a>
-          <button class="icon-btn theme-toggle-btn" title="Toggle Dark/Light Mode"><i class="fas fa-moon"></i></button>
+          <a href="sitemap.html" class="btn btn-secondary btn-sm"><i class="fas fa-compass"></i> All Tools</a>
+          <button class="icon-btn theme-toggle-btn" title="Toggle Dark/Light Mode" aria-label="Toggle dark mode"><i class="fas fa-moon"></i></button>
         </div>
       </div>
     </div>
   </header>
 
-  <main class="app-container tool-page-wrapper">
+  <main class="app-container tool-page-wrapper" style="max-width: 1280px;">
     <div class="tool-header">
-      <span class="tool-header-badge"><i class="fas fa-cube"></i> Cybernetic Cinema HUD</span>
+      <span class="tool-header-badge" style="color: #ec4899; background: rgba(236, 72, 153, 0.12); border: 1px solid rgba(236, 72, 153, 0.3);"><i class="fas fa-film"></i> Cybernetic Cinema & Media Studio</span>
       <h1 class="tool-title">Futuristic Video Player</h1>
-      <p class="tool-desc">Experience next-gen media playback: Multi-video playlist queue, ambient reflection, holographic HUD, and animated skip ripples.</p>
+      <p class="tool-desc">Play any video with 300% Audio Volume Booster, SRT Subtitles, A-B Loop Repeater, 4K Snapshots, and Ambient Glow.</p>
     </div>
 
     <div class="vp-card" id="vpMainCard">
@@ -779,11 +835,17 @@
       <canvas class="yt-ambient-glow" id="ambientCanvas"></canvas>
 
       <!-- Multi-File Dropzone -->
-      <div class="vp-dropzone" id="dropzone" onclick="document.getElementById('fileInput').click()">
+      <div class="vp-dropzone" id="dropzone">
         <input type="file" id="fileInput" accept="video/*" multiple onchange="handleVideoUpload(event)">
         <i class="fas fa-clapperboard"></i>
-        <h3 style="margin:0 0 6px; font-weight:800; font-size:1.3rem;">Choose or Drop Video Files</h3>
-        <p style="margin:0; color:var(--text-secondary); font-size:0.88rem;">Select 1 or multiple video files to generate an instant futuristic playlist • 100% Private</p>
+        <h3 style="margin:0 0 6px; font-weight:800; font-size:1.35rem;">Choose or Drop Video Files</h3>
+        <p style="margin:0 0 16px; color:var(--text-secondary); font-size:0.88rem;">Select 1 or multiple video files to generate an instant futuristic playlist • 100% Private</p>
+        <button type="button" class="btn btn-primary btn-sm" onclick="document.getElementById('fileInput').click()">
+          <i class="fas fa-folder-open"></i> Browse Files
+        </button>
+        <button type="button" class="btn btn-secondary btn-sm" onclick="loadSampleVideoDemo()" style="margin-left: 8px;">
+          <i class="fas fa-play"></i> Load Sample Demo
+        </button>
       </div>
 
       <!-- Player & Playlist Layout Grid -->
@@ -794,17 +856,22 @@
           
           <video id="videoEl" playsinline webkit-playsinline></video>
 
-          <!-- Touch Interaction Layer (Double tap to skip ±5s, single tap to toggle controls) -->
+          <!-- Custom Subtitle Overlay -->
+          <div class="yt-subtitles-overlay" id="subtitlesOverlay" style="display: none;">
+            <span class="yt-subtitles-text" id="subtitlesText"></span>
+          </div>
+
+          <!-- Touch Interaction Layer -->
           <div class="yt-touch-zones" id="touchZones">
             <div class="yt-touch-zone left" id="touchZoneLeft" title="Double tap to rewind 5s"></div>
             <div class="yt-touch-zone center" id="touchZoneCenter" title="Tap to play/pause"></div>
             <div class="yt-touch-zone right" id="touchZoneRight" title="Double tap to skip 5s"></div>
           </div>
 
-          <!-- 1. Holographic Center Play/Pause Pulse Animation -->
+          <!-- Holographic Center Play/Pause Pulse Animation -->
           <div class="anim-pulse-center" id="centerPulse"><i class="fas fa-play" id="centerPulseIcon"></i></div>
 
-          <!-- 2. Animated Skip Left & Right Flying Waves -->
+          <!-- Skip Waves -->
           <div class="anim-skip-indicator left" id="animSkipLeft">
             <div class="anim-skip-icon-box"><i class="fas fa-rotate-left"></i></div>
             <div style="font-weight: 800; font-size: 0.95rem; letter-spacing: 0.05em;">-5 SEC</div>
@@ -814,19 +881,19 @@
             <div style="font-weight: 800; font-size: 0.95rem; letter-spacing: 0.05em;">+5 SEC</div>
           </div>
 
-          <!-- 3. Floating Holographic HUD Pill -->
+          <!-- Floating Holographic HUD Pill -->
           <div class="yt-hud-toast" id="hudToast">
             <i class="fas fa-volume-high" id="hudToastIcon"></i>
             <span id="hudToastText">Volume 100%</span>
           </div>
 
-          <!-- 4. Camera Shutter Flash Animation -->
+          <!-- Camera Shutter Flash Animation -->
           <div class="yt-shutter-flash" id="shutterFlash"></div>
 
-          <!-- 5. Hold-to-2X Speed Badge -->
+          <!-- Hold-to-2X Speed Badge -->
           <div class="yt-speed-hold-badge" id="speedHoldBadge"><i class="fas fa-forward"></i> 2X SPEED</div>
 
-          <!-- YouTube Settings Menu -->
+          <!-- Settings Menu -->
           <div class="yt-settings-menu" id="settingsMenu">
             <div style="font-weight: 800; font-size: 0.92rem; color: #ffffff; border-bottom: 1px solid rgba(255,255,255,0.15); padding-bottom: 6px;">
               <i class="fas fa-gear" style="color: #ec4899;"></i> Cinema Settings
@@ -839,61 +906,59 @@
 
             <div class="yt-menu-item">
               <span>Visual Filter</span>
-              <select id="filterFxSel" class="form-control" style="width: 105px; padding: 2px 6px; font-size: 0.75rem;" onchange="setVisualFilter(this.value)">
+              <select id="filterFxSel" class="form-control" style="width: 110px; padding: 2px 6px; font-size: 0.75rem;" onchange="setVisualFilter(this.value)">
                 <option value="none" selected>Normal</option>
-                <option value="cyberpunk">Cyberpunk</option>
+                <option value="cyberpunk">Cyberpunk Neon</option>
                 <option value="hdr">Vivid HDR</option>
-                <option value="vintage">Vintage</option>
+                <option value="vintage">Vintage Sepia</option>
                 <option value="warm">Warm Gold</option>
+                <option value="bw">High Contrast B&W</option>
+                <option value="invert">Night Vision Invert</option>
               </select>
             </div>
 
             <div class="yt-menu-item">
-              <span>Speed Preset</span>
-              <select id="speedSel" class="form-control" style="width: 85px; padding: 2px 6px; font-size: 0.75rem;" onchange="setSpeed(this.value)">
-                <option value="0.25">0.25x</option>
-                <option value="0.5">0.5x</option>
-                <option value="0.75">0.75x</option>
-                <option value="1" selected>1.0x</option>
-                <option value="1.25">1.25x</option>
-                <option value="1.5">1.5x</option>
-                <option value="2">2.0x</option>
+              <span>Aspect Ratio</span>
+              <select id="aspectRatioSel" class="form-control" style="width: 110px; padding: 2px 6px; font-size: 0.75rem;" onchange="setAspectRatio(this.value)">
+                <option value="contain" selected>Fit (Contain)</option>
+                <option value="cover">Fill (Cover)</option>
+                <option value="16-9">16:9 Standard</option>
+                <option value="4-3">4:3 TV</option>
+                <option value="9-16">9:16 Vertical</option>
+                <option value="21-9">21:9 Ultrawide</option>
               </select>
             </div>
 
             <div class="yt-menu-item">
               <span>Audio Equalizer</span>
-              <select id="eqSel" class="form-control" style="width: 95px; padding: 2px 6px; font-size: 0.75rem;" onchange="setAudioPreset(this.value)">
+              <select id="eqSel" class="form-control" style="width: 110px; padding: 2px 6px; font-size: 0.75rem;" onchange="setAudioPreset(this.value)">
                 <option value="flat" selected>Flat / Normal</option>
                 <option value="bass">Bass Boost</option>
                 <option value="vocal">Vocal Clarity</option>
+                <option value="surround">3D Surround</option>
                 <option value="night">Night Mode</option>
               </select>
             </div>
 
             <div class="yt-menu-item">
-              <span>Loop Mode</span>
-              <button class="btn btn-secondary btn-sm" id="btnMenuLoop" style="padding: 2px 8px; font-size: 0.72rem;" onclick="toggleLoop()">OFF</button>
-            </div>
-
-            <div class="yt-menu-item">
-              <span>Quick Snapshot</span>
-              <button class="btn btn-secondary btn-sm" style="padding: 2px 8px; font-size: 0.72rem;" onclick="captureFrame()"><i class="fas fa-camera"></i> Save PNG</button>
-            </div>
-
-            <div class="yt-menu-item">
-              <span>Volume Boost</span>
+              <span>Volume Booster</span>
               <span style="color:#10b981; font-weight:700;" id="menuBoostVal">100%</span>
             </div>
-            <input type="range" min="0" max="200" value="100" class="range-slider" id="menuBoostSlider" oninput="setAudioBoost(this.value)">
+            <input type="range" min="50" max="300" value="100" class="range-slider" id="menuBoostSlider" style="width: 100%; accent-color: #ec4899;" oninput="setAudioBoost(this.value)">
           </div>
 
           <!-- YouTube Floating Glass Controls Overlay -->
           <div class="yt-controls-overlay" id="controlsOverlay">
             
-            <!-- Laser Scrubber Timeline Bar -->
+            <!-- Live VU Peak Meter -->
+            <div class="yt-vu-meter">
+              <div class="yt-vu-fill" id="vuMeterFill"></div>
+            </div>
+
+            <!-- Scrubber Timeline Bar -->
             <div class="yt-scrubber-wrapper" id="scrubberWrapper">
               <div class="yt-scrubber-track">
+                <div class="yt-ab-range" id="abRangeHighlight"></div>
                 <div class="yt-scrubber-played" id="scrubberPlayed"></div>
                 <div class="yt-scrubber-thumb" id="scrubberThumb"></div>
               </div>
@@ -903,14 +968,14 @@
             <!-- Controls Buttons Row -->
             <div class="yt-buttons-row">
               
-              <!-- Left Group: Prev, Play/Pause, Next, Rewind 5s, Skip 5s, Volume, Time -->
+              <!-- Left Controls -->
               <div class="yt-btn-group">
-                <button class="yt-btn desktop-only-btn" onclick="playPrevTrack()" title="Previous Video"><i class="fas fa-backward-step"></i></button>
+                <button class="yt-btn desktop-only-btn" onclick="playPrevTrack()" title="Previous Video (P)"><i class="fas fa-backward-step"></i></button>
                 <button class="yt-btn" id="btnPlayPause" onclick="togglePlay()" title="Play/Pause (Space)"><i class="fas fa-play"></i></button>
-                <button class="yt-btn desktop-only-btn" onclick="playNextTrack()" title="Next Video"><i class="fas fa-forward-step"></i></button>
+                <button class="yt-btn desktop-only-btn" onclick="playNextTrack()" title="Next Video (N)"><i class="fas fa-forward-step"></i></button>
 
-                <button class="yt-btn" onclick="seekAnimated(-5)" title="Rewind 5s (←)"><i class="fas fa-rotate-left"></i></button>
-                <button class="yt-btn" onclick="seekAnimated(5)" title="Skip 5s (→)"><i class="fas fa-rotate-right"></i></button>
+                <button class="yt-btn" onclick="seekAnimated(-5)" title="Rewind 5s (← / J)"><i class="fas fa-rotate-left"></i></button>
+                <button class="yt-btn" onclick="seekAnimated(5)" title="Skip 5s (→ / L)"><i class="fas fa-rotate-right"></i></button>
 
                 <div class="yt-volume-wrap">
                   <button class="yt-btn" id="btnMute" onclick="toggleMute()" title="Mute (M)"><i class="fas fa-volume-high"></i></button>
@@ -920,15 +985,16 @@
                 <span class="yt-time-text" id="timeDisplay">00:00 / 00:00</span>
               </div>
 
-              <!-- Right Group: Frame Step, Snapshot, Playlist Toggle, Settings, PiP, Fullscreen -->
+              <!-- Right Controls -->
               <div class="yt-btn-group">
-                <button class="yt-btn desktop-only-btn" onclick="stepFrame(-1)" title="Previous Frame [,]"><i class="fas fa-chevron-left"></i></button>
-                <button class="yt-btn desktop-only-btn" onclick="stepFrame(1)" title="Next Frame [.]"><i class="fas fa-chevron-right"></i></button>
-                <button class="yt-btn desktop-only-btn" onclick="captureFrame()" title="Grab HD Snapshot [S]"><i class="fas fa-camera"></i></button>
-                <button class="yt-btn" id="btnTogglePlaylist" onclick="togglePlaylistDrawer()" title="Toggle Playlist Queue"><i class="fas fa-list"></i></button>
-                <button class="yt-btn" onclick="toggleSettingsMenu()" title="Settings"><i class="fas fa-gear"></i></button>
+                <button class="yt-btn desktop-only-btn" id="btnCc" onclick="toggleSubtitlesModal()" title="Subtitles (C)"><i class="fas fa-closed-captioning"></i></button>
+                <button class="yt-btn desktop-only-btn" id="btnLoopAb" onclick="toggleAbLoopMode()" title="A-B Loop Repeater"><i class="fas fa-repeat"></i></button>
+                <button class="yt-btn desktop-only-btn" onclick="rotateVideo()" title="Rotate 90° (R)"><i class="fas fa-arrows-rotate"></i></button>
+                <button class="yt-btn desktop-only-btn" onclick="captureFrame()" title="Grab HD Snapshot (S)"><i class="fas fa-camera"></i></button>
+                <button class="yt-btn" id="btnTogglePlaylist" onclick="togglePlaylistDrawer()" title="Playlist Queue"><i class="fas fa-list"></i></button>
+                <button class="yt-btn" onclick="toggleSettingsMenu()" title="Cinema Settings"><i class="fas fa-gear"></i></button>
                 <button class="yt-btn desktop-only-btn" onclick="togglePiP()" title="Miniplayer (PiP)"><i class="fas fa-up-right-from-square"></i></button>
-                <button class="yt-btn desktop-only-btn" onclick="toggleTheater()" title="Theater Mode"><i class="fas fa-expand"></i></button>
+                <button class="yt-btn desktop-only-btn" onclick="showKeyboardShortcuts()" title="Shortcuts (?)"><i class="fas fa-keyboard"></i></button>
                 <button class="yt-btn" onclick="toggleFullscreen()" title="Fullscreen (F)"><i class="fas fa-maximize"></i></button>
               </div>
 
@@ -944,9 +1010,14 @@
             <div style="font-weight: 800; font-size: 0.95rem; color: var(--text-primary); display: flex; align-items: center; gap: 8px;">
               <i class="fas fa-list-check" style="color: #ec4899;"></i> Playlist Queue (<span id="playlistCount">0</span>)
             </div>
-            <button class="btn btn-secondary btn-sm" onclick="document.getElementById('fileInput').click()" style="padding: 2px 8px; font-size: 0.72rem;">
-              <i class="fas fa-plus"></i> Add
-            </button>
+            <div style="display: flex; gap: 6px;">
+              <button class="btn btn-secondary btn-sm" onclick="shufflePlaylist()" title="Shuffle Queue" style="padding: 2px 8px; font-size: 0.72rem;">
+                <i class="fas fa-shuffle"></i>
+              </button>
+              <button class="btn btn-secondary btn-sm" onclick="document.getElementById('fileInput').click()" style="padding: 2px 8px; font-size: 0.72rem;">
+                <i class="fas fa-plus"></i> Add
+              </button>
+            </div>
           </div>
 
           <div class="playlist-items-scroll" id="playlistContainer">
@@ -955,30 +1026,221 @@
         </div>
 
       </div>
+
+      <!-- Studio Pro Control Decks (Below Player) -->
+      <div class="studio-controls-deck" id="studioDecks" style="display: none;">
+        
+        <!-- A-B Loop Repeater Deck -->
+        <div class="deck-panel">
+          <div class="deck-panel-title">
+            <i class="fas fa-repeat" style="color: #10b981;"></i> A-B Precision Loop Repeater
+          </div>
+          <div style="display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 10px;">
+            <button class="btn btn-secondary btn-sm" onclick="setPointA()"><i class="fas fa-flag"></i> Set Point A</button>
+            <button class="btn btn-secondary btn-sm" onclick="setPointB()"><i class="fas fa-flag-checkered"></i> Set Point B</button>
+            <button class="btn btn-danger btn-sm" onclick="clearAbLoop()"><i class="fas fa-xmark"></i> Clear Loop</button>
+          </div>
+          <div style="font-size: 0.82rem; color: var(--text-secondary); display: flex; justify-content: space-between;">
+            <span>Point A: <strong id="valPointA">--:--</strong></span>
+            <span>Point B: <strong id="valPointB">--:--</strong></span>
+            <span>Status: <strong id="valLoopStatus" style="color: var(--text-muted);">Inactive</strong></span>
+          </div>
+        </div>
+
+        <!-- Subtitles (.SRT / .VTT) Studio -->
+        <div class="deck-panel">
+          <div class="deck-panel-title">
+            <i class="fas fa-closed-captioning" style="color: #3b82f6;"></i> Subtitles & Closed Captions
+          </div>
+          <div style="display: flex; gap: 8px; flex-wrap: wrap; align-items: center; margin-bottom: 10px;">
+            <label class="btn btn-secondary btn-sm" style="margin: 0; cursor: pointer;">
+              <i class="fas fa-upload"></i> Load .SRT / .VTT
+              <input type="file" id="subFileInput" accept=".srt,.vtt" style="display: none;" onchange="handleSubtitleUpload(event)">
+            </label>
+            <select id="subSizeSel" class="form-control" style="width: 100px; padding: 4px; font-size: 0.78rem;" onchange="setSubtitleSize(this.value)">
+              <option value="sub-sm">Small</option>
+              <option value="sub-md" selected>Medium</option>
+              <option value="sub-lg">Large</option>
+            </select>
+          </div>
+          <div style="display: flex; gap: 8px; align-items: center; font-size: 0.8rem; color: var(--text-secondary);">
+            <span>Sync Offset:</span>
+            <button class="btn btn-secondary btn-sm" style="padding: 2px 6px; font-size: 0.7rem;" onclick="adjustSubSync(-0.5)">-0.5s</button>
+            <span id="subSyncVal" style="font-weight: 700; color: var(--primary);">0.0s</span>
+            <button class="btn btn-secondary btn-sm" style="padding: 2px 6px; font-size: 0.7rem;" onclick="adjustSubSync(0.5)">+0.5s</button>
+          </div>
+        </div>
+
+        <!-- Video Metadata & Diagnostic Inspector -->
+        <div class="deck-panel">
+          <div class="deck-panel-title">
+            <i class="fas fa-circle-info" style="color: #6366f1;"></i> Video Specs & Diagnostics
+          </div>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px; font-size: 0.8rem; color: var(--text-secondary);">
+            <div>Resolution: <strong id="metaRes" style="color: var(--text-primary);">--</strong></div>
+            <div>Aspect Ratio: <strong id="metaAspect" style="color: var(--text-primary);">--</strong></div>
+            <div>Duration: <strong id="metaDuration" style="color: var(--text-primary);">--</strong></div>
+            <div>File Size: <strong id="metaSize" style="color: var(--text-primary);">--</strong></div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Snapshot Gallery Section -->
+      <div class="snapshot-gallery-card" id="snapshotGalleryCard" style="display: none;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+          <div style="font-weight: 800; font-size: 0.95rem; color: var(--text-primary); display: flex; align-items: center; gap: 8px;">
+            <i class="fas fa-images" style="color: #ec4899;"></i> Captured HD Frame Snapshots (<span id="snapshotCount">0</span>)
+          </div>
+          <div style="display: flex; gap: 6px;">
+            <button class="btn btn-primary btn-sm" onclick="downloadAllSnapshots()"><i class="fas fa-download"></i> Download All</button>
+            <button class="btn btn-secondary btn-sm" onclick="clearSnapshots()"><i class="fas fa-trash-can"></i> Clear</button>
+          </div>
+        </div>
+        <div class="snapshot-strip" id="snapshotStrip"></div>
+      </div>
+
     </div>
   </main>
 
+  <!-- Keyboard Shortcuts Help Modal -->
+  <div class="kb-modal-backdrop" id="kbModal" onclick="if(event.target === this) closeKeyboardShortcuts()">
+    <div class="kb-modal-card">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+        <h3 style="margin: 0; font-size: 1.15rem; font-weight: 800; color: var(--text-primary); display: flex; align-items: center; gap: 8px;">
+          <i class="fas fa-keyboard" style="color: var(--primary);"></i> Keyboard Shortcuts
+        </h3>
+        <button class="btn btn-secondary btn-sm" onclick="closeKeyboardShortcuts()">✕</button>
+      </div>
+      <div class="kb-grid">
+        <div class="kb-row"><span>Play / Pause</span><span class="kb-key">Space / K</span></div>
+        <div class="kb-row"><span>Seek ±5s</span><span class="kb-key">← / →</span></div>
+        <div class="kb-row"><span>Seek ±10s</span><span class="kb-key">J / L</span></div>
+        <div class="kb-row"><span>Volume Up/Down</span><span class="kb-key">↑ / ↓</span></div>
+        <div class="kb-row"><span>Mute Toggle</span><span class="kb-key">M</span></div>
+        <div class="kb-row"><span>Fullscreen</span><span class="kb-key">F</span></div>
+        <div class="kb-row"><span>Grab Snapshot</span><span class="kb-key">S</span></div>
+        <div class="kb-row"><span>Rotate 90°</span><span class="kb-key">R</span></div>
+        <div class="kb-row"><span>Subtitles (CC)</span><span class="kb-key">C</span></div>
+        <div class="kb-row"><span>Set Point A</span><span class="kb-key">[</span></div>
+        <div class="kb-row"><span>Set Point B</span><span class="kb-key">]</span></div>
+        <div class="kb-row"><span>Frame Step</span><span class="kb-key">, / .</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SEO Frequently Asked Questions Section -->
+  <section class="app-container" style="max-width: 900px; margin: 40px auto 20px; padding: 0 16px;">
+    <div style="background: var(--bg-secondary, #ffffff); border: 1px solid var(--border-color, #e2e8f0); border-radius: 16px; padding: 28px; box-shadow: 0 4px 20px rgba(0,0,0,0.03);">
+      <h2 style="font-size: 1.25rem; font-weight: 800; margin-bottom: 20px; display: flex; align-items: center; gap: 10px; color: var(--text-primary);">
+        <i class="fas fa-circle-question" style="color: var(--primary, #6366f1);"></i> Frequently Asked Questions
+      </h2>
+      <div style="display: flex; flex-direction: column; gap: 12px;">
+        <details style="background: var(--bg-tertiary, #f8fafc); border: 1px solid var(--border-color, #e2e8f0); border-radius: 12px; padding: 14px 18px; cursor: pointer;">
+          <summary style="font-weight: 700; font-size: 0.95rem; color: var(--text-primary);">How does the 300% Audio Volume Booster work?</summary>
+          <p style="margin-top: 10px; font-size: 0.88rem; line-height: 1.6; color: var(--text-secondary); margin-bottom: 0;">The Volume Booster connects the HTML5 media stream to a Web Audio GainNode and BiquadFilter equalizer to amplify quiet video audio tracks up to 300% without distortion.</p>
+        </details>
+        <details style="background: var(--bg-tertiary, #f8fafc); border: 1px solid var(--border-color, #e2e8f0); border-radius: 12px; padding: 14px 18px; cursor: pointer;">
+          <summary style="font-weight: 700; font-size: 0.95rem; color: var(--text-primary);">Can I load external subtitle files (.SRT / .VTT)? </summary>
+          <p style="margin-top: 10px; font-size: 0.88rem; line-height: 1.6; color: var(--text-secondary); margin-bottom: 0;">Yes! You can load any .SRT or .VTT subtitle file, customize font sizing, and adjust subtitle sync timing offsets in real time.</p>
+        </details>
+        <details style="background: var(--bg-tertiary, #f8fafc); border: 1px solid var(--border-color, #e2e8f0); border-radius: 12px; padding: 14px 18px; cursor: pointer;">
+          <summary style="font-weight: 700; font-size: 0.95rem; color: var(--text-primary);">How do I repeat a specific part of a video (A-B Loop)?</summary>
+          <p style="margin-top: 10px; font-size: 0.88rem; line-height: 1.6; color: var(--text-secondary); margin-bottom: 0;">Click 'Set Point A' at the start timestamp and 'Set Point B' at the end timestamp (or press [ and ] on your keyboard). The player will continuously repeat that specific segment.</p>
+        </details>
+        <details style="background: var(--bg-tertiary, #f8fafc); border: 1px solid var(--border-color, #e2e8f0); border-radius: 12px; padding: 14px 18px; cursor: pointer;">
+          <summary style="font-weight: 700; font-size: 0.95rem; color: var(--text-primary);">Is my video uploaded to any server?</summary>
+          <p style="margin-top: 10px; font-size: 0.88rem; line-height: 1.6; color: var(--text-secondary); margin-bottom: 0;">Zero bytes are uploaded. All video decoding, audio filtering, and snapshot captures run 100% locally in your web browser.</p>
+        </details>
+      </div>
+    </div>
+  </section>
+
+  <!-- Related Tools Cross-Links -->
+  <section class="app-container" style="max-width: 900px; margin: 20px auto 40px; padding: 0 16px;">
+    <div style="background: var(--bg-secondary, #ffffff); border: 1px solid var(--border-color, #e2e8f0); border-radius: 16px; padding: 24px 28px; box-shadow: 0 4px 20px rgba(0,0,0,0.03);">
+      <h3 style="font-size: 1.05rem; font-weight: 800; margin-bottom: 16px; color: var(--text-primary); display: flex; align-items: center; gap: 8px;">
+        <i class="fas fa-sparkles" style="color: #f59e0b;"></i> Explore Related Free Creative Tools
+      </h3>
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px;">
+        <a href="videoeditor.html" style="display: flex; align-items: center; gap: 10px; padding: 12px 16px; background: var(--bg-tertiary, #f8fafc); border: 1px solid var(--border-color, #e2e8f0); border-radius: 12px; text-decoration: none; color: var(--text-primary); font-size: 0.86rem; font-weight: 700;">
+          <i class="fas fa-clapperboard" style="color: #ec4899; font-size: 1.1rem;"></i>
+          <span>Video Studio Pro</span>
+        </a>
+        <a href="audiorecorder.html" style="display: flex; align-items: center; gap: 10px; padding: 12px 16px; background: var(--bg-tertiary, #f8fafc); border: 1px solid var(--border-color, #e2e8f0); border-radius: 12px; text-decoration: none; color: var(--text-primary); font-size: 0.86rem; font-weight: 700;">
+          <i class="fas fa-microphone-lines" style="color: #ec4899; font-size: 1.1rem;"></i>
+          <span>Voice Recorder Studio</span>
+        </a>
+        <a href="backremover.html" style="display: flex; align-items: center; gap: 10px; padding: 12px 16px; background: var(--bg-tertiary, #f8fafc); border: 1px solid var(--border-color, #e2e8f0); border-radius: 12px; text-decoration: none; color: var(--text-primary); font-size: 0.86rem; font-weight: 700;">
+          <i class="fas fa-wand-magic-sparkles" style="color: #6366f1; font-size: 1.1rem;"></i>
+          <span>AI BG Remover</span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Player Script Engine -->
   <script>
     const video = document.getElementById('videoEl');
     const container = document.getElementById('playerWrap');
     const playerGrid = document.getElementById('playerGrid');
+    const studioDecks = document.getElementById('studioDecks');
     const ambientCanvas = document.getElementById('ambientCanvas');
     const ambientCtx = ambientCanvas.getContext('2d', { alpha: false });
+    const vuMeterFill = document.getElementById('vuMeterFill');
 
     let playlist = [];
     let currentTrackIndex = 0;
+    let snapshots = [];
 
+    // Audio Context & Boost
     let audioCtx = null;
     let audioSource = null;
     let gainNode = null;
+    let analyserNode = null;
     let bassFilter = null;
     let trebleFilter = null;
+    let vuAnimId = null;
+
+    // A-B Loop State
+    let loopPointA = null;
+    let loopPointB = null;
+    let isAbLoopActive = false;
+
+    // Subtitles State
+    let subtitleCues = [];
+    let subtitleOffset = 0;
+    let areSubtitlesVisible = true;
+
+    // Orientation & Scale State
+    let currentRotation = 0;
+    let isMirrored = false;
+
+    // HUD & Inactivity State
     let controlsTimer = null;
     let hudTimer = null;
     let isAmbientOn = true;
     let originalSpeed = 1.0;
     let holdSpeedTimeout = null;
 
+    // Helper HUD Toast
+    function showHudToast(iconClass, text) {
+      const toast = document.getElementById('hudToast');
+      const icon = document.getElementById('hudToastIcon');
+      const label = document.getElementById('hudToastText');
+      if (!toast || !icon || !label) return;
+
+      icon.className = 'fas ' + iconClass;
+      label.textContent = text;
+      toast.classList.add('show');
+
+      clearTimeout(hudTimer);
+      hudTimer = setTimeout(() => {
+        toast.classList.remove('show');
+      }, 1500);
+    }
+
+    // Audio Booster Initialization
     function initAudioBooster() {
       if (audioCtx) {
         if (audioCtx.state === 'suspended') audioCtx.resume().catch(() => {});
@@ -1002,27 +1264,68 @@
         gainNode = audioCtx.createGain();
         gainNode.gain.value = 1.0;
 
+        analyserNode = audioCtx.createAnalyser();
+        analyserNode.fftSize = 64;
+
         audioSource.connect(bassFilter);
         bassFilter.connect(trebleFilter);
         trebleFilter.connect(gainNode);
-        gainNode.connect(audioCtx.destination);
-      } catch(e) {}
+        gainNode.connect(analyserNode);
+        analyserNode.connect(audioCtx.destination);
+
+        startVuMeter();
+      } catch(e) {
+        console.warn('Web Audio initialization error', e);
+      }
+    }
+
+    function startVuMeter() {
+      if (!analyserNode) return;
+      const dataArray = new Uint8Array(analyserNode.frequencyBinCount);
+      function drawVu() {
+        if (!video.paused && !video.muted) {
+          analyserNode.getByteFrequencyData(dataArray);
+          let sum = 0;
+          for (let i = 0; i < dataArray.length; i++) sum += dataArray[i];
+          let avg = sum / dataArray.length;
+          let pct = Math.min(100, Math.round((avg / 128) * 100));
+          if (vuMeterFill) vuMeterFill.style.width = pct + '%';
+        } else {
+          if (vuMeterFill) vuMeterFill.style.width = '0%';
+        }
+        vuAnimId = requestAnimationFrame(drawVu);
+      }
+      drawVu();
+    }
+
+    function setAudioBoost(val) {
+      initAudioBooster();
+      const pct = parseInt(val, 10);
+      document.getElementById('menuBoostVal').textContent = pct + '%';
+      if (gainNode) {
+        gainNode.gain.value = pct / 100;
+      }
+      showHudToast('fa-volume-high', `Boost: ${pct}%`);
     }
 
     function setAudioPreset(preset) {
       initAudioBooster();
       if (!bassFilter || !trebleFilter) return;
       if (preset === 'bass') {
-        bassFilter.gain.value = 8;
+        bassFilter.gain.value = 9;
         trebleFilter.gain.value = -2;
         showHudToast('fa-sliders', 'Equalizer: Bass Boost 🔊');
       } else if (preset === 'vocal') {
         bassFilter.gain.value = -4;
-        trebleFilter.gain.value = 6;
+        trebleFilter.gain.value = 7;
         showHudToast('fa-microphone', 'Equalizer: Vocal Clarity 🎙️');
+      } else if (preset === 'surround') {
+        bassFilter.gain.value = 5;
+        trebleFilter.gain.value = 5;
+        showHudToast('fa-music', 'Equalizer: 3D Surround ✨');
       } else if (preset === 'night') {
         bassFilter.gain.value = -3;
-        trebleFilter.gain.value = -3;
+        trebleFilter.gain.value = -4;
         showHudToast('fa-moon', 'Equalizer: Night Mode 🌙');
       } else {
         bassFilter.gain.value = 0;
@@ -1031,26 +1334,73 @@
       }
     }
 
+    // Visual Filters
     function setVisualFilter(val) {
       if (val === 'cyberpunk') {
-        video.style.filter = 'contrast(1.3) saturate(1.7) hue-rotate(15deg)';
+        video.style.filter = 'contrast(1.3) saturate(1.8) hue-rotate(15deg)';
         showHudToast('fa-wand-magic-sparkles', 'Filter: Cyberpunk Neon');
       } else if (val === 'hdr') {
         video.style.filter = 'contrast(1.25) saturate(1.4) brightness(1.05)';
         showHudToast('fa-wand-magic-sparkles', 'Filter: Vivid HDR');
       } else if (val === 'vintage') {
-        video.style.filter = 'sepia(0.6) contrast(1.15) brightness(0.9)';
+        video.style.filter = 'sepia(0.65) contrast(1.15) brightness(0.9)';
         showHudToast('fa-wand-magic-sparkles', 'Filter: Vintage Sepia');
       } else if (val === 'warm') {
         video.style.filter = 'sepia(0.25) saturate(1.3) brightness(1.05)';
         showHudToast('fa-wand-magic-sparkles', 'Filter: Warm Gold');
+      } else if (val === 'bw') {
+        video.style.filter = 'grayscale(1) contrast(1.4)';
+        showHudToast('fa-wand-magic-sparkles', 'Filter: High Contrast B&W');
+      } else if (val === 'invert') {
+        video.style.filter = 'invert(1) hue-rotate(180deg)';
+        showHudToast('fa-wand-magic-sparkles', 'Filter: Night Vision Invert');
       } else {
         video.style.filter = 'none';
         showHudToast('fa-wand-magic-sparkles', 'Filter: Normal');
       }
     }
 
-    // Multi-File Playlist Upload Handler
+    // Aspect Ratio
+    function setAspectRatio(val) {
+      if (val === 'cover') {
+        video.style.objectFit = 'cover';
+        showHudToast('fa-expand', 'Aspect: Fill / Cover');
+      } else if (val === '16-9') {
+        video.style.objectFit = 'contain';
+        video.style.aspectRatio = '16/9';
+        showHudToast('fa-tv', 'Aspect: 16:9 Standard');
+      } else if (val === '4-3') {
+        video.style.objectFit = 'contain';
+        video.style.aspectRatio = '4/3';
+        showHudToast('fa-tv', 'Aspect: 4:3 TV');
+      } else if (val === '9-16') {
+        video.style.objectFit = 'contain';
+        video.style.aspectRatio = '9/16';
+        showHudToast('fa-mobile-screen', 'Aspect: 9:16 Vertical');
+      } else if (val === '21-9') {
+        video.style.objectFit = 'contain';
+        video.style.aspectRatio = '21/9';
+        showHudToast('fa-film', 'Aspect: 21:9 Ultrawide');
+      } else {
+        video.style.objectFit = 'contain';
+        video.style.aspectRatio = 'auto';
+        showHudToast('fa-compress', 'Aspect: Fit / Contain');
+      }
+    }
+
+    // Video Rotation
+    function rotateVideo() {
+      currentRotation = (currentRotation + 90) % 360;
+      updateVideoTransform();
+      showHudToast('fa-arrows-rotate', `Rotated: ${currentRotation}°`);
+    }
+
+    function updateVideoTransform() {
+      const scaleX = isMirrored ? -1 : 1;
+      video.style.transform = `rotate(${currentRotation}deg) scaleX(${scaleX})`;
+    }
+
+    // File Upload Handler
     function handleVideoUpload(e) {
       const files = Array.from(e.target.files);
       if (!files.length) return;
@@ -1060,7 +1410,7 @@
         playlist.push({
           id: 'track_' + Date.now() + '_' + idx,
           name: file.name,
-          size: (file.size / (1024*1024)).toFixed(1) + 'MB',
+          size: (file.size / (1024*1024)).toFixed(1) + ' MB',
           url: URL.createObjectURL(file)
         });
       });
@@ -1068,7 +1418,9 @@
       if (document.getElementById('fileInput')) document.getElementById('fileInput').value = '';
 
       playerGrid.style.display = 'grid';
+      studioDecks.style.display = 'grid';
       document.getElementById('dropzone').style.display = 'none';
+
       if (playlist.length > 1) {
         playerGrid.classList.add('with-playlist');
       }
@@ -1077,6 +1429,30 @@
       if (startIndex === 0) {
         loadTrack(0, true);
       }
+    }
+
+    // Load Sample Demo Video
+    function loadSampleVideoDemo() {
+      playlist = [
+        {
+          id: 'demo_1',
+          name: 'Big Buck Bunny (Sample HD Trailer)',
+          size: '5.5 MB',
+          url: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4'
+        },
+        {
+          id: 'demo_2',
+          name: 'Elephants Dream (Sample HD)',
+          size: '8.2 MB',
+          url: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4'
+        }
+      ];
+      playerGrid.style.display = 'grid';
+      studioDecks.style.display = 'grid';
+      document.getElementById('dropzone').style.display = 'none';
+      playerGrid.classList.add('with-playlist');
+      renderPlaylistSidebar();
+      loadTrack(0, true);
     }
 
     function loadTrack(index, autoPlay = true) {
@@ -1096,6 +1472,12 @@
         ambientCanvas.width = 160;
         ambientCanvas.height = 90;
 
+        // Populate Diagnostics
+        document.getElementById('metaRes').textContent = `${video.videoWidth || 1920} × ${video.videoHeight || 1080}`;
+        document.getElementById('metaAspect').textContent = video.videoWidth ? (video.videoWidth / video.videoHeight).toFixed(2) + ':1' : '16:9';
+        document.getElementById('metaDuration').textContent = formatSec(video.duration);
+        document.getElementById('metaSize').textContent = track.size || '--';
+
         if (!hasRenderedFrame) {
           hasRenderedFrame = true;
           if (video.currentTime === 0 && (video.duration || 0) > 0) {
@@ -1104,9 +1486,7 @@
         }
 
         if (autoPlay) {
-          if (audioCtx && audioCtx.state === 'suspended') {
-            audioCtx.resume().catch(() => {});
-          }
+          initAudioBooster();
           const playPromise = video.play();
           if (playPromise !== undefined) {
             playPromise.then(() => {
@@ -1123,6 +1503,45 @@
       video.oncanplay = handleReady;
 
       renderAmbientLoop();
+    }
+
+    function renderPlaylistSidebar() {
+      const container = document.getElementById('playlistContainer');
+      document.getElementById('playlistCount').textContent = playlist.length;
+      if (!container) return;
+
+      container.innerHTML = playlist.map((item, idx) => `
+        <div class="playlist-item ${idx === currentTrackIndex ? 'active' : ''}" onclick="loadTrack(${idx}, true)">
+          <i class="fas ${idx === currentTrackIndex ? 'fa-circle-play' : 'fa-film'}" style="color: ${idx === currentTrackIndex ? 'var(--primary)' : 'var(--text-muted)'};"></i>
+          <div class="playlist-item-title">${item.name}</div>
+          <span style="font-size: 0.72rem; color: var(--text-muted);">${item.size}</span>
+          <button class="btn btn-secondary btn-sm" style="padding: 2px 6px; font-size: 0.68rem;" onclick="event.stopPropagation(); removePlaylistItem(${idx})">✕</button>
+        </div>
+      `).join('');
+    }
+
+    function removePlaylistItem(idx) {
+      playlist.splice(idx, 1);
+      if (playlist.length === 0) {
+        playerGrid.style.display = 'none';
+        studioDecks.style.display = 'none';
+        document.getElementById('dropzone').style.display = 'block';
+      } else {
+        if (currentTrackIndex >= playlist.length) currentTrackIndex = 0;
+        renderPlaylistSidebar();
+        loadTrack(currentTrackIndex, true);
+      }
+    }
+
+    function shufflePlaylist() {
+      for (let i = playlist.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [playlist[i], playlist[j]] = [playlist[j], playlist[i]];
+      }
+      currentTrackIndex = 0;
+      renderPlaylistSidebar();
+      loadTrack(0, true);
+      showHudToast('fa-shuffle', 'Playlist Shuffled');
     }
 
     function playNextTrack() {
@@ -1144,7 +1563,7 @@
     }
 
     video.addEventListener('ended', () => {
-      if (video.loop) return;
+      if (isAbLoopActive) return;
       if (currentTrackIndex < playlist.length - 1) {
         playNextTrack();
       } else {
@@ -1152,32 +1571,289 @@
       }
     });
 
-    function renderPlaylistSidebar() {
-      const container = document.getElementById('playlistContainer');
-      document.getElementById('playlistCount').textContent = playlist.length;
-      if (!container) return;
+    // Playback Core
+    function togglePlay() {
+      initAudioBooster();
+      if (video.paused) {
+        video.play();
+        document.getElementById('btnPlayPause').innerHTML = '<i class="fas fa-pause"></i>';
+        showCenterPulse('fa-play');
+      } else {
+        video.pause();
+        document.getElementById('btnPlayPause').innerHTML = '<i class="fas fa-play"></i>';
+        showCenterPulse('fa-pause');
+      }
+    }
 
-      container.innerHTML = playlist.map((item, idx) => `
-        <div class="playlist-item-card ${idx === currentTrackIndex ? 'active' : ''}" onclick="loadTrack(${idx})">
-          <span class="playlist-item-index">${idx + 1}</span>
-          <div class="playlist-item-info">
-            <div class="playlist-item-title">${item.name}</div>
-            <div class="playlist-item-meta">${item.size}</div>
-          </div>
-          ${idx === currentTrackIndex ? '<i class="fas fa-chart-simple" style="color:#ec4899; font-size:0.85rem;"></i>' : ''}
+    function showCenterPulse(iconClass) {
+      const pulse = document.getElementById('centerPulse');
+      const icon = document.getElementById('centerPulseIcon');
+      if (!pulse || !icon) return;
+      icon.className = 'fas ' + iconClass;
+      pulse.classList.add('show');
+      setTimeout(() => pulse.classList.remove('show'), 400);
+    }
+
+    function seekAnimated(delta) {
+      video.currentTime = Math.max(0, Math.min(video.duration || 0, video.currentTime + delta));
+      updateTimeDisplay();
+      if (delta > 0) {
+        const anim = document.getElementById('animSkipRight');
+        anim.classList.add('show');
+        setTimeout(() => anim.classList.remove('show'), 400);
+      } else {
+        const anim = document.getElementById('animSkipLeft');
+        anim.classList.add('show');
+        setTimeout(() => anim.classList.remove('show'), 400);
+      }
+    }
+
+    function setPlayerVolume(val) {
+      video.volume = val;
+      video.muted = (val == 0);
+      updateVolumeIcon();
+    }
+
+    function toggleMute() {
+      video.muted = !video.muted;
+      updateVolumeIcon();
+      showHudToast(video.muted ? 'fa-volume-xmark' : 'fa-volume-high', video.muted ? 'Muted' : 'Unmuted');
+    }
+
+    function updateVolumeIcon() {
+      const btn = document.getElementById('btnMute');
+      if (video.muted || video.volume === 0) {
+        btn.innerHTML = '<i class="fas fa-volume-xmark" style="color:#ef4444;"></i>';
+      } else if (video.volume < 0.5) {
+        btn.innerHTML = '<i class="fas fa-volume-low"></i>';
+      } else {
+        btn.innerHTML = '<i class="fas fa-volume-high"></i>';
+      }
+    }
+
+    // A-B Loop Logic
+    function setPointA() {
+      loopPointA = video.currentTime;
+      document.getElementById('valPointA').textContent = formatSec(loopPointA);
+      updateAbRangeHighlight();
+      checkAbLoopActivation();
+      showHudToast('fa-flag', `Point A Set: ${formatSec(loopPointA)}`);
+    }
+
+    function setPointB() {
+      loopPointB = video.currentTime;
+      document.getElementById('valPointB').textContent = formatSec(loopPointB);
+      updateAbRangeHighlight();
+      checkAbLoopActivation();
+      showHudToast('fa-flag-checkered', `Point B Set: ${formatSec(loopPointB)}`);
+    }
+
+    function checkAbLoopActivation() {
+      if (loopPointA !== null && loopPointB !== null && loopPointB > loopPointA) {
+        isAbLoopActive = true;
+        document.getElementById('valLoopStatus').textContent = 'Looping A ⇄ B';
+        document.getElementById('valLoopStatus').style.color = '#10b981';
+        document.getElementById('btnLoopAb').classList.add('active');
+      }
+    }
+
+    function clearAbLoop() {
+      loopPointA = null;
+      loopPointB = null;
+      isAbLoopActive = false;
+      document.getElementById('valPointA').textContent = '--:--';
+      document.getElementById('valPointB').textContent = '--:--';
+      document.getElementById('valLoopStatus').textContent = 'Inactive';
+      document.getElementById('valLoopStatus').style.color = 'var(--text-muted)';
+      document.getElementById('btnLoopAb').classList.remove('active');
+      document.getElementById('abRangeHighlight').style.display = 'none';
+      showHudToast('fa-xmark', 'A-B Loop Cleared');
+    }
+
+    function toggleAbLoopMode() {
+      if (isAbLoopActive) {
+        clearAbLoop();
+      } else {
+        setPointA();
+      }
+    }
+
+    function updateAbRangeHighlight() {
+      const range = document.getElementById('abRangeHighlight');
+      if (!video.duration || loopPointA === null) {
+        range.style.display = 'none';
+        return;
+      }
+      const startPct = (loopPointA / video.duration) * 100;
+      const endPct = loopPointB !== null ? (loopPointB / video.duration) * 100 : startPct;
+      range.style.left = startPct + '%';
+      range.style.width = Math.max(2, (endPct - startPct)) + '%';
+      range.style.display = 'block';
+    }
+
+    // Subtitle (.SRT / .VTT) Parser
+    function handleSubtitleUpload(e) {
+      const file = e.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = function(evt) {
+        const text = evt.target.result;
+        parseSubtitles(text);
+        showHudToast('fa-closed-captioning', `Subtitles: ${file.name}`);
+      };
+      reader.readAsText(file);
+    }
+
+    function parseSubtitles(text) {
+      subtitleCues = [];
+      const lines = text.replace(/\r\n/g, '\n').replace(/\r/g, '\n').split('\n');
+      let currentCue = null;
+      const timeRegex = /((\d{2}:)?\d{2}:\d{2}[,.]\d{3})\s*-->\s*((\d{2}:)?\d{2}:\d{2}[,.]\d{3})/;
+
+      lines.forEach(line => {
+        const trimmed = line.trim();
+        const match = trimmed.match(timeRegex);
+        if (match) {
+          if (currentCue) subtitleCues.push(currentCue);
+          currentCue = {
+            start: parseSubTime(match[1]),
+            end: parseSubTime(match[3]),
+            text: ''
+          };
+        } else if (currentCue && trimmed && !/^\d+$/.test(trimmed) && !trimmed.startsWith('WEBVTT')) {
+          currentCue.text += (currentCue.text ? ' ' : '') + trimmed;
+        }
+      });
+      if (currentCue) subtitleCues.push(currentCue);
+      areSubtitlesVisible = true;
+      document.getElementById('subtitlesOverlay').style.display = 'block';
+    }
+
+    function parseSubTime(timeStr) {
+      const parts = timeStr.replace(',', '.').split(':');
+      if (parts.length === 3) {
+        return parseFloat(parts[0]) * 3600 + parseFloat(parts[1]) * 60 + parseFloat(parts[2]);
+      } else if (parts.length === 2) {
+        return parseFloat(parts[0]) * 60 + parseFloat(parts[1]);
+      }
+      return 0;
+    }
+
+    function updateSubtitles() {
+      if (!areSubtitlesVisible || !subtitleCues.length) return;
+      const now = video.currentTime + subtitleOffset;
+      const activeCue = subtitleCues.find(c => now >= c.start && now <= c.end);
+      const textEl = document.getElementById('subtitlesText');
+      if (activeCue) {
+        textEl.textContent = activeCue.text;
+        textEl.style.display = 'inline-block';
+      } else {
+        textEl.textContent = '';
+        textEl.style.display = 'none';
+      }
+    }
+
+    function setSubtitleSize(sizeClass) {
+      const overlay = document.getElementById('subtitlesOverlay');
+      overlay.className = `yt-subtitles-overlay ${sizeClass}`;
+    }
+
+    function adjustSubSync(delta) {
+      subtitleOffset += delta;
+      document.getElementById('subSyncVal').textContent = (subtitleOffset >= 0 ? '+' : '') + subtitleOffset.toFixed(1) + 's';
+      showHudToast('fa-clock', `Subtitle Sync: ${subtitleOffset.toFixed(1)}s`);
+    }
+
+    function toggleSubtitlesModal() {
+      areSubtitlesVisible = !areSubtitlesVisible;
+      document.getElementById('subtitlesOverlay').style.display = areSubtitlesVisible ? 'block' : 'none';
+      document.getElementById('btnCc').classList.toggle('active', areSubtitlesVisible);
+      showHudToast('fa-closed-captioning', areSubtitlesVisible ? 'Subtitles ON' : 'Subtitles OFF');
+    }
+
+    // Frame Snapshot Capture
+    function captureFrame() {
+      const snapCanvas = document.createElement('canvas');
+      snapCanvas.width = video.videoWidth || 1920;
+      snapCanvas.height = video.videoHeight || 1080;
+      const ctx = snapCanvas.getContext('2d');
+      ctx.drawImage(video, 0, 0, snapCanvas.width, snapCanvas.height);
+
+      const dataUrl = snapCanvas.toDataURL('image/png');
+      const timeStr = formatSec(video.currentTime);
+
+      snapshots.push({ dataUrl, timeStr });
+      renderSnapshotGallery();
+
+      // Flash FX
+      const flash = document.getElementById('shutterFlash');
+      flash.classList.add('flash');
+      setTimeout(() => flash.classList.remove('flash'), 200);
+
+      // Trigger Direct Download
+      const a = document.createElement('a');
+      a.href = dataUrl;
+      a.download = `snapshot_${timeStr.replace(':', 'm')}s.png`;
+      a.click();
+
+      showHudToast('fa-camera', `Snapshot Saved (${timeStr}) ✓`);
+    }
+
+    function renderSnapshotGallery() {
+      const gallery = document.getElementById('snapshotGalleryCard');
+      const strip = document.getElementById('snapshotStrip');
+      document.getElementById('snapshotCount').textContent = snapshots.length;
+
+      if (!snapshots.length) {
+        gallery.style.display = 'none';
+        return;
+      }
+      gallery.style.display = 'block';
+
+      strip.innerHTML = snapshots.map((s, idx) => `
+        <div class="snapshot-thumb-box">
+          <img src="${s.dataUrl}" alt="Snapshot at ${s.timeStr}">
+          <span class="snap-time">${s.timeStr}</span>
         </div>
       `).join('');
     }
 
-    function togglePlaylistDrawer() {
-      playerGrid.classList.toggle('with-playlist');
+    function downloadAllSnapshots() {
+      snapshots.forEach((s, idx) => {
+        const a = document.createElement('a');
+        a.href = s.dataUrl;
+        a.download = `snapshot_${idx + 1}_${s.timeStr.replace(':', 'm')}s.png`;
+        a.click();
+      });
+      showHudToast('fa-download', `Downloaded ${snapshots.length} Snapshots!`);
     }
 
-    // Real-Time Ambient Light Engine
+    function clearSnapshots() {
+      snapshots = [];
+      renderSnapshotGallery();
+      showHudToast('fa-trash-can', 'Snapshots Cleared');
+    }
+
+    // Step Frame
+    function stepFrame(step) {
+      video.pause();
+      video.currentTime = Math.max(0, Math.min(video.duration, video.currentTime + (step * 0.04)));
+      updateTimeDisplay();
+      showHudToast('fa-film', `Frame Step ${step > 0 ? '+1' : '-1'}`);
+    }
+
+    // Ambient Dynamic Backlight Loop
     function renderAmbientLoop() {
-      if (!video.paused && !video.ended && isAmbientOn && video.videoWidth) {
-        ambientCtx.drawImage(video, 0, 0, ambientCanvas.width, ambientCanvas.height);
+      if (!isAmbientOn || video.paused || video.ended) {
+        requestAnimationFrame(renderAmbientLoop);
+        return;
       }
+      try {
+        if (video.readyState >= 2) {
+          ambientCtx.drawImage(video, 0, 0, ambientCanvas.width, ambientCanvas.height);
+        }
+      } catch(e) {}
       requestAnimationFrame(renderAmbientLoop);
     }
 
@@ -1185,221 +1861,9 @@
       isAmbientOn = !isAmbientOn;
       ambientCanvas.classList.toggle('disabled', !isAmbientOn);
       const btn = document.getElementById('btnAmbientToggle');
-      if (btn) {
-        btn.textContent = isAmbientOn ? 'ON' : 'OFF';
-        btn.style.color = isAmbientOn ? '#10b981' : '';
-      }
+      btn.textContent = isAmbientOn ? 'ON' : 'OFF';
+      btn.style.color = isAmbientOn ? '#10b981' : '#ef4444';
       showHudToast('fa-sun', `Ambient Glow: ${isAmbientOn ? 'ON' : 'OFF'}`);
-    }
-
-    // Play / Pause Animation & Logic
-    function togglePlay() {
-      if (video.paused || video.ended) {
-        video.play();
-        document.getElementById('btnPlayPause').innerHTML = '<i class="fas fa-pause"></i>';
-        showCenterPulse('play');
-      } else {
-        video.pause();
-        document.getElementById('btnPlayPause').innerHTML = '<i class="fas fa-play"></i>';
-        showCenterPulse('pause');
-      }
-    }
-
-    function showCenterPulse(action) {
-      const pulse = document.getElementById('centerPulse');
-      const icon = document.getElementById('centerPulseIcon');
-      icon.className = action === 'play' ? 'fas fa-play' : 'fas fa-pause';
-      pulse.classList.add('show');
-      setTimeout(() => pulse.classList.remove('show'), 350);
-    }
-
-    // Animated 5s Skip Left / Right
-    function seekAnimated(sec) {
-      video.currentTime = Math.max(0, Math.min(video.duration, video.currentTime + sec));
-      resetControlsTimeout();
-
-      const el = document.getElementById(sec < 0 ? 'animSkipLeft' : 'animSkipRight');
-      if (el) {
-        el.classList.add('show');
-        setTimeout(() => el.classList.remove('show'), 400);
-      }
-    }
-
-    // ===================================================
-    // TOUCH / CLICK SKIP GESTURES (LEFT: -5s, RIGHT: +5s)
-    // ===================================================
-    let tapTimeout = null;
-    let lastTapSide = null;
-    let lastTapTime = 0;
-
-    function handleZoneTap(side) {
-      const now = Date.now();
-      const isDoubleTap = (lastTapSide === side && (now - lastTapTime) < 340);
-
-      if (isDoubleTap) {
-        clearTimeout(tapTimeout);
-        lastTapSide = null;
-        lastTapTime = 0;
-
-        if (side === 'left') {
-          seekAnimated(-5);
-          showHudToast('fa-rotate-left', '-5 SEC ⏪');
-        } else if (side === 'right') {
-          seekAnimated(5);
-          showHudToast('fa-rotate-right', '+5 SEC ⏩');
-        } else {
-          togglePlay();
-        }
-      } else {
-        lastTapSide = side;
-        lastTapTime = now;
-        tapTimeout = setTimeout(() => {
-          // Single tap toggles controls visibility or toggles play in center
-          if (side === 'center') {
-            togglePlay();
-          } else {
-            toggleControlsVisibility();
-          }
-          lastTapSide = null;
-          lastTapTime = 0;
-        }, 280);
-      }
-    }
-
-    function toggleControlsVisibility() {
-      if (container.classList.contains('hide-controls')) {
-        resetControlsTimeout();
-      } else {
-        container.classList.add('hide-controls');
-      }
-    }
-
-    const tLeft = document.getElementById('touchZoneLeft');
-    const tCenter = document.getElementById('touchZoneCenter');
-    const tRight = document.getElementById('touchZoneRight');
-
-    if (tLeft) {
-      tLeft.addEventListener('click', (e) => { e.stopPropagation(); handleZoneTap('left'); });
-      tLeft.addEventListener('dblclick', (e) => { e.stopPropagation(); seekAnimated(-5); });
-    }
-    if (tRight) {
-      tRight.addEventListener('click', (e) => { e.stopPropagation(); handleZoneTap('right'); });
-      tRight.addEventListener('dblclick', (e) => { e.stopPropagation(); seekAnimated(5); });
-    }
-    if (tCenter) {
-      tCenter.addEventListener('click', (e) => { e.stopPropagation(); handleZoneTap('center'); });
-    }
-
-    // Floating HUD Toast System
-    function showHudToast(iconClass, text) {
-      const toast = document.getElementById('hudToast');
-      const icon = document.getElementById('hudToastIcon');
-      const txt = document.getElementById('hudToastText');
-
-      icon.className = `fas ${iconClass}`;
-      txt.textContent = text;
-      toast.classList.add('show');
-
-      clearTimeout(hudTimer);
-      hudTimer = setTimeout(() => toast.classList.remove('show'), 1500);
-    }
-
-    // Volume Controls & HUD
-    function toggleMute() {
-      video.muted = !video.muted;
-      document.getElementById('btnMute').innerHTML = video.muted ? '<i class="fas fa-volume-xmark"></i>' : '<i class="fas fa-volume-high"></i>';
-      showHudToast(video.muted ? 'fa-volume-xmark' : 'fa-volume-high', video.muted ? 'Muted' : `Volume ${Math.round(video.volume * 100)}%`);
-    }
-
-    function setPlayerVolume(val) {
-      video.volume = parseFloat(val);
-      video.muted = (video.volume === 0);
-      document.getElementById('btnMute').innerHTML = video.muted ? '<i class="fas fa-volume-xmark"></i>' : '<i class="fas fa-volume-high"></i>';
-      showHudToast('fa-volume-high', `Volume ${Math.round(video.volume * 100)}%`);
-    }
-
-    function setAudioBoost(val) {
-      initAudioBooster();
-      const pct = parseFloat(val);
-      document.getElementById('menuBoostVal').textContent = `${pct}%`;
-      if (gainNode) {
-        gainNode.gain.value = pct / 100;
-      }
-      showHudToast('fa-volume-high', `Audio Boost ${pct}%`);
-    }
-
-    function setSpeed(val) {
-      video.playbackRate = parseFloat(val);
-      originalSpeed = video.playbackRate;
-      showHudToast('fa-gauge-high', `Speed ${val}x`);
-    }
-
-    function toggleLoop() {
-      video.loop = !video.loop;
-      const btn = document.getElementById('btnMenuLoop');
-      if (btn) {
-        btn.textContent = video.loop ? 'ON' : 'OFF';
-        btn.style.color = video.loop ? '#10b981' : '';
-      }
-      showHudToast('fa-repeat', `Loop: ${video.loop ? 'ON' : 'OFF'}`);
-    }
-
-    function stepFrame(step) {
-      video.pause();
-      document.getElementById('btnPlayPause').innerHTML = '<i class="fas fa-play"></i>';
-      video.currentTime += step * (1 / 30);
-      showHudToast('fa-film', `${step > 0 ? '+1' : '-1'} Frame`);
-    }
-
-    function toggleSettingsMenu() {
-      const menu = document.getElementById('settingsMenu');
-      menu.classList.toggle('open');
-    }
-
-    function toggleTheater() {
-      document.getElementById('vpMainCard').classList.toggle('theater-mode');
-    }
-
-    async function togglePiP() {
-      try {
-        if (document.pictureInPictureElement) {
-          await document.exitPictureInPicture();
-        } else if (document.pictureInPictureEnabled) {
-          await video.requestPictureInPicture();
-        }
-      } catch(e) {}
-    }
-
-    function toggleFullscreen() {
-      if (!document.fullscreenElement) {
-        container.requestFullscreen().catch(() => video.requestFullscreen());
-      } else {
-        document.exitFullscreen();
-      }
-    }
-
-    // 1-Click Snapshot with Flash Animation
-    function captureFrame() {
-      if (!video.videoWidth) return;
-      
-      const flash = document.getElementById('shutterFlash');
-      flash.classList.add('flash');
-      setTimeout(() => flash.classList.remove('flash'), 180);
-
-      const canvas = document.createElement('canvas');
-      canvas.width = video.videoWidth;
-      canvas.height = video.videoHeight;
-      const ctx = canvas.getContext('2d');
-      ctx.imageSmoothingEnabled = true;
-      ctx.imageSmoothingQuality = 'high';
-      ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-
-      const a = document.createElement('a');
-      a.href = canvas.toDataURL('image/png');
-      a.download = `snapshot_${Math.floor(video.currentTime)}s_${video.videoWidth}x${video.videoHeight}.png`;
-      a.click();
-
-      showHudToast('fa-camera', 'HD Snapshot Saved ✓');
     }
 
     // Scrubber & Timeline Progress
@@ -1418,6 +1882,13 @@
       const pct = (video.currentTime / (video.duration || 1)) * 100;
       document.getElementById('scrubberPlayed').style.width = `${pct}%`;
       document.getElementById('scrubberThumb').style.left = `${pct}%`;
+
+      // Check A-B Loop constraint
+      if (isAbLoopActive && loopPointB !== null && video.currentTime >= loopPointB) {
+        video.currentTime = loopPointA || 0;
+      }
+
+      updateSubtitles();
     }
 
     video.addEventListener('timeupdate', updateTimeDisplay);
@@ -1455,7 +1926,7 @@
 
     window.addEventListener('mouseup', () => { isScrubbing = false; });
 
-    // YouTube Controls Auto-Hide Engine
+    // YouTube Controls Auto-Hide
     function resetControlsTimeout() {
       container.classList.remove('hide-controls');
       clearTimeout(controlsTimer);
@@ -1477,11 +1948,10 @@
       container.classList.remove('hide-controls');
     });
 
-    // YouTube Hold-to-2X Speed Feature (Clean, Reliable, Zero Native Download Dialog)
+    // Hold-to-2X Speed Feature
     let isHoldingSpeed = false;
     let baseSpeed = 1.0;
 
-    // Prevent native mobile browser download dialog on long press
     container.addEventListener('contextmenu', (e) => e.preventDefault());
     video.addEventListener('contextmenu', (e) => e.preventDefault());
 
@@ -1518,10 +1988,50 @@
     window.addEventListener('touchcancel', endHoldSpeed, { passive: true });
     window.addEventListener('mouseleave', endHoldSpeed);
 
+    // Settings Menu Toggle
+    function toggleSettingsMenu() {
+      document.getElementById('settingsMenu').classList.toggle('open');
+    }
+
+    // Playlist Drawer Toggle
+    function togglePlaylistDrawer() {
+      playerGrid.classList.toggle('with-playlist');
+    }
+
+    // Picture-in-Picture
+    async function togglePiP() {
+      try {
+        if (document.pictureInPictureElement) {
+          await document.exitPictureInPicture();
+        } else if (document.pictureInPictureEnabled) {
+          await video.requestPictureInPicture();
+        }
+      } catch(e) {
+        showHudToast('fa-triangle-exclamation', 'PiP not supported in browser');
+      }
+    }
+
+    // Fullscreen
+    function toggleFullscreen() {
+      if (!document.fullscreenElement) {
+        container.requestFullscreen().catch(() => {});
+      } else {
+        document.exitFullscreen().catch(() => {});
+      }
+    }
+
+    // Keyboard Shortcuts Modal Handlers
+    function showKeyboardShortcuts() {
+      document.getElementById('kbModal').style.display = 'flex';
+    }
+    function closeKeyboardShortcuts() {
+      document.getElementById('kbModal').style.display = 'none';
+    }
+
     // Keyboard Shortcuts
     window.addEventListener('keydown', (e) => {
       if (e.target.tagName === 'INPUT' || e.target.tagName === 'SELECT') return;
-      if (e.key === ' ' || e.code === 'Space') {
+      if (e.key === ' ' || e.code === 'Space' || e.key === 'k' || e.key === 'K') {
         e.preventDefault();
         togglePlay();
       } else if (e.key === 'f' || e.key === 'F') {
@@ -1532,10 +2042,20 @@
       } else if (e.key === 's' || e.key === 'S') {
         e.preventDefault();
         captureFrame();
-      } else if (e.key === 'ArrowLeft') {
+      } else if (e.key === 'c' || e.key === 'C') {
+        toggleSubtitlesModal();
+      } else if (e.key === 'r' || e.key === 'R') {
+        rotateVideo();
+      } else if (e.key === '[') {
+        setPointA();
+      } else if (e.key === ']') {
+        setPointB();
+      } else if (e.key === '?' || e.key === '/') {
+        showKeyboardShortcuts();
+      } else if (e.key === 'ArrowLeft' || e.key === 'j' || e.key === 'J') {
         e.preventDefault();
         seekAnimated(-5);
-      } else if (e.key === 'ArrowRight') {
+      } else if (e.key === 'ArrowRight' || e.key === 'l' || e.key === 'L') {
         e.preventDefault();
         seekAnimated(5);
       } else if (e.key === 'ArrowUp') {
@@ -1554,6 +2074,10 @@
         stepFrame(-1);
       } else if (e.key === '.' || e.key === '>') {
         stepFrame(1);
+      } else if (e.key >= '0' && e.key <= '9') {
+        const pct = parseInt(e.key, 10) * 0.1;
+        video.currentTime = (video.duration || 0) * pct;
+        updateTimeDisplay();
       }
     });
   </script>

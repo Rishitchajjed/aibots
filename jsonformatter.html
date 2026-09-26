@@ -356,15 +356,34 @@
 <body class="ab-body">
   <div class="bg-mesh"></div>
 
-  <div class="jf-container">
-    <div class="jf-header">
-      <h1 class="jf-title">
-        <i class="fas fa-code" style="color: var(--primary);"></i> JSON Formatter & Studio Pro
-      </h1>
-      <p class="jf-subtitle">
-        Format, validate, auto-repair, inspect interactive tree nodes, and convert JSON to CSV, XML, YAML, or TypeScript. 100% local privacy.
-      </p>
+  <!-- Navbar -->
+  <header class="navbar">
+    <div class="app-container" style="width: 100%;">
+      <div class="nav-wrapper">
+        <a href="index.html" class="brand-link">
+          <img src="logo.png" alt="AI Bots Logo" class="brand-logo-img">
+          <span>AI Bots</span>
+          <span class="brand-badge" style="background: linear-gradient(135deg, var(--primary), #ec4899); color: white;">JSON STUDIO</span>
+        </a>
+
+        <div class="nav-actions">
+          <a href="index.html" class="btn btn-secondary btn-sm"><i class="fas fa-house"></i> Hub</a>
+          <a href="sitemap.html" class="btn btn-secondary btn-sm"><i class="fas fa-compass"></i> All Tools</a>
+          <button class="icon-btn theme-toggle-btn" title="Toggle Dark/Light Mode" aria-label="Toggle dark mode"><i class="fas fa-moon"></i></button>
+        </div>
+      </div>
     </div>
+  </header>
+
+  <!-- Main Tool Container -->
+  <main class="app-container tool-page-wrapper" style="max-width: 1320px;">
+    <div class="tool-header">
+      <span class="tool-header-badge" style="color: #6366f1; background: rgba(99, 102, 241, 0.12); border: 1px solid rgba(99, 102, 241, 0.3);"><i class="fas fa-code"></i> Developer JSON Studio</span>
+      <h1 class="tool-title">JSON Formatter & Studio Pro</h1>
+      <p class="tool-desc">Format, validate, auto-repair, inspect interactive tree nodes, and convert JSON to CSV, XML, YAML, or TypeScript. 100% local privacy.</p>
+    </div>
+
+    <div class="jf-container" style="padding-top: 0;">
 
     <!-- Toolbar -->
     <div class="jf-toolbar">
@@ -487,7 +506,7 @@
         </div>
       </div>
     </div>
-  </div>
+  </main>
 
   <!-- SEO Frequently Asked Questions Section -->
   <section class="app-container" style="max-width: 900px; margin: 40px auto 20px; padding: 0 16px;">
@@ -535,9 +554,12 @@
     </div>
   </section>
 
-  <script src="js/common.js"></script>
   <script>
-    abInitChrome('jsonformatter');
+    function abToast(msg, type = 'info') {
+      if (typeof showToast === 'function') {
+        showToast(msg, type);
+      }
+    }
 
     const jsonInput = document.getElementById('jsonInput');
     const jsonOutput = document.getElementById('jsonOutput');
@@ -1032,5 +1054,6 @@
     jsonInput.value = JSON.stringify(SAMPLES.invoice, null, 2);
     parseAndFormat(2);
   </script>
+  <script src="js/app.js"></script>
 </body>
 </html>

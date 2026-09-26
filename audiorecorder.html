@@ -321,15 +321,34 @@
 <body class="ab-body">
   <div class="bg-mesh"></div>
 
-  <div class="ar-container">
-    <div class="ar-header">
-      <h1 class="ar-title">
-        <i class="fas fa-microphone-lines" style="color: #ec4899;"></i> Voice Recorder & Studio Pro
-      </h1>
-      <p class="ar-subtitle">
-        High-fidelity microphone recording, real-time waveform visualizer, 300% volume booster & studio WAV export. 100% private.
-      </p>
+  <!-- Navbar -->
+  <header class="navbar">
+    <div class="app-container" style="width: 100%;">
+      <div class="nav-wrapper">
+        <a href="index.html" class="brand-link">
+          <img src="logo.png" alt="AI Bots Logo" class="brand-logo-img">
+          <span>AI Bots</span>
+          <span class="brand-badge" style="background: linear-gradient(135deg, #ec4899, #8b5cf6); color: white;">VOICE STUDIO</span>
+        </a>
+
+        <div class="nav-actions">
+          <a href="index.html" class="btn btn-secondary btn-sm"><i class="fas fa-house"></i> Hub</a>
+          <a href="sitemap.html" class="btn btn-secondary btn-sm"><i class="fas fa-compass"></i> All Tools</a>
+          <button class="icon-btn theme-toggle-btn" title="Toggle Dark/Light Mode" aria-label="Toggle dark mode"><i class="fas fa-moon"></i></button>
+        </div>
+      </div>
     </div>
+  </header>
+
+  <!-- Main Tool Container -->
+  <main class="app-container tool-page-wrapper" style="max-width: 1080px;">
+    <div class="tool-header">
+      <span class="tool-header-badge" style="color: #ec4899; background: rgba(236, 72, 153, 0.12); border: 1px solid rgba(236, 72, 153, 0.3);"><i class="fas fa-microphone-lines"></i> HD Voice Recording Studio</span>
+      <h1 class="tool-title">Voice Recorder & Studio Pro</h1>
+      <p class="tool-desc">High-fidelity microphone recording, real-time waveform visualizer, 300% volume booster & studio WAV export. 100% private in-browser.</p>
+    </div>
+
+    <div class="ar-container" style="padding-top: 0;">
 
     <div class="ar-card">
       <!-- Visualizer with View Modes -->
@@ -448,7 +467,8 @@
         <div id="historyList"></div>
       </div>
     </div>
-  </div>
+    </div>
+  </main>
 
   <!-- SEO Frequently Asked Questions Section -->
   <section class="app-container" style="max-width: 900px; margin: 40px auto 20px; padding: 0 16px;">
@@ -496,9 +516,12 @@
     </div>
   </section>
 
-  <script src="js/common.js"></script>
   <script>
-    abInitChrome('audiorecorder');
+    function abToast(msg, type = 'info') {
+      if (typeof showToast === 'function') {
+        showToast(msg, type);
+      }
+    }
 
     let mediaRecorder;
     let audioChunks = [];
@@ -932,5 +955,6 @@
       return new Blob([out], { type: 'audio/wav' });
     }
   </script>
+  <script src="js/app.js"></script>
 </body>
 </html>

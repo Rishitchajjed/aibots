@@ -136,7 +136,7 @@
     }
     @media (max-width: 960px) {
       .player-layout-grid.with-playlist {
-        grid-template-columns: 1fr;
+        grid-template-columns: 1fr !important;
       }
     }
 
@@ -145,8 +145,7 @@
       position: relative;
       width: 100%;
       aspect-ratio: 16/9;
-      min-height: 220px;
-      max-height: 72vh;
+      min-height: 210px;
       background: #020617;
       border-radius: 20px;
       border: 1px solid rgba(255, 255, 255, 0.14);
@@ -157,6 +156,7 @@
       display: flex;
       align-items: center;
       justify-content: center;
+      touch-action: manipulation;
     }
     @media (max-width: 768px) {
       .yt-player-container {
@@ -187,11 +187,11 @@
       transition: bottom 0.2s ease;
     }
     @media (max-width: 768px) {
-      .yt-subtitles-overlay { bottom: 65px; }
+      .yt-subtitles-overlay { bottom: 62px; }
     }
     .yt-subtitles-text {
       display: inline-block;
-      background: rgba(0, 0, 0, 0.82);
+      background: rgba(0, 0, 0, 0.85);
       color: #ffffff;
       padding: 4px 12px;
       border-radius: 6px;
@@ -204,20 +204,6 @@
     }
     .yt-subtitles-overlay.sub-sm .yt-subtitles-text { font-size: 0.85rem; }
     .yt-subtitles-overlay.sub-lg .yt-subtitles-text { font-size: 1.35rem; }
-
-    /* Touch Gesture Layer */
-    .yt-touch-layer {
-      position: absolute;
-      inset: 0;
-      display: grid;
-      grid-template-columns: 1fr 1fr 1fr;
-      z-index: 15;
-    }
-    .yt-touch-col {
-      height: 100%;
-      cursor: pointer;
-      -webkit-tap-highlight-color: transparent;
-    }
 
     /* Pulse Center Animations */
     .anim-pulse-center {
@@ -361,12 +347,12 @@
       bottom: 10px;
       left: 10px;
       right: 10px;
-      background: rgba(10, 15, 30, 0.9);
+      background: rgba(10, 15, 30, 0.92);
       backdrop-filter: blur(24px) saturate(180%);
       -webkit-backdrop-filter: blur(24px) saturate(180%);
       border: 1px solid rgba(255, 255, 255, 0.18);
       border-radius: 16px;
-      padding: 8px 14px 10px;
+      padding: 8px 12px 10px;
       display: flex;
       flex-direction: column;
       gap: 6px;
@@ -411,7 +397,7 @@
     .yt-scrubber-wrapper {
       position: relative;
       width: 100%;
-      height: 22px;
+      height: 20px;
       display: flex;
       align-items: center;
       cursor: pointer;
@@ -455,11 +441,11 @@
       top: 50%;
       left: 0%;
       transform: translate(-50%, -50%) scale(1);
-      width: 14px;
-      height: 14px;
+      width: 13px;
+      height: 13px;
       border-radius: 50%;
       background: #ffffff;
-      border: 3px solid #ec4899;
+      border: 2px solid #ec4899;
       box-shadow: 0 0 14px #ec4899, 0 0 25px #6366f1;
       transition: transform 0.15s ease;
       pointer-events: none;
@@ -507,8 +493,9 @@
       align-items: center;
       justify-content: center;
       transition: all 0.15s ease;
-      min-width: 34px;
-      min-height: 34px;
+      min-width: 36px;
+      min-height: 36px;
+      touch-action: manipulation;
     }
     .yt-btn:hover {
       color: #ffffff;
@@ -530,10 +517,13 @@
       cursor: pointer;
       accent-color: #ec4899;
     }
+
     @media (max-width: 768px) {
       .yt-volume-slider { display: none; }
       .desktop-only-btn { display: none !important; }
-      .yt-btn { min-width: 32px; min-height: 32px; font-size: 1rem; padding: 4px; }
+      .hide-on-mobile-bar { display: none !important; }
+      .yt-btn { min-width: 34px; min-height: 34px; font-size: 1.02rem; padding: 4px; }
+      .yt-btn-group { gap: 3px; }
     }
 
     .yt-time-text {
@@ -545,7 +535,39 @@
       white-space: nowrap;
     }
     @media (max-width: 480px) {
-      .yt-time-text { font-size: 0.7rem; }
+      .yt-time-text { font-size: 0.7rem; margin-left: 2px; }
+    }
+
+    /* Mobile Quick Action Toolbar */
+    .mobile-action-bar {
+      display: none;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 6px;
+      margin-top: 10px;
+    }
+    .mobile-action-bar button {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      padding: 8px 4px;
+      font-size: 0.72rem;
+      font-weight: 700;
+      border-radius: 12px;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      color: var(--text-primary);
+      box-shadow: var(--shadow-sm);
+    }
+    .mobile-action-bar button i {
+      font-size: 1rem;
+      color: var(--primary);
+    }
+    @media (max-width: 768px) {
+      .mobile-action-bar {
+        display: grid;
+      }
     }
 
     /* Settings Menu Overlay */
@@ -685,7 +707,7 @@
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
       gap: 16px;
-      margin-top: 24px;
+      margin-top: 20px;
     }
     .deck-panel {
       background: var(--bg-secondary);
@@ -883,157 +905,161 @@
       <!-- Player & Playlist Layout Grid -->
       <div class="player-layout-grid" id="playerGrid" style="display: none;">
         
-        <!-- Video Player Box -->
-        <div class="yt-player-container" id="playerWrap">
-          
-          <video id="videoEl" playsinline webkit-playsinline x5-playsinline preload="metadata" crossorigin="anonymous"></video>
-
-          <!-- Custom Subtitle Overlay -->
-          <div class="yt-subtitles-overlay" id="subtitlesOverlay" style="display: none;">
-            <span class="yt-subtitles-text" id="subtitlesText"></span>
-          </div>
-
-          <!-- Touch Interaction Gesture Layer -->
-          <div class="yt-touch-layer" id="touchZones">
-            <div class="yt-touch-col left" id="touchZoneLeft" title="Tap to toggle controls • Double tap to rewind 5s"></div>
-            <div class="yt-touch-col center" id="touchZoneCenter" title="Tap to play/pause"></div>
-            <div class="yt-touch-col right" id="touchZoneRight" title="Tap to toggle controls • Double tap to skip 5s"></div>
-          </div>
-
-          <!-- Holographic Center Play/Pause Pulse Animation -->
-          <div class="anim-pulse-center" id="centerPulse"><i class="fas fa-play" id="centerPulseIcon"></i></div>
-
-          <!-- Skip Waves -->
-          <div class="anim-skip-indicator left" id="animSkipLeft">
-            <div class="anim-skip-icon-box"><i class="fas fa-rotate-left"></i></div>
-            <div style="font-weight: 800; font-size: 0.95rem; letter-spacing: 0.05em;">-5 SEC</div>
-          </div>
-          <div class="anim-skip-indicator right" id="animSkipRight">
-            <div class="anim-skip-icon-box"><i class="fas fa-rotate-right"></i></div>
-            <div style="font-weight: 800; font-size: 0.95rem; letter-spacing: 0.05em;">+5 SEC</div>
-          </div>
-
-          <!-- Floating Holographic HUD Pill -->
-          <div class="yt-hud-toast" id="hudToast">
-            <i class="fas fa-volume-high" id="hudToastIcon"></i>
-            <span id="hudToastText">Volume 100%</span>
-          </div>
-
-          <!-- Camera Shutter Flash Animation -->
-          <div class="yt-shutter-flash" id="shutterFlash"></div>
-
-          <!-- Hold-to-2X Speed Badge -->
-          <div class="yt-speed-hold-badge" id="speedHoldBadge"><i class="fas fa-forward"></i> 2X SPEED</div>
-
-          <!-- Settings Menu -->
-          <div class="yt-settings-menu" id="settingsMenu">
-            <div style="font-weight: 800; font-size: 0.92rem; color: #ffffff; border-bottom: 1px solid rgba(255,255,255,0.15); padding-bottom: 6px;">
-              <i class="fas fa-gear" style="color: #ec4899;"></i> Cinema Settings
-            </div>
+        <div>
+          <!-- Video Player Box -->
+          <div class="yt-player-container" id="playerWrap">
             
-            <div class="yt-menu-item">
-              <span>Ambient Glow</span>
-              <button class="btn btn-secondary btn-sm" id="btnAmbientToggle" style="padding: 2px 8px; font-size: 0.72rem; color:#10b981;" onclick="toggleAmbientGlow()">ON</button>
+            <video id="videoEl" playsinline webkit-playsinline x5-playsinline preload="metadata" crossorigin="anonymous"></video>
+
+            <!-- Custom Subtitle Overlay -->
+            <div class="yt-subtitles-overlay" id="subtitlesOverlay" style="display: none;">
+              <span class="yt-subtitles-text" id="subtitlesText"></span>
             </div>
 
-            <div class="yt-menu-item">
-              <span>Visual Filter</span>
-              <select id="filterFxSel" class="form-control" style="width: 110px; padding: 2px 6px; font-size: 0.75rem;" onchange="setVisualFilter(this.value)">
-                <option value="none" selected>Normal</option>
-                <option value="cyberpunk">Cyberpunk Neon</option>
-                <option value="hdr">Vivid HDR</option>
-                <option value="vintage">Vintage Sepia</option>
-                <option value="warm">Warm Gold</option>
-                <option value="bw">High Contrast B&W</option>
-                <option value="invert">Night Vision Invert</option>
-              </select>
+            <!-- Holographic Center Play/Pause Pulse Animation -->
+            <div class="anim-pulse-center" id="centerPulse"><i class="fas fa-play" id="centerPulseIcon"></i></div>
+
+            <!-- Skip Waves -->
+            <div class="anim-skip-indicator left" id="animSkipLeft">
+              <div class="anim-skip-icon-box"><i class="fas fa-rotate-left"></i></div>
+              <div style="font-weight: 800; font-size: 0.95rem; letter-spacing: 0.05em;">-5 SEC</div>
+            </div>
+            <div class="anim-skip-indicator right" id="animSkipRight">
+              <div class="anim-skip-icon-box"><i class="fas fa-rotate-right"></i></div>
+              <div style="font-weight: 800; font-size: 0.95rem; letter-spacing: 0.05em;">+5 SEC</div>
             </div>
 
-            <div class="yt-menu-item">
-              <span>Aspect Ratio</span>
-              <select id="aspectRatioSel" class="form-control" style="width: 110px; padding: 2px 6px; font-size: 0.75rem;" onchange="setAspectRatio(this.value)">
-                <option value="contain" selected>Fit (Contain)</option>
-                <option value="cover">Fill (Cover)</option>
-                <option value="16-9">16:9 Standard</option>
-                <option value="4-3">4:3 TV</option>
-                <option value="9-16">9:16 Vertical</option>
-                <option value="21-9">21:9 Ultrawide</option>
-              </select>
+            <!-- Floating Holographic HUD Pill -->
+            <div class="yt-hud-toast" id="hudToast">
+              <i class="fas fa-volume-high" id="hudToastIcon"></i>
+              <span id="hudToastText">Volume 100%</span>
             </div>
 
-            <div class="yt-menu-item">
-              <span>Audio Equalizer</span>
-              <select id="eqSel" class="form-control" style="width: 110px; padding: 2px 6px; font-size: 0.75rem;" onchange="setAudioPreset(this.value)">
-                <option value="flat" selected>Flat / Normal</option>
-                <option value="bass">Bass Boost</option>
-                <option value="vocal">Vocal Clarity</option>
-                <option value="surround">3D Surround</option>
-                <option value="night">Night Mode</option>
-              </select>
-            </div>
+            <!-- Camera Shutter Flash Animation -->
+            <div class="yt-shutter-flash" id="shutterFlash"></div>
 
-            <div class="yt-menu-item">
-              <span>Volume Booster</span>
-              <span style="color:#10b981; font-weight:700;" id="menuBoostVal">100%</span>
-            </div>
-            <input type="range" min="50" max="300" value="100" class="range-slider" id="menuBoostSlider" style="width: 100%; accent-color: #ec4899;" oninput="setAudioBoost(this.value)">
-          </div>
+            <!-- Hold-to-2X Speed Badge -->
+            <div class="yt-speed-hold-badge" id="speedHoldBadge"><i class="fas fa-forward"></i> 2X SPEED</div>
 
-          <!-- Floating Glass Controls Overlay -->
-          <div class="yt-controls-overlay" id="controlsOverlay">
-            
-            <!-- Live VU Peak Meter -->
-            <div class="yt-vu-meter">
-              <div class="yt-vu-fill" id="vuMeterFill"></div>
-            </div>
-
-            <!-- Scrubber Timeline Bar -->
-            <div class="yt-scrubber-wrapper" id="scrubberWrapper">
-              <div class="yt-scrubber-track">
-                <div class="yt-ab-range" id="abRangeHighlight"></div>
-                <div class="yt-scrubber-played" id="scrubberPlayed"></div>
-                <div class="yt-scrubber-thumb" id="scrubberThumb"></div>
+            <!-- Settings Menu -->
+            <div class="yt-settings-menu" id="settingsMenu">
+              <div style="font-weight: 800; font-size: 0.92rem; color: #ffffff; border-bottom: 1px solid rgba(255,255,255,0.15); padding-bottom: 6px;">
+                <i class="fas fa-gear" style="color: #ec4899;"></i> Cinema Settings
               </div>
-              <div class="yt-scrub-tooltip" id="scrubTooltip">00:00</div>
+              
+              <div class="yt-menu-item">
+                <span>Ambient Glow</span>
+                <button class="btn btn-secondary btn-sm" id="btnAmbientToggle" style="padding: 2px 8px; font-size: 0.72rem; color:#10b981;" onclick="toggleAmbientGlow()">ON</button>
+              </div>
+
+              <div class="yt-menu-item">
+                <span>Visual Filter</span>
+                <select id="filterFxSel" class="form-control" style="width: 110px; padding: 2px 6px; font-size: 0.75rem;" onchange="setVisualFilter(this.value)">
+                  <option value="none" selected>Normal</option>
+                  <option value="cyberpunk">Cyberpunk Neon</option>
+                  <option value="hdr">Vivid HDR</option>
+                  <option value="vintage">Vintage Sepia</option>
+                  <option value="warm">Warm Gold</option>
+                  <option value="bw">High Contrast B&W</option>
+                  <option value="invert">Night Vision Invert</option>
+                </select>
+              </div>
+
+              <div class="yt-menu-item">
+                <span>Aspect Ratio</span>
+                <select id="aspectRatioSel" class="form-control" style="width: 110px; padding: 2px 6px; font-size: 0.75rem;" onchange="setAspectRatio(this.value)">
+                  <option value="contain" selected>Fit (Contain)</option>
+                  <option value="cover">Fill (Cover)</option>
+                  <option value="16-9">16:9 Standard</option>
+                  <option value="4-3">4:3 TV</option>
+                  <option value="9-16">9:16 Vertical</option>
+                  <option value="21-9">21:9 Ultrawide</option>
+                </select>
+              </div>
+
+              <div class="yt-menu-item">
+                <span>Audio Equalizer</span>
+                <select id="eqSel" class="form-control" style="width: 110px; padding: 2px 6px; font-size: 0.75rem;" onchange="setAudioPreset(this.value)">
+                  <option value="flat" selected>Flat / Normal</option>
+                  <option value="bass">Bass Boost</option>
+                  <option value="vocal">Vocal Clarity</option>
+                  <option value="surround">3D Surround</option>
+                  <option value="night">Night Mode</option>
+                </select>
+              </div>
+
+              <div class="yt-menu-item">
+                <span>Volume Booster</span>
+                <span style="color:#10b981; font-weight:700;" id="menuBoostVal">100%</span>
+              </div>
+              <input type="range" min="50" max="300" value="100" class="range-slider" id="menuBoostSlider" style="width: 100%; accent-color: #ec4899;" oninput="setAudioBoost(this.value)">
             </div>
 
-            <!-- Controls Buttons Row -->
-            <div class="yt-buttons-row">
+            <!-- Floating Glass Controls Overlay -->
+            <div class="yt-controls-overlay" id="controlsOverlay">
               
-              <!-- Left Controls -->
-              <div class="yt-btn-group">
-                <button class="yt-btn desktop-only-btn" onclick="playPrevTrack()" title="Previous Video (P)"><i class="fas fa-backward-step"></i></button>
-                <button class="yt-btn" id="btnPlayPause" onclick="togglePlay()" title="Play/Pause (Space)"><i class="fas fa-play"></i></button>
-                <button class="yt-btn desktop-only-btn" onclick="playNextTrack()" title="Next Video (N)"><i class="fas fa-forward-step"></i></button>
+              <!-- Live VU Peak Meter -->
+              <div class="yt-vu-meter">
+                <div class="yt-vu-fill" id="vuMeterFill"></div>
+              </div>
 
-                <button class="yt-btn" onclick="seekAnimated(-5)" title="Rewind 5s (← / J)"><i class="fas fa-rotate-left"></i></button>
-                <button class="yt-btn" onclick="seekAnimated(5)" title="Skip 5s (→ / L)"><i class="fas fa-rotate-right"></i></button>
+              <!-- Scrubber Timeline Bar -->
+              <div class="yt-scrubber-wrapper" id="scrubberWrapper">
+                <div class="yt-scrubber-track">
+                  <div class="yt-ab-range" id="abRangeHighlight"></div>
+                  <div class="yt-scrubber-played" id="scrubberPlayed"></div>
+                  <div class="yt-scrubber-thumb" id="scrubberThumb"></div>
+                </div>
+                <div class="yt-scrub-tooltip" id="scrubTooltip">00:00</div>
+              </div>
 
-                <div class="yt-volume-wrap">
-                  <button class="yt-btn" id="btnMute" onclick="toggleMute()" title="Mute (M)"><i class="fas fa-volume-high"></i></button>
-                  <input type="range" min="0" max="1" step="0.05" value="1" class="yt-volume-slider" id="volumeSlider" oninput="setPlayerVolume(this.value)">
+              <!-- Controls Buttons Row -->
+              <div class="yt-buttons-row">
+                
+                <!-- Left Controls -->
+                <div class="yt-btn-group">
+                  <button class="yt-btn desktop-only-btn" onclick="playPrevTrack()" title="Previous Video (P)"><i class="fas fa-backward-step"></i></button>
+                  <button class="yt-btn" id="btnPlayPause" onclick="togglePlay()" title="Play/Pause (Space)"><i class="fas fa-play"></i></button>
+                  <button class="yt-btn desktop-only-btn" onclick="playNextTrack()" title="Next Video (N)"><i class="fas fa-forward-step"></i></button>
+
+                  <button class="yt-btn" onclick="seekAnimated(-5)" title="Rewind 5s (← / J)"><i class="fas fa-rotate-left"></i></button>
+                  <button class="yt-btn" onclick="seekAnimated(5)" title="Skip 5s (→ / L)"><i class="fas fa-rotate-right"></i></button>
+
+                  <div class="yt-volume-wrap">
+                    <button class="yt-btn" id="btnMute" onclick="toggleMute()" title="Mute (M)"><i class="fas fa-volume-high"></i></button>
+                    <input type="range" min="0" max="1" step="0.05" value="1" class="yt-volume-slider" id="volumeSlider" oninput="setPlayerVolume(this.value)">
+                  </div>
+
+                  <span class="yt-time-text" id="timeDisplay">00:00 / 00:00</span>
                 </div>
 
-                <span class="yt-time-text" id="timeDisplay">00:00 / 00:00</span>
-              </div>
+                <!-- Right Controls -->
+                <div class="yt-btn-group">
+                  <button class="yt-btn desktop-only-btn" id="btnCc" onclick="toggleSubtitlesModal()" title="Subtitles (C)"><i class="fas fa-closed-captioning"></i></button>
+                  <button class="yt-btn desktop-only-btn" id="btnLoopAb" onclick="toggleAbLoopMode()" title="A-B Loop Repeater"><i class="fas fa-repeat"></i></button>
+                  <button class="yt-btn hide-on-mobile-bar" onclick="rotateVideo()" title="Rotate 90° (R)"><i class="fas fa-arrows-rotate"></i></button>
+                  <button class="yt-btn hide-on-mobile-bar" onclick="captureFrame()" title="Grab HD Snapshot (S)"><i class="fas fa-camera"></i></button>
+                  <button class="yt-btn hide-on-mobile-bar" id="btnTogglePlaylist" onclick="togglePlaylistDrawer()" title="Playlist Queue"><i class="fas fa-list"></i></button>
+                  <button class="yt-btn" onclick="toggleSettingsMenu()" title="Cinema Settings"><i class="fas fa-gear"></i></button>
+                  <button class="yt-btn desktop-only-btn" onclick="togglePiP()" title="Miniplayer (PiP)"><i class="fas fa-up-right-from-square"></i></button>
+                  <button class="yt-btn desktop-only-btn" onclick="showKeyboardShortcuts()" title="Shortcuts (?)"><i class="fas fa-keyboard"></i></button>
+                  <button class="yt-btn" onclick="toggleFullscreen()" title="Fullscreen (F)"><i class="fas fa-maximize"></i></button>
+                </div>
 
-              <!-- Right Controls -->
-              <div class="yt-btn-group">
-                <button class="yt-btn desktop-only-btn" id="btnCc" onclick="toggleSubtitlesModal()" title="Subtitles (C)"><i class="fas fa-closed-captioning"></i></button>
-                <button class="yt-btn desktop-only-btn" id="btnLoopAb" onclick="toggleAbLoopMode()" title="A-B Loop Repeater"><i class="fas fa-repeat"></i></button>
-                <button class="yt-btn" onclick="rotateVideo()" title="Rotate 90° (R)"><i class="fas fa-arrows-rotate"></i></button>
-                <button class="yt-btn" onclick="captureFrame()" title="Grab HD Snapshot (S)"><i class="fas fa-camera"></i></button>
-                <button class="yt-btn" id="btnTogglePlaylist" onclick="togglePlaylistDrawer()" title="Playlist Queue"><i class="fas fa-list"></i></button>
-                <button class="yt-btn" onclick="toggleSettingsMenu()" title="Cinema Settings"><i class="fas fa-gear"></i></button>
-                <button class="yt-btn desktop-only-btn" onclick="togglePiP()" title="Miniplayer (PiP)"><i class="fas fa-up-right-from-square"></i></button>
-                <button class="yt-btn desktop-only-btn" onclick="showKeyboardShortcuts()" title="Shortcuts (?)"><i class="fas fa-keyboard"></i></button>
-                <button class="yt-btn" onclick="toggleFullscreen()" title="Fullscreen (F)"><i class="fas fa-maximize"></i></button>
               </div>
 
             </div>
 
           </div>
 
+          <!-- Mobile Portrait Quick Action Bar -->
+          <div class="mobile-action-bar" id="mobileActionBar">
+            <button type="button" onclick="rotateVideo()"><i class="fas fa-arrows-rotate"></i> Rotate</button>
+            <button type="button" onclick="captureFrame()"><i class="fas fa-camera"></i> Snapshot</button>
+            <button type="button" onclick="toggleSubtitlesModal()"><i class="fas fa-closed-captioning"></i> Subtitles</button>
+            <button type="button" onclick="toggleAbLoopMode()"><i class="fas fa-repeat"></i> A-B Loop</button>
+            <button type="button" onclick="togglePlaylistDrawer()"><i class="fas fa-list"></i> Queue</button>
+          </div>
         </div>
 
         <!-- Multi-Video Playlist Sidebar Queue -->
@@ -1253,7 +1279,6 @@
     let hudTimer = null;
     let isAmbientOn = true;
     let originalSpeed = 1.0;
-    let holdSpeedTimeout = null;
 
     // Helper HUD Toast
     function showHudToast(iconClass, text) {
@@ -1269,7 +1294,7 @@
       clearTimeout(hudTimer);
       hudTimer = setTimeout(() => {
         toast.classList.remove('show');
-      }, 1500);
+      }, 1400);
     }
 
     // Audio Booster Initialization (Safe on-demand for mobile)
@@ -1453,7 +1478,7 @@
       studioDecks.style.display = 'grid';
       document.getElementById('dropzone').style.display = 'none';
 
-      if (playlist.length > 1) {
+      if (playlist.length > 1 && window.innerWidth > 960) {
         playerGrid.classList.add('with-playlist');
       }
 
@@ -1482,7 +1507,9 @@
       playerGrid.style.display = 'grid';
       studioDecks.style.display = 'grid';
       document.getElementById('dropzone').style.display = 'none';
-      playerGrid.classList.add('with-playlist');
+      if (window.innerWidth > 960) {
+        playerGrid.classList.add('with-playlist');
+      }
       renderPlaylistSidebar();
       loadTrack(0, true);
     }
@@ -1683,7 +1710,8 @@
         isAbLoopActive = true;
         document.getElementById('valLoopStatus').textContent = 'Looping A ⇄ B';
         document.getElementById('valLoopStatus').style.color = '#10b981';
-        document.getElementById('btnLoopAb').classList.add('active');
+        const loopBtn = document.getElementById('btnLoopAb');
+        if (loopBtn) loopBtn.classList.add('active');
       }
     }
 
@@ -1695,7 +1723,8 @@
       document.getElementById('valPointB').textContent = '--:--';
       document.getElementById('valLoopStatus').textContent = 'Inactive';
       document.getElementById('valLoopStatus').style.color = 'var(--text-muted)';
-      document.getElementById('btnLoopAb').classList.remove('active');
+      const loopBtn = document.getElementById('btnLoopAb');
+      if (loopBtn) loopBtn.classList.remove('active');
       document.getElementById('abRangeHighlight').style.display = 'none';
       showHudToast('fa-xmark', 'A-B Loop Cleared');
     }
@@ -1758,6 +1787,8 @@
       if (currentCue) subtitleCues.push(currentCue);
       areSubtitlesVisible = true;
       document.getElementById('subtitlesOverlay').style.display = 'block';
+      const ccBtn = document.getElementById('btnCc');
+      if (ccBtn) ccBtn.classList.add('active');
     }
 
     function parseSubTime(timeStr) {
@@ -1798,7 +1829,8 @@
     function toggleSubtitlesModal() {
       areSubtitlesVisible = !areSubtitlesVisible;
       document.getElementById('subtitlesOverlay').style.display = areSubtitlesVisible ? 'block' : 'none';
-      document.getElementById('btnCc').classList.toggle('active', areSubtitlesVisible);
+      const ccBtn = document.getElementById('btnCc');
+      if (ccBtn) ccBtn.classList.toggle('active', areSubtitlesVisible);
       showHudToast('fa-closed-captioning', areSubtitlesVisible ? 'Subtitles ON' : 'Subtitles OFF');
     }
 
@@ -1937,6 +1969,7 @@
     }
 
     scrubber.addEventListener('mousedown', (e) => {
+      e.stopPropagation();
       isScrubbing = true;
       scrubber.classList.add('active-scrub');
       handleScrub(e.clientX);
@@ -1966,6 +1999,7 @@
 
     // Touch Support for Scrubber
     scrubber.addEventListener('touchstart', (e) => {
+      e.stopPropagation();
       isScrubbing = true;
       scrubber.classList.add('active-scrub');
       if (e.touches.length) handleScrub(e.touches[0].clientX);
@@ -1984,7 +2018,7 @@
       }
     });
 
-    // YouTube Controls Auto-Hide
+    // Controls Auto-Hide
     function resetControlsTimeout() {
       container.classList.remove('hide-controls');
       clearTimeout(controlsTimer);
@@ -1993,7 +2027,7 @@
           if (!isScrubbing && !document.getElementById('settingsMenu').classList.contains('open')) {
             container.classList.add('hide-controls');
           }
-        }, 2800);
+        }, 3200);
       }
     }
 
@@ -2005,93 +2039,42 @@
       container.classList.remove('hide-controls');
     });
 
-    // Mobile & Desktop Gesture Engine (Single Tap, Double Tap Left/Right/Center, Hold 2X)
-    let lastTapTime = 0;
-    let lastTapTarget = null;
-    let singleTapTimeout = null;
+    // Tap Handling on Video Container
+    let lastTapTimestamp = 0;
+    let lastTapPositionX = 0;
 
-    function handleZoneTap(zone) {
+    container.addEventListener('click', (e) => {
+      // If clicking inside the controls overlay or settings menu, don't trigger background video tap
+      if (e.target.closest('#controlsOverlay') || e.target.closest('#settingsMenu') || e.target.closest('.yt-hud-toast')) {
+        return;
+      }
+
       const now = Date.now();
-      const delta = now - lastTapTime;
+      const rect = container.getBoundingClientRect();
+      const clickX = e.clientX - rect.left;
+      const relativeX = clickX / rect.width;
 
-      if (delta < 320 && lastTapTarget === zone) {
-        // Double Tap Detected
-        clearTimeout(singleTapTimeout);
-        if (zone === 'left') {
+      if (now - lastTapTimestamp < 320 && Math.abs(clickX - lastTapPositionX) < 80) {
+        // Double tap detected
+        lastTapTimestamp = 0;
+        if (relativeX < 0.38) {
           seekAnimated(-5);
-        } else if (zone === 'right') {
+        } else if (relativeX > 0.62) {
           seekAnimated(5);
-        } else if (zone === 'center') {
+        } else {
           toggleFullscreen();
         }
-        lastTapTime = 0;
-        lastTapTarget = null;
       } else {
-        // Single Tap
-        lastTapTime = now;
-        lastTapTarget = zone;
-        singleTapTimeout = setTimeout(() => {
-          if (container.classList.contains('hide-controls')) {
-            resetControlsTimeout();
-          } else {
-            togglePlay();
-          }
-        }, 300);
+        // Single tap
+        lastTapTimestamp = now;
+        lastTapPositionX = clickX;
+        if (container.classList.contains('hide-controls')) {
+          resetControlsTimeout();
+        } else {
+          togglePlay();
+        }
       }
-    }
-
-    document.getElementById('touchZoneLeft').addEventListener('click', (e) => {
-      e.stopPropagation();
-      handleZoneTap('left');
     });
-    document.getElementById('touchZoneCenter').addEventListener('click', (e) => {
-      e.stopPropagation();
-      handleZoneTap('center');
-    });
-    document.getElementById('touchZoneRight').addEventListener('click', (e) => {
-      e.stopPropagation();
-      handleZoneTap('right');
-    });
-
-    // Hold-to-2X Speed Feature
-    let isHoldingSpeed = false;
-    let baseSpeed = 1.0;
-
-    container.addEventListener('contextmenu', (e) => e.preventDefault());
-    video.addEventListener('contextmenu', (e) => e.preventDefault());
-
-    function startHoldSpeed(e) {
-      if (video.paused) return;
-      clearTimeout(holdSpeedTimeout);
-      holdSpeedTimeout = setTimeout(() => {
-        isHoldingSpeed = true;
-        baseSpeed = (originalSpeed && originalSpeed !== 2.0) ? originalSpeed : 1.0;
-        video.playbackRate = 2.0;
-        document.getElementById('speedHoldBadge').style.display = 'flex';
-        showHudToast('fa-forward', '2X Speed Active ⏩');
-      }, 400);
-    }
-
-    function endHoldSpeed() {
-      clearTimeout(holdSpeedTimeout);
-      if (isHoldingSpeed) {
-        isHoldingSpeed = false;
-        video.playbackRate = baseSpeed;
-        document.getElementById('speedHoldBadge').style.display = 'none';
-        showHudToast('fa-gauge-high', `Speed ${baseSpeed}x`);
-      }
-    }
-
-    const tZones = document.getElementById('touchZones');
-    if (tZones) {
-      tZones.addEventListener('mousedown', startHoldSpeed);
-      tZones.addEventListener('touchstart', startHoldSpeed, { passive: true });
-    }
-
-    window.addEventListener('mouseup', endHoldSpeed);
-    window.addEventListener('touchend', endHoldSpeed, { passive: true });
-    window.addEventListener('touchcancel', endHoldSpeed, { passive: true });
-    window.addEventListener('mouseleave', endHoldSpeed);
 
     // Settings Menu Toggle
     function toggleSettingsMenu() {

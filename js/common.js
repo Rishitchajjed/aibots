@@ -5,39 +5,44 @@
    ========================================================================== */
 
 const AB_TOOLS = [
-  // Utilities
-  { id:'calculator',     name:'Calculator',            file:'calculator.html',     icon:'🧮', cat:'Utilities',      desc:'Scientific calculator with history and keyboard input.' },
-  { id:'currency',       name:'Currency Converter',    file:'currency.html',       icon:'💱', cat:'Utilities',      desc:'Live exchange rates between 150+ currencies.' },
-  { id:'timer',          name:'Timer & Stopwatch',     file:'timer.html',          icon:'⏱️', cat:'Utilities',      desc:'Countdown timer, stopwatch and Pomodoro sessions.' },
-  { id:'unitconverter',  name:'Unit Converter',        file:'unitconverter.html',  icon:'📐', cat:'Utilities',      desc:'Length, weight, temperature and more.', isNew:true },
-  { id:'password',       name:'Password Generator',   file:'password.html',       icon:'🔑', cat:'Utilities',      desc:'Strong random passwords with a strength meter.', isNew:true },
-  { id:'wordcounter',    name:'Word Counter',          file:'wordcounter.html',    icon:'📝', cat:'Utilities',      desc:'Words, characters, reading time and keyword density.', isNew:true },
-  { id:'qrcode',         name:'QR Code Generator',    file:'qrcode.html',         icon:'📷', cat:'Utilities',      desc:'Turn any text or link into a downloadable QR code.', isNew:true },
-  { id:'weather',        name:'Weather',               file:'weather.html',        icon:'🌤️', cat:'Live Data',       desc:'Current conditions and forecast for any city.' },
-  { id:'cricket',        name:'Cricket Scores',        file:'cricket.html',        icon:'🏏', cat:'Live Data',       desc:'Live and recent cricket scores.' },
-  { id:'cricketscore',   name:'Cricket Scorer',        file:'cricketscore.html',   icon:'📊', cat:'Live Data',       desc:'Ball-by-ball scoring board for live matches.', isNew:true },
-  // Image & Design
-  { id:'backremover',    name:'Background Remover',   file:'backremover.html',    icon:'✂️', cat:'Image & Design',  desc:'Remove image backgrounds fully in your browser — no upload, no key.' },
-  { id:'cropphoto',      name:'Crop Photo',            file:'cropphoto.html',      icon:'🖼️', cat:'Image & Design',  desc:'Crop and export images to common sizes.' },
-  { id:'resizeimage',    name:'Resize Image',          file:'resizeimage.html',    icon:'📏', cat:'Image & Design',  desc:'Resize images by pixels or percentage.' },
-  { id:'imagecombiner',  name:'Image Combiner',        file:'imagecombiner.html',  icon:'🖇️', cat:'Image & Design',  desc:'Merge multiple images into one canvas.' },
-  { id:'imagelink',      name:'Image to Link',         file:'imagelink.html',      icon:'🔗', cat:'Image & Design',  desc:'Host an image and get a shareable direct link.' },
-  { id:'logomaker',      name:'Logo Maker',            file:'logomaker.html',      icon:'🎨', cat:'Image & Design',  desc:'Generate a simple text-based vector logo.' },
-  { id:'photogenerator', name:'Photo Generator',       file:'photogenerator.html', icon:'🤖', cat:'Image & Design',  desc:'AI-powered placeholder & image generation utility.' },
-  { id:'emojis',         name:'Emoji Picker',          file:'emojis.html',         icon:'😊', cat:'Image & Design',  desc:'Search and copy emojis fast.' },
-  // Documents
-  { id:'pdfmaker',       name:'PDF Maker',             file:'pdfmaker.html',       icon:'📄', cat:'Documents',       desc:'Turn images and text into a downloadable PDF.' },
-  { id:'pdfviewer',      name:'PDF Viewer',            file:'pdfviewer.html',      icon:'📖', cat:'Documents',       desc:'View PDFs in the browser, page by page.' },
-  { id:'print',          name:'Print Studio',          file:'print.html',          icon:'🖨️', cat:'Documents',       desc:'Preview, watermark, and print PDFs & images.' },
-  { id:'invoice',        name:'Invoice Generator',     file:'invoice.html',        icon:'🧾', cat:'Documents',       desc:'Create and download a professional invoice PDF.' },
-  { id:'ledger',         name:'Cash & Udhar Ledger',   file:'ledger.html',         icon:'📒', cat:'Documents',       desc:'Personal cash passbook, Udhar khata & daily spending tracker.', isNew:true },
-  { id:'buisnesscard',   name:'Business Card Maker',  file:'buisnesscard.html',   icon:'💼', cat:'Documents',       desc:'Design a printable business card.' },
-  { id:'endchanger',     name:'File Extension Changer',file:'endchanger.html',    icon:'🔄', cat:'Documents',       desc:"Rename a file's extension instantly." },
-  // Fun & Learning
-  { id:'chatbot',        name:'AI Chatbot',            file:'chatbot.html',        icon:'💬', cat:'Fun & Learning',  desc:'Chat with an intelligent assistant.' },
-  { id:'game',           name:'Mini Game',             file:'game.html',           icon:'🎮', cat:'Fun & Learning',  desc:'Quick browser game to take a break.' },
-  { id:'typingpractice', name:'Typing Practice',       file:'typingpractice.html', icon:'⌨️', cat:'Fun & Learning',  desc:'Test and improve your typing speed & accuracy.' },
-  { id:'videoplayer',    name:'Video Player',          file:'videoplayer.html',    icon:'▶️', cat:'Fun & Learning',  desc:'Play local video files in the browser.' },
+  // Financial & Documents
+  { id:'bank-statement-converter', name:'Bank Statement to Tally', file:'bank-statement-converter.html', icon:'📊', cat:'Finance & Docs', desc:'Convert PDF bank statements to TallyPrime XML with 100% privacy.', isNew:true },
+  { id:'ledger',         name:'Cash & Udhar Ledger',   file:'ledger.html',         icon:'📒', cat:'Finance & Docs', desc:'Personal cash passbook, Udhar khata & daily spending tracker.', isNew:true },
+  { id:'invoice',        name:'Invoice Generator',     file:'invoice.html',        icon:'🧾', cat:'Finance & Docs', desc:'Create and download a professional invoice PDF.' },
+  { id:'print',          name:'Print Studio',          file:'print.html',          icon:'🖨️', cat:'Finance & Docs', desc:'Preview, watermark, and print PDFs & images.' },
+  { id:'buisnesscard',   name:'Business Card Maker',  file:'buisnesscard.html',   icon:'💼', cat:'Finance & Docs', desc:'Design a printable business card.' },
+  { id:'pdfmaker',       name:'PDF Maker',             file:'pdfmaker.html',       icon:'📄', cat:'Finance & Docs', desc:'Turn images and text into a downloadable PDF.' },
+  { id:'pdfviewer',      name:'PDF Viewer',            file:'pdfviewer.html',      icon:'📖', cat:'Finance & Docs', desc:'View PDFs in the browser, page by page.' },
+  { id:'currency',       name:'Currency Converter',    file:'currency.html',       icon:'💱', cat:'Finance & Docs', desc:'Live exchange rates between 150+ currencies.' },
+  { id:'endchanger',     name:'File Extension Changer',file:'endchanger.html',    icon:'🔄', cat:'Finance & Docs', desc:"Rename a file's extension instantly." },
+
+  // Image & Video Studio
+  { id:'videoeditor',    name:'Video Studio Pro',      file:'videoeditor.html',    icon:'🎬', cat:'Image & Video',  desc:'Lossless video trimmer, cutter, audio extractor & compressor.', isNew:true },
+  { id:'videoplayer',    name:'Video Player',          file:'videoplayer.html',    icon:'▶️', cat:'Image & Video',  desc:'Play local video files with audio booster & frame grabber.' },
+  { id:'backremover',    name:'Background Remover',   file:'backremover.html',    icon:'✂️', cat:'Image & Video',  desc:'Remove image backgrounds fully in your browser — no upload, no key.' },
+  { id:'cropphoto',      name:'Crop Photo',            file:'cropphoto.html',      icon:'🖼️', cat:'Image & Video',  desc:'Crop and export images to common sizes.' },
+  { id:'resizeimage',    name:'Resize Image',          file:'resizeimage.html',    icon:'📏', cat:'Image & Video',  desc:'Resize images by pixels or percentage.' },
+  { id:'imagecombiner',  name:'Image Combiner',        file:'imagecombiner.html',  icon:'🖇️', cat:'Image & Video',  desc:'Merge multiple images into one canvas.' },
+  { id:'imagelink',      name:'Image to Link',         file:'imagelink.html',      icon:'🔗', cat:'Image & Video',  desc:'Host an image and get a shareable direct link.' },
+  { id:'logomaker',      name:'Logo Maker',            file:'logomaker.html',      icon:'🎨', cat:'Image & Video',  desc:'Generate a simple text-based vector logo.' },
+  { id:'photogenerator', name:'Photo Generator',       file:'photogenerator.html', icon:'🤖', cat:'Image & Video',  desc:'AI-powered placeholder & image generation utility.' },
+  { id:'emojis',         name:'Emoji Picker',          file:'emojis.html',         icon:'😊', cat:'Image & Video',  desc:'Search and copy emojis fast.' },
+
+  // Utilities & AI
+  { id:'chatbot',        name:'AI Chatbot',            file:'chatbot.html',        icon:'💬', cat:'Utilities & AI', desc:'Chat with an intelligent assistant.' },
+  { id:'qrcode',         name:'QR Code Generator',    file:'qrcode.html',         icon:'📷', cat:'Utilities & AI', desc:'Turn any text or link into a downloadable QR code.', isNew:true },
+  { id:'password',       name:'Password Generator',   file:'password.html',       icon:'🔑', cat:'Utilities & AI', desc:'Strong random passwords with a strength meter.', isNew:true },
+  { id:'calculator',     name:'Calculator',            file:'calculator.html',     icon:'🧮', cat:'Utilities & AI', desc:'Scientific calculator with history and keyboard input.' },
+  { id:'unitconverter',  name:'Unit Converter',        file:'unitconverter.html',  icon:'📐', cat:'Utilities & AI', desc:'Length, weight, temperature and more.', isNew:true },
+  { id:'wordcounter',    name:'Word Counter',          file:'wordcounter.html',    icon:'📝', cat:'Utilities & AI', desc:'Words, characters, reading time and keyword density.', isNew:true },
+  { id:'timer',          name:'Timer & Stopwatch',     file:'timer.html',          icon:'⏱️', cat:'Utilities & AI', desc:'Countdown timer, stopwatch and Pomodoro sessions.' },
+  { id:'weather',        name:'Weather Radar',         file:'weather.html',        icon:'🌤️', cat:'Utilities & AI', desc:'Current conditions and forecast for any city.' },
+
+  // Sports & Gaming
+  { id:'cricketscore',   name:'Cricket Scorer',        file:'cricketscore.html',   icon:'📊', cat:'Sports & Gaming',desc:'Ball-by-ball scoring board for live matches.', isNew:true },
+  { id:'cricket',        name:'Cricket Scores',        file:'cricket.html',        icon:'🏏', cat:'Sports & Gaming',desc:'Live and recent cricket scores.' },
+  { id:'game',           name:'Realm of Bots RPG',     file:'game.html',           icon:'🎮', cat:'Sports & Gaming',desc:'Epic browser action RPG game.' },
+  { id:'typingpractice', name:'Typing Practice',       file:'typingpractice.html', icon:'⌨️', cat:'Sports & Gaming',desc:'Test and improve your typing speed & accuracy.' }
 ];
 
 /* ──────────────────────────────────────────────

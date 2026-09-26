@@ -1,17 +1,29 @@
 // AI Bots Progressive Web App (PWA) Service Worker
-// Version: 1.1.0 (Cache-First Core + Stale-While-Revalidate Strategy)
+// Version: 1.3.0 (Cache-First Core + Stale-While-Revalidate Strategy)
 
-const CACHE_NAME = 'aibots-pwa-v2';
+const CACHE_NAME = 'aibots-pwa-v3';
 const PRECACHE_ASSETS = [
   './',
   './index.html',
   './offline.html',
   './logo.png',
+  './logo-exact-hd.svg',
+  './logo-hd.svg',
   './css/theme.css',
+  './js/app.js',
   './js/app.min.js',
   './js/common.js',
   './js/effects.js',
-  './manifest.json'
+  './manifest.json',
+  './calculator.html',
+  './cricketscore.html',
+  './qrcode.html',
+  './password.html',
+  './ledger.html',
+  './unitconverter.html',
+  './wordcounter.html',
+  './cropphoto.html',
+  './resizeimage.html'
 ];
 
 // 1. Install Event: Pre-cache core shell assets

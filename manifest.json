@@ -3,14 +3,14 @@
   "name": "AI Bots — Creative Studio & Productivity Tools",
   "short_name": "AI Bots",
   "id": "ai-bots-creative-studio",
-  "description": "Free all-in-one web-based creative powerhouse and 28+ private browser tools by Rishit Chajjed.",
+  "description": "Free all-in-one web-based creative powerhouse and 33+ private browser tools by Rishit Chajjed.",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",
   "orientation": "any",
   "background_color": "#0a0f1d",
   "theme_color": "#6366f1",
-  "categories": ["productivity", "utilities", "photo", "games"],
+  "categories": ["productivity", "utilities", "photo", "finance", "games"],
   "icons": [
     {
       "src": "logo.png",
@@ -23,6 +23,11 @@
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any maskable"
+    },
+    {
+      "src": "logo-exact-hd.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
     }
   ],
   "shortcuts": [
@@ -34,6 +39,20 @@
       "icons": [{ "src": "logo.png", "sizes": "192x192" }]
     },
     {
+      "name": "Cash & Udhar Ledger",
+      "short_name": "Udhar Ledger",
+      "description": "Personal passbook, Udhar khata, and daily cash tracker",
+      "url": "./ledger.html",
+      "icons": [{ "src": "logo.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Bank Statement Converter",
+      "short_name": "Tally XML",
+      "description": "Convert bank PDF statements to Tally XML vouchers",
+      "url": "./bank-statement-converter.html",
+      "icons": [{ "src": "logo.png", "sizes": "192x192" }]
+    },
+    {
       "name": "Background Remover",
       "short_name": "BG Remover",
       "description": "1-click AI photo background eraser",
@@ -41,17 +60,10 @@
       "icons": [{ "src": "logo.png", "sizes": "192x192" }]
     },
     {
-      "name": "Precision Photo Crop",
-      "short_name": "Crop Studio",
-      "description": "8-handle precision rule-of-thirds photo cropper",
-      "url": "./cropphoto.html",
-      "icons": [{ "src": "logo.png", "sizes": "192x192" }]
-    },
-    {
-      "name": "Realm of Bots RPG",
-      "short_name": "Open World Game",
-      "description": "Epic 4-biome top-down open world action adventure",
-      "url": "./game.html",
+      "name": "Video Studio Pro",
+      "short_name": "Video Editor",
+      "description": "Lossless HD video trimmer, cutter, and compressor",
+      "url": "./videoeditor.html",
       "icons": [{ "src": "logo.png", "sizes": "192x192" }]
     }
   ]

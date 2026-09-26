@@ -55,7 +55,7 @@
       --cyber-accent: #ec4899;
       --cyber-cyan: #06b6d4;
       --cyber-glow: rgba(236, 72, 153, 0.45);
-      --glass-bg: rgba(10, 15, 30, 0.88);
+      --glass-bg: rgba(10, 15, 30, 0.9);
       --glass-border: rgba(255, 255, 255, 0.14);
     }
 
@@ -162,6 +162,61 @@
       .yt-player-container {
         border-radius: 14px;
         min-height: 200px;
+      }
+    }
+
+    /* Custom Fullscreen Mode (Works on iOS, Android & Desktop) */
+    .yt-player-container.is-custom-fullscreen {
+      position: fixed !important;
+      inset: 0 !important;
+      width: 100vw !important;
+      height: 100vh !important;
+      max-height: 100vh !important;
+      border-radius: 0 !important;
+      border: none !important;
+      z-index: 999999 !important;
+      background: #000 !important;
+    }
+
+    /* Mobile Landscape Auto-Cinema Mode */
+    @media (orientation: landscape) and (max-height: 520px) {
+      .navbar, .tool-header, .mobile-action-bar, .studio-controls-deck, .snapshot-gallery-card, .footer-modern {
+        display: none !important;
+      }
+      body {
+        overflow: hidden !important;
+        margin: 0 !important;
+        padding: 0 !important;
+      }
+      main.tool-page-wrapper {
+        padding: 0 !important;
+        margin: 0 !important;
+        max-width: 100% !important;
+      }
+      .vp-card {
+        max-width: 100% !important;
+        margin: 0 !important;
+      }
+      .yt-player-container {
+        position: fixed !important;
+        inset: 0 !important;
+        width: 100vw !important;
+        height: 100vh !important;
+        max-height: 100vh !important;
+        border-radius: 0 !important;
+        border: none !important;
+        z-index: 99999 !important;
+      }
+      .yt-controls-overlay {
+        bottom: 10px !important;
+        left: 14px !important;
+        right: 14px !important;
+      }
+      .hide-on-mobile-bar {
+        display: flex !important;
+      }
+      .mobile-action-bar {
+        display: none !important;
       }
     }
 
@@ -1043,7 +1098,7 @@
                   <button class="yt-btn" onclick="toggleSettingsMenu()" title="Cinema Settings"><i class="fas fa-gear"></i></button>
                   <button class="yt-btn desktop-only-btn" onclick="togglePiP()" title="Miniplayer (PiP)"><i class="fas fa-up-right-from-square"></i></button>
                   <button class="yt-btn desktop-only-btn" onclick="showKeyboardShortcuts()" title="Shortcuts (?)"><i class="fas fa-keyboard"></i></button>
-                  <button class="yt-btn" onclick="toggleFullscreen()" title="Fullscreen (F)"><i class="fas fa-maximize"></i></button>
+                  <button class="yt-btn" id="btnFullscreen" onclick="toggleFullscreen()" title="Fullscreen (F)"><i class="fas fa-maximize"></i></button>
                 </div>
 
               </div>
@@ -1279,6 +1334,12 @@
     let hudTimer = null;
     let isAmbientOn = true;
     let originalSpeed = 1.0;
+
+    // Long Press 2X Speed Engine
+    let holdSpeedTimer = null;
+    let isHoldingSpeed = false;
+    let wasHoldingSpeed = false;
+    let baseSpeed = 1.0;
 
     // Helper HUD Toast
     function showHudToast(iconClass, text) {
@@ -2039,12 +2100,62 @@
       container.classList.remove('hide-controls');
     });
 
+    // Stop propagation on controls dock so buttons don't trigger container clicks
+    document.getElementById('controlsOverlay').addEventListener('click', (e) => e.stopPropagation());
+    document.getElementById('controlsOverlay').addEventListener('touchstart', (e) => e.stopPropagation(), { passive: true });
+    document.getElementById('settingsMenu').addEventListener('click', (e) => e.stopPropagation());
+    document.getElementById('settingsMenu').addEventListener('touchstart', (e) => e.stopPropagation(), { passive: true });
+
+    // 2X Speed Long Press Engine (YouTube Style)
+    function startSpeedHold(e) {
+      if (e.target.closest('#controlsOverlay') || e.target.closest('#settingsMenu') || e.target.closest('.yt-hud-toast')) {
+        return;
+      }
+      if (video.paused) return;
+
+      clearTimeout(holdSpeedTimer);
+      holdSpeedTimer = setTimeout(() => {
+        isHoldingSpeed = true;
+        baseSpeed = (originalSpeed && originalSpeed !== 2.0) ? originalSpeed : (video.playbackRate || 1.0);
+        video.playbackRate = 2.0;
+        const badge = document.getElementById('speedHoldBadge');
+        if (badge) badge.style.display = 'flex';
+        showHudToast('fa-forward', '2X Speed Active ⏩');
+        if (navigator.vibrate) {
+          try { navigator.vibrate(30); } catch(err) {}
+        }
+      }, 350);
+    }
+
+    function cancelSpeedHold(e) {
+      clearTimeout(holdSpeedTimer);
+      if (isHoldingSpeed) {
+        isHoldingSpeed = false;
+        wasHoldingSpeed = true;
+        setTimeout(() => { wasHoldingSpeed = false; }, 120);
+        video.playbackRate = baseSpeed;
+        const badge = document.getElementById('speedHoldBadge');
+        if (badge) badge.style.display = 'none';
+        showHudToast('fa-gauge-high', `Speed ${baseSpeed}x`);
+      }
+    }
+
+    container.addEventListener('touchstart', startSpeedHold, { passive: true });
+    window.addEventListener('touchend', cancelSpeedHold, { passive: true });
+    window.addEventListener('touchcancel', cancelSpeedHold, { passive: true });
+
+    container.addEventListener('mousedown', (e) => {
+      if (e.button === 0) startSpeedHold(e);
+    });
+    window.addEventListener('mouseup', cancelSpeedHold);
+    window.addEventListener('mouseleave', cancelSpeedHold);
+
     // Tap Handling on Video Container
     let lastTapTimestamp = 0;
     let lastTapPositionX = 0;
 
     container.addEventListener('click', (e) => {
-      // If clicking inside the controls overlay or settings menu, don't trigger background video tap
+      if (wasHoldingSpeed) return;
       if (e.target.closest('#controlsOverlay') || e.target.closest('#settingsMenu') || e.target.closest('.yt-hud-toast')) {
         return;
       }
@@ -2054,7 +2165,7 @@
       const clickX = e.clientX - rect.left;
       const relativeX = clickX / rect.width;
 
-      if (now - lastTapTimestamp < 320 && Math.abs(clickX - lastTapPositionX) < 80) {
+      if (now - lastTapTimestamp < 320 && Math.abs(clickX - lastTapPositionX) < 90) {
         // Double tap detected
         lastTapTimestamp = 0;
         if (relativeX < 0.38) {
@@ -2099,24 +2210,46 @@
       }
     }
 
-    // Fullscreen
+    // Fullscreen (Cross-Platform / Seamless iOS & Android)
     function toggleFullscreen() {
-      if (!document.fullscreenElement && !document.webkitFullscreenElement) {
-        if (container.requestFullscreen) {
-          container.requestFullscreen().catch(() => {});
-        } else if (container.webkitRequestFullscreen) {
-          container.webkitRequestFullscreen();
-        } else if (video.webkitEnterFullscreen) {
-          video.webkitEnterFullscreen();
-        }
-      } else {
+      const fsBtn = document.getElementById('btnFullscreen');
+      if (document.fullscreenElement || document.webkitFullscreenElement) {
         if (document.exitFullscreen) {
           document.exitFullscreen().catch(() => {});
         } else if (document.webkitExitFullscreen) {
           document.webkitExitFullscreen();
         }
+        if (fsBtn) fsBtn.innerHTML = '<i class="fas fa-maximize"></i>';
+        container.classList.remove('is-custom-fullscreen');
+      } else if (container.classList.contains('is-custom-fullscreen')) {
+        container.classList.remove('is-custom-fullscreen');
+        if (fsBtn) fsBtn.innerHTML = '<i class="fas fa-maximize"></i>';
+      } else if (container.requestFullscreen) {
+        container.requestFullscreen().then(() => {
+          if (fsBtn) fsBtn.innerHTML = '<i class="fas fa-compress"></i>';
+        }).catch(() => {
+          container.classList.add('is-custom-fullscreen');
+          if (fsBtn) fsBtn.innerHTML = '<i class="fas fa-compress"></i>';
+        });
+      } else if (container.webkitRequestFullscreen) {
+        container.webkitRequestFullscreen();
+        if (fsBtn) fsBtn.innerHTML = '<i class="fas fa-compress"></i>';
+      } else {
+        // iOS Safari Fullscreen fallback
+        container.classList.add('is-custom-fullscreen');
+        if (fsBtn) fsBtn.innerHTML = '<i class="fas fa-compress"></i>';
       }
     }
+
+    document.addEventListener('fullscreenchange', () => {
+      const fsBtn = document.getElementById('btnFullscreen');
+      if (document.fullscreenElement) {
+        if (fsBtn) fsBtn.innerHTML = '<i class="fas fa-compress"></i>';
+      } else {
+        if (fsBtn) fsBtn.innerHTML = '<i class="fas fa-maximize"></i>';
+        container.classList.remove('is-custom-fullscreen');
+      }
+    });
 
     // Keyboard Shortcuts Modal Handlers
     function showKeyboardShortcuts() {

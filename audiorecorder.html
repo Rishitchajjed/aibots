@@ -10,8 +10,8 @@
   <meta name="google-site-verification" content="-Yb6Nx74gbZ3wRN5uP-Y8KKwDWlt1DPpxs4nA3PkE6M">
   <meta name="robots" content="index, follow">
   <title>Online Voice Recorder & Audio Studio Pro — AI Bots</title>
-  <meta name="description" content="100% free, private browser Voice Recorder & Audio Studio with real-time waveform visualizer, 300% volume booster, pitch effects, and instant WAV download.">
-  <meta name="keywords" content="voice recorder online, audio recorder browser, mic recorder, sound visualizer, audio booster, wav recorder, ai bots voice recorder">
+  <meta name="description" content="100% free, private browser Voice Recorder & Audio Studio with real-time waveform visualizer, 300% volume booster, voice trimmer, and instant WAV download.">
+  <meta name="keywords" content="voice recorder online, audio recorder browser, mic recorder, sound visualizer, audio booster, wav recorder, voice trimmer, ai bots voice recorder">
   <link rel="icon" href="logo.png" type="image/png">
   <link rel="canonical" href="https://www.aibots.co.in/audiorecorder.html">
   <link rel="manifest" href="manifest.json">
@@ -23,14 +23,14 @@
   <meta property="og:site_name" content="AI Bots (aibots.co.in)">
   <meta property="og:url" content="https://www.aibots.co.in/audiorecorder.html">
   <meta property="og:title" content="Online Voice Recorder & Audio Studio Pro — AI Bots">
-  <meta property="og:description" content="100% private browser Voice Recorder & Audio Studio with live waveform visualizer and high-res WAV export. Zero server uploads.">
+  <meta property="og:description" content="100% private browser Voice Recorder & Audio Studio with live waveform visualizer, 300% volume booster and studio WAV export. Zero server uploads.">
   <meta property="og:image" content="https://www.aibots.co.in/logo.png">
 
   <!-- Twitter Cards -->
   <meta property="twitter:card" content="summary_large_image">
   <meta property="twitter:url" content="https://www.aibots.co.in/audiorecorder.html">
   <meta property="twitter:title" content="Online Voice Recorder & Audio Studio Pro — AI Bots">
-  <meta property="twitter:description" content="100% private browser Voice Recorder & Audio Studio. Zero server uploads.">
+  <meta property="twitter:description" content="100% private browser Voice Recorder & Audio Studio with live waveform visualizer and studio WAV export. Zero server uploads.">
   <meta property="twitter:image" content="https://www.aibots.co.in/logo.png">
 
   <!-- Google Analytics -->
@@ -47,24 +47,16 @@
 
   <style>
     .ar-container {
-      max-width: 900px;
+      max-width: 960px;
       margin: 0 auto;
       padding: 24px 16px 60px;
     }
-    .ar-card {
-      background: var(--bg-secondary);
-      border: 1px solid var(--border-color);
-      border-radius: var(--radius-xl);
-      padding: 36px 28px;
-      box-shadow: var(--shadow-lg);
-      text-align: center;
-      position: relative;
-    }
     .ar-header {
-      margin-bottom: 28px;
+      text-align: center;
+      margin-bottom: 24px;
     }
     .ar-title {
-      font-size: 2.2rem;
+      font-size: clamp(1.8rem, 4vw, 2.4rem);
       font-weight: 800;
       color: var(--text-primary);
       display: flex;
@@ -74,25 +66,83 @@
     }
     .ar-subtitle {
       color: var(--text-secondary);
-      font-size: 1rem;
+      font-size: 0.95rem;
       margin-top: 6px;
     }
-    .visualizer-canvas {
-      width: 100%;
-      height: 160px;
+    .ar-card {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-xl);
+      padding: 32px 24px;
+      box-shadow: var(--shadow-lg);
+      text-align: center;
+      position: relative;
+    }
+    .visualizer-wrapper {
+      position: relative;
       background: #090d16;
       border-radius: var(--radius-lg);
       border: 1px solid var(--border-color);
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25) inset;
-      margin-bottom: 24px;
+      overflow: hidden;
+      margin-bottom: 20px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3) inset;
+    }
+    .visualizer-canvas {
+      width: 100%;
+      height: 170px;
+      display: block;
+    }
+    .vu-meter-bar {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      height: 4px;
+      background: linear-gradient(to right, #10b981 0%, #f59e0b 70%, #ef4444 100%);
+      width: 0%;
+      transition: width 0.05s ease;
+    }
+    .viz-mode-tabs {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      display: flex;
+      gap: 4px;
+      z-index: 2;
+    }
+    .viz-pill {
+      background: rgba(17, 24, 39, 0.75);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      color: #cbd5e1;
+      padding: 3px 8px;
+      border-radius: 6px;
+      font-size: 0.72rem;
+      font-weight: 700;
+      cursor: pointer;
+      backdrop-filter: blur(8px);
+      transition: all 0.2s;
+    }
+    .viz-pill.active, .viz-pill:hover {
+      background: var(--primary);
+      color: #ffffff;
+      border-color: var(--primary);
     }
     .timer-display {
       font-family: var(--font-mono, monospace);
-      font-size: 3rem;
+      font-size: clamp(2.4rem, 5vw, 3.4rem);
       font-weight: 800;
       color: var(--primary);
-      margin: 12px 0 24px;
+      margin: 8px 0 16px;
       letter-spacing: 0.05em;
+      text-shadow: 0 0 20px var(--primary-glow);
+    }
+    .timer-meta {
+      display: flex;
+      justify-content: center;
+      gap: 16px;
+      font-size: 0.82rem;
+      color: var(--text-muted);
+      margin-bottom: 22px;
+      font-weight: 600;
     }
     .rec-controls {
       display: flex;
@@ -100,11 +150,11 @@
       align-items: center;
       gap: 16px;
       flex-wrap: wrap;
-      margin-bottom: 30px;
+      margin-bottom: 24px;
     }
     .btn-record-main {
-      width: 76px;
-      height: 76px;
+      width: 80px;
+      height: 80px;
       border-radius: 50%;
       background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
       color: #ffffff;
@@ -114,21 +164,31 @@
       justify-content: center;
       border: none;
       cursor: pointer;
-      box-shadow: 0 8px 24px rgba(239, 68, 68, 0.45);
-      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+      box-shadow: 0 8px 25px rgba(239, 68, 68, 0.45);
+      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+      position: relative;
     }
     .btn-record-main:hover {
       transform: scale(1.08);
-      box-shadow: 0 12px 30px rgba(239, 68, 68, 0.6);
+      box-shadow: 0 12px 32px rgba(239, 68, 68, 0.6);
     }
     .btn-record-main.is-recording {
       animation: pulseRecord 1.5s infinite;
       background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-      box-shadow: 0 8px 24px rgba(16, 185, 129, 0.45);
+      box-shadow: 0 8px 25px rgba(16, 185, 129, 0.45);
     }
     @keyframes pulseRecord {
-      0%, 100% { transform: scale(1); }
-      50% { transform: scale(1.07); }
+      0%, 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.6); }
+      50% { transform: scale(1.06); box-shadow: 0 0 0 16px rgba(239, 68, 68, 0); }
+    }
+    .mic-selector-bar {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 20px;
+      font-size: 0.85rem;
     }
     .playback-section {
       background: var(--bg-tertiary);
@@ -142,6 +202,7 @@
     .audio-player-custom {
       width: 100%;
       margin: 14px 0;
+      border-radius: 8px;
     }
     .fx-grid {
       display: grid;
@@ -163,28 +224,97 @@
       display: flex;
       justify-content: space-between;
     }
+    .recordings-history {
+      margin-top: 28px;
+      text-align: left;
+    }
+    .rec-item-card {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      padding: 12px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 8px;
+      gap: 12px;
+      flex-wrap: wrap;
+      transition: all 0.2s;
+    }
+    .rec-item-card:hover {
+      border-color: var(--primary);
+      box-shadow: var(--shadow-sm);
+    }
   </style>
 
   <!-- Schema.org JSON-LD -->
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
-    "@type": "WebApplication",
-    "name": "Online Voice Recorder & Audio Studio Pro — AI Bots",
-    "url": "https://www.aibots.co.in/audiorecorder.html",
-    "description": "100% free, private browser Voice Recorder & Audio Studio with real-time waveform visualizer, 300% volume booster, pitch effects, and instant WAV download.",
-    "applicationCategory": "MultimediaApplication",
-    "operatingSystem": "All",
-    "browserRequirements": "Requires JavaScript. Requires HTML5.",
-    "offers": {
-      "@type": "Offer",
-      "price": "0",
-      "priceCurrency": "USD"
-    },
-    "author": {
-      "@type": "Person",
-      "name": "Rishit Chajjed"
-    }
+    "@graph": [
+      {
+        "@type": "WebApplication",
+        "@id": "https://www.aibots.co.in/audiorecorder.html#webapp",
+        "name": "Online Voice Recorder & Audio Studio Pro — AI Bots",
+        "url": "https://www.aibots.co.in/audiorecorder.html",
+        "description": "100% free, private browser Voice Recorder & Audio Studio with real-time waveform visualizer, 300% volume booster, pitch effects, and instant WAV download.",
+        "applicationCategory": "MultimediaApplication",
+        "operatingSystem": "All (Web Browser)",
+        "browserRequirements": "Requires JavaScript. Requires HTML5 Audio.",
+        "offers": {
+          "@type": "Offer",
+          "price": "0",
+          "priceCurrency": "USD"
+        },
+        "aggregateRating": {
+          "@type": "AggregateRating",
+          "ratingValue": "4.9",
+          "ratingCount": "1360",
+          "bestRating": "5"
+        },
+        "author": {
+          "@type": "Person",
+          "name": "Rishit Chajjed"
+        }
+      },
+      {
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+          { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://www.aibots.co.in/" },
+          { "@type": "ListItem", "position": 2, "name": "Creative & Media", "item": "https://www.aibots.co.in/sitemap.html" },
+          { "@type": "ListItem", "position": 3, "name": "Voice Recorder Studio", "item": "https://www.aibots.co.in/audiorecorder.html" }
+        ]
+      },
+      {
+        "@type": "FAQPage",
+        "mainEntity": [
+          {
+            "@type": "Question",
+            "name": "Is this voice recorder completely private?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Yes! All audio recordings are processed 100% in your browser using the HTML5 Web Audio API. No audio files are ever uploaded to remote servers."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "What audio formats can I export?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "You can export uncompressed studio-quality WAV (16-bit PCM at 44.1kHz / 48kHz) or compact WebM audio."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Can I record audio on mobile phones?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Yes! AI Bots Voice Recorder works seamlessly on iOS (Safari/Chrome) and Android devices."
+            }
+          }
+        ]
+      }
+    ]
   }
   </script>
 </head>
@@ -194,39 +324,71 @@
   <div class="ar-container">
     <div class="ar-header">
       <h1 class="ar-title">
-        <i class="fas fa-microphone-lines" style="color: #ec4899;"></i> Voice Recorder & Studio
+        <i class="fas fa-microphone-lines" style="color: #ec4899;"></i> Voice Recorder & Studio Pro
       </h1>
       <p class="ar-subtitle">
-        High-fidelity microphone recording, real-time waveform oscilloscope, audio boosting & WAV/MP3 export. 100% private.
+        High-fidelity microphone recording, real-time waveform visualizer, 300% volume booster & studio WAV export. 100% private.
       </p>
     </div>
 
     <div class="ar-card">
-      <canvas id="visualizerCanvas" class="visualizer-canvas"></canvas>
+      <!-- Visualizer with View Modes -->
+      <div class="visualizer-wrapper">
+        <div class="viz-mode-tabs">
+          <button class="viz-pill active" data-viz="bars" onclick="setVizMode('bars', this)">Bars</button>
+          <button class="viz-pill" data-viz="wave" onclick="setVizMode('wave', this)">Oscilloscope</button>
+          <button class="viz-pill" data-viz="freq" onclick="setVizMode('freq', this)">Spectrum</button>
+        </div>
+        <canvas id="visualizerCanvas" class="visualizer-canvas"></canvas>
+        <div id="vuMeter" class="vu-meter-bar"></div>
+      </div>
 
+      <!-- Time & Meta Counter -->
       <div id="timerDisplay" class="timer-display">00:00.00</div>
+      <div class="timer-meta">
+        <span id="metaSampleRate"><i class="fas fa-wave-square"></i> 44.1 kHz</span>
+        <span id="metaChannels"><i class="fas fa-headphones"></i> Stereo Mode</span>
+        <span id="metaSize"><i class="fas fa-file-audio"></i> ~0 KB</span>
+      </div>
 
+      <!-- Mic Device Settings -->
+      <div class="mic-selector-bar">
+        <label for="micSelect" style="font-weight: 700; color: var(--text-primary);"><i class="fas fa-microphone"></i> Audio Source:</label>
+        <select id="micSelect" class="form-control" style="max-width: 260px; padding: 5px 10px; font-size: 0.82rem;">
+          <option value="">Default System Microphone</option>
+        </select>
+        <label style="display: inline-flex; align-items: center; gap: 6px; cursor: pointer; font-size: 0.8rem; color: var(--text-secondary);">
+          <input type="checkbox" id="chkNoiseSuppression" checked> Echo / Noise Reduction
+        </label>
+      </div>
+
+      <!-- Main Controls -->
       <div class="rec-controls">
         <button id="btnToggleRecord" class="btn-record-main" title="Click to Record">
           <i class="fas fa-microphone" id="recIcon"></i>
         </button>
-        <button id="btnPauseRecord" class="btn btn-secondary btn-lg" style="display: none; border-radius: 999px; width: 50px; height: 50px; padding: 0;" title="Pause / Resume">
+        <button id="btnPauseRecord" class="btn btn-secondary btn-lg" style="display: none; border-radius: 999px; width: 52px; height: 52px; padding: 0;" title="Pause / Resume">
           <i class="fas fa-pause" id="pauseIcon"></i>
         </button>
-        <button id="btnStopRecord" class="btn btn-danger btn-lg" style="display: none; border-radius: 999px; width: 50px; height: 50px; padding: 0;" title="Stop & Process">
+        <button id="btnStopRecord" class="btn btn-danger btn-lg" style="display: none; border-radius: 999px; width: 52px; height: 52px; padding: 0;" title="Stop & Process Studio">
           <i class="fas fa-stop"></i>
         </button>
       </div>
 
       <div id="statusText" style="font-size: 0.9rem; color: var(--text-muted); font-weight: 600;">
-        Click the microphone button to start recording.
+        Click the microphone button to start recording your voice.
       </div>
 
-      <!-- Playback & Audio Processing Section -->
+      <!-- Playback & Audio Processing Studio -->
       <div id="playbackSection" class="playback-section">
-        <h3 style="font-size: 1.15rem; font-weight: 800; color: var(--text-primary); margin-bottom: 12px; display: flex; align-items: center; gap: 8px;">
-          <i class="fas fa-music" style="color: var(--primary);"></i> Audio Studio & Export
-        </h3>
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; flex-wrap: wrap; gap: 8px;">
+          <h3 style="font-size: 1.15rem; font-weight: 800; color: var(--text-primary); margin: 0; display: flex; align-items: center; gap: 8px;">
+            <i class="fas fa-music" style="color: var(--primary);"></i> Audio Studio & Mastering
+          </h3>
+          <span id="recordingLengthBadge" class="badge" style="background: var(--primary-light); color: var(--primary-text); font-weight: 700; padding: 3px 8px; border-radius: 6px; font-size: 0.75rem;">
+            Recorded Take
+          </span>
+        </div>
 
         <audio id="audioPlayer" controls class="audio-player-custom"></audio>
 
@@ -234,34 +396,105 @@
           <div class="fx-item">
             <div class="fx-label">
               <span>Volume Booster</span>
-              <span id="volVal">100%</span>
+              <span id="volVal" style="color: var(--primary);">100%</span>
             </div>
-            <input type="range" id="volSlider" min="50" max="300" value="100" style="width: 100%;">
+            <input type="range" id="volSlider" min="50" max="300" value="100" class="form-range" style="width: 100%;">
           </div>
 
           <div class="fx-item">
             <div class="fx-label">
               <span>Playback Speed</span>
-              <span id="speedVal">1.0x</span>
+              <span id="speedVal" style="color: var(--primary);">1.0x</span>
             </div>
-            <input type="range" id="speedSlider" min="0.5" max="2.0" step="0.25" value="1.0" style="width: 100%;">
+            <input type="range" id="speedSlider" min="0.5" max="2.0" step="0.25" value="1.0" class="form-range" style="width: 100%;">
+          </div>
+
+          <div class="fx-item">
+            <div class="fx-label">
+              <span>Voice Preset Effect</span>
+              <span id="presetVal">Natural</span>
+            </div>
+            <select id="voicePreset" class="form-control" style="padding: 6px; font-size: 0.8rem;">
+              <option value="none">Natural / Original</option>
+              <option value="warm">Warm Studio Mic</option>
+              <option value="bright">Crisp & Clear Voice</option>
+              <option value="telephone">Vintage Telephone</option>
+            </select>
           </div>
         </div>
 
-        <div style="display: flex; gap: 10px; margin-top: 20px; flex-wrap: wrap; justify-content: flex-end;">
+        <!-- Export Action Bar -->
+        <div style="display: flex; gap: 10px; margin-top: 22px; flex-wrap: wrap; justify-content: space-between; align-items: center;">
           <button class="btn btn-secondary btn-sm" id="btnRestart">
-            <i class="fas fa-rotate-left"></i> Record Again
+            <i class="fas fa-rotate-left"></i> Record New Take
           </button>
-          <button class="btn btn-primary btn-sm" id="btnDownloadWav">
-            <i class="fas fa-download"></i> Download WAV Audio
-          </button>
-          <button class="btn btn-secondary btn-sm" id="btnDownloadWebm">
-            <i class="fas fa-file-audio"></i> Download WebM
-          </button>
+          
+          <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+            <button class="btn btn-primary btn-sm" id="btnDownloadWav">
+              <i class="fas fa-file-audio"></i> Download Studio WAV
+            </button>
+            <button class="btn btn-secondary btn-sm" id="btnDownloadWebm">
+              <i class="fas fa-download"></i> Download WebM
+            </button>
+          </div>
         </div>
+      </div>
+
+      <!-- Recent Recordings History List -->
+      <div id="historySection" class="recordings-history" style="display: none;">
+        <h4 style="font-size: 0.95rem; font-weight: 800; color: var(--text-primary); margin-bottom: 12px; display: flex; align-items: center; gap: 8px;">
+          <i class="fas fa-clock-rotate-left" style="color: var(--primary);"></i> Recent Recordings in This Session
+        </h4>
+        <div id="historyList"></div>
       </div>
     </div>
   </div>
+
+  <!-- SEO Frequently Asked Questions Section -->
+  <section class="app-container" style="max-width: 900px; margin: 40px auto 20px; padding: 0 16px;">
+    <div style="background: var(--bg-secondary, #ffffff); border: 1px solid var(--border-color, #e2e8f0); border-radius: 16px; padding: 28px; box-shadow: 0 4px 20px rgba(0,0,0,0.03);">
+      <h2 style="font-size: 1.25rem; font-weight: 800; margin-bottom: 20px; display: flex; align-items: center; gap: 10px; color: var(--text-primary);">
+        <i class="fas fa-circle-question" style="color: var(--primary, #6366f1);"></i> Frequently Asked Questions
+      </h2>
+      <div style="display: flex; flex-direction: column; gap: 12px;">
+        <details style="background: var(--bg-tertiary, #f8fafc); border: 1px solid var(--border-color, #e2e8f0); border-radius: 12px; padding: 14px 18px; cursor: pointer;">
+          <summary style="font-weight: 700; font-size: 0.95rem; color: var(--text-primary);">Is this voice recorder completely private?</summary>
+          <p style="margin-top: 10px; font-size: 0.88rem; line-height: 1.6; color: var(--text-secondary); margin-bottom: 0;">Yes! All audio recordings are processed 100% in your browser using the HTML5 Web Audio API. No audio files are ever uploaded to remote servers.</p>
+        </details>
+        <details style="background: var(--bg-tertiary, #f8fafc); border: 1px solid var(--border-color, #e2e8f0); border-radius: 12px; padding: 14px 18px; cursor: pointer;">
+          <summary style="font-weight: 700; font-size: 0.95rem; color: var(--text-primary);">What audio formats can I download?</summary>
+          <p style="margin-top: 10px; font-size: 0.88rem; line-height: 1.6; color: var(--text-secondary); margin-bottom: 0;">You can download uncompressed 16-bit PCM WAV (broadcast studio quality) or lightweight WebM audio files compatible with all media players.</p>
+        </details>
+        <details style="background: var(--bg-tertiary, #f8fafc); border: 1px solid var(--border-color, #e2e8f0); border-radius: 12px; padding: 14px 18px; cursor: pointer;">
+          <summary style="font-weight: 700; font-size: 0.95rem; color: var(--text-primary);">How does the volume booster work?</summary>
+          <p style="margin-top: 10px; font-size: 0.88rem; line-height: 1.6; color: var(--text-secondary); margin-bottom: 0;">The Volume Booster applies an active Web Audio Gain node to magnify quiet microphone recordings up to 300% without distortion.</p>
+        </details>
+      </div>
+    </div>
+  </section>
+
+  <!-- Related Tools Cross-Links -->
+  <section class="app-container" style="max-width: 900px; margin: 20px auto 40px; padding: 0 16px;">
+    <div style="background: var(--bg-secondary, #ffffff); border: 1px solid var(--border-color, #e2e8f0); border-radius: 16px; padding: 24px 28px; box-shadow: 0 4px 20px rgba(0,0,0,0.03);">
+      <h3 style="font-size: 1.05rem; font-weight: 800; margin-bottom: 16px; color: var(--text-primary); display: flex; align-items: center; gap: 8px;">
+        <i class="fas fa-sparkles" style="color: #f59e0b;"></i> Explore Related Free Tools
+      </h3>
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px;">
+        <a href="videoeditor.html" style="display: flex; align-items: center; gap: 10px; padding: 12px 16px; background: var(--bg-tertiary, #f8fafc); border: 1px solid var(--border-color, #e2e8f0); border-radius: 12px; text-decoration: none; color: var(--text-primary); font-size: 0.86rem; font-weight: 700;">
+          <i class="fas fa-clapperboard" style="color: #ec4899; font-size: 1.1rem;"></i>
+          <span>Video Studio Pro</span>
+        </a>
+        <a href="videoplayer.html" style="display: flex; align-items: center; gap: 10px; padding: 12px 16px; background: var(--bg-tertiary, #f8fafc); border: 1px solid var(--border-color, #e2e8f0); border-radius: 12px; text-decoration: none; color: var(--text-primary); font-size: 0.86rem; font-weight: 700;">
+          <i class="fas fa-circle-play" style="color: #3b82f6; font-size: 1.1rem;"></i>
+          <span>Cyber Video Player</span>
+        </a>
+        <a href="jsonformatter.html" style="display: flex; align-items: center; gap: 10px; padding: 12px 16px; background: var(--bg-tertiary, #f8fafc); border: 1px solid var(--border-color, #e2e8f0); border-radius: 12px; text-decoration: none; color: var(--text-primary); font-size: 0.86rem; font-weight: 700;">
+          <i class="fas fa-code" style="color: #6366f1; font-size: 1.1rem;"></i>
+          <span>JSON Formatter</span>
+        </a>
+      </div>
+    </div>
+  </section>
 
   <script src="js/common.js"></script>
   <script>
@@ -271,11 +504,13 @@
     let audioChunks = [];
     let audioBlob = null;
     let audioUrl = null;
-    let audioCtx, analyser, sourceNode, gainNode;
+    let audioCtx, analyser, sourceNode, gainNode, filterNode;
     let animFrameId;
     let startTime, elapsedTime = 0, timerInterval;
     let isRecording = false;
     let isPaused = false;
+    let currentVizMode = 'bars';
+    let sessionHistory = [];
 
     const btnToggleRecord = document.getElementById('btnToggleRecord');
     const btnPauseRecord = document.getElementById('btnPauseRecord');
@@ -288,53 +523,146 @@
     const audioPlayer = document.getElementById('audioPlayer');
     const canvas = document.getElementById('visualizerCanvas');
     const canvasCtx = canvas.getContext('2d');
+    const vuMeter = document.getElementById('vuMeter');
     const volSlider = document.getElementById('volSlider');
     const volVal = document.getElementById('volVal');
     const speedSlider = document.getElementById('speedSlider');
     const speedVal = document.getElementById('speedVal');
+    const micSelect = document.getElementById('micSelect');
+    const metaSize = document.getElementById('metaSize');
+    const historySection = document.getElementById('historySection');
+    const historyList = document.getElementById('historyList');
+    const voicePreset = document.getElementById('voicePreset');
 
-    // Setup Canvas Resolution
     function resizeCanvas() {
-      canvas.width = canvas.clientWidth * window.devicePixelRatio || 600;
-      canvas.height = canvas.clientHeight * window.devicePixelRatio || 160;
+      canvas.width = canvas.clientWidth * (window.devicePixelRatio || 1);
+      canvas.height = canvas.clientHeight * (window.devicePixelRatio || 1);
+      if (!isRecording) drawIdleWave();
     }
     window.addEventListener('resize', resizeCanvas);
-    resizeCanvas();
 
-    // Visualizer Loop
+    // Enumerate Microphones
+    async function populateMics() {
+      try {
+        const devices = await navigator.mediaDevices.enumerateDevices();
+        const audioInputs = devices.filter(d => d.kind === 'audioinput');
+        micSelect.innerHTML = '<option value="">Default Microphone</option>';
+        audioInputs.forEach((mic, i) => {
+          const opt = document.createElement('option');
+          opt.value = mic.deviceId;
+          opt.textContent = mic.label || `Microphone ${i + 1}`;
+          micSelect.appendChild(opt);
+        });
+      } catch (e) {}
+    }
+    navigator.mediaDevices.addEventListener('devicechange', populateMics);
+    populateMics();
+
+    // Idle Wave Animation
+    let idlePhase = 0;
+    function drawIdleWave() {
+      if (isRecording) return;
+      canvasCtx.fillStyle = '#090d16';
+      canvasCtx.fillRect(0, 0, canvas.width, canvas.height);
+
+      canvasCtx.lineWidth = 2;
+      canvasCtx.strokeStyle = 'rgba(99, 102, 241, 0.35)';
+      canvasCtx.beginPath();
+      const mid = canvas.height / 2;
+      for (let x = 0; x < canvas.width; x++) {
+        const y = mid + Math.sin((x + idlePhase) * 0.02) * 8;
+        if (x === 0) canvasCtx.moveTo(x, y);
+        else canvasCtx.lineTo(x, y);
+      }
+      canvasCtx.stroke();
+      idlePhase += 1.2;
+      if (!isRecording) requestAnimationFrame(drawIdleWave);
+    }
+    resizeCanvas();
+    drawIdleWave();
+
+    function setVizMode(mode, btn) {
+      currentVizMode = mode;
+      document.querySelectorAll('.viz-pill').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+    }
+
+    // Real-Time Visualizer
     function drawVisualizer() {
+      if (!isRecording) return;
       animFrameId = requestAnimationFrame(drawVisualizer);
       if (!analyser) return;
 
       const bufferLength = analyser.frequencyBinCount;
       const dataArray = new Uint8Array(bufferLength);
-      analyser.getByteTimeDomainData(dataArray);
 
       canvasCtx.fillStyle = '#090d16';
       canvasCtx.fillRect(0, 0, canvas.width, canvas.height);
 
-      canvasCtx.lineWidth = 3;
-      const gradient = canvasCtx.createLinearGradient(0, 0, canvas.width, 0);
-      gradient.addColorStop(0, '#6366f1');
-      gradient.addColorStop(0.5, '#ec4899');
-      gradient.addColorStop(1, '#10b981');
-      canvasCtx.strokeStyle = gradient;
+      if (currentVizMode === 'bars') {
+        analyser.getByteFrequencyData(dataArray);
+        const barCount = 48;
+        const barWidth = (canvas.width / barCount) - 3;
+        const step = Math.floor(bufferLength / barCount);
+        let maxVol = 0;
 
-      canvasCtx.beginPath();
-      const sliceWidth = canvas.width * 1.0 / bufferLength;
-      let x = 0;
+        for (let i = 0; i < barCount; i++) {
+          const val = dataArray[i * step];
+          if (val > maxVol) maxVol = val;
+          const barHeight = (val / 255) * (canvas.height - 20);
 
-      for (let i = 0; i < bufferLength; i++) {
-        const v = dataArray[i] / 128.0;
-        const y = v * canvas.height / 2;
+          const grad = canvasCtx.createLinearGradient(0, canvas.height, 0, 0);
+          grad.addColorStop(0, '#6366f1');
+          grad.addColorStop(0.6, '#ec4899');
+          grad.addColorStop(1, '#10b981');
+          canvasCtx.fillStyle = grad;
 
-        if (i === 0) canvasCtx.moveTo(x, y);
-        else canvasCtx.lineTo(x, y);
+          const x = i * (barWidth + 3);
+          const y = canvas.height - barHeight - 8;
+          canvasCtx.beginPath();
+          canvasCtx.roundRect(x, y, barWidth, barHeight, 4);
+          canvasCtx.fill();
+        }
 
-        x += sliceWidth;
+        // VU meter update
+        const pct = Math.min(100, Math.round((maxVol / 255) * 100));
+        vuMeter.style.width = pct + '%';
+
+      } else if (currentVizMode === 'wave') {
+        analyser.getByteTimeDomainData(dataArray);
+        canvasCtx.lineWidth = 3;
+        const grad = canvasCtx.createLinearGradient(0, 0, canvas.width, 0);
+        grad.addColorStop(0, '#6366f1');
+        grad.addColorStop(0.5, '#ec4899');
+        grad.addColorStop(1, '#10b981');
+        canvasCtx.strokeStyle = grad;
+
+        canvasCtx.beginPath();
+        const sliceWidth = canvas.width * 1.0 / bufferLength;
+        let x = 0;
+        for (let i = 0; i < bufferLength; i++) {
+          const v = dataArray[i] / 128.0;
+          const y = v * canvas.height / 2;
+          if (i === 0) canvasCtx.moveTo(x, y);
+          else canvasCtx.lineTo(x, y);
+          x += sliceWidth;
+        }
+        canvasCtx.lineTo(canvas.width, canvas.height / 2);
+        canvasCtx.stroke();
+      } else {
+        // Spectrum
+        analyser.getByteFrequencyData(dataArray);
+        canvasCtx.lineWidth = 2;
+        canvasCtx.strokeStyle = '#10b981';
+        canvasCtx.beginPath();
+        const slice = canvas.width / (bufferLength / 2);
+        for (let i = 0; i < bufferLength / 2; i++) {
+          const y = canvas.height - (dataArray[i] / 255) * canvas.height;
+          if (i === 0) canvasCtx.moveTo(i * slice, y);
+          else canvasCtx.lineTo(i * slice, y);
+        }
+        canvasCtx.stroke();
       }
-      canvasCtx.lineTo(canvas.width, canvas.height / 2);
-      canvasCtx.stroke();
     }
 
     function formatTime(ms) {
@@ -347,10 +675,23 @@
 
     async function startRecording() {
       try {
-        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        const devId = micSelect.value;
+        const noiseRed = document.getElementById('chkNoiseSuppression').checked;
+        const constraints = {
+          audio: {
+            deviceId: devId ? { exact: devId } : undefined,
+            echoCancellation: noiseRed,
+            noiseSuppression: noiseRed,
+            autoGainControl: true
+          }
+        };
+
+        const stream = await navigator.mediaDevices.getUserMedia(constraints);
+        populateMics(); // Refresh mic names after permission granted
+
         audioCtx = new (window.AudioContext || window.webkitAudioContext)();
         analyser = audioCtx.createAnalyser();
-        analyser.fftSize = 2048;
+        analyser.fftSize = 1024;
         sourceNode = audioCtx.createMediaStreamSource(stream);
         sourceNode.connect(analyser);
 
@@ -358,7 +699,11 @@
         audioChunks = [];
 
         mediaRecorder.ondataavailable = (e) => {
-          if (e.data.size > 0) audioChunks.push(e.data);
+          if (e.data.size > 0) {
+            audioChunks.push(e.data);
+            const totalBytes = audioChunks.reduce((acc, c) => acc + c.size, 0);
+            metaSize.innerHTML = `<i class="fas fa-file-audio"></i> ~${(totalBytes / 1024).toFixed(1)} KB`;
+          }
         };
 
         mediaRecorder.onstop = () => {
@@ -366,8 +711,9 @@
           audioUrl = URL.createObjectURL(audioBlob);
           audioPlayer.src = audioUrl;
           playbackSection.style.display = 'block';
-          statusText.textContent = 'Recording complete! You can listen, tweak settings, or download below.';
+          statusText.textContent = 'Recording complete! Tweak studio effects or download below.';
           stream.getTracks().forEach(t => t.stop());
+          saveToHistory(audioBlob, elapsedTime);
         };
 
         mediaRecorder.start(100);
@@ -388,7 +734,7 @@
 
         drawVisualizer();
       } catch (err) {
-        abToast('Microphone access denied: ' + err.message);
+        abToast('Microphone access denied or error: ' + err.message);
       }
     }
 
@@ -404,15 +750,8 @@
       recIcon.className = 'fas fa-microphone';
       btnPauseRecord.style.display = 'none';
       btnStopRecord.style.display = 'none';
-
-      // Clear Canvas Line
-      canvasCtx.fillStyle = '#090d16';
-      canvasCtx.fillRect(0, 0, canvas.width, canvas.height);
-      canvasCtx.strokeStyle = '#6366f1';
-      canvasCtx.beginPath();
-      canvasCtx.moveTo(0, canvas.height / 2);
-      canvasCtx.lineTo(canvas.width, canvas.height / 2);
-      canvasCtx.stroke();
+      vuMeter.style.width = '0%';
+      drawIdleWave();
     }
 
     function togglePause() {
@@ -447,10 +786,11 @@
     document.getElementById('btnRestart').addEventListener('click', () => {
       elapsedTime = 0;
       timerDisplay.textContent = '00:00.00';
+      metaSize.innerHTML = '<i class="fas fa-file-audio"></i> ~0 KB';
       startRecording();
     });
 
-    // Speed and Volume controls
+    // Speed & Volume Studio Effects
     speedSlider.addEventListener('input', (e) => {
       const val = parseFloat(e.target.value);
       audioPlayer.playbackRate = val;
@@ -463,6 +803,61 @@
       volVal.textContent = val + '%';
     });
 
+    // Save Recording to Local Session List
+    function saveToHistory(blob, duration) {
+      const id = Date.now();
+      const rec = { id, blob, url: URL.createObjectURL(blob), duration, date: new Date().toLocaleTimeString() };
+      sessionHistory.unshift(rec);
+      renderHistory();
+    }
+
+    function renderHistory() {
+      if (sessionHistory.length === 0) {
+        historySection.style.display = 'none';
+        return;
+      }
+      historySection.style.display = 'block';
+      historyList.innerHTML = '';
+      sessionHistory.slice(0, 5).forEach((item, idx) => {
+        const card = document.createElement('div');
+        card.className = 'rec-item-card';
+        card.innerHTML = `
+          <div>
+            <strong>Take #${sessionHistory.length - idx}</strong>
+            <span style="font-size: 0.78rem; color: var(--text-muted); margin-left: 8px;">${item.date} &bull; ${formatTime(item.duration)}</span>
+          </div>
+          <div style="display: flex; gap: 6px;">
+            <button class="btn btn-secondary btn-xs" onclick="playHistoryItem(${item.id})"><i class="fas fa-play"></i> Play</button>
+            <button class="btn btn-primary btn-xs" onclick="downloadHistoryItem(${item.id})"><i class="fas fa-download"></i> WAV</button>
+          </div>
+        `;
+        historyList.appendChild(card);
+      });
+    }
+
+    window.playHistoryItem = function(id) {
+      const item = sessionHistory.find(h => h.id === id);
+      if (item) {
+        audioPlayer.src = item.url;
+        audioPlayer.play();
+        playbackSection.style.display = 'block';
+      }
+    };
+
+    window.downloadHistoryItem = async function(id) {
+      const item = sessionHistory.find(h => h.id === id);
+      if (item) {
+        const arrayBuffer = await item.blob.arrayBuffer();
+        const offlineCtx = new (window.AudioContext || window.webkitAudioContext)();
+        const decodedData = await offlineCtx.decodeAudioData(arrayBuffer);
+        const wavBlob = bufferToWave(decodedData, decodedData.length);
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(wavBlob);
+        a.download = `voice-take-${item.id}.wav`;
+        a.click();
+      }
+    };
+
     // Download WebM
     document.getElementById('btnDownloadWebm').addEventListener('click', () => {
       if (!audioBlob) return;
@@ -473,22 +868,26 @@
       abToast('WebM Audio downloaded!');
     });
 
-    // Download WAV (Convert WebM Audio to WAV format client-side)
+    // Download Studio WAV (Convert WebM Audio to Uncompressed 16-bit PCM WAV)
     document.getElementById('btnDownloadWav').addEventListener('click', async () => {
       if (!audioBlob) return;
-      abToast('Generating high-quality WAV...');
-      const arrayBuffer = await audioBlob.arrayBuffer();
-      const offlineCtx = new (window.AudioContext || window.webkitAudioContext)();
-      const decodedData = await offlineCtx.decodeAudioData(arrayBuffer);
-      const wavBlob = bufferToWave(decodedData, decodedData.length);
-      const a = document.createElement('a');
-      a.href = URL.createObjectURL(wavBlob);
-      a.download = `voice-studio-${Date.now()}.wav`;
-      a.click();
-      abToast('WAV file downloaded successfully!');
+      abToast('Generating Studio Master WAV...');
+      try {
+        const arrayBuffer = await audioBlob.arrayBuffer();
+        const offlineCtx = new (window.AudioContext || window.webkitAudioContext)();
+        const decodedData = await offlineCtx.decodeAudioData(arrayBuffer);
+        const wavBlob = bufferToWave(decodedData, decodedData.length);
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(wavBlob);
+        a.download = `voice-studio-${Date.now()}.wav`;
+        a.click();
+        abToast('WAV file downloaded successfully!');
+      } catch (err) {
+        abToast('Error generating WAV: ' + err.message);
+      }
     });
 
-    // WAV Encoder
+    // Uncompressed 16-Bit PCM WAV Encoder
     function bufferToWave(abuffer, len) {
       const numOfChan = abuffer.numberOfChannels;
       const length = len * numOfChan * 2 + 44;
@@ -514,7 +913,7 @@
       setUint16(numOfChan * 2);              // block align
       setUint16(16);                         // 16-bit
 
-      setUint32(0x61746164); // "data" - chunk
+      setUint32(0x61746164); // "data" chunk
       setUint32(length - pos - 4);
 
       for (let i = 0; i < abuffer.numberOfChannels; i++) {

@@ -16,7 +16,8 @@ const AB_TOOLS = [
   { id:'currency',       name:'Currency Converter',    file:'currency.html',       icon:'💱', cat:'Finance & Docs', desc:'Live exchange rates between 150+ currencies.' },
   { id:'endchanger',     name:'File Extension Changer',file:'endchanger.html',    icon:'🔄', cat:'Finance & Docs', desc:"Rename a file's extension instantly." },
 
-  // Image & Video Studio
+  // Image & Audio/Video Studio
+  { id:'audiorecorder',  name:'Voice Recorder Studio', file:'audiorecorder.html',  icon:'🎙️', cat:'Image & Video',  desc:'Microphone audio recorder with live visualizer and WAV export.', isNew:true },
   { id:'videoeditor',    name:'Video Studio Pro',      file:'videoeditor.html',    icon:'🎬', cat:'Image & Video',  desc:'Lossless video trimmer, cutter, audio extractor & compressor.', isNew:true },
   { id:'videoplayer',    name:'Video Player',          file:'videoplayer.html',    icon:'▶️', cat:'Image & Video',  desc:'Play local video files with audio booster & frame grabber.' },
   { id:'backremover',    name:'Background Remover',   file:'backremover.html',    icon:'✂️', cat:'Image & Video',  desc:'Remove image backgrounds fully in your browser — no upload, no key.' },
@@ -29,6 +30,7 @@ const AB_TOOLS = [
   { id:'emojis',         name:'Emoji Picker',          file:'emojis.html',         icon:'😊', cat:'Image & Video',  desc:'Search and copy emojis fast.' },
 
   // Utilities & AI
+  { id:'jsonformatter',  name:'JSON Formatter & Studio', file:'jsonformatter.html',icon:'💻', cat:'Utilities & AI', desc:'Format, validate, repair and convert JSON to CSV/XML/YAML.', isNew:true },
   { id:'chatbot',        name:'AI Chatbot',            file:'chatbot.html',        icon:'💬', cat:'Utilities & AI', desc:'Chat with an intelligent assistant.' },
   { id:'qrcode',         name:'QR Code Generator',    file:'qrcode.html',         icon:'📷', cat:'Utilities & AI', desc:'Turn any text or link into a downloadable QR code.', isNew:true },
   { id:'password',       name:'Password Generator',   file:'password.html',       icon:'🔑', cat:'Utilities & AI', desc:'Strong random passwords with a strength meter.', isNew:true },

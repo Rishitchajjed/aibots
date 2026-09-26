@@ -21,20 +21,24 @@
     "chips": "20, 50, 100, 250, 500"
   },
   "analytics_clicks": {
-    "backremover": 42,
-    "invoice": 28,
-    "pdf": 24,
-    "qr": 19,
-    "summarizer": 15,
-    "resume": 12
+    "bank-statement-converter": 65,
+    "backremover": 54,
+    "ledger": 48,
+    "cricketscore": 39,
+    "invoice": 34,
+    "pdf": 29,
+    "qr": 24,
+    "videoeditor": 22
   },
   "analytics_searches": [
+    "bank statement to tally",
+    "cash udhar ledger",
     "remove background",
+    "cricket score counter",
     "invoice generator",
     "pdf editor",
     "qr code",
-    "gemini ai",
-    "resume builder"
+    "gemini ai"
   ],
-  "updated_at": "2026-08-28T22:03:00Z"
+  "updated_at": "2026-09-26T19:30:00Z"
 }

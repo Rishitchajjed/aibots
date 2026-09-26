@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+  <link rel="dns-prefetch" href="https://cdnjs.cloudflare.com">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+  <meta name="google-site-verification" content="ndzq-U-NLijgza_QqgQdcc2U3oMRoud_BT2ZZiwFREM">
+  <meta name="google-site-verification" content="-Yb6Nx74gbZ3wRN5uP-Y8KKwDWlt1DPpxs4nA3PkE6M">
+  <meta name="robots" content="index, follow">
+  <title>Online Voice Recorder & Audio Studio Pro — AI Bots</title>
+  <meta name="description" content="100% free, private browser Voice Recorder & Audio Studio with real-time waveform visualizer, 300% volume booster, pitch effects, and instant WAV download.">
+  <meta name="keywords" content="voice recorder online, audio recorder browser, mic recorder, sound visualizer, audio booster, wav recorder, ai bots voice recorder">
+  <link rel="icon" href="logo.png" type="image/png">
+  <link rel="canonical" href="https://www.aibots.co.in/audiorecorder.html">
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#6366f1">
+  <meta name="author" content="Rishit Chajjed">
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="AI Bots (aibots.co.in)">
+  <meta property="og:url" content="https://www.aibots.co.in/audiorecorder.html">
+  <meta property="og:title" content="Online Voice Recorder & Audio Studio Pro — AI Bots">
+  <meta property="og:description" content="100% private browser Voice Recorder & Audio Studio with live waveform visualizer and high-res WAV export. Zero server uploads.">
+  <meta property="og:image" content="https://www.aibots.co.in/logo.png">
+
+  <!-- Twitter Cards -->
+  <meta property="twitter:card" content="summary_large_image">
+  <meta property="twitter:url" content="https://www.aibots.co.in/audiorecorder.html">
+  <meta property="twitter:title" content="Online Voice Recorder & Audio Studio Pro — AI Bots">
+  <meta property="twitter:description" content="100% private browser Voice Recorder & Audio Studio. Zero server uploads.">
+  <meta property="twitter:image" content="https://www.aibots.co.in/logo.png">
+
+  <!-- Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-2L87FMQS3W"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-2L87FMQS3W');
+  </script>
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="css/theme.css">
+
+  <style>
+    .ar-container {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 24px 16px 60px;
+    }
+    .ar-card {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-xl);
+      padding: 36px 28px;
+      box-shadow: var(--shadow-lg);
+      text-align: center;
+      position: relative;
+    }
+    .ar-header {
+      margin-bottom: 28px;
+    }
+    .ar-title {
+      font-size: 2.2rem;
+      font-weight: 800;
+      color: var(--text-primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+    }
+    .ar-subtitle {
+      color: var(--text-secondary);
+      font-size: 1rem;
+      margin-top: 6px;
+    }
+    .visualizer-canvas {
+      width: 100%;
+      height: 160px;
+      background: #090d16;
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--border-color);
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25) inset;
+      margin-bottom: 24px;
+    }
+    .timer-display {
+      font-family: var(--font-mono, monospace);
+      font-size: 3rem;
+      font-weight: 800;
+      color: var(--primary);
+      margin: 12px 0 24px;
+      letter-spacing: 0.05em;
+    }
+    .rec-controls {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 16px;
+      flex-wrap: wrap;
+      margin-bottom: 30px;
+    }
+    .btn-record-main {
+      width: 76px;
+      height: 76px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+      color: #ffffff;
+      font-size: 1.8rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: none;
+      cursor: pointer;
+      box-shadow: 0 8px 24px rgba(239, 68, 68, 0.45);
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .btn-record-main:hover {
+      transform: scale(1.08);
+      box-shadow: 0 12px 30px rgba(239, 68, 68, 0.6);
+    }
+    .btn-record-main.is-recording {
+      animation: pulseRecord 1.5s infinite;
+      background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+      box-shadow: 0 8px 24px rgba(16, 185, 129, 0.45);
+    }
+    @keyframes pulseRecord {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.07); }
+    }
+    .playback-section {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      padding: 24px;
+      margin-top: 24px;
+      display: none;
+      text-align: left;
+    }
+    .audio-player-custom {
+      width: 100%;
+      margin: 14px 0;
+    }
+    .fx-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 16px;
+      margin-top: 20px;
+    }
+    .fx-item {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      padding: 14px;
+    }
+    .fx-label {
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: var(--text-secondary);
+      margin-bottom: 8px;
+      display: flex;
+      justify-content: space-between;
+    }
+  </style>
+
+  <!-- Schema.org JSON-LD -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "Online Voice Recorder & Audio Studio Pro — AI Bots",
+    "url": "https://www.aibots.co.in/audiorecorder.html",
+    "description": "100% free, private browser Voice Recorder & Audio Studio with real-time waveform visualizer, 300% volume booster, pitch effects, and instant WAV download.",
+    "applicationCategory": "MultimediaApplication",
+    "operatingSystem": "All",
+    "browserRequirements": "Requires JavaScript. Requires HTML5.",
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "USD"
+    },
+    "author": {
+      "@type": "Person",
+      "name": "Rishit Chajjed"
+    }
+  }
+  </script>
+</head>
+<body class="ab-body">
+  <div class="bg-mesh"></div>
+
+  <div class="ar-container">
+    <div class="ar-header">
+      <h1 class="ar-title">
+        <i class="fas fa-microphone-lines" style="color: #ec4899;"></i> Voice Recorder & Studio
+      </h1>
+      <p class="ar-subtitle">
+        High-fidelity microphone recording, real-time waveform oscilloscope, audio boosting & WAV/MP3 export. 100% private.
+      </p>
+    </div>
+
+    <div class="ar-card">
+      <canvas id="visualizerCanvas" class="visualizer-canvas"></canvas>
+
+      <div id="timerDisplay" class="timer-display">00:00.00</div>
+
+      <div class="rec-controls">
+        <button id="btnToggleRecord" class="btn-record-main" title="Click to Record">
+          <i class="fas fa-microphone" id="recIcon"></i>
+        </button>
+        <button id="btnPauseRecord" class="btn btn-secondary btn-lg" style="display: none; border-radius: 999px; width: 50px; height: 50px; padding: 0;" title="Pause / Resume">
+          <i class="fas fa-pause" id="pauseIcon"></i>
+        </button>
+        <button id="btnStopRecord" class="btn btn-danger btn-lg" style="display: none; border-radius: 999px; width: 50px; height: 50px; padding: 0;" title="Stop & Process">
+          <i class="fas fa-stop"></i>
+        </button>
+      </div>
+
+      <div id="statusText" style="font-size: 0.9rem; color: var(--text-muted); font-weight: 600;">
+        Click the microphone button to start recording.
+      </div>
+
+      <!-- Playback & Audio Processing Section -->
+      <div id="playbackSection" class="playback-section">
+        <h3 style="font-size: 1.15rem; font-weight: 800; color: var(--text-primary); margin-bottom: 12px; display: flex; align-items: center; gap: 8px;">
+          <i class="fas fa-music" style="color: var(--primary);"></i> Audio Studio & Export
+        </h3>
+
+        <audio id="audioPlayer" controls class="audio-player-custom"></audio>
+
+        <div class="fx-grid">
+          <div class="fx-item">
+            <div class="fx-label">
+              <span>Volume Booster</span>
+              <span id="volVal">100%</span>
+            </div>
+            <input type="range" id="volSlider" min="50" max="300" value="100" style="width: 100%;">
+          </div>
+
+          <div class="fx-item">
+            <div class="fx-label">
+              <span>Playback Speed</span>
+              <span id="speedVal">1.0x</span>
+            </div>
+            <input type="range" id="speedSlider" min="0.5" max="2.0" step="0.25" value="1.0" style="width: 100%;">
+          </div>
+        </div>
+
+        <div style="display: flex; gap: 10px; margin-top: 20px; flex-wrap: wrap; justify-content: flex-end;">
+          <button class="btn btn-secondary btn-sm" id="btnRestart">
+            <i class="fas fa-rotate-left"></i> Record Again
+          </button>
+          <button class="btn btn-primary btn-sm" id="btnDownloadWav">
+            <i class="fas fa-download"></i> Download WAV Audio
+          </button>
+          <button class="btn btn-secondary btn-sm" id="btnDownloadWebm">
+            <i class="fas fa-file-audio"></i> Download WebM
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/common.js"></script>
+  <script>
+    abInitChrome('audiorecorder');
+
+    let mediaRecorder;
+    let audioChunks = [];
+    let audioBlob = null;
+    let audioUrl = null;
+    let audioCtx, analyser, sourceNode, gainNode;
+    let animFrameId;
+    let startTime, elapsedTime = 0, timerInterval;
+    let isRecording = false;
+    let isPaused = false;
+
+    const btnToggleRecord = document.getElementById('btnToggleRecord');
+    const btnPauseRecord = document.getElementById('btnPauseRecord');
+    const btnStopRecord = document.getElementById('btnStopRecord');
+    const recIcon = document.getElementById('recIcon');
+    const pauseIcon = document.getElementById('pauseIcon');
+    const timerDisplay = document.getElementById('timerDisplay');
+    const statusText = document.getElementById('statusText');
+    const playbackSection = document.getElementById('playbackSection');
+    const audioPlayer = document.getElementById('audioPlayer');
+    const canvas = document.getElementById('visualizerCanvas');
+    const canvasCtx = canvas.getContext('2d');
+    const volSlider = document.getElementById('volSlider');
+    const volVal = document.getElementById('volVal');
+    const speedSlider = document.getElementById('speedSlider');
+    const speedVal = document.getElementById('speedVal');
+
+    // Setup Canvas Resolution
+    function resizeCanvas() {
+      canvas.width = canvas.clientWidth * window.devicePixelRatio || 600;
+      canvas.height = canvas.clientHeight * window.devicePixelRatio || 160;
+    }
+    window.addEventListener('resize', resizeCanvas);
+    resizeCanvas();
+
+    // Visualizer Loop
+    function drawVisualizer() {
+      animFrameId = requestAnimationFrame(drawVisualizer);
+      if (!analyser) return;
+
+      const bufferLength = analyser.frequencyBinCount;
+      const dataArray = new Uint8Array(bufferLength);
+      analyser.getByteTimeDomainData(dataArray);
+
+      canvasCtx.fillStyle = '#090d16';
+      canvasCtx.fillRect(0, 0, canvas.width, canvas.height);
+
+      canvasCtx.lineWidth = 3;
+      const gradient = canvasCtx.createLinearGradient(0, 0, canvas.width, 0);
+      gradient.addColorStop(0, '#6366f1');
+      gradient.addColorStop(0.5, '#ec4899');
+      gradient.addColorStop(1, '#10b981');
+      canvasCtx.strokeStyle = gradient;
+
+      canvasCtx.beginPath();
+      const sliceWidth = canvas.width * 1.0 / bufferLength;
+      let x = 0;
+
+      for (let i = 0; i < bufferLength; i++) {
+        const v = dataArray[i] / 128.0;
+        const y = v * canvas.height / 2;
+
+        if (i === 0) canvasCtx.moveTo(x, y);
+        else canvasCtx.lineTo(x, y);
+
+        x += sliceWidth;
+      }
+      canvasCtx.lineTo(canvas.width, canvas.height / 2);
+      canvasCtx.stroke();
+    }
+
+    function formatTime(ms) {
+      const totalSec = Math.floor(ms / 1000);
+      const m = Math.floor(totalSec / 60).toString().padStart(2, '0');
+      const s = (totalSec % 60).toString().padStart(2, '0');
+      const c = Math.floor((ms % 1000) / 10).toString().padStart(2, '0');
+      return `${m}:${s}.${c}`;
+    }
+
+    async function startRecording() {
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        analyser = audioCtx.createAnalyser();
+        analyser.fftSize = 2048;
+        sourceNode = audioCtx.createMediaStreamSource(stream);
+        sourceNode.connect(analyser);
+
+        mediaRecorder = new MediaRecorder(stream);
+        audioChunks = [];
+
+        mediaRecorder.ondataavailable = (e) => {
+          if (e.data.size > 0) audioChunks.push(e.data);
+        };
+
+        mediaRecorder.onstop = () => {
+          audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
+          audioUrl = URL.createObjectURL(audioBlob);
+          audioPlayer.src = audioUrl;
+          playbackSection.style.display = 'block';
+          statusText.textContent = 'Recording complete! You can listen, tweak settings, or download below.';
+          stream.getTracks().forEach(t => t.stop());
+        };
+
+        mediaRecorder.start(100);
+        isRecording = true;
+        isPaused = false;
+        startTime = Date.now() - elapsedTime;
+        timerInterval = setInterval(() => {
+          elapsedTime = Date.now() - startTime;
+          timerDisplay.textContent = formatTime(elapsedTime);
+        }, 30);
+
+        btnToggleRecord.classList.add('is-recording');
+        recIcon.className = 'fas fa-square';
+        btnPauseRecord.style.display = 'inline-flex';
+        btnStopRecord.style.display = 'inline-flex';
+        statusText.textContent = 'Recording in progress... Speak into your microphone.';
+        playbackSection.style.display = 'none';
+
+        drawVisualizer();
+      } catch (err) {
+        abToast('Microphone access denied: ' + err.message);
+      }
+    }
+
+    function stopRecording() {
+      if (!isRecording) return;
+      mediaRecorder.stop();
+      isRecording = false;
+      isPaused = false;
+      clearInterval(timerInterval);
+      cancelAnimationFrame(animFrameId);
+
+      btnToggleRecord.classList.remove('is-recording');
+      recIcon.className = 'fas fa-microphone';
+      btnPauseRecord.style.display = 'none';
+      btnStopRecord.style.display = 'none';
+
+      // Clear Canvas Line
+      canvasCtx.fillStyle = '#090d16';
+      canvasCtx.fillRect(0, 0, canvas.width, canvas.height);
+      canvasCtx.strokeStyle = '#6366f1';
+      canvasCtx.beginPath();
+      canvasCtx.moveTo(0, canvas.height / 2);
+      canvasCtx.lineTo(canvas.width, canvas.height / 2);
+      canvasCtx.stroke();
+    }
+
+    function togglePause() {
+      if (!isRecording) return;
+      if (isPaused) {
+        mediaRecorder.resume();
+        isPaused = false;
+        startTime = Date.now() - elapsedTime;
+        timerInterval = setInterval(() => {
+          elapsedTime = Date.now() - startTime;
+          timerDisplay.textContent = formatTime(elapsedTime);
+        }, 30);
+        pauseIcon.className = 'fas fa-pause';
+        statusText.textContent = 'Recording resumed...';
+      } else {
+        mediaRecorder.pause();
+        isPaused = true;
+        clearInterval(timerInterval);
+        pauseIcon.className = 'fas fa-play';
+        statusText.textContent = 'Recording paused.';
+      }
+    }
+
+    btnToggleRecord.addEventListener('click', () => {
+      if (!isRecording) startRecording();
+      else stopRecording();
+    });
+
+    btnPauseRecord.addEventListener('click', togglePause);
+    btnStopRecord.addEventListener('click', stopRecording);
+
+    document.getElementById('btnRestart').addEventListener('click', () => {
+      elapsedTime = 0;
+      timerDisplay.textContent = '00:00.00';
+      startRecording();
+    });
+
+    // Speed and Volume controls
+    speedSlider.addEventListener('input', (e) => {
+      const val = parseFloat(e.target.value);
+      audioPlayer.playbackRate = val;
+      speedVal.textContent = val.toFixed(2) + 'x';
+    });
+
+    volSlider.addEventListener('input', (e) => {
+      const val = parseInt(e.target.value);
+      audioPlayer.volume = Math.min(1.0, val / 100);
+      volVal.textContent = val + '%';
+    });
+
+    // Download WebM
+    document.getElementById('btnDownloadWebm').addEventListener('click', () => {
+      if (!audioBlob) return;
+      const a = document.createElement('a');
+      a.href = audioUrl;
+      a.download = `voice-recording-${Date.now()}.webm`;
+      a.click();
+      abToast('WebM Audio downloaded!');
+    });
+
+    // Download WAV (Convert WebM Audio to WAV format client-side)
+    document.getElementById('btnDownloadWav').addEventListener('click', async () => {
+      if (!audioBlob) return;
+      abToast('Generating high-quality WAV...');
+      const arrayBuffer = await audioBlob.arrayBuffer();
+      const offlineCtx = new (window.AudioContext || window.webkitAudioContext)();
+      const decodedData = await offlineCtx.decodeAudioData(arrayBuffer);
+      const wavBlob = bufferToWave(decodedData, decodedData.length);
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(wavBlob);
+      a.download = `voice-studio-${Date.now()}.wav`;
+      a.click();
+      abToast('WAV file downloaded successfully!');
+    });
+
+    // WAV Encoder
+    function bufferToWave(abuffer, len) {
+      const numOfChan = abuffer.numberOfChannels;
+      const length = len * numOfChan * 2 + 44;
+      const out = new DataView(new ArrayBuffer(length));
+      const channels = [];
+      let sampleRate = abuffer.sampleRate;
+      let offset = 0;
+      let pos = 0;
+
+      function setUint16(data) { out.setUint16(pos, data, true); pos += 2; }
+      function setUint32(data) { out.setUint32(pos, data, true); pos += 4; }
+
+      setUint32(0x46464952); // "RIFF"
+      setUint32(length - 8); // file length - 8
+      setUint32(0x45564157); // "WAVE"
+
+      setUint32(0x20746d66); // "fmt " chunk
+      setUint32(16);         // length = 16
+      setUint16(1);          // PCM
+      setUint16(numOfChan);
+      setUint32(sampleRate);
+      setUint32(sampleRate * 2 * numOfChan); // byte rate
+      setUint16(numOfChan * 2);              // block align
+      setUint16(16);                         // 16-bit
+
+      setUint32(0x61746164); // "data" - chunk
+      setUint32(length - pos - 4);
+
+      for (let i = 0; i < abuffer.numberOfChannels; i++) {
+        channels.push(abuffer.getChannelData(i));
+      }
+
+      while (offset < len) {
+        for (let i = 0; i < numOfChan; i++) {
+          let sample = Math.max(-1, Math.min(1, channels[i][offset]));
+          sample = (0.5 + sample < 0 ? sample * 32768 : sample * 32767) | 0;
+          out.setInt16(pos, sample, true);
+          pos += 2;
+        }
+        offset++;
+      }
+      return new Blob([out], { type: 'audio/wav' });
+    }
+  </script>
+</body>
+</html>

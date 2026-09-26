@@ -1,0 +1,765 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+  <link rel="dns-prefetch" href="https://cdnjs.cloudflare.com">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+  <meta name="google-site-verification" content="ndzq-U-NLijgza_QqgQdcc2U3oMRoud_BT2ZZiwFREM">
+  <meta name="google-site-verification" content="-Yb6Nx74gbZ3wRN5uP-Y8KKwDWlt1DPpxs4nA3PkE6M">
+  <meta name="robots" content="index, follow">
+  <title>JSON Formatter, Validator & Converter Studio — AI Bots</title>
+  <meta name="description" content="100% free, private browser JSON Formatter, Validator, Tree Viewer & Converter (JSON to CSV, XML, YAML). Instant syntax auto-repair and tree inspection.">
+  <meta name="keywords" content="json formatter, json validator, json to csv, json to xml, json to yaml, json prettifier, json tree viewer, json minifier, ai bots json formatter">
+  <link rel="icon" href="logo.png" type="image/png">
+  <link rel="canonical" href="https://www.aibots.co.in/jsonformatter.html">
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#6366f1">
+  <meta name="author" content="Rishit Chajjed">
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="AI Bots (aibots.co.in)">
+  <meta property="og:url" content="https://www.aibots.co.in/jsonformatter.html">
+  <meta property="og:title" content="JSON Formatter, Validator & Converter Studio — AI Bots">
+  <meta property="og:description" content="100% private browser JSON Formatter, Validator, Tree Viewer & Converter (JSON to CSV, XML, YAML). Zero server uploads.">
+  <meta property="og:image" content="https://www.aibots.co.in/logo.png">
+
+  <!-- Twitter Cards -->
+  <meta property="twitter:card" content="summary_large_image">
+  <meta property="twitter:url" content="https://www.aibots.co.in/jsonformatter.html">
+  <meta property="twitter:title" content="JSON Formatter, Validator & Converter Studio — AI Bots">
+  <meta property="twitter:description" content="100% private browser JSON Formatter, Validator, Tree Viewer & Converter. Zero server uploads.">
+  <meta property="twitter:image" content="https://www.aibots.co.in/logo.png">
+
+  <!-- Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-2L87FMQS3W"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-2L87FMQS3W');
+  </script>
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="css/theme.css">
+
+  <style>
+    .jf-container {
+      max-width: 1240px;
+      margin: 0 auto;
+      padding: 20px 16px 60px;
+    }
+    .jf-header {
+      text-align: center;
+      margin-bottom: 24px;
+    }
+    .jf-title {
+      font-size: 2rem;
+      font-weight: 800;
+      color: var(--text-primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+    }
+    .jf-subtitle {
+      color: var(--text-secondary);
+      font-size: 0.95rem;
+      margin-top: 6px;
+    }
+    .jf-toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      padding: 12px 18px;
+      margin-bottom: 18px;
+      box-shadow: var(--shadow-sm);
+    }
+    .jf-btn-group {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 8px;
+    }
+    .jf-editor-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 18px;
+      margin-bottom: 20px;
+    }
+    @media (max-width: 900px) {
+      .jf-editor-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+    .jf-pane {
+      display: flex;
+      flex-direction: column;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      box-shadow: var(--shadow-md);
+    }
+    .jf-pane-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 16px;
+      background: var(--bg-tertiary);
+      border-bottom: 1px solid var(--border-color);
+      font-size: 0.88rem;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+    .jf-pane-actions {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .jf-textarea {
+      width: 100%;
+      height: 480px;
+      padding: 16px;
+      font-family: var(--font-mono, monospace);
+      font-size: 0.88rem;
+      line-height: 1.5;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      border: none;
+      outline: none;
+      resize: vertical;
+      box-sizing: border-box;
+      tab-size: 2;
+    }
+    .jf-tree-view {
+      width: 100%;
+      height: 480px;
+      padding: 16px;
+      font-family: var(--font-mono, monospace);
+      font-size: 0.86rem;
+      line-height: 1.5;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      overflow-y: auto;
+      box-sizing: border-box;
+    }
+    .jf-status-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px 16px;
+      background: var(--bg-tertiary);
+      border-top: 1px solid var(--border-color);
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+    .jf-status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-weight: 700;
+    }
+    .jf-status-badge.valid { color: var(--success); }
+    .jf-status-badge.invalid { color: var(--danger); }
+    .jf-status-badge.empty { color: var(--text-muted); }
+
+    /* Tree View Styling */
+    .tree-node {
+      margin-left: 18px;
+    }
+    .tree-key {
+      color: #6366f1;
+      font-weight: 600;
+    }
+    .tree-string { color: #10b981; }
+    .tree-number { color: #f59e0b; }
+    .tree-boolean { color: #ec4899; }
+    .tree-null { color: #94a3b8; font-style: italic; }
+    .tree-toggle {
+      cursor: pointer;
+      user-select: none;
+      display: inline-block;
+      width: 14px;
+      color: var(--text-muted);
+    }
+
+    /* Convert Tabs */
+    .jf-convert-section {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      padding: 20px;
+      margin-bottom: 24px;
+      box-shadow: var(--shadow-sm);
+    }
+    .jf-tab-nav {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 16px;
+      border-bottom: 1px solid var(--border-color);
+      padding-bottom: 10px;
+      flex-wrap: wrap;
+    }
+    .jf-tab-btn {
+      padding: 6px 14px;
+      border-radius: var(--radius-md);
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border-color);
+      color: var(--text-secondary);
+      font-size: 0.85rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+    .jf-tab-btn:hover, .jf-tab-btn.active {
+      background: var(--primary);
+      color: #ffffff;
+      border-color: var(--primary);
+    }
+  </style>
+
+  <!-- Schema.org JSON-LD -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "JSON Formatter, Validator & Converter Studio — AI Bots",
+    "url": "https://www.aibots.co.in/jsonformatter.html",
+    "description": "100% free, private browser JSON Formatter, Validator, Tree Viewer & Converter (JSON to CSV, XML, YAML). Instant syntax auto-repair and tree inspection.",
+    "applicationCategory": "DeveloperApplication",
+    "operatingSystem": "All",
+    "browserRequirements": "Requires JavaScript. Requires HTML5.",
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "USD"
+    },
+    "author": {
+      "@type": "Person",
+      "name": "Rishit Chajjed"
+    }
+  }
+  </script>
+</head>
+<body class="ab-body">
+  <div class="bg-mesh"></div>
+
+  <div class="jf-container">
+    <div class="jf-header">
+      <h1 class="jf-title">
+        <i class="fas fa-code" style="color: var(--primary);"></i> JSON Formatter & Studio
+      </h1>
+      <p class="jf-subtitle">
+        Format, validate, auto-repair, inspect tree structures, and convert JSON to CSV, XML, or YAML with 100% local privacy.
+      </p>
+    </div>
+
+    <!-- Toolbar -->
+    <div class="jf-toolbar">
+      <div class="jf-btn-group">
+        <button class="btn btn-primary btn-sm" id="btnFormat2" title="Format with 2 spaces indent">
+          <i class="fas fa-align-left"></i> Format (2 Spaces)
+        </button>
+        <button class="btn btn-secondary btn-sm" id="btnFormat4" title="Format with 4 spaces indent">
+          <i class="fas fa-indent"></i> Format (4 Spaces)
+        </button>
+        <button class="btn btn-secondary btn-sm" id="btnMinify" title="Minify / Compress to single line">
+          <i class="fas fa-compress"></i> Minify
+        </button>
+        <button class="btn btn-secondary btn-sm" id="btnRepair" title="Auto-repair common JSON syntax errors (quotes, trailing commas)">
+          <i class="fas fa-wrench" style="color: #f59e0b;"></i> Auto-Repair
+        </button>
+      </div>
+
+      <div class="jf-btn-group">
+        <select id="sampleSelect" class="form-select" style="padding: 6px 12px; border-radius: 8px; font-size: 0.82rem; border: 1px solid var(--border-color); background: var(--bg-tertiary); color: var(--text-primary);">
+          <option value="">Load Sample Data...</option>
+          <option value="invoice">GST Invoice Data</option>
+          <option value="bank">Bank Statement Transactions</option>
+          <option value="api">API Mock Response</option>
+          <option value="complex">Nested Complex Hierarchy</option>
+        </select>
+        <label class="btn btn-secondary btn-sm" style="margin: 0; cursor: pointer;">
+          <i class="fas fa-upload"></i> Upload
+          <input type="file" id="fileUpload" accept=".json,.txt,.csv,.xml" style="display: none;">
+        </label>
+        <button class="btn btn-danger btn-sm" id="btnClear" title="Clear input">
+          <i class="fas fa-trash-can"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- Split Editor Grid -->
+    <div class="jf-editor-grid">
+      <!-- Input Pane -->
+      <div class="jf-pane">
+        <div class="jf-pane-header">
+          <span><i class="fas fa-pen-to-square"></i> JSON Input</span>
+          <div class="jf-pane-actions">
+            <button class="btn btn-secondary btn-xs" id="btnPaste" title="Paste from clipboard">
+              <i class="fas fa-paste"></i> Paste
+            </button>
+          </div>
+        </div>
+        <textarea id="jsonInput" class="jf-textarea" placeholder="Paste or type raw JSON here... e.g. { &quot;name&quot;: &quot;AI Bots&quot;, &quot;status&quot;: &quot;active&quot; }" spellcheck="false"></textarea>
+        <div class="jf-status-bar">
+          <div id="statusBadge" class="jf-status-badge empty">
+            <i class="fas fa-circle-info"></i> Ready
+          </div>
+          <div id="inputStats">0 chars | 0 lines</div>
+        </div>
+      </div>
+
+      <!-- Output / Tree View Pane -->
+      <div class="jf-pane">
+        <div class="jf-pane-header">
+          <div style="display: flex; gap: 8px;">
+            <button class="jf-tab-btn active" id="tabFormatted" style="padding: 3px 10px; font-size: 0.78rem;">Formatted Text</button>
+            <button class="jf-tab-btn" id="tabTree" style="padding: 3px 10px; font-size: 0.78rem;">Interactive Tree</button>
+          </div>
+          <div class="jf-pane-actions">
+            <button class="btn btn-secondary btn-xs" id="btnCopyOutput" title="Copy formatted output">
+              <i class="fas fa-copy"></i> Copy
+            </button>
+            <button class="btn btn-primary btn-xs" id="btnDownloadJson" title="Download JSON file">
+              <i class="fas fa-download"></i> Save
+            </button>
+          </div>
+        </div>
+        <textarea id="jsonOutput" class="jf-textarea" readonly placeholder="Formatted output will appear here..."></textarea>
+        <div id="jsonTreeView" class="jf-tree-view" style="display: none;"></div>
+        <div class="jf-status-bar">
+          <div id="outputStats">0 bytes</div>
+          <div>100% Client-Side Privacy</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Converter Section -->
+    <div class="jf-convert-section">
+      <h2 style="font-size: 1.15rem; font-weight: 800; color: var(--text-primary); margin-bottom: 12px; display: flex; align-items: center; gap: 8px;">
+        <i class="fas fa-arrow-right-arrow-left" style="color: var(--primary);"></i> Format Conversion Studio
+      </h2>
+      <div class="jf-tab-nav">
+        <button class="jf-tab-btn active" data-convert="csv"><i class="fas fa-table"></i> JSON to CSV</button>
+        <button class="jf-tab-btn" data-convert="xml"><i class="fas fa-file-code"></i> JSON to XML</button>
+        <button class="jf-tab-btn" data-convert="yaml"><i class="fas fa-file-lines"></i> JSON to YAML</button>
+      </div>
+
+      <div style="display: flex; flex-direction: column; gap: 10px;">
+        <textarea id="convertedOutput" class="jf-textarea" style="height: 220px;" readonly placeholder="Converted CSV / XML / YAML representation will appear here..."></textarea>
+        <div style="display: flex; justify-content: flex-end; gap: 8px;">
+          <button class="btn btn-secondary btn-sm" id="btnCopyConverted">
+            <i class="fas fa-copy"></i> Copy Converted
+          </button>
+          <button class="btn btn-primary btn-sm" id="btnDownloadConverted">
+            <i class="fas fa-download"></i> Download Converted File
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/common.js"></script>
+  <script>
+    // Initialize common navbar & footer chrome
+    abInitChrome('jsonformatter');
+
+    const jsonInput = document.getElementById('jsonInput');
+    const jsonOutput = document.getElementById('jsonOutput');
+    const jsonTreeView = document.getElementById('jsonTreeView');
+    const statusBadge = document.getElementById('statusBadge');
+    const inputStats = document.getElementById('inputStats');
+    const outputStats = document.getElementById('outputStats');
+    const convertedOutput = document.getElementById('convertedOutput');
+
+    let currentFormatMode = 'formatted'; // 'formatted' or 'tree'
+    let currentConvertTarget = 'csv';
+
+    // Format Helpers
+    function parseAndFormat(spaces = 2) {
+      const raw = jsonInput.value.trim();
+      if (!raw) {
+        jsonOutput.value = '';
+        jsonTreeView.innerHTML = '<div style="color: var(--text-muted); padding: 10px;">No JSON data to display.</div>';
+        statusBadge.className = 'jf-status-badge empty';
+        statusBadge.innerHTML = '<i class="fas fa-circle-info"></i> Ready';
+        updateStats();
+        return null;
+      }
+
+      try {
+        const parsed = JSON.parse(raw);
+        statusBadge.className = 'jf-status-badge valid';
+        statusBadge.innerHTML = '<i class="fas fa-circle-check"></i> Valid JSON';
+        
+        const formatted = spaces === 0 ? JSON.stringify(parsed) : JSON.stringify(parsed, null, spaces);
+        jsonOutput.value = formatted;
+        renderTree(parsed);
+        updateStats();
+        triggerConversion(parsed);
+        return parsed;
+      } catch (err) {
+        statusBadge.className = 'jf-status-badge invalid';
+        statusBadge.innerHTML = `<i class="fas fa-triangle-exclamation"></i> Error: ${err.message}`;
+        jsonOutput.value = `Syntax Error:\n${err.message}`;
+        updateStats();
+        return null;
+      }
+    }
+
+    // Auto-repair JSON common issues
+    function autoRepairJson(str) {
+      if (!str) return str;
+      let cleaned = str
+        // Remove single line and multi-line comments
+        .replace(/\/\/.*$/gm, '')
+        .replace(/\/\*[\s\S]*?\*\//g, '')
+        // Replace single quotes around keys/strings with double quotes
+        .replace(/'([^'\\]*(?:\\.[^'\\]*)*)'/g, '"$1"')
+        // Remove trailing commas in objects and arrays
+        .replace(/,\s*([\]}])/g, '$1')
+        // Fix unquoted alphanumeric keys
+        .replace(/([{,]\s*)([a-zA-Z0-9_$]+)\s*:/g, '$1"$2":');
+      return cleaned;
+    }
+
+    // Interactive Tree View
+    function renderTree(data) {
+      jsonTreeView.innerHTML = '';
+      jsonTreeView.appendChild(buildTreeNode(data, 'root'));
+    }
+
+    function buildTreeNode(val, key = '') {
+      const el = document.createElement('div');
+      el.className = 'tree-node';
+
+      const type = Array.isArray(val) ? 'array' : typeof val;
+
+      if (val === null) {
+        el.innerHTML = `<span class="tree-key">${key ? key + ': ' : ''}</span><span class="tree-null">null</span>`;
+      } else if (type === 'string') {
+        el.innerHTML = `<span class="tree-key">${key ? key + ': ' : ''}</span><span class="tree-string">"${escapeHtml(val)}"</span>`;
+      } else if (type === 'number') {
+        el.innerHTML = `<span class="tree-key">${key ? key + ': ' : ''}</span><span class="tree-number">${val}</span>`;
+      } else if (type === 'boolean') {
+        el.innerHTML = `<span class="tree-key">${key ? key + ': ' : ''}</span><span class="tree-boolean">${val}</span>`;
+      } else if (type === 'object' || type === 'array') {
+        const isArr = type === 'array';
+        const openChar = isArr ? '[' : '{';
+        const closeChar = isArr ? ']' : '}';
+        const count = isArr ? val.length : Object.keys(val).length;
+
+        const header = document.createElement('div');
+        header.innerHTML = `<span class="tree-toggle">▼</span> <span class="tree-key">${key ? key + ': ' : ''}</span>${openChar} <span style="color:var(--text-muted); font-size:0.75rem;">(${count} items)</span>`;
+        header.style.cursor = 'pointer';
+
+        const childrenContainer = document.createElement('div');
+        childrenContainer.style.display = 'block';
+
+        if (isArr) {
+          val.forEach((item, idx) => {
+            childrenContainer.appendChild(buildTreeNode(item, idx));
+          });
+        } else {
+          Object.keys(val).forEach((k) => {
+            childrenContainer.appendChild(buildTreeNode(val[k], k));
+          });
+        }
+
+        const footer = document.createElement('div');
+        footer.textContent = closeChar;
+
+        header.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const isClosed = childrenContainer.style.display === 'none';
+          childrenContainer.style.display = isClosed ? 'block' : 'none';
+          header.querySelector('.tree-toggle').textContent = isClosed ? '▼' : '▶';
+        });
+
+        el.appendChild(header);
+        el.appendChild(childrenContainer);
+        el.appendChild(footer);
+      }
+      return el;
+    }
+
+    function escapeHtml(str) {
+      return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+    }
+
+    function updateStats() {
+      const text = jsonInput.value;
+      const chars = text.length;
+      const lines = text ? text.split('\n').length : 0;
+      inputStats.textContent = `${chars} chars | ${lines} lines`;
+
+      const outText = jsonOutput.value;
+      const bytes = new Blob([outText]).size;
+      outputStats.textContent = `${bytes} bytes`;
+    }
+
+    // Conversions: JSON to CSV, XML, YAML
+    function triggerConversion(data) {
+      if (!data) {
+        convertedOutput.value = '';
+        return;
+      }
+      if (currentConvertTarget === 'csv') {
+        convertedOutput.value = jsonToCsv(data);
+      } else if (currentConvertTarget === 'xml') {
+        convertedOutput.value = jsonToXml(data);
+      } else if (currentConvertTarget === 'yaml') {
+        convertedOutput.value = jsonToYaml(data);
+      }
+    }
+
+    function jsonToCsv(obj) {
+      const arr = Array.isArray(obj) ? obj : [obj];
+      if (arr.length === 0 || typeof arr[0] !== 'object' || arr[0] === null) {
+        return 'CSV conversion requires an array of objects.';
+      }
+      const headers = Array.from(new Set(arr.flatMap(item => Object.keys(item || {}))));
+      const rows = arr.map(row => 
+        headers.map(header => {
+          let val = row[header];
+          if (val === undefined || val === null) val = '';
+          if (typeof val === 'object') val = JSON.stringify(val);
+          val = String(val).replace(/"/g, '""');
+          return `"${val}"`;
+        }).join(',')
+      );
+      return [headers.join(','), ...rows].join('\n');
+    }
+
+    function jsonToXml(obj, rootName = 'root') {
+      function toXml(v, name) {
+        if (v === null || v === undefined) return `<${name}/>`;
+        if (typeof v === 'object') {
+          if (Array.isArray(v)) {
+            return v.map(item => toXml(item, 'item')).join('\n');
+          }
+          let inner = Object.keys(v).map(k => toXml(v[k], k)).join('\n');
+          return `<${name}>\n${inner}\n</${name}>`;
+        }
+        return `<${name}>${escapeHtml(String(v))}</${name}>`;
+      }
+      return `<?xml version="1.0" encoding="UTF-8"?>\n${toXml(obj, rootName)}`;
+    }
+
+    function jsonToYaml(obj, indent = 0) {
+      const pad = '  '.repeat(indent);
+      if (obj === null) return 'null\n';
+      if (typeof obj !== 'object') {
+        return `${String(obj)}\n`;
+      }
+      let res = '';
+      if (Array.isArray(obj)) {
+        if (obj.length === 0) return '[]\n';
+        obj.forEach(item => {
+          res += `${pad}- ${jsonToYaml(item, indent + 1).trimStart()}`;
+        });
+      } else {
+        const keys = Object.keys(obj);
+        if (keys.length === 0) return '{}\n';
+        keys.forEach(k => {
+          const val = obj[k];
+          if (typeof val === 'object' && val !== null) {
+            res += `${pad}${k}:\n${jsonToYaml(val, indent + 1)}`;
+          } else {
+            res += `${pad}${k}: ${String(val)}\n`;
+          }
+        });
+      }
+      return res;
+    }
+
+    // Sample Datasets
+    const SAMPLES = {
+      invoice: {
+        invoiceNumber: "INV-2026-0891",
+        date: "2026-09-26",
+        customer: {
+          name: "Acme Enterprises Ltd",
+          gstin: "27AABCU9603R1ZM",
+          city: "Mumbai, Maharashtra"
+        },
+        items: [
+          { description: "Full Stack AI Automation Suite", hsn: "998313", qty: 1, rate: 45000, gstPct: 18 },
+          { description: "Tally XML Reconciliation Engine", hsn: "998314", qty: 2, rate: 12500, gstPct: 18 }
+        ],
+        subtotal: 70000,
+        cgst: 6300,
+        sgst: 6300,
+        grandTotal: 82600,
+        currency: "INR",
+        status: "Paid"
+      },
+      bank: {
+        bankName: "State Bank of India",
+        accountNumber: "XXXX-XXXX-4091",
+        period: "01-Sep-2026 to 26-Sep-2026",
+        openingBalance: 142500.50,
+        transactions: [
+          { date: "2026-09-02", description: "NEFT-SALARY-CREDIT", type: "CR", amount: 95000.00, balance: 237500.50 },
+          { date: "2026-09-08", description: "UPI-SWIGGY-FOOD", type: "DR", amount: 640.00, balance: 236860.50 },
+          { date: "2026-09-15", description: "ELECTRICITY BILL TNEB", type: "DR", amount: 3200.00, balance: 233660.50 }
+        ],
+        closingBalance: 233660.50
+      },
+      api: {
+        status: 200,
+        message: "Operation completed successfully",
+        responseTimeMs: 24,
+        data: {
+          platform: "AI Bots Creative Studio",
+          version: "2.4.0",
+          features: ["Zero-upload", "Offline PWA", "Vector Engine", "Sub-50ms latency"]
+        }
+      },
+      complex: {
+        project: "aibots.co.in",
+        developer: { name: "Rishit Chajjed", country: "India" },
+        metrics: { uptime: 99.98, activeUsers: 15400, totalConversions: 84000 },
+        tags: ["pwa", "wasm", "client-side", "productivity"]
+      }
+    };
+
+    // Event Listeners
+    jsonInput.addEventListener('input', () => parseAndFormat(2));
+
+    document.getElementById('btnFormat2').addEventListener('click', () => parseAndFormat(2));
+    document.getElementById('btnFormat4').addEventListener('click', () => parseAndFormat(4));
+    document.getElementById('btnMinify').addEventListener('click', () => parseAndFormat(0));
+
+    document.getElementById('btnRepair').addEventListener('click', () => {
+      const repaired = autoRepairJson(jsonInput.value);
+      jsonInput.value = repaired;
+      const parsed = parseAndFormat(2);
+      if (parsed) abToast('Syntax repaired successfully!');
+      else abToast('Attempted repair, check remaining errors.');
+    });
+
+    document.getElementById('sampleSelect').addEventListener('change', (e) => {
+      const val = e.target.value;
+      if (SAMPLES[val]) {
+        jsonInput.value = JSON.stringify(SAMPLES[val], null, 2);
+        parseAndFormat(2);
+        abToast(`Loaded ${val} sample!`);
+      }
+    });
+
+    document.getElementById('btnClear').addEventListener('click', () => {
+      jsonInput.value = '';
+      parseAndFormat(2);
+      abToast('Editor cleared');
+    });
+
+    document.getElementById('btnPaste').addEventListener('click', async () => {
+      try {
+        const clip = await navigator.clipboard.readText();
+        jsonInput.value = clip;
+        parseAndFormat(2);
+        abToast('Pasted from clipboard');
+      } catch (err) {
+        abToast('Clipboard access denied. Use Ctrl+V');
+      }
+    });
+
+    document.getElementById('btnCopyOutput').addEventListener('click', () => {
+      if (!jsonOutput.value) return;
+      navigator.clipboard.writeText(jsonOutput.value);
+      abToast('Formatted JSON copied to clipboard!');
+    });
+
+    document.getElementById('btnDownloadJson').addEventListener('click', () => {
+      const val = jsonOutput.value;
+      if (!val) return;
+      const blob = new Blob([val], { type: 'application/json' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = 'formatted-data.json';
+      a.click();
+      URL.revokeObjectURL(a.href);
+      abToast('Downloaded JSON file!');
+    });
+
+    // Toggle Formatted Text vs Interactive Tree
+    document.getElementById('tabFormatted').addEventListener('click', () => {
+      currentFormatMode = 'formatted';
+      document.getElementById('tabFormatted').classList.add('active');
+      document.getElementById('tabTree').classList.remove('active');
+      jsonOutput.style.display = 'block';
+      jsonTreeView.style.display = 'none';
+    });
+
+    document.getElementById('tabTree').addEventListener('click', () => {
+      currentFormatMode = 'tree';
+      document.getElementById('tabTree').classList.add('active');
+      document.getElementById('tabFormatted').classList.remove('active');
+      jsonOutput.style.display = 'none';
+      jsonTreeView.style.display = 'block';
+    });
+
+    // File Upload Handler
+    document.getElementById('fileUpload').addEventListener('change', (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = (ev) => {
+        jsonInput.value = ev.target.result;
+        parseAndFormat(2);
+        abToast(`Loaded ${file.name}`);
+      };
+      reader.readAsText(file);
+    });
+
+    // Format Converter Tabs
+    document.querySelectorAll('[data-convert]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('[data-convert]').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        currentConvertTarget = btn.getAttribute('data-convert');
+        try {
+          const parsed = JSON.parse(jsonInput.value);
+          triggerConversion(parsed);
+        } catch (e) {
+          convertedOutput.value = 'Please provide valid JSON above first.';
+        }
+      });
+    });
+
+    document.getElementById('btnCopyConverted').addEventListener('click', () => {
+      if (!convertedOutput.value) return;
+      navigator.clipboard.writeText(convertedOutput.value);
+      abToast(`Copied ${currentConvertTarget.toUpperCase()} to clipboard!`);
+    });
+
+    document.getElementById('btnDownloadConverted').addEventListener('click', () => {
+      const text = convertedOutput.value;
+      if (!text) return;
+      const ext = currentConvertTarget === 'yaml' ? 'yaml' : currentConvertTarget;
+      const mime = ext === 'csv' ? 'text/csv' : ext === 'xml' ? 'application/xml' : 'text/plain';
+      const blob = new Blob([text], { type: mime });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = `converted-data.${ext}`;
+      a.click();
+      URL.revokeObjectURL(a.href);
+      abToast(`Downloaded .${ext} file!`);
+    });
+
+    // Default Load on start
+    jsonInput.value = JSON.stringify(SAMPLES.invoice, null, 2);
+    parseAndFormat(2);
+  </script>
+</body>
+</html>

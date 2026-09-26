@@ -6,6 +6,26 @@
 // Tools Registry for Search and Navigation
 const AI_BOTS_TOOLS = [
   {
+    id: 'jsonformatter',
+    title: 'JSON Formatter & Studio',
+    description: 'Format, validate, repair malformed syntax, inspect tree nodes, and convert JSON to CSV, XML, and YAML.',
+    icon: 'fa-code',
+    url: 'jsonformatter.html',
+    category: 'utility',
+    badge: 'STUDIO PRO',
+    color: '#6366f1'
+  },
+  {
+    id: 'audiorecorder',
+    title: 'Voice Recorder & Studio',
+    description: 'Record crystal-clear microphone audio with live waveform visualizer, 300% volume boost, and WAV export.',
+    icon: 'fa-microphone-lines',
+    url: 'audiorecorder.html',
+    category: 'creative',
+    badge: 'HD AUDIO',
+    color: '#ec4899'
+  },
+  {
     id: 'bank-statement-converter',
     title: 'Bank Statement to Tally',
     description: 'Convert PDF/CSV statements for 20+ Indian banks into formatted Excel and Tally XML vouchers with 0.00 difference.',

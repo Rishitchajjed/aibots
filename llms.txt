@@ -16,13 +16,14 @@
 
 ## PDF & Financial Tools
 
+- [Cash & Udhar Ledger](https://www.aibots.co.in/ledger.html): Personal cash passbook, Udhar khata, daily spending tracker, eatables contri, and WhatsApp statements with offline storage.
 - [Bank Statement to Tally XML](https://www.aibots.co.in/bank-statement-converter.html): Convert PDF bank statements from 21+ Indian banks (SBI, HDFC, ICICI, PNB, Axis, BOB, Canara) directly to TallyPrime / Tally.ERP 9 XML vouchers with 100% local privacy.
 - [Professional Invoice Maker](https://www.aibots.co.in/invoice.html): Create professional GST/VAT invoices with automatic tax calculations, UPI QR payment codes, and print/PDF export.
+- [Business Card Studio](https://www.aibots.co.in/buisnesscard.html): Design double-sided printable business cards with custom QR codes and typography.
 - [Pro Print Studio (Ultra-HD)](https://www.aibots.co.in/print.html): High-fidelity document and image print studio with multi-page management and DPI scaling.
 - [Image to PDF Maker](https://www.aibots.co.in/pdfmaker.html): Convert multiple images (JPG, PNG, WebP) into high-resolution multi-page PDF documents.
 - [Fast PDF Reader & Viewer](https://www.aibots.co.in/pdfviewer.html): In-browser interactive PDF reader with text search, zoom, rotation, and multi-page viewing.
 - [Live Currency Converter](https://www.aibots.co.in/currency.html): Real-time currency exchange rates for 160+ world currencies with historical trends.
-- [Business Card Studio](https://www.aibots.co.in/buisnesscard.html): Design double-sided printable business cards with custom QR codes and typography.
 
 ## Utilities & AI Tools
 

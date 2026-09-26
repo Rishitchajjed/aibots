@@ -1,51 +1,175 @@
-﻿{
-    "tools":  [
-                  {
-                      "url":  "https://www.aibots.co.in/backremover.html",
-                      "description":  "Removes background from image",
-                      "name":  "remove_background",
-                      "parameters":  {
-                                         "properties":  {
-                                                            "image":  {
-                                                                          "type":  "string",
-                                                                          "description":  "Image file or data URL"
-                                                                      }
-                                                        },
-                                         "type":  "object"
-                                     }
-                  },
-                  {
-                      "url":  "https://www.aibots.co.in/invoice.html",
-                      "description":  "Creates a PDF invoice",
-                      "name":  "generate_invoice",
-                      "parameters":  {
-                                         "properties":  {
-                                                            "items":  {
-                                                                          "type":  "array"
-                                                                      },
-                                                            "client_name":  {
-                                                                                "type":  "string"
-                                                                            }
-                                                        },
-                                         "type":  "object"
-                                     }
-                  },
-                  {
-                      "url":  "https://www.aibots.co.in/qrcode.html",
-                      "description":  "Generates customized QR codes",
-                      "name":  "make_qr_code",
-                      "parameters":  {
-                                         "properties":  {
-                                                            "text":  {
-                                                                         "type":  "string",
-                                                                         "description":  "URL or text to encode"
-                                                                     }
-                                                        },
-                                         "type":  "object"
-                                     }
-                  }
-              ],
-    "description":  "A suite of 30+ browser-based creative and utility tools for image processing, PDF generation, and calculation.",
-    "name":  "AI Bots Creative Studio Tools",
-    "version":  "1.0.0"
+{
+  "$schema": "https://json.schemastore.org/webmcp.json",
+  "name": "AI Bots Creative Studio Tools",
+  "description": "A privacy-first suite of 33+ browser-based creative, financial, and utility tools.",
+  "version": "1.2.0",
+  "tools": [
+    {
+      "name": "bank_statement_to_tally",
+      "description": "Converts PDF/CSV bank statements into TallyPrime / Tally.ERP 9 XML vouchers locally.",
+      "url": "https://www.aibots.co.in/bank-statement-converter.html",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "bank": {
+            "type": "string",
+            "description": "Bank name (SBI, HDFC, ICICI, Axis, PNB, BOB, etc.)"
+          }
+        }
+      }
+    },
+    {
+      "name": "cash_and_udhar_ledger",
+      "description": "Personal cash passbook, Udhar khata, and daily cash spending manager with offline storage.",
+      "url": "https://www.aibots.co.in/ledger.html",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": ["cash_in", "cash_out", "udhar_given", "udhar_taken"]
+          },
+          "amount": {
+            "type": "number",
+            "description": "Transaction amount in INR"
+          }
+        }
+      }
+    },
+    {
+      "name": "remove_background",
+      "description": "Removes background from image with client-side edge detection.",
+      "url": "https://www.aibots.co.in/backremover.html",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "image": {
+            "type": "string",
+            "description": "Image file or data URL"
+          }
+        }
+      }
+    },
+    {
+      "name": "generate_invoice",
+      "description": "Generates professional GST/VAT PDF invoices with automated tax calculations and UPI QR.",
+      "url": "https://www.aibots.co.in/invoice.html",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "client_name": {
+            "type": "string"
+          },
+          "items": {
+            "type": "array"
+          }
+        }
+      }
+    },
+    {
+      "name": "make_qr_code",
+      "description": "Generates customized downloadable QR codes for URLs, text, Wi-Fi, vCards, and UPI.",
+      "url": "https://www.aibots.co.in/qrcode.html",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "text": {
+            "type": "string",
+            "description": "URL or text to encode"
+          }
+        }
+      }
+    },
+    {
+      "name": "generate_password",
+      "description": "Generates cryptographically secure passwords with custom character sets and entropy scores.",
+      "url": "https://www.aibots.co.in/password.html",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "length": {
+            "type": "integer",
+            "description": "Length of password"
+          }
+        }
+      }
+    },
+    {
+      "name": "crop_photo",
+      "description": "Interactive photo cropper with aspect ratios and rule-of-thirds grid.",
+      "url": "https://www.aibots.co.in/cropphoto.html",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "aspect_ratio": {
+            "type": "string",
+            "description": "Aspect ratio (1:1, 16:9, 4:3, passport)"
+          }
+        }
+      }
+    },
+    {
+      "name": "resize_image",
+      "description": "Resize photos to exact pixel dimensions, percentages, or target file sizes (KB/MB).",
+      "url": "https://www.aibots.co.in/resizeimage.html",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "width": { "type": "integer" },
+          "height": { "type": "integer" }
+        }
+      }
+    },
+    {
+      "name": "convert_units",
+      "description": "Universal unit converter for length, weight, temperature, digital storage, and speed.",
+      "url": "https://www.aibots.co.in/unitconverter.html",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "value": { "type": "number" },
+          "from_unit": { "type": "string" },
+          "to_unit": { "type": "string" }
+        }
+      }
+    },
+    {
+      "name": "convert_currency",
+      "description": "Real-time foreign exchange rate converter for 160+ fiat currencies.",
+      "url": "https://www.aibots.co.in/currency.html",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "amount": { "type": "number" },
+          "from": { "type": "string" },
+          "to": { "type": "string" }
+        }
+      }
+    },
+    {
+      "name": "count_words",
+      "description": "Live analyzer for word count, character count, reading time, and keyword density.",
+      "url": "https://www.aibots.co.in/wordcounter.html",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "text": { "type": "string" }
+        }
+      }
+    },
+    {
+      "name": "video_studio",
+      "description": "Lossless HD browser video trimmer, cutter, audio extractor, and compressor.",
+      "url": "https://www.aibots.co.in/videoeditor.html",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "operation": {
+            "type": "string",
+            "enum": ["trim", "cut", "audio_extract", "compress"]
+          }
+        }
+      }
+    }
+  ]
 }

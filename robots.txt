@@ -3,7 +3,7 @@ Disallow: /admin
 Disallow: /admin.html
 Allow: /
 
-# AI & LLM Search Crawlers (Explicitly Allowed for GEO)
+# AI & LLM Search Crawlers (Explicitly Allowed for Generative Search & Discovery)
 User-agent: GPTBot
 Allow: /
 
@@ -20,6 +20,15 @@ User-agent: Google-Extended
 Allow: /
 
 User-agent: Applebot-Extended
+Allow: /
+
+User-agent: meta-externalagent
+Allow: /
+
+User-agent: Bytespider
+Allow: /
+
+User-agent: cohere-ai
 Allow: /
 
 User-agent: Bingbot

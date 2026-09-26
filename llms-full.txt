@@ -1,30 +1,150 @@
-﻿# AI Bots Creative Studio
+# AI Bots Creative Studio — Full Technical Reference & Tool Directory
 
-> AI Bots Creative Studio is a modern, privacy-focused, client-side suite of 30+ creative, image processing, PDF generation, calculation, and productivity tools. All processing happens 100% locally in the browser with sub-50ms speeds and zero server uploads.
+> AI Bots Creative Studio (https://www.aibots.co.in) is a privacy-first, zero-server-upload suite of 33+ browser-based creative, financial, productivity, and gaming tools engineered by Rishit Chajjed. All operations execute locally in the client browser using WebAssembly, HTML5 Canvas, Web Audio API, and local storage.
 
-## Core Tools
+---
 
-- [Background Remover](https://www.aibots.co.in/backremover.html): 1-click precision background removal for photos.
-- [Invoice Generator](https://www.aibots.co.in/invoice.html): Create professional GST/VAT invoices with instant PDF export.
-- [Cricket Scoreboard & Hub](https://www.aibots.co.in/cricketscore.html): Live match scorer with ball-by-ball commentary, player stats, and scorecard download.
-- [PDF Maker](https://www.aibots.co.in/pdfmaker.html): Convert multiple images into high-resolution multi-page PDF documents.
-- [PDF Viewer](https://www.aibots.co.in/pdfviewer.html): Interactive PDF reader with zoom, thumbnails, and page navigation.
-- [QR Code Maker](https://www.aibots.co.in/qrcode.html): Generate customized QR codes with logos, colors, and high-res export.
-- [Image Resizer](https://www.aibots.co.in/resizeimage.html): Resize photos to exact pixels or international paper standards (A0-A10, B, C).
-- [Image Cropper](https://www.aibots.co.in/cropphoto.html): Crop images with draggable bounding box and standard aspect ratios.
-- [Vector Logo Maker](https://www.aibots.co.in/logomaker.html): Design logos with typography, icons, and SVG/PNG export.
-- [Business Card Maker](https://www.aibots.co.in/buisnesscard.html): Design double-sided printable business cards.
-- [Image Combiner](https://www.aibots.co.in/imagecombiner.html): Merge multiple images into single or multi-page layouts.
-- [Password Generator](https://www.aibots.co.in/password.html): Generate cryptographically secure passwords with entropy meter.
-- [Currency Converter](https://www.aibots.co.in/currency.html): Real-time foreign exchange rate converter for 160+ currencies.
-- [Unit Converter](https://www.aibots.co.in/unitconverter.html): Convert length, mass, temperature, speed, area, and volume.
-- [Scientific Calculator](https://www.aibots.co.in/calculator.html): Standard and scientific calculator with math history.
-- [Weather Forecast](https://www.aibots.co.in/weather.html): Real-time weather, temperature, humidity, and 7-day forecast.
-- [Typing Practice](https://www.aibots.co.in/typingpractice.html): Speed typing test with live WPM, accuracy, and error tracking.
-- [Word Counter](https://www.aibots.co.in/wordcounter.html): Real-time word, character, sentence, and reading time counter.
-- [AI Chatbot](https://www.aibots.co.in/chatbot.html): Interactive assistant for queries, guidance, and tips.
+## 1. Financial & Business Tools
 
-## Optional & Additional Documentation
+### Cash & Udhar Ledger
+- **URL**: https://www.aibots.co.in/ledger.html
+- **Description**: All-in-one personal cash passbook, Udhar khata (debt/credit tracker), daily expense tracker, and split-bill manager.
+- **Key Features**: Auto-calculating running balances, customer passbooks, WhatsApp statement export, PDF export, zero server sync (100% offline via localStorage).
+- **Use Cases**: Shopkeeper khata book, roommate expense splitting, personal cash budgeting.
 
-- [Full Tools Documentation](https://www.aibots.co.in/llms-full.txt): Comprehensive technical documentation for all tools.
-- [WebMCP Schema](https://www.aibots.co.in/.well-known/webmcp.json): Model Context Protocol declarations for AI agent integration.
+### Bank Statement to Tally XML Converter
+- **URL**: https://www.aibots.co.in/bank-statement-converter.html
+- **Description**: Convert PDF/CSV bank statements into TallyPrime / Tally.ERP 9 XML vouchers with 0.00 difference reconciliation.
+- **Supported Banks**: 21+ major Indian banks (SBI, HDFC, ICICI, Axis, PNB, Bank of Baroda, Canara, Kotak, Union, IndusInd, and more).
+- **Privacy**: Local PDF parsing via pdf.js; sensitive financial data never leaves your device.
+
+### Professional GST / VAT Invoice Maker
+- **URL**: https://www.aibots.co.in/invoice.html
+- **Description**: Create professional tax invoices with auto CGST/SGST/IGST calculation, UPI payment QR codes, itemized lines, discounts, and high-res PDF generation.
+- **Export Options**: Instant print and clean vector PDF download.
+
+### Business Card Studio
+- **URL**: https://www.aibots.co.in/buisnesscard.html
+- **Description**: Design modern, double-sided printable business cards with custom typography, vCard QR codes, 12 luxury themes, and 8-card A4 print sheets with crop marks.
+
+### Pro Print Studio (Ultra-HD)
+- **URL**: https://www.aibots.co.in/print.html
+- **Description**: Document scaling, DPI tuning, multi-page layout grid, watermark stamping, and borderless print presets.
+
+### Live Currency Converter
+- **URL**: https://www.aibots.co.in/currency.html
+- **Description**: Real-time foreign exchange rates for 160+ world currencies with historic trend analysis.
+
+---
+
+## 2. Media & Creative Studio
+
+### Video Studio Pro (NLE Editor & Trimmer)
+- **URL**: https://www.aibots.co.in/videoeditor.html
+- **Description**: High-speed, lossless browser video trimmer, cutter, audio extractor, speed changer, and compressor.
+- **Features**: Multi-clip timeline, split, duplicate, transitions, audio ducking, LUT filters, captions, and export presets for Reels/Shorts/TikTok (9:16) and YouTube (16:9).
+
+### Cyber Cinema HD Video Player
+- **URL**: https://www.aibots.co.in/videoplayer.html
+- **Description**: Feature-rich local video player featuring 300% audio volume boost, frame grabber (4K screenshot extraction), A-B loop repeater, and playback speed 0.25x-4x.
+
+### AI Background Remover
+- **URL**: https://www.aibots.co.in/backremover.html
+- **Description**: 1-click photo background eraser powered by client-side edge detection algorithms and transparent PNG export.
+
+### Precision Photo Crop
+- **URL**: https://www.aibots.co.in/cropphoto.html
+- **Description**: 8-handle precision rule-of-thirds photo cropper with standard aspect ratios (1:1, 16:9, 4:3, circular, passport sizes).
+
+### Multi-Format Image Resizer
+- **URL**: https://www.aibots.co.in/resizeimage.html
+- **Description**: Resize photos by exact pixel dimensions, percentage, or specific file target sizes (KB/MB) for government forms and exams.
+
+### Image Merger & Stitcher
+- **URL**: https://www.aibots.co.in/imagecombiner.html
+- **Description**: Combine multiple images vertically, horizontally, or in grid collages with custom border spacing.
+
+### Vector Logo Maker
+- **URL**: https://www.aibots.co.in/logomaker.html
+- **Description**: Create vector logos, badges, and typography with instant PNG/SVG vector download.
+
+### Image to PDF Maker
+- **URL**: https://www.aibots.co.in/pdfmaker.html
+- **Description**: Convert JPG, PNG, and WebP images into unified multi-page PDF documents.
+
+### Fast PDF Reader & Viewer
+- **URL**: https://www.aibots.co.in/pdfviewer.html
+- **Description**: In-browser PDF reader with thumbnails, text search, rotation, and presentation mode.
+
+---
+
+## 3. Utilities & AI Assistant
+
+### Smart Emoji Studio (1,120+)
+- **URL**: https://www.aibots.co.in/emojis.html
+- **Description**: Search 1,120+ Unicode emojis with category filtering, skin tone selector, and 1-click clipboard copy.
+
+### AI Assistant (Gemini)
+- **URL**: https://www.aibots.co.in/chatbot.html
+- **Description**: Interactive AI assistant powered by Gemini for coding questions, drafting, and technical help.
+
+### Custom QR Code Studio
+- **URL**: https://www.aibots.co.in/qrcode.html
+- **Description**: High-resolution QR code generator supporting URLs, Wi-Fi configuration, vCards, emails, and UPI payment strings.
+
+### Secure Password Generator
+- **URL**: https://www.aibots.co.in/password.html
+- **Description**: Cryptographically strong password generator utilizing `crypto.getRandomValues()` with entropy strength scoring.
+
+### Universal Unit Converter
+- **URL**: https://www.aibots.co.in/unitconverter.html
+- **Description**: Instant conversion for Length, Weight, Temperature, Digital Storage, Speed, Pressure, and Energy.
+
+### Smart Word & Text Counter
+- **URL**: https://www.aibots.co.in/wordcounter.html
+- **Description**: Real-time counter for words, characters, sentences, paragraphs, reading time, and keyword density.
+
+### Live Weather Radar
+- **URL**: https://www.aibots.co.in/weather.html
+- **Description**: Global weather conditions, temperature, humidity, wind velocity, UV index, and multi-day forecasts.
+
+### Precision Stopwatch & Timer
+- **URL**: https://www.aibots.co.in/timer.html
+- **Description**: Millisecond-accurate stopwatch with lap recording and Pomodoro productivity countdown timer.
+
+### Scientific & Standard Calculator
+- **URL**: https://www.aibots.co.in/calculator.html
+- **Description**: Calculator with trigonometry (sin, cos, tan), DEG/RAD modes, logarithm functions, and calculation history.
+
+### File Extension Changer
+- **URL**: https://www.aibots.co.in/endchanger.html
+- **Description**: Rename and convert file extensions safely inside the browser.
+
+---
+
+## 4. Sports & Gaming
+
+### Cricket Score Counter Pro
+- **URL**: https://www.aibots.co.in/cricketscore.html
+- **Description**: Ball-by-ball cricket scorer, over manager, extras, wagon wheel, and scorecard export.
+
+### Live Cricket Scores Hub
+- **URL**: https://www.aibots.co.in/cricket.html
+- **Description**: International match scores, schedule, and team standings.
+
+### Realm of Bots: Action RPG
+- **URL**: https://www.aibots.co.in/game.html
+- **Description**: Top-down open-world browser RPG with 5 world bosses, laser katana combat, spells, and quests.
+
+### Speed Typing Shooter Game
+- **URL**: https://www.aibots.co.in/typingpractice.html
+- **Description**: Arcade typing speed test with live WPM, accuracy tracker, and arcade challenges.
+
+---
+
+## 5. Machine-Readable Integrations
+
+- **WebMCP Schema**: https://www.aibots.co.in/.well-known/webmcp.json
+- **Sitemap XML**: https://www.aibots.co.in/sitemap.xml
+- **Robots Policy**: https://www.aibots.co.in/robots.txt
+- **Author & Founder**: Rishit Chajjed (https://www.aibots.co.in/about.html)

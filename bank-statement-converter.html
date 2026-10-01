@@ -763,6 +763,7 @@
             
             <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap;">
               <input type="text" id="tableSearch" class="form-control" placeholder="Search narration or amount..." style="width:160px; padding:6px 9px; font-size:0.78rem;" oninput="filterTable()">
+              <button class="btn btn-secondary btn-sm" onclick="invertTransactionOrder()" title="Reverse statement order (Oldest ⇄ Newest)"><i class="fas fa-sort"></i> Invert Order</button>
               <button class="btn btn-secondary btn-sm" onclick="invertAllTypes()" title="Swap all Payments (Dr) & Receipts (Cr)"><i class="fas fa-right-left"></i> Swap Dr/Cr</button>
               <button class="btn btn-secondary btn-sm" onclick="addNewRow()" title="Add custom row"><i class="fas fa-plus"></i> Add Row</button>
               <button class="btn btn-secondary btn-sm" onclick="clearAllData()" title="Clear all"><i class="fas fa-trash"></i></button>
@@ -1383,15 +1384,22 @@
         } else {
           // PASS 2: Mathematical verification against running balance delta
           if (allTxns.length > 1) {
-            let incCount = 0;
-            let decCount = 0;
-            for (let i = 1; i < Math.min(allTxns.length, 25); i++) {
-              if (allTxns[i].tallyDate >= allTxns[i - 1].tallyDate) incCount++;
-              else decCount++;
+            // Determine if statement is in reverse chronological order (newest to oldest)
+            let isReverse = false;
+            const firstDate = allTxns[0].tallyDate;
+            const lastDate = allTxns[allTxns.length - 1].tallyDate;
+            if (firstDate && lastDate && firstDate !== lastDate) {
+              isReverse = (firstDate > lastDate);
+            } else {
+              let strictInc = 0, strictDec = 0;
+              for (let i = 1; i < allTxns.length; i++) {
+                if (allTxns[i].tallyDate > allTxns[i - 1].tallyDate) strictInc++;
+                else if (allTxns[i].tallyDate < allTxns[i - 1].tallyDate) strictDec++;
+              }
+              isReverse = (strictDec > strictInc);
             }
-            const isChronological = incCount >= decCount;
 
-            if (isChronological) {
+            if (!isReverse) {
               for (let i = 1; i < allTxns.length; i++) {
                 const prev = allTxns[i - 1];
                 const curr = allTxns[i];
@@ -2128,22 +2136,26 @@
 
       const firstTx = parsedTransactions[0];
       const lastTx = parsedTransactions[parsedTransactions.length - 1];
+      const isReverseDisplayed = firstTx && lastTx && (firstTx.tallyDate > lastTx.tallyDate);
+      const oldestTx = isReverseDisplayed ? lastTx : firstTx;
+      const newestTx = isReverseDisplayed ? firstTx : lastTx;
+
       let openingBal = 0;
-      if (firstTx && firstTx.balance > 0) {
-        openingBal = Math.round((firstTx.balance - (firstTx.credit || 0) + (firstTx.debit || 0)) * 100) / 100;
+      if (oldestTx && oldestTx.balance > 0) {
+        openingBal = Math.round((oldestTx.balance - (oldestTx.credit || 0) + (oldestTx.debit || 0)) * 100) / 100;
       }
-      const closingBal = lastTx ? (lastTx.balance || 0) : 0;
+      const closingBal = newestTx ? (newestTx.balance || 0) : 0;
       const expectedClosing = Math.round((openingBal + totalCr - totalDr) * 100) / 100;
       const discrepancy = Math.round(Math.abs(expectedClosing - closingBal) * 100) / 100;
 
       const closingBalEl = document.getElementById('metricClosingBal');
-      if (closingBalEl && lastTx) {
+      if (closingBalEl && newestTx) {
         closingBalEl.textContent = '₹' + closingBal.toLocaleString('en-IN', {minimumFractionDigits:2});
       }
 
       const rBanner = document.getElementById('reconcileBanner');
       const rEq = document.getElementById('reconcileEquation');
-      if (rBanner && rEq && lastTx) {
+      if (rBanner && rEq && newestTx) {
         rBanner.style.display = 'flex';
         if (discrepancy === 0) {
           rBanner.style.background = 'rgba(16,185,129,0.08)';
@@ -2175,6 +2187,15 @@
         }
         renderTable();
       }
+    }
+
+    function invertTransactionOrder() {
+      if (!parsedTransactions || parsedTransactions.length === 0) {
+        alert("No transactions loaded.");
+        return;
+      }
+      parsedTransactions.reverse();
+      renderTable();
     }
 
     function invertAllTypes() {

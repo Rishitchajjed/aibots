@@ -1444,16 +1444,32 @@
       if (!str) return null;
       str = str.trim();
       
-      // 1. DD/MM/YYYY or DD-MM-YYYY or DD.MM.YYYY
-      let m = str.match(/^(\d{1,2})[-/.](\d{1,2})[-/.](\d{2,4})/);
+      const months = { 
+        jan:'01', january:'01',
+        feb:'02', february:'02',
+        mar:'03', march:'03',
+        apr:'04', april:'04',
+        may:'05',
+        jun:'06', june:'06',
+        jul:'07', july:'07',
+        aug:'08', august:'08',
+        sep:'09', sept:'09', september:'09',
+        oct:'10', october:'10',
+        nov:'11', november:'11',
+        dec:'12', december:'12'
+      };
+
+      // 1. DD-Mon-YYYY or DD Mon YYYY or DD-Mon-YY or DD/Mon/YYYY or DD-Month-YYYY
+      let m = str.match(/^(\d{1,2})[-\s/]([A-Za-z]{3,9})[-\s/](\d{2,4})/);
       if (m) {
         let day = m[1].padStart(2, '0');
-        let month = m[2].padStart(2, '0');
+        let monKey = m[2].toLowerCase();
+        let month = months[monKey] || months[monKey.slice(0, 3)] || '01';
         let year = m[3].length === 2 ? '20' + m[3] : m[3];
         return { display: `${day}/${month}/${year}`, tally: `${year}${month}${day}` };
       }
 
-      // 2. YYYY-MM-DD or YYYY/MM/DD
+      // 2. YYYY-MM-DD or YYYY/MM/DD or YYYY.MM.DD
       m = str.match(/^(\d{4})[-/.](\d{1,2})[-/.](\d{1,2})/);
       if (m) {
         let year = m[1];
@@ -1462,21 +1478,23 @@
         return { display: `${day}/${month}/${year}`, tally: `${year}${month}${day}` };
       }
 
-      // 3. DD-Mon-YYYY or DD Mon YYYY or DD-Mon-YY
-      const months = { jan:'01', feb:'02', mar:'03', apr:'04', may:'05', jun:'06', jul:'07', aug:'08', sep:'09', oct:'10', nov:'11', dec:'12' };
-      m = str.match(/^(\d{1,2})[-\s/]([A-Za-z]{3})[A-Za-z]*[-\s/](\d{2,4})/);
+      // 3. DD/MM/YYYY or DD-MM-YYYY or DD.MM.YYYY or DD/MM/YY
+      m = str.match(/^(\d{1,2})[-/.](\d{1,2})[-/.](\d{2,4})/);
       if (m) {
         let day = m[1].padStart(2, '0');
-        let monKey = m[2].toLowerCase();
-        let month = months[monKey] || '01';
+        let month = m[2].padStart(2, '0');
         let year = m[3].length === 2 ? '20' + m[3] : m[3];
-        return { display: `${day}/${month}/${year}`, tally: `${year}${month}${day}` };
+        const dNum = parseInt(day, 10);
+        const mNum = parseInt(month, 10);
+        if (dNum >= 1 && dNum <= 31 && mNum >= 1 && mNum <= 12) {
+          return { display: `${day}/${month}/${year}`, tally: `${year}${month}${day}` };
+        }
       }
 
       return null;
     }
 
-    // Helper: Detect table header row on any page with tight 6pt line clustering
+    // Helper: Detect table header row on any page with tight line clustering
     function detectPageHeaderCoordinates(pageItems) {
       const candidateItems = pageItems.filter(it => it.y > 120).sort((a, b) => b.y - a.y);
       const clusters = [];
@@ -1517,29 +1535,29 @@
           const it = itemsInLine[j];
           const s = it.str.toLowerCase().trim();
 
-          if (/^(date|txn\s*date|value\s*date|tran\s*date|transaction|post\s*date)/i.test(s) && it.x < 160) {
+          if (/^(date|txn\s*date|txn\.?\s*date|tran\s*date|trans\s*date|value\s*date|val\s*date|post\s*date|posting\s*date|booking\s*date|transaction\s*date)/i.test(s) && it.x < 160) {
             hasDate = true;
             hDate = it.x;
             score += 3;
-          } else if (/^(instrument|instrument\s*id|chq|cheque|cheque\s*no|ref\s*no|mode)/i.test(s) && it.x < 200) {
+          } else if (/^(instrument|instrument\s*id|chq|cheque|cheque\s*no|chq\.?\s*no|ref\s*no|ref\.?\s*no|utr|mode|chq\/ref)/i.test(s) && it.x < 220) {
             hInstr = it.x;
             score += 2;
-          } else if (/^(amount|amount\s*\(inr\)|txn\s*amt|trans\s*amt)/i.test(s) && it.x < 250) {
+          } else if (/^(amount|amount\s*\(inr\)|amount\s*\(rs\.?\)|txn\s*amt|trans\s*amt|transaction\s*amount)/i.test(s) && it.x < 250) {
             hAmount = it.x;
             score += 3;
-          } else if (/^(type|dr\/cr|cr\/dr|txn\s*type)/i.test(s) && it.x < 280) {
+          } else if (/^(type|dr\/cr|cr\/dr|txn\s*type|transaction\s*type)/i.test(s) && it.x < 280) {
             hType = it.x;
             score += 3;
-          } else if (/(?:withdrawal|withdrawals|debit|debits|\bdr\b|\bdr\.)/i.test(s)) {
+          } else if (/(?:withdrawal|withdrawals|debit|debits|\bdr\b|\bdr\.|\bdebit\s*amt|\bwithdrawal\s*amt)/i.test(s)) {
             hDebit = it.x;
             score += 3;
-          } else if (/(?:deposit|deposits|credit|credits|\bcr\b|\bcr\.)/i.test(s)) {
+          } else if (/(?:deposit|deposits|credit|credits|\bcr\b|\bcr\.|\bcredit\s*amt|\bdeposit\s*amt)/i.test(s)) {
             hCredit = it.x;
             score += 3;
-          } else if (/(?:balance|bal|closing\s*balance)/i.test(s)) {
+          } else if (/(?:balance|bal|closing\s*balance|running\s*balance|bal\s*\(inr\)|bal\s*\(rs\.?\))/i.test(s)) {
             hBalance = it.x;
             score += 3;
-          } else if (/(particulars|narration|description|remarks)/i.test(s)) {
+          } else if (/(particulars|narration|description|remarks|transaction\s*details|details)/i.test(s)) {
             hasNarr = true;
             hRemarks = it.x;
             score += 3;
@@ -1720,12 +1738,12 @@
         const rowItems = pageItems.filter(it => it.y >= yBottom && it.y < yTop && (footerMaxY === null || it.y > footerMaxY + 2));
 
         // Check if row is an opening balance row (B/F or Brought Forward)
-        const isOpeningRow = rowItems.some(it => /(?:opening\s*balance|\bb\/f\b|brought\s*forward)/i.test(it.str));
+        const isOpeningRow = rowItems.some(it => /(?:opening\s*balance|bal\s*b\/f|\bb\/f\b|brought\s*forward|balance\s*forward|previous\s*balance|balance\s*b\/d|bal\s*b\/d)/i.test(it.str));
         if (isOpeningRow) {
           for (const it of rowItems) {
             if (isValidStandaloneAmount(it.str)) {
               const val = parseIndianAmount(it.str);
-              if (val > 0 && (sharedHeaders.headerXBalance === null || Math.abs(it.x - sharedHeaders.headerXBalance) < 45)) {
+              if (val > 0 && (sharedHeaders.headerXBalance === null || Math.abs(it.x - sharedHeaders.headerXBalance) < 55)) {
                 window.parsedInitialOpeningBal = val;
               }
             }
@@ -1818,8 +1836,28 @@
         narration = narration.replace(/^(Date\s+)?(Narration|Particulars|Remarks)\s*(Chq\.?\/Ref\.?\s*No\.?\s*)?/i, '').trim();
 
         if (!chqNo) {
-          const chqMatch = narration.match(/(?:CHQ|CHEQUE|REF|UTR|UPI)[\s/:-]*([A-Z0-9]{4,22})/i);
-          if (chqMatch) chqNo = chqMatch[1];
+          let upiM = narration.match(/UPI\/(?:P2M|P2A|P2V\/|)?([0-9]{12})/i);
+          if (upiM) {
+            chqNo = upiM[1];
+          } else {
+            let neftM = narration.match(/NEFT(?:_IN|_OUT)?[:/]([A-Z0-9]{10,22})/i);
+            if (neftM) {
+              chqNo = neftM[1];
+            } else {
+              let impsM = narration.match(/IMPS(?:-IN|-OUT)?[\/:-]([0-9]{12})/i);
+              if (impsM) {
+                chqNo = impsM[1];
+              } else {
+                let rtgsM = narration.match(/(?:NRTGS|RTGS)[\/:-]([A-Z0-9]{10,24})/i);
+                if (rtgsM) {
+                  chqNo = rtgsM[1];
+                } else {
+                  let chqMatch = narration.match(/(?:CHQ|CHEQUE|REF|UTR)[\s/:-]*([A-Z0-9]{4,22})/i);
+                  if (chqMatch) chqNo = chqMatch[1];
+                }
+              }
+            }
+          }
         }
 
         // Debit / Credit calculation
@@ -2043,27 +2081,27 @@
       }
     }
 
-    // Default Ledger Heuristic: Uses standard Tally Names
+    // Default Ledger Heuristic: Uses standard Tally Names for Indian businesses
     function autoMapLedger(narration) {
       const defaultCounter = document.getElementById('defaultCounterLedger').value || 'Suspense A/c';
       if (!narration) return defaultCounter;
       const upper = narration.toUpperCase();
 
       if (upper.includes('ATM') || upper.includes('CASH WDL') || upper.includes('CASH DEP') || upper.includes('SELF') || upper.includes('TPW')) return 'Cash';
-      if (upper.includes('SALARY') || upper.includes('PAYROLL') || upper.includes('WAGES')) return 'Salary A/c';
+      if (upper.includes('SALARY') || upper.includes('PAYROLL') || upper.includes('WAGES') || upper.includes('STIPEND')) return 'Salary A/c';
       if (upper.includes('INT.PD') || upper.includes('INTEREST') || upper.includes('INT COLL') || upper.includes('INT DIV') || upper.includes('DIVIDEND') || upper.includes(' DIV ')) return 'Bank Interest & Dividend Income';
-      if (upper.includes('- CHG') || upper.includes('CHG/') || upper.includes('CHARGES') || upper.includes('FEE') || upper.includes('SMS CHG')) return 'Bank Charges';
-      if (upper.includes('PETROL') || upper.includes('FUEL') || upper.includes('HPCL') || upper.includes('IOCL') || upper.includes('BPCL') || upper.includes('SHELL')) return 'Fuel & Conveyance';
-      if (upper.includes('ELECTRICITY') || upper.includes('BESCOM') || upper.includes('MSEDCL') || upper.includes('TNEB') || upper.includes('UPPCL') || upper.includes('UTILITY') || upper.includes('POWER')) return 'Electricity & Utility Expenses';
-      if (upper.includes('RENT') || upper.includes('LEASE')) return 'Rent Expense';
-      if (upper.includes('GST') || upper.includes('TIN2') || upper.includes('TDS') || upper.includes('TAX') || upper.includes('COMMERCIAL TAX')) return 'Taxes & Duties A/c';
+      if (upper.includes('- CHG') || upper.includes('CHG/') || upper.includes('CHARGES') || upper.includes('FEE') || upper.includes('SMS CHG') || upper.includes('RET CHG') || upper.includes('FOLIO') || upper.includes('MIN BAL') || upper.includes('NACH RET') || upper.includes('ECS RET')) return 'Bank Charges';
+      if (upper.includes('PETROL') || upper.includes('FUEL') || upper.includes('HPCL') || upper.includes('IOCL') || upper.includes('BPCL') || upper.includes('SHELL') || upper.includes('FASTAG') || upper.includes('TOLL')) return 'Fuel & Conveyance';
+      if (upper.includes('ELECTRICITY') || upper.includes('BESCOM') || upper.includes('MSEDCL') || upper.includes('TNEB') || upper.includes('UPPCL') || upper.includes('TPDDL') || upper.includes('BSES') || upper.includes('UTILITY') || upper.includes('POWER') || upper.includes('METRO WATER') || upper.includes('WATER TAX')) return 'Electricity & Utility Expenses';
+      if (upper.includes('RENT') || upper.includes('LEASE') || upper.includes('MAINTENANCE')) return 'Rent Expense';
+      if (upper.includes('GST') || upper.includes('GSTIN') || upper.includes('CGST') || upper.includes('SGST') || upper.includes('IGST') || upper.includes('TIN2') || upper.includes('TDS') || upper.includes('TAX') || upper.includes('COMMERCIAL TAX') || upper.includes('ADVANCE TAX') || upper.includes('INCOME TAX')) return 'Taxes & Duties A/c';
       if (upper.includes('MUNICIPAL') || upper.includes('CORPORATION') || upper.includes('GREATERCHENNAI') || upper.includes('PROPERTY TAX')) return 'Municipal & Property Taxes';
-      if (upper.includes('IRCTC') || upper.includes('IXIGO') || upper.includes('AIRWAYS') || upper.includes('INDIGO') || upper.includes('TRAVEL') || upper.includes('UBER') || upper.includes('OLA') || upper.includes('METRO')) return 'Travel & Conveyance';
-      if (upper.includes('NETFLIX') || upper.includes('SPOTIFY') || upper.includes('HOTSTAR') || upper.includes('SUBSCRIPTION')) return 'Subscriptions & Software';
-      if (upper.includes('INSURANCE') || upper.includes('LIC') || upper.includes('HDFC LIFE') || upper.includes('MAX LIFE') || upper.includes('STAR HEALTH') || upper.includes('ICICI PRU')) return 'Insurance Expenses';
-      if (upper.includes('TELECOM') || upper.includes('AIRTEL') || upper.includes('JIO') || upper.includes('VODAFONE') || upper.includes('BSNL') || upper.includes('BROADBAND')) return 'Telephone & Internet Expenses';
-      if (upper.includes('SWIGGY') || upper.includes('ZOMATO') || upper.includes('RESTAURANT') || upper.includes('FOOD') || upper.includes('DOMINOS') || upper.includes('MCDONALDS')) return 'Staff Refreshment';
-      if (upper.includes('AMAZON') || upper.includes('FLIPKART') || upper.includes('BLINKIT') || upper.includes('ZEPTO') || upper.includes('INSTAMART') || upper.includes('BIGBASKET')) return 'Office Supplies';
+      if (upper.includes('IRCTC') || upper.includes('IXIGO') || upper.includes('AIRWAYS') || upper.includes('INDIGO') || upper.includes('AIR INDIA') || upper.includes('TRAVEL') || upper.includes('UBER') || upper.includes('OLA') || upper.includes('RAPIDO') || upper.includes('METRO') || upper.includes('MAKEMYTRIP') || upper.includes('EASEMYTRIP') || upper.includes('YATRA')) return 'Travel & Conveyance';
+      if (upper.includes('NETFLIX') || upper.includes('SPOTIFY') || upper.includes('HOTSTAR') || upper.includes('SUBSCRIPTION') || upper.includes('AMAZON PRIME') || upper.includes('ZOOM')) return 'Subscriptions & Software';
+      if (upper.includes('INSURANCE') || upper.includes('LIC') || upper.includes('LIFE INSURANCE') || upper.includes('HDFC LIFE') || upper.includes('MAX LIFE') || upper.includes('STAR HEALTH') || upper.includes('ICICI PRU') || upper.includes('TATA AIA') || upper.includes('BAJAJ ALLIANZ') || upper.includes('SBI LIFE') || upper.includes('CARE HEALTH') || upper.includes('NEW INDIA ASSURANCE')) return 'Insurance Expenses';
+      if (upper.includes('TELECOM') || upper.includes('AIRTEL') || upper.includes('JIO') || upper.includes('VODAFONE') || upper.includes(' VI ') || upper.includes('BSNL') || upper.includes('BROADBAND') || upper.includes('ACT FIBERNET') || upper.includes('HATHWAY') || upper.includes('TATA PLAY') || upper.includes('DTH')) return 'Telephone & Internet Expenses';
+      if (upper.includes('SWIGGY') || upper.includes('ZOMATO') || upper.includes('RESTAURANT') || upper.includes('FOOD') || upper.includes('DOMINOS') || upper.includes('MCDONALDS') || upper.includes('STARBUCKS') || upper.includes('CAFE') || upper.includes('BAKERY') || upper.includes('SWEETS')) return 'Staff Refreshment';
+      if (upper.includes('AMAZON') || upper.includes('FLIPKART') || upper.includes('BLINKIT') || upper.includes('ZEPTO') || upper.includes('INSTAMART') || upper.includes('BIGBASKET') || upper.includes('DMART') || upper.includes('STATIONERY') || upper.includes('OFFICE')) return 'Office Supplies';
 
       return defaultCounter;
     }
@@ -2073,7 +2111,7 @@
       const n = name.trim();
       if (n.toLowerCase() === 'cash') return 'Cash-in-Hand';
       if (n === 'Suspense A/c' || n === 'Suspense Account') return 'Suspense A/c';
-      if (n.includes('Bank') || n.includes('PNB') || n.includes('SBI') || n.includes('HDFC') || n.includes('ICICI')) return 'Bank Accounts';
+      if (n.includes('Bank') || n.includes('PNB') || n.includes('SBI') || n.includes('HDFC') || n.includes('ICICI') || n.includes('Axis') || n.includes('Kotak')) return 'Bank Accounts';
       if (n.includes('Tax') || n.includes('Duties') || n.includes('GST') || n.includes('TDS')) return 'Duties & Taxes';
       if (n.includes('Interest') || n.includes('Dividend') || n.includes('Income')) return 'Indirect Incomes';
       return 'Indirect Expenses';

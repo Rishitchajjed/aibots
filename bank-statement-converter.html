@@ -1444,7 +1444,8 @@
       if (!str) return null;
       str = str.trim();
       
-      let m = str.match(/(\d{1,2})[-/.](\d{1,2})[-/.](\d{2,4})/);
+      // 1. DD/MM/YYYY or DD-MM-YYYY or DD.MM.YYYY
+      let m = str.match(/^(\d{1,2})[-/.](\d{1,2})[-/.](\d{2,4})/);
       if (m) {
         let day = m[1].padStart(2, '0');
         let month = m[2].padStart(2, '0');
@@ -1452,8 +1453,18 @@
         return { display: `${day}/${month}/${year}`, tally: `${year}${month}${day}` };
       }
 
+      // 2. YYYY-MM-DD or YYYY/MM/DD
+      m = str.match(/^(\d{4})[-/.](\d{1,2})[-/.](\d{1,2})/);
+      if (m) {
+        let year = m[1];
+        let month = m[2].padStart(2, '0');
+        let day = m[3].padStart(2, '0');
+        return { display: `${day}/${month}/${year}`, tally: `${year}${month}${day}` };
+      }
+
+      // 3. DD-Mon-YYYY or DD Mon YYYY or DD-Mon-YY
       const months = { jan:'01', feb:'02', mar:'03', apr:'04', may:'05', jun:'06', jul:'07', aug:'08', sep:'09', oct:'10', nov:'11', dec:'12' };
-      m = str.match(/(\d{1,2})[-\s]([A-Za-z]{3})[A-Za-z]*[-\s](\d{2,4})/);
+      m = str.match(/^(\d{1,2})[-\s/]([A-Za-z]{3})[A-Za-z]*[-\s/](\d{2,4})/);
       if (m) {
         let day = m[1].padStart(2, '0');
         let monKey = m[2].toLowerCase();
@@ -1661,10 +1672,10 @@
       // Sort dates top to bottom, then leftmost first
       rawDateItems.sort((a, b) => (b.y - a.y) || (a.x - b.x));
 
-      // Deduplicate multiple dates on the same line
+      // Deduplicate multiple dates on the same line (e.g. Txn Date and Value Date on same horizontal row)
       const dateItems = [];
       for (const d of rawDateItems) {
-        if (!dateItems.some(u => Math.abs(u.y - d.y) < 6)) {
+        if (!dateItems.some(u => Math.abs(u.y - d.y) < 3.5)) {
           dateItems.push(d);
         }
       }
@@ -1677,18 +1688,18 @@
 
         // Gapless Voronoi midpoint partitioning so no multi-line text is clipped
         if (dateItems.length === 1) {
-          yTop = currY + 30;
-          yBottom = currY - 30;
+          yTop = (pageHeaderY !== null) ? pageHeaderY - 2 : currY + 35;
+          yBottom = (footerMaxY !== null) ? footerMaxY + 2 : Math.max(0, currY - 35);
         } else if (idx === 0) {
           const nextY = dateItems[idx + 1].y;
           const h = currY - nextY;
-          yTop = currY + Math.min(h / 2.0, 20);
+          yTop = (pageHeaderY !== null) ? Math.min(pageHeaderY - 2, currY + 35) : (currY + Math.min(h / 2.0, 30));
           yBottom = (currY + nextY) / 2.0;
         } else if (idx === dateItems.length - 1) {
           const prevY = dateItems[idx - 1].y;
           const h = prevY - currY;
           yTop = (prevY + currY) / 2.0;
-          yBottom = currY - Math.max(h / 2.0, 20);
+          yBottom = (footerMaxY !== null) ? Math.max(footerMaxY + 2, currY - 35) : Math.max(0, currY - Math.max(h / 2.0, 30));
         } else {
           const prevY = dateItems[idx - 1].y;
           const nextY = dateItems[idx + 1].y;

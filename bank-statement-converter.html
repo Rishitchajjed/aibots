@@ -1607,22 +1607,27 @@
         }
       }
 
-      // Skip non-transaction pages (e.g. Terms, Legends, Instructions)
-      if (!pageHeader && pageIdx > 0) {
-        if (pageItems.some(it => /(?:legends\s*for\s*transactions|terms\s*and\s*conditions|account\s*related\s*other\s*information)/i.test(it.str))) {
-          return [];
-        }
-      }
-
-      // 2. Per-page Footer Detection (STRICTLY in footer area: y < 250)
+      // 2. Per-page Footer / Disclaimer Boundary Detection
       let footerMaxY = null;
       for (let i = 0; i < pageItems.length; i++) {
         const it = pageItems[i];
         const s = it.str.toLowerCase().trim();
         const y = it.y;
 
-        if (y < 250) {
-          if (/^(total|totals|grand\s*total|transaction\s*total)$/i.test(s) || /statement\s*summary/i.test(s) || /generated\s*through/i.test(s) || /page\s*\d+\s*of\s*\d+/i.test(s) || /legends\s*for\s*transactions/i.test(s) || /date:\s*\d{2}\/\d{2}\/\d{4}/i.test(s)) {
+        // Detect footer summary rows or bank disclaimer sections
+        const isFooterMarker = /^(total|totals|grand\s*total|transaction\s*total)$/i.test(s) ||
+                               /statement\s*summary/i.test(s) ||
+                               /generated\s*through/i.test(s) ||
+                               /page\s*\d+\s*of\s*\d+/i.test(s) ||
+                               /legends\s*for\s*transactions/i.test(s) ||
+                               /abbreviations\s*are\s*as\s*under/i.test(s) ||
+                               /unless\s*constituent\s*notifies/i.test(s) ||
+                               /computer\s*generated\s*enteries/i.test(s) ||
+                               /account\s*related\s*other\s*information/i.test(s) ||
+                               /date:\s*\d{2}\/\d{2}\/\d{4}/i.test(s);
+
+        if (isFooterMarker) {
+          if (pageHeaderY === null || y < pageHeaderY - 10) {
             const lineY = y;
             for (let j = 0; j < pageItems.length; j++) {
               const other = pageItems[j];

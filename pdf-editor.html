@@ -50,6 +50,7 @@
   <!-- PDF Engine Libraries -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
 
   <!-- Schema.org JSON-LD -->
   <script type="application/ld+json">
@@ -479,6 +480,22 @@
       background: var(--editor-accent-light);
       border-color: var(--editor-accent);
       color: var(--editor-accent);
+    }
+    .btn-xs-pill.btn-ocr-glow {
+      background: linear-gradient(135deg, #f59e0b, #d97706);
+      border-color: #b45309;
+      color: #ffffff;
+      box-shadow: 0 0 12px rgba(245, 158, 11, 0.45);
+      animation: pulseOcrGlow 2s infinite ease-in-out;
+    }
+    .btn-xs-pill.btn-ocr-glow:hover {
+      background: linear-gradient(135deg, #d97706, #b45309);
+      color: #ffffff;
+      transform: translateY(-1px);
+    }
+    @keyframes pulseOcrGlow {
+      0%, 100% { box-shadow: 0 0 8px rgba(245, 158, 11, 0.35); }
+      50% { box-shadow: 0 0 18px rgba(245, 158, 11, 0.75); }
     }
 
     /* Secondary Contextual Properties Bar */
@@ -1535,6 +1552,9 @@
 
     // Active Word Edit Session
     let activeWordEditData = null;
+    let ocrPageWords = {};        // Cache OCR extracted words { origIdx: [ words ] }
+    let scannedPages = new Set(); // Track pages that contain pure scans / images
+    let isOcrRunning = false;
 
     // Signature Pad State
     let sigCanvas, sigCtx, isDrawingSig = false;
@@ -1658,6 +1678,9 @@
       activePageIndex = 0;
       undoStack = [];
       redoStack = [];
+      ocrPageWords = {};
+      scannedPages = new Set();
+      isOcrRunning = false;
 
       document.getElementById('pageCountDisplay').textContent = pageOrder.length;
       document.getElementById('dropzoneContainer').style.display = 'none';
@@ -1893,7 +1916,22 @@
 
         // Render interactive word detection layer
         const textContent = await page.getTextContent({ normalizeWhitespace: true });
-        renderWordBoxes(textContent, viewport, textLayer);
+        const hasTextItems = textContent && textContent.items && textContent.items.some(it => it.str && it.str.trim());
+
+        if (hasTextItems) {
+          scannedPages.delete(origPageIdx);
+          renderWordBoxes(textContent, viewport, textLayer);
+          if (activeTool === 'edit-text') resetStandardModeBanner();
+        } else {
+          scannedPages.add(origPageIdx);
+          if (ocrPageWords[origPageIdx] && ocrPageWords[origPageIdx].length > 0) {
+            renderOcrWordBoxes(ocrPageWords[origPageIdx], textLayer);
+            setScannedBannerOcrDone(ocrPageWords[origPageIdx].length);
+          } else {
+            textLayer.innerHTML = '';
+            if (activeTool === 'edit-text') setScannedBannerNeedOcr();
+          }
+        }
 
         // Render annotations (text, signatures, stamps, whiteouts)
         renderPageAnnotations(origPageIdx);
@@ -1979,6 +2017,166 @@
 
           currentOffsetX += tokenWidth;
         }
+      }
+    }
+
+    // -------------------------------------------------------------------------
+    // In-Browser OCR Word Scanner for Scanned Documents & Photocopies
+    // -------------------------------------------------------------------------
+    function renderOcrWordBoxes(words, container) {
+      container.innerHTML = '';
+      if (!words || words.length === 0) return;
+      container.className = 'text-detect-layer interactive-mode';
+
+      for (const word of words) {
+        const wordEl = document.createElement('div');
+        wordEl.className = 'word-box';
+        wordEl.title = `Click to edit scanned word: "${word.word}"`;
+        wordEl.style.left = word.screenX + 'px';
+        wordEl.style.top = word.screenY + 'px';
+        wordEl.style.width = word.screenW + 'px';
+        wordEl.style.height = word.screenH + 'px';
+
+        wordEl.onclick = (e) => {
+          e.stopPropagation();
+          e.preventDefault();
+          openWordEditorModal(wordEl, word);
+        };
+
+        container.appendChild(wordEl);
+      }
+    }
+
+    async function runOcrOnActivePage() {
+      if (isOcrRunning) return;
+      const origPageIdx = pageOrder[activePageIndex];
+      const canvas = document.getElementById('pdfRenderCanvas');
+      const textLayer = document.getElementById('textDetectLayer');
+      if (!canvas || !textLayer) return;
+
+      if (typeof Tesseract === 'undefined') {
+        alert("OCR engine is still initializing from CDN. Please verify internet connectivity and retry in a few moments.");
+        return;
+      }
+
+      isOcrRunning = true;
+      const banner = document.getElementById('modeBanner');
+      const bannerText = document.getElementById('modeBannerText');
+      if (bannerText) {
+        bannerText.innerHTML = `<i class="fas fa-spinner fa-spin" style="color:var(--editor-accent);"></i> <strong>Scanning Document with In-Browser OCR:</strong> Recognizing words... <span id="ocrProgressPercent" style="font-weight:800; font-family:'JetBrains Mono',monospace;">0%</span>`;
+      }
+      showToast("Running in-browser OCR scanner...", "fa-bolt");
+
+      try {
+        const worker = await Tesseract.createWorker('eng', 1, {
+          logger: m => {
+            if (m.status === 'recognizing text' && m.progress !== undefined) {
+              const pct = Math.round(m.progress * 100);
+              const pEl = document.getElementById('ocrProgressPercent');
+              if (pEl) pEl.textContent = `${pct}%`;
+            }
+          }
+        });
+
+        const ret = await worker.recognize(canvas);
+        await worker.terminate();
+
+        const words = [];
+        if (ret && ret.data && ret.data.words) {
+          for (const w of ret.data.words) {
+            const cleanText = (w.text || '').trim();
+            if (!cleanText) continue;
+            const screenW = w.bbox.x1 - w.bbox.x0;
+            const screenH = w.bbox.y1 - w.bbox.y0;
+            if (screenW < 4 || screenH < 6) continue;
+
+            words.push({
+              word: cleanText,
+              screenX: w.bbox.x0,
+              screenY: w.bbox.y0,
+              screenW: screenW,
+              screenH: screenH,
+              pdfX: w.bbox.x0 / currentScale,
+              pdfY: w.bbox.y0 / currentScale,
+              pdfW: screenW / currentScale,
+              pdfH: screenH / currentScale,
+              pdfFontSize: Math.max(8, (screenH * 0.82) / currentScale)
+            });
+          }
+        }
+
+        ocrPageWords[origPageIdx] = words;
+        renderOcrWordBoxes(words, textLayer);
+        setScannedBannerOcrDone(words.length);
+        showToast(`OCR Complete! Detected ${words.length} editable words.`, 'fa-circle-check');
+      } catch (err) {
+        console.error("OCR Error:", err);
+        showToast("OCR Error: " + err.message, "fa-triangle-exclamation");
+        setScannedBannerNeedOcr();
+      } finally {
+        isOcrRunning = false;
+      }
+    }
+
+    function setScannedBannerNeedOcr() {
+      const banner = document.getElementById('modeBanner');
+      if (!banner) return;
+      banner.style.display = 'flex';
+      banner.style.background = 'linear-gradient(90deg, rgba(245, 158, 11, 0.16), rgba(217, 119, 6, 0.08))';
+      banner.style.borderColor = 'rgba(245, 158, 11, 0.35)';
+
+      const bannerText = document.getElementById('modeBannerText');
+      if (bannerText) {
+        bannerText.innerHTML = `<strong>📸 Scanned Image Document Detected:</strong> This page is a photograph/scan with no embedded digital text layer.`;
+      }
+
+      const actions = banner.querySelector('.mode-banner-actions');
+      if (actions) {
+        actions.innerHTML = `
+          <button class="btn-xs-pill btn-ocr-glow" id="btnRunOcr" onclick="runOcrOnActivePage()" title="Run in-browser OCR to detect words automatically"><i class="fas fa-bolt"></i> Run OCR Word Scanner</button>
+          <button class="btn-xs-pill" onclick="setEditorMode('redact')" title="Conceal any text with clean whiteout"><i class="fas fa-eraser"></i> Whiteout &amp; Replace</button>
+          <button class="btn-xs-pill" onclick="setEditorMode('add-text')" title="Add typography text box anywhere"><i class="fas fa-font"></i> Add Text</button>
+        `;
+      }
+    }
+
+    function setScannedBannerOcrDone(count) {
+      const banner = document.getElementById('modeBanner');
+      if (!banner) return;
+      banner.style.display = 'flex';
+      banner.style.background = 'linear-gradient(90deg, rgba(16, 185, 129, 0.15), rgba(5, 150, 105, 0.08))';
+      banner.style.borderColor = 'rgba(16, 185, 129, 0.35)';
+
+      const bannerText = document.getElementById('modeBannerText');
+      if (bannerText) {
+        bannerText.innerHTML = `<strong>⚡ OCR Scanned Words Active:</strong> Detected <strong>${count} words</strong>. Click on any word to edit, replace, or erase!`;
+      }
+
+      const actions = banner.querySelector('.mode-banner-actions');
+      if (actions) {
+        actions.innerHTML = `
+          <button class="btn-xs-pill" onclick="runOcrOnActivePage()"><i class="fas fa-arrows-rotate"></i> Re-Scan Page</button>
+          <button class="btn-xs-pill" onclick="openFindReplace()"><i class="fas fa-search"></i> Search &amp; Replace</button>
+        `;
+      }
+    }
+
+    function resetStandardModeBanner() {
+      const banner = document.getElementById('modeBanner');
+      if (!banner) return;
+      banner.style.display = 'flex';
+      banner.style.background = 'var(--panel-bg)';
+      banner.style.borderColor = 'var(--panel-border)';
+      const bannerText = document.getElementById('modeBannerText');
+      if (bannerText) {
+        bannerText.innerHTML = `<strong>Direct Word Edit Mode Active:</strong> Click on any word in the document to edit, replace, or erase it!`;
+      }
+      const actions = banner.querySelector('.mode-banner-actions');
+      if (actions) {
+        actions.innerHTML = `
+          <button class="btn-xs-pill" onclick="openFindReplace()"><i class="fas fa-search"></i> Search &amp; Replace</button>
+          <button class="btn-xs-pill" onclick="setEditorMode('select')"><i class="fas fa-mouse-pointer"></i> Select Mode</button>
+        `;
       }
     }
 
@@ -2340,6 +2538,13 @@
       const pdfX = screenX / currentScale;
       const pdfY = screenY / currentScale;
 
+      if (activeTool === 'edit-text') {
+        if (scannedPages.has(origPageIdx) && (!ocrPageWords[origPageIdx] || ocrPageWords[origPageIdx].length === 0)) {
+          showToast("Scanned document: Click 'Run OCR Word Scanner' in the banner to detect words, or use 'Whiteout & Replace'!", "fa-camera");
+        }
+        return;
+      }
+
       if (activeTool === 'add-text') {
         const textObj = {
           id: 'text_' + Date.now(),
@@ -2414,17 +2619,34 @@
       const banner = document.getElementById('modeBanner');
       const bannerText = document.getElementById('modeBannerText');
       if (mode === 'edit-text') {
-        banner.style.display = 'flex';
-        bannerText.innerHTML = `<strong>Direct Word Edit Mode Active:</strong> Click on any word in the document to edit, replace, or erase it!`;
+        const origPageIdx = pageOrder[activePageIndex];
+        if (scannedPages.has(origPageIdx)) {
+          if (ocrPageWords[origPageIdx] && ocrPageWords[origPageIdx].length > 0) {
+            setScannedBannerOcrDone(ocrPageWords[origPageIdx].length);
+          } else {
+            setScannedBannerNeedOcr();
+          }
+        } else {
+          resetStandardModeBanner();
+        }
       } else if (mode === 'add-text') {
         banner.style.display = 'flex';
+        banner.style.background = 'var(--panel-bg)';
+        banner.style.borderColor = 'var(--panel-border)';
         bannerText.innerHTML = `<strong>Add Text Mode:</strong> Click anywhere on the page to insert a custom typography text box.`;
+        banner.querySelector('.mode-banner-actions').innerHTML = `<button class="btn-xs-pill" onclick="setEditorMode('edit-text')"><i class="fas fa-pen-to-square"></i> Word Edit</button>`;
       } else if (mode === 'redact') {
         banner.style.display = 'flex';
-        bannerText.innerHTML = `<strong>Redact &amp; Whiteout Mode:</strong> Click on the page to place a concealment mask.`;
+        banner.style.background = 'var(--panel-bg)';
+        banner.style.borderColor = 'var(--panel-border)';
+        bannerText.innerHTML = `<strong>Redact &amp; Whiteout Mode:</strong> Click on the page to place a clean concealment mask.`;
+        banner.querySelector('.mode-banner-actions').innerHTML = `<button class="btn-xs-pill" onclick="setEditorMode('edit-text')"><i class="fas fa-pen-to-square"></i> Word Edit</button>`;
       } else if (mode === 'highlighter') {
         banner.style.display = 'flex';
+        banner.style.background = 'var(--panel-bg)';
+        banner.style.borderColor = 'var(--panel-border)';
         bannerText.innerHTML = `<strong>Highlighter Mode:</strong> Click on text to place a semi-transparent yellow highlight.`;
+        banner.querySelector('.mode-banner-actions').innerHTML = `<button class="btn-xs-pill" onclick="setEditorMode('edit-text')"><i class="fas fa-pen-to-square"></i> Word Edit</button>`;
       } else {
         banner.style.display = 'none';
       }

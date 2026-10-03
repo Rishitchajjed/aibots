@@ -23,7 +23,7 @@
   </script>
 
   <title>Free Online PDF Editor — Edit Text, Pages, Signatures & Redact PDF | AI Bots</title>
-  <meta name="description" content="Directly edit words and text in PDF documents, rearrange/delete pages, add signatures, stamps, whiteout redactions, images, and text boxes online. 100% private in-browser tool.">
+  <meta name="description" content="Directly edit words and text in PDF documents, rearrange/delete pages, add signatures, stamps, whiteout redactions, images, and text boxes online. 100% private in-browser tool by Rishit Chajjed.">
   <meta name="keywords" content="pdf editor, edit pdf online, edit text in pdf, replace words in pdf, pdf page editor, free pdf editor, sign pdf online, redact pdf, delete pdf pages, merge pdf, ai bots">
   <link rel="icon" href="logo.png" type="image/png">
   <link rel="canonical" href="https://www.aibots.co.in/pdf-editor.html">
@@ -43,7 +43,7 @@
   <meta property="twitter:image" content="https://www.aibots.co.in/logo.png">
 
   <!-- Fonts & Libraries -->
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&family=Caveat:wght@600;700&family=Dancing+Script:wght@700&family=Great+Vibes&family=Pacifico&display=swap">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;700&family=Caveat:wght@600;700&family=Dancing+Script:wght@700&family=Great+Vibes&family=Pacifico&display=swap">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link rel="stylesheet" href="css/theme.css">
 
@@ -73,66 +73,184 @@
     :root {
       --editor-accent: #6366f1;
       --editor-accent-dark: #4f46e5;
-      --editor-accent-light: #e0e7ff;
+      --editor-accent-light: rgba(99, 102, 241, 0.12);
+      --editor-accent-glow: rgba(99, 102, 241, 0.35);
       --panel-bg: var(--bg-secondary, #ffffff);
       --panel-border: var(--border-color, #e2e8f0);
-      --canvas-bg: #525659;
+      --canvas-backdrop: #475569;
       --selection-color: #3b82f6;
     }
 
     [data-theme="dark"] {
-      --editor-accent-light: rgba(99, 102, 241, 0.18);
-      --canvas-bg: #1e293b;
+      --editor-accent-light: rgba(99, 102, 241, 0.22);
+      --canvas-backdrop: #0f172a;
+      --panel-border: rgba(255, 255, 255, 0.1);
     }
 
     * { box-sizing: border-box; }
-    body { overflow-x: hidden; background: var(--bg-primary, #f8fafc); color: var(--text-primary, #0f172a); }
+    body {
+      overflow-x: hidden;
+      background: var(--bg-primary, #f8fafc);
+      color: var(--text-primary, #0f172a);
+      font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+    }
 
+    .bg-mesh {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: radial-gradient(at 10% 10%, rgba(99, 102, 241, 0.08) 0px, transparent 50%),
+                  radial-gradient(at 90% 90%, rgba(236, 72, 153, 0.06) 0px, transparent 50%);
+      pointer-events: none;
+      z-index: -1;
+    }
+
+    /* Navbar Branding */
+    .navbar {
+      background: var(--bg-secondary);
+      border-bottom: 1px solid var(--border-color);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      backdrop-filter: blur(12px);
+    }
+    .nav-container {
+      max-width: 1560px;
+      margin: 0 auto;
+      padding: 10px 18px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+    .brand-group {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+      color: inherit;
+    }
+    .brand-logo-img {
+      width: 34px;
+      height: 34px;
+      border-radius: 8px;
+      object-fit: contain;
+      box-shadow: 0 2px 8px rgba(99, 102, 241, 0.25);
+    }
+    .brand-name {
+      font-weight: 900;
+      font-size: 1.25rem;
+      letter-spacing: -0.02em;
+      background: linear-gradient(135deg, var(--text-primary) 30%, var(--editor-accent) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .brand-pill {
+      font-size: 0.72rem;
+      font-weight: 800;
+      padding: 3px 10px;
+      border-radius: 999px;
+      background: linear-gradient(135deg, #6366f1, #ec4899);
+      color: #ffffff;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .nav-link-btn {
+      color: var(--text-secondary);
+      text-decoration: none;
+      font-size: 0.86rem;
+      font-weight: 600;
+      padding: 6px 12px;
+      border-radius: 8px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s;
+    }
+    .nav-link-btn:hover {
+      color: var(--editor-accent);
+      background: var(--editor-accent-light);
+    }
+    .btn-donate {
+      background: linear-gradient(135deg, #ec4899, #f43f5e);
+      color: #ffffff !important;
+      border: none;
+      font-weight: 700;
+      font-size: 0.84rem;
+      padding: 6px 14px;
+      border-radius: 999px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: transform 0.15s, box-shadow 0.15s;
+    }
+    .btn-donate:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(236, 72, 153, 0.35);
+    }
+    .icon-circle-btn {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      border: 1px solid var(--border-color);
+      background: var(--bg-primary);
+      color: var(--text-secondary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .icon-circle-btn:hover {
+      color: var(--editor-accent);
+      border-color: var(--editor-accent);
+      transform: rotate(15deg);
+    }
+
+    /* Main Container */
     .editor-wrapper {
-      max-width: 1540px;
+      max-width: 1560px;
       margin: 12px auto 60px;
-      padding: 0 14px;
+      padding: 0 16px;
       width: 100%;
     }
 
     /* Hero Section */
     .hero-banner {
       text-align: center;
-      padding: 24px 16px 16px;
+      padding: 24px 16px 14px;
       margin-bottom: 16px;
-      background: radial-gradient(circle at 50% 0%, rgba(99, 102, 241, 0.12) 0%, transparent 70%);
+      background: radial-gradient(circle at 50% 0%, rgba(99, 102, 241, 0.14) 0%, transparent 70%);
       border-bottom: 1px solid var(--panel-border);
+      position: relative;
     }
     .hero-badge {
       display: inline-flex;
       align-items: center;
       gap: 6px;
-      padding: 4px 14px;
+      padding: 4px 16px;
       border-radius: 999px;
       background: var(--editor-accent-light);
       border: 1px solid rgba(99, 102, 241, 0.35);
       color: var(--editor-accent);
       font-size: 0.8rem;
-      font-weight: 700;
+      font-weight: 800;
       margin-bottom: 8px;
     }
     .hero-title {
-      font-size: clamp(1.5rem, 3.2vw, 2.2rem);
+      font-size: clamp(1.6rem, 3.4vw, 2.3rem);
       font-weight: 900;
-      margin: 0 0 8px;
-      background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, var(--editor-accent) 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      letter-spacing: -0.02em;
-    }
-    [data-theme="dark"] .hero-title {
-      background: linear-gradient(135deg, #f8fafc 0%, #cbd5e1 50%, #818cf8 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
+      margin: 0 0 6px;
+      letter-spacing: -0.025em;
     }
     .hero-desc {
       font-size: 0.92rem;
-      color: var(--text-secondary, #475569);
+      color: var(--text-secondary);
       max-width: 780px;
       margin: 0 auto;
       line-height: 1.5;
@@ -142,19 +260,20 @@
     .dropzone-card {
       background: var(--panel-bg);
       border: 2px dashed var(--editor-accent);
-      border-radius: var(--radius-lg, 16px);
-      padding: 50px 24px;
+      border-radius: 20px;
+      padding: 60px 24px;
       text-align: center;
       cursor: pointer;
       position: relative;
       transition: all 0.25s ease;
-      box-shadow: var(--shadow-sm);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
       margin-bottom: 24px;
     }
     .dropzone-card:hover, .dropzone-card.drag-over {
       background: var(--editor-accent-light);
+      border-color: var(--editor-accent-dark);
       transform: translateY(-2px);
-      box-shadow: var(--shadow-lg);
+      box-shadow: 0 16px 40px rgba(99, 102, 241, 0.15);
     }
     .dropzone-card input[type="file"] {
       position: absolute;
@@ -164,14 +283,24 @@
       width: 100%;
       height: 100%;
     }
-    .drop-icon {
-      font-size: 3.2rem;
+    .drop-icon-box {
+      width: 80px;
+      height: 80px;
+      border-radius: 24px;
+      background: linear-gradient(135deg, rgba(99, 102, 241, 0.15), rgba(236, 72, 153, 0.15));
       color: var(--editor-accent);
-      margin-bottom: 12px;
-      display: inline-block;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2.5rem;
+      margin-bottom: 16px;
+      transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    .dropzone-card:hover .drop-icon-box {
+      transform: scale(1.1) rotate(-5deg);
     }
     .drop-title {
-      font-size: 1.3rem;
+      font-size: 1.35rem;
       font-weight: 800;
       margin: 0 0 6px;
       color: var(--text-primary);
@@ -179,7 +308,7 @@
     .drop-subtitle {
       font-size: 0.88rem;
       color: var(--text-secondary);
-      margin-bottom: 16px;
+      margin-bottom: 20px;
     }
     .drop-actions {
       display: flex;
@@ -188,7 +317,48 @@
       flex-wrap: wrap;
     }
 
-    /* Main Workspace Container */
+    /* Buttons */
+    .btn-action {
+      background: linear-gradient(135deg, #6366f1, #4f46e5);
+      color: #ffffff;
+      border: none;
+      padding: 9px 18px;
+      border-radius: 10px;
+      font-weight: 700;
+      font-size: 0.88rem;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.15s ease;
+      font-family: inherit;
+      box-shadow: 0 2px 8px rgba(99, 102, 241, 0.3);
+    }
+    .btn-action:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 16px rgba(99, 102, 241, 0.45);
+    }
+    .btn-action.btn-secondary {
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      border: 1px solid var(--border-color);
+      box-shadow: none;
+    }
+    .btn-action.btn-secondary:hover {
+      background: var(--editor-accent-light);
+      border-color: var(--editor-accent);
+      color: var(--editor-accent);
+    }
+    .btn-action.btn-success {
+      background: linear-gradient(135deg, #10b981, #059669);
+      box-shadow: 0 2px 8px rgba(16, 185, 129, 0.3);
+    }
+    .btn-action.btn-danger {
+      background: linear-gradient(135deg, #ef4444, #dc2626);
+      box-shadow: 0 2px 8px rgba(239, 68, 68, 0.3);
+    }
+
+    /* Main Workspace */
     .editor-workspace {
       display: none;
       flex-direction: column;
@@ -199,18 +369,18 @@
     .main-toolbar {
       background: var(--panel-bg);
       border: 1px solid var(--panel-border);
-      border-radius: var(--radius-lg, 14px);
+      border-radius: 16px;
       padding: 8px 12px;
-      box-shadow: var(--shadow-md);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 10px;
+      gap: 8px;
       flex-wrap: wrap;
       position: sticky;
-      top: 70px;
-      z-index: 50;
-      backdrop-filter: blur(10px);
+      top: 60px;
+      z-index: 60;
+      backdrop-filter: blur(12px);
     }
 
     .tool-group {
@@ -227,16 +397,17 @@
       background: transparent;
       border: none;
       color: var(--text-secondary);
-      padding: 7px 10px;
-      border-radius: 7px;
+      padding: 7px 11px;
+      border-radius: 8px;
       font-size: 0.84rem;
-      font-weight: 600;
+      font-weight: 700;
       cursor: pointer;
       display: inline-flex;
       align-items: center;
       gap: 6px;
       transition: all 0.15s ease;
       font-family: inherit;
+      white-space: nowrap;
     }
     .tool-btn:hover {
       background: var(--editor-accent-light);
@@ -245,74 +416,96 @@
     .tool-btn.active {
       background: var(--editor-accent);
       color: #ffffff;
-      box-shadow: 0 2px 6px rgba(99, 102, 241, 0.35);
+      box-shadow: 0 2px 8px rgba(99, 102, 241, 0.4);
+    }
+    .tool-btn.active-glow {
+      animation: pulseBtn 2s infinite;
+    }
+    @keyframes pulseBtn {
+      0% { box-shadow: 0 0 0 0 rgba(99, 102, 241, 0.5); }
+      70% { box-shadow: 0 0 0 6px rgba(99, 102, 241, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(99, 102, 241, 0); }
     }
 
-    .btn-action {
-      background: var(--editor-accent);
-      color: #ffffff;
-      border: none;
-      padding: 7px 14px;
-      border-radius: 8px;
-      font-size: 0.84rem;
+    /* Active Tool Mode Banner */
+    .mode-banner {
+      background: linear-gradient(135deg, rgba(99, 102, 241, 0.12), rgba(139, 92, 246, 0.12));
+      border: 1px solid rgba(99, 102, 241, 0.3);
+      border-radius: 12px;
+      padding: 8px 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      font-size: 0.85rem;
+      color: var(--text-primary);
+    }
+    .mode-banner-text {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: 600;
+    }
+    .mode-banner-text i {
+      color: var(--editor-accent);
+      font-size: 1rem;
+    }
+    .mode-banner-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .btn-xs-pill {
+      background: var(--panel-bg);
+      border: 1px solid var(--panel-border);
+      color: var(--text-primary);
+      padding: 3px 10px;
+      border-radius: 999px;
+      font-size: 0.76rem;
       font-weight: 700;
       cursor: pointer;
       display: inline-flex;
       align-items: center;
-      gap: 6px;
-      transition: all 0.2s;
+      gap: 4px;
+      transition: all 0.15s;
     }
-    .btn-action:hover {
-      background: var(--editor-accent-dark);
-      transform: translateY(-1px);
-    }
-    .btn-action.btn-secondary {
-      background: var(--bg-primary);
-      color: var(--text-primary);
-      border: 1px solid var(--panel-border);
-    }
-    .btn-action.btn-secondary:hover {
-      background: var(--panel-border);
-    }
-    .btn-action.btn-danger {
-      background: #ef4444;
-    }
-    .btn-action.btn-danger:hover {
-      background: #dc2626;
+    .btn-xs-pill:hover {
+      background: var(--editor-accent-light);
+      border-color: var(--editor-accent);
+      color: var(--editor-accent);
     }
 
-    /* Contextual Secondary Properties Bar */
+    /* Secondary Contextual Properties Bar */
     .properties-bar {
       background: var(--panel-bg);
       border: 1px solid var(--panel-border);
-      border-radius: var(--radius-md, 10px);
-      padding: 6px 12px;
-      display: flex;
+      border-radius: 12px;
+      padding: 6px 14px;
+      display: none;
       align-items: center;
       gap: 12px;
       flex-wrap: wrap;
       font-size: 0.82rem;
     }
+    .properties-bar.active { display: flex; }
     .prop-item {
       display: flex;
       align-items: center;
       gap: 6px;
     }
     .prop-item label {
-      font-weight: 600;
       color: var(--text-secondary);
-      font-size: 0.76rem;
-      text-transform: uppercase;
-      letter-spacing: 0.03em;
+      font-weight: 600;
     }
     .prop-select, .prop-input {
-      background: var(--bg-primary);
-      border: 1px solid var(--panel-border);
-      color: var(--text-primary);
       padding: 4px 8px;
       border-radius: 6px;
+      border: 1px solid var(--panel-border);
+      background: var(--bg-primary);
+      color: var(--text-primary);
       font-size: 0.82rem;
       font-family: inherit;
+      outline: none;
     }
     .prop-color {
       width: 28px;
@@ -321,156 +514,161 @@
       border: 1px solid var(--panel-border);
       border-radius: 6px;
       cursor: pointer;
-      background: none;
+      background: transparent;
     }
 
-    /* Workspace Body: Thumbnails + Canvas Viewport */
+    /* Workspace Body: Sidebar + Viewport */
     .workspace-body {
       display: grid;
       grid-template-columns: 240px 1fr;
       gap: 14px;
-      align-items: start;
+      min-height: calc(100vh - 220px);
     }
     @media (max-width: 900px) {
-      .workspace-body { grid-template-columns: 1fr; }
+      .workspace-body {
+        grid-template-columns: 1fr;
+      }
     }
 
-    /* Left Sidebar: Page Thumbnails */
+    /* Left Sidebar: Pages Manager */
     .pages-sidebar {
       background: var(--panel-bg);
       border: 1px solid var(--panel-border);
-      border-radius: var(--radius-lg, 14px);
-      padding: 12px;
+      border-radius: 16px;
+      padding: 14px 10px;
       display: flex;
       flex-direction: column;
       gap: 10px;
-      max-height: calc(100vh - 180px);
-      overflow-y: auto;
+      max-height: calc(100vh - 160px);
       position: sticky;
-      top: 140px;
+      top: 135px;
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.04);
     }
     .sidebar-header {
       display: flex;
-      align-items: center;
       justify-content: space-between;
-      font-size: 0.88rem;
-      font-weight: 700;
-      color: var(--text-primary);
-      padding-bottom: 6px;
+      align-items: center;
+      padding: 0 4px 8px;
       border-bottom: 1px solid var(--panel-border);
+      font-weight: 800;
+      font-size: 0.9rem;
+      color: var(--text-primary);
     }
     .thumb-list {
       display: flex;
       flex-direction: column;
-      gap: 10px;
+      gap: 12px;
+      overflow-y: auto;
+      padding: 4px;
+      flex: 1;
     }
     .thumb-card {
       background: var(--bg-primary);
-      border: 2px solid var(--panel-border);
+      border: 2px solid transparent;
       border-radius: 10px;
       padding: 6px;
       cursor: pointer;
-      position: relative;
-      transition: all 0.2s;
+      transition: all 0.15s ease;
       display: flex;
       flex-direction: column;
       align-items: center;
-      user-select: none;
+      position: relative;
     }
     .thumb-card:hover {
-      border-color: var(--editor-accent);
+      border-color: rgba(99, 102, 241, 0.5);
       transform: translateY(-2px);
-      box-shadow: var(--shadow-sm);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
     }
     .thumb-card.active {
       border-color: var(--editor-accent);
-      box-shadow: 0 0 0 3px var(--editor-accent-light);
+      background: var(--editor-accent-light);
+      box-shadow: 0 0 0 3px var(--editor-accent-glow);
     }
-    .thumb-canvas-wrap {
+    .thumb-preview-wrap {
       width: 100%;
-      aspect-ratio: 1 / 1.414;
+      height: 140px;
       display: flex;
       align-items: center;
       justify-content: center;
       background: #ffffff;
       border-radius: 6px;
       overflow: hidden;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+      position: relative;
     }
-    .thumb-canvas-wrap canvas {
+    .thumb-canvas {
       max-width: 100%;
       max-height: 100%;
-      display: block;
-      box-shadow: 0 1px 4px rgba(0,0,0,0.15);
-    }
-    .thumb-footer {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      width: 100%;
-      margin-top: 6px;
-      padding: 0 4px;
+      object-fit: contain;
     }
     .thumb-badge {
-      font-size: 0.72rem;
-      font-weight: 700;
-      font-family: var(--font-mono, monospace);
-      color: var(--text-secondary);
+      position: absolute;
+      top: 4px;
+      left: 4px;
+      background: rgba(15, 23, 42, 0.85);
+      color: #ffffff;
+      font-size: 0.7rem;
+      font-weight: 800;
+      padding: 2px 6px;
+      border-radius: 4px;
+      backdrop-filter: blur(4px);
     }
-    .thumb-actions {
+    .thumb-toolbar {
       display: flex;
       gap: 4px;
-      opacity: 0.6;
-      transition: opacity 0.15s;
+      margin-top: 6px;
+      width: 100%;
+      justify-content: space-between;
     }
-    .thumb-card:hover .thumb-actions { opacity: 1; }
     .thumb-btn {
       background: var(--panel-bg);
       border: 1px solid var(--panel-border);
-      border-radius: 4px;
-      width: 22px;
-      height: 22px;
-      display: inline-flex;
+      border-radius: 5px;
+      color: var(--text-secondary);
+      width: 26px;
+      height: 24px;
+      display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 0.65rem;
-      color: var(--text-secondary);
+      font-size: 0.72rem;
       cursor: pointer;
+      transition: all 0.15s;
     }
     .thumb-btn:hover {
-      background: var(--editor-accent);
-      color: #ffffff;
+      color: var(--editor-accent);
       border-color: var(--editor-accent);
+      background: var(--editor-accent-light);
     }
     .thumb-btn.btn-del:hover {
-      background: #ef4444;
+      color: #ef4444;
       border-color: #ef4444;
-      color: #ffffff;
+      background: rgba(239, 68, 68, 0.1);
     }
 
-    /* Main Viewport Container */
+    /* Viewport Stage */
     .viewport-container {
-      background: var(--canvas-bg);
-      border: 1px solid var(--panel-border);
-      border-radius: var(--radius-lg, 14px);
-      min-height: 680px;
-      padding: 30px 20px;
+      background: var(--canvas-backdrop);
+      border-radius: 16px;
+      padding: 24px 16px 60px;
+      overflow: auto;
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: flex-start;
-      overflow: auto;
+      min-height: 700px;
+      box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.25);
       position: relative;
     }
 
-    /* The Interactive Page Canvas Stack */
+    /* Page Canvas & Overlay Layers */
     .page-stage-wrapper {
       position: relative;
       background: #ffffff;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.35);
+      box-shadow: 0 10px 35px rgba(0, 0, 0, 0.35);
       border-radius: 4px;
       transform-origin: top center;
       transition: transform 0.1s ease-out;
       margin-bottom: 24px;
+      user-select: none;
     }
 
     .pdf-render-canvas {
@@ -485,28 +683,39 @@
       inset: 0;
       pointer-events: none;
       overflow: hidden;
+      z-index: 15;
     }
     .text-detect-layer.interactive-mode {
-      pointer-events: auto;
+      pointer-events: none; /* Container is transparent, children are clickable */
     }
+
+    /* Word Box Overlay */
     .word-box {
       position: absolute;
       cursor: text;
       background: transparent;
-      border-radius: 2px;
-      transition: background 0.12s;
-      pointer-events: auto;
+      border-radius: 3px;
+      pointer-events: auto !important;
+      transition: background 0.12s ease, outline 0.12s ease;
+      box-sizing: border-box;
+      z-index: 16;
     }
-    .text-detect-layer.interactive-mode .word-box:hover {
-      background: rgba(99, 102, 241, 0.22);
-      outline: 1px dashed var(--editor-accent);
+    .word-box:hover {
+      background: rgba(99, 102, 241, 0.2) !important;
+      outline: 1.5px dashed var(--editor-accent) !important;
+      box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.15);
+    }
+    .word-box.active-editing {
+      outline: 2px solid var(--editor-accent) !important;
+      background: rgba(99, 102, 241, 0.25) !important;
     }
 
-    /* Annotation Overlay Canvas Layer */
+    /* Annotation Overlay Layer (for newly created elements) */
     .annotation-overlay-layer {
       position: absolute;
       inset: 0;
-      pointer-events: auto;
+      pointer-events: none !important; /* DO NOT BLOCK CLICKS to words below */
+      z-index: 25;
     }
 
     /* Interactive Object Elements on Stage */
@@ -516,25 +725,29 @@
       user-select: none;
       box-sizing: border-box;
       border: 1px dashed transparent;
-      transition: border-color 0.15s;
+      pointer-events: auto !important; /* Children receive pointer events */
+      transition: border-color 0.15s, box-shadow 0.15s;
+      z-index: 26;
     }
     .stage-element:hover {
-      border-color: rgba(99, 102, 241, 0.5);
+      border-color: rgba(99, 102, 241, 0.6);
     }
     .stage-element.selected {
-      border: 1px solid var(--selection-color);
-      box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.25);
+      border: 1.5px solid var(--selection-color) !important;
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.3) !important;
+      z-index: 30 !important;
     }
 
     /* Resizer Handles */
     .resize-handle {
       position: absolute;
-      width: 9px;
-      height: 9px;
+      width: 10px;
+      height: 10px;
       background: #ffffff;
       border: 2px solid var(--selection-color);
       border-radius: 50%;
       display: none;
+      z-index: 35;
     }
     .stage-element.selected .resize-handle { display: block; }
     .resize-handle.tl { top: -5px; left: -5px; cursor: nwse-resize; }
@@ -542,17 +755,85 @@
     .resize-handle.bl { bottom: -5px; left: -5px; cursor: nesw-resize; }
     .resize-handle.br { bottom: -5px; right: -5px; cursor: nwse-resize; }
 
-    /* Inline Word Edit Input Overlay */
-    .inline-edit-input {
+    /* Floating Inline Word Editor Popover */
+    .floating-word-editor {
       position: absolute;
+      background: var(--panel-bg);
       border: 2px solid var(--editor-accent);
-      background: #ffffff;
-      color: #000000;
-      padding: 0 4px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.25);
-      z-index: 100;
-      outline: none;
+      border-radius: 12px;
+      padding: 10px 12px;
+      box-shadow: 0 12px 36px rgba(0, 0, 0, 0.3);
+      z-index: 200;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      min-width: 260px;
+      transform: translateY(-8px);
+      animation: popIn 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+      pointer-events: auto !important;
+    }
+    @keyframes popIn {
+      from { opacity: 0; transform: translateY(4px) scale(0.96); }
+      to { opacity: 1; transform: translateY(-8px) scale(1); }
+    }
+    .fwe-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.76rem;
+      font-weight: 800;
+      color: var(--editor-accent);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    .fwe-input {
+      width: 100%;
+      border: 1px solid var(--panel-border);
+      border-radius: 8px;
+      padding: 8px 10px;
+      font-size: 0.95rem;
       font-family: inherit;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      outline: none;
+      font-weight: 600;
+    }
+    .fwe-input:focus {
+      border-color: var(--editor-accent);
+      box-shadow: 0 0 0 3px var(--editor-accent-glow);
+    }
+    .fwe-controls {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+    .fwe-btn-pill {
+      background: var(--bg-primary);
+      border: 1px solid var(--panel-border);
+      padding: 4px 8px;
+      border-radius: 6px;
+      font-size: 0.76rem;
+      font-weight: 700;
+      color: var(--text-secondary);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .fwe-btn-pill:hover {
+      color: var(--editor-accent);
+      border-color: var(--editor-accent);
+      background: var(--editor-accent-light);
+    }
+    .fwe-actions {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 6px;
+      margin-top: 4px;
+      padding-top: 6px;
+      border-top: 1px solid var(--panel-border);
     }
 
     /* Floating Find & Replace Bar */
@@ -562,88 +843,106 @@
       right: 30px;
       background: var(--panel-bg);
       border: 1px solid var(--panel-border);
-      border-radius: var(--radius-md, 10px);
-      padding: 10px 14px;
-      box-shadow: var(--shadow-xl);
+      border-radius: 14px;
+      padding: 12px 16px;
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.25);
       display: none;
       flex-direction: column;
-      gap: 8px;
-      z-index: 60;
+      gap: 10px;
+      z-index: 150;
       width: 320px;
+      backdrop-filter: blur(14px);
     }
     .find-replace-bar.active { display: flex; }
-    .fr-row { display: flex; gap: 6px; align-items: center; }
+    .fr-row {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
     .fr-input {
       flex: 1;
-      background: var(--bg-primary);
+      padding: 7px 10px;
+      border-radius: 8px;
       border: 1px solid var(--panel-border);
+      background: var(--bg-primary);
       color: var(--text-primary);
-      padding: 5px 8px;
-      border-radius: 6px;
       font-size: 0.84rem;
+      outline: none;
+      font-family: inherit;
     }
+    .fr-input:focus { border-color: var(--editor-accent); }
 
-    /* Modals (Signature, Stamp, Watermark, Merge) */
+    /* Modals */
     .modal-backdrop {
       position: fixed;
       inset: 0;
-      background: rgba(15, 23, 42, 0.65);
-      backdrop-filter: blur(4px);
+      background: rgba(15, 23, 42, 0.7);
+      backdrop-filter: blur(6px);
       display: none;
       align-items: center;
       justify-content: center;
-      z-index: 999;
+      z-index: 200;
       padding: 16px;
     }
     .modal-backdrop.active { display: flex; }
     .modal-card {
       background: var(--panel-bg);
       border: 1px solid var(--panel-border);
-      border-radius: var(--radius-lg, 16px);
-      padding: 24px;
-      max-width: 540px;
+      border-radius: 20px;
+      max-width: 580px;
       width: 100%;
-      box-shadow: var(--shadow-xl);
-      max-height: 90vh;
-      overflow-y: auto;
+      padding: 24px;
+      box-shadow: 0 25px 60px rgba(0, 0, 0, 0.35);
+      animation: modalScale 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    @keyframes modalScale {
+      from { opacity: 0; transform: scale(0.95); }
+      to { opacity: 1; transform: scale(1); }
     }
     .modal-header {
       display: flex;
-      align-items: center;
       justify-content: space-between;
+      align-items: center;
       margin-bottom: 16px;
+      border-bottom: 1px solid var(--panel-border);
+      padding-bottom: 12px;
     }
     .modal-title {
-      font-size: 1.15rem;
+      font-size: 1.25rem;
       font-weight: 800;
-      color: var(--text-primary);
       margin: 0;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--text-primary);
     }
     .modal-close {
       background: none;
       border: none;
-      font-size: 1.2rem;
+      font-size: 1.4rem;
       color: var(--text-secondary);
       cursor: pointer;
+      line-height: 1;
     }
+    .modal-close:hover { color: #ef4444; }
 
-    /* Signature Tabs */
+    /* Signature Studio Tabs */
     .sig-tabs {
       display: flex;
+      gap: 6px;
       border-bottom: 1px solid var(--panel-border);
-      margin-bottom: 14px;
+      margin-bottom: 16px;
     }
     .sig-tab {
-      flex: 1;
-      padding: 8px 12px;
-      text-align: center;
       background: none;
       border: none;
-      border-bottom: 2px solid transparent;
+      padding: 8px 14px;
       font-weight: 700;
-      font-size: 0.85rem;
+      font-size: 0.88rem;
       color: var(--text-secondary);
       cursor: pointer;
+      border-bottom: 2px solid transparent;
+      font-family: inherit;
     }
     .sig-tab.active {
       color: var(--editor-accent);
@@ -651,30 +950,30 @@
     }
     .sig-canvas-wrap {
       border: 2px dashed var(--panel-border);
-      border-radius: 10px;
+      border-radius: 12px;
       background: #ffffff;
-      margin-bottom: 12px;
+      margin-bottom: 14px;
       cursor: crosshair;
       overflow: hidden;
     }
     .sig-canvas {
       display: block;
       width: 100%;
-      height: 160px;
+      height: 170px;
     }
     .sig-type-previews {
       display: flex;
       flex-direction: column;
       gap: 10px;
-      max-height: 240px;
+      max-height: 250px;
       overflow-y: auto;
     }
     .sig-type-card {
       border: 1px solid var(--panel-border);
-      border-radius: 8px;
-      padding: 10px 16px;
+      border-radius: 10px;
+      padding: 12px 18px;
       cursor: pointer;
-      font-size: 1.8rem;
+      font-size: 1.9rem;
       color: #0f172a;
       background: #ffffff;
       transition: all 0.15s;
@@ -682,31 +981,66 @@
     .sig-type-card:hover, .sig-type-card.selected {
       border-color: var(--editor-accent);
       background: var(--editor-accent-light);
+      box-shadow: 0 0 0 2px var(--editor-accent);
     }
 
     /* Stamp Grid */
     .stamps-grid {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
-      gap: 10px;
+      gap: 12px;
       margin-bottom: 16px;
     }
     .stamp-item {
       border: 2px solid currentColor;
-      border-radius: 6px;
-      padding: 10px 6px;
+      border-radius: 8px;
+      padding: 12px 8px;
       text-align: center;
-      font-weight: 800;
+      font-weight: 900;
       font-size: 0.88rem;
       text-transform: uppercase;
       letter-spacing: 0.05em;
       cursor: pointer;
-      transition: transform 0.15s;
+      transition: all 0.15s;
       transform: rotate(-3deg);
+      background: rgba(255, 255, 255, 0.05);
     }
-    .stamp-item:hover { transform: scale(1.05) rotate(0deg); }
+    .stamp-item:hover {
+      transform: scale(1.05) rotate(0deg);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
 
-    /* Features, FAQ & Guide Section */
+    /* Toast Notification */
+    .toast-container {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      z-index: 999;
+      pointer-events: none;
+    }
+    .toast-msg {
+      background: var(--panel-bg);
+      border: 1px solid var(--editor-accent);
+      color: var(--text-primary);
+      padding: 10px 16px;
+      border-radius: 10px;
+      font-weight: 700;
+      font-size: 0.84rem;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      animation: toastIn 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    @keyframes toastIn {
+      from { opacity: 0; transform: translateY(12px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Footer & Guide */
     .info-section {
       margin-top: 50px;
       border-top: 1px solid var(--panel-border);
@@ -714,80 +1048,49 @@
     }
     .features-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
       gap: 20px;
       margin-bottom: 40px;
     }
-    .feat-card {
+    .feature-card {
       background: var(--panel-bg);
       border: 1px solid var(--panel-border);
-      border-radius: var(--radius-lg, 14px);
-      padding: 20px;
-      box-shadow: var(--shadow-sm);
+      border-radius: 16px;
+      padding: 24px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.03);
     }
-    .feat-icon {
-      font-size: 1.8rem;
+    .feature-icon-box {
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      background: var(--editor-accent-light);
       color: var(--editor-accent);
-      margin-bottom: 12px;
-    }
-    .feat-title {
-      font-size: 1.05rem;
-      font-weight: 800;
-      margin: 0 0 6px;
-      color: var(--text-primary);
-    }
-    .feat-desc {
-      font-size: 0.86rem;
-      color: var(--text-secondary);
-      line-height: 1.5;
-    }
-
-    .faq-list {
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-      max-width: 900px;
-      margin: 0 auto;
-    }
-    .faq-item {
-      background: var(--panel-bg);
-      border: 1px solid var(--panel-border);
-      border-radius: 10px;
-      padding: 14px 18px;
-    }
-    .faq-q {
-      font-weight: 700;
-      font-size: 0.95rem;
-      color: var(--text-primary);
-      margin-bottom: 6px;
       display: flex;
       align-items: center;
-      gap: 8px;
-    }
-    .faq-a {
-      font-size: 0.86rem;
-      color: var(--text-secondary);
-      line-height: 1.5;
+      justify-content: center;
+      font-size: 1.25rem;
+      margin-bottom: 14px;
     }
   </style>
 </head>
 <body>
+  <div class="bg-mesh"></div>
 
   <!-- Header / Navbar -->
   <header class="navbar">
     <div class="nav-container">
-      <div class="nav-brand">
-        <a href="index.html" style="display:flex; align-items:center; gap:10px; text-decoration:none; color:inherit;">
-          <img src="logo.png" alt="AI Bots Logo" width="36" height="36">
-          <span style="font-weight:800; font-size:1.2rem; letter-spacing:-0.02em;">AI Bots</span>
-        </a>
-      </div>
-      <div class="nav-links">
-        <a href="index.html" class="nav-link"><i class="fas fa-home"></i> All Tools</a>
-        <a href="bank-statement-converter.html" class="nav-link"><i class="fas fa-file-invoice-dollar"></i> Bank to Tally</a>
-        <a href="pdfmaker.html" class="nav-link"><i class="fas fa-images"></i> Image to PDF</a>
-        <a href="pdfviewer.html" class="nav-link"><i class="fas fa-eye"></i> PDF Viewer</a>
-        <button id="themeToggleBtn" class="theme-toggle" onclick="toggleTheme()" title="Toggle Dark/Light Mode">
+      <a href="index.html" class="brand-group">
+        <img src="logo.png" alt="AI Bots Logo" class="brand-logo-img">
+        <span class="brand-name">AI Bots</span>
+        <span class="brand-pill">Studio Hub v3.0</span>
+      </a>
+
+      <div class="nav-actions">
+        <a href="index.html" class="nav-link-btn"><i class="fas fa-arrow-left"></i> <span class="hide-on-mobile">All Tools</span></a>
+        <a href="bank-statement-converter.html" class="nav-link-btn"><i class="fas fa-file-invoice-dollar"></i> <span class="hide-on-mobile">Bank to Tally</span></a>
+        <a href="pdfmaker.html" class="nav-link-btn"><i class="fas fa-images"></i> <span class="hide-on-mobile">Make PDF</span></a>
+        <button onclick="openDonationModal()" class="btn-donate"><i class="fas fa-heart"></i> Donate</button>
+        <button id="themeToggleBtn" class="icon-circle-btn" onclick="toggleTheme()" title="Toggle Dark/Light Mode">
           <i class="fas fa-moon"></i>
         </button>
       </div>
@@ -797,17 +1100,19 @@
   <main class="editor-wrapper">
     <!-- Hero Banner -->
     <section class="hero-banner">
-      <div class="hero-badge"><i class="fas fa-shield-alt"></i> 100% In-Browser & Private • Zero Uploads</div>
+      <div class="hero-badge"><i class="fas fa-shield-alt"></i> 100% Client-Side Privacy • Zero Server Uploads</div>
       <h1 class="hero-title">Direct PDF Page & Word Editor</h1>
-      <p class="hero-desc">Directly edit words, replace text, rearrange pages, insert digital signatures, add stamps, whiteout confidential info, draw shapes, and watermark PDF documents with zero data leaving your device.</p>
+      <p class="hero-desc">Click any word in your document to edit or replace text inline, find & replace across pages, reorder or rotate pages, add cursive digital signatures, apply stamps, and redact sensitive info with zero data leaving your device.</p>
     </section>
 
     <!-- Upload Dropzone Card -->
     <div id="dropzoneContainer" class="dropzone-card">
       <input type="file" id="pdfFileInput" accept="application/pdf" onchange="handleFileSelect(event)">
-      <i class="fas fa-file-pdf drop-icon"></i>
+      <div class="drop-icon-box">
+        <i class="fas fa-file-pdf"></i>
+      </div>
       <h2 class="drop-title">Drop your PDF here or click to browse</h2>
-      <p class="drop-subtitle">Supports multi-page PDFs up to 200MB. Completely processed inside your browser memory.</p>
+      <p class="drop-subtitle">Supports multi-page documents up to 200MB. Processed 100% inside your browser memory.</p>
       <div class="drop-actions">
         <button class="btn-action" onclick="document.getElementById('pdfFileInput').click()">
           <i class="fas fa-folder-open"></i> Choose PDF File
@@ -824,27 +1129,27 @@
       <!-- Primary Sticky Toolbar -->
       <div class="main-toolbar">
         
-        <!-- Tool Selectors -->
+        <!-- Primary Tool Selectors -->
         <div class="tool-group">
-          <button id="tool-select" class="tool-btn active" onclick="setEditorMode('select')" title="Select & Move Objects (V)">
-            <i class="fas fa-mouse-pointer"></i> <span>Select</span>
-          </button>
-          <button id="tool-edit-text" class="tool-btn" onclick="setEditorMode('edit-text')" title="Click Existing Text to Edit / Replace (T)">
+          <button id="tool-edit-text" class="tool-btn active active-glow" onclick="setEditorMode('edit-text')" title="Click on any word in the PDF to edit inline (T)">
             <i class="fas fa-pen-to-square"></i> <span>Edit Words</span>
           </button>
-          <button id="tool-add-text" class="tool-btn" onclick="setEditorMode('add-text')" title="Add New Text Box">
+          <button id="tool-select" class="tool-btn" onclick="setEditorMode('select')" title="Select & Move Objects (V)">
+            <i class="fas fa-mouse-pointer"></i> <span>Select</span>
+          </button>
+          <button id="tool-add-text" class="tool-btn" onclick="setEditorMode('add-text')" title="Add New Custom Text Box">
             <i class="fas fa-font"></i> <span>Add Text</span>
           </button>
-          <button id="tool-sign" class="tool-btn" onclick="openSignatureModal()" title="Insert Signature">
+          <button id="tool-sign" class="tool-btn" onclick="openSignatureModal()" title="Insert Cursive or Drawn Signature">
             <i class="fas fa-signature"></i> <span>Sign</span>
           </button>
           <button id="tool-stamp" class="tool-btn" onclick="openStampModal()" title="Add Document Stamp">
             <i class="fas fa-stamp"></i> <span>Stamp</span>
           </button>
-          <button id="tool-redact" class="tool-btn" onclick="setEditorMode('redact')" title="Whiteout / Black Redaction">
-            <i class="fas fa-eraser"></i> <span>Whiteout</span>
+          <button id="tool-redact" class="tool-btn" onclick="setEditorMode('redact')" title="Whiteout Conceal / Blackout Redact">
+            <i class="fas fa-eraser"></i> <span>Redact</span>
           </button>
-          <button id="tool-highlighter" class="tool-btn" onclick="setEditorMode('highlighter')" title="Highlighter / Freehand Marker">
+          <button id="tool-highlighter" class="tool-btn" onclick="setEditorMode('highlighter')" title="Highlighter Marker">
             <i class="fas fa-highlighter"></i> <span>Highlight</span>
           </button>
           <button id="tool-image" class="tool-btn" onclick="triggerImageUpload()" title="Insert Image / Logo">
@@ -852,9 +1157,9 @@
           </button>
         </div>
 
-        <!-- Quick Operations -->
+        <!-- Document Operations -->
         <div class="tool-group">
-          <button class="tool-btn" onclick="openFindReplace()" title="Find & Replace Text Across Document (Ctrl+F)">
+          <button class="tool-btn" onclick="openFindReplace()" title="Find & Replace Text Across Entire Document (Ctrl+F)">
             <i class="fas fa-search"></i> <span>Find/Replace</span>
           </button>
           <button class="tool-btn" onclick="openWatermarkModal()" title="Add Watermark & Page Numbers">
@@ -872,7 +1177,7 @@
         <div style="display:flex; align-items:center; gap:8px;">
           <div class="tool-group">
             <button class="tool-btn" onclick="zoomOut()" title="Zoom Out"><i class="fas fa-minus"></i></button>
-            <span id="zoomLevelDisplay" style="font-size:0.78rem; font-weight:700; padding:0 4px; font-family:var(--font-mono, monospace);">100%</span>
+            <span id="zoomLevelDisplay" style="font-size:0.78rem; font-weight:700; padding:0 4px; font-family:'JetBrains Mono', monospace;">100%</span>
             <button class="tool-btn" onclick="zoomIn()" title="Zoom In"><i class="fas fa-plus"></i></button>
             <button class="tool-btn" onclick="zoomFit()" title="Fit Width"><i class="fas fa-expand"></i></button>
           </div>
@@ -880,7 +1185,7 @@
           <button class="btn-action" onclick="exportEditedPdf(false)" title="Download High-Fidelity Vector PDF">
             <i class="fas fa-download"></i> <span>Save PDF</span>
           </button>
-          <button class="btn-action btn-secondary" onclick="exportEditedPdf(true)" title="Flatten All Layers into Permanent Raster PDF">
+          <button class="btn-action btn-secondary" onclick="exportEditedPdf(true)" title="Flatten All Annotations into Permanent PDF">
             <i class="fas fa-lock"></i> <span>Flatten</span>
           </button>
           <button class="btn-action btn-secondary" onclick="openNewPdfDialog()" title="Open Another PDF">
@@ -890,6 +1195,18 @@
 
       </div>
 
+      <!-- Active Mode Info Banner -->
+      <div id="modeBanner" class="mode-banner">
+        <div class="mode-banner-text">
+          <i class="fas fa-circle-info"></i>
+          <span id="modeBannerText"><strong>Direct Word Edit Mode Active:</strong> Hover over any word to highlight it, click to replace or delete inline!</span>
+        </div>
+        <div class="mode-banner-actions">
+          <button class="btn-xs-pill" onclick="openFindReplace()"><i class="fas fa-search"></i> Search &amp; Replace</button>
+          <button class="btn-xs-pill" onclick="setEditorMode('select')"><i class="fas fa-mouse-pointer"></i> Select Mode</button>
+        </div>
+      </div>
+
       <!-- Secondary Contextual Properties Bar -->
       <div id="propertiesBar" class="properties-bar">
         <div class="prop-item">
@@ -897,7 +1214,7 @@
           <select id="propFontFamily" class="prop-select" onchange="updateSelectedObjectProp('fontFamily', this.value)">
             <option value="Helvetica">Helvetica (Standard)</option>
             <option value="TimesRoman">Times New Roman</option>
-            <option value="Courier">Courier (Mono)</option>
+            <option value="Courier">Courier (Monospace)</option>
             <option value="Caveat">Caveat (Handwritten)</option>
             <option value="Dancing Script">Dancing Script</option>
           </select>
@@ -909,12 +1226,12 @@
         </div>
 
         <div class="prop-item">
-          <label>Color:</label>
+          <label>Text Color:</label>
           <input id="propTextColor" type="color" class="prop-color" value="#000000" onchange="updateSelectedObjectProp('textColor', this.value)">
         </div>
 
         <div class="prop-item">
-          <label>Fill/Bg:</label>
+          <label>Background:</label>
           <input id="propBgColor" type="color" class="prop-color" value="#ffffff" onchange="updateSelectedObjectProp('bgColor', this.value)">
         </div>
 
@@ -969,7 +1286,9 @@
         <div class="viewport-container" id="viewportContainer" onclick="handleViewportClick(event)">
           <div id="pageStageWrapper" class="page-stage-wrapper">
             <canvas id="pdfRenderCanvas" class="pdf-render-canvas"></canvas>
-            <div id="textDetectLayer" class="text-detect-layer"></div>
+            <!-- Interactive clickable word boxes layer -->
+            <div id="textDetectLayer" class="text-detect-layer interactive-mode"></div>
+            <!-- Stage annotations (text, signatures, stamps, shapes) -->
             <div id="annotationOverlayLayer" class="annotation-overlay-layer"></div>
           </div>
         </div>
@@ -981,33 +1300,32 @@
     <!-- Floating Find & Replace Bar -->
     <div id="findReplaceBar" class="find-replace-bar">
       <div style="display:flex; justify-content:space-between; align-items:center;">
-        <span style="font-weight:700; font-size:0.85rem;"><i class="fas fa-search"></i> Find & Replace</span>
-        <button onclick="closeFindReplace()" style="background:none; border:none; cursor:pointer;"><i class="fas fa-times"></i></button>
+        <span style="font-weight:800; font-size:0.9rem; color:var(--text-primary);"><i class="fas fa-search" style="color:var(--editor-accent);"></i> Find & Replace</span>
+        <button onclick="closeFindReplace()" style="background:none; border:none; cursor:pointer; color:var(--text-secondary); font-size:1.1rem;"><i class="fas fa-times"></i></button>
       </div>
       <div class="fr-row">
-        <input type="text" id="findInput" class="fr-input" placeholder="Find word..." onkeydown="if(event.key==='Enter') executeFind()">
+        <input type="text" id="findInput" class="fr-input" placeholder="Word to find..." onkeydown="if(event.key==='Enter') executeFind()">
       </div>
       <div class="fr-row">
         <input type="text" id="replaceInput" class="fr-input" placeholder="Replace with...">
       </div>
       <div class="fr-row" style="justify-content:flex-end;">
-        <button class="btn-action btn-secondary" style="padding:4px 8px; font-size:0.75rem;" onclick="executeFind()">Find</button>
-        <button class="btn-action btn-secondary" style="padding:4px 8px; font-size:0.75rem;" onclick="executeReplaceCurrent()">Replace</button>
-        <button class="btn-action" style="padding:4px 8px; font-size:0.75rem;" onclick="executeReplaceAll()">Replace All</button>
+        <button class="btn-action btn-secondary" style="padding:5px 10px; font-size:0.78rem;" onclick="executeFind()">Find</button>
+        <button class="btn-action" style="padding:5px 12px; font-size:0.78rem;" onclick="executeReplaceAll()">Replace All</button>
       </div>
-      <div id="findStatusText" style="font-size:0.75rem; color:var(--text-secondary);"></div>
+      <div id="findStatusText" style="font-size:0.76rem; color:var(--text-secondary); font-weight:600;"></div>
     </div>
 
     <!-- Signature Studio Modal -->
     <div id="sigModal" class="modal-backdrop">
       <div class="modal-card">
         <div class="modal-header">
-          <h3 class="modal-title"><i class="fas fa-signature"></i> Digital Signature Studio</h3>
+          <h3 class="modal-title"><i class="fas fa-signature" style="color:var(--editor-accent);"></i> Digital Signature Studio</h3>
           <button class="modal-close" onclick="closeSignatureModal()">&times;</button>
         </div>
 
         <div class="sig-tabs">
-          <button class="sig-tab active" onclick="switchSigTab('draw')">Draw</button>
+          <button class="sig-tab active" onclick="switchSigTab('draw')">Draw Freehand</button>
           <button class="sig-tab" onclick="switchSigTab('type')">Type Name</button>
           <button class="sig-tab" onclick="switchSigTab('upload')">Upload Image</button>
         </div>
@@ -1018,76 +1336,78 @@
             <canvas id="sigDrawCanvas" class="sig-canvas"></canvas>
           </div>
           <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;">
-            <div style="display:flex; gap:6px; align-items:center;">
-              <span style="font-size:0.8rem; font-weight:600;">Ink:</span>
-              <input type="color" id="sigDrawColor" value="#000000" class="prop-color" style="width:24px; height:24px;">
+            <div style="display:flex; align-items:center; gap:8px;">
+              <label style="font-size:0.8rem; font-weight:600;">Ink Color:</label>
+              <input type="color" id="sigColorInput" class="prop-color" value="#0f172a" onchange="updateSigInkColor(this.value)">
             </div>
-            <button class="btn-action btn-secondary" style="padding:4px 10px; font-size:0.78rem;" onclick="clearSigCanvas()">
-              <i class="fas fa-eraser"></i> Clear
+            <button class="btn-action btn-secondary" style="padding:4px 10px; font-size:0.78rem;" onclick="clearSignatureCanvas()">
+              <i class="fas fa-eraser"></i> Clear Canvas
             </button>
           </div>
         </div>
 
         <!-- Tab 2: Type Signature -->
         <div id="sigTabType" class="sig-tab-content" style="display:none;">
-          <input type="text" id="sigTypeInput" class="fr-input" placeholder="Type your full name..." style="width:100%; font-size:1rem; padding:8px 12px; margin-bottom:12px;" oninput="updateSigTypePreviews(this.value)">
-          <div class="sig-type-previews" id="sigTypePreviewsList">
-            <!-- 5 handwriting previews -->
+          <input type="text" id="sigNameInput" class="form-control" placeholder="Type your full name..." style="width:100%; padding:10px 14px; border-radius:10px; border:1px solid var(--panel-border); font-size:1.1rem; margin-bottom:14px;" oninput="renderSignatureTypePreviews()">
+          <div id="sigTypePreviews" class="sig-type-previews">
+            <!-- 5 typography previews rendered dynamically -->
           </div>
         </div>
 
         <!-- Tab 3: Upload Signature -->
-        <div id="sigTabUpload" class="sig-tab-content" style="display:none; text-align:center;">
-          <div class="sig-canvas-wrap" style="padding:24px; cursor:pointer;" onclick="document.getElementById('sigUploadInput').click()">
-            <i class="fas fa-cloud-upload-alt" style="font-size:2rem; color:var(--editor-accent); margin-bottom:8px;"></i>
-            <p style="font-size:0.85rem; margin:0; font-weight:600;">Click to upload signature PNG/JPG</p>
-            <input type="file" id="sigUploadInput" accept="image/png, image/jpeg, image/webp" style="display:none;" onchange="handleSigImageUpload(event)">
+        <div id="sigTabUpload" class="sig-tab-content" style="display:none;">
+          <div style="border:2px dashed var(--panel-border); border-radius:12px; padding:30px; text-align:center; cursor:pointer;" onclick="document.getElementById('sigImageInput').click()">
+            <input type="file" id="sigImageInput" accept="image/*" style="display:none;" onchange="handleSigImageUpload(event)">
+            <i class="fas fa-cloud-arrow-up" style="font-size:2rem; color:var(--editor-accent); margin-bottom:8px;"></i>
+            <div style="font-weight:700;">Click to upload signature photo</div>
+            <div style="font-size:0.8rem; color:var(--text-secondary); margin-top:4px;">PNG, JPG, or WebP. Auto-whiteout background removal included.</div>
           </div>
-          <label style="font-size:0.8rem; display:inline-flex; align-items:center; gap:6px; cursor:pointer;">
-            <input type="checkbox" id="sigAutoTransparent" checked> Automatically remove white background
-          </label>
+          <div id="sigUploadPreviewContainer" style="display:none; text-align:center; margin-top:14px;">
+            <img id="sigUploadPreviewImg" src="" alt="Signature Preview" style="max-height:100px; max-width:100%; border:1px solid var(--panel-border); border-radius:8px;">
+          </div>
         </div>
 
-        <div style="display:flex; justify-content:flex-end; gap:8px; margin-top:16px;">
+        <div style="display:flex; justify-content:flex-end; gap:8px; margin-top:18px; border-top:1px solid var(--panel-border); padding-top:14px;">
           <button class="btn-action btn-secondary" onclick="closeSignatureModal()">Cancel</button>
-          <button class="btn-action" onclick="applySignatureToDocument()">
-            <i class="fas fa-check"></i> Place on PDF
+          <button class="btn-action btn-success" onclick="applySignatureToStage()">
+            <i class="fas fa-check"></i> Place on Page
           </button>
         </div>
       </div>
     </div>
 
-    <!-- Stamp Gallery Modal -->
+    <!-- Stamp Studio Modal -->
     <div id="stampModal" class="modal-backdrop">
       <div class="modal-card">
         <div class="modal-header">
-          <h3 class="modal-title"><i class="fas fa-stamp"></i> Document Stamp Gallery</h3>
+          <h3 class="modal-title"><i class="fas fa-stamp" style="color:var(--editor-accent);"></i> Official Stamp Studio</h3>
           <button class="modal-close" onclick="closeStampModal()">&times;</button>
         </div>
 
         <div class="stamps-grid">
           <div class="stamp-item" style="color:#10b981;" onclick="applyPredefinedStamp('APPROVED', '#10b981')">APPROVED</div>
           <div class="stamp-item" style="color:#ef4444;" onclick="applyPredefinedStamp('CONFIDENTIAL', '#ef4444')">CONFIDENTIAL</div>
-          <div class="stamp-item" style="color:#3b82f6;" onclick="applyPredefinedStamp('PAID', '#3b82f6')">PAID</div>
-          <div class="stamp-item" style="color:#f59e0b;" onclick="applyPredefinedStamp('DRAFT', '#f59e0b')">DRAFT</div>
-          <div class="stamp-item" style="color:#8b5cf6;" onclick="applyPredefinedStamp('VERIFIED', '#8b5cf6')">VERIFIED</div>
-          <div class="stamp-item" style="color:#dc2626;" onclick="applyPredefinedStamp('REJECTED', '#dc2626')">REJECTED</div>
-          <div class="stamp-item" style="color:#64748b;" onclick="applyPredefinedStamp('VOID', '#64748b')">VOID</div>
-          <div class="stamp-item" style="color:#059669;" onclick="applyPredefinedStamp('COMPLETED', '#059669')">COMPLETED</div>
-          <div class="stamp-item" style="color:#0284c7;" onclick="applyPredefinedStamp('COPY', '#0284c7')">COPY</div>
+          <div class="stamp-item" style="color:#059669;" onclick="applyPredefinedStamp('PAID', '#059669')">PAID</div>
+          <div class="stamp-item" style="color:#3b82f6;" onclick="applyPredefinedStamp('DRAFT', '#3b82f6')">DRAFT</div>
+          <div class="stamp-item" style="color:#dc2626;" onclick="applyPredefinedStamp('VOID', '#dc2626')">VOID</div>
+          <div class="stamp-item" style="color:#f59e0b;" onclick="applyPredefinedStamp('URGENT', '#f59e0b')">URGENT</div>
+          <div class="stamp-item" style="color:#8b5cf6;" onclick="applyPredefinedStamp('FINAL', '#8b5cf6')">FINAL</div>
+          <div class="stamp-item" style="color:#64748b;" onclick="applyPredefinedStamp('COPY', '#64748b')">COPY</div>
+          <div class="stamp-item" style="color:#06b6d4;" onclick="applyPredefinedStamp('VERIFIED', '#06b6d4')">VERIFIED</div>
         </div>
 
-        <div style="border-top:1px solid var(--panel-border); padding-top:14px;">
-          <h4 style="font-size:0.9rem; font-weight:700; margin:0 0 10px;">Create Custom Stamp</h4>
+        <div style="margin-top:16px; border-top:1px solid var(--panel-border); padding-top:14px;">
+          <h4 style="font-size:0.9rem; font-weight:800; margin-bottom:10px;">Custom Stamp Builder</h4>
           <div style="display:flex; gap:8px; margin-bottom:10px;">
-            <input type="text" id="customStampText" class="fr-input" placeholder="e.g. RECEIVED ON">
-            <input type="color" id="customStampColor" value="#10b981" class="prop-color">
+            <input type="text" id="customStampText" class="form-control" placeholder="STAMP TEXT..." style="flex:1; padding:8px 12px; border-radius:8px; border:1px solid var(--panel-border); font-weight:700;">
+            <input type="color" id="customStampColor" class="prop-color" value="#6366f1">
           </div>
-          <label style="font-size:0.8rem; display:flex; align-items:center; gap:6px; cursor:pointer; margin-bottom:12px;">
-            <input type="checkbox" id="customStampIncludeDate" checked> Include current date stamp
-          </label>
+          <div style="display:flex; align-items:center; gap:8px; margin-bottom:12px; font-size:0.82rem;">
+            <input type="checkbox" id="stampIncludeDate" checked>
+            <label for="stampIncludeDate">Include today's date stamp</label>
+          </div>
           <button class="btn-action" style="width:100%; justify-content:center;" onclick="applyCustomStamp()">
-            <i class="fas fa-stamp"></i> Insert Custom Stamp
+            <i class="fas fa-stamp"></i> Create &amp; Place Custom Stamp
           </button>
         </div>
       </div>
@@ -1097,287 +1417,319 @@
     <div id="watermarkModal" class="modal-backdrop">
       <div class="modal-card">
         <div class="modal-header">
-          <h3 class="modal-title"><i class="fas fa-hashtag"></i> Watermark & Page Numbers</h3>
+          <h3 class="modal-title"><i class="fas fa-hashtag" style="color:var(--editor-accent);"></i> Watermark &amp; Page Numbers</h3>
           <button class="modal-close" onclick="closeWatermarkModal()">&times;</button>
         </div>
 
         <div style="margin-bottom:18px;">
-          <h4 style="font-size:0.9rem; font-weight:700; margin:0 0 8px;"><i class="fas fa-water"></i> Text Watermark</h4>
+          <h4 style="font-size:0.95rem; font-weight:800; margin-bottom:8px;">Diagonal Document Watermark</h4>
+          <p style="font-size:0.8rem; color:var(--text-secondary); margin-bottom:8px;">Applies a large, semi-transparent security watermark across every page.</p>
           <div style="display:flex; gap:8px; margin-bottom:8px;">
-            <input type="text" id="wmTextInput" class="fr-input" placeholder="e.g. CONFIDENTIAL or DO NOT COPY">
-            <input type="color" id="wmColorInput" value="#94a3b8" class="prop-color">
-          </div>
-          <div style="display:flex; gap:12px; font-size:0.82rem; margin-bottom:10px;">
-            <label><input type="radio" name="wmAngle" value="diagonal" checked> Diagonal ($45^\circ$)</label>
-            <label><input type="radio" name="wmAngle" value="horizontal"> Horizontal ($0^\circ$)</label>
+            <input type="text" id="wmTextInput" class="form-control" value="CONFIDENTIAL" style="flex:1; padding:8px 12px; border-radius:8px; border:1px solid var(--panel-border); font-weight:700;">
+            <input type="color" id="wmColorInput" class="prop-color" value="#94a3b8">
           </div>
           <button class="btn-action btn-secondary" style="width:100%; justify-content:center; font-size:0.82rem;" onclick="applyWatermarkToAllPages()">
-            Apply Watermark to All Pages
+            <i class="fas fa-check"></i> Apply Watermark to All Pages
           </button>
         </div>
 
         <div style="border-top:1px solid var(--panel-border); padding-top:14px;">
-          <h4 style="font-size:0.9rem; font-weight:700; margin:0 0 8px;"><i class="fas fa-list-ol"></i> Page Numbering</h4>
-          <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:10px;">
-            <div>
-              <label style="font-size:0.75rem; font-weight:600;">Format:</label>
-              <select id="pnFormat" class="prop-select" style="width:100%;">
-                <option value="Page {n} of {total}">Page 1 of 10</option>
-                <option value="{n} / {total}">1 / 10</option>
-                <option value="{n}">1, 2, 3...</option>
-              </select>
-            </div>
-            <div>
-              <label style="font-size:0.75rem; font-weight:600;">Position:</label>
-              <select id="pnPosition" class="prop-select" style="width:100%;">
-                <option value="bottom-center">Bottom Center</option>
-                <option value="bottom-right">Bottom Right</option>
-                <option value="bottom-left">Bottom Left</option>
-                <option value="top-right">Top Right</option>
-              </select>
-            </div>
-          </div>
-          <button class="btn-action" style="width:100%; justify-content:center; font-size:0.82rem;" onclick="applyPageNumbersToAllPages()">
-            Stamp Page Numbers on All Pages
+          <h4 style="font-size:0.95rem; font-weight:800; margin-bottom:8px;">Automatic Page Numbering</h4>
+          <p style="font-size:0.8rem; color:var(--text-secondary); margin-bottom:8px;">Adds crisp footer page numbers to the bottom center of all pages.</p>
+          <select id="pnFormat" class="prop-select" style="width:100%; padding:8px 12px; margin-bottom:8px;">
+            <option value="Page {n} of {total}">Page {n} of {total}</option>
+            <option value="{n} / {total}">{n} / {total}</option>
+            <option value="- {n} -">- {n} -</option>
+          </select>
+          <button class="btn-action btn-secondary" style="width:100%; justify-content:center; font-size:0.82rem;" onclick="applyPageNumbersToAllPages()">
+            <i class="fas fa-list-ol"></i> Stamp Page Numbers
           </button>
         </div>
       </div>
     </div>
 
     <!-- Hidden File Inputs -->
-    <input type="file" id="imageUploadInput" accept="image/png, image/jpeg, image/webp" style="display:none;" onchange="handleImageOverlayUpload(event)">
+    <input type="file" id="imageUploadInput" accept="image/*" style="display:none;" onchange="handleImageInsert(event)">
     <input type="file" id="mergePdfInput" accept="application/pdf" style="display:none;" onchange="handleMergePdfUpload(event)">
 
-    <!-- Features & Technical Overview -->
+    <!-- Toast Notification Container -->
+    <div id="toastContainer" class="toast-container"></div>
+
+    <!-- Features & Information Section -->
     <section class="info-section">
-      <h2 style="text-align:center; font-size:1.6rem; font-weight:800; margin-bottom:24px;">Everything You Need in an In-Browser PDF Editor</h2>
-      
+      <h2 style="font-size:1.6rem; font-weight:900; margin-bottom:8px; text-align:center;">Comprehensive PDF Suite Features</h2>
+      <p style="text-align:center; color:var(--text-secondary); max-width:650px; margin:0 auto 30px; font-size:0.9rem;">
+        Everything you need to modify, edit, sign, and organize PDF documents right in your browser.
+      </p>
+
       <div class="features-grid">
-        <div class="feat-card">
-          <i class="fas fa-spell-check feat-icon"></i>
-          <h3 class="feat-title">Direct Word & Text Replacement</h3>
-          <p class="feat-desc">Click or double-click any word or text sentence in your PDF. The editor automatically conceals original characters with a matching vector background patch and redraws replacement text at the exact typographical baseline.</p>
+        <div class="feature-card">
+          <div class="feature-icon-box"><i class="fas fa-font"></i></div>
+          <h3 style="font-size:1.1rem; font-weight:800; margin-bottom:6px;">Direct Word & Text Editing</h3>
+          <p style="font-size:0.85rem; color:var(--text-secondary); line-height:1.5;">
+            Hover over any word to reveal its bounding box; click to replace text inline. Automatically masks original text and redraws with matching typography.
+          </p>
         </div>
 
-        <div class="feat-card">
-          <i class="fas fa-signature feat-icon"></i>
-          <h3 class="feat-title">Digital Signature Studio</h3>
-          <p class="feat-desc">Draw your signature with smooth pen smoothing, type your name using elegant cursive calligraphy styles, or upload your signature image with automatic white-background removal.</p>
+        <div class="feature-card">
+          <div class="feature-icon-box"><i class="fas fa-magnifying-glass"></i></div>
+          <h3 style="font-size:1.1rem; font-weight:800; margin-bottom:6px;">Global Find &amp; Replace</h3>
+          <p style="font-size:0.85rem; color:var(--text-secondary); line-height:1.5;">
+            Search any keyword across all pages with live match counter and execute one-by-one or single-click Replace All substitutions.
+          </p>
         </div>
 
-        <div class="feat-card">
-          <i class="fas fa-layer-group feat-icon"></i>
-          <h3 class="feat-title">Visual Page Organizer</h3>
-          <p class="feat-desc">Drag and drop to rearrange pages, rotate single or all pages, delete unwanted pages, duplicate existing ones, insert blank pages, or merge another PDF seamlessly.</p>
+        <div class="feature-card">
+          <div class="feature-icon-box"><i class="fas fa-layer-group"></i></div>
+          <h3 style="font-size:1.1rem; font-weight:800; margin-bottom:6px;">Visual Page Reordering &amp; Merge</h3>
+          <p style="font-size:0.85rem; color:var(--text-secondary); line-height:1.5;">
+            Drag-and-drop or use up/down buttons to rearrange pages. Rotate individual pages 90°/180°, duplicate, delete, or merge other PDFs.
+          </p>
         </div>
 
-        <div class="feat-card">
-          <i class="fas fa-eye-slash feat-icon"></i>
-          <h3 class="feat-title">Permanent Redaction & Whiteout</h3>
-          <p class="feat-desc">Draw solid black bars or clean whiteout rectangles over confidential data like bank account numbers, Aadhaar, PAN, or personal details before sharing.</p>
+        <div class="feature-card">
+          <div class="feature-icon-box"><i class="fas fa-signature"></i></div>
+          <h3 style="font-size:1.1rem; font-weight:800; margin-bottom:6px;">3-in-1 Digital Signatures</h3>
+          <p style="font-size:0.85rem; color:var(--text-secondary); line-height:1.5;">
+            Draw smooth freehand signatures, generate cursive handwriting styles, or upload your signature photo with automatic white background removal.
+          </p>
         </div>
 
-        <div class="feat-card">
-          <i class="fas fa-stamp feat-icon"></i>
-          <h3 class="feat-title">Stamps, Shapes & Images</h3>
-          <p class="feat-desc">Insert official stamps like APPROVED, PAID, and CONFIDENTIAL, overlay company logos/seals, and draw callout rectangles, circles, checkmarks, and arrows.</p>
+        <div class="feature-card">
+          <div class="feature-icon-box"><i class="fas fa-stamp"></i></div>
+          <h3 style="font-size:1.1rem; font-weight:800; margin-bottom:6px;">Official Stamps &amp; Redactions</h3>
+          <p style="font-size:0.85rem; color:var(--text-secondary); line-height:1.5;">
+            Apply certified stamps (APPROVED, CONFIDENTIAL, PAID, VOID) or custom stamps with live date stamps, plus whiteout and blackout bar redactions.
+          </p>
         </div>
 
-        <div class="feat-card">
-          <i class="fas fa-shield-halved feat-icon"></i>
-          <h3 class="feat-title">100% Client-Side Privacy</h3>
-          <p class="feat-desc">All PDF parsing, text replacement, rendering, and downloading happen locally in your browser memory. Your documents are never uploaded to any cloud server.</p>
-        </div>
-      </div>
-
-      <!-- FAQ Accordion -->
-      <h2 style="text-align:center; font-size:1.4rem; font-weight:800; margin-bottom:20px;">Frequently Asked Questions</h2>
-      <div class="faq-list">
-        <div class="faq-item">
-          <div class="faq-q"><i class="fas fa-circle-question" style="color:var(--editor-accent);"></i> Can I edit existing text inside a PDF without converting to Word?</div>
-          <div class="faq-a">Yes! Click on the <strong>Edit Words</strong> tool and click or double-click any word in the document. You can edit the text directly inline, and the editor will automatically cover the original text and render your updated text matching the exact position and font size.</div>
-        </div>
-
-        <div class="faq-item">
-          <div class="faq-q"><i class="fas fa-circle-question" style="color:var(--editor-accent);"></i> Is my sensitive data safe when editing financial or identity documents?</div>
-          <div class="faq-a">Yes, 100%. This tool operates completely inside your browser using WebAssembly and PDF-Lib. No file, text, signature, or image is ever uploaded to a server or third-party cloud.</div>
-        </div>
-
-        <div class="faq-item">
-          <div class="faq-q"><i class="fas fa-circle-question" style="color:var(--editor-accent);"></i> How do I sign a PDF document online?</div>
-          <div class="faq-a">Click the <strong>Sign</strong> button in the top toolbar. You can draw your signature using your mouse/touchscreen, type your name to generate a cursive signature, or upload a photo of your signature. Once placed, you can resize, move, and position it anywhere on the page.</div>
+        <div class="feature-card">
+          <div class="feature-icon-box"><i class="fas fa-shield-halved"></i></div>
+          <h3 style="font-size:1.1rem; font-weight:800; margin-bottom:6px;">100% In-Browser Privacy</h3>
+          <p style="font-size:0.85rem; color:var(--text-secondary); line-height:1.5;">
+            Your files never leave your device. All rendering and vector modifications happen client-side in memory with zero cloud uploads.
+          </p>
         </div>
       </div>
     </section>
-
   </main>
 
-  <!-- Footer -->
-  <footer style="border-top:1px solid var(--panel-border); padding:30px 20px; text-align:center; margin-top:60px; color:var(--text-secondary); font-size:0.85rem;">
-    <p>© 2026 AI Bots by Rishit Chajjed. All rights reserved. 100% Free, Private Browser Studio.</p>
-    <div style="display:flex; justify-content:center; gap:16px; margin-top:10px; flex-wrap:wrap;">
-      <a href="index.html" style="color:inherit; text-decoration:none;">Home</a>
-      <a href="bank-statement-converter.html" style="color:inherit; text-decoration:none;">Bank Statement to Tally</a>
-      <a href="pdfmaker.html" style="color:inherit; text-decoration:none;">Image to PDF</a>
-      <a href="pdfviewer.html" style="color:inherit; text-decoration:none;">PDF Viewer</a>
-      <a href="about.html" style="color:inherit; text-decoration:none;">About</a>
-    </div>
-  </footer>
-
-  <!-- ========================================================================= -->
-  <!-- JAVASCRIPT ENGINE -->
-  <!-- ========================================================================= -->
   <script>
-    // Initialize PDF.js worker
-    if (window.pdfjsLib) {
-      window.pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
-    }
-
-    // State Management
+    // -------------------------------------------------------------------------
+    // Global Application State
+    // -------------------------------------------------------------------------
     let currentPdfBytes = null;
     let pdfDocProxy = null;
-    let numPages = 0;
-    let activePageIndex = 0; // 0-indexed
-    let currentScale = 1.25;
-    let activeTool = 'select'; // select, edit-text, add-text, redact, highlighter
-    let selectedObject = null; // currently selected stage element
-    let pageAnnotations = {}; // { [pageIdx]: [ { id, type, x, y, w, h, ... } ] }
-    let pageRotations = {}; // { [pageIdx]: 0, 90, 180, 270 }
-    let pageOrder = []; // [ 0, 1, 2, ... ]
+    let pageOrder = [];       // Array of original page indices e.g. [0, 1, 2...]
+    let pageRotations = {};   // { origIdx: 0, 90, 180, 270 }
+    let pageAnnotations = {}; // { origIdx: [ { id, type, x, y, w, h, ... } ] } in unscaled PDF POINTS!
+    let activePageIndex = 0;  // Index in pageOrder
+    let currentScale = 1.2;   // Viewport display zoom scale
+    let activeTool = 'edit-text'; // Default to 'edit-text' for immediate word editing!
+    let selectedObject = null;
     let undoStack = [];
     let redoStack = [];
 
     // Signature Pad State
-    let sigCanvas, sigCtx, isSigDrawing = false;
-    let selectedTypeSig = null;
+    let sigCanvas, sigCtx, isDrawingSig = false;
+    let selectedSigStyle = 'Caveat';
 
-    // Theme Management
-    function initTheme() {
-      const saved = localStorage.getItem('aibots-theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
-      document.documentElement.setAttribute('data-theme', saved);
-      updateThemeIcon(saved);
+    // PDF.js Worker Configuration
+    if (window.pdfjsLib) {
+      window.pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
     }
-    function toggleTheme() {
-      const current = document.documentElement.getAttribute('data-theme') || 'light';
-      const next = current === 'dark' ? 'light' : 'dark';
-      document.documentElement.setAttribute('data-theme', next);
-      localStorage.setItem('aibots-theme', next);
-      updateThemeIcon(next);
-    }
-    function updateThemeIcon(t) {
-      const btn = document.getElementById('themeToggleBtn');
-      if (btn) btn.innerHTML = t === 'dark' ? '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>';
-    }
-    initTheme();
 
     // -------------------------------------------------------------------------
-    // File Loading & Document Initialization
+    // Toast Notification Utility
+    // -------------------------------------------------------------------------
+    function showToast(message, icon = 'fa-check-circle') {
+      const container = document.getElementById('toastContainer');
+      const toast = document.createElement('div');
+      toast.className = 'toast-msg';
+      toast.innerHTML = `<i class="fas ${icon}" style="color:var(--editor-accent);"></i> <span>${message}</span>`;
+      container.appendChild(toast);
+      setTimeout(() => {
+        toast.style.opacity = '0';
+        toast.style.transform = 'translateY(10px)';
+        toast.style.transition = 'all 0.25s ease';
+        setTimeout(() => toast.remove(), 250);
+      }, 2800);
+    }
+
+    // -------------------------------------------------------------------------
+    // File Upload & PDF Document Initialization
     // -------------------------------------------------------------------------
     function handleFileSelect(e) {
       const file = e.target.files && e.target.files[0];
-      if (!file) return;
-      if (file.type !== 'application/pdf' && !file.name.toLowerCase().endsWith('.pdf')) {
-        alert('Please select a valid PDF file.');
-        return;
+      if (file && file.type === 'application/pdf') {
+        loadPdfFromFile(file);
       }
-      const reader = new FileReader();
-      reader.onload = function(evt) {
-        loadPdfArrayBuffer(evt.target.result);
-      };
-      reader.readAsArrayBuffer(file);
     }
 
-    async function loadPdfArrayBuffer(buffer) {
+    function openNewPdfDialog() {
+      document.getElementById('pdfFileInput').click();
+    }
+
+    // Drag and drop handling on dropzone
+    const dropzone = document.getElementById('dropzoneContainer');
+    ['dragenter', 'dragover'].forEach(name => {
+      dropzone.addEventListener(name, (e) => {
+        e.preventDefault();
+        dropzone.classList.add('drag-over');
+      });
+    });
+    ['dragleave', 'drop'].forEach(name => {
+      dropzone.addEventListener(name, (e) => {
+        e.preventDefault();
+        dropzone.classList.remove('drag-over');
+      });
+    });
+    dropzone.addEventListener('drop', (e) => {
+      const file = e.dataTransfer.files && e.dataTransfer.files[0];
+      if (file && file.type === 'application/pdf') {
+        loadPdfFromFile(file);
+      }
+    });
+
+    async function loadPdfFromFile(file) {
       try {
-        currentPdfBytes = new Uint8Array(buffer);
-        const loadingTask = pdfjsLib.getDocument({ data: currentPdfBytes });
-        pdfDocProxy = await loadingTask.promise;
-        numPages = pdfDocProxy.numPages;
-
-        pageOrder = Array.from({ length: numPages }, (_, i) => i);
-        pageRotations = {};
-        pageAnnotations = {};
-        for (let i = 0; i < numPages; i++) {
-          pageRotations[i] = 0;
-          pageAnnotations[i] = [];
-        }
-
-        activePageIndex = 0;
-        document.getElementById('dropzoneContainer').style.display = 'none';
-        document.getElementById('editorWorkspace').style.display = 'flex';
-        document.getElementById('pageCountDisplay').textContent = numPages;
-
-        await renderThumbnails();
-        await renderActivePage();
+        const buffer = await file.arrayBuffer();
+        await initializePdfDocument(new Uint8Array(buffer));
+        showToast('PDF loaded successfully! Click any word to edit.', 'fa-file-pdf');
       } catch (err) {
-        console.error("Error loading PDF:", err);
-        alert("Failed to load PDF document: " + err.message);
+        console.error("PDF load error:", err);
+        alert("Failed to load PDF: " + err.message);
       }
     }
 
-    // Demo Document Loader
     async function loadSampleDocument(e) {
-      if (e) e.stopPropagation();
-      // Generate a sample 2-page PDF via PDFLib
-      const samplePdf = await PDFLib.PDFDocument.create();
-      const page1 = samplePdf.addPage([595.28, 841.89]); // A4
-      const font = await samplePdf.embedFont(PDFLib.StandardFonts.HelveticaBold);
-      const fontRegular = await samplePdf.embedFont(PDFLib.StandardFonts.Helvetica);
+      e.stopPropagation();
+      try {
+        // Generate a sample PDF using pdf-lib
+        const sampleDoc = await PDFLib.PDFDocument.create();
+        const page1 = sampleDoc.addPage([595.28, 841.89]); // A4
+        const fontBold = await sampleDoc.embedFont(PDFLib.StandardFonts.HelveticaBold);
+        const fontReg = await sampleDoc.embedFont(PDFLib.StandardFonts.Helvetica);
 
-      page1.drawText("SAMPLE BUSINESS AGREEMENT", { x: 50, y: 780, size: 20, font, color: PDFLib.rgb(0.06, 0.09, 0.16) });
-      page1.drawText("This is an interactive demo document. You can edit any word directly,", { x: 50, y: 740, size: 12, font: fontRegular, color: PDFLib.rgb(0.28, 0.33, 0.41) });
-      page1.drawText("rearrange pages, insert digital signatures, add stamps, and redact text.", { x: 50, y: 720, size: 12, font: fontRegular, color: PDFLib.rgb(0.28, 0.33, 0.41) });
-      
-      page1.drawText("Invoice Number: INV-2026-9042", { x: 50, y: 660, size: 13, font, color: PDFLib.rgb(0.39, 0.4, 0.95) });
-      page1.drawText("Client Name: Rishit Chajjed", { x: 50, y: 635, size: 12, font: fontRegular, color: PDFLib.rgb(0.1, 0.1, 0.1) });
-      page1.drawText("Total Payable: $4,500.00 USD", { x: 50, y: 610, size: 12, font, color: PDFLib.rgb(0.06, 0.72, 0.5) });
-      page1.drawText("Status: Pending Signature & Approval", { x: 50, y: 585, size: 12, font: fontRegular, color: PDFLib.rgb(0.96, 0.62, 0.04) });
+        page1.drawText("ACME FINANCIAL STATEMENT", { x: 50, y: 780, size: 22, font: fontBold, color: PDFLib.rgb(0.06, 0.09, 0.16) });
+        page1.drawText("Account Holder: John Doe", { x: 50, y: 740, size: 14, font: fontReg, color: PDFLib.rgb(0.2, 0.25, 0.3) });
+        page1.drawText("Account Number: 9876543210", { x: 50, y: 718, size: 13, font: fontReg, color: PDFLib.rgb(0.2, 0.25, 0.3) });
+        page1.drawText("Statement Period: October 2026", { x: 50, y: 696, size: 13, font: fontReg, color: PDFLib.rgb(0.2, 0.25, 0.3) });
+        page1.drawText("Closing Balance: $14,850.00", { x: 50, y: 660, size: 16, font: fontBold, color: PDFLib.rgb(0.06, 0.72, 0.5) });
 
-      const page2 = samplePdf.addPage([595.28, 841.89]);
-      page2.drawText("TERMS & CONDITIONS (PAGE 2)", { x: 50, y: 780, size: 18, font, color: PDFLib.rgb(0.06, 0.09, 0.16) });
-      page2.drawText("1. All changes made in this editor are 100% private in browser memory.", { x: 50, y: 740, size: 12, font: fontRegular, color: PDFLib.rgb(0.28, 0.33, 0.41) });
-      page2.drawText("2. You can drag and drop pages in the left sidebar to change order.", { x: 50, y: 715, size: 12, font: fontRegular, color: PDFLib.rgb(0.28, 0.33, 0.41) });
+        page1.drawText("Summary Notes: Click on any word in this document to edit inline.", { x: 50, y: 610, size: 12, font: fontReg, color: PDFLib.rgb(0.4, 0.45, 0.5) });
+        page1.drawText("You can replace names, change amounts, delete words, or add stamps.", { x: 50, y: 590, size: 12, font: fontReg, color: PDFLib.rgb(0.4, 0.45, 0.5) });
 
-      const pdfBytes = await samplePdf.save();
-      loadPdfArrayBuffer(pdfBytes);
+        const page2 = sampleDoc.addPage([595.28, 841.89]);
+        page2.drawText("TERMS & CONDITIONS", { x: 50, y: 780, size: 20, font: fontBold, color: PDFLib.rgb(0.06, 0.09, 0.16) });
+        page2.drawText("This is page 2. Try reordering pages or adding a digital signature below.", { x: 50, y: 740, size: 13, font: fontReg, color: PDFLib.rgb(0.2, 0.25, 0.3) });
+
+        const bytes = await sampleDoc.save();
+        await initializePdfDocument(bytes);
+        showToast('Sample PDF loaded! Click any word to edit.', 'fa-magic');
+      } catch (err) {
+        console.error("Sample creation error:", err);
+      }
+    }
+
+    async function initializePdfDocument(bytes) {
+      currentPdfBytes = bytes;
+      const loadingTask = pdfjsLib.getDocument({ data: currentPdfBytes });
+      pdfDocProxy = await loadingTask.promise;
+
+      // Reset document state
+      pageOrder = [];
+      pageRotations = {};
+      pageAnnotations = {};
+      for (let i = 0; i < pdfDocProxy.numPages; i++) {
+        pageOrder.push(i);
+        pageRotations[i] = 0;
+        pageAnnotations[i] = [];
+      }
+      activePageIndex = 0;
+      undoStack = [];
+      redoStack = [];
+
+      document.getElementById('pageCountDisplay').textContent = pageOrder.length;
+      document.getElementById('dropzoneContainer').style.display = 'none';
+      document.getElementById('editorWorkspace').style.display = 'flex';
+
+      // Set default mode to 'edit-text' for instant word editing
+      setEditorMode('edit-text');
+
+      renderThumbnails();
+      await renderActivePage();
+      pushUndoState();
     }
 
     // -------------------------------------------------------------------------
-    // Thumbnail Generation & Page Management
+    // Sidebar Thumbnails Rendering & Drag/Drop
     // -------------------------------------------------------------------------
-    async function renderThumbnails() {
+    function renderThumbnails() {
       const container = document.getElementById('thumbnailsList');
       container.innerHTML = '';
 
       for (let i = 0; i < pageOrder.length; i++) {
         const origPageIdx = pageOrder[i];
+        const isCurrent = (i === activePageIndex);
+
         const card = document.createElement('div');
-        card.className = `thumb-card ${i === activePageIndex ? 'active' : ''}`;
-        card.dataset.orderIndex = i;
+        card.className = `thumb-card ${isCurrent ? 'active' : ''}`;
+        card.draggable = true;
+        card.dataset.index = i;
+
+        // Drag and drop reordering
+        card.ondragstart = (e) => {
+          e.dataTransfer.setData('text/plain', i);
+        };
+        card.ondragover = (e) => {
+          e.preventDefault();
+          card.style.borderColor = 'var(--editor-accent)';
+        };
+        card.ondragleave = () => {
+          card.style.borderColor = isCurrent ? 'var(--editor-accent)' : 'transparent';
+        };
+        card.ondrop = (e) => {
+          e.preventDefault();
+          const fromIndex = parseInt(e.dataTransfer.getData('text/plain'), 10);
+          const toIndex = i;
+          if (fromIndex !== toIndex) {
+            const item = pageOrder.splice(fromIndex, 1)[0];
+            pageOrder.splice(toIndex, 0, item);
+            activePageIndex = toIndex;
+            renderThumbnails();
+            renderActivePage();
+            pushUndoState();
+          }
+        };
+
         card.onclick = () => switchActivePage(i);
 
-        const canvasWrap = document.createElement('div');
-        canvasWrap.className = 'thumb-canvas-wrap';
+        const previewWrap = document.createElement('div');
+        previewWrap.className = 'thumb-preview-wrap';
+
+        const badge = document.createElement('span');
+        badge.className = 'thumb-badge';
+        badge.textContent = `P.${i + 1}`;
+        previewWrap.appendChild(badge);
+
         const canvas = document.createElement('canvas');
-        canvasWrap.appendChild(canvas);
-        card.appendChild(canvasWrap);
+        canvas.className = 'thumb-canvas';
+        previewWrap.appendChild(canvas);
+        card.appendChild(previewWrap);
 
         const footer = document.createElement('div');
-        footer.className = 'thumb-footer';
+        footer.className = 'thumb-toolbar';
         footer.innerHTML = `
-          <span class="thumb-badge">P${i + 1}</span>
-          <div class="thumb-actions">
-            <button class="thumb-btn" onclick="event.stopPropagation(); rotatePage(${i}, 90)" title="Rotate 90°"><i class="fas fa-rotate-right"></i></button>
-            <button class="thumb-btn" onclick="event.stopPropagation(); movePageUp(${i})" title="Move Up"><i class="fas fa-arrow-up"></i></button>
-            <button class="thumb-btn" onclick="event.stopPropagation(); movePageDown(${i})" title="Move Down"><i class="fas fa-arrow-down"></i></button>
-            <button class="thumb-btn" onclick="event.stopPropagation(); duplicatePage(${i})" title="Duplicate"><i class="fas fa-clone"></i></button>
-            <button class="thumb-btn btn-del" onclick="event.stopPropagation(); deletePage(${i})" title="Delete"><i class="fas fa-trash"></i></button>
-          </div>
+          <button class="thumb-btn" onclick="event.stopPropagation(); rotatePage(${i}, 90)" title="Rotate 90°"><i class="fas fa-rotate-right"></i></button>
+          <button class="thumb-btn" onclick="event.stopPropagation(); movePageUp(${i})" title="Move Up"><i class="fas fa-arrow-up"></i></button>
+          <button class="thumb-btn" onclick="event.stopPropagation(); movePageDown(${i})" title="Move Down"><i class="fas fa-arrow-down"></i></button>
+          <button class="thumb-btn" onclick="event.stopPropagation(); duplicatePage(${i})" title="Duplicate"><i class="fas fa-clone"></i></button>
+          <button class="thumb-btn btn-del" onclick="event.stopPropagation(); deletePage(${i})" title="Delete"><i class="fas fa-trash"></i></button>
         `;
         card.appendChild(footer);
         container.appendChild(card);
 
-        // Render mini preview
         renderThumbnailCanvas(origPageIdx, canvas, pageRotations[origPageIdx] || 0);
       }
     }
@@ -1385,7 +1737,6 @@
     async function renderThumbnailCanvas(origPageIdx, canvas, rotation) {
       try {
         if (origPageIdx >= pdfDocProxy.numPages) {
-          // Blank page
           canvas.width = 100;
           canvas.height = 141;
           const ctx = canvas.getContext('2d');
@@ -1394,7 +1745,7 @@
           return;
         }
         const page = await pdfDocProxy.getPage(origPageIdx + 1);
-        const viewport = page.getViewport({ scale: 0.2, rotation: rotation });
+        const viewport = page.getViewport({ scale: 0.22, rotation: rotation });
         canvas.width = viewport.width;
         canvas.height = viewport.height;
         const ctx = canvas.getContext('2d');
@@ -1418,6 +1769,8 @@
       pageRotations[origIdx] = ((pageRotations[origIdx] || 0) + deg) % 360;
       renderThumbnails();
       if (orderIdx === activePageIndex) renderActivePage();
+      pushUndoState();
+      showToast(`Page ${orderIdx + 1} rotated ${deg}°`, 'fa-rotate-right');
     }
 
     function rotateAllPages(deg) {
@@ -1426,6 +1779,8 @@
       }
       renderThumbnails();
       renderActivePage();
+      pushUndoState();
+      showToast(`All pages rotated ${deg}°`, 'fa-rotate-right');
     }
 
     function movePageUp(orderIdx) {
@@ -1437,6 +1792,7 @@
       else if (activePageIndex === orderIdx - 1) activePageIndex++;
       renderThumbnails();
       renderActivePage();
+      pushUndoState();
     }
 
     function movePageDown(orderIdx) {
@@ -1448,6 +1804,7 @@
       else if (activePageIndex === orderIdx + 1) activePageIndex--;
       renderThumbnails();
       renderActivePage();
+      pushUndoState();
     }
 
     function duplicatePage(orderIdx) {
@@ -1455,11 +1812,13 @@
       pageOrder.splice(orderIdx + 1, 0, origIdx);
       document.getElementById('pageCountDisplay').textContent = pageOrder.length;
       renderThumbnails();
+      pushUndoState();
+      showToast(`Page ${orderIdx + 1} duplicated`, 'fa-clone');
     }
 
     function deletePage(orderIdx) {
       if (pageOrder.length <= 1) {
-        alert("Cannot delete the only remaining page.");
+        alert("Cannot delete the only remaining page in the document.");
         return;
       }
       if (!confirm(`Delete Page ${orderIdx + 1}?`)) return;
@@ -1468,35 +1827,39 @@
       document.getElementById('pageCountDisplay').textContent = pageOrder.length;
       renderThumbnails();
       renderActivePage();
+      pushUndoState();
+      showToast('Page deleted', 'fa-trash');
     }
 
-    async function addBlankPage() {
-      // Use virtual index for blank page
-      const blankIdx = 9999 + pageOrder.length;
+    function addBlankPage() {
+      const blankIdx = 10000 + pageOrder.length;
+      pageOrder.push(blankIdx);
       pageRotations[blankIdx] = 0;
       pageAnnotations[blankIdx] = [];
-      pageOrder.push(blankIdx);
+      activePageIndex = pageOrder.length - 1;
       document.getElementById('pageCountDisplay').textContent = pageOrder.length;
       renderThumbnails();
-      switchActivePage(pageOrder.length - 1);
+      renderActivePage();
+      pushUndoState();
+      showToast('Blank page added', 'fa-file-circle-plus');
     }
 
     // -------------------------------------------------------------------------
-    // Main Viewport Canvas & Text Layer Rendering
+    // Main Viewport Page Rendering & Direct Word Detection
     // -------------------------------------------------------------------------
     async function renderActivePage() {
+      if (!pdfDocProxy || pageOrder.length === 0) return;
       const origPageIdx = pageOrder[activePageIndex];
+
       const stageWrapper = document.getElementById('pageStageWrapper');
       const canvas = document.getElementById('pdfRenderCanvas');
       const textLayer = document.getElementById('textDetectLayer');
-      const annotLayer = document.getElementById('annotationOverlayLayer');
 
-      textLayer.innerHTML = '';
-      annotLayer.innerHTML = '';
-      selectedObject = null;
+      // Close any open floating editor
+      closeFloatingWordEditor();
 
+      // Case: Blank page
       if (origPageIdx >= 9999) {
-        // Blank Page Rendering
         const w = 595.28 * currentScale;
         const h = 841.89 * currentScale;
         canvas.width = w;
@@ -1506,6 +1869,7 @@
         const ctx = canvas.getContext('2d');
         ctx.fillStyle = '#ffffff';
         ctx.fillRect(0, 0, w, h);
+        textLayer.innerHTML = '';
         renderPageAnnotations(origPageIdx);
         return;
       }
@@ -1523,135 +1887,246 @@
         const ctx = canvas.getContext('2d');
         await page.render({ canvasContext: ctx, viewport: viewport }).promise;
 
-        // Render interactive text layer words
+        // Render interactive word detection layer
         const textContent = await page.getTextContent({ normalizeWhitespace: true });
         renderWordBoxes(textContent, viewport, textLayer);
 
-        // Render interactive annotation/overlay elements
+        // Render annotations (text, signatures, stamps, whiteouts)
         renderPageAnnotations(origPageIdx);
       } catch (err) {
         console.error("Render active page error:", err);
       }
     }
 
+    // -------------------------------------------------------------------------
+    // Precision Word Splitting & Clickable Word Box Generation
+    // -------------------------------------------------------------------------
     function renderWordBoxes(textContent, viewport, container) {
       container.innerHTML = '';
       if (!textContent || !textContent.items) return;
 
-      container.className = `text-detect-layer ${activeTool === 'edit-text' ? 'interactive-mode' : ''}`;
+      container.className = 'text-detect-layer interactive-mode';
+
+      // Offscreen canvas for proportional text width measurement
+      const measureCanvas = document.createElement('canvas');
+      const measureCtx = measureCanvas.getContext('2d');
 
       for (const item of textContent.items) {
-        const str = item.str.trim();
-        if (!str) continue;
+        const fullStr = item.str;
+        if (!fullStr || !fullStr.trim()) continue;
 
-        // Transform coordinate from PDF to Viewport space
+        // Transform baseline coordinate from PDF to Viewport space
         const tx = pdfjsLib.Util.transform(viewport.transform, item.transform);
-        const fontHeight = Math.sqrt((tx[2] * tx[2]) + (tx[3] * tx[3]));
+        const fontHeight = Math.sqrt((tx[2] * tx[2]) + (tx[3] * tx[3])) || (item.height * currentScale) || 14;
         const fontWidth = item.width * currentScale;
 
-        const wordEl = document.createElement('div');
-        wordEl.className = 'word-box';
-        wordEl.textContent = str;
-        wordEl.title = `Click to edit: "${str}"`;
-        wordEl.style.left = (tx[4]) + 'px';
-        wordEl.style.top = (tx[5] - fontHeight) + 'px';
-        wordEl.style.width = Math.max(fontWidth, 18) + 'px';
-        wordEl.style.height = (fontHeight * 1.1) + 'px';
-        wordEl.style.fontSize = (fontHeight * 0.9) + 'px';
-        wordEl.style.color = 'transparent';
+        // Set font for accurate measurement
+        measureCtx.font = `${Math.round(fontHeight)}px "Plus Jakarta Sans", Helvetica, Arial, sans-serif`;
 
-        wordEl.onclick = (e) => {
-          e.stopPropagation();
-          if (activeTool === 'edit-text' || activeTool === 'select') {
-            startInlineWordEdit(item, tx[4], tx[5] - fontHeight, fontWidth, fontHeight, str);
+        // Split text item into tokens (words and spaces)
+        const tokens = fullStr.match(/\S+|\s+/g) || [fullStr];
+        const totalMeasuredWidth = measureCtx.measureText(fullStr).width || fontWidth;
+        const widthRatio = fontWidth / (totalMeasuredWidth || 1);
+
+        let currentOffsetX = 0;
+
+        for (const token of tokens) {
+          const isSpace = /^\s+$/.test(token);
+          const rawTokenWidth = measureCtx.measureText(token).width;
+          const tokenWidth = rawTokenWidth * widthRatio;
+
+          if (!isSpace && token.trim().length > 0) {
+            const wordLeft = tx[4] + currentOffsetX;
+            const wordTop = tx[5] - (fontHeight * 0.95);
+            const wordW = Math.max(tokenWidth, 12);
+            const wordH = fontHeight * 1.15;
+
+            // PDF points coordinates (unscaled) for storage and saving
+            const pdfX = wordLeft / currentScale;
+            const pdfY = wordTop / currentScale;
+            const pdfW = wordW / currentScale;
+            const pdfH = wordH / currentScale;
+            const pdfFontSize = (fontHeight * 0.9) / currentScale;
+
+            const wordEl = document.createElement('div');
+            wordEl.className = 'word-box';
+            wordEl.title = `Click to edit: "${token}"`;
+            wordEl.style.left = wordLeft + 'px';
+            wordEl.style.top = wordTop + 'px';
+            wordEl.style.width = wordW + 'px';
+            wordEl.style.height = wordH + 'px';
+
+            const wordData = {
+              word: token,
+              screenX: wordLeft,
+              screenY: wordTop,
+              screenW: wordW,
+              screenH: wordH,
+              pdfX: pdfX,
+              pdfY: pdfY,
+              pdfW: pdfW,
+              pdfH: pdfH,
+              pdfFontSize: pdfFontSize
+            };
+
+            wordEl.onclick = (e) => {
+              e.stopPropagation();
+              e.preventDefault();
+              openFloatingWordEditor(wordEl, wordData);
+            };
+
+            container.appendChild(wordEl);
           }
-        };
 
-        container.appendChild(wordEl);
+          currentOffsetX += tokenWidth;
+        }
       }
     }
 
     // -------------------------------------------------------------------------
-    // Direct Word & Text Editing
+    // Floating Word Editor Popover
     // -------------------------------------------------------------------------
-    function startInlineWordEdit(item, left, top, width, height, currentText) {
-      // Remove any existing active inline input
-      const existing = document.querySelector('.inline-edit-input');
-      if (existing) existing.remove();
+    let activeFloatingWordEditor = null;
 
-      const input = document.createElement('input');
-      input.type = 'text';
-      input.className = 'inline-edit-input';
-      input.value = currentText;
-      input.style.left = left + 'px';
-      input.style.top = top + 'px';
-      input.style.width = Math.max(width + 24, 80) + 'px';
-      input.style.height = Math.max(height + 4, 20) + 'px';
-      input.style.fontSize = (height * 0.9) + 'px';
+    function closeFloatingWordEditor() {
+      if (activeFloatingWordEditor) {
+        document.querySelectorAll('.word-box').forEach(b => b.classList.remove('active-editing'));
+        activeFloatingWordEditor.remove();
+        activeFloatingWordEditor = null;
+      }
+    }
+
+    function openFloatingWordEditor(wordEl, wordData) {
+      closeFloatingWordEditor();
+      wordEl.classList.add('active-editing');
+
+      const popover = document.createElement('div');
+      popover.className = 'floating-word-editor';
+      popover.onclick = (e) => e.stopPropagation();
+
+      // Position popover cleanly
+      const popLeft = Math.max(10, Math.min(window.innerWidth - 300, wordData.screenX - 20));
+      const popTop = Math.max(10, wordData.screenY - 125);
+      popover.style.left = popLeft + 'px';
+      popover.style.top = popTop + 'px';
+
+      popover.innerHTML = `
+        <div class="fwe-header">
+          <span><i class="fas fa-pen"></i> Edit Word</span>
+          <button style="background:none; border:none; cursor:pointer; color:var(--text-secondary);" onclick="closeFloatingWordEditor()">&times;</button>
+        </div>
+        <input type="text" id="fweTextInput" class="fwe-input" value="${escapeHtml(wordData.word)}" autocomplete="off" spellcheck="false">
+        <div class="fwe-controls">
+          <div style="display:flex; align-items:center; gap:4px;">
+            <label style="font-size:0.76rem; color:var(--text-secondary); font-weight:600;">Color:</label>
+            <input type="color" id="fweTextColor" class="prop-color" value="#000000" style="width:24px; height:24px;">
+          </div>
+          <div style="display:flex; align-items:center; gap:4px; margin-left:auto;">
+            <label style="font-size:0.76rem; color:var(--text-secondary); font-weight:600;">Mask:</label>
+            <input type="color" id="fweMaskColor" class="prop-color" value="#ffffff" style="width:24px; height:24px;" title="Conceal Background Color">
+          </div>
+        </div>
+        <div class="fwe-actions">
+          <button class="fwe-btn-pill" style="color:#ef4444;" onclick="deleteWordAction(${JSON.stringify(wordData).replace(/"/g, '&quot;')})" title="Delete word (clean whiteout)">
+            <i class="fas fa-trash"></i> Delete
+          </button>
+          <div style="display:flex; gap:6px;">
+            <button class="fwe-btn-pill" onclick="closeFloatingWordEditor()">Cancel</button>
+            <button class="btn-action" style="padding:4px 12px; font-size:0.78rem;" id="fweApplyBtn">
+              <i class="fas fa-check"></i> Apply (Enter)
+            </button>
+          </div>
+        </div>
+      `;
+
+      document.getElementById('pageStageWrapper').appendChild(popover);
+      activeFloatingWordEditor = popover;
+
+      const input = popover.querySelector('#fweTextInput');
+      input.focus();
+      input.select();
+
+      let committed = false;
+      const applyChange = () => {
+        if (committed) return;
+        committed = true;
+        const newText = input.value;
+        const textColor = popover.querySelector('#fweTextColor').value;
+        const maskColor = popover.querySelector('#fweMaskColor').value;
+        commitWordReplacement(wordData, newText, textColor, maskColor);
+        closeFloatingWordEditor();
+      };
+
+      popover.querySelector('#fweApplyBtn').onclick = applyChange;
 
       input.onkeydown = (e) => {
         if (e.key === 'Enter') {
-          commitWordEdit(input.value, left, top, width, height);
-          input.remove();
+          e.preventDefault();
+          applyChange();
         } else if (e.key === 'Escape') {
-          input.remove();
+          e.preventDefault();
+          closeFloatingWordEditor();
         }
       };
-
-      input.onblur = () => {
-        if (input.value !== currentText) {
-          commitWordEdit(input.value, left, top, width, height);
-        }
-        input.remove();
-      };
-
-      document.getElementById('annotationOverlayLayer').appendChild(input);
-      input.focus();
-      input.select();
     }
 
-    function commitWordEdit(newText, left, top, width, height) {
+    function escapeHtml(str) {
+      return (str || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+    }
+
+    function deleteWordAction(wordData) {
+      commitWordReplacement(wordData, '', '#000000', '#ffffff');
+      closeFloatingWordEditor();
+      showToast('Word concealed with whiteout', 'fa-eraser');
+    }
+
+    function commitWordReplacement(wordData, newText, textColor = '#000000', maskColor = '#ffffff') {
       const origPageIdx = pageOrder[activePageIndex];
       if (!pageAnnotations[origPageIdx]) pageAnnotations[origPageIdx] = [];
 
-      // Step 1: Create a Whiteout Mask object to conceal original word
+      // If user typed the exact same word, do nothing
+      if (newText === wordData.word) return;
+
+      // 1. Add whiteout concealment patch covering original word in PDF points
       const maskObj = {
         id: 'mask_' + Date.now() + '_' + Math.random().toString(36).substr(2, 5),
         type: 'whiteout',
-        x: left - 1,
-        y: top - 1,
-        w: width + 4,
-        h: height + 3,
-        bgColor: '#ffffff',
+        x: wordData.pdfX - 0.5,
+        y: wordData.pdfY - 0.5,
+        w: wordData.pdfW + 2,
+        h: wordData.pdfH + 1.5,
+        bgColor: maskColor || '#ffffff',
         opacity: 1.0
       };
       pageAnnotations[origPageIdx].push(maskObj);
 
-      // Step 2: Create a Replacement Text Box on top
-      if (newText.trim()) {
+      // 2. Add replacement text box in PDF points
+      if (newText.trim().length > 0) {
         const textObj = {
           id: 'text_' + Date.now() + '_' + Math.random().toString(36).substr(2, 5),
           type: 'text',
-          x: left,
-          y: top,
-          w: Math.max(width, 40),
-          h: height,
+          x: wordData.pdfX,
+          y: wordData.pdfY,
+          w: Math.max(wordData.pdfW, newText.length * (wordData.pdfFontSize * 0.6)),
+          h: wordData.pdfH,
           text: newText,
-          fontSize: Math.round(height * 0.9),
+          fontSize: wordData.pdfFontSize,
           fontFamily: 'Helvetica',
-          textColor: '#000000',
+          textColor: textColor || '#000000',
           bgColor: 'transparent',
           opacity: 1.0
         };
         pageAnnotations[origPageIdx].push(textObj);
+        selectStageElement(textObj);
       }
 
       renderActivePage();
       pushUndoState();
+      showToast('Word updated successfully!', 'fa-check');
     }
 
     // -------------------------------------------------------------------------
-    // Annotation & Stage Elements Rendering
+    // Stage Elements Rendering (Unscaled PDF Points to Scaled Screen Pixels)
     // -------------------------------------------------------------------------
     function renderPageAnnotations(origPageIdx) {
       const layer = document.getElementById('annotationOverlayLayer');
@@ -1662,23 +2137,33 @@
         const el = document.createElement('div');
         el.className = `stage-element ${selectedObject && selectedObject.id === item.id ? 'selected' : ''}`;
         el.dataset.id = item.id;
-        el.style.left = item.x + 'px';
-        el.style.top = item.y + 'px';
-        el.style.width = item.w + 'px';
-        el.style.height = item.h + 'px';
-        el.style.opacity = item.opacity || 1.0;
+        el.dataset.type = item.type;
 
-        if (item.type === 'whiteout' || item.type === 'redact') {
-          el.style.backgroundColor = item.bgColor || (item.type === 'whiteout' ? '#ffffff' : '#000000');
+        // Scale unscaled PDF points to current screen pixels
+        el.style.left = (item.x * currentScale) + 'px';
+        el.style.top = (item.y * currentScale) + 'px';
+        el.style.width = (item.w * currentScale) + 'px';
+        el.style.height = (item.h * currentScale) + 'px';
+        el.style.opacity = item.opacity !== undefined ? item.opacity : 1.0;
+
+        if (item.type === 'whiteout' || item.type === 'redact' || item.type === 'blackout') {
+          el.style.backgroundColor = item.bgColor || (item.type === 'blackout' ? '#000000' : '#ffffff');
         } else if (item.type === 'text') {
           el.style.backgroundColor = item.bgColor || 'transparent';
           el.style.color = item.textColor || '#000000';
-          el.style.fontSize = (item.fontSize || 14) + 'px';
+          el.style.fontSize = Math.round((item.fontSize || 14) * currentScale) + 'px';
           el.style.fontFamily = item.fontFamily || 'Helvetica';
           el.style.fontWeight = item.fontWeight || 'normal';
           el.style.display = 'flex';
           el.style.alignItems = 'center';
           el.textContent = item.text || '';
+          el.title = "Double-click to edit text";
+
+          // Double click on existing text element to edit
+          el.ondblclick = (e) => {
+            e.stopPropagation();
+            startEditingExistingText(item, el);
+          };
         } else if (item.type === 'image' || item.type === 'signature' || item.type === 'stamp') {
           el.style.backgroundImage = `url(${item.dataUrl})`;
           el.style.backgroundSize = 'contain';
@@ -1706,6 +2191,18 @@
       }
     }
 
+    function startEditingExistingText(item, el) {
+      const currentVal = item.text || '';
+      const promptVal = prompt("Edit text:", currentVal);
+      if (promptVal !== null && promptVal !== currentVal) {
+        item.text = promptVal;
+        item.w = Math.max(item.w, promptVal.length * (item.fontSize * 0.6));
+        renderActivePage();
+        pushUndoState();
+        showToast('Text updated', 'fa-check');
+      }
+    }
+
     function selectStageElement(item) {
       selectedObject = item;
       document.querySelectorAll('.stage-element').forEach(el => {
@@ -1713,7 +2210,10 @@
       });
 
       // Update Properties Bar
-      if (item.fontSize) document.getElementById('propFontSize').value = item.fontSize;
+      const propBar = document.getElementById('propertiesBar');
+      propBar.classList.add('active');
+
+      if (item.fontSize) document.getElementById('propFontSize').value = Math.round(item.fontSize);
       if (item.fontFamily) document.getElementById('propFontFamily').value = item.fontFamily;
       if (item.textColor) document.getElementById('propTextColor').value = item.textColor;
       if (item.bgColor && item.bgColor !== 'transparent') document.getElementById('propBgColor').value = item.bgColor;
@@ -1732,27 +2232,25 @@
       const origPageIdx = pageOrder[activePageIndex];
       pageAnnotations[origPageIdx] = (pageAnnotations[origPageIdx] || []).filter(it => it.id !== selectedObject.id);
       selectedObject = null;
+      document.getElementById('propertiesBar').classList.remove('active');
       renderActivePage();
       pushUndoState();
+      showToast('Element deleted', 'fa-trash');
     }
 
     // Dragging Logic
     function startDragging(e, item) {
       let startX = e.clientX;
       let startY = e.clientY;
-      let origLeft = item.x;
-      let origTop = item.y;
+      let origLeft = item.x * currentScale;
+      let origTop = item.y * currentScale;
 
       function onMouseMove(ev) {
         const dx = ev.clientX - startX;
         const dy = ev.clientY - startY;
-        item.x = Math.max(0, origLeft + dx);
-        item.y = Math.max(0, origTop + dy);
-        const el = document.querySelector(`.stage-element[data-id="${item.id}"]`);
-        if (el) {
-          el.style.left = item.x + 'px';
-          el.style.top = item.y + 'px';
-        }
+        item.x = Math.max(0, (origLeft + dx) / currentScale);
+        item.y = Math.max(0, (origTop + dy) / currentScale);
+        renderActivePage();
       }
 
       function onMouseUp() {
@@ -1770,40 +2268,28 @@
       e.stopPropagation();
       let startX = e.clientX;
       let startY = e.clientY;
-      let origW = item.w;
-      let origH = item.h;
-      let origX = item.x;
-      let origY = item.y;
+      let origW = item.w * currentScale;
+      let origH = item.h * currentScale;
+      let origX = item.x * currentScale;
+      let origY = item.y * currentScale;
 
       function onMouseMove(ev) {
         const dx = ev.clientX - startX;
         const dy = ev.clientY - startY;
 
-        if (pos === 'br') {
-          item.w = Math.max(20, origW + dx);
-          item.h = Math.max(10, origH + dy);
-        } else if (pos === 'tr') {
-          item.w = Math.max(20, origW + dx);
-          item.h = Math.max(10, origH - dy);
-          item.y = origY + dy;
-        } else if (pos === 'bl') {
-          item.w = Math.max(20, origW - dx);
-          item.h = Math.max(10, origH + dy);
-          item.x = origX + dx;
-        } else if (pos === 'tl') {
-          item.w = Math.max(20, origW - dx);
-          item.h = Math.max(10, origH - dy);
-          item.x = origX + dx;
-          item.y = origY + dy;
+        if (pos.includes('r')) item.w = Math.max(20, (origW + dx) / currentScale);
+        if (pos.includes('b')) item.h = Math.max(14, (origH + dy) / currentScale);
+        if (pos.includes('l')) {
+          const newW = Math.max(20, origW - dx);
+          item.x = (origX + (origW - newW)) / currentScale;
+          item.w = newW / currentScale;
         }
-
-        const el = document.querySelector(`.stage-element[data-id="${item.id}"]`);
-        if (el) {
-          el.style.width = item.w + 'px';
-          el.style.height = item.h + 'px';
-          el.style.left = item.x + 'px';
-          el.style.top = item.y + 'px';
+        if (pos.includes('t')) {
+          const newH = Math.max(14, origH - dy);
+          item.y = (origY + (origH - newH)) / currentScale;
+          item.h = newH / currentScale;
         }
+        renderActivePage();
       }
 
       function onMouseUp() {
@@ -1818,15 +2304,16 @@
 
     // Viewport Click Handler (for placing new elements)
     function handleViewportClick(e) {
-      if (e.target.closest('.stage-element') || e.target.closest('.inline-edit-input')) return;
+      if (e.target.closest('.stage-element') || e.target.closest('.word-box') || e.target.closest('.floating-word-editor')) return;
 
       const stage = document.getElementById('pageStageWrapper');
       const rect = stage.getBoundingClientRect();
-      const x = e.clientX - rect.left;
-      const y = e.clientY - rect.top;
+      const screenX = e.clientX - rect.left;
+      const screenY = e.clientY - rect.top;
 
-      if (x < 0 || y < 0 || x > rect.width || y > rect.height) {
+      if (screenX < 0 || screenY < 0 || screenX > rect.width || screenY > rect.height) {
         selectedObject = null;
+        document.getElementById('propertiesBar').classList.remove('active');
         document.querySelectorAll('.stage-element').forEach(el => el.classList.remove('selected'));
         return;
       }
@@ -1834,14 +2321,17 @@
       const origPageIdx = pageOrder[activePageIndex];
       if (!pageAnnotations[origPageIdx]) pageAnnotations[origPageIdx] = [];
 
+      const pdfX = screenX / currentScale;
+      const pdfY = screenY / currentScale;
+
       if (activeTool === 'add-text') {
         const textObj = {
           id: 'text_' + Date.now(),
           type: 'text',
-          x: x,
-          y: y,
+          x: pdfX,
+          y: pdfY,
           w: 160,
-          h: 28,
+          h: 26,
           text: 'Type text here...',
           fontSize: 14,
           fontFamily: document.getElementById('propFontFamily').value || 'Helvetica',
@@ -1853,13 +2343,14 @@
         renderActivePage();
         selectStageElement(textObj);
         pushUndoState();
+        showToast('Text box added. Double-click to edit.', 'fa-font');
       } else if (activeTool === 'redact') {
         const type = document.getElementById('propRedactType').value;
         const redactObj = {
           id: 'redact_' + Date.now(),
           type: type,
-          x: x,
-          y: y,
+          x: pdfX,
+          y: pdfY,
           w: 120,
           h: 24,
           bgColor: type === 'blackout' ? '#000000' : '#ffffff',
@@ -1869,13 +2360,14 @@
         renderActivePage();
         selectStageElement(redactObj);
         pushUndoState();
+        showToast(type === 'blackout' ? 'Blackout redact placed' : 'Whiteout conceal placed', 'fa-eraser');
       } else if (activeTool === 'highlighter') {
         const hlObj = {
           id: 'hl_' + Date.now(),
           type: 'whiteout',
-          x: x,
-          y: y,
-          w: 140,
+          x: pdfX,
+          y: pdfY,
+          w: 100,
           h: 18,
           bgColor: '#facc15',
           opacity: 0.45
@@ -1884,6 +2376,7 @@
         renderActivePage();
         selectStageElement(hlObj);
         pushUndoState();
+        showToast('Highlight bar placed', 'fa-highlighter');
       }
     }
 
@@ -1894,13 +2387,31 @@
       activeTool = mode;
       document.querySelectorAll('.tool-group .tool-btn').forEach(btn => {
         btn.classList.remove('active');
+        btn.classList.remove('active-glow');
       });
       const activeBtn = document.getElementById(`tool-${mode}`);
-      if (activeBtn) activeBtn.classList.add('active');
+      if (activeBtn) {
+        activeBtn.classList.add('active');
+        if (mode === 'edit-text') activeBtn.classList.add('active-glow');
+      }
 
-      const textLayer = document.getElementById('textDetectLayer');
-      if (textLayer) {
-        textLayer.className = `text-detect-layer ${mode === 'edit-text' ? 'interactive-mode' : ''}`;
+      // Update Mode Banner
+      const banner = document.getElementById('modeBanner');
+      const bannerText = document.getElementById('modeBannerText');
+      if (mode === 'edit-text') {
+        banner.style.display = 'flex';
+        bannerText.innerHTML = `<strong>Direct Word Edit Mode Active:</strong> Hover over any word to highlight it, click to replace or delete inline!`;
+      } else if (mode === 'add-text') {
+        banner.style.display = 'flex';
+        bannerText.innerHTML = `<strong>Add Text Mode:</strong> Click anywhere on the page to insert a custom typography text box.`;
+      } else if (mode === 'redact') {
+        banner.style.display = 'flex';
+        bannerText.innerHTML = `<strong>Redact &amp; Whiteout Mode:</strong> Click on the page to place a concealment mask.`;
+      } else if (mode === 'highlighter') {
+        banner.style.display = 'flex';
+        bannerText.innerHTML = `<strong>Highlighter Mode:</strong> Click on text to place a semi-transparent yellow highlight.`;
+      } else {
+        banner.style.display = 'none';
       }
 
       document.getElementById('redactStyleGroup').style.display = (mode === 'redact') ? 'flex' : 'none';
@@ -1929,129 +2440,114 @@
     // -------------------------------------------------------------------------
     function openSignatureModal() {
       document.getElementById('sigModal').classList.add('active');
-      initSigCanvas();
-      updateSigTypePreviews(document.getElementById('sigTypeInput').value || 'John Doe');
+      initSignatureCanvas();
+      renderSignatureTypePreviews();
     }
     function closeSignatureModal() {
       document.getElementById('sigModal').classList.remove('active');
     }
+
     function switchSigTab(tab) {
-      document.querySelectorAll('.sig-tab').forEach((t, i) => {
-        t.classList.toggle('active', (tab === 'draw' && i === 0) || (tab === 'type' && i === 1) || (tab === 'upload' && i === 2));
-      });
-      document.getElementById('sigTabDraw').style.display = tab === 'draw' ? 'block' : 'none';
-      document.getElementById('sigTabType').style.display = tab === 'type' ? 'block' : 'none';
-      document.getElementById('sigTabUpload').style.display = tab === 'upload' ? 'block' : 'none';
+      document.querySelectorAll('.sig-tab').forEach(b => b.classList.remove('active'));
+      event.target.classList.add('active');
+      document.getElementById('sigTabDraw').style.display = (tab === 'draw') ? 'block' : 'none';
+      document.getElementById('sigTabType').style.display = (tab === 'type') ? 'block' : 'none';
+      document.getElementById('sigTabUpload').style.display = (tab === 'upload') ? 'block' : 'none';
     }
 
-    function initSigCanvas() {
+    function initSignatureCanvas() {
       sigCanvas = document.getElementById('sigDrawCanvas');
       sigCtx = sigCanvas.getContext('2d');
-      sigCanvas.width = sigCanvas.offsetWidth || 460;
-      sigCanvas.height = 160;
-      sigCtx.lineCap = 'round';
-      sigCtx.lineJoin = 'round';
-      sigCtx.lineWidth = 2.5;
-      clearSigCanvas();
+      sigCanvas.width = sigCanvas.offsetWidth || 500;
+      sigCanvas.height = 170;
+      clearSignatureCanvas();
 
       sigCanvas.onmousedown = (e) => {
-        isSigDrawing = true;
-        sigCtx.strokeStyle = document.getElementById('sigDrawColor').value || '#000000';
+        isDrawingSig = true;
         sigCtx.beginPath();
         sigCtx.moveTo(e.offsetX, e.offsetY);
       };
       sigCanvas.onmousemove = (e) => {
-        if (!isSigDrawing) return;
+        if (!isDrawingSig) return;
         sigCtx.lineTo(e.offsetX, e.offsetY);
         sigCtx.stroke();
       };
-      sigCanvas.onmouseup = () => isSigDrawing = false;
-      sigCanvas.onmouseleave = () => isSigDrawing = false;
+      window.onmouseup = () => { isDrawingSig = false; };
     }
 
-    function clearSigCanvas() {
+    function clearSignatureCanvas() {
       if (!sigCtx) return;
-      sigCtx.clearRect(0, 0, sigCanvas.width, sigCanvas.height);
+      sigCtx.fillStyle = '#ffffff';
+      sigCtx.fillRect(0, 0, sigCanvas.width, sigCanvas.height);
+      sigCtx.strokeStyle = document.getElementById('sigColorInput').value || '#0f172a';
+      sigCtx.lineWidth = 2.5;
+      sigCtx.lineCap = 'round';
+      sigCtx.lineJoin = 'round';
     }
 
-    function updateSigTypePreviews(name) {
-      if (!name) name = "Signature";
-      const fonts = ['Caveat', 'Dancing Script', 'Great Vibes', 'Pacifico'];
-      const container = document.getElementById('sigTypePreviewsList');
+    function updateSigInkColor(color) {
+      if (sigCtx) sigCtx.strokeStyle = color;
+    }
+
+    function renderSignatureTypePreviews() {
+      const name = document.getElementById('sigNameInput').value.trim() || 'John Doe';
+      const container = document.getElementById('sigTypePreviews');
       container.innerHTML = '';
 
-      fonts.forEach((f, idx) => {
+      const fonts = ['Caveat', 'Dancing Script', 'Great Vibes', 'Pacifico'];
+      fonts.forEach(font => {
         const card = document.createElement('div');
-        card.className = `sig-type-card ${selectedTypeSig === f ? 'selected' : ''}`;
-        card.style.fontFamily = f;
+        card.className = `sig-type-card ${selectedSigStyle === font ? 'selected' : ''}`;
+        card.style.fontFamily = `"${font}", cursive`;
         card.textContent = name;
         card.onclick = () => {
-          selectedTypeSig = f;
-          document.querySelectorAll('.sig-type-card').forEach(c => c.classList.remove('selected'));
-          card.classList.add('selected');
+          selectedSigStyle = font;
+          renderSignatureTypePreviews();
         };
         container.appendChild(card);
       });
-      if (!selectedTypeSig) selectedTypeSig = fonts[0];
     }
 
+    let uploadedSigDataUrl = null;
     function handleSigImageUpload(e) {
       const file = e.target.files && e.target.files[0];
       if (!file) return;
       const reader = new FileReader();
       reader.onload = function(evt) {
-        let img = new Image();
-        img.onload = function() {
-          let c = document.createElement('canvas');
-          c.width = img.width;
-          c.height = img.height;
-          let ctx = c.getContext('2d');
-          ctx.drawImage(img, 0, 0);
-
-          if (document.getElementById('sigAutoTransparent').checked) {
-            let imgData = ctx.getImageData(0, 0, c.width, c.height);
-            let d = imgData.data;
-            for (let i = 0; i < d.length; i += 4) {
-              if (d[i] > 220 && d[i+1] > 220 && d[i+2] > 220) {
-                d[i+3] = 0; // make white transparent
-              }
-            }
-            ctx.putImageData(imgData, 0, 0);
-          }
-          window.lastUploadedSigUrl = c.toDataURL('image/png');
-        };
-        img.src = evt.target.result;
+        uploadedSigDataUrl = evt.target.result;
+        document.getElementById('sigUploadPreviewImg').src = uploadedSigDataUrl;
+        document.getElementById('sigUploadPreviewContainer').style.display = 'block';
       };
       reader.readAsDataURL(file);
     }
 
-    function applySignatureToDocument() {
-      let dataUrl = null;
-      const isDraw = document.getElementById('sigTabDraw').style.display !== 'none';
-      const isType = document.getElementById('sigTabType').style.display !== 'none';
+    function applySignatureToStage() {
+      let finalDataUrl = null;
+      const activeTab = document.querySelector('.sig-tab.active').textContent.toLowerCase();
 
-      if (isDraw) {
-        dataUrl = sigCanvas.toDataURL('image/png');
-      } else if (isType) {
-        const name = document.getElementById('sigTypeInput').value || 'Signature';
-        const font = selectedTypeSig || 'Caveat';
-        let c = document.createElement('canvas');
-        c.width = 400;
-        c.height = 120;
-        let ctx = c.getContext('2d');
-        ctx.font = `52px "${font}"`;
-        ctx.fillStyle = '#0f172a';
-        ctx.textBaseline = 'middle';
-        ctx.fillText(name, 20, 60);
-        dataUrl = c.toDataURL('image/png');
-      } else {
-        dataUrl = window.lastUploadedSigUrl;
+      if (activeTab.includes('draw')) {
+        finalDataUrl = sigCanvas.toDataURL('image/png');
+      } else if (activeTab.includes('type')) {
+        const name = document.getElementById('sigNameInput').value.trim() || 'John Doe';
+        const offCanvas = document.createElement('canvas');
+        offCanvas.width = 400;
+        offCanvas.height = 120;
+        const offCtx = offCanvas.getContext('2d');
+        offCtx.font = `64px "${selectedSigStyle}", cursive`;
+        offCtx.fillStyle = '#0f172a';
+        offCtx.textAlign = 'center';
+        offCtx.textBaseline = 'middle';
+        offCtx.fillText(name, 200, 60);
+        finalDataUrl = offCanvas.toDataURL('image/png');
+      } else if (activeTab.includes('upload')) {
+        if (!uploadedSigDataUrl) {
+          alert("Please upload a signature image first.");
+          return;
+        }
+        finalDataUrl = uploadedSigDataUrl;
       }
 
-      if (!dataUrl) {
-        alert("Please draw, type, or upload a signature first.");
-        return;
-      }
+      if (!finalDataUrl) return;
 
       const origPageIdx = pageOrder[activePageIndex];
       if (!pageAnnotations[origPageIdx]) pageAnnotations[origPageIdx] = [];
@@ -2060,10 +2556,10 @@
         id: 'sig_' + Date.now(),
         type: 'signature',
         x: 180,
-        y: 400,
+        y: 650,
         w: 160,
         h: 60,
-        dataUrl: dataUrl,
+        dataUrl: finalDataUrl,
         opacity: 1.0
       };
       pageAnnotations[origPageIdx].push(sigObj);
@@ -2071,83 +2567,93 @@
       renderActivePage();
       selectStageElement(sigObj);
       pushUndoState();
+      showToast('Signature placed on page', 'fa-signature');
     }
 
     // -------------------------------------------------------------------------
-    // Stamp Gallery Logic
+    // Stamp Studio Modal Logic
     // -------------------------------------------------------------------------
     function openStampModal() { document.getElementById('stampModal').classList.add('active'); }
     function closeStampModal() { document.getElementById('stampModal').classList.remove('active'); }
 
     function applyPredefinedStamp(text, color) {
-      let c = document.createElement('canvas');
-      c.width = 300;
+      const c = document.createElement('canvas');
+      c.width = 240;
       c.height = 90;
-      let ctx = c.getContext('2d');
+      const ctx = c.getContext('2d');
+
+      // Draw double border stamp
+      ctx.lineWidth = 4;
       ctx.strokeStyle = color;
-      ctx.lineWidth = 6;
-      ctx.strokeRect(6, 6, 288, 78);
-      ctx.font = 'bold 36px "Plus Jakarta Sans", sans-serif';
+      ctx.strokeRect(6, 6, 228, 78);
+      ctx.lineWidth = 1.5;
+      ctx.strokeRect(12, 12, 216, 66);
+
+      ctx.font = '900 24px "Plus Jakarta Sans", sans-serif';
       ctx.fillStyle = color;
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
-      ctx.fillText(text, 150, 45);
+      ctx.fillText(text, 120, 45);
 
-      insertStampOnPage(c.toDataURL('image/png'));
+      placeStampOnStage(c.toDataURL('image/png'));
     }
 
     function applyCustomStamp() {
-      const text = document.getElementById('customStampText').value.trim() || 'APPROVED';
-      const color = document.getElementById('customStampColor').value || '#10b981';
-      const incDate = document.getElementById('customStampIncludeDate').checked;
-      
-      let c = document.createElement('canvas');
-      c.width = 320;
-      c.height = 100;
-      let ctx = c.getContext('2d');
+      const text = document.getElementById('customStampText').value.trim() || 'OFFICIAL';
+      const color = document.getElementById('customStampColor').value || '#6366f1';
+      const incDate = document.getElementById('stampIncludeDate').checked;
+
+      const c = document.createElement('canvas');
+      c.width = 240;
+      c.height = incDate ? 100 : 80;
+      const ctx = c.getContext('2d');
+
+      ctx.lineWidth = 3.5;
       ctx.strokeStyle = color;
-      ctx.lineWidth = 5;
-      ctx.strokeRect(6, 6, 308, 88);
+      ctx.strokeRect(5, 5, 230, c.height - 10);
+
+      ctx.font = '900 22px "Plus Jakarta Sans", sans-serif';
       ctx.fillStyle = color;
       ctx.textAlign = 'center';
-      ctx.font = 'bold 30px "Plus Jakarta Sans", sans-serif';
-      ctx.fillText(text, 160, incDate ? 40 : 55);
+      ctx.textBaseline = 'middle';
+      ctx.fillText(text.toUpperCase(), 120, incDate ? 40 : 40);
 
       if (incDate) {
-        const today = new Date().toLocaleDateString('en-GB');
-        ctx.font = 'bold 16px "JetBrains Mono", monospace';
-        ctx.fillText(today, 160, 75);
+        ctx.font = '700 12px "JetBrains Mono", monospace';
+        const dStr = new Date().toLocaleDateString('en-GB');
+        ctx.fillText(dStr, 120, 70);
       }
 
-      insertStampOnPage(c.toDataURL('image/png'));
+      placeStampOnStage(c.toDataURL('image/png'));
     }
 
-    function insertStampOnPage(dataUrl) {
+    function placeStampOnStage(dataUrl) {
       const origPageIdx = pageOrder[activePageIndex];
       if (!pageAnnotations[origPageIdx]) pageAnnotations[origPageIdx] = [];
 
       const stampObj = {
         id: 'stamp_' + Date.now(),
         type: 'stamp',
-        x: 200,
-        y: 300,
-        w: 180,
-        h: 56,
+        x: 220,
+        y: 260,
+        w: 150,
+        h: 60,
         dataUrl: dataUrl,
-        opacity: 0.92
+        opacity: 0.95
       };
       pageAnnotations[origPageIdx].push(stampObj);
       closeStampModal();
       renderActivePage();
       selectStageElement(stampObj);
       pushUndoState();
+      showToast('Stamp applied', 'fa-stamp');
     }
 
     // -------------------------------------------------------------------------
-    // Image & Logo Overlay
+    // Image Insertion
     // -------------------------------------------------------------------------
     function triggerImageUpload() { document.getElementById('imageUploadInput').click(); }
-    function handleImageOverlayUpload(e) {
+    function handleImageInsert(e) {
       const file = e.target.files && e.target.files[0];
       if (!file) return;
       const reader = new FileReader();
@@ -2169,15 +2675,21 @@
         renderActivePage();
         selectStageElement(imgObj);
         pushUndoState();
+        showToast('Image inserted', 'fa-image');
       };
       reader.readAsDataURL(file);
     }
 
     // -------------------------------------------------------------------------
-    // Find & Replace Engine
+    // Document-Wide Find & Replace Engine
     // -------------------------------------------------------------------------
-    function openFindReplace() { document.getElementById('findReplaceBar').classList.add('active'); document.getElementById('findInput').focus(); }
-    function closeFindReplace() { document.getElementById('findReplaceBar').classList.remove('active'); }
+    function openFindReplace() {
+      document.getElementById('findReplaceBar').classList.add('active');
+      document.getElementById('findInput').focus();
+    }
+    function closeFindReplace() {
+      document.getElementById('findReplaceBar').classList.remove('active');
+    }
 
     async function executeFind() {
       const query = document.getElementById('findInput').value.trim();
@@ -2209,18 +2721,18 @@
         if (origIdx >= 9999) continue;
         const page = await pdfDocProxy.getPage(origIdx + 1);
         const rotation = pageRotations[origIdx] || 0;
-        const viewport = page.getViewport({ scale: currentScale, rotation: rotation });
+        const viewport = page.getViewport({ scale: 1.0, rotation: rotation }); // Unscaled PDF points
         const textContent = await page.getTextContent({ normalizeWhitespace: true });
 
         for (const item of textContent.items) {
           if (item.str.toLowerCase().includes(findText.toLowerCase())) {
             const tx = pdfjsLib.Util.transform(viewport.transform, item.transform);
-            const fontHeight = Math.sqrt((tx[2] * tx[2]) + (tx[3] * tx[3]));
-            const fontWidth = item.width * currentScale;
+            const fontHeight = Math.sqrt((tx[2] * tx[2]) + (tx[3] * tx[3])) || item.height || 14;
+            const fontWidth = item.width || 40;
 
             if (!pageAnnotations[origIdx]) pageAnnotations[origIdx] = [];
 
-            // Mask original
+            // Mask original word in unscaled PDF points
             pageAnnotations[origIdx].push({
               id: 'mask_fr_' + Date.now() + '_' + Math.random().toString(36).substr(2, 4),
               type: 'whiteout',
@@ -2232,14 +2744,14 @@
               opacity: 1.0
             });
 
-            // Replace text
+            // Replace text in unscaled PDF points
             const updated = item.str.replace(new RegExp(findText, 'gi'), replaceText);
             pageAnnotations[origIdx].push({
               id: 'text_fr_' + Date.now() + '_' + Math.random().toString(36).substr(2, 4),
               type: 'text',
               x: tx[4],
               y: tx[5] - fontHeight,
-              w: fontWidth,
+              w: Math.max(fontWidth, updated.length * 8),
               h: fontHeight,
               text: updated,
               fontSize: Math.round(fontHeight * 0.9),
@@ -2253,13 +2765,14 @@
         }
       }
 
-      document.getElementById('findStatusText').textContent = `Successfully replaced ${replacedCount} occurrence(s)!`;
+      document.getElementById('findStatusText').textContent = `Replaced ${replacedCount} occurrence(s)!`;
       renderActivePage();
       pushUndoState();
+      showToast(`Replaced ${replacedCount} words across document`, 'fa-check');
     }
 
     // -------------------------------------------------------------------------
-    // Watermark & Page Numbering Modals
+    // Watermark & Page Numbering
     // -------------------------------------------------------------------------
     function openWatermarkModal() { document.getElementById('watermarkModal').classList.add('active'); }
     function closeWatermarkModal() { document.getElementById('watermarkModal').classList.remove('active'); }
@@ -2297,6 +2810,7 @@
       closeWatermarkModal();
       renderActivePage();
       pushUndoState();
+      showToast('Watermark added to all pages', 'fa-hashtag');
     }
 
     function applyPageNumbersToAllPages() {
@@ -2311,11 +2825,11 @@
           id: 'pn_' + Date.now() + '_' + i,
           type: 'text',
           x: 230,
-          y: 780,
+          y: 800,
           w: 140,
           h: 20,
           text: str,
-          fontSize: 11,
+          fontSize: 10,
           fontFamily: 'Helvetica',
           textColor: '#64748b',
           bgColor: 'transparent',
@@ -2325,6 +2839,7 @@
       closeWatermarkModal();
       renderActivePage();
       pushUndoState();
+      showToast('Page numbers stamped on all pages', 'fa-list-ol');
     }
 
     // -------------------------------------------------------------------------
@@ -2341,7 +2856,6 @@
           const donorDoc = await PDFLib.PDFDocument.load(secondBytes);
           const donorPageCount = donorDoc.getPageCount();
 
-          // Append to PDFLib in export
           window.pendingDonorBytes = secondBytes;
           for (let k = 0; k < donorPageCount; k++) {
             const virtualIdx = 20000 + k;
@@ -2351,7 +2865,8 @@
           }
           document.getElementById('pageCountDisplay').textContent = pageOrder.length;
           renderThumbnails();
-          alert(`Successfully merged ${donorPageCount} pages from "${file.name}"!`);
+          pushUndoState();
+          showToast(`Merged ${donorPageCount} pages from external PDF`, 'fa-file-import');
         } catch (err) {
           alert("Error merging PDF: " + err.message);
         }
@@ -2360,21 +2875,89 @@
     }
 
     // -------------------------------------------------------------------------
-    // PDF Export & Download Engine (via PDFLib)
+    // Export High-Fidelity Vector PDF or Flattened PDF
     // -------------------------------------------------------------------------
     async function exportEditedPdf(flatten = false) {
       if (!currentPdfBytes) return;
+      showToast(flatten ? "Generating flattened raster PDF..." : "Exporting crisp vector PDF...", "fa-gear");
 
       try {
-        const outDoc = await PDFLib.PDFDocument.create();
+        if (flatten) {
+          // Flattened mode: Render every page to canvas at high DPI and pack with pdf-lib
+          const flatDoc = await PDFLib.PDFDocument.create();
+          for (let i = 0; i < pageOrder.length; i++) {
+            const origIdx = pageOrder[i];
+            const page = await pdfDocProxy.getPage(origIdx >= 9999 ? 1 : origIdx + 1);
+            const rot = pageRotations[origIdx] || 0;
+            const viewport = page.getViewport({ scale: 2.0, rotation: rot });
+
+            const c = document.createElement('canvas');
+            c.width = viewport.width;
+            c.height = viewport.height;
+            const ctx = c.getContext('2d');
+
+            if (origIdx >= 9999) {
+              ctx.fillStyle = '#ffffff';
+              ctx.fillRect(0, 0, c.width, c.height);
+            } else {
+              await page.render({ canvasContext: ctx, viewport: viewport }).promise;
+            }
+
+            // Draw annotations on canvas
+            const annotations = pageAnnotations[origIdx] || [];
+            for (const item of annotations) {
+              const x = item.x * 2.0;
+              const y = item.y * 2.0;
+              const w = item.w * 2.0;
+              const h = item.h * 2.0;
+
+              if (item.type === 'whiteout' || item.type === 'blackout' || item.type === 'redact') {
+                ctx.fillStyle = item.bgColor || (item.type === 'blackout' ? '#000000' : '#ffffff');
+                ctx.fillRect(x, y, w, h);
+              } else if (item.type === 'text') {
+                ctx.font = `${Math.round((item.fontSize || 14) * 2.0)}px ${item.fontFamily || 'Helvetica'}, sans-serif`;
+                ctx.fillStyle = item.textColor || '#000000';
+                ctx.textBaseline = 'top';
+                ctx.fillText(item.text || '', x, y);
+              } else if (item.dataUrl) {
+                const img = new Image();
+                img.src = item.dataUrl;
+                await new Promise(r => { img.onload = r; });
+                ctx.drawImage(img, x, y, w, h);
+              }
+            }
+
+            const imgData = c.toDataURL('image/jpeg', 0.92);
+            const imgBytes = await fetch(imgData).then(res => res.arrayBuffer());
+            const embedded = await flatDoc.embedJpg(imgBytes);
+            const p = flatDoc.addPage([viewport.width / 2.0, viewport.height / 2.0]);
+            p.drawImage(embedded, { x: 0, y: 0, width: viewport.width / 2.0, height: viewport.height / 2.0 });
+          }
+
+          const outBytes = await flatDoc.save();
+          downloadPdfFile(outBytes, 'flattened_document.pdf');
+          return;
+        }
+
+        // Vector Mode: PDFLib vector modifications
         const srcDoc = await PDFLib.PDFDocument.load(currentPdfBytes);
+        const outDoc = await PDFLib.PDFDocument.create();
+
+        // Standard embedded fonts
+        const helveticaFont = await outDoc.embedFont(PDFLib.StandardFonts.Helvetica);
+        const timesFont = await outDoc.embedFont(PDFLib.StandardFonts.TimesRoman);
+        const courierFont = await outDoc.embedFont(PDFLib.StandardFonts.Courier);
+
+        let donorDoc = null;
+        if (window.pendingDonorBytes) {
+          donorDoc = await PDFLib.PDFDocument.load(window.pendingDonorBytes);
+        }
 
         for (let i = 0; i < pageOrder.length; i++) {
           const origIdx = pageOrder[i];
-          let pageObj = null;
+          let pageObj;
 
-          if (origIdx >= 20000 && window.pendingDonorBytes) {
-            const donorDoc = await PDFLib.PDFDocument.load(window.pendingDonorBytes);
+          if (origIdx >= 20000 && donorDoc) {
             const donorIdx = origIdx - 20000;
             const [copied] = await outDoc.copyPages(donorDoc, [donorIdx]);
             pageObj = outDoc.addPage(copied);
@@ -2391,17 +2974,15 @@
             pageObj.setRotation(PDFLib.degrees(rot));
           }
 
-          // Apply Annotations & Overlays
+          // Apply Annotations & Overlays in exact PDF points
           const annotations = pageAnnotations[origIdx] || [];
           const { width: pWidth, height: pHeight } = pageObj.getSize();
-          const scaleX = pWidth / (pWidth * currentScale);
-          const scaleY = pHeight / (pHeight * currentScale);
 
           for (const item of annotations) {
-            const xPdf = item.x / currentScale;
-            const yPdf = pHeight - ((item.y + item.h) / currentScale);
-            const wPdf = item.w / currentScale;
-            const hPdf = item.h / currentScale;
+            const xPdf = item.x;
+            const yPdf = pHeight - (item.y + item.h);
+            const wPdf = item.w;
+            const hPdf = item.h;
 
             if (item.type === 'whiteout' || item.type === 'blackout' || item.type === 'redact') {
               const isBlack = item.type === 'blackout' || (item.bgColor && item.bgColor.toLowerCase() === '#000000');
@@ -2412,10 +2993,13 @@
                 width: wPdf,
                 height: hPdf,
                 color: PDFLib.rgb(cVal, cVal, cVal),
-                opacity: item.opacity || 1.0
+                opacity: item.opacity !== undefined ? item.opacity : 1.0
               });
             } else if (item.type === 'text') {
-              const font = await outDoc.embedFont(item.fontFamily === 'TimesRoman' ? PDFLib.StandardFonts.TimesRoman : (item.fontFamily === 'Courier' ? PDFLib.StandardFonts.Courier : PDFLib.StandardFonts.Helvetica));
+              let font = helveticaFont;
+              if (item.fontFamily === 'TimesRoman') font = timesFont;
+              else if (item.fontFamily === 'Courier') font = courierFont;
+
               const hex = item.textColor || '#000000';
               const r = parseInt(hex.slice(1,3), 16) / 255 || 0;
               const g = parseInt(hex.slice(3,5), 16) / 255 || 0;
@@ -2423,11 +3007,11 @@
 
               pageObj.drawText(item.text || '', {
                 x: xPdf,
-                y: yPdf + 2,
-                size: (item.fontSize || 14) / currentScale,
+                y: yPdf + (hPdf * 0.15),
+                size: item.fontSize || 12,
                 font: font,
                 color: PDFLib.rgb(r, g, b),
-                opacity: item.opacity || 1.0
+                opacity: item.opacity !== undefined ? item.opacity : 1.0
               });
             } else if (item.dataUrl) {
               try {
@@ -2438,7 +3022,7 @@
                   y: yPdf,
                   width: wPdf,
                   height: hPdf,
-                  opacity: item.opacity || 1.0
+                  opacity: item.opacity !== undefined ? item.opacity : 1.0
                 });
               } catch (e) {
                 console.warn("Embed image error:", e);
@@ -2448,22 +3032,29 @@
         }
 
         const outBytes = await outDoc.save();
-        const blob = new Blob([outBytes], { type: 'application/pdf' });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = `edited_document_${Date.now()}.pdf`;
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        URL.revokeObjectURL(url);
+        downloadPdfFile(outBytes, `edited_document_${Date.now()}.pdf`);
+        showToast("PDF exported successfully!", "fa-check-circle");
       } catch (err) {
         console.error("Export error:", err);
         alert("Error exporting PDF: " + err.message);
       }
     }
 
-    // Undo / Redo
+    function downloadPdfFile(bytes, filename) {
+      const blob = new Blob([bytes], { type: 'application/pdf' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    }
+
+    // -------------------------------------------------------------------------
+    // Undo / Redo Engine
+    // -------------------------------------------------------------------------
     function pushUndoState() {
       undoStack.push(JSON.stringify({ pageAnnotations, pageOrder, pageRotations }));
       if (undoStack.length > 30) undoStack.shift();
@@ -2478,6 +3069,7 @@
       pageRotations = state.pageRotations;
       renderThumbnails();
       renderActivePage();
+      showToast('Undo performed', 'fa-undo');
     }
     function redo() {
       if (redoStack.length === 0) return;
@@ -2488,10 +3080,54 @@
       pageRotations = state.pageRotations;
       renderThumbnails();
       renderActivePage();
+      showToast('Redo performed', 'fa-redo');
     }
 
-    function openNewPdfDialog() {
-      document.getElementById('pdfFileInput').click();
+    // -------------------------------------------------------------------------
+    // Keyboard Shortcuts & Theme Toggle
+    // -------------------------------------------------------------------------
+    window.addEventListener('keydown', (e) => {
+      if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA' || e.target.tagName === 'SELECT') return;
+
+      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'z') {
+        e.preventDefault();
+        undo();
+      } else if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'y') {
+        e.preventDefault();
+        redo();
+      } else if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'f') {
+        e.preventDefault();
+        openFindReplace();
+      } else if (e.key === 'Delete' || e.key === 'Backspace') {
+        if (selectedObject) {
+          e.preventDefault();
+          deleteSelectedObject();
+        }
+      } else if (e.key.toLowerCase() === 'v') {
+        setEditorMode('select');
+      } else if (e.key.toLowerCase() === 't') {
+        setEditorMode('edit-text');
+      }
+    });
+
+    function toggleTheme() {
+      const current = document.documentElement.getAttribute('data-theme');
+      const target = current === 'dark' ? 'light' : 'dark';
+      document.documentElement.setAttribute('data-theme', target);
+      localStorage.setItem('theme', target);
+      const icon = document.querySelector('#themeToggleBtn i');
+      if (icon) icon.className = target === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
+    }
+
+    // Initial theme check
+    const savedTheme = localStorage.getItem('theme') || 'dark';
+    document.documentElement.setAttribute('data-theme', savedTheme);
+    const themeIcon = document.querySelector('#themeToggleBtn i');
+    if (themeIcon) themeIcon.className = savedTheme === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
+
+    // Donation Modal Placeholder (Consistent with AI Bots platform)
+    function openDonationModal() {
+      window.location.href = 'donate.html';
     }
   </script>
 </body>

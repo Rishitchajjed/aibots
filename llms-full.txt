@@ -1,10 +1,15 @@
 # AI Bots Creative Studio — Full Technical Reference & Tool Directory
 
-> AI Bots Creative Studio (https://www.aibots.co.in) is a privacy-first, zero-server-upload suite of 33+ browser-based creative, financial, productivity, and gaming tools engineered by Rishit Chajjed. All operations execute locally in the client browser using WebAssembly, HTML5 Canvas, Web Audio API, and local storage.
+> AI Bots Creative Studio (https://www.aibots.co.in) is a privacy-first, zero-server-upload suite of 34+ browser-based creative, financial, productivity, and gaming tools engineered by Rishit Chajjed. All operations execute locally in the client browser using WebAssembly, HTML5 Canvas, Web Audio API, and local storage.
 
 ---
 
-## 1. Financial & Business Tools
+## 1. Financial & PDF Tools
+
+### Direct PDF Page & Word Editor
+- **URL**: https://www.aibots.co.in/pdf-editor.html
+- **Description**: 100% in-browser visual PDF editor to click-to-edit words, find & replace text, rearrange/delete pages, rotate pages, merge external PDFs, and insert cursive e-signatures, stamps, text boxes, and redactions.
+- **Key Features**: Direct word concealment & vector redraw, document-wide find & replace, multi-layer canvas rendering, drag-and-drop page manager, 3-in-1 signature modal (draw/type/upload), vector PDF export via pdf-lib.
 
 ### Cash & Udhar Ledger
 - **URL**: https://www.aibots.co.in/ledger.html

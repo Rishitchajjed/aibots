@@ -197,6 +197,16 @@ const AI_BOTS_TOOLS = [
     color: '#a855f7'
   },
   {
+    id: 'pdf-editor',
+    title: 'PDF Page & Word Editor',
+    description: 'Click-to-edit words, find & replace text, rearrange/delete pages, merge PDFs, and add signatures, stamps, & redactions.',
+    icon: 'fa-file-pen',
+    url: 'pdf-editor.html',
+    category: 'pdf',
+    badge: 'DIRECT EDIT',
+    color: '#6366f1'
+  },
+  {
     id: 'pdfmaker',
     title: 'Image to PDF Generator',
     description: 'Convert collections of photos and scans into clean, unified multi-page A4 PDF documents.',

@@ -3,7 +3,7 @@
   "name": "AI Bots — Creative Studio & Productivity Tools",
   "short_name": "AI Bots",
   "id": "ai-bots-creative-studio",
-  "description": "Free all-in-one web-based creative powerhouse and 33+ private browser tools by Rishit Chajjed.",
+  "description": "Free all-in-one web-based creative powerhouse and 34+ private browser tools by Rishit Chajjed.",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",

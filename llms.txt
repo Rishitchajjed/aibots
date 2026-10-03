@@ -1,6 +1,6 @@
 # AI Bots Creative Studio
 
-> AI Bots Creative Studio (https://www.aibots.co.in) is a fast, private, 100% free browser-based suite of 33+ creative, financial, productivity, and gaming tools engineered by Rishit Chajjed. All processing happens locally in the browser with zero server uploads and no account requirements.
+> AI Bots Creative Studio (https://www.aibots.co.in) is a fast, private, 100% free browser-based suite of 34+ creative, financial, productivity, and gaming tools engineered by Rishit Chajjed. All processing happens locally in the browser with zero server uploads and no account requirements.
 
 ## Creative & Media Tools
 
@@ -17,6 +17,7 @@
 
 ## PDF & Financial Tools
 
+- [Direct PDF Page & Word Editor](https://www.aibots.co.in/pdf-editor.html): In-browser visual PDF editor to click-to-edit words, find & replace text, delete/rotate/reorder pages, merge PDFs, add digital cursive signatures, stamps, and redaction.
 - [Cash & Udhar Ledger](https://www.aibots.co.in/ledger.html): Personal cash passbook, Udhar khata, daily spending tracker, eatables contri, and WhatsApp statements with offline storage.
 - [Bank Statement to Tally XML](https://www.aibots.co.in/bank-statement-converter.html): Convert PDF bank statements from 21+ Indian banks (SBI, HDFC, ICICI, PNB, Axis, BOB, Canara) directly to TallyPrime / Tally.ERP 9 XML vouchers with 100% local privacy.
 - [Professional Invoice Maker](https://www.aibots.co.in/invoice.html): Create professional GST/VAT invoices with automatic tax calculations, UPI QR payment codes, and print/PDF export.

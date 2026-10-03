@@ -716,9 +716,14 @@
       box-shadow: 0 10px 35px rgba(0, 0, 0, 0.35);
       border-radius: 4px;
       transform-origin: top center;
-      transition: transform 0.1s ease-out;
+      transition: opacity 0.12s ease-in-out, transform 0.1s ease-out;
       margin-bottom: 24px;
       user-select: none;
+    }
+
+    .page-stage-wrapper.page-loading {
+      opacity: 0.6;
+      pointer-events: none;
     }
 
     .pdf-render-canvas {
@@ -1158,6 +1163,21 @@
           </button>
         </div>
 
+        <!-- Page Turn Navigation Controls -->
+        <div class="tool-group" id="toolbarPageTurnGroup">
+          <button class="tool-btn" id="btnToolbarPrevPage" onclick="goToPrevPage()" title="Previous Page (PageUp / Alt+Left)">
+            <i class="fas fa-chevron-left"></i>
+          </button>
+          <div style="display:flex; align-items:center; gap:4px; font-size:0.78rem; font-weight:700; padding:0 5px;">
+            <span>Page</span>
+            <input type="number" id="toolbarPageInput" min="1" max="1" value="1" style="width:38px; text-align:center; padding:2px 3px; border-radius:6px; border:1px solid var(--panel-border); background:var(--bg-primary); color:var(--text-primary); font-family:'JetBrains Mono',monospace; font-weight:700; font-size:0.78rem;" onchange="onPageInputChange(this.value)">
+            <span>/ <span id="toolbarTotalPages">1</span></span>
+          </div>
+          <button class="tool-btn" id="btnToolbarNextPage" onclick="goToNextPage()" title="Next Page (PageDown / Alt+Right)">
+            <i class="fas fa-chevron-right"></i>
+          </button>
+        </div>
+
         <!-- Zoom & Export Controls -->
         <div style="display:flex; align-items:center; gap:8px;">
           <div class="tool-group">
@@ -1318,6 +1338,19 @@
             Original Text: <strong id="wemOriginalWord" style="color: var(--text-primary); font-family: 'JetBrains Mono', monospace; background: var(--bg-primary); padding: 3px 8px; border-radius: 6px; border: 1px solid var(--panel-border);"></strong>
           </div>
           <span class="badge" style="background: var(--editor-accent-light); color: var(--editor-accent); font-weight: 800; font-size: 0.76rem; padding: 4px 10px; border-radius: 999px;">Page <span id="wemPageNum">1</span></span>
+        </div>
+
+        <!-- Intelligent Word Variety & Context Categorization Banner -->
+        <div id="wemCategoryBox" style="margin-bottom: 12px; background: rgba(14, 165, 233, 0.08); border: 1px solid rgba(14, 165, 233, 0.25); border-radius: 10px; padding: 8px 12px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px;">
+          <div style="display: flex; align-items: center; gap: 8px; font-size: 0.8rem;">
+            <span id="wemCategoryBadge" style="background: var(--editor-accent); color: #fff; font-weight: 700; font-size: 0.72rem; padding: 2px 8px; border-radius: 999px; display: flex; align-items: center; gap: 5px;">
+              <i class="fas fa-tags" id="wemCategoryIcon"></i> <span id="wemCategoryName">Date / Header</span>
+            </span>
+            <span id="wemNearbyContextHint" style="color: var(--text-secondary); font-size: 0.78rem;">Auto-detected from line context</span>
+          </div>
+          <div style="font-size: 0.75rem; color: var(--text-secondary); display: flex; align-items: center; gap: 6px;">
+            <i class="fas fa-arrows-up-down" style="color:var(--editor-accent);"></i> Line Height: <strong id="wemHeightText" style="color: var(--text-primary);">16 pt</strong>
+          </div>
         </div>
 
         <div style="margin-bottom: 14px;">
@@ -1612,6 +1645,8 @@
     let selectedObject = null;
     let undoStack = [];
     let redoStack = [];
+    let currentRenderTask = null; // In-flight PDF.js render operation
+    let activeRenderSequence = 0; // Monotonic sequence ID to prevent page turning race conditions
 
     // Active Word Edit Session
     let activeWordEditData = null;
@@ -1748,6 +1783,7 @@
       isOcrRunning = false;
 
       document.getElementById('pageCountDisplay').textContent = pageOrder.length;
+      updatePageNavDisplay();
       document.getElementById('dropzoneContainer').style.display = 'none';
       document.getElementById('editorWorkspace').style.display = 'flex';
 
@@ -1852,11 +1888,54 @@
 
     function switchActivePage(index) {
       if (index < 0 || index >= pageOrder.length) return;
+      if (activePageIndex === index) return;
+      deselectCurrentObject();
       activePageIndex = index;
       document.querySelectorAll('.thumb-card').forEach((c, i) => {
         c.classList.toggle('active', i === index);
       });
+      const activeThumb = document.querySelectorAll('.thumb-card')[index];
+      if (activeThumb) activeThumb.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      updatePageNavDisplay();
       renderActivePage();
+    }
+
+    function goToPrevPage() {
+      if (activePageIndex > 0) {
+        switchActivePage(activePageIndex - 1);
+      }
+    }
+
+    function goToNextPage() {
+      if (activePageIndex < pageOrder.length - 1) {
+        switchActivePage(activePageIndex + 1);
+      }
+    }
+
+    function onPageInputChange(val) {
+      let pageNum = parseInt(val, 10);
+      if (isNaN(pageNum)) return;
+      pageNum = Math.max(1, Math.min(pageOrder.length, pageNum));
+      switchActivePage(pageNum - 1);
+    }
+
+    function updatePageNavDisplay() {
+      const current = activePageIndex + 1;
+      const total = pageOrder.length || 1;
+      const input = document.getElementById('toolbarPageInput');
+      const totalSpan = document.getElementById('toolbarTotalPages');
+      const prevBtn = document.getElementById('btnToolbarPrevPage');
+      const nextBtn = document.getElementById('btnToolbarNextPage');
+      const countDisplay = document.getElementById('pageCountDisplay');
+
+      if (input) {
+        input.value = current;
+        input.max = total;
+      }
+      if (totalSpan) totalSpan.textContent = total;
+      if (countDisplay) countDisplay.textContent = total;
+      if (prevBtn) prevBtn.disabled = (current <= 1);
+      if (nextBtn) nextBtn.disabled = (current >= total);
     }
 
     function rotatePage(orderIdx, deg) {
@@ -1940,15 +2019,32 @@
     }
 
     // -------------------------------------------------------------------------
-    // Main Viewport Page Rendering & Direct Word Detection
+    // Main Viewport Page Rendering & Direct Word Detection (Glitch-Free)
     // -------------------------------------------------------------------------
     async function renderActivePage() {
       if (!pdfDocProxy || pageOrder.length === 0) return;
       const origPageIdx = pageOrder[activePageIndex];
+      const thisSeq = ++activeRenderSequence;
 
       const stageWrapper = document.getElementById('pageStageWrapper');
       const canvas = document.getElementById('pdfRenderCanvas');
       const textLayer = document.getElementById('textDetectLayer');
+      const annotLayer = document.getElementById('annotationOverlayLayer');
+
+      // 1. Cancel in-flight PDF.js render operation immediately to prevent race conditions
+      if (currentRenderTask) {
+        try {
+          currentRenderTask.cancel();
+        } catch (_) {}
+        currentRenderTask = null;
+      }
+
+      // 2. Immediately clear previous page overlay layers so old words/annotations never flash or jump
+      if (textLayer) textLayer.innerHTML = '';
+      if (annotLayer) annotLayer.innerHTML = '';
+      if (stageWrapper) stageWrapper.classList.add('page-loading');
+
+      updatePageNavDisplay();
 
       // Case: Blank page
       if (origPageIdx >= 9999) {
@@ -1961,13 +2057,17 @@
         const ctx = canvas.getContext('2d');
         ctx.fillStyle = '#ffffff';
         ctx.fillRect(0, 0, w, h);
-        textLayer.innerHTML = '';
-        renderPageAnnotations(origPageIdx);
+        if (thisSeq === activeRenderSequence) {
+          renderPageAnnotations(origPageIdx);
+          if (stageWrapper) stageWrapper.classList.remove('page-loading');
+        }
         return;
       }
 
       try {
         const page = await pdfDocProxy.getPage(origPageIdx + 1);
+        if (thisSeq !== activeRenderSequence) return; // Discard superseded page render
+
         const rotation = pageRotations[origPageIdx] || 0;
         const viewport = page.getViewport({ scale: currentScale, rotation: rotation });
 
@@ -1977,10 +2077,27 @@
         stageWrapper.style.height = viewport.height + 'px';
 
         const ctx = canvas.getContext('2d');
-        await page.render({ canvasContext: ctx, viewport: viewport }).promise;
+        currentRenderTask = page.render({ canvasContext: ctx, viewport: viewport });
+
+        try {
+          await currentRenderTask.promise;
+        } catch (renderError) {
+          if (renderError && (renderError.name === 'RenderingCancelledException' || (renderError.message && renderError.message.includes('cancelled')))) {
+            return; // Clean cancellation when turning pages rapidly
+          }
+          throw renderError;
+        } finally {
+          if (thisSeq === activeRenderSequence) {
+            currentRenderTask = null;
+          }
+        }
+
+        if (thisSeq !== activeRenderSequence) return; // Discard superseded page render
 
         // Render interactive word detection layer
         const textContent = await page.getTextContent({ normalizeWhitespace: true });
+        if (thisSeq !== activeRenderSequence) return; // Discard superseded page render
+
         const hasTextItems = textContent && textContent.items && textContent.items.some(it => it.str && it.str.trim());
 
         if (hasTextItems) {
@@ -2001,7 +2118,13 @@
         // Render annotations (text, signatures, stamps, whiteouts)
         renderPageAnnotations(origPageIdx);
       } catch (err) {
-        console.error("Render active page error:", err);
+        if (err && err.name !== 'RenderingCancelledException') {
+          console.error("Render active page error:", err);
+        }
+      } finally {
+        if (thisSeq === activeRenderSequence && stageWrapper) {
+          stageWrapper.classList.remove('page-loading');
+        }
       }
     }
 
@@ -2302,6 +2425,115 @@
       if (iBtn) iBtn.classList.toggle('active', selectedObject.fontStyle === 'italic' || selectedObject.isItalic);
     }
 
+    // -------------------------------------------------------------------------
+    // Word Variety Classification & Context Analyzer
+    // -------------------------------------------------------------------------
+    const WORD_CATEGORIES = {
+      YEAR: {
+        regex: /^(19\d\d|20\d\d)$/,
+        label: 'Date (Year)',
+        icon: 'fa-calendar',
+        suggestedFont: 'TimesRoman',
+        suggestedWeight: 'bold'
+      },
+      DATE_DAY: {
+        regex: /^(\d{1,2}(st|nd|rd|th)?|first|second|third|fourth|fifth|twenty-sixth|day)$/i,
+        label: 'Date (Day / Ordinal)',
+        icon: 'fa-calendar-day',
+        suggestedFont: 'TimesRoman',
+        suggestedWeight: 'bold'
+      },
+      MONTH: {
+        regex: /^(january|february|march|april|may|june|july|august|september|october|november|december|jan|feb|mar|apr|jun|jul|aug|sep|oct|nov|dec)$/i,
+        label: 'Date (Month)',
+        icon: 'fa-calendar-alt',
+        suggestedFont: 'TimesRoman',
+        suggestedWeight: 'bold'
+      },
+      CURRENCY_SYMBOL: {
+        regex: /^(₹|rs\.?|inr|\$|usd|eur|€|£|gbp)$/i,
+        label: 'Currency Symbol',
+        icon: 'fa-indian-rupee-sign',
+        suggestedFont: 'TimesRoman',
+        suggestedWeight: 'bold'
+      },
+      CURRENCY_AMOUNT: {
+        regex: /^(\d{1,3}(,\d{2,3})*(\.\d{2})?(\/-)?|\d+(\.\d{2})?(\/-)?)$/,
+        label: 'Financial Amount',
+        icon: 'fa-money-bill-wave',
+        suggestedFont: 'TimesRoman',
+        suggestedWeight: 'bold'
+      },
+      FINANCIAL_TERM: {
+        regex: /^(rupees|lakhs?|crores?|thousands?|hundreds?|only|rent|deposit|security|per|month|advance|amount|payable)$/i,
+        label: 'Financial Term',
+        icon: 'fa-coins',
+        suggestedFont: 'TimesRoman',
+        suggestedWeight: 'bold'
+      },
+      LEGAL_PARTY: {
+        regex: /^(lessor|lessee|landlord|tenant|licensor|licensee|borrower|lender|purchaser|vendor|party|parties|first|second|part)$/i,
+        label: 'Legal Party / Entity',
+        icon: 'fa-user-tie',
+        suggestedFont: 'TimesRoman',
+        suggestedWeight: 'bold'
+      },
+      LEGAL_HEADER: {
+        regex: /^(agreement|deed|contract|witnesseth|whereas|schedule|clause|article|section|annexure|memorandum|affidavit|between|now|therefore)$/i,
+        label: 'Legal Clause / Header',
+        icon: 'fa-gavel',
+        suggestedFont: 'TimesRoman',
+        suggestedWeight: 'bold'
+      },
+      HONORIFIC_TITLE: {
+        regex: /^(mr\.?|mrs\.?|ms\.?|dr\.?|prof\.?|shri|smt\.?|kumari|m\/s|s\/o|d\/o|w\/o|son|daughter|wife)$/i,
+        label: 'Honorific / Relation',
+        icon: 'fa-id-card',
+        suggestedFont: 'TimesRoman',
+        suggestedWeight: 'bold'
+      },
+      IDENTIFIER: {
+        regex: /^(flat|plot|door|no\.?|street|road|city|pin|state|pan|aadhaar|passport|reg\.?)$/i,
+        label: 'Identifier / Address',
+        icon: 'fa-location-dot',
+        suggestedFont: 'TimesRoman',
+        suggestedWeight: 'normal'
+      },
+      NUMBER_WORD: {
+        regex: /^(one|two|three|four|five|six|seven|eight|nine|ten|eleven|twelve|fifteen|twenty|thirty|forty|fifty|hundred|thousand)$/i,
+        label: 'Number Word',
+        icon: 'fa-arrow-up-1-9',
+        suggestedFont: 'TimesRoman',
+        suggestedWeight: 'bold'
+      }
+    };
+
+    function classifyWord(wordStr) {
+      if (!wordStr) return null;
+      const clean = wordStr.trim().replace(/^["'(]+|[)"',;:]+$/g, '');
+      for (const [key, cat] of Object.entries(WORD_CATEGORIES)) {
+        if (cat.regex.test(clean)) {
+          return { key, ...cat };
+        }
+      }
+      if (clean.length >= 2 && clean === clean.toUpperCase() && /^[A-Z]+$/.test(clean)) {
+        return {
+          key: 'UPPERCASE_HEADER',
+          label: 'Agreement Header Word',
+          icon: 'fa-heading',
+          suggestedFont: 'TimesRoman',
+          suggestedWeight: 'bold'
+        };
+      }
+      return {
+        key: 'STANDARD_TEXT',
+        label: 'Standard Text',
+        icon: 'fa-font',
+        suggestedFont: 'TimesRoman',
+        suggestedWeight: 'normal'
+      };
+    }
+
     function detectFontAndWeightForWord(wordData) {
       let fontFamily = lastUsedFontFamily || 'TimesRoman'; // Default to Times Roman for Indian legal/agreements
       let isBold = lastUsedBold !== null ? lastUsedBold : false;
@@ -2310,6 +2542,52 @@
       const origPageIdx = pageOrder[activePageIndex];
       const pageWords = [...(digitalPageWords[origPageIdx] || []), ...(ocrPageWords[origPageIdx] || [])];
       const nearbyWordsOnLine = pageWords.filter(w => Math.abs(w.pdfY - wordData.pdfY) < 6 && w.word !== wordData.word);
+
+      // Sort line words horizontally to analyze left and right neighbors
+      const allLineWords = [...nearbyWordsOnLine, wordData].sort((a, b) => a.pdfX - b.pdfX);
+      const targetIdx = allLineWords.findIndex(w => w === wordData || (w.word === wordData.word && Math.abs(w.pdfX - wordData.pdfX) < 1));
+      const leftNeighbor = targetIdx > 0 ? allLineWords[targetIdx - 1] : null;
+      const rightNeighbor = (targetIdx >= 0 && targetIdx < allLineWords.length - 1) ? allLineWords[targetIdx + 1] : null;
+
+      // Classify word and its neighbors
+      const wordCat = classifyWord(wordData.word);
+      const leftCat = leftNeighbor ? classifyWord(leftNeighbor.word) : null;
+      const rightCat = rightNeighbor ? classifyWord(rightNeighbor.word) : null;
+
+      let categoryLabel = wordCat ? wordCat.label : 'General Text';
+      let categoryIcon = wordCat ? wordCat.icon : 'fa-font';
+      let contextExplanation = '';
+
+      // Smooth nearby categorisation fusion:
+      if (wordCat && wordCat.key === 'YEAR' && ((leftCat && leftCat.key === 'MONTH') || (rightCat && (rightCat.key === 'LEGAL_HEADER' || rightCat.key === 'LEGAL_PARTY')))) {
+        categoryLabel = 'Agreement Execution Date (Year)';
+        categoryIcon = 'fa-calendar-check';
+        contextExplanation = `Matched with neighbor words "${leftNeighbor ? leftNeighbor.word : ''}" / "${rightNeighbor ? rightNeighbor.word : ''}"`;
+        isBold = true;
+        fontFamily = 'TimesRoman';
+      } else if (wordCat && wordCat.key === 'CURRENCY_AMOUNT' && leftCat && leftCat.key === 'CURRENCY_SYMBOL') {
+        categoryLabel = 'Monetary Amount';
+        categoryIcon = 'fa-money-bill-wave';
+        contextExplanation = `Preceded by currency symbol "${leftNeighbor.word}"`;
+        isBold = true;
+      } else if (leftCat && leftCat.key === 'HONORIFIC_TITLE') {
+        categoryLabel = 'Person / Entity Name';
+        categoryIcon = 'fa-user-tag';
+        contextExplanation = `Preceded by title "${leftNeighbor.word}"`;
+        isBold = true;
+      } else if (nearbyWordsOnLine.length > 0) {
+        const alphaWords = nearbyWordsOnLine.filter(w => /[a-zA-Z]/.test(w.word));
+        if (alphaWords.length > 0) {
+          const capsCount = alphaWords.filter(w => w.word === w.word.toUpperCase()).length;
+          if (capsCount / alphaWords.length >= 0.5) {
+            categoryLabel = 'Agreement Header / Title Line';
+            categoryIcon = 'fa-file-lines';
+            contextExplanation = `Surrounding line has ${capsCount} uppercase header words`;
+            isBold = true;
+            if (!lastUsedFontFamily) fontFamily = 'TimesRoman';
+          }
+        }
+      }
 
       // 1. Digital PDF fontName inspection from current word or nearby words on the line
       const fontsToTest = [wordData.rawFontName, ...nearbyWordsOnLine.map(w => w.rawFontName)].filter(Boolean);
@@ -2328,31 +2606,46 @@
         }
       }
 
-      // 2. Agreement uppercase / title bold heuristic for current word
-      const textStr = (wordData.word || '').trim();
-      if (textStr.length >= 2 && textStr === textStr.toUpperCase() && !/^[0-9]+$/.test(textStr)) {
-        isBold = true;
-      }
+      // 2. Automatic Height & Baseline Pickup from nearby words on same line
+      const nearbyHeights = nearbyWordsOnLine.map(w => w.pdfH).filter(h => h > 4);
+      let detectedHeight = wordData.pdfH || 16;
+      let detectedY = wordData.pdfY;
 
-      // 3. Inspect nearby words on the same line (same pdfY ±6)
-      if (nearbyWordsOnLine.length > 0) {
-        // If surrounding words are uppercase (e.g. "DAY OF JUNE 2026 BETWEEN"), this entire header/date line is bold!
-        const alphaWords = nearbyWordsOnLine.filter(w => /[a-zA-Z]/.test(w.word));
-        if (alphaWords.length > 0) {
-          const capsCount = alphaWords.filter(w => w.word === w.word.toUpperCase()).length;
-          if (capsCount / alphaWords.length >= 0.5) {
-            isBold = true;
-            if (!lastUsedFontFamily) fontFamily = 'TimesRoman'; // Agreements standard
-          }
+      if (nearbyHeights.length > 0) {
+        const avgNearbyHeight = nearbyHeights.reduce((s, h) => s + h, 0) / nearbyHeights.length;
+        // Always pick up the larger/matching line height so replacements never look undersized
+        detectedHeight = Math.max(wordData.pdfH, avgNearbyHeight);
+        detectedHeight = Math.round(detectedHeight * 10) / 10;
+
+        // Baseline alignment
+        const baselines = nearbyWordsOnLine.map(w => w.pdfY + w.pdfH);
+        const avgBaseline = baselines.reduce((s, b) => s + b, 0) / baselines.length;
+        if (Math.abs(avgBaseline - (wordData.pdfY + wordData.pdfH)) < 6) {
+          detectedY = Math.round((avgBaseline - detectedHeight) * 10) / 10;
         }
 
+        // Average font size
         const avgSize = nearbyWordsOnLine.reduce((sum, w) => sum + (w.pdfFontSize || 14), 0) / nearbyWordsOnLine.length;
-        if (avgSize && Math.abs(avgSize - fontSize) < 5) {
+        if (avgSize && Math.abs(avgSize - fontSize) < 6) {
           fontSize = Math.round(avgSize * 10) / 10;
         }
       }
 
-      return { fontFamily, isBold, fontSize };
+      if (!contextExplanation && nearbyWordsOnLine.length > 0) {
+        contextExplanation = `Analyzed ${nearbyWordsOnLine.length} surrounding words on line`;
+      }
+
+      return {
+        fontFamily,
+        isBold,
+        fontSize,
+        detectedHeight,
+        detectedY,
+        categoryKey: wordCat ? wordCat.key : 'STANDARD_TEXT',
+        categoryLabel,
+        categoryIcon,
+        contextExplanation
+      };
     }
 
     function openWordEditorModal(wordEl, wordData) {
@@ -2370,6 +2663,21 @@
       input.value = wordData.word || '';
 
       const detected = detectFontAndWeightForWord(wordData);
+
+      // Store detected height and baseline alignment on activeWordEditData
+      wordData.detectedHeight = detected.detectedHeight;
+      wordData.detectedY = detected.detectedY;
+
+      // Update Category & Height Info in Modal
+      const catName = document.getElementById('wemCategoryName');
+      const catIcon = document.getElementById('wemCategoryIcon');
+      const contextHint = document.getElementById('wemNearbyContextHint');
+      const heightText = document.getElementById('wemHeightText');
+
+      if (catName) catName.textContent = detected.categoryLabel;
+      if (catIcon) catIcon.className = `fas ${detected.categoryIcon || 'fa-tags'}`;
+      if (contextHint) contextHint.textContent = detected.contextExplanation || 'Auto-detected from line context';
+      if (heightText) heightText.textContent = `${detected.detectedHeight} pt (Auto-matched)`;
 
       const fontSelect = document.getElementById('wemFontFamily');
       if (fontSelect) fontSelect.value = wordData.fontFamily || detected.fontFamily;
@@ -2484,13 +2792,16 @@
       if (newText === wordData.word) return;
 
       // 1. Add whiteout concealment patch covering original word in PDF points
+      const chosenHeight = (wordData.detectedHeight && wordData.detectedHeight > 4) ? wordData.detectedHeight : wordData.pdfH;
+      const chosenY = (wordData.detectedY !== undefined && Math.abs(wordData.detectedY - wordData.pdfY) < 6) ? wordData.detectedY : wordData.pdfY;
+
       const maskObj = {
         id: 'mask_' + Date.now() + '_' + Math.random().toString(36).substr(2, 5),
         type: 'whiteout',
         x: wordData.pdfX - 0.5,
-        y: wordData.pdfY - 0.5,
+        y: Math.min(wordData.pdfY, chosenY) - 0.5,
         w: wordData.pdfW + 2,
-        h: wordData.pdfH + 1.5,
+        h: Math.max(wordData.pdfH, chosenHeight) + 1.5,
         bgColor: maskColor || '#ffffff',
         opacity: 1.0
       };
@@ -2502,9 +2813,9 @@
           id: 'text_' + Date.now() + '_' + Math.random().toString(36).substr(2, 5),
           type: 'text',
           x: wordData.pdfX,
-          y: wordData.pdfY,
+          y: chosenY,
           w: Math.max(wordData.pdfW, newText.length * (fontSize * 0.6)),
-          h: wordData.pdfH,
+          h: chosenHeight,
           text: newText,
           fontSize: fontSize,
           fontFamily: fontFamily,
@@ -3712,6 +4023,12 @@
         }
       } else if (e.key === 'Escape') {
         deselectCurrentObject();
+      } else if (e.key === 'PageDown' || (e.altKey && e.key === 'ArrowRight') || (e.key === 'ArrowRight' && !document.querySelector('.modal-backdrop.active'))) {
+        e.preventDefault();
+        goToNextPage();
+      } else if (e.key === 'PageUp' || (e.altKey && e.key === 'ArrowLeft') || (e.key === 'ArrowLeft' && !document.querySelector('.modal-backdrop.active'))) {
+        e.preventDefault();
+        goToPrevPage();
       } else if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 's') {
         e.preventDefault();
         exportEditedPdf(false);

@@ -357,6 +357,11 @@
       background: linear-gradient(135deg, #ef4444, #dc2626);
       box-shadow: 0 2px 8px rgba(239, 68, 68, 0.3);
     }
+    .btn-action.btn-lg {
+      padding: 12px 24px;
+      font-size: 1rem;
+      border-radius: 12px;
+    }
 
     /* Main Workspace */
     .editor-workspace {
@@ -429,26 +434,27 @@
 
     /* Active Tool Mode Banner */
     .mode-banner {
-      background: linear-gradient(135deg, rgba(99, 102, 241, 0.12), rgba(139, 92, 246, 0.12));
-      border: 1px solid rgba(99, 102, 241, 0.3);
+      background: linear-gradient(135deg, rgba(99, 102, 241, 0.14), rgba(139, 92, 246, 0.14));
+      border: 1.5px solid rgba(99, 102, 241, 0.35);
       border-radius: 12px;
-      padding: 8px 14px;
+      padding: 9px 16px;
       display: flex;
       align-items: center;
       justify-content: space-between;
       gap: 12px;
-      font-size: 0.85rem;
+      font-size: 0.88rem;
       color: var(--text-primary);
+      box-shadow: 0 2px 8px rgba(99, 102, 241, 0.08);
     }
     .mode-banner-text {
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: 10px;
       font-weight: 600;
     }
     .mode-banner-text i {
       color: var(--editor-accent);
-      font-size: 1rem;
+      font-size: 1.1rem;
     }
     .mode-banner-actions {
       display: flex;
@@ -459,14 +465,14 @@
       background: var(--panel-bg);
       border: 1px solid var(--panel-border);
       color: var(--text-primary);
-      padding: 3px 10px;
+      padding: 4px 12px;
       border-radius: 999px;
-      font-size: 0.76rem;
+      font-size: 0.78rem;
       font-weight: 700;
       cursor: pointer;
       display: inline-flex;
       align-items: center;
-      gap: 4px;
+      gap: 5px;
       transition: all 0.15s;
     }
     .btn-xs-pill:hover {
@@ -681,40 +687,37 @@
     .text-detect-layer {
       position: absolute;
       inset: 0;
-      pointer-events: none;
+      pointer-events: none !important;
       overflow: hidden;
       z-index: 15;
-    }
-    .text-detect-layer.interactive-mode {
-      pointer-events: none; /* Container is transparent, children are clickable */
     }
 
     /* Word Box Overlay */
     .word-box {
       position: absolute;
-      cursor: text;
+      cursor: text !important;
       background: transparent;
       border-radius: 3px;
       pointer-events: auto !important;
-      transition: background 0.12s ease, outline 0.12s ease;
+      transition: background 0.1s ease, outline 0.1s ease;
       box-sizing: border-box;
       z-index: 16;
     }
     .word-box:hover {
-      background: rgba(99, 102, 241, 0.2) !important;
+      background: rgba(99, 102, 241, 0.22) !important;
       outline: 1.5px dashed var(--editor-accent) !important;
-      box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.15);
+      box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.2);
     }
     .word-box.active-editing {
-      outline: 2px solid var(--editor-accent) !important;
-      background: rgba(99, 102, 241, 0.25) !important;
+      outline: 2px solid #10b981 !important;
+      background: rgba(16, 185, 129, 0.25) !important;
     }
 
-    /* Annotation Overlay Layer (for newly created elements) */
+    /* Annotation Overlay Layer */
     .annotation-overlay-layer {
       position: absolute;
       inset: 0;
-      pointer-events: none !important; /* DO NOT BLOCK CLICKS to words below */
+      pointer-events: none !important;
       z-index: 25;
     }
 
@@ -725,7 +728,7 @@
       user-select: none;
       box-sizing: border-box;
       border: 1px dashed transparent;
-      pointer-events: auto !important; /* Children receive pointer events */
+      pointer-events: auto !important;
       transition: border-color 0.15s, box-shadow 0.15s;
       z-index: 26;
     }
@@ -755,133 +758,16 @@
     .resize-handle.bl { bottom: -5px; left: -5px; cursor: nesw-resize; }
     .resize-handle.br { bottom: -5px; right: -5px; cursor: nwse-resize; }
 
-    /* Floating Inline Word Editor Popover */
-    .floating-word-editor {
-      position: absolute;
-      background: var(--panel-bg);
-      border: 2px solid var(--editor-accent);
-      border-radius: 12px;
-      padding: 10px 12px;
-      box-shadow: 0 12px 36px rgba(0, 0, 0, 0.3);
-      z-index: 200;
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-      min-width: 260px;
-      transform: translateY(-8px);
-      animation: popIn 0.18s cubic-bezier(0.16, 1, 0.3, 1);
-      pointer-events: auto !important;
-    }
-    @keyframes popIn {
-      from { opacity: 0; transform: translateY(4px) scale(0.96); }
-      to { opacity: 1; transform: translateY(-8px) scale(1); }
-    }
-    .fwe-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      font-size: 0.76rem;
-      font-weight: 800;
-      color: var(--editor-accent);
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-    }
-    .fwe-input {
-      width: 100%;
-      border: 1px solid var(--panel-border);
-      border-radius: 8px;
-      padding: 8px 10px;
-      font-size: 0.95rem;
-      font-family: inherit;
-      background: var(--bg-primary);
-      color: var(--text-primary);
-      outline: none;
-      font-weight: 600;
-    }
-    .fwe-input:focus {
-      border-color: var(--editor-accent);
-      box-shadow: 0 0 0 3px var(--editor-accent-glow);
-    }
-    .fwe-controls {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      flex-wrap: wrap;
-    }
-    .fwe-btn-pill {
-      background: var(--bg-primary);
-      border: 1px solid var(--panel-border);
-      padding: 4px 8px;
-      border-radius: 6px;
-      font-size: 0.76rem;
-      font-weight: 700;
-      color: var(--text-secondary);
-      cursor: pointer;
-      display: inline-flex;
-      align-items: center;
-      gap: 4px;
-    }
-    .fwe-btn-pill:hover {
-      color: var(--editor-accent);
-      border-color: var(--editor-accent);
-      background: var(--editor-accent-light);
-    }
-    .fwe-actions {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 6px;
-      margin-top: 4px;
-      padding-top: 6px;
-      border-top: 1px solid var(--panel-border);
-    }
-
-    /* Floating Find & Replace Bar */
-    .find-replace-bar {
-      position: fixed;
-      top: 140px;
-      right: 30px;
-      background: var(--panel-bg);
-      border: 1px solid var(--panel-border);
-      border-radius: 14px;
-      padding: 12px 16px;
-      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.25);
-      display: none;
-      flex-direction: column;
-      gap: 10px;
-      z-index: 150;
-      width: 320px;
-      backdrop-filter: blur(14px);
-    }
-    .find-replace-bar.active { display: flex; }
-    .fr-row {
-      display: flex;
-      gap: 8px;
-      align-items: center;
-    }
-    .fr-input {
-      flex: 1;
-      padding: 7px 10px;
-      border-radius: 8px;
-      border: 1px solid var(--panel-border);
-      background: var(--bg-primary);
-      color: var(--text-primary);
-      font-size: 0.84rem;
-      outline: none;
-      font-family: inherit;
-    }
-    .fr-input:focus { border-color: var(--editor-accent); }
-
     /* Modals */
     .modal-backdrop {
       position: fixed;
       inset: 0;
-      background: rgba(15, 23, 42, 0.7);
-      backdrop-filter: blur(6px);
+      background: rgba(15, 23, 42, 0.72);
+      backdrop-filter: blur(8px);
       display: none;
       align-items: center;
       justify-content: center;
-      z-index: 200;
+      z-index: 300;
       padding: 16px;
     }
     .modal-backdrop.active { display: flex; }
@@ -889,11 +775,11 @@
       background: var(--panel-bg);
       border: 1px solid var(--panel-border);
       border-radius: 20px;
-      max-width: 580px;
+      max-width: 540px;
       width: 100%;
       padding: 24px;
-      box-shadow: 0 25px 60px rgba(0, 0, 0, 0.35);
-      animation: modalScale 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+      box-shadow: 0 25px 60px rgba(0, 0, 0, 0.45);
+      animation: modalScale 0.18s cubic-bezier(0.16, 1, 0.3, 1);
     }
     @keyframes modalScale {
       from { opacity: 0; transform: scale(0.95); }
@@ -919,12 +805,67 @@
     .modal-close {
       background: none;
       border: none;
-      font-size: 1.4rem;
+      font-size: 1.5rem;
       color: var(--text-secondary);
       cursor: pointer;
       line-height: 1;
     }
     .modal-close:hover { color: #ef4444; }
+
+    /* Word Edit Main Input */
+    .word-edit-main-input {
+      width: 100%;
+      padding: 12px 14px;
+      border-radius: 12px;
+      border: 2px solid var(--editor-accent);
+      font-size: 1.15rem;
+      font-weight: 700;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      outline: none;
+      font-family: inherit;
+      box-shadow: 0 4px 14px rgba(99, 102, 241, 0.15);
+    }
+    .word-edit-main-input:focus {
+      border-color: #10b981;
+      box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.25);
+    }
+
+    /* Floating Find & Replace Bar */
+    .find-replace-bar {
+      position: fixed;
+      top: 140px;
+      right: 30px;
+      background: var(--panel-bg);
+      border: 1px solid var(--panel-border);
+      border-radius: 14px;
+      padding: 14px 18px;
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.25);
+      display: none;
+      flex-direction: column;
+      gap: 10px;
+      z-index: 150;
+      width: 320px;
+      backdrop-filter: blur(14px);
+    }
+    .find-replace-bar.active { display: flex; }
+    .fr-row {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+    .fr-input {
+      flex: 1;
+      padding: 8px 12px;
+      border-radius: 8px;
+      border: 1px solid var(--panel-border);
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      font-size: 0.88rem;
+      outline: none;
+      font-family: inherit;
+    }
+    .fr-input:focus { border-color: var(--editor-accent); }
 
     /* Signature Studio Tabs */
     .sig-tabs {
@@ -1101,8 +1042,8 @@
     <!-- Hero Banner -->
     <section class="hero-banner">
       <div class="hero-badge"><i class="fas fa-shield-alt"></i> 100% Client-Side Privacy • Zero Server Uploads</div>
-      <h1 class="hero-title">Direct PDF Page & Word Editor</h1>
-      <p class="hero-desc">Click any word in your document to edit or replace text inline, find & replace across pages, reorder or rotate pages, add cursive digital signatures, apply stamps, and redact sensitive info with zero data leaving your device.</p>
+      <h1 class="hero-title">Direct PDF Page &amp; Word Editor</h1>
+      <p class="hero-desc">Click any word in your document to edit or replace text inline, find &amp; replace across pages, reorder or rotate pages, add cursive digital signatures, apply stamps, and redact sensitive info with zero data leaving your device.</p>
     </section>
 
     <!-- Upload Dropzone Card -->
@@ -1159,10 +1100,10 @@
 
         <!-- Document Operations -->
         <div class="tool-group">
-          <button class="tool-btn" onclick="openFindReplace()" title="Find & Replace Text Across Entire Document (Ctrl+F)">
+          <button class="tool-btn" onclick="openFindReplace()" title="Find &amp; Replace Text Across Entire Document (Ctrl+F)">
             <i class="fas fa-search"></i> <span>Find/Replace</span>
           </button>
-          <button class="tool-btn" onclick="openWatermarkModal()" title="Add Watermark & Page Numbers">
+          <button class="tool-btn" onclick="openWatermarkModal()" title="Add Watermark &amp; Page Numbers">
             <i class="fas fa-hashtag"></i> <span>Watermark</span>
           </button>
           <button class="tool-btn" onclick="undo()" title="Undo (Ctrl+Z)">
@@ -1182,11 +1123,14 @@
             <button class="tool-btn" onclick="zoomFit()" title="Fit Width"><i class="fas fa-expand"></i></button>
           </div>
 
-          <button class="btn-action" onclick="exportEditedPdf(false)" title="Download High-Fidelity Vector PDF">
-            <i class="fas fa-download"></i> <span>Save PDF</span>
+          <button class="btn-action" id="mainSavePdfBtn" onclick="exportEditedPdf(false)" title="Download High-Fidelity Vector PDF (Ctrl+S)">
+            <i class="fas fa-download"></i> <span>Download PDF</span>
           </button>
           <button class="btn-action btn-secondary" onclick="exportEditedPdf(true)" title="Flatten All Annotations into Permanent PDF">
-            <i class="fas fa-lock"></i> <span>Flatten</span>
+            <i class="fas fa-lock"></i> <span>Flatten &amp; Download</span>
+          </button>
+          <button class="btn-action btn-secondary" onclick="exportCurrentPageAsPng()" title="Export Current Page as PNG Image">
+            <i class="fas fa-file-image"></i>
           </button>
           <button class="btn-action btn-secondary" onclick="openNewPdfDialog()" title="Open Another PDF">
             <i class="fas fa-folder-open"></i>
@@ -1198,8 +1142,8 @@
       <!-- Active Mode Info Banner -->
       <div id="modeBanner" class="mode-banner">
         <div class="mode-banner-text">
-          <i class="fas fa-circle-info"></i>
-          <span id="modeBannerText"><strong>Direct Word Edit Mode Active:</strong> Hover over any word to highlight it, click to replace or delete inline!</span>
+          <i class="fas fa-pen-to-square"></i>
+          <span id="modeBannerText"><strong>Direct Word Edit Mode Active:</strong> Click on any word in the document to edit, replace, or erase it!</span>
         </div>
         <div class="mode-banner-actions">
           <button class="btn-xs-pill" onclick="openFindReplace()"><i class="fas fa-search"></i> Search &amp; Replace</button>
@@ -1209,6 +1153,14 @@
 
       <!-- Secondary Contextual Properties Bar -->
       <div id="propertiesBar" class="properties-bar">
+        <div class="prop-item" id="propTextContentGroup" style="display:none; background: var(--bg-primary); padding: 4px 10px; border-radius: 8px; border: 1px solid var(--panel-border);">
+          <label style="color:var(--editor-accent); font-weight:700;"><i class="fas fa-font"></i> Text:</label>
+          <input id="propTextContent" type="text" class="prop-input" style="width:200px; font-weight:600; border:none; background:transparent;" placeholder="Type text words..." oninput="onPropTextContentChange(this.value)" onchange="onPropTextContentBlur()">
+          <button class="btn-action btn-secondary" style="padding:3px 10px; font-size:0.75rem; border-radius:6px;" onclick="openWordEditorForSelected()" title="Open Dedicated Edit Modal">
+            <i class="fas fa-pen-to-square"></i> Edit in Modal
+          </button>
+        </div>
+
         <div class="prop-item">
           <label>Font:</label>
           <select id="propFontFamily" class="prop-select" onchange="updateSelectedObjectProp('fontFamily', this.value)">
@@ -1297,10 +1249,61 @@
 
     </div>
 
+    <!-- Dedicated Word Editor Modal / Dock -->
+    <div id="wordEditorModal" class="modal-backdrop" onclick="if(event.target === this) closeWordEditorModal()">
+      <div class="modal-card">
+        <div class="modal-header">
+          <h3 class="modal-title"><i class="fas fa-pen-to-square" style="color:var(--editor-accent);"></i> Edit Word in Document</h3>
+          <button class="modal-close" onclick="closeWordEditorModal()">&times;</button>
+        </div>
+
+        <div style="margin-bottom: 12px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px;">
+          <div style="font-size: 0.85rem; color: var(--text-secondary);">
+            Original Text: <strong id="wemOriginalWord" style="color: var(--text-primary); font-family: 'JetBrains Mono', monospace; background: var(--bg-primary); padding: 3px 8px; border-radius: 6px; border: 1px solid var(--panel-border);"></strong>
+          </div>
+          <span class="badge" style="background: var(--editor-accent-light); color: var(--editor-accent); font-weight: 800; font-size: 0.76rem; padding: 4px 10px; border-radius: 999px;">Page <span id="wemPageNum">1</span></span>
+        </div>
+
+        <div style="margin-bottom: 14px;">
+          <label style="font-size: 0.84rem; font-weight: 800; margin-bottom: 6px; display: block; color: var(--text-primary);">Type replacement text:</label>
+          <input type="text" id="wemNewTextInput" class="word-edit-main-input" placeholder="Type new word or phrase..." autocomplete="off" spellcheck="false">
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 16px; background: var(--bg-primary); padding: 12px; border-radius: 12px; border: 1px solid var(--panel-border);">
+          <div>
+            <label style="font-size: 0.78rem; font-weight: 700; color: var(--text-secondary); display: block; margin-bottom: 4px;">Text Ink Color:</label>
+            <div style="display: flex; align-items: center; gap: 6px;">
+              <input type="color" id="wemTextColor" class="prop-color" value="#000000">
+              <span id="wemTextColorHex" style="font-size: 0.78rem; font-family: monospace; font-weight: 600;">#000000</span>
+            </div>
+          </div>
+          <div>
+            <label style="font-size: 0.78rem; font-weight: 700; color: var(--text-secondary); display: block; margin-bottom: 4px;">Background Conceal:</label>
+            <div style="display: flex; align-items: center; gap: 6px;">
+              <input type="color" id="wemMaskColor" class="prop-color" value="#ffffff">
+              <span style="font-size: 0.78rem; color: var(--text-secondary); font-weight: 600;">Whiteout</span>
+            </div>
+          </div>
+        </div>
+
+        <div style="display: flex; justify-content: space-between; align-items: center; gap: 8px; border-top: 1px solid var(--panel-border); padding-top: 14px; flex-wrap: wrap;">
+          <button class="btn-action btn-danger" onclick="deleteActiveWordAction()" title="Erase word completely with clean whiteout">
+            <i class="fas fa-eraser"></i> Erase Word (Whiteout)
+          </button>
+          <div style="display: flex; gap: 8px; margin-left: auto;">
+            <button class="btn-action btn-secondary" onclick="closeWordEditorModal()">Cancel</button>
+            <button class="btn-action btn-success" id="wemApplyBtn" onclick="applyWordEditFromModal()">
+              <i class="fas fa-check"></i> Apply &amp; Replace (Enter)
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <!-- Floating Find & Replace Bar -->
     <div id="findReplaceBar" class="find-replace-bar">
       <div style="display:flex; justify-content:space-between; align-items:center;">
-        <span style="font-weight:800; font-size:0.9rem; color:var(--text-primary);"><i class="fas fa-search" style="color:var(--editor-accent);"></i> Find & Replace</span>
+        <span style="font-weight:800; font-size:0.9rem; color:var(--text-primary);"><i class="fas fa-search" style="color:var(--editor-accent);"></i> Find &amp; Replace</span>
         <button onclick="closeFindReplace()" style="background:none; border:none; cursor:pointer; color:var(--text-secondary); font-size:1.1rem;"><i class="fas fa-times"></i></button>
       </div>
       <div class="fr-row">
@@ -1465,7 +1468,7 @@
       <div class="features-grid">
         <div class="feature-card">
           <div class="feature-icon-box"><i class="fas fa-font"></i></div>
-          <h3 style="font-size:1.1rem; font-weight:800; margin-bottom:6px;">Direct Word & Text Editing</h3>
+          <h3 style="font-size:1.1rem; font-weight:800; margin-bottom:6px;">Direct Word &amp; Text Editing</h3>
           <p style="font-size:0.85rem; color:var(--text-secondary); line-height:1.5;">
             Hover over any word to reveal its bounding box; click to replace text inline. Automatically masks original text and redraws with matching typography.
           </p>
@@ -1516,19 +1519,22 @@
 
   <script>
     // -------------------------------------------------------------------------
-    // Global Application State
+    // Global Application State (Master Clones to Prevent Buffer Detachment)
     // -------------------------------------------------------------------------
-    let currentPdfBytes = null;
+    let masterPdfBytes = null; // Master untouched Uint8Array copy!
     let pdfDocProxy = null;
-    let pageOrder = [];       // Array of original page indices e.g. [0, 1, 2...]
-    let pageRotations = {};   // { origIdx: 0, 90, 180, 270 }
-    let pageAnnotations = {}; // { origIdx: [ { id, type, x, y, w, h, ... } ] } in unscaled PDF POINTS!
-    let activePageIndex = 0;  // Index in pageOrder
-    let currentScale = 1.2;   // Viewport display zoom scale
+    let pageOrder = [];        // Array of original page indices e.g. [0, 1, 2...]
+    let pageRotations = {};    // { origIdx: 0, 90, 180, 270 }
+    let pageAnnotations = {};  // { origIdx: [ { id, type, x, y, w, h, ... } ] } in unscaled PDF POINTS!
+    let activePageIndex = 0;   // Index in pageOrder
+    let currentScale = 1.25;   // Viewport display zoom scale
     let activeTool = 'edit-text'; // Default to 'edit-text' for immediate word editing!
     let selectedObject = null;
     let undoStack = [];
     let redoStack = [];
+
+    // Active Word Edit Session
+    let activeWordEditData = null;
 
     // Signature Pad State
     let sigCanvas, sigCtx, isDrawingSig = false;
@@ -1553,7 +1559,7 @@
         toast.style.transform = 'translateY(10px)';
         toast.style.transition = 'all 0.25s ease';
         setTimeout(() => toast.remove(), 250);
-      }, 2800);
+      }, 3000);
     }
 
     // -------------------------------------------------------------------------
@@ -1595,7 +1601,7 @@
       try {
         const buffer = await file.arrayBuffer();
         await initializePdfDocument(new Uint8Array(buffer));
-        showToast('PDF loaded successfully! Click any word to edit.', 'fa-file-pdf');
+        showToast('PDF loaded! Click on any word to edit or replace it.', 'fa-file-pdf');
       } catch (err) {
         console.error("PDF load error:", err);
         alert("Failed to load PDF: " + err.message);
@@ -1605,7 +1611,6 @@
     async function loadSampleDocument(e) {
       e.stopPropagation();
       try {
-        // Generate a sample PDF using pdf-lib
         const sampleDoc = await PDFLib.PDFDocument.create();
         const page1 = sampleDoc.addPage([595.28, 841.89]); // A4
         const fontBold = await sampleDoc.embedFont(PDFLib.StandardFonts.HelveticaBold);
@@ -1633,8 +1638,12 @@
     }
 
     async function initializePdfDocument(bytes) {
-      currentPdfBytes = bytes;
-      const loadingTask = pdfjsLib.getDocument({ data: currentPdfBytes });
+      // Keep master clone untouched so it never gets detached by PDF.js worker!
+      masterPdfBytes = new Uint8Array(bytes.length);
+      masterPdfBytes.set(bytes);
+
+      // Pass fresh slice copy to PDF.js
+      const loadingTask = pdfjsLib.getDocument({ data: masterPdfBytes.slice(0) });
       pdfDocProxy = await loadingTask.promise;
 
       // Reset document state
@@ -1654,7 +1663,6 @@
       document.getElementById('dropzoneContainer').style.display = 'none';
       document.getElementById('editorWorkspace').style.display = 'flex';
 
-      // Set default mode to 'edit-text' for instant word editing
       setEditorMode('edit-text');
 
       renderThumbnails();
@@ -1678,7 +1686,6 @@
         card.draggable = true;
         card.dataset.index = i;
 
-        // Drag and drop reordering
         card.ondragstart = (e) => {
           e.dataTransfer.setData('text/plain', i);
         };
@@ -1855,9 +1862,6 @@
       const canvas = document.getElementById('pdfRenderCanvas');
       const textLayer = document.getElementById('textDetectLayer');
 
-      // Close any open floating editor
-      closeFloatingWordEditor();
-
       // Case: Blank page
       if (origPageIdx >= 9999) {
         const w = 595.28 * currentScale;
@@ -1907,7 +1911,6 @@
 
       container.className = 'text-detect-layer interactive-mode';
 
-      // Offscreen canvas for proportional text width measurement
       const measureCanvas = document.createElement('canvas');
       const measureCtx = measureCanvas.getContext('2d');
 
@@ -1915,15 +1918,12 @@
         const fullStr = item.str;
         if (!fullStr || !fullStr.trim()) continue;
 
-        // Transform baseline coordinate from PDF to Viewport space
         const tx = pdfjsLib.Util.transform(viewport.transform, item.transform);
         const fontHeight = Math.sqrt((tx[2] * tx[2]) + (tx[3] * tx[3])) || (item.height * currentScale) || 14;
         const fontWidth = item.width * currentScale;
 
-        // Set font for accurate measurement
         measureCtx.font = `${Math.round(fontHeight)}px "Plus Jakarta Sans", Helvetica, Arial, sans-serif`;
 
-        // Split text item into tokens (words and spaces)
         const tokens = fullStr.match(/\S+|\s+/g) || [fullStr];
         const totalMeasuredWidth = measureCtx.measureText(fullStr).width || fontWidth;
         const widthRatio = fontWidth / (totalMeasuredWidth || 1);
@@ -1941,7 +1941,6 @@
             const wordW = Math.max(tokenWidth, 12);
             const wordH = fontHeight * 1.15;
 
-            // PDF points coordinates (unscaled) for storage and saving
             const pdfX = wordLeft / currentScale;
             const pdfY = wordTop / currentScale;
             const pdfW = wordW / currentScale;
@@ -1950,7 +1949,7 @@
 
             const wordEl = document.createElement('div');
             wordEl.className = 'word-box';
-            wordEl.title = `Click to edit: "${token}"`;
+            wordEl.title = `Click to edit word: "${token}"`;
             wordEl.style.left = wordLeft + 'px';
             wordEl.style.top = wordTop + 'px';
             wordEl.style.width = wordW + 'px';
@@ -1972,7 +1971,7 @@
             wordEl.onclick = (e) => {
               e.stopPropagation();
               e.preventDefault();
-              openFloatingWordEditor(wordEl, wordData);
+              openWordEditorModal(wordEl, wordData);
             };
 
             container.appendChild(wordEl);
@@ -1984,107 +1983,98 @@
     }
 
     // -------------------------------------------------------------------------
-    // Floating Word Editor Popover
+    // Word Editor Modal Logic (Dedicated, Obvious, and Unmissable)
     // -------------------------------------------------------------------------
-    let activeFloatingWordEditor = null;
+    function openWordEditorModal(wordEl, wordData) {
+      activeWordEditData = wordData;
 
-    function closeFloatingWordEditor() {
-      if (activeFloatingWordEditor) {
-        document.querySelectorAll('.word-box').forEach(b => b.classList.remove('active-editing'));
-        activeFloatingWordEditor.remove();
-        activeFloatingWordEditor = null;
+      // Highlight active word on canvas
+      document.querySelectorAll('.word-box').forEach(b => b.classList.remove('active-editing'));
+      if (wordEl) wordEl.classList.add('active-editing');
+
+      const modal = document.getElementById('wordEditorModal');
+      document.getElementById('wemOriginalWord').textContent = `"${wordData.word || ''}"`;
+      document.getElementById('wemPageNum').textContent = `${activePageIndex + 1}`;
+
+      const input = document.getElementById('wemNewTextInput');
+      input.value = wordData.word || '';
+
+      if (wordData.textColor) {
+        document.getElementById('wemTextColor').value = wordData.textColor;
+        document.getElementById('wemTextColorHex').textContent = wordData.textColor;
       }
-    }
+      if (wordData.maskColor && wordData.maskColor !== 'transparent') {
+        document.getElementById('wemMaskColor').value = wordData.maskColor;
+      }
 
-    function openFloatingWordEditor(wordEl, wordData) {
-      closeFloatingWordEditor();
-      wordEl.classList.add('active-editing');
+      modal.classList.add('active');
 
-      const popover = document.createElement('div');
-      popover.className = 'floating-word-editor';
-      popover.onclick = (e) => e.stopPropagation();
+      setTimeout(() => {
+        input.focus();
+        input.select();
+      }, 50);
 
-      // Position popover cleanly
-      const popLeft = Math.max(10, Math.min(window.innerWidth - 300, wordData.screenX - 20));
-      const popTop = Math.max(10, wordData.screenY - 125);
-      popover.style.left = popLeft + 'px';
-      popover.style.top = popTop + 'px';
-
-      popover.innerHTML = `
-        <div class="fwe-header">
-          <span><i class="fas fa-pen"></i> Edit Word</span>
-          <button style="background:none; border:none; cursor:pointer; color:var(--text-secondary);" onclick="closeFloatingWordEditor()">&times;</button>
-        </div>
-        <input type="text" id="fweTextInput" class="fwe-input" value="${escapeHtml(wordData.word)}" autocomplete="off" spellcheck="false">
-        <div class="fwe-controls">
-          <div style="display:flex; align-items:center; gap:4px;">
-            <label style="font-size:0.76rem; color:var(--text-secondary); font-weight:600;">Color:</label>
-            <input type="color" id="fweTextColor" class="prop-color" value="#000000" style="width:24px; height:24px;">
-          </div>
-          <div style="display:flex; align-items:center; gap:4px; margin-left:auto;">
-            <label style="font-size:0.76rem; color:var(--text-secondary); font-weight:600;">Mask:</label>
-            <input type="color" id="fweMaskColor" class="prop-color" value="#ffffff" style="width:24px; height:24px;" title="Conceal Background Color">
-          </div>
-        </div>
-        <div class="fwe-actions">
-          <button class="fwe-btn-pill" style="color:#ef4444;" onclick="deleteWordAction(${JSON.stringify(wordData).replace(/"/g, '&quot;')})" title="Delete word (clean whiteout)">
-            <i class="fas fa-trash"></i> Delete
-          </button>
-          <div style="display:flex; gap:6px;">
-            <button class="fwe-btn-pill" onclick="closeFloatingWordEditor()">Cancel</button>
-            <button class="btn-action" style="padding:4px 12px; font-size:0.78rem;" id="fweApplyBtn">
-              <i class="fas fa-check"></i> Apply (Enter)
-            </button>
-          </div>
-        </div>
-      `;
-
-      document.getElementById('pageStageWrapper').appendChild(popover);
-      activeFloatingWordEditor = popover;
-
-      const input = popover.querySelector('#fweTextInput');
-      input.focus();
-      input.select();
-
-      let committed = false;
-      const applyChange = () => {
-        if (committed) return;
-        committed = true;
-        const newText = input.value;
-        const textColor = popover.querySelector('#fweTextColor').value;
-        const maskColor = popover.querySelector('#fweMaskColor').value;
-        commitWordReplacement(wordData, newText, textColor, maskColor);
-        closeFloatingWordEditor();
-      };
-
-      popover.querySelector('#fweApplyBtn').onclick = applyChange;
-
+      // Enter key to apply
       input.onkeydown = (e) => {
         if (e.key === 'Enter') {
           e.preventDefault();
-          applyChange();
+          applyWordEditFromModal();
         } else if (e.key === 'Escape') {
           e.preventDefault();
-          closeFloatingWordEditor();
+          closeWordEditorModal();
         }
+      };
+
+      // Color picker sync
+      document.getElementById('wemTextColor').oninput = (e) => {
+        document.getElementById('wemTextColorHex').textContent = e.target.value;
       };
     }
 
-    function escapeHtml(str) {
-      return (str || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+    function closeWordEditorModal() {
+      document.querySelectorAll('.word-box').forEach(b => b.classList.remove('active-editing'));
+      document.getElementById('wordEditorModal').classList.remove('active');
+      activeWordEditData = null;
     }
 
-    function deleteWordAction(wordData) {
-      commitWordReplacement(wordData, '', '#000000', '#ffffff');
-      closeFloatingWordEditor();
-      showToast('Word concealed with whiteout', 'fa-eraser');
+    function applyWordEditFromModal() {
+      if (!activeWordEditData) return;
+      const input = document.getElementById('wemNewTextInput');
+      const newText = input.value;
+      const textColor = document.getElementById('wemTextColor').value || '#000000';
+      const maskColor = document.getElementById('wemMaskColor').value || '#ffffff';
+
+      if (activeWordEditData.isAnnotation && activeWordEditData.annotationObj) {
+        const item = activeWordEditData.annotationObj;
+        item.text = newText;
+        item.textColor = textColor;
+        item.w = Math.max(item.w, (newText.length * (item.fontSize || 14) * 0.6));
+        renderActivePage();
+        pushUndoState();
+        showToast(`Text updated: "${newText}"`, 'fa-check');
+      } else {
+        commitWordReplacement(activeWordEditData, newText, textColor, maskColor);
+      }
+      closeWordEditorModal();
+    }
+
+    function deleteActiveWordAction() {
+      if (!activeWordEditData) return;
+      if (activeWordEditData.isAnnotation && activeWordEditData.annotationObj) {
+        deleteSelectedObject();
+      } else {
+        const maskColor = document.getElementById('wemMaskColor').value || '#ffffff';
+        commitWordReplacement(activeWordEditData, '', '#000000', maskColor);
+        showToast('Word erased with whiteout', 'fa-eraser');
+      }
+      closeWordEditorModal();
     }
 
     function commitWordReplacement(wordData, newText, textColor = '#000000', maskColor = '#ffffff') {
       const origPageIdx = pageOrder[activePageIndex];
       if (!pageAnnotations[origPageIdx]) pageAnnotations[origPageIdx] = [];
 
-      // If user typed the exact same word, do nothing
+      // If text is unchanged and not blank, do nothing
       if (newText === wordData.word) return;
 
       // 1. Add whiteout concealment patch covering original word in PDF points
@@ -2122,7 +2112,7 @@
 
       renderActivePage();
       pushUndoState();
-      showToast('Word updated successfully!', 'fa-check');
+      showToast(`Word updated: "${newText || '(erased)'}"`, 'fa-check');
     }
 
     // -------------------------------------------------------------------------
@@ -2139,7 +2129,6 @@
         el.dataset.id = item.id;
         el.dataset.type = item.type;
 
-        // Scale unscaled PDF points to current screen pixels
         el.style.left = (item.x * currentScale) + 'px';
         el.style.top = (item.y * currentScale) + 'px';
         el.style.width = (item.w * currentScale) + 'px';
@@ -2159,10 +2148,10 @@
           el.textContent = item.text || '';
           el.title = "Double-click to edit text";
 
-          // Double click on existing text element to edit
           el.ondblclick = (e) => {
             e.stopPropagation();
-            startEditingExistingText(item, el);
+            selectStageElement(item);
+            openWordEditorForSelected();
           };
         } else if (item.type === 'image' || item.type === 'signature' || item.type === 'stamp') {
           el.style.backgroundImage = `url(${item.dataUrl})`;
@@ -2191,16 +2180,33 @@
       }
     }
 
-    function startEditingExistingText(item, el) {
-      const currentVal = item.text || '';
-      const promptVal = prompt("Edit text:", currentVal);
-      if (promptVal !== null && promptVal !== currentVal) {
-        item.text = promptVal;
-        item.w = Math.max(item.w, promptVal.length * (item.fontSize * 0.6));
-        renderActivePage();
-        pushUndoState();
-        showToast('Text updated', 'fa-check');
+    function openWordEditorForSelected() {
+      if (!selectedObject || selectedObject.type !== 'text') return;
+      openWordEditorModal(null, {
+        isAnnotation: true,
+        annotationObj: selectedObject,
+        word: selectedObject.text || '',
+        textColor: selectedObject.textColor || '#000000',
+        maskColor: selectedObject.bgColor || '#ffffff'
+      });
+    }
+
+    function onPropTextContentChange(val) {
+      if (!selectedObject || selectedObject.type !== 'text') return;
+      selectedObject.text = val;
+      selectedObject.w = Math.max(selectedObject.w, (val.length * (selectedObject.fontSize || 14) * 0.6));
+      const el = document.querySelector(`.stage-element[data-id="${selectedObject.id}"]`);
+      if (el) {
+        const handles = Array.from(el.querySelectorAll('.resize-handle'));
+        el.textContent = val;
+        handles.forEach(h => el.appendChild(h));
+        el.style.width = (selectedObject.w * currentScale) + 'px';
       }
+    }
+
+    function onPropTextContentBlur() {
+      renderActivePage();
+      pushUndoState();
     }
 
     function selectStageElement(item) {
@@ -2209,9 +2215,19 @@
         el.classList.toggle('selected', el.dataset.id === item.id);
       });
 
-      // Update Properties Bar
       const propBar = document.getElementById('propertiesBar');
       propBar.classList.add('active');
+
+      const textGroup = document.getElementById('propTextContentGroup');
+      if (textGroup) {
+        if (item.type === 'text') {
+          textGroup.style.display = 'flex';
+          const textInput = document.getElementById('propTextContent');
+          if (textInput) textInput.value = item.text || '';
+        } else {
+          textGroup.style.display = 'none';
+        }
+      }
 
       if (item.fontSize) document.getElementById('propFontSize').value = Math.round(item.fontSize);
       if (item.fontFamily) document.getElementById('propFontFamily').value = item.fontFamily;
@@ -2304,7 +2320,7 @@
 
     // Viewport Click Handler (for placing new elements)
     function handleViewportClick(e) {
-      if (e.target.closest('.stage-element') || e.target.closest('.word-box') || e.target.closest('.floating-word-editor')) return;
+      if (e.target.closest('.stage-element') || e.target.closest('.word-box')) return;
 
       const stage = document.getElementById('pageStageWrapper');
       const rect = stage.getBoundingClientRect();
@@ -2395,12 +2411,11 @@
         if (mode === 'edit-text') activeBtn.classList.add('active-glow');
       }
 
-      // Update Mode Banner
       const banner = document.getElementById('modeBanner');
       const bannerText = document.getElementById('modeBannerText');
       if (mode === 'edit-text') {
         banner.style.display = 'flex';
-        bannerText.innerHTML = `<strong>Direct Word Edit Mode Active:</strong> Hover over any word to highlight it, click to replace or delete inline!`;
+        bannerText.innerHTML = `<strong>Direct Word Edit Mode Active:</strong> Click on any word in the document to edit, replace, or erase it!`;
       } else if (mode === 'add-text') {
         banner.style.display = 'flex';
         bannerText.innerHTML = `<strong>Add Text Mode:</strong> Click anywhere on the page to insert a custom typography text box.`;
@@ -2582,7 +2597,6 @@
       c.height = 90;
       const ctx = c.getContext('2d');
 
-      // Draw double border stamp
       ctx.lineWidth = 4;
       ctx.strokeStyle = color;
       ctx.strokeRect(6, 6, 228, 78);
@@ -2616,7 +2630,7 @@
       ctx.fillStyle = color;
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
-      ctx.fillText(text.toUpperCase(), 120, incDate ? 40 : 40);
+      ctx.fillText(text.toUpperCase(), 120, 40);
 
       if (incDate) {
         ctx.font = '700 12px "JetBrains Mono", monospace';
@@ -2721,7 +2735,7 @@
         if (origIdx >= 9999) continue;
         const page = await pdfDocProxy.getPage(origIdx + 1);
         const rotation = pageRotations[origIdx] || 0;
-        const viewport = page.getViewport({ scale: 1.0, rotation: rotation }); // Unscaled PDF points
+        const viewport = page.getViewport({ scale: 1.0, rotation: rotation });
         const textContent = await page.getTextContent({ normalizeWhitespace: true });
 
         for (const item of textContent.items) {
@@ -2732,7 +2746,6 @@
 
             if (!pageAnnotations[origIdx]) pageAnnotations[origIdx] = [];
 
-            // Mask original word in unscaled PDF points
             pageAnnotations[origIdx].push({
               id: 'mask_fr_' + Date.now() + '_' + Math.random().toString(36).substr(2, 4),
               type: 'whiteout',
@@ -2744,7 +2757,6 @@
               opacity: 1.0
             });
 
-            // Replace text in unscaled PDF points
             const updated = item.str.replace(new RegExp(findText, 'gi'), replaceText);
             pageAnnotations[origIdx].push({
               id: 'text_fr_' + Date.now() + '_' + Math.random().toString(36).substr(2, 4),
@@ -2875,82 +2887,94 @@
     }
 
     // -------------------------------------------------------------------------
-    // Export High-Fidelity Vector PDF or Flattened PDF
+    // Helper: Unicode Sanitizer & Color Parser for PDFLib
+    // -------------------------------------------------------------------------
+    function sanitizeForPdfLib(text) {
+      if (!text) return '';
+      return String(text)
+        .replace(/₹/g, 'Rs. ')
+        .replace(/€/g, 'EUR ')
+        .replace(/£/g, 'GBP ')
+        .replace(/[“”]/g, '"')
+        .replace(/[‘’]/g, "'")
+        .replace(/[–—]/g, '-')
+        .replace(/•/g, '*')
+        .replace(/…/g, '...')
+        .replace(/[^\x00-\xFF]/g, ' '); // Strip characters outside Latin-1
+    }
+
+    function parseColorToRgb(colorStr) {
+      if (!colorStr || typeof colorStr !== 'string') return [0, 0, 0];
+      let hex = colorStr.replace('#', '').trim();
+      if (hex.length === 3) {
+        hex = hex[0] + hex[0] + hex[1] + hex[1] + hex[2] + hex[2];
+      }
+      if (hex.length === 6) {
+        const num = parseInt(hex, 16);
+        if (!isNaN(num)) {
+          return [
+            ((num >> 16) & 255) / 255,
+            ((num >> 8) & 255) / 255,
+            (num & 255) / 255
+          ];
+        }
+      }
+      return [0, 0, 0];
+    }
+
+    function dataUrlToBytes(dataUrl) {
+      if (!dataUrl || typeof dataUrl !== 'string' || !dataUrl.includes(',')) return new Uint8Array(0);
+      try {
+        const base64 = dataUrl.split(',')[1];
+        const binaryStr = window.atob(base64);
+        const len = binaryStr.length;
+        const bytes = new Uint8Array(len);
+        for (let i = 0; i < len; i++) {
+          bytes[i] = binaryStr.charCodeAt(i);
+        }
+        return bytes;
+      } catch (e) {
+        console.warn("dataUrlToBytes error:", e);
+        return new Uint8Array(0);
+      }
+    }
+
+    // -------------------------------------------------------------------------
+    // Export High-Fidelity Vector PDF or Flattened PDF (Rock-Solid & Guaranteed)
     // -------------------------------------------------------------------------
     async function exportEditedPdf(flatten = false) {
-      if (!currentPdfBytes) return;
-      showToast(flatten ? "Generating flattened raster PDF..." : "Exporting crisp vector PDF...", "fa-gear");
+      if (!masterPdfBytes) {
+        alert("Please load a PDF document first.");
+        return;
+      }
+
+      const saveBtn = document.getElementById('mainSavePdfBtn');
+      const originalBtnHtml = saveBtn ? saveBtn.innerHTML : '';
+      if (saveBtn) {
+        saveBtn.innerHTML = `<i class="fas fa-spinner fa-spin"></i> <span>Saving...</span>`;
+        saveBtn.disabled = true;
+      }
+
+      showToast(flatten ? "Rendering high-res flattened PDF..." : "Generating crisp vector PDF...", "fa-gear");
 
       try {
         if (flatten) {
-          // Flattened mode: Render every page to canvas at high DPI and pack with pdf-lib
-          const flatDoc = await PDFLib.PDFDocument.create();
-          for (let i = 0; i < pageOrder.length; i++) {
-            const origIdx = pageOrder[i];
-            const page = await pdfDocProxy.getPage(origIdx >= 9999 ? 1 : origIdx + 1);
-            const rot = pageRotations[origIdx] || 0;
-            const viewport = page.getViewport({ scale: 2.0, rotation: rot });
-
-            const c = document.createElement('canvas');
-            c.width = viewport.width;
-            c.height = viewport.height;
-            const ctx = c.getContext('2d');
-
-            if (origIdx >= 9999) {
-              ctx.fillStyle = '#ffffff';
-              ctx.fillRect(0, 0, c.width, c.height);
-            } else {
-              await page.render({ canvasContext: ctx, viewport: viewport }).promise;
-            }
-
-            // Draw annotations on canvas
-            const annotations = pageAnnotations[origIdx] || [];
-            for (const item of annotations) {
-              const x = item.x * 2.0;
-              const y = item.y * 2.0;
-              const w = item.w * 2.0;
-              const h = item.h * 2.0;
-
-              if (item.type === 'whiteout' || item.type === 'blackout' || item.type === 'redact') {
-                ctx.fillStyle = item.bgColor || (item.type === 'blackout' ? '#000000' : '#ffffff');
-                ctx.fillRect(x, y, w, h);
-              } else if (item.type === 'text') {
-                ctx.font = `${Math.round((item.fontSize || 14) * 2.0)}px ${item.fontFamily || 'Helvetica'}, sans-serif`;
-                ctx.fillStyle = item.textColor || '#000000';
-                ctx.textBaseline = 'top';
-                ctx.fillText(item.text || '', x, y);
-              } else if (item.dataUrl) {
-                const img = new Image();
-                img.src = item.dataUrl;
-                await new Promise(r => { img.onload = r; });
-                ctx.drawImage(img, x, y, w, h);
-              }
-            }
-
-            const imgData = c.toDataURL('image/jpeg', 0.92);
-            const imgBytes = await fetch(imgData).then(res => res.arrayBuffer());
-            const embedded = await flatDoc.embedJpg(imgBytes);
-            const p = flatDoc.addPage([viewport.width / 2.0, viewport.height / 2.0]);
-            p.drawImage(embedded, { x: 0, y: 0, width: viewport.width / 2.0, height: viewport.height / 2.0 });
-          }
-
-          const outBytes = await flatDoc.save();
-          downloadPdfFile(outBytes, 'flattened_document.pdf');
+          await exportFlattenedPdf();
           return;
         }
 
         // Vector Mode: PDFLib vector modifications
-        const srcDoc = await PDFLib.PDFDocument.load(currentPdfBytes);
+        // Always pass a fresh slice of masterPdfBytes to avoid detached ArrayBuffers!
+        const srcDoc = await PDFLib.PDFDocument.load(masterPdfBytes.slice(0));
         const outDoc = await PDFLib.PDFDocument.create();
 
-        // Standard embedded fonts
         const helveticaFont = await outDoc.embedFont(PDFLib.StandardFonts.Helvetica);
         const timesFont = await outDoc.embedFont(PDFLib.StandardFonts.TimesRoman);
         const courierFont = await outDoc.embedFont(PDFLib.StandardFonts.Courier);
 
         let donorDoc = null;
         if (window.pendingDonorBytes) {
-          donorDoc = await PDFLib.PDFDocument.load(window.pendingDonorBytes);
+          donorDoc = await PDFLib.PDFDocument.load(window.pendingDonorBytes.slice(0));
         }
 
         for (let i = 0; i < pageOrder.length; i++) {
@@ -2979,20 +3003,19 @@
           const { width: pWidth, height: pHeight } = pageObj.getSize();
 
           for (const item of annotations) {
-            const xPdf = item.x;
-            const yPdf = pHeight - (item.y + item.h);
+            const xPdf = Math.max(0, item.x);
+            const yPdf = Math.max(0, pHeight - (item.y + item.h));
             const wPdf = item.w;
             const hPdf = item.h;
 
             if (item.type === 'whiteout' || item.type === 'blackout' || item.type === 'redact') {
-              const isBlack = item.type === 'blackout' || (item.bgColor && item.bgColor.toLowerCase() === '#000000');
-              const cVal = isBlack ? 0 : 1;
+              const [r, g, b] = parseColorToRgb(item.bgColor || (item.type === 'blackout' ? '#000000' : '#ffffff'));
               pageObj.drawRectangle({
                 x: xPdf,
                 y: yPdf,
                 width: wPdf,
                 height: hPdf,
-                color: PDFLib.rgb(cVal, cVal, cVal),
+                color: PDFLib.rgb(r, g, b),
                 opacity: item.opacity !== undefined ? item.opacity : 1.0
               });
             } else if (item.type === 'text') {
@@ -3000,30 +3023,34 @@
               if (item.fontFamily === 'TimesRoman') font = timesFont;
               else if (item.fontFamily === 'Courier') font = courierFont;
 
-              const hex = item.textColor || '#000000';
-              const r = parseInt(hex.slice(1,3), 16) / 255 || 0;
-              const g = parseInt(hex.slice(3,5), 16) / 255 || 0;
-              const b = parseInt(hex.slice(5,7), 16) / 255 || 0;
+              const [r, g, b] = parseColorToRgb(item.textColor || '#000000');
+              const cleanText = sanitizeForPdfLib(item.text || '');
 
-              pageObj.drawText(item.text || '', {
-                x: xPdf,
-                y: yPdf + (hPdf * 0.15),
-                size: item.fontSize || 12,
-                font: font,
-                color: PDFLib.rgb(r, g, b),
-                opacity: item.opacity !== undefined ? item.opacity : 1.0
-              });
-            } else if (item.dataUrl) {
               try {
-                const imgBytes = await fetch(item.dataUrl).then(res => res.arrayBuffer());
-                let embeddedImg = item.dataUrl.includes('image/png') ? await outDoc.embedPng(imgBytes) : await outDoc.embedJpg(imgBytes);
-                pageObj.drawImage(embeddedImg, {
+                pageObj.drawText(cleanText, {
                   x: xPdf,
-                  y: yPdf,
-                  width: wPdf,
-                  height: hPdf,
+                  y: yPdf + (hPdf * 0.15),
+                  size: Math.max(6, item.fontSize || 12),
+                  font: font,
+                  color: PDFLib.rgb(r, g, b),
                   opacity: item.opacity !== undefined ? item.opacity : 1.0
                 });
+              } catch (drawErr) {
+                console.warn("drawText fallback:", drawErr);
+              }
+            } else if (item.dataUrl) {
+              try {
+                const imgBytes = dataUrlToBytes(item.dataUrl);
+                if (imgBytes.length > 0) {
+                  let embeddedImg = item.dataUrl.includes('image/png') ? await outDoc.embedPng(imgBytes) : await outDoc.embedJpg(imgBytes);
+                  pageObj.drawImage(embeddedImg, {
+                    x: xPdf,
+                    y: yPdf,
+                    width: wPdf,
+                    height: hPdf,
+                    opacity: item.opacity !== undefined ? item.opacity : 1.0
+                  });
+                }
               } catch (e) {
                 console.warn("Embed image error:", e);
               }
@@ -3033,11 +3060,118 @@
 
         const outBytes = await outDoc.save();
         downloadPdfFile(outBytes, `edited_document_${Date.now()}.pdf`);
-        showToast("PDF exported successfully!", "fa-check-circle");
+        showToast("PDF downloaded successfully!", "fa-circle-check");
       } catch (err) {
-        console.error("Export error:", err);
-        alert("Error exporting PDF: " + err.message);
+        console.warn("Vector export encountered an error, falling back to high-res flattened PDF:", err);
+        showToast("Using high-resolution flattened export...", "fa-shield-halved");
+        await exportFlattenedPdf();
+      } finally {
+        if (saveBtn) {
+          saveBtn.innerHTML = originalBtnHtml;
+          saveBtn.disabled = false;
+        }
       }
+    }
+
+    async function exportFlattenedPdf() {
+      try {
+        const flatDoc = await PDFLib.PDFDocument.create();
+        for (let i = 0; i < pageOrder.length; i++) {
+          const origIdx = pageOrder[i];
+          const page = await pdfDocProxy.getPage(origIdx >= 9999 ? 1 : origIdx + 1);
+          const rot = pageRotations[origIdx] || 0;
+          const viewport = page.getViewport({ scale: 2.0, rotation: rot }); // High DPI 2x
+
+          const c = document.createElement('canvas');
+          c.width = viewport.width;
+          c.height = viewport.height;
+          const ctx = c.getContext('2d');
+
+          if (origIdx >= 9999) {
+            ctx.fillStyle = '#ffffff';
+            ctx.fillRect(0, 0, c.width, c.height);
+          } else {
+            await page.render({ canvasContext: ctx, viewport: viewport }).promise;
+          }
+
+          // Draw annotations on canvas
+          const annotations = pageAnnotations[origIdx] || [];
+          for (const item of annotations) {
+            const x = item.x * 2.0;
+            const y = item.y * 2.0;
+            const w = item.w * 2.0;
+            const h = item.h * 2.0;
+
+            if (item.type === 'whiteout' || item.type === 'blackout' || item.type === 'redact') {
+              ctx.fillStyle = item.bgColor || (item.type === 'blackout' ? '#000000' : '#ffffff');
+              ctx.fillRect(x, y, w, h);
+            } else if (item.type === 'text') {
+              ctx.font = `${Math.round((item.fontSize || 14) * 2.0)}px ${item.fontFamily || 'Helvetica'}, sans-serif`;
+              ctx.fillStyle = item.textColor || '#000000';
+              ctx.textBaseline = 'top';
+              ctx.fillText(item.text || '', x, y);
+            } else if (item.dataUrl) {
+              const img = new Image();
+              img.src = item.dataUrl;
+              await new Promise(r => { img.onload = r; img.onerror = r; });
+              ctx.drawImage(img, x, y, w, h);
+            }
+          }
+
+          const imgData = c.toDataURL('image/jpeg', 0.94);
+          const imgBytes = dataUrlToBytes(imgData);
+          const embedded = await flatDoc.embedJpg(imgBytes);
+          const p = flatDoc.addPage([viewport.width / 2.0, viewport.height / 2.0]);
+          p.drawImage(embedded, { x: 0, y: 0, width: viewport.width / 2.0, height: viewport.height / 2.0 });
+        }
+
+        const outBytes = await flatDoc.save();
+        downloadPdfFile(outBytes, `edited_document_flattened_${Date.now()}.pdf`);
+        showToast("Flattened PDF downloaded successfully!", "fa-circle-check");
+      } catch (e) {
+        console.error("Flattened export error:", e);
+        alert("Error exporting PDF: " + e.message);
+      }
+    }
+
+    function exportCurrentPageAsPng() {
+      const canvas = document.getElementById('pdfRenderCanvas');
+      if (!canvas) return;
+
+      const c = document.createElement('canvas');
+      c.width = canvas.width;
+      c.height = canvas.height;
+      const ctx = c.getContext('2d');
+      ctx.drawImage(canvas, 0, 0);
+
+      const origPageIdx = pageOrder[activePageIndex];
+      const items = pageAnnotations[origPageIdx] || [];
+      for (const item of items) {
+        const x = item.x * currentScale;
+        const y = item.y * currentScale;
+        const w = item.w * currentScale;
+        const h = item.h * currentScale;
+
+        if (item.type === 'whiteout' || item.type === 'blackout' || item.type === 'redact') {
+          ctx.fillStyle = item.bgColor || (item.type === 'blackout' ? '#000000' : '#ffffff');
+          ctx.fillRect(x, y, w, h);
+        } else if (item.type === 'text') {
+          ctx.font = `${Math.round((item.fontSize || 14) * currentScale)}px ${item.fontFamily || 'Helvetica'}, sans-serif`;
+          ctx.fillStyle = item.textColor || '#000000';
+          ctx.textBaseline = 'top';
+          ctx.fillText(item.text || '', x, y);
+        } else if (item.dataUrl) {
+          const img = new Image();
+          img.src = item.dataUrl;
+          ctx.drawImage(img, x, y, w, h);
+        }
+      }
+
+      const link = document.createElement('a');
+      link.download = `page_${activePageIndex + 1}_${Date.now()}.png`;
+      link.href = c.toDataURL('image/png');
+      link.click();
+      showToast("Page exported as PNG image!", "fa-file-image");
     }
 
     function downloadPdfFile(bytes, filename) {
@@ -3048,8 +3182,12 @@
       a.download = filename;
       document.body.appendChild(a);
       a.click();
-      document.body.removeChild(a);
-      URL.revokeObjectURL(url);
+
+      // Delay revocation by 60s so Chrome/Edge download manager has full time to stream
+      setTimeout(() => {
+        if (a.parentNode) document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+      }, 60000);
     }
 
     // -------------------------------------------------------------------------
@@ -3103,6 +3241,9 @@
           e.preventDefault();
           deleteSelectedObject();
         }
+      } else if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 's') {
+        e.preventDefault();
+        exportEditedPdf(false);
       } else if (e.key.toLowerCase() === 'v') {
         setEditorMode('select');
       } else if (e.key.toLowerCase() === 't') {
@@ -3125,7 +3266,7 @@
     const themeIcon = document.querySelector('#themeToggleBtn i');
     if (themeIcon) themeIcon.className = savedTheme === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
 
-    // Donation Modal Placeholder (Consistent with AI Bots platform)
+    // Donation Modal Placeholder
     function openDonationModal() {
       window.location.href = 'donate.html';
     }

@@ -1295,44 +1295,43 @@
           headerY: null
         };
 
-        // Auto-detect bank from Page 1 Header
+        // Auto-detect bank strictly from Page 1 Header Banner (> 620 pt) to avoid matching bank names inside transaction narrations
         try {
           const p1 = await pdf.getPage(1);
           const p1Text = await p1.getTextContent({ normalizeWhitespace: true });
-          const headerItems = p1Text.items.filter(it => it.transform[5] > 340);
+          const headerItems = p1Text.items.filter(it => it.transform[5] > 620);
           const p1HeaderCombined = headerItems.map(it => it.str).join(' ').toUpperCase();
-          const p1AllCombined = p1Text.items.map(it => it.str).join(' ').toUpperCase();
           
           let detectedKey = '';
-          if (/PUNB|PUNJAB\s*NATIONAL|PNB\s*ONE/i.test(p1HeaderCombined) || /IFSC:\s*PUNB/i.test(p1AllCombined)) detectedKey = 'pnb';
-          else if (/SBIN|STATE\s*BANK\s*OF\s*INDIA|ONLINESBI|YONO/i.test(p1HeaderCombined) || /IFSC:\s*SBIN/i.test(p1AllCombined)) detectedKey = 'sbi';
-          else if (/HDFC0|HDFC\s*BANK/i.test(p1HeaderCombined) || /IFSC:\s*HDFC|HDFCBANK/i.test(p1AllCombined)) detectedKey = 'hdfc';
-          else if (/ICIC0|ICICI\s*BANK|IBIZZ|ICICIBANK/i.test(p1HeaderCombined) || /IFSC:\s*ICIC|ICICIBANK\.COM/i.test(p1AllCombined)) detectedKey = 'icici';
-          else if (/UTIB0|AXIS\s*BANK/i.test(p1HeaderCombined) || /IFSC:\s*UTIB|AXISBANK/i.test(p1AllCombined)) detectedKey = 'axis';
-          else if (/KKBK0|KOTAK\s*MAHINDRA/i.test(p1HeaderCombined) || /IFSC:\s*KKBK|KOTAKBANK/i.test(p1AllCombined)) detectedKey = 'kotak';
-          else if (/BARB0|BANK\s*OF\s*BARODA/i.test(p1HeaderCombined) || /IFSC:\s*BARB|BOBBANK/i.test(p1AllCombined)) detectedKey = 'bob';
-          else if (/CNRB0|CANARA\s*BANK/i.test(p1HeaderCombined) || /IFSC:\s*CNRB|CANARABANK/i.test(p1AllCombined)) detectedKey = 'canara';
-          else if (/UBIN0|UNION\s*BANK/i.test(p1HeaderCombined) || /IFSC:\s*UBIN/i.test(p1AllCombined)) detectedKey = 'union';
-          else if (/BKID0|BANK\s*OF\s*INDIA/i.test(p1HeaderCombined) || /IFSC:\s*BKID/i.test(p1AllCombined)) detectedKey = 'boi';
-          else if (/IDIB0|INDIAN\s*BANK/i.test(p1HeaderCombined) || /IFSC:\s*IDIB/i.test(p1AllCombined)) detectedKey = 'indian';
-          else if (/CBIN0|CENTRAL\s*BANK/i.test(p1HeaderCombined) || /IFSC:\s*CBIN/i.test(p1AllCombined)) detectedKey = 'cbi';
-          else if (/IOBA0|INDIAN\s*OVERSEAS/i.test(p1HeaderCombined) || /IFSC:\s*IOBA/i.test(p1AllCombined)) detectedKey = 'iob';
-          else if (/UCBA0|UCO\s*BANK/i.test(p1HeaderCombined) || /IFSC:\s*UCBA/i.test(p1AllCombined)) detectedKey = 'uco';
-          else if (/MAHB0|BANK\s*OF\s*MAHARASHTRA/i.test(p1HeaderCombined) || /IFSC:\s*MAHB/i.test(p1AllCombined)) detectedKey = 'bom';
-          else if (/PSIB0|PUNJAB\s*&\s*SIND/i.test(p1HeaderCombined) || /IFSC:\s*PSIB/i.test(p1AllCombined)) detectedKey = 'psb';
-          else if (/IDFB0|IDFC\s*FIRST/i.test(p1HeaderCombined) || /IFSC:\s*IDFB/i.test(p1AllCombined)) detectedKey = 'idfc';
-          else if (/YESB0|YES\s*BANK/i.test(p1HeaderCombined) || /IFSC:\s*YESB/i.test(p1AllCombined)) detectedKey = 'yes';
-          else if (/FDRL0|FEDERAL\s*BANK/i.test(p1HeaderCombined) || /IFSC:\s*FDRL/i.test(p1AllCombined)) detectedKey = 'federal';
-          else if (/BDBL0|BANDHAN\s*BANK/i.test(p1HeaderCombined) || /IFSC:\s*BDBL/i.test(p1AllCombined)) detectedKey = 'bandhan';
-          else if (/INDB0|INDUSIND\s*BANK/i.test(p1HeaderCombined) || /IFSC:\s*INDB/i.test(p1AllCombined)) detectedKey = 'indusind';
+          if (/HDFC\s*BANK|HDFC000|WE\s*UNDERSTAND\s*YOUR\s*WORLD/i.test(p1HeaderCombined)) detectedKey = 'hdfc';
+          else if (/PUNJAB\s*NATIONAL|PUNB0|PNB\s*ONE/i.test(p1HeaderCombined)) detectedKey = 'pnb';
+          else if (/STATE\s*BANK\s*OF\s*INDIA|SBIN0|ONLINESBI|YONO/i.test(p1HeaderCombined)) detectedKey = 'sbi';
+          else if (/ICICI\s*BANK|ICIC0|IBIZZ/i.test(p1HeaderCombined)) detectedKey = 'icici';
+          else if (/AXIS\s*BANK|UTIB0/i.test(p1HeaderCombined)) detectedKey = 'axis';
+          else if (/KOTAK\s*MAHINDRA|KKBK0/i.test(p1HeaderCombined)) detectedKey = 'kotak';
+          else if (/BANK\s*OF\s*BARODA|BARB0/i.test(p1HeaderCombined)) detectedKey = 'bob';
+          else if (/CANARA\s*BANK|CNRB0/i.test(p1HeaderCombined)) detectedKey = 'canara';
+          else if (/UNION\s*BANK|UBIN0/i.test(p1HeaderCombined)) detectedKey = 'union';
+          else if (/BANK\s*OF\s*INDIA|BKID0/i.test(p1HeaderCombined)) detectedKey = 'boi';
+          else if (/INDIAN\s*BANK|IDIB0/i.test(p1HeaderCombined)) detectedKey = 'indian';
+          else if (/CENTRAL\s*BANK|CBIN0/i.test(p1HeaderCombined)) detectedKey = 'cbi';
+          else if (/INDIAN\s*OVERSEAS|IOBA0/i.test(p1HeaderCombined)) detectedKey = 'iob';
+          else if (/UCO\s*BANK|UCBA0/i.test(p1HeaderCombined)) detectedKey = 'uco';
+          else if (/BANK\s*OF\s*MAHARASHTRA|MAHB0/i.test(p1HeaderCombined)) detectedKey = 'bom';
+          else if (/PUNJAB\s*&\s*SIND|PSIB0/i.test(p1HeaderCombined)) detectedKey = 'psb';
+          else if (/IDFC\s*FIRST|IDFB0/i.test(p1HeaderCombined)) detectedKey = 'idfc';
+          else if (/YES\s*BANK|YESB0/i.test(p1HeaderCombined)) detectedKey = 'yes';
+          else if (/FEDERAL\s*BANK|FDRL0/i.test(p1HeaderCombined)) detectedKey = 'federal';
+          else if (/BANDHAN\s*BANK|BDBL0/i.test(p1HeaderCombined)) detectedKey = 'bandhan';
+          else if (/INDUSIND\s*BANK|INDB0/i.test(p1HeaderCombined)) detectedKey = 'indusind';
           
           if (detectedKey && BANK_PROFILES[detectedKey]) {
             selectedBankKey = detectedKey;
             const selEl = document.getElementById('bankSelect');
             if (selEl) selEl.value = detectedKey;
             const legEl = document.getElementById('bankLedger');
-            if (legEl && !legEl.value) legEl.value = BANK_PROFILES[detectedKey].ledger;
-            console.log("Auto-detected bank from statement:", BANK_PROFILES[detectedKey].name);
+            if (legEl) legEl.value = BANK_PROFILES[detectedKey].ledger;
+            console.log("Auto-detected bank from statement header:", BANK_PROFILES[detectedKey].name);
           }
         } catch (e) {
           console.warn("Auto-detect bank error:", e);

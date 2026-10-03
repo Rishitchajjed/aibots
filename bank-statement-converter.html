@@ -1582,7 +1582,25 @@
         }
       }
 
-      return bestCoords;
+    function findInterRowBoundary(items, currY, nextY) {
+      const betweenItems = items.filter(it => it.y >= nextY - 2 && it.y <= currY + 2);
+      if (!betweenItems || betweenItems.length === 0) {
+        return (currY + nextY) / 2.0;
+      }
+      const uniqueYs = Array.from(new Set(betweenItems.map(it => Math.round(it.y * 10) / 10))).sort((a, b) => b - a);
+      if (uniqueYs.length <= 1) {
+        return (currY + nextY) / 2.0;
+      }
+      let maxGap = 0;
+      let bestSplit = (currY + nextY) / 2.0;
+      for (let j = 0; j < uniqueYs.length - 1; j++) {
+        const gap = uniqueYs[j] - uniqueYs[j + 1];
+        if (gap > maxGap) {
+          maxGap = gap;
+          bestSplit = (uniqueYs[j] + uniqueYs[j + 1]) / 2.0;
+        }
+      }
+      return bestSplit;
     }
 
     // =========================================================================
@@ -1682,6 +1700,14 @@
             continue;
           }
 
+          // Check if this line is part of metadata/account details (e.g. From : 01/04/2026 To : 02/10/2026 or Statement Period)
+          const lineItems = pageItems.filter(other => Math.abs(other.y - it.y) < 4);
+          const lineStr = lineItems.map(o => o.str).join(' ').toLowerCase();
+          if (/\b(?:from|to)\s*:\s*\d{1,2}[-/.]\d{1,2}/i.test(lineStr) ||
+              /statement\s*period|statement\s*of\s*account|generated\s*on|branch\s*code|cust\s*id|a\/c\s*open|joint\s*holders|nomination\s*:/i.test(lineStr)) {
+            continue;
+          }
+
           const pDate = parseStatementDate(m[1]);
           if (pDate) {
             rawDateItems.push({
@@ -1705,27 +1731,30 @@
         }
       }
 
+      // Precalculate adaptive inter-row boundaries based on largest natural vertical gaps
+      const cuts = [];
+      for (let j = 0; j < dateItems.length - 1; j++) {
+        cuts.push(findInterRowBoundary(pageItems, dateItems[j].y, dateItems[j + 1].y));
+      }
+
       const txns = [];
       for (let idx = 0; idx < dateItems.length; idx++) {
         const d = dateItems[idx];
         const currY = d.y;
         let yTop, yBottom;
 
-        // Top-anchored row partitioning so multi-line narrations are 100% attached to their row
         if (dateItems.length === 1) {
-          yTop = (pageHeaderY !== null) ? pageHeaderY - 2 : currY + 15;
+          yTop = (pageHeaderY !== null) ? pageHeaderY - 2 : currY + 25;
           yBottom = (footerMaxY !== null) ? footerMaxY + 2 : Math.max(0, currY - 35);
         } else if (idx === 0) {
-          const nextY = dateItems[idx + 1].y;
-          yTop = (pageHeaderY !== null) ? Math.min(pageHeaderY - 2, currY + 15) : currY + 15;
-          yBottom = nextY + 2.5;
+          yTop = (pageHeaderY !== null) ? Math.min(pageHeaderY - 2, currY + 25) : currY + 25;
+          yBottom = cuts[0];
         } else if (idx === dateItems.length - 1) {
-          yTop = currY + 2.5;
+          yTop = cuts[idx - 1];
           yBottom = (footerMaxY !== null) ? Math.max(footerMaxY + 2, currY - 35) : Math.max(0, currY - 35);
         } else {
-          const nextY = dateItems[idx + 1].y;
-          yTop = currY + 2.5;
-          yBottom = nextY + 2.5;
+          yTop = cuts[idx - 1];
+          yBottom = cuts[idx];
         }
 
         // Clamp yBottom strictly above footer summary

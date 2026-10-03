@@ -6,6 +6,9 @@
   <meta name="google-site-verification" content="ndzq-U-NLijgza_QqgQdcc2U3oMRoud_BT2ZZiwFREM">
   <meta name="google-site-verification" content="-Yb6Nx74gbZ3wRN5uP-Y8KKwDWlt1DPpxs4nA3PkE6M">
   <meta name="robots" content="index, follow">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
   
   <!-- Google Analytics -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-2L87FMQS3W"></script>
@@ -1708,25 +1711,21 @@
         const currY = d.y;
         let yTop, yBottom;
 
-        // Gapless Voronoi midpoint partitioning so no multi-line text is clipped
+        // Top-anchored row partitioning so multi-line narrations are 100% attached to their row
         if (dateItems.length === 1) {
-          yTop = (pageHeaderY !== null) ? pageHeaderY - 2 : currY + 35;
+          yTop = (pageHeaderY !== null) ? pageHeaderY - 2 : currY + 15;
           yBottom = (footerMaxY !== null) ? footerMaxY + 2 : Math.max(0, currY - 35);
         } else if (idx === 0) {
           const nextY = dateItems[idx + 1].y;
-          const h = currY - nextY;
-          yTop = (pageHeaderY !== null) ? Math.min(pageHeaderY - 2, currY + 35) : (currY + Math.min(h / 2.0, 30));
-          yBottom = (currY + nextY) / 2.0;
+          yTop = (pageHeaderY !== null) ? Math.min(pageHeaderY - 2, currY + 15) : currY + 15;
+          yBottom = nextY + 2.5;
         } else if (idx === dateItems.length - 1) {
-          const prevY = dateItems[idx - 1].y;
-          const h = prevY - currY;
-          yTop = (prevY + currY) / 2.0;
-          yBottom = (footerMaxY !== null) ? Math.max(footerMaxY + 2, currY - 35) : Math.max(0, currY - Math.max(h / 2.0, 30));
+          yTop = currY + 2.5;
+          yBottom = (footerMaxY !== null) ? Math.max(footerMaxY + 2, currY - 35) : Math.max(0, currY - 35);
         } else {
-          const prevY = dateItems[idx - 1].y;
           const nextY = dateItems[idx + 1].y;
-          yTop = (prevY + currY) / 2.0;
-          yBottom = (currY + nextY) / 2.0;
+          yTop = currY + 2.5;
+          yBottom = nextY + 2.5;
         }
 
         // Clamp yBottom strictly above footer summary

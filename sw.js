@@ -1,7 +1,7 @@
 // AI Bots Progressive Web App (PWA) Service Worker
 // Version: 1.3.0 (Cache-First Core + Stale-While-Revalidate Strategy)
 
-const CACHE_NAME = 'aibots-pwa-v3';
+const CACHE_NAME = 'aibots-pwa-v5';
 const PRECACHE_ASSETS = [
   './',
   './index.html',
@@ -54,18 +54,38 @@ self.addEventListener('activate', (event) => {
   );
 });
 
-// 3. Fetch Event: Stale-While-Revalidate with Offline Fallback
+// 3. Fetch Event: Network-First for HTML pages, Stale-While-Revalidate for static assets
 self.addEventListener('fetch', (event) => {
   const request = event.request;
 
-  // Ignore non-GET requests or external API calls (e.g. Google Apps Script)
+  // Ignore non-GET requests or external API calls
   if (request.method !== 'GET' || !request.url.startsWith(self.location.origin)) {
     return;
   }
 
+  // Network-First for navigation / HTML pages to prevent stale code lock-in
+  if (request.mode === 'navigate' || (request.headers.get('accept') && request.headers.get('accept').includes('text/html'))) {
+    event.respondWith(
+      fetch(request).then((networkResponse) => {
+        if (networkResponse && networkResponse.status === 200) {
+          const responseToCache = networkResponse.clone();
+          caches.open(CACHE_NAME).then((cache) => {
+            cache.put(request, responseToCache);
+          });
+        }
+        return networkResponse;
+      }).catch(() => {
+        return caches.match(request).then((cachedResponse) => {
+          return cachedResponse || caches.match('./offline.html');
+        });
+      })
+    );
+    return;
+  }
+
+  // Stale-While-Revalidate for static assets (css, js, images)
   event.respondWith(
     caches.match(request).then((cachedResponse) => {
-      // Fetch fresh version in the background
       const fetchPromise = fetch(request).then((networkResponse) => {
         if (networkResponse && networkResponse.status === 200) {
           const responseToCache = networkResponse.clone();
@@ -75,13 +95,9 @@ self.addEventListener('fetch', (event) => {
         }
         return networkResponse;
       }).catch(() => {
-        // If network fails and request is a navigation page, serve offline.html
-        if (request.mode === 'navigate') {
-          return caches.match('./offline.html');
-        }
+        return cachedResponse;
       });
 
-      // Return cached version immediately if available, else wait for network
       return cachedResponse || fetchPromise;
     })
   );

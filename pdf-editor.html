@@ -497,6 +497,33 @@
       0%, 100% { box-shadow: 0 0 8px rgba(245, 158, 11, 0.35); }
       50% { box-shadow: 0 0 18px rgba(245, 158, 11, 0.75); }
     }
+    .font-style-btn, .btn-tool-toggle {
+      padding: 5px 10px;
+      border-radius: 8px;
+      border: 1px solid var(--panel-border);
+      background: var(--bg-primary);
+      color: var(--text-secondary);
+      cursor: pointer;
+      font-weight: 700;
+      font-size: 0.85rem;
+      transition: all 0.15s ease;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 32px;
+      min-height: 30px;
+    }
+    .font-style-btn:hover, .btn-tool-toggle:hover {
+      background: var(--editor-accent-light);
+      color: var(--editor-accent);
+      border-color: var(--editor-accent);
+    }
+    .font-style-btn.active, .btn-tool-toggle.active {
+      background: var(--editor-accent) !important;
+      color: #ffffff !important;
+      border-color: var(--editor-accent) !important;
+      box-shadow: 0 0 8px rgba(99, 102, 241, 0.45);
+    }
 
     /* Secondary Contextual Properties Bar */
     .properties-bar {
@@ -1194,6 +1221,15 @@
           <input id="propFontSize" type="number" class="prop-input" value="14" min="6" max="120" style="width:58px;" onchange="updateSelectedObjectProp('fontSize', parseFloat(this.value)||14)">
         </div>
 
+        <div class="prop-item" id="propStyleGroup" style="display:none; gap:4px;">
+          <button id="propBoldBtn" type="button" class="btn-tool-toggle" onclick="togglePropBold()" title="Toggle Bold">
+            <i class="fas fa-bold"></i>
+          </button>
+          <button id="propItalicBtn" type="button" class="btn-tool-toggle" onclick="togglePropItalic()" title="Toggle Italic">
+            <i class="fas fa-italic"></i>
+          </button>
+        </div>
+
         <div class="prop-item">
           <label>Text Color:</label>
           <input id="propTextColor" type="color" class="prop-color" value="#000000" onchange="updateSelectedObjectProp('textColor', this.value)">
@@ -1217,7 +1253,10 @@
           </select>
         </div>
 
-        <div style="margin-left:auto; display:flex; gap:6px;">
+        <div style="margin-left:auto; display:flex; align-items:center; gap:8px;">
+          <button id="btnDeselectSelected" class="btn-action btn-success" style="padding:4px 12px; font-size:0.75rem;" onclick="deselectCurrentObject()" title="Deselect and remove blue box (Esc)">
+            <i class="fas fa-check"></i> Done (Deselect)
+          </button>
           <button id="btnDeleteSelected" class="btn-action btn-danger" style="padding:4px 10px; font-size:0.75rem;" onclick="deleteSelectedObject()">
             <i class="fas fa-trash"></i> Delete
           </button>
@@ -1284,6 +1323,30 @@
         <div style="margin-bottom: 14px;">
           <label style="font-size: 0.84rem; font-weight: 800; margin-bottom: 6px; display: block; color: var(--text-primary);">Type replacement text:</label>
           <input type="text" id="wemNewTextInput" class="word-edit-main-input" placeholder="Type new word or phrase..." autocomplete="off" spellcheck="false">
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1.4fr 1fr; gap: 10px; margin-bottom: 12px; background: var(--bg-primary); padding: 10px 12px; border-radius: 12px; border: 1px solid var(--panel-border);">
+          <div>
+            <label style="font-size: 0.78rem; font-weight: 700; color: var(--text-secondary); display: block; margin-bottom: 5px;">Matching Font:</label>
+            <select id="wemFontFamily" class="prop-select" style="width: 100%; font-weight: 600;">
+              <option value="TimesRoman">Times New Roman (Legal / Serif)</option>
+              <option value="Helvetica">Helvetica / Arial (Standard)</option>
+              <option value="Courier">Courier (Monospace / Typewriter)</option>
+              <option value="Caveat">Caveat (Handwritten)</option>
+            </select>
+          </div>
+          <div>
+            <label style="font-size: 0.78rem; font-weight: 700; color: var(--text-secondary); display: block; margin-bottom: 5px;">Size &amp; Style:</label>
+            <div style="display: flex; align-items: center; gap: 6px;">
+              <input type="number" id="wemFontSize" class="prop-input" value="14" min="6" max="100" step="0.5" style="width: 58px; font-weight: 700;" title="Font Size in points">
+              <button type="button" id="wemBoldBtn" class="font-style-btn" onclick="toggleWemBold()" title="Make Text Bold (Matching surrounding text)">
+                <i class="fas fa-bold"></i>
+              </button>
+              <button type="button" id="wemItalicBtn" class="font-style-btn" onclick="toggleWemItalic()" title="Make Text Italic">
+                <i class="fas fa-italic"></i>
+              </button>
+            </div>
+          </div>
         </div>
 
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 16px; background: var(--bg-primary); padding: 12px; border-radius: 12px; border: 1px solid var(--panel-border);">
@@ -1552,6 +1615,7 @@
 
     // Active Word Edit Session
     let activeWordEditData = null;
+    let digitalPageWords = {};    // Cache digital extracted words per page { origIdx: [ words ] }
     let ocrPageWords = {};        // Cache OCR extracted words { origIdx: [ words ] }
     let scannedPages = new Set(); // Track pages that contain pure scans / images
     let isOcrRunning = false;
@@ -1678,6 +1742,7 @@
       activePageIndex = 0;
       undoStack = [];
       redoStack = [];
+      digitalPageWords = {};
       ocrPageWords = {};
       scannedPages = new Set();
       isOcrRunning = false;
@@ -1920,7 +1985,7 @@
 
         if (hasTextItems) {
           scannedPages.delete(origPageIdx);
-          renderWordBoxes(textContent, viewport, textLayer);
+          renderWordBoxes(textContent, viewport, textLayer, origPageIdx);
           if (activeTool === 'edit-text') resetStandardModeBanner();
         } else {
           scannedPages.add(origPageIdx);
@@ -1943,9 +2008,12 @@
     // -------------------------------------------------------------------------
     // Precision Word Splitting & Clickable Word Box Generation
     // -------------------------------------------------------------------------
-    function renderWordBoxes(textContent, viewport, container) {
+    function renderWordBoxes(textContent, viewport, container, origPageIdx) {
       container.innerHTML = '';
       if (!textContent || !textContent.items) return;
+      if (origPageIdx !== undefined) {
+        digitalPageWords[origPageIdx] = [];
+      }
 
       container.className = 'text-detect-layer interactive-mode';
 
@@ -1965,6 +2033,9 @@
         const tokens = fullStr.match(/\S+|\s+/g) || [fullStr];
         const totalMeasuredWidth = measureCtx.measureText(fullStr).width || fontWidth;
         const widthRatio = fontWidth / (totalMeasuredWidth || 1);
+
+        const fontStyleObj = (textContent.styles && item.fontName) ? textContent.styles[item.fontName] : null;
+        const rawFontName = (fontStyleObj && fontStyleObj.fontFamily) ? fontStyleObj.fontFamily : (item.fontName || '');
 
         let currentOffsetX = 0;
 
@@ -2003,8 +2074,13 @@
               pdfY: pdfY,
               pdfW: pdfW,
               pdfH: pdfH,
-              pdfFontSize: pdfFontSize
+              pdfFontSize: pdfFontSize,
+              rawFontName: rawFontName
             };
+
+            if (origPageIdx !== undefined && digitalPageWords[origPageIdx]) {
+              digitalPageWords[origPageIdx].push(wordData);
+            }
 
             wordEl.onclick = (e) => {
               e.stopPropagation();
@@ -2183,6 +2259,102 @@
     // -------------------------------------------------------------------------
     // Word Editor Modal Logic (Dedicated, Obvious, and Unmissable)
     // -------------------------------------------------------------------------
+    let lastUsedFontFamily = null;
+    let lastUsedBold = null;
+    let lastUsedFontSize = null;
+
+    function toggleWemBold() {
+      const btn = document.getElementById('wemBoldBtn');
+      if (btn) btn.classList.toggle('active');
+    }
+
+    function toggleWemItalic() {
+      const btn = document.getElementById('wemItalicBtn');
+      if (btn) btn.classList.toggle('active');
+    }
+
+    function togglePropBold() {
+      if (!selectedObject || selectedObject.type !== 'text') return;
+      const isCurrentlyBold = selectedObject.fontWeight === 'bold' || selectedObject.isBold;
+      selectedObject.fontWeight = isCurrentlyBold ? 'normal' : 'bold';
+      selectedObject.isBold = !isCurrentlyBold;
+      lastUsedBold = !isCurrentlyBold;
+      updatePropStyleButtons();
+      renderActivePage();
+      pushUndoState();
+    }
+
+    function togglePropItalic() {
+      if (!selectedObject || selectedObject.type !== 'text') return;
+      const isCurrentlyItalic = selectedObject.fontStyle === 'italic' || selectedObject.isItalic;
+      selectedObject.fontStyle = isCurrentlyItalic ? 'normal' : 'italic';
+      selectedObject.isItalic = !isCurrentlyItalic;
+      updatePropStyleButtons();
+      renderActivePage();
+      pushUndoState();
+    }
+
+    function updatePropStyleButtons() {
+      if (!selectedObject || selectedObject.type !== 'text') return;
+      const bBtn = document.getElementById('propBoldBtn');
+      const iBtn = document.getElementById('propItalicBtn');
+      if (bBtn) bBtn.classList.toggle('active', selectedObject.fontWeight === 'bold' || selectedObject.isBold);
+      if (iBtn) iBtn.classList.toggle('active', selectedObject.fontStyle === 'italic' || selectedObject.isItalic);
+    }
+
+    function detectFontAndWeightForWord(wordData) {
+      let fontFamily = lastUsedFontFamily || 'TimesRoman'; // Default to Times Roman for Indian legal/agreements
+      let isBold = lastUsedBold !== null ? lastUsedBold : false;
+      let fontSize = wordData.pdfFontSize ? Math.round(wordData.pdfFontSize * 10) / 10 : (lastUsedFontSize || 14);
+
+      const origPageIdx = pageOrder[activePageIndex];
+      const pageWords = [...(digitalPageWords[origPageIdx] || []), ...(ocrPageWords[origPageIdx] || [])];
+      const nearbyWordsOnLine = pageWords.filter(w => Math.abs(w.pdfY - wordData.pdfY) < 6 && w.word !== wordData.word);
+
+      // 1. Digital PDF fontName inspection from current word or nearby words on the line
+      const fontsToTest = [wordData.rawFontName, ...nearbyWordsOnLine.map(w => w.rawFontName)].filter(Boolean);
+      for (const fn of fontsToTest) {
+        const lower = fn.toLowerCase();
+        if (lower.includes('times') || lower.includes('roman') || lower.includes('serif') || lower.includes('cambria') || lower.includes('georgia')) {
+          fontFamily = 'TimesRoman';
+        } else if (lower.includes('courier') || lower.includes('mono')) {
+          fontFamily = 'Courier';
+        } else if (lower.includes('arial') || lower.includes('helvetica') || lower.includes('sans')) {
+          fontFamily = 'Helvetica';
+        }
+
+        if (lower.includes('bold') || lower.includes('black') || lower.includes('heavy') || lower.includes('700') || lower.includes('800') || lower.includes('900')) {
+          isBold = true;
+        }
+      }
+
+      // 2. Agreement uppercase / title bold heuristic for current word
+      const textStr = (wordData.word || '').trim();
+      if (textStr.length >= 2 && textStr === textStr.toUpperCase() && !/^[0-9]+$/.test(textStr)) {
+        isBold = true;
+      }
+
+      // 3. Inspect nearby words on the same line (same pdfY ±6)
+      if (nearbyWordsOnLine.length > 0) {
+        // If surrounding words are uppercase (e.g. "DAY OF JUNE 2026 BETWEEN"), this entire header/date line is bold!
+        const alphaWords = nearbyWordsOnLine.filter(w => /[a-zA-Z]/.test(w.word));
+        if (alphaWords.length > 0) {
+          const capsCount = alphaWords.filter(w => w.word === w.word.toUpperCase()).length;
+          if (capsCount / alphaWords.length >= 0.5) {
+            isBold = true;
+            if (!lastUsedFontFamily) fontFamily = 'TimesRoman'; // Agreements standard
+          }
+        }
+
+        const avgSize = nearbyWordsOnLine.reduce((sum, w) => sum + (w.pdfFontSize || 14), 0) / nearbyWordsOnLine.length;
+        if (avgSize && Math.abs(avgSize - fontSize) < 5) {
+          fontSize = Math.round(avgSize * 10) / 10;
+        }
+      }
+
+      return { fontFamily, isBold, fontSize };
+    }
+
     function openWordEditorModal(wordEl, wordData) {
       activeWordEditData = wordData;
 
@@ -2196,6 +2368,26 @@
 
       const input = document.getElementById('wemNewTextInput');
       input.value = wordData.word || '';
+
+      const detected = detectFontAndWeightForWord(wordData);
+
+      const fontSelect = document.getElementById('wemFontFamily');
+      if (fontSelect) fontSelect.value = wordData.fontFamily || detected.fontFamily;
+
+      const sizeInput = document.getElementById('wemFontSize');
+      if (sizeInput) sizeInput.value = wordData.fontSize || detected.fontSize;
+
+      const boldBtn = document.getElementById('wemBoldBtn');
+      if (boldBtn) {
+        const shouldBeBold = (wordData.fontWeight === 'bold' || wordData.isBold !== undefined ? wordData.isBold : detected.isBold);
+        boldBtn.classList.toggle('active', shouldBeBold);
+      }
+
+      const italicBtn = document.getElementById('wemItalicBtn');
+      if (italicBtn) {
+        const shouldBeItalic = (wordData.fontStyle === 'italic' || wordData.isItalic !== undefined ? wordData.isItalic : false);
+        italicBtn.classList.toggle('active', shouldBeItalic);
+      }
 
       if (wordData.textColor) {
         document.getElementById('wemTextColor').value = wordData.textColor;
@@ -2241,17 +2433,33 @@
       const newText = input.value;
       const textColor = document.getElementById('wemTextColor').value || '#000000';
       const maskColor = document.getElementById('wemMaskColor').value || '#ffffff';
+      const fontFamily = document.getElementById('wemFontFamily').value || 'TimesRoman';
+      const fontSize = parseFloat(document.getElementById('wemFontSize').value) || 14;
+      const isBold = document.getElementById('wemBoldBtn').classList.contains('active');
+      const isItalic = document.getElementById('wemItalicBtn').classList.contains('active');
+
+      // Remember choices for nearby and subsequent words!
+      lastUsedFontFamily = fontFamily;
+      lastUsedBold = isBold;
+      lastUsedFontSize = fontSize;
 
       if (activeWordEditData.isAnnotation && activeWordEditData.annotationObj) {
         const item = activeWordEditData.annotationObj;
         item.text = newText;
         item.textColor = textColor;
-        item.w = Math.max(item.w, (newText.length * (item.fontSize || 14) * 0.6));
+        item.fontFamily = fontFamily;
+        item.fontSize = fontSize;
+        item.fontWeight = isBold ? 'bold' : 'normal';
+        item.fontStyle = isItalic ? 'italic' : 'normal';
+        item.isBold = isBold;
+        item.isItalic = isItalic;
+        item.w = Math.max(item.w, (newText.length * (fontSize * 0.6)));
+        deselectCurrentObject();
         renderActivePage();
         pushUndoState();
         showToast(`Text updated: "${newText}"`, 'fa-check');
       } else {
-        commitWordReplacement(activeWordEditData, newText, textColor, maskColor);
+        commitWordReplacement(activeWordEditData, newText, textColor, maskColor, fontFamily, fontSize, isBold, isItalic);
       }
       closeWordEditorModal();
     }
@@ -2268,7 +2476,7 @@
       closeWordEditorModal();
     }
 
-    function commitWordReplacement(wordData, newText, textColor = '#000000', maskColor = '#ffffff') {
+    function commitWordReplacement(wordData, newText, textColor = '#000000', maskColor = '#ffffff', fontFamily = 'TimesRoman', fontSize = 14, isBold = false, isItalic = false) {
       const origPageIdx = pageOrder[activePageIndex];
       if (!pageAnnotations[origPageIdx]) pageAnnotations[origPageIdx] = [];
 
@@ -2295,19 +2503,24 @@
           type: 'text',
           x: wordData.pdfX,
           y: wordData.pdfY,
-          w: Math.max(wordData.pdfW, newText.length * (wordData.pdfFontSize * 0.6)),
+          w: Math.max(wordData.pdfW, newText.length * (fontSize * 0.6)),
           h: wordData.pdfH,
           text: newText,
-          fontSize: wordData.pdfFontSize,
-          fontFamily: 'Helvetica',
+          fontSize: fontSize,
+          fontFamily: fontFamily,
+          fontWeight: isBold ? 'bold' : 'normal',
+          fontStyle: isItalic ? 'italic' : 'normal',
+          isBold: isBold,
+          isItalic: isItalic,
           textColor: textColor || '#000000',
           bgColor: 'transparent',
           opacity: 1.0
         };
         pageAnnotations[origPageIdx].push(textObj);
-        selectStageElement(textObj);
       }
 
+      // Automatically deselect so NO blue box or resize handles remain on the word!
+      deselectCurrentObject();
       renderActivePage();
       pushUndoState();
       showToast(`Word updated: "${newText || '(erased)'}"`, 'fa-check');
@@ -2339,8 +2552,9 @@
           el.style.backgroundColor = item.bgColor || 'transparent';
           el.style.color = item.textColor || '#000000';
           el.style.fontSize = Math.round((item.fontSize || 14) * currentScale) + 'px';
-          el.style.fontFamily = item.fontFamily || 'Helvetica';
-          el.style.fontWeight = item.fontWeight || 'normal';
+          el.style.fontFamily = item.fontFamily === 'TimesRoman' ? '"Times New Roman", Times, serif' : (item.fontFamily === 'Courier' ? '"Courier New", Courier, monospace' : (item.fontFamily || 'Helvetica, Arial, sans-serif'));
+          el.style.fontWeight = (item.fontWeight === 'bold' || item.isBold) ? 'bold' : 'normal';
+          el.style.fontStyle = (item.fontStyle === 'italic' || item.isItalic) ? 'italic' : 'normal';
           el.style.display = 'flex';
           el.style.alignItems = 'center';
           el.textContent = item.text || '';
@@ -2385,7 +2599,11 @@
         annotationObj: selectedObject,
         word: selectedObject.text || '',
         textColor: selectedObject.textColor || '#000000',
-        maskColor: selectedObject.bgColor || '#ffffff'
+        maskColor: selectedObject.bgColor || '#ffffff',
+        fontFamily: selectedObject.fontFamily,
+        fontSize: selectedObject.fontSize,
+        isBold: selectedObject.fontWeight === 'bold' || selectedObject.isBold,
+        isItalic: selectedObject.fontStyle === 'italic' || selectedObject.isItalic
       });
     }
 
@@ -2414,7 +2632,7 @@
       });
 
       const propBar = document.getElementById('propertiesBar');
-      propBar.classList.add('active');
+      if (propBar) propBar.classList.add('active');
 
       const textGroup = document.getElementById('propTextContentGroup');
       if (textGroup) {
@@ -2432,6 +2650,16 @@
       if (item.textColor) document.getElementById('propTextColor').value = item.textColor;
       if (item.bgColor && item.bgColor !== 'transparent') document.getElementById('propBgColor').value = item.bgColor;
       if (item.opacity !== undefined) document.getElementById('propOpacity').value = item.opacity;
+      updatePropStyleButtons();
+    }
+
+    function deselectCurrentObject() {
+      selectedObject = null;
+      document.querySelectorAll('.stage-element').forEach(el => {
+        el.classList.remove('selected');
+      });
+      const propBar = document.getElementById('propertiesBar');
+      if (propBar) propBar.classList.remove('active');
     }
 
     function updateSelectedObjectProp(prop, val) {
@@ -2520,15 +2748,16 @@
     function handleViewportClick(e) {
       if (e.target.closest('.stage-element') || e.target.closest('.word-box')) return;
 
+      // Always deselect any active object when clicking canvas or viewport background
+      deselectCurrentObject();
+
       const stage = document.getElementById('pageStageWrapper');
+      if (!stage) return;
       const rect = stage.getBoundingClientRect();
       const screenX = e.clientX - rect.left;
       const screenY = e.clientY - rect.top;
 
       if (screenX < 0 || screenY < 0 || screenX > rect.width || screenY > rect.height) {
-        selectedObject = null;
-        document.getElementById('propertiesBar').classList.remove('active');
-        document.querySelectorAll('.stage-element').forEach(el => el.classList.remove('selected'));
         return;
       }
 
@@ -3191,8 +3420,13 @@
         const outDoc = await PDFLib.PDFDocument.create();
 
         const helveticaFont = await outDoc.embedFont(PDFLib.StandardFonts.Helvetica);
+        const helveticaBold = await outDoc.embedFont(PDFLib.StandardFonts.HelveticaBold);
+        const helveticaOblique = await outDoc.embedFont(PDFLib.StandardFonts.HelveticaOblique);
         const timesFont = await outDoc.embedFont(PDFLib.StandardFonts.TimesRoman);
+        const timesBold = await outDoc.embedFont(PDFLib.StandardFonts.TimesRomanBold);
+        const timesItalic = await outDoc.embedFont(PDFLib.StandardFonts.TimesRomanItalic);
         const courierFont = await outDoc.embedFont(PDFLib.StandardFonts.Courier);
+        const courierBold = await outDoc.embedFont(PDFLib.StandardFonts.CourierBold);
 
         let donorDoc = null;
         if (window.pendingDonorBytes) {
@@ -3241,9 +3475,16 @@
                 opacity: item.opacity !== undefined ? item.opacity : 1.0
               });
             } else if (item.type === 'text') {
+              const isB = (item.fontWeight === 'bold' || item.isBold);
+              const isI = (item.fontStyle === 'italic' || item.isItalic);
               let font = helveticaFont;
-              if (item.fontFamily === 'TimesRoman') font = timesFont;
-              else if (item.fontFamily === 'Courier') font = courierFont;
+              if (item.fontFamily === 'TimesRoman') {
+                font = isB ? timesBold : (isI ? timesItalic : timesFont);
+              } else if (item.fontFamily === 'Courier') {
+                font = isB ? courierBold : courierFont;
+              } else {
+                font = isB ? helveticaBold : (isI ? helveticaOblique : helveticaFont);
+              }
 
               const [r, g, b] = parseColorToRgb(item.textColor || '#000000');
               const cleanText = sanitizeForPdfLib(item.text || '');
@@ -3328,7 +3569,10 @@
               ctx.fillStyle = item.bgColor || (item.type === 'blackout' ? '#000000' : '#ffffff');
               ctx.fillRect(x, y, w, h);
             } else if (item.type === 'text') {
-              ctx.font = `${Math.round((item.fontSize || 14) * 2.0)}px ${item.fontFamily || 'Helvetica'}, sans-serif`;
+              const fontFam = item.fontFamily === 'TimesRoman' ? '"Times New Roman", Times, serif' : (item.fontFamily === 'Courier' ? '"Courier New", Courier, monospace' : (item.fontFamily || 'Helvetica, Arial, sans-serif'));
+              const fontW = (item.fontWeight === 'bold' || item.isBold) ? 'bold ' : '';
+              const fontS = (item.fontStyle === 'italic' || item.isItalic) ? 'italic ' : '';
+              ctx.font = `${fontS}${fontW}${Math.round((item.fontSize || 14) * 2.0)}px ${fontFam}`;
               ctx.fillStyle = item.textColor || '#000000';
               ctx.textBaseline = 'top';
               ctx.fillText(item.text || '', x, y);
@@ -3378,7 +3622,10 @@
           ctx.fillStyle = item.bgColor || (item.type === 'blackout' ? '#000000' : '#ffffff');
           ctx.fillRect(x, y, w, h);
         } else if (item.type === 'text') {
-          ctx.font = `${Math.round((item.fontSize || 14) * currentScale)}px ${item.fontFamily || 'Helvetica'}, sans-serif`;
+          const fontFam = item.fontFamily === 'TimesRoman' ? '"Times New Roman", Times, serif' : (item.fontFamily === 'Courier' ? '"Courier New", Courier, monospace' : (item.fontFamily || 'Helvetica, Arial, sans-serif'));
+          const fontW = (item.fontWeight === 'bold' || item.isBold) ? 'bold ' : '';
+          const fontS = (item.fontStyle === 'italic' || item.isItalic) ? 'italic ' : '';
+          ctx.font = `${fontS}${fontW}${Math.round((item.fontSize || 14) * currentScale)}px ${fontFam}`;
           ctx.fillStyle = item.textColor || '#000000';
           ctx.textBaseline = 'top';
           ctx.fillText(item.text || '', x, y);
@@ -3463,6 +3710,8 @@
           e.preventDefault();
           deleteSelectedObject();
         }
+      } else if (e.key === 'Escape') {
+        deselectCurrentObject();
       } else if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 's') {
         e.preventDefault();
         exportEditedPdf(false);

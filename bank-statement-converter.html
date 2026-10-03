@@ -1896,26 +1896,12 @@
         } else {
           // Standard Multi-Column Layout (Separate Debit & Credit columns)
           if (amtItems.length >= 2) {
-            let balItem = null;
-            let candTxItems = [];
-            if (sharedHeaders.headerXBalance !== null) {
-              for (const a of amtItems) {
-                if (Math.abs(a.x - sharedHeaders.headerXBalance) <= 55 || a.x >= sharedHeaders.headerXBalance - 20) {
-                  balItem = a;
-                } else {
-                  candTxItems.push(a);
-                }
-              }
-            }
-            if (!balItem) {
-              balItem = amtItems[amtItems.length - 1];
-              candTxItems = amtItems.slice(0, -1);
-            }
-
+            const balItem = amtItems[amtItems.length - 1];
+            const candTxItems = amtItems.slice(0, -1);
             balance = balItem.val;
 
             if (candTxItems.length > 0) {
-              let bestCand = candTxItems[0];
+              const bestCand = candTxItems[0];
               const txnAmt = bestCand.val;
               const txnX = bestCand.x;
 

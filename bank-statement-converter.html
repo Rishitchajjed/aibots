@@ -1582,6 +1582,9 @@
         }
       }
 
+      return bestCoords;
+    }
+
     function findInterRowBoundary(items, currY, nextY) {
       const betweenItems = items.filter(it => it.y >= nextY - 2 && it.y <= currY + 2);
       if (!betweenItems || betweenItems.length === 0) {

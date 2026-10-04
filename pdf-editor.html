@@ -5051,6 +5051,64 @@
       }
     }
 
+    function isGarbageLine(line, origPageIdx, pageWidth, pageHeight) {
+      const text = (line.text || '').trim();
+      if (!text) return true;
+
+      const x = line.x;
+      const y = line.y;
+      const w = line.w;
+      const conf = line.confidence !== undefined ? line.confidence : 80;
+
+      // 1. Extreme left/right/top edge artifacts (punch holes, binder shadows, scanner borders)
+      const isLeftMargin = (x < pageWidth * 0.08);
+      const isRightMargin = (x + w > pageWidth * 0.96);
+      const isBottomMargin = (y > pageHeight * 0.88);
+
+      // Isolated 1-2 char noise along edges (e.g. '|', 'i', ';', 'Y/', ') }', '4')
+      if ((isLeftMargin || isRightMargin || isBottomMargin) && text.length <= 2 && !/^\d+$/.test(text)) {
+        return true;
+      }
+
+      // 2. Page 1 stamp paper ornamental graphic / guilloche noise
+      // On Indian and international revenue stamp papers, top 32% has national emblem, currency microprint
+      if (origPageIdx === 0 && y < pageHeight * 0.32) {
+        const isLegitContractText = /tenancy|agreement|lease|deed|between|party|landlord|tenant/i.test(text);
+        if (!isLegitContractText) {
+          const symbolCount = (text.match(/[^a-zA-Z0-9\s]/g) || []).length;
+          const symbolRatio = symbolCount / text.length;
+          const tokens = text.split(/\s+/).filter(Boolean);
+          const avgTokenLen = tokens.reduce((acc, t) => acc + t.length, 0) / (tokens.length || 1);
+
+          if (symbolRatio > 0.18 || avgTokenLen < 3.0 || conf < 65 || text.includes('~') || text.includes('=') || text.includes('§') || text.includes('«')) {
+            return true;
+          }
+        }
+      }
+
+      // 3. Handwritten signature OCR noise at the bottom of pages
+      // When English OCR attempts to read cursive English or Hindi signatures, it produces noise like:
+      // '5) x ot', 'By', 'éol', '|', 'i 1 BRIE : 2', '9.0 ud | > A Sal', '3 |'
+      if (isBottomMargin) {
+        const isCenteredPageNum = /^\d{1,3}$/.test(text) && Math.abs((x + w / 2) - (pageWidth / 2)) < pageWidth * 0.25;
+        if (!isCenteredPageNum) {
+          const symbolCount = (text.match(/[^a-zA-Z0-9\s]/g) || []).length;
+          const symbolRatio = symbolCount / text.length;
+          if (symbolRatio > 0.18 || conf < 55 || text.length <= 3 || /^[\d\W\s_]+$/.test(text) || /^[xX\)\|\:\>\<\.\s]+$/.test(text)) {
+            return true;
+          }
+        }
+      }
+
+      // 4. Low-confidence gibberish lines anywhere on page
+      if (conf < 35 && text.length > 3) {
+        const symbolCount = (text.match(/[^a-zA-Z0-9\s]/g) || []).length;
+        if (symbolCount / text.length > 0.28) return true;
+      }
+
+      return false;
+    }
+
     async function getPageLayoutForExport(origPageIdx, ocrStrategy, includeEdits, ocrWorker, onProgress) {
       if (origPageIdx >= 9999) {
         return {
@@ -5069,6 +5127,7 @@
       const pageWidth = viewport.width;
       const pageHeight = viewport.height;
 
+      let extractedLines = [];
       let rawWords = [];
 
       // 1. Digital text extraction
@@ -5076,7 +5135,9 @@
         try {
           const textContent = await page.getTextContent();
           if (textContent && textContent.items && textContent.items.length > 3) {
-            rawWords = extractWordsFromPdfTextContent(textContent, viewport);
+            const digitalRes = extractLinesFromPdfTextContent(textContent, viewport, origPageIdx, pageWidth, pageHeight);
+            extractedLines = digitalRes.lines;
+            rawWords = digitalRes.words;
           }
         } catch (e) {
           console.warn("TextContent read notice:", e);
@@ -5095,25 +5156,76 @@
         await page.render({ canvasContext: ctx, viewport: ocrViewport }).promise;
 
         const ocrResult = await ocrWorker.recognize(ocrCanvas);
-        if (ocrResult && ocrResult.data && ocrResult.data.words) {
-          for (const w of ocrResult.data.words) {
-            const text = (w.text || '').trim();
-            if (!text) continue;
-            const screenW = (w.bbox.x1 - w.bbox.x0) / ocrScale;
-            const screenH = (w.bbox.y1 - w.bbox.y0) / ocrScale;
-            if (screenW < 3 || screenH < 5) continue;
-            rawWords.push({
-              word: text,
-              pdfX: w.bbox.x0 / ocrScale,
-              pdfY: w.bbox.y0 / ocrScale,
-              pdfW: screenW,
-              pdfH: screenH,
-              fontSize: Math.max(10, Math.round(screenH * 1.18 * 10) / 10),
-              fontFamily: docPrimaryFont || 'TimesRoman',
-              isBold: w.confidence > 70 && /^[A-Z0-9\s]+$/.test(text) && text.length > 2,
-              isItalic: false,
-              textColor: '#000000'
-            });
+        if (ocrResult && ocrResult.data && ocrResult.data.lines && ocrResult.data.lines.length > 0) {
+          for (const rawLine of ocrResult.data.lines) {
+            const lineText = (rawLine.text || '').trim();
+            if (!lineText) continue;
+
+            const lineX = rawLine.bbox.x0 / ocrScale;
+            const lineY = rawLine.bbox.y0 / ocrScale;
+            const lineW = (rawLine.bbox.x1 - rawLine.bbox.x0) / ocrScale;
+            const lineH = (rawLine.bbox.y1 - rawLine.bbox.y0) / ocrScale;
+            const lineConf = rawLine.confidence !== undefined ? rawLine.confidence : 80;
+
+            const lineObj = {
+              text: lineText,
+              x: lineX,
+              y: lineY,
+              w: lineW,
+              h: lineH,
+              confidence: lineConf
+            };
+
+            if (isGarbageLine(lineObj, origPageIdx, pageWidth, pageHeight)) {
+              continue;
+            }
+
+            const cleanLineWords = [];
+            const srcWords = rawLine.words || [];
+
+            for (const sw of srcWords) {
+              const wText = (sw.text || '').trim();
+              if (!wText) continue;
+              if (wText.length === 1 && /^[|~=_^\\/`]$/.test(wText)) continue;
+
+              const wx = sw.bbox.x0 / ocrScale;
+              const wy = sw.bbox.y0 / ocrScale;
+              const ww = (sw.bbox.x1 - sw.bbox.x0) / ocrScale;
+              const wh = (sw.bbox.y1 - sw.bbox.y0) / ocrScale;
+              if (ww < 2 || wh < 4) continue;
+
+              const estFontSize = Math.min(20, Math.max(9.5, Math.round(wh * 0.82 * 2) / 2));
+              const isBold = (sw.confidence > 70 && /^[A-Z0-9\s.,:\-()]+$/.test(wText) && wText.length >= 2) || (sw.is_bold);
+
+              const wordData = {
+                word: wText,
+                pdfX: wx,
+                pdfY: wy,
+                pdfW: ww,
+                pdfH: wh,
+                fontSize: estFontSize,
+                fontFamily: docPrimaryFont || 'TimesRoman',
+                isBold: !!isBold,
+                isItalic: false,
+                textColor: '#000000',
+                confidence: sw.confidence
+              };
+              cleanLineWords.push(wordData);
+              rawWords.push(wordData);
+            }
+
+            if (cleanLineWords.length > 0) {
+              cleanLineWords.sort((a, b) => a.pdfX - b.pdfX);
+              extractedLines.push({
+                words: cleanLineWords,
+                x: cleanLineWords[0].pdfX,
+                y: lineY,
+                h: lineH,
+                w: (cleanLineWords[cleanLineWords.length - 1].pdfX + cleanLineWords[cleanLineWords.length - 1].pdfW) - cleanLineWords[0].pdfX,
+                text: cleanLineWords.map(w => w.word).join(' '),
+                confidence: lineConf
+              });
+            }
           }
         }
       }
@@ -5125,14 +5237,24 @@
         const textAnnots = annots.filter(a => a.type === 'text');
 
         if (whiteouts.length > 0) {
+          extractedLines.forEach(l => {
+            l.words = l.words.filter(w => {
+              const wCenterX = w.pdfX + w.pdfW / 2;
+              const wCenterY = w.pdfY + w.pdfH / 2;
+              return !whiteouts.some(m =>
+                wCenterX >= m.x && wCenterX <= (m.x + m.w) &&
+                wCenterY >= m.y && wCenterY <= (m.y + m.h)
+              );
+            });
+          });
+          extractedLines = extractedLines.filter(l => l.words.length > 0);
           rawWords = rawWords.filter(w => {
             const wCenterX = w.pdfX + w.pdfW / 2;
             const wCenterY = w.pdfY + w.pdfH / 2;
-            const isCovered = whiteouts.some(m => 
+            return !whiteouts.some(m =>
               wCenterX >= m.x && wCenterX <= (m.x + m.w) &&
               wCenterY >= m.y && wCenterY <= (m.y + m.h)
             );
-            return !isCovered;
           });
         }
 
@@ -5140,24 +5262,37 @@
           if (!t.text || !t.text.trim()) continue;
           const tokens = t.text.trim().split(/\s+/);
           const estTokenW = t.w / tokens.length;
+          const annotWords = [];
           tokens.forEach((tok, idx) => {
-            rawWords.push({
+            const wd = {
               word: tok,
               pdfX: t.x + (idx * estTokenW),
               pdfY: t.y,
               pdfW: estTokenW,
               pdfH: t.h || 14,
-              fontSize: t.fontSize || 14,
+              fontSize: t.fontSize || 12,
               fontFamily: t.fontFamily || docPrimaryFont || 'TimesRoman',
               isBold: !!(t.fontWeight === 'bold' || t.isBold),
               isItalic: !!(t.fontStyle === 'italic' || t.isItalic),
               textColor: t.textColor || '#000000'
-            });
+            };
+            annotWords.push(wd);
+            rawWords.push(wd);
+          });
+
+          extractedLines.push({
+            words: annotWords,
+            x: t.x,
+            y: t.y,
+            w: t.w,
+            h: t.h || 14,
+            text: t.text.trim(),
+            confidence: 100
           });
         }
       }
 
-      const structured = groupWordsIntoLinesAndParagraphs(rawWords);
+      const structured = groupWordsIntoLinesAndParagraphs(extractedLines, origPageIdx, pageWidth, pageHeight);
       return {
         origPageIdx,
         pageWidth,
@@ -5168,9 +5303,9 @@
       };
     }
 
-    function extractWordsFromPdfTextContent(textContent, viewport) {
-      if (!textContent || !textContent.items) return [];
-      const words = [];
+    function extractLinesFromPdfTextContent(textContent, viewport, origPageIdx, pageWidth, pageHeight) {
+      if (!textContent || !textContent.items) return { lines: [], words: [] };
+      const rawItems = [];
       const measureCanvas = document.createElement('canvas');
       const measureCtx = measureCanvas.getContext('2d');
 
@@ -5183,14 +5318,14 @@
         const fontW = item.width || 10;
         measureCtx.font = `${Math.round(fontH)}px sans-serif`;
 
-        const tokens = fullStr.match(/\S+|\s+/g) || [fullStr];
-        const totalW = measureCtx.measureText(fullStr).width || fontW;
-        const ratio = fontW / (totalW || 1);
-
         const cleanResName = (item.fontName || '').replace(/^g_d\d+_/, '').toUpperCase();
         const rawFont = pdfFontResourceMap[cleanResName] || item.fontName || docPrimaryFont || 'TimesRoman';
         const mappedFont = mapRawFontToFamily(rawFont);
         const isBold = rawFont.toLowerCase().includes('bold') || rawFont.toLowerCase().includes('heavy');
+
+        const tokens = fullStr.match(/\S+|\s+/g) || [fullStr];
+        const totalW = measureCtx.measureText(fullStr).width || fontW;
+        const ratio = fontW / (totalW || 1);
 
         let curOffset = 0;
         for (const tok of tokens) {
@@ -5198,11 +5333,11 @@
           const tokW = (measureCtx.measureText(tok).width || 10) * ratio;
 
           if (!isSpace && tok.trim().length > 0) {
-            words.push({
+            rawItems.push({
               word: tok,
               pdfX: tx[4] + curOffset,
               pdfY: tx[5] - (fontH * 0.95),
-              pdfW: Math.max(tokW, 10),
+              pdfW: Math.max(tokW, 6),
               pdfH: fontH * 1.15,
               fontSize: Math.max(9, Math.round(fontH * 10) / 10),
               fontFamily: mappedFont,
@@ -5215,121 +5350,216 @@
         }
       }
 
-      return words;
+      // Group items into lines by baseline Y
+      rawItems.sort((a, b) => a.pdfY - b.pdfY);
+      const lines = [];
+      let curLineItems = [];
+      let curLineY = null;
+      let curLineH = 14;
+
+      for (const it of rawItems) {
+        if (curLineItems.length === 0) {
+          curLineItems.push(it);
+          curLineY = it.pdfY;
+          curLineH = it.pdfH;
+        } else {
+          const tol = Math.max(4, curLineH * 0.45);
+          if (Math.abs(it.pdfY - curLineY) <= tol) {
+            curLineItems.push(it);
+            curLineH = Math.max(curLineH, it.pdfH);
+          } else {
+            curLineItems.sort((a, b) => a.pdfX - b.pdfX);
+            const lineObj = {
+              words: curLineItems,
+              x: curLineItems[0].pdfX,
+              y: curLineY,
+              h: curLineH,
+              w: (curLineItems[curLineItems.length - 1].pdfX + curLineItems[curLineItems.length - 1].pdfW) - curLineItems[0].pdfX,
+              text: curLineItems.map(w => w.word).join(' '),
+              confidence: 95
+            };
+            if (!isGarbageLine(lineObj, origPageIdx, pageWidth, pageHeight)) {
+              lines.push(lineObj);
+            }
+            curLineItems = [it];
+            curLineY = it.pdfY;
+            curLineH = it.pdfH;
+          }
+        }
+      }
+
+      if (curLineItems.length > 0) {
+        curLineItems.sort((a, b) => a.pdfX - b.pdfX);
+        const lineObj = {
+          words: curLineItems,
+          x: curLineItems[0].pdfX,
+          y: curLineY,
+          h: curLineH,
+          w: (curLineItems[curLineItems.length - 1].pdfX + curLineItems[curLineItems.length - 1].pdfW) - curLineItems[0].pdfX,
+          text: curLineItems.map(w => w.word).join(' '),
+          confidence: 95
+        };
+        if (!isGarbageLine(lineObj, origPageIdx, pageWidth, pageHeight)) {
+          lines.push(lineObj);
+        }
+      }
+
+      const allWords = [];
+      lines.forEach(l => allWords.push(...l.words));
+      return { lines, words: allWords };
     }
 
-    function groupWordsIntoLinesAndParagraphs(words) {
-      if (!words || words.length === 0) return { lines: [], paragraphs: [] };
+    function groupWordsIntoLinesAndParagraphs(extractedLines, origPageIdx, pageWidth, pageHeight) {
+      if (!extractedLines || extractedLines.length === 0) return { lines: [], paragraphs: [] };
 
-      // Sort words vertically by pdfY, then horizontally by pdfX
-      const sorted = [...words].sort((a, b) => {
-        const yDiff = a.pdfY - b.pdfY;
-        if (Math.abs(yDiff) > 5) return yDiff;
-        return a.pdfX - b.pdfX;
-      });
+      // Sort lines vertically
+      const lines = [...extractedLines].sort((a, b) => a.y - b.y);
 
-      const lines = [];
-      let curLine = [];
-      let curY = null;
-      let curH = 14;
+      // Determine content horizontal margins
+      const allX0 = lines.map(l => l.x);
+      const allX1 = lines.map(l => l.x + l.w);
+      const contentLeft = allX0.length > 0 ? Math.min(...allX0) : 54;
+      const contentRight = allX1.length > 0 ? Math.max(...allX1) : pageWidth - 54;
+      const contentWidth = Math.max(100, contentRight - contentLeft);
 
-      for (const w of sorted) {
-        const wY = w.pdfY;
-        const wH = w.pdfH || 14;
+      // Analyze each line's layout traits
+      for (const l of lines) {
+        const lineCenter = l.x + l.w / 2;
+        const pageCenter = pageWidth / 2;
+        l.isCentered = Math.abs(lineCenter - pageCenter) < 45 && l.w < contentWidth * 0.72;
+        l.isRightAligned = (l.x > contentLeft + contentWidth * 0.52) && (l.w < contentWidth * 0.48);
+        l.isLeftCol = (l.x < contentLeft + contentWidth * 0.50) && ((l.x + l.w) < contentLeft + contentWidth * 0.55);
 
-        if (curLine.length === 0) {
-          curLine.push(w);
-          curY = wY;
-          curH = wH;
-        } else {
-          const tolerance = Math.max(5, curH * 0.45);
-          if (Math.abs(wY - curY) <= tolerance) {
-            curLine.push(w);
-            curH = Math.max(curH, wH);
-          } else {
-            curLine.sort((a, b) => a.pdfX - b.pdfX);
-            lines.push({
-              words: curLine,
-              y: curY,
-              h: curH,
-              x: curLine[0].pdfX,
-              w: (curLine[curLine.length - 1].pdfX + (curLine[curLine.length - 1].pdfW || 20)) - curLine[0].pdfX
-            });
-            curLine = [w];
-            curY = wY;
-            curH = wH;
-          }
-        }
+        const cleanT = (l.text || '').replace(/[^a-zA-Z0-9\s]/g, '').trim();
+        const isUpper = cleanT.length >= 3 && cleanT === cleanT.toUpperCase() && /[A-Z]/.test(cleanT);
+        const isLegalTitle = /^(tenancy agreement|schedule|witnesses|in the witness whereof|now this agreement witnesseth|the tenant covenants)/i.test((l.text || '').trim());
+        l.isHeading = isLegalTitle || (isUpper && l.words.length <= 10 && (l.isCentered || l.h >= 15));
+        l.isClauseStart = /^((\d+[\.\)])|(\(\d+\))|([A-Z][\.\)]))\s+/.test((l.text || '').trim());
+        l.isPageNum = /^\d{1,3}$/.test((l.text || '').trim()) && (l.y < pageHeight * 0.12 || l.y > pageHeight * 0.88);
       }
 
-      if (curLine.length > 0) {
-        curLine.sort((a, b) => a.pdfX - b.pdfX);
-        lines.push({
-          words: curLine,
-          y: curY,
-          h: curH,
-          x: curLine[0].pdfX,
-          w: (curLine[curLine.length - 1].pdfX + (curLine[curLine.length - 1].pdfW || 20)) - curLine[0].pdfX
-        });
-      }
-
-      // Group lines into paragraphs
+      // Group into paragraphs, including detecting multi-column (side-by-side) blocks
       const paragraphs = [];
-      let curParaLines = [];
+      let i = 0;
 
-      for (let i = 0; i < lines.length; i++) {
+      while (i < lines.length) {
         const line = lines[i];
-        if (curParaLines.length === 0) {
-          curParaLines.push(line);
-        } else {
-          const prevLine = curParaLines[curParaLines.length - 1];
-          const gap = line.y - (prevLine.y + prevLine.h);
-          const avgH = (line.h + prevLine.h) / 2;
 
-          // Heading detection: if line is short or has larger font size
-          const isPrevHeading = prevLine.words.length <= 6 && (prevLine.words.some(w => w.fontSize >= 15 || w.isBold));
+        // 1. Multi-column Side-by-Side detection (Witnesses & Signatures, Stamp Vendor)
+        const isColCandidate = (line.isLeftCol || line.isRightAligned) && !line.isHeading && !line.isPageNum && !line.isClauseStart;
+        if (isColCandidate) {
+          let colLines = [line];
+          let j = i + 1;
+          while (j < lines.length) {
+            const nextL = lines[j];
+            if (nextL.isHeading || nextL.isPageNum || nextL.w > contentWidth * 0.65) break;
+            if (nextL.isLeftCol || nextL.isRightAligned) {
+              colLines.push(nextL);
+              j++;
+            } else {
+              break;
+            }
+          }
 
-          if (gap > avgH * 0.85 || isPrevHeading) {
-            paragraphs.push(buildParagraphFromLines(curParaLines));
-            curParaLines = [line];
-          } else {
-            curParaLines.push(line);
+          const hasLeft = colLines.some(cl => cl.isLeftCol);
+          const hasRight = colLines.some(cl => cl.isRightAligned);
+
+          if (colLines.length >= 2 && hasLeft && hasRight) {
+            const leftColLines = colLines.filter(cl => cl.isLeftCol);
+            const rightColLines = colLines.filter(cl => cl.isRightAligned);
+
+            paragraphs.push({
+              type: 'table',
+              leftParagraphs: groupLinesToParagraphArray(leftColLines),
+              rightParagraphs: groupLinesToParagraphArray(rightColLines)
+            });
+
+            i = j;
+            continue;
           }
         }
-      }
 
-      if (curParaLines.length > 0) {
-        paragraphs.push(buildParagraphFromLines(curParaLines));
+        // 2. Centered Page Number
+        if (line.isPageNum) {
+          paragraphs.push({
+            type: 'paragraph',
+            alignment: 'center',
+            isPageNum: true,
+            isHeading: false,
+            lines: [line],
+            words: line.words
+          });
+          i++;
+          continue;
+        }
+
+        // 3. Headings & Titles
+        if (line.isHeading) {
+          const isUnderline = /^(tenancy agreement|schedule|witnesses)/i.test((line.text || '').trim());
+          paragraphs.push({
+            type: 'paragraph',
+            alignment: line.isCentered ? 'center' : 'left',
+            isHeading: true,
+            isUnderline: isUnderline,
+            lines: [line],
+            words: line.words
+          });
+          i++;
+          continue;
+        }
+
+        // 4. Regular Paragraph / Legal Clause accumulation
+        const paraLines = [line];
+        let k = i + 1;
+        while (k < lines.length) {
+          const nxt = lines[k];
+          if (nxt.isHeading || nxt.isClauseStart || nxt.isPageNum || nxt.isCentered) break;
+
+          const prev = paraLines[paraLines.length - 1];
+          const vGap = nxt.y - (prev.y + prev.h);
+          const avgH = (prev.h + nxt.h) / 2;
+
+          if (vGap <= avgH * 1.55 && Math.abs(nxt.x - prev.x) < contentWidth * 0.35) {
+            paraLines.push(nxt);
+            k++;
+          } else {
+            break;
+          }
+        }
+
+        const allParaWords = [];
+        paraLines.forEach(pl => allParaWords.push(...pl.words));
+
+        const isWide = paraLines.some(pl => pl.w > contentWidth * 0.60);
+        const alignment = line.isRightAligned ? 'right' : (line.isCentered ? 'center' : (isWide ? 'both' : 'left'));
+
+        paragraphs.push({
+          type: 'paragraph',
+          alignment: alignment,
+          isHeading: false,
+          isClause: line.isClauseStart,
+          lines: paraLines,
+          words: allParaWords
+        });
+
+        i = k;
       }
 
       return { lines, paragraphs };
     }
 
-    function buildParagraphFromLines(lines) {
-      const allWords = [];
-      for (const l of lines) {
-        allWords.push(...l.words);
+    function groupLinesToParagraphArray(linesList) {
+      const paras = [];
+      for (const l of linesList) {
+        paras.push({
+          type: 'paragraph',
+          alignment: 'left',
+          isHeading: l.isHeading || false,
+          lines: [l],
+          words: l.words
+        });
       }
-
-      const isHeading = lines.length === 1 && (
-        allWords.some(w => w.fontSize >= 15) || 
-        (allWords.length <= 6 && allWords.every(w => w.word === w.word.toUpperCase() && /[A-Z]/.test(w.word)))
-      );
-
-      const runs = allWords.map(w => ({
-        text: w.word,
-        fontSize: w.fontSize || 12,
-        fontFamily: w.fontFamily || 'TimesRoman',
-        isBold: !!w.isBold,
-        isItalic: !!w.isItalic,
-        color: w.textColor || '#000000'
-      }));
-
-      return {
-        isHeading,
-        headingLevel: isHeading ? 1 : null,
-        runs
-      };
+      return paras;
     }
 
     async function buildDocxFromPages(pagesData, fileName) {
@@ -5337,57 +5567,165 @@
         throw new Error("Word export engine (docx.js) is not loaded yet. Please check your internet connection.");
       }
 
-      const { Document, Paragraph, TextRun, Packer, HeadingLevel, PageBreak } = window.docx;
+      const {
+        Document,
+        Paragraph,
+        TextRun,
+        Table,
+        TableRow,
+        TableCell,
+        WidthType,
+        AlignmentType,
+        BorderStyle,
+        UnderlineType,
+        Packer,
+        PageBreak
+      } = window.docx;
 
-      const children = [];
+      const noBorder = { style: BorderStyle.NONE, size: 0, color: 'FFFFFF' };
+      const tableBorders = {
+        top: noBorder,
+        bottom: noBorder,
+        left: noBorder,
+        right: noBorder,
+        insideHorizontal: noBorder,
+        insideVertical: noBorder
+      };
 
-      for (let i = 0; i < pagesData.length; i++) {
-        const page = pagesData[i];
+      const docChildren = [];
+
+      function createWordParagraph(para) {
+        const textRuns = [];
+        const words = para.words || [];
+
+        for (let rIdx = 0; rIdx < words.length; rIdx++) {
+          const curWord = words[rIdx];
+          const nextWord = rIdx < words.length - 1 ? words[rIdx + 1] : null;
+
+          let trailingSpace = '';
+          if (nextWord) {
+            if (Math.abs(curWord.pdfY - nextWord.pdfY) < 8) {
+              const gap = nextWord.pdfX - (curWord.pdfX + curWord.pdfW);
+              if (gap > 22) {
+                trailingSpace = '    ';
+              } else {
+                trailingSpace = ' ';
+              }
+            } else {
+              trailingSpace = ' ';
+            }
+          }
+
+          const isBold = !!(para.isHeading || curWord.isBold);
+          const fontSizeHalfPt = Math.round((curWord.fontSize || 11.5) * 2);
+
+          textRuns.push(new TextRun({
+            text: curWord.word + trailingSpace,
+            font: getFontDisplayName(curWord.fontFamily || 'TimesRoman'),
+            size: fontSizeHalfPt,
+            bold: isBold,
+            italics: !!curWord.isItalic,
+            color: (curWord.textColor || '#000000').replace('#', ''),
+            underline: para.isUnderline ? { type: UnderlineType.SINGLE } : undefined
+          }));
+        }
+
+        let alignType = AlignmentType.LEFT;
+        if (para.alignment === 'center') alignType = AlignmentType.CENTER;
+        else if (para.alignment === 'right') alignType = AlignmentType.RIGHT;
+        else if (para.alignment === 'both') alignType = AlignmentType.BOTH;
+
+        const pOpts = {
+          children: textRuns,
+          alignment: alignType,
+          spacing: { after: 120, line: 276 }
+        };
+
+        if (para.isPageNum) {
+          pOpts.spacing = { before: 0, after: 180, line: 240 };
+        } else if (para.isHeading) {
+          pOpts.spacing = { before: 200, after: 100, line: 260 };
+        } else if (para.lines && para.lines.length === 1 && !para.isClause) {
+          pOpts.spacing = { before: 0, after: 50, line: 240 };
+        }
+
+        return new Paragraph(pOpts);
+      }
+
+      for (let pIdx = 0; pIdx < pagesData.length; pIdx++) {
+        const page = pagesData[pIdx];
 
         if (page.paragraphs.length === 0) {
-          children.push(new Paragraph({ children: [new TextRun("")] }));
+          docChildren.push(new Paragraph({ children: [new TextRun("")] }));
         } else {
-          for (const para of page.paragraphs) {
-            const textRuns = [];
+          for (const item of page.paragraphs) {
+            if (item.type === 'table') {
+              const leftCells = (item.leftParagraphs || []).map(lp => createWordParagraph(lp));
+              const rightCells = (item.rightParagraphs || []).map(rp => createWordParagraph(rp));
 
-            for (let rIdx = 0; rIdx < para.runs.length; rIdx++) {
-              const run = para.runs[rIdx];
-              textRuns.push(new TextRun({
-                text: run.text + (rIdx < para.runs.length - 1 ? ' ' : ''),
-                font: getFontDisplayName(run.fontFamily || 'TimesRoman'),
-                size: Math.round((run.fontSize || 12) * 2), // half-points (24 = 12pt)
-                bold: !!run.isBold,
-                italics: !!run.isItalic,
-                color: (run.color || '#000000').replace('#', '')
-              }));
+              if (leftCells.length === 0) leftCells.push(new Paragraph({ children: [new TextRun("")] }));
+              if (rightCells.length === 0) rightCells.push(new Paragraph({ children: [new TextRun("")] }));
+
+              const table = new Table({
+                width: { size: 100, type: WidthType.PERCENTAGE },
+                borders: tableBorders,
+                rows: [
+                  new TableRow({
+                    children: [
+                      new TableCell({
+                        width: { size: 55, type: WidthType.PERCENTAGE },
+                        borders: tableBorders,
+                        children: leftCells
+                      }),
+                      new TableCell({
+                        width: { size: 45, type: WidthType.PERCENTAGE },
+                        borders: tableBorders,
+                        children: rightCells
+                      })
+                    ]
+                  })
+                ]
+              });
+
+              docChildren.push(table);
+              docChildren.push(new Paragraph({ spacing: { after: 100, line: 240 }, children: [] }));
+            } else {
+              docChildren.push(createWordParagraph(item));
             }
-
-            const paraOptions = {
-              children: textRuns,
-              spacing: { after: 120, line: 260 }
-            };
-
-            if (para.isHeading) {
-              paraOptions.heading = para.headingLevel === 1 ? HeadingLevel.HEADING_1 : HeadingLevel.HEADING_2;
-              paraOptions.spacing = { before: 200, after: 100 };
-            }
-
-            children.push(new Paragraph(paraOptions));
           }
         }
 
-        // Insert page break between pages
-        if (i < pagesData.length - 1) {
-          children.push(new Paragraph({
+        if (pIdx < pagesData.length - 1) {
+          docChildren.push(new Paragraph({
             children: [new PageBreak()]
           }));
         }
       }
 
+      const firstPage = pagesData[0] || { pageWidth: 595.28, pageHeight: 841.89 };
+      let pageWTwips = Math.round((firstPage.pageWidth || 595.28) * 20);
+      let pageHTwips = Math.round((firstPage.pageHeight || 841.89) * 20);
+
+      if (Math.abs(pageWTwips - 11906) < 800) pageWTwips = 11906;
+      if (Math.abs(pageHTwips - 16838) < 800) pageHTwips = 16838;
+
       const doc = new Document({
         sections: [{
-          properties: {},
-          children: children
+          properties: {
+            page: {
+              size: {
+                width: pageWTwips,
+                height: pageHTwips
+              },
+              margin: {
+                top: 720,
+                bottom: 720,
+                left: 900,
+                right: 900
+              }
+            }
+          },
+          children: docChildren
         }]
       });
 
@@ -5417,16 +5755,26 @@
         slide.background = { color: 'FFFFFF' };
 
         for (const line of page.lines) {
-          const runs = line.words.map((w, wIdx) => ({
-            text: w.word + (wIdx < line.words.length - 1 ? ' ' : ''),
-            options: {
-              fontFace: getFontDisplayName(w.fontFamily || 'TimesRoman'),
-              fontSize: Math.round(w.fontSize || 12),
-              bold: !!w.isBold,
-              italic: !!w.isItalic,
-              color: (w.textColor || '#000000').replace('#', '')
+          const runs = line.words.map((w, wIdx) => {
+            const nextW = wIdx < line.words.length - 1 ? line.words[wIdx + 1] : null;
+            let gapSpace = ' ';
+            if (nextW) {
+              const gap = nextW.pdfX - (w.pdfX + w.pdfW);
+              if (gap > 22) gapSpace = '    ';
+            } else {
+              gapSpace = '';
             }
-          }));
+            return {
+              text: w.word + gapSpace,
+              options: {
+                fontFace: getFontDisplayName(w.fontFamily || 'TimesRoman'),
+                fontSize: Math.round(w.fontSize || 12),
+                bold: !!w.isBold,
+                italic: !!w.isItalic,
+                color: (w.textColor || '#000000').replace('#', '')
+              }
+            };
+          });
 
           const xInches = Math.max(0, (line.x / page.pageWidth) * slideW);
           const yInches = Math.max(0, (line.y / page.pageHeight) * slideH);

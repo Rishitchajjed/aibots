@@ -438,27 +438,33 @@
 
     /* Active Tool Mode Banner */
     .mode-banner {
-      background: linear-gradient(135deg, rgba(99, 102, 241, 0.14), rgba(139, 92, 246, 0.14));
-      border: 1.5px solid rgba(99, 102, 241, 0.35);
+      background: linear-gradient(135deg, #1e1b4b 0%, #312e81 100%);
+      border: 1.5px solid #4338ca;
       border-radius: 12px;
-      padding: 9px 16px;
+      padding: 10px 18px;
       display: flex;
       align-items: center;
       justify-content: space-between;
       gap: 12px;
       font-size: 0.88rem;
-      color: var(--text-primary);
-      box-shadow: 0 2px 8px rgba(99, 102, 241, 0.08);
+      color: #ffffff !important;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
+      transition: all 0.2s ease;
     }
     .mode-banner-text {
       display: flex;
       align-items: center;
       gap: 10px;
       font-weight: 600;
+      color: #ffffff !important;
+    }
+    .mode-banner-text strong {
+      color: #ffffff !important;
+      font-weight: 800;
     }
     .mode-banner-text i {
-      color: var(--editor-accent);
-      font-size: 1.1rem;
+      color: #38bdf8 !important;
+      font-size: 1.15rem;
     }
     .mode-banner-actions {
       display: flex;
@@ -466,35 +472,69 @@
       gap: 8px;
     }
     .btn-xs-pill {
-      background: var(--panel-bg);
-      border: 1px solid var(--panel-border);
-      color: var(--text-primary);
-      padding: 4px 12px;
+      background: rgba(255, 255, 255, 0.15);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      color: #ffffff !important;
+      padding: 5px 14px;
       border-radius: 999px;
-      font-size: 0.78rem;
+      font-size: 0.8rem;
       font-weight: 700;
       cursor: pointer;
       display: inline-flex;
       align-items: center;
-      gap: 5px;
+      gap: 6px;
       transition: all 0.15s;
     }
     .btn-xs-pill:hover {
-      background: var(--editor-accent-light);
-      border-color: var(--editor-accent);
-      color: var(--editor-accent);
+      background: #ffffff;
+      border-color: #ffffff;
+      color: #1e1b4b !important;
+      transform: translateY(-1px);
     }
     .btn-xs-pill.btn-ocr-glow {
       background: linear-gradient(135deg, #f59e0b, #d97706);
-      border-color: #b45309;
-      color: #ffffff;
-      box-shadow: 0 0 12px rgba(245, 158, 11, 0.45);
+      border-color: #fde68a;
+      color: #ffffff !important;
+      box-shadow: 0 0 14px rgba(245, 158, 11, 0.6);
       animation: pulseOcrGlow 2s infinite ease-in-out;
     }
     .btn-xs-pill.btn-ocr-glow:hover {
-      background: linear-gradient(135deg, #d97706, #b45309);
-      color: #ffffff;
+      background: linear-gradient(135deg, #fbbf24, #f59e0b);
+      color: #78350f !important;
       transform: translateY(-1px);
+    }
+    /* Floating in-page instruction card for scanned documents and OCR */
+    .page-in-canvas-notice {
+      position: absolute;
+      top: 14px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 50;
+      background: #0f172a;
+      border: 1.5px solid #d97706;
+      color: #ffffff;
+      padding: 10px 18px;
+      border-radius: 12px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      max-width: 90%;
+      font-size: 0.85rem;
+      pointer-events: auto;
+      animation: slideInDown 0.25s ease-out;
+    }
+    .page-in-canvas-notice.success {
+      border-color: #10b981;
+      background: #064e3b;
+    }
+    .page-in-canvas-notice.info {
+      border-color: #4f46e5;
+      background: #1e1b4b;
+    }
+    @keyframes slideInDown {
+      from { opacity: 0; transform: translate(-50%, -10px); }
+      to { opacity: 1; transform: translate(-50%, 0); }
     }
     @keyframes pulseOcrGlow {
       0%, 100% { box-shadow: 0 0 8px rgba(245, 158, 11, 0.35); }
@@ -864,22 +904,29 @@
     }
     .modal-close:hover { color: #ef4444; }
 
-    /* Word Edit Main Input */
+    /* Word Edit Main Input - Crisp High-Contrast Paper Surface */
     .word-edit-main-input {
       width: 100%;
-      padding: 12px 14px;
+      padding: 12px 16px;
       border-radius: 12px;
       border: 2px solid var(--editor-accent);
-      font-size: 1.15rem;
+      font-size: 1.25rem;
       font-weight: 700;
-      background: var(--bg-primary);
-      color: var(--text-primary);
+      background: #ffffff !important;
+      color: #0f172a;
+      caret-color: #6366f1;
       outline: none;
       font-family: inherit;
-      box-shadow: 0 4px 14px rgba(99, 102, 241, 0.15);
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
+      transition: border-color 0.15s, box-shadow 0.15s;
+    }
+    .word-edit-main-input::placeholder {
+      color: #64748b !important;
+      font-weight: 500;
+    }
     .word-edit-main-input:focus {
-      border-color: #10b981;
-      box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.25);
+      border-color: #10b981 !important;
+      box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.35) !important;
     }
 
     /* Automatic Typography Engine Card in Word Editor Modal */
@@ -1344,9 +1391,9 @@
 
       <!-- Secondary Contextual Properties Bar -->
       <div id="propertiesBar" class="properties-bar">
-        <div class="prop-item" id="propTextContentGroup" style="display:none; background: var(--bg-primary); padding: 4px 10px; border-radius: 8px; border: 1px solid var(--panel-border);">
-          <label style="color:var(--editor-accent); font-weight:700;"><i class="fas fa-font"></i> Text:</label>
-          <input id="propTextContent" type="text" class="prop-input" style="width:200px; font-weight:600; border:none; background:transparent;" placeholder="Type text words..." oninput="onPropTextContentChange(this.value)" onchange="onPropTextContentBlur()">
+        <div class="prop-item" id="propTextContentGroup" style="display:none; background: var(--panel-bg); padding: 5px 12px; border-radius: 8px; border: 1.5px solid var(--editor-accent); align-items:center; gap:8px;">
+          <label style="color:var(--editor-accent); font-weight:800; font-size:0.82rem;"><i class="fas fa-font"></i> Text:</label>
+          <input id="propTextContent" type="text" class="prop-input" style="width:220px; font-weight:700; font-size:0.85rem; border:1px solid var(--panel-border); background:#ffffff; color:#0f172a; padding:4px 8px; border-radius:6px;" placeholder="Type text words..." oninput="onPropTextContentChange(this.value)" onchange="onPropTextContentBlur()">
           <button class="btn-action btn-secondary" style="padding:3px 10px; font-size:0.75rem; border-radius:6px;" onclick="openWordEditorForSelected()" title="Open Dedicated Edit Modal">
             <i class="fas fa-pen-to-square"></i> Edit in Modal
           </button>
@@ -2378,6 +2425,7 @@
       if (textLayer) textLayer.innerHTML = '';
       if (annotLayer) annotLayer.innerHTML = '';
       if (stageWrapper) stageWrapper.classList.add('page-loading');
+      removePageInCanvasNotice();
 
       updatePageNavDisplay();
 
@@ -2607,11 +2655,18 @@
 
       isOcrRunning = true;
       const banner = document.getElementById('modeBanner');
+      if (banner) {
+        banner.style.display = 'flex';
+        banner.style.background = 'linear-gradient(135deg, #134e4a 0%, #0f766e 100%)';
+        banner.style.borderColor = '#14b8a6';
+        banner.style.boxShadow = '0 4px 18px rgba(20, 184, 166, 0.35)';
+      }
       const bannerText = document.getElementById('modeBannerText');
       if (bannerText) {
-        bannerText.innerHTML = `<i class="fas fa-spinner fa-spin" style="color:var(--editor-accent);"></i> <strong>Scanning Document with In-Browser OCR:</strong> Recognizing words... <span id="ocrProgressPercent" style="font-weight:800; font-family:'JetBrains Mono',monospace;">0%</span>`;
+        bannerText.innerHTML = `<i class="fas fa-spinner fa-spin" style="color:#2dd4bf !important;"></i> <span><strong style="color:#ffffff !important;">Scanning Document with In-Browser OCR:</strong> <span style="color:#ccfbf1;">Recognizing words...</span> <span id="ocrProgressPercent" style="font-weight:900; font-family:'JetBrains Mono',monospace; color:#38bdf8; background:rgba(0,0,0,0.3); padding:2px 8px; border-radius:6px;">0%</span></span>`;
       }
       showToast("Running in-browser OCR scanner...", "fa-bolt");
+      showPageInCanvasOcrProgress();
 
       try {
         const worker = await Tesseract.createWorker('eng', 1, {
@@ -2620,6 +2675,8 @@
               const pct = Math.round(m.progress * 100);
               const pEl = document.getElementById('ocrProgressPercent');
               if (pEl) pEl.textContent = `${pct}%`;
+              const pagePct = document.getElementById('pageOcrProgressPercent');
+              if (pagePct) pagePct.textContent = `${pct}%`;
             }
           }
         });
@@ -2663,6 +2720,8 @@
         setScannedBannerNeedOcr();
       } finally {
         isOcrRunning = false;
+        const progNotice = document.getElementById('pageInCanvasOcrProgress');
+        if (progNotice) progNotice.remove();
       }
     }
 
@@ -2670,12 +2729,13 @@
       const banner = document.getElementById('modeBanner');
       if (!banner) return;
       banner.style.display = 'flex';
-      banner.style.background = 'linear-gradient(90deg, rgba(245, 158, 11, 0.16), rgba(217, 119, 6, 0.08))';
-      banner.style.borderColor = 'rgba(245, 158, 11, 0.35)';
+      banner.style.background = 'linear-gradient(135deg, #78350f 0%, #92400e 100%)';
+      banner.style.borderColor = '#d97706';
+      banner.style.boxShadow = '0 4px 18px rgba(180, 83, 9, 0.35)';
 
       const bannerText = document.getElementById('modeBannerText');
       if (bannerText) {
-        bannerText.innerHTML = `<strong>📸 Scanned Image Document Detected:</strong> This page is a photograph/scan with no embedded digital text layer.`;
+        bannerText.innerHTML = `<i class="fas fa-camera" style="color:#fde047 !important;"></i> <span><strong style="color:#ffffff !important;">📸 Scanned Document Detected:</strong> <span style="color:#fef3c7;">This page is a photo or scan with no embedded digital text layer.</span></span>`;
       }
 
       const actions = banner.querySelector('.mode-banner-actions');
@@ -2686,18 +2746,20 @@
           <button class="btn-xs-pill" onclick="setEditorMode('add-text')" title="Add typography text box anywhere"><i class="fas fa-font"></i> Add Text</button>
         `;
       }
+      showPageInCanvasScannedNotice();
     }
 
     function setScannedBannerOcrDone(count) {
       const banner = document.getElementById('modeBanner');
       if (!banner) return;
       banner.style.display = 'flex';
-      banner.style.background = 'linear-gradient(90deg, rgba(16, 185, 129, 0.15), rgba(5, 150, 105, 0.08))';
-      banner.style.borderColor = 'rgba(16, 185, 129, 0.35)';
+      banner.style.background = 'linear-gradient(135deg, #064e3b 0%, #047857 100%)';
+      banner.style.borderColor = '#10b981';
+      banner.style.boxShadow = '0 4px 18px rgba(16, 185, 129, 0.35)';
 
       const bannerText = document.getElementById('modeBannerText');
       if (bannerText) {
-        bannerText.innerHTML = `<strong>⚡ OCR Scanned Words Active:</strong> Detected <strong>${count} words</strong>. Click on any word to edit, replace, or erase!`;
+        bannerText.innerHTML = `<i class="fas fa-circle-check" style="color:#34d399 !important;"></i> <span><strong style="color:#ffffff !important;">⚡ OCR Scanned Words Active:</strong> <span style="color:#d1fae5;">Detected <strong style="color:#ffffff !important;">${count} editable words</strong>. Click any word to edit, replace, or erase!</span></span>`;
       }
 
       const actions = banner.querySelector('.mode-banner-actions');
@@ -2707,18 +2769,22 @@
           <button class="btn-xs-pill" onclick="openFindReplace()"><i class="fas fa-search"></i> Search &amp; Replace</button>
         `;
       }
+      showPageInCanvasOcrDoneNotice(count);
     }
 
     function resetStandardModeBanner() {
       const banner = document.getElementById('modeBanner');
       if (!banner) return;
       banner.style.display = 'flex';
-      banner.style.background = 'var(--panel-bg)';
-      banner.style.borderColor = 'var(--panel-border)';
+      banner.style.background = 'linear-gradient(135deg, #1e1b4b 0%, #312e81 100%)';
+      banner.style.borderColor = '#4f46e5';
+      banner.style.boxShadow = '0 4px 18px rgba(79, 70, 229, 0.3)';
+
       const bannerText = document.getElementById('modeBannerText');
       if (bannerText) {
-        bannerText.innerHTML = `<strong>Direct Word Edit Mode Active:</strong> Click on any word in the document to edit, replace, or erase it!`;
+        bannerText.innerHTML = `<i class="fas fa-pen-to-square" style="color:#38bdf8 !important;"></i> <span><strong style="color:#ffffff !important;">Direct Word Edit Mode Active:</strong> <span style="color:#e0e7ff;">Click on any word in the document to edit, replace, or erase it!</span></span>`;
       }
+
       const actions = banner.querySelector('.mode-banner-actions');
       if (actions) {
         actions.innerHTML = `
@@ -2726,6 +2792,68 @@
           <button class="btn-xs-pill" onclick="setEditorMode('select')"><i class="fas fa-mouse-pointer"></i> Select Mode</button>
         `;
       }
+    }
+
+    function showPageInCanvasScannedNotice() {
+      removePageInCanvasNotice();
+      const stage = document.getElementById('pageStageWrapper');
+      if (!stage) return;
+      const notice = document.createElement('div');
+      notice.id = 'pageInCanvasNotice';
+      notice.className = 'page-in-canvas-notice';
+      notice.innerHTML = `
+        <i class="fas fa-camera" style="font-size:1.3rem; color:#f59e0b;"></i>
+        <div>
+          <strong style="display:block; font-size:0.9rem; color:#ffffff;">Scanned Page Detected (Image Only)</strong>
+          <span style="color:#cbd5e1; font-size:0.8rem;">Click to detect words with OCR so they become directly clickable &amp; editable.</span>
+        </div>
+        <button class="btn-xs-pill btn-ocr-glow" onclick="runOcrOnActivePage()"><i class="fas fa-bolt"></i> Run OCR</button>
+        <button onclick="removePageInCanvasNotice()" style="background:none; border:none; color:#94a3b8; cursor:pointer; font-size:1.1rem; padding:0 4px;" title="Dismiss">&times;</button>
+      `;
+      stage.appendChild(notice);
+    }
+
+    function showPageInCanvasOcrProgress() {
+      removePageInCanvasNotice();
+      const stage = document.getElementById('pageStageWrapper');
+      if (!stage) return;
+      const notice = document.createElement('div');
+      notice.id = 'pageInCanvasOcrProgress';
+      notice.className = 'page-in-canvas-notice info';
+      notice.innerHTML = `
+        <i class="fas fa-spinner fa-spin" style="font-size:1.3rem; color:#38bdf8;"></i>
+        <div>
+          <strong style="display:block; font-size:0.9rem; color:#ffffff;">Scanning Document with OCR... <span id="pageOcrProgressPercent" style="color:#38bdf8; font-family:'JetBrains Mono',monospace;">0%</span></strong>
+          <span style="color:#e0e7ff; font-size:0.8rem;">Recognizing words directly on this page. Please wait a moment.</span>
+        </div>
+      `;
+      stage.appendChild(notice);
+    }
+
+    function showPageInCanvasOcrDoneNotice(count) {
+      removePageInCanvasNotice();
+      const stage = document.getElementById('pageStageWrapper');
+      if (!stage) return;
+      const notice = document.createElement('div');
+      notice.id = 'pageInCanvasNotice';
+      notice.className = 'page-in-canvas-notice success';
+      notice.innerHTML = `
+        <i class="fas fa-circle-check" style="font-size:1.3rem; color:#34d399;"></i>
+        <div>
+          <strong style="display:block; font-size:0.9rem; color:#ffffff;">OCR Ready — ${count} Words Detected!</strong>
+          <span style="color:#d1fae5; font-size:0.8rem;">Click on any word on the page to edit, replace, or whiteout.</span>
+        </div>
+        <button onclick="removePageInCanvasNotice()" style="background:none; border:none; color:#a7f3d0; cursor:pointer; font-size:1.1rem; padding:0 4px;" title="Dismiss">&times;</button>
+      `;
+      stage.appendChild(notice);
+      setTimeout(removePageInCanvasNotice, 6000);
+    }
+
+    function removePageInCanvasNotice() {
+      const el1 = document.getElementById('pageInCanvasNotice');
+      if (el1) el1.remove();
+      const el2 = document.getElementById('pageInCanvasOcrProgress');
+      if (el2) el2.remove();
     }
 
     // -------------------------------------------------------------------------
@@ -3153,6 +3281,78 @@
       return rgbToHex(rSum / count, gSum / count, bSum / count);
     }
 
+    // Samples true character ink color from the rendered canvas pixels
+    function sampleWordInkColor(screenX, screenY, screenW, screenH) {
+      const canvas = document.getElementById('pdfRenderCanvas');
+      if (!canvas) return '#000000';
+      const ctx = canvas.getContext('2d', { willReadFrequently: true });
+      if (!ctx) return '#000000';
+
+      const pad = 1;
+      const x = Math.max(0, Math.floor(screenX - pad));
+      const y = Math.max(0, Math.floor(screenY - pad));
+      const w = Math.min(canvas.width - x, Math.ceil(screenW + pad * 2));
+      const h = Math.min(canvas.height - y, Math.ceil(screenH + pad * 2));
+
+      if (w < 4 || h < 4) return '#000000';
+
+      let imgData;
+      try {
+        imgData = ctx.getImageData(x, y, w, h);
+      } catch (e) {
+        return '#000000';
+      }
+
+      const data = imgData.data;
+
+      // Sample paper background brightness
+      let bgLumSum = 0, bgCount = 0;
+      for (let px = 0; px < w; px++) {
+        const iTop = px * 4;
+        bgLumSum += (0.299 * data[iTop] + 0.587 * data[iTop + 1] + 0.114 * data[iTop + 2]);
+        const iBot = ((h - 1) * w + px) * 4;
+        bgLumSum += (0.299 * data[iBot] + 0.587 * data[iBot + 1] + 0.114 * data[iBot + 2]);
+        bgCount += 2;
+      }
+      const bgLum = bgCount > 0 ? (bgLumSum / bgCount) : 255;
+
+      // Collect pixels distinctly darker than background (ink strokes)
+      const inkPixels = [];
+      for (let i = 0; i < data.length; i += 4) {
+        const r = data[i], g = data[i + 1], b = data[i + 2], a = data[i + 3];
+        if (a < 120) continue;
+        const lum = 0.299 * r + 0.587 * g + 0.114 * b;
+        if (bgLum - lum > 32) {
+          inkPixels.push({ r, g, b, lum });
+        }
+      }
+
+      if (inkPixels.length === 0) return '#000000';
+
+      // Sort by luminance (darkest core ink strokes first)
+      inkPixels.sort((a, b) => a.lum - b.lum);
+
+      // Average top 25% darkest ink pixels to bypass anti-aliasing edge blend
+      const sampleCount = Math.max(1, Math.floor(inkPixels.length * 0.25));
+      let sumR = 0, sumG = 0, sumB = 0;
+      for (let i = 0; i < sampleCount; i++) {
+        sumR += inkPixels[i].r;
+        sumG += inkPixels[i].g;
+        sumB += inkPixels[i].b;
+      }
+      const avgR = Math.round(sumR / sampleCount);
+      const avgG = Math.round(sumG / sampleCount);
+      const avgB = Math.round(sumB / sampleCount);
+
+      // Dark neutral threshold
+      if (avgR < 28 && avgG < 28 && avgB < 28) {
+        return '#000000';
+      }
+
+      const toHex = (n) => n.toString(16).padStart(2, '0');
+      return `#${toHex(avgR)}${toHex(avgG)}${toHex(avgB)}`;
+    }
+
     // -------------------------------------------------------------------------
     // Word Variety Classification & Context Analyzer
     // -------------------------------------------------------------------------
@@ -3446,11 +3646,13 @@
 
       const footFlareRatio = (botRowWidth / Math.max(1, midRowWidth));
 
-      // 5. Bold Classification (Accurately distinguishes Regular vs Bold without false positives)
+      // 5. Bold Classification (Accurately distinguishes Regular vs Bold across small and large sizes)
       const stemToHeightRatio = medStem / Math.max(1, inkH);
-      // Regular glyphs have thin stems (1 - 2.2px, ratio 0.07 - 0.14)
-      // True bold glyphs have distinctly thick stems (ratio >= 0.19 and medStem >= 2.6px, or ratio >= 0.17 with high ink density)
-      const isBold = (stemToHeightRatio >= 0.19 && medStem >= 2.6) || (stemToHeightRatio >= 0.17 && inkDensity >= 0.38 && medStem >= 2.4);
+      // Small/medium text (inkH <= 16): regular stem is 1 - 2px (ratio 0.08 - 0.13), bold stem is >= 2.4px (ratio >= 0.165)
+      // Large text (inkH > 16, e.g. 20-24pt headers like "Wells"): regular stem is ~2.0 - 2.8px, bold stem is >= 3.2px (ratio >= 0.14)
+      const isBold = (inkH > 16 && medStem >= 3.2 && stemToHeightRatio >= 0.14) ||
+                     (stemToHeightRatio >= 0.175 && medStem >= 2.3) ||
+                     (stemToHeightRatio >= 0.155 && inkDensity >= 0.35 && medStem >= 2.2);
 
       // 6. Serif vs Sans-Serif Classification
       const isSerif = (contrastRatio >= 1.55 || (footFlareRatio > 1.25 && contrastRatio >= 1.35));
@@ -3511,12 +3713,24 @@
       const categoryLabel = wordCat ? wordCat.label : 'General Text';
       const categoryIcon = wordCat ? wordCat.icon : 'fa-font';
 
+      // ALWAYS run Visual Canvas Analysis on the word and previous character!
+      // Rendered canvas pixels are the ultimate physical ground truth for stroke thickness, bold weight, and font proportions!
+      const canvas = document.getElementById('pdfRenderCanvas');
+      let glyphRes = null;
+      let leftGlyphRes = null;
+      if (canvas) {
+        glyphRes = analyzeCanvasWordTypography(canvas, wordData.screenX, wordData.screenY, wordData.screenW, wordData.screenH, wordData.word);
+        if (leftNeighbor) {
+          leftGlyphRes = analyzeCanvasWordTypography(canvas, leftNeighbor.screenX, leftNeighbor.screenY, leftNeighbor.screenW, leftNeighbor.screenH, leftNeighbor.word);
+        }
+      }
+
       let fontFamily = null;
       let fontSource = 'Intelligent Glyph Engine';
       let fontConfidence = 'Auto-Matched';
 
       // ---------------------------------------------------------------------
-      // 1. FONT MATCHING: Priority: Previous Character -> Self Font -> Right Neighbor -> Visual -> Document -> Arial
+      // 1. FONT MATCHING: Priority: Previous Character -> Self Font -> Right Neighbor -> Visual Canvas -> Document -> Arial
       // ---------------------------------------------------------------------
       const leftNeighborFont = leftNeighbor ? (mapRawFontToFamily(leftNeighbor.rawFontName) || leftNeighbor.fontFamily) : null;
       const selfFont = (wordData.rawFontName && wordData.rawFontName !== 'OCR_DETECT') ? mapRawFontToFamily(wordData.rawFontName) : (wordData.fontFamily || null);
@@ -3534,6 +3748,14 @@
         fontFamily = rightNeighborFont;
         fontSource = `Line Neighbor ("${rightNeighbor.word}")`;
         fontConfidence = 'Line Matched (95%)';
+      } else if (leftGlyphRes && leftGlyphRes.matchedFamily) {
+        fontFamily = leftGlyphRes.matchedFamily;
+        fontSource = `Visual Match on Prev ("${leftNeighbor.word}")`;
+        fontConfidence = 'Visual Glyph Match (94%)';
+      } else if (glyphRes && glyphRes.matchedFamily) {
+        fontFamily = glyphRes.matchedFamily;
+        fontSource = 'Visual Glyph Analysis';
+        fontConfidence = glyphRes.confidence || 'Visual Glyph Match (92%)';
       }
 
       // If still not resolved, check other line neighbors with embedded fonts
@@ -3546,23 +3768,6 @@
             fontSource = 'Line Context Font';
             fontConfidence = 'Line Matched (92%)';
           }
-        }
-      }
-
-      // Computer-Vision Visual Glyph Canvas Analysis (for scans & rasterized text)
-      const canvas = document.getElementById('pdfRenderCanvas');
-      let glyphRes = null;
-      if (canvas && (!fontFamily || !wordData.rawFontName)) {
-        if (leftNeighbor) {
-          glyphRes = analyzeCanvasWordTypography(canvas, leftNeighbor.screenX, leftNeighbor.screenY, leftNeighbor.screenW, leftNeighbor.screenH, leftNeighbor.word);
-        }
-        if (!glyphRes) {
-          glyphRes = analyzeCanvasWordTypography(canvas, wordData.screenX, wordData.screenY, wordData.screenW, wordData.screenH, wordData.word);
-        }
-        if (glyphRes && !fontFamily) {
-          fontFamily = glyphRes.matchedFamily;
-          fontSource = leftNeighbor ? `Visual Analysis on Prev ("${leftNeighbor.word}")` : 'Visual Glyph Analysis';
-          fontConfidence = glyphRes.confidence || 'Glyph Matched (94%)';
         }
       }
 
@@ -3638,29 +3843,46 @@
 
       // ---------------------------------------------------------------------
       // 3. ACCURATE BOLD DETECTION (Whether it is Bold or Not)
+      // Combines Font Name Indicators + Visual Canvas Pixel Stroke Measurement!
       // ---------------------------------------------------------------------
       let isBold = false;
       let weightExplanation = 'Regular (Normal)';
 
-      const selfIsBold = (wordData.rawFontName && wordData.rawFontName !== 'OCR_DETECT') ? isFontNameBold(wordData.rawFontName) : null;
-      const leftIsBold = (leftNeighbor && leftNeighbor.rawFontName && leftNeighbor.rawFontName !== 'OCR_DETECT') ? isFontNameBold(leftNeighbor.rawFontName) : null;
+      const selfFontIsBold = isFontNameBold(wordData.rawFontName);
+      const leftFontIsBold = leftNeighbor ? isFontNameBold(leftNeighbor.rawFontName) : null;
+      const wordVisualBold = glyphRes ? glyphRes.isBold : false;
+      const leftVisualBold = leftGlyphRes ? leftGlyphRes.isBold : false;
 
-      if (selfIsBold !== null) {
-        isBold = selfIsBold;
-        weightExplanation = isBold ? 'Embedded Bold Font' : 'Embedded Regular Font';
-      } else if (leftIsBold !== null) {
-        isBold = leftIsBold;
-        weightExplanation = isBold ? `Inherited Bold from Prev ("${leftNeighbor.word}")` : `Inherited Regular from Prev ("${leftNeighbor.word}")`;
-      } else if (wordData.isBold !== undefined && !wordData.isOcrWord) {
-        isBold = !!wordData.isBold;
-        weightExplanation = isBold ? 'Original Bold' : 'Original Regular';
-      } else if (leftNeighbor && leftNeighbor.isBold !== undefined && !leftNeighbor.isOcrWord) {
-        isBold = !!leftNeighbor.isBold;
-        weightExplanation = isBold ? `Inherited Bold from Prev ("${leftNeighbor.word}")` : `Inherited Regular from Prev ("${leftNeighbor.word}")`;
-      } else if (glyphRes) {
-        isBold = !!glyphRes.isBold;
-        weightExplanation = isBold ? 'Visual Canvas Stroke (Bold)' : 'Visual Canvas Stroke (Regular)';
+      if (selfFontIsBold) {
+        isBold = true;
+        weightExplanation = 'Embedded Bold Font';
+      } else if (wordVisualBold) {
+        // Physical canvas stroke width proves this word was rendered with bold weight!
+        isBold = true;
+        weightExplanation = 'Visual Bold Stroke (Detected)';
+      } else if (leftNeighbor && (leftFontIsBold || leftVisualBold || leftNeighbor.isBold)) {
+        isBold = true;
+        weightExplanation = `Inherited Bold from Prev ("${leftNeighbor.word}")`;
+      } else if (wordData.isBold && !wordData.isOcrWord) {
+        isBold = true;
+        weightExplanation = 'Original Bold';
+      } else {
+        isBold = false;
+        weightExplanation = 'Regular (Normal)';
       }
+
+      // ---------------------------------------------------------------------
+      // 4. INK COLOR DETECTION (Match previous character or word from canvas)
+      // ---------------------------------------------------------------------
+      let textColor = '#000000';
+      if (leftNeighbor) {
+        const leftColor = sampleWordInkColor(leftNeighbor.screenX, leftNeighbor.screenY, leftNeighbor.screenW, leftNeighbor.screenH);
+        if (leftColor) textColor = leftColor;
+      } else {
+        const selfColor = sampleWordInkColor(wordData.screenX, wordData.screenY, wordData.screenW, wordData.screenH);
+        if (selfColor) textColor = selfColor;
+      }
+      wordData.textColor = textColor;
 
       const contextExplanation = `Font: ${fontFamily} | Size: ${fontSize} pt | Weight: ${isBold ? 'Bold' : 'Regular'}`;
 
@@ -3671,6 +3893,7 @@
         confidence: fontConfidence,
         isBold,
         fontSize,
+        textColor,
         detectedHeight,
         detectedY,
         categoryKey: wordCat ? wordCat.key : 'STANDARD_TEXT',
@@ -3719,8 +3942,18 @@
       const detHeightSub = document.getElementById('wemDetectedHeightSub');
       if (detHeightSub) detHeightSub.textContent = detected.sizeExplanation || `Line: ${detected.detectedHeight} pt`;
 
-      const shouldBeBold = (wordData.fontWeight === 'bold' || wordData.isBold !== undefined ? wordData.isBold : detected.isBold);
-      const shouldBeItalic = (wordData.fontStyle === 'italic' || wordData.isItalic !== undefined ? wordData.isItalic : false);
+      // Smart Bold Detection: Canvas pixel stroke & neighbor analysis override digital un-bolded defaults
+      const shouldBeBold = (wordData.isAnnotation && wordData.annotationObj)
+        ? (wordData.fontWeight === 'bold' || !!wordData.isBold)
+        : (detected.isBold || wordData.fontWeight === 'bold' || !!wordData.isBold);
+
+      const shouldBeItalic = (wordData.isAnnotation && wordData.annotationObj)
+        ? (wordData.fontStyle === 'italic' || !!wordData.isItalic)
+        : (detected.isItalic || wordData.fontStyle === 'italic' || !!wordData.isItalic);
+
+      wordData.isBold = shouldBeBold;
+      wordData.isItalic = shouldBeItalic;
+
       const detStyleDisplay = document.getElementById('wemDetectedStyleDisplay');
       if (detStyleDisplay) {
         detStyleDisplay.textContent = shouldBeBold && shouldBeItalic ? 'Bold Italic' : shouldBeBold ? 'Bold (Strong)' : shouldBeItalic ? 'Italic' : 'Regular (Normal)';
@@ -3747,6 +3980,13 @@
       // Update badge next to font label
       const selectedFontNameEl = document.getElementById('wemSelectedFontName');
       if (selectedFontNameEl) selectedFontNameEl.textContent = getFontDisplayName(fontSelect ? fontSelect.value : finalFontFamily);
+      if (fontSelect) {
+        fontSelect.onchange = () => {
+          const chosen = fontSelect.value;
+          if (selectedFontNameEl) selectedFontNameEl.textContent = getFontDisplayName(chosen);
+          if (input) input.style.fontFamily = getFontCssFamily(chosen);
+        };
+      }
 
       // Automatically set font size and wire live sync
       const sizeInput = document.getElementById('wemFontSize');
@@ -3759,12 +3999,16 @@
         };
       }
 
-      // Live WYSIWYG preview styling directly on the input
+      // Live WYSIWYG preview styling directly on the input with high-contrast paper surface
       input.style.fontFamily = getFontCssFamily(finalFontFamily);
       input.style.fontSize = Math.min(24, Math.max(14, finalFontSize * 1.25)) + 'px';
       input.style.fontWeight = shouldBeBold ? 'bold' : 'normal';
       input.style.fontStyle = shouldBeItalic ? 'italic' : 'normal';
-      input.style.color = wordData.textColor || '#000000';
+      input.style.backgroundColor = '#ffffff';
+
+      const effectiveTextColor = (wordData.textColor && wordData.textColor.toLowerCase() !== '#ffffff') ? wordData.textColor : '#0f172a';
+      input.style.color = effectiveTextColor;
+      input.style.caretColor = '#6366f1';
 
       const boldBtn = document.getElementById('wemBoldBtn');
       if (boldBtn) {
@@ -3776,10 +4020,21 @@
         italicBtn.classList.toggle('active', !!shouldBeItalic);
       }
 
-      if (wordData.textColor) {
-        document.getElementById('wemTextColor').value = wordData.textColor;
-        document.getElementById('wemTextColorHex').textContent = wordData.textColor;
+      const pickerColor = (wordData.textColor && wordData.textColor.toLowerCase() !== '#ffffff') ? wordData.textColor : '#000000';
+      const wemTextColorEl = document.getElementById('wemTextColor');
+      const wemTextColorHexEl = document.getElementById('wemTextColorHex');
+      if (wemTextColorEl) wemTextColorEl.value = pickerColor;
+      if (wemTextColorHexEl) wemTextColorHexEl.textContent = pickerColor;
+
+      // Color picker sync
+      if (wemTextColorEl) {
+        wemTextColorEl.oninput = (e) => {
+          const val = e.target.value;
+          if (wemTextColorHexEl) wemTextColorHexEl.textContent = val;
+          if (input) input.style.color = val;
+        };
       }
+
       // Sample true paper background tint from surrounding canvas pixels
       const sampledTint = samplePageBackgroundColor(wordData.screenX, wordData.screenY, wordData.screenW, wordData.screenH);
       wordData.sampledPaperTint = sampledTint;
@@ -3814,11 +4069,6 @@
           e.preventDefault();
           closeWordEditorModal();
         }
-      };
-
-      // Color picker sync
-      document.getElementById('wemTextColor').oninput = (e) => {
-        document.getElementById('wemTextColorHex').textContent = e.target.value;
       };
     }
 
@@ -4288,21 +4538,24 @@
         }
       } else if (mode === 'add-text') {
         banner.style.display = 'flex';
-        banner.style.background = 'var(--panel-bg)';
-        banner.style.borderColor = 'var(--panel-border)';
-        bannerText.innerHTML = `<strong>Add Text Mode:</strong> Click anywhere on the page to insert a custom typography text box.`;
+        banner.style.background = 'linear-gradient(135deg, #1e293b 0%, #334155 100%)';
+        banner.style.borderColor = '#475569';
+        banner.style.boxShadow = '0 4px 18px rgba(0,0,0,0.3)';
+        bannerText.innerHTML = `<i class="fas fa-font" style="color:#38bdf8 !important;"></i> <span><strong style="color:#ffffff !important;">Add Text Mode:</strong> <span style="color:#e2e8f0;">Click anywhere on the page to insert a custom typography text box.</span></span>`;
         banner.querySelector('.mode-banner-actions').innerHTML = `<button class="btn-xs-pill" onclick="setEditorMode('edit-text')"><i class="fas fa-pen-to-square"></i> Word Edit</button>`;
       } else if (mode === 'redact') {
         banner.style.display = 'flex';
-        banner.style.background = 'var(--panel-bg)';
-        banner.style.borderColor = 'var(--panel-border)';
-        bannerText.innerHTML = `<strong>Redact &amp; Whiteout Mode:</strong> Click on the page to place a clean concealment mask.`;
+        banner.style.background = 'linear-gradient(135deg, #450a0a 0%, #7f1d1d 100%)';
+        banner.style.borderColor = '#991b1b';
+        banner.style.boxShadow = '0 4px 18px rgba(153, 27, 27, 0.35)';
+        bannerText.innerHTML = `<i class="fas fa-eraser" style="color:#fca5a5 !important;"></i> <span><strong style="color:#ffffff !important;">Redact &amp; Whiteout Mode:</strong> <span style="color:#fee2e2;">Click on the page to place a clean concealment mask.</span></span>`;
         banner.querySelector('.mode-banner-actions').innerHTML = `<button class="btn-xs-pill" onclick="setEditorMode('edit-text')"><i class="fas fa-pen-to-square"></i> Word Edit</button>`;
       } else if (mode === 'highlighter') {
         banner.style.display = 'flex';
-        banner.style.background = 'var(--panel-bg)';
-        banner.style.borderColor = 'var(--panel-border)';
-        bannerText.innerHTML = `<strong>Highlighter Mode:</strong> Click on text to place a semi-transparent yellow highlight.`;
+        banner.style.background = 'linear-gradient(135deg, #713f12 0%, #854d0e 100%)';
+        banner.style.borderColor = '#a16207';
+        banner.style.boxShadow = '0 4px 18px rgba(161, 98, 7, 0.35)';
+        bannerText.innerHTML = `<i class="fas fa-highlighter" style="color:#fde047 !important;"></i> <span><strong style="color:#ffffff !important;">Highlighter Mode:</strong> <span style="color:#fef9c3;">Click on text to place a semi-transparent yellow highlight.</span></span>`;
         banner.querySelector('.mode-banner-actions').innerHTML = `<button class="btn-xs-pill" onclick="setEditorMode('edit-text')"><i class="fas fa-pen-to-square"></i> Word Edit</button>`;
       } else {
         banner.style.display = 'none';

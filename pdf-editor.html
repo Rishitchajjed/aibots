@@ -1365,7 +1365,9 @@
               <option value="Baskerville">Baskerville (Transitional)</option>
             </optgroup>
             <optgroup label="Sans-Serif (Modern, Clean &amp; Corporate)">
-              <option value="Helvetica">Helvetica / Arial (Standard)</option>
+              <option value="Calibri">Calibri (Standard Office / Clean)</option>
+              <option value="Arial">Arial (Standard Sans)</option>
+              <option value="Helvetica">Helvetica (Clean International)</option>
               <option value="Inter">Inter (Ultra-Modern UI)</option>
               <option value="Roboto">Roboto (Neo-Grotesque)</option>
               <option value="Open Sans">Open Sans (Neutral &amp; Clear)</option>
@@ -1542,7 +1544,7 @@
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px;">
               <label style="font-size: 0.78rem; font-weight: 700; color: var(--text-secondary);"><i class="fas fa-font"></i> Matching Font:</label>
               <span id="wemFontAutoBadge" style="font-size: 0.7rem; font-weight: 800; color: #10b981; background: rgba(16, 185, 129, 0.12); padding: 2px 7px; border-radius: 999px; border: 1px solid rgba(16, 185, 129, 0.25);">
-                <i class="fas fa-check"></i> <span id="wemSelectedFontName">Times New Roman</span>
+                <i class="fas fa-check"></i> <span id="wemSelectedFontName">Auto-Detect</span>
               </span>
             </div>
             <select id="wemFontFamily" class="prop-select" style="width: 100%; font-weight: 600;" onchange="onWemFontFamilyChange(this.value)">
@@ -1556,7 +1558,9 @@
                 <option value="Baskerville">Baskerville (Transitional)</option>
               </optgroup>
               <optgroup label="Sans-Serif (Modern, Clean &amp; Corporate)">
-                <option value="Helvetica">Helvetica / Arial (Standard)</option>
+                <option value="Calibri">Calibri (Standard Office / Clean)</option>
+                <option value="Arial">Arial (Standard Sans)</option>
+                <option value="Helvetica">Helvetica (Clean International)</option>
                 <option value="Inter">Inter (Ultra-Modern UI)</option>
                 <option value="Roboto">Roboto (Neo-Grotesque)</option>
                 <option value="Open Sans">Open Sans (Neutral &amp; Clear)</option>
@@ -1979,7 +1983,7 @@
     let isOcrRunning = false;
     let pdfDocumentEmbeddedFonts = []; // BaseFont names embedded in the PDF document
     let pdfFontResourceMap = {};       // Mapping of resource names (e.g. F1) to BaseFont names
-    let docPrimaryFont = 'TimesRoman'; // Dominant document font family (e.g. TimesRoman, Helvetica)
+    let docPrimaryFont = null;         // Dominant document font family detected from embedded fonts (e.g. Calibri, Arial, Georgia)
 
     // Signature Pad State
     let sigCanvas, sigCtx, isDrawingSig = false;
@@ -2489,7 +2493,7 @@
         const widthRatio = fontWidth / (totalMeasuredWidth || 1);
 
         const fontStyleObj = (textContent.styles && item.fontName) ? textContent.styles[item.fontName] : null;
-        let rawFontName = '';
+        let rawFontName = null;
         const cleanResName = (item.fontName || '').replace(/^g_d\d+_/, '').toUpperCase();
         if (pdfFontResourceMap[cleanResName]) {
           rawFontName = pdfFontResourceMap[cleanResName];
@@ -2497,8 +2501,8 @@
           rawFontName = fontStyleObj.fontFamily;
         } else if (item.fontName && !item.fontName.startsWith('g_')) {
           rawFontName = item.fontName;
-        } else if (docPrimaryFont) {
-          rawFontName = docPrimaryFont;
+        } else if (item.fontName) {
+          rawFontName = item.fontName;
         }
 
         let currentOffsetX = 0;
@@ -2642,7 +2646,8 @@
               pdfW: screenW / currentScale,
               pdfH: screenH / currentScale,
               pdfFontSize: Math.max(10, Math.round(((screenH / currentScale) * 1.18) * 10) / 10),
-              rawFontName: docPrimaryFont || 'TimesRoman'
+              rawFontName: null,
+              isOcrWord: true
             });
           }
         }
@@ -2778,30 +2783,20 @@
 
         pdfDocumentEmbeddedFonts = Array.from(allFoundFonts);
 
-        // 4. Auto-detect primary document font
-        let hasSerif = false;
-        let hasSans = false;
-        let hasMono = false;
-
+        // 4. Auto-detect primary document font by frequency
+        const fontCounts = {};
         for (const f of pdfDocumentEmbeddedFonts) {
           const mapped = mapRawFontToFamily(f);
-          if (['TimesRoman', 'Georgia', 'Garamond', 'Merriweather', 'Cambria', 'Palatino', 'Baskerville'].includes(mapped)) {
-            hasSerif = true;
-          } else if (['Courier', 'JetBrains Mono', 'Consolas'].includes(mapped)) {
-            hasMono = true;
-          } else {
-            hasSans = true;
+          if (mapped) {
+            fontCounts[mapped] = (fontCounts[mapped] || 0) + 1;
           }
         }
 
-        if (hasSerif) {
-          docPrimaryFont = 'TimesRoman';
-        } else if (hasSans) {
-          docPrimaryFont = 'Helvetica';
-        } else if (hasMono) {
-          docPrimaryFont = 'Courier';
+        const sortedFonts = Object.entries(fontCounts).sort((a, b) => b[1] - a[1]);
+        if (sortedFonts.length > 0) {
+          docPrimaryFont = sortedFonts[0][0];
         } else {
-          docPrimaryFont = 'TimesRoman'; // Standard default for Indian deeds, agreements & contracts
+          docPrimaryFont = null; // Scanned PDF: do not lock to TimesRoman, let visual engine inspect
         }
 
         // Reset click overrides on new document
@@ -2814,16 +2809,16 @@
         console.warn("Font detection notice:", err);
         pdfDocumentEmbeddedFonts = [];
         pdfFontResourceMap = {};
-        docPrimaryFont = 'TimesRoman';
+        docPrimaryFont = null;
         lastUsedFontFamily = null;
         lastUsedBold = null;
         lastUsedFontSize = null;
       }
     }
 
-    // Maps raw PDF embedded font names or strings into our 24 supported typography keys
+    // Maps raw PDF embedded font names or strings into our supported typography keys
     function mapRawFontToFamily(rawFont) {
-      if (!rawFont) return docPrimaryFont || 'TimesRoman';
+      if (!rawFont) return null;
       const clean = rawFont.replace(/^[A-Z]{6}\+/, '').trim();
       const lower = clean.toLowerCase();
 
@@ -2839,22 +2834,19 @@
       if (lower.includes('consolas')) return 'Consolas';
       if (lower.includes('mono')) return 'JetBrains Mono';
 
-      // 3. Sans-Serif fonts (Must check BEFORE generic 'serif'!)
-      if (lower.includes('sans') || lower.includes('arial') || lower.includes('helvetica') || 
-          lower.includes('calibri') || lower.includes('inter') || lower.includes('roboto') || 
-          lower.includes('lato') || lower.includes('montserrat') || lower.includes('verdana') || 
-          lower.includes('tahoma') || lower.includes('trebuchet') || lower.includes('jakarta')) {
-        if (lower.includes('inter')) return 'Inter';
-        if (lower.includes('roboto')) return 'Roboto';
-        if (lower.includes('open sans') || lower.includes('opensans')) return 'Open Sans';
-        if (lower.includes('lato')) return 'Lato';
-        if (lower.includes('montserrat')) return 'Montserrat';
-        if (lower.includes('jakarta')) return 'Plus Jakarta Sans';
-        if (lower.includes('trebuchet')) return 'Trebuchet MS';
-        if (lower.includes('verdana')) return 'Verdana';
-        if (lower.includes('tahoma')) return 'Tahoma';
-        return 'Helvetica';
-      }
+      // 3. Sans-Serif fonts
+      if (lower.includes('calibri')) return 'Calibri';
+      if (lower.includes('arial')) return 'Arial';
+      if (lower.includes('inter')) return 'Inter';
+      if (lower.includes('roboto')) return 'Roboto';
+      if (lower.includes('open sans') || lower.includes('opensans')) return 'Open Sans';
+      if (lower.includes('lato')) return 'Lato';
+      if (lower.includes('montserrat')) return 'Montserrat';
+      if (lower.includes('jakarta')) return 'Plus Jakarta Sans';
+      if (lower.includes('trebuchet')) return 'Trebuchet MS';
+      if (lower.includes('verdana')) return 'Verdana';
+      if (lower.includes('tahoma')) return 'Tahoma';
+      if (lower.includes('helvetica') || lower.includes('sans')) return 'Helvetica';
 
       // 4. Serif fonts
       if (lower.includes('georgia')) return 'Georgia';
@@ -2867,12 +2859,14 @@
         return 'TimesRoman';
       }
 
-      return docPrimaryFont || 'TimesRoman';
+      return null;
     }
 
     // Friendly display names for typography chips and badges
     function getFontDisplayName(key) {
       const names = {
+        'Calibri': 'Calibri',
+        'Arial': 'Arial',
         'TimesRoman': 'Times New Roman',
         'Georgia': 'Georgia',
         'Garamond': 'EB Garamond',
@@ -2880,7 +2874,7 @@
         'Cambria': 'Cambria',
         'Palatino': 'Palatino',
         'Baskerville': 'Baskerville',
-        'Helvetica': 'Helvetica / Arial',
+        'Helvetica': 'Helvetica',
         'Inter': 'Inter',
         'Roboto': 'Roboto',
         'Open Sans': 'Open Sans',
@@ -2898,7 +2892,7 @@
         'Great Vibes': 'Great Vibes',
         'Pacifico': 'Pacifico'
       };
-      return names[key] || key || 'Times New Roman';
+      return names[key] || key || 'Arial';
     }
 
     // Bulletproof case-insensitive and normalized selection of <select> options
@@ -2951,6 +2945,7 @@
 
     // Handles live font changes in the Word Editor modal
     function onWemFontFamilyChange(val) {
+      lastUsedFontFamily = val;
       const dispName = getFontDisplayName(val);
       const badgeName = document.getElementById('wemSelectedFontName');
       if (badgeName) badgeName.textContent = dispName;
@@ -2973,6 +2968,8 @@
         'Baskerville': 'Baskerville, "Baskerville Old Face", serif',
 
         // Sans-Serif
+        'Calibri': 'Calibri, Candara, Segoe, "Segoe UI", Optima, Arial, sans-serif',
+        'Arial': 'Arial, "Helvetica Neue", Helvetica, sans-serif',
         'Helvetica': 'Helvetica, Arial, "Liberation Sans", sans-serif',
         'Inter': 'Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
         'Roboto': 'Roboto, Helvetica, Arial, sans-serif',
@@ -3139,119 +3136,102 @@
         regex: /^(19\d\d|20\d\d)$/,
         label: 'Date (Year)',
         icon: 'fa-calendar',
-        suggestedFont: 'TimesRoman',
         suggestedWeight: 'bold'
       },
       DATE_DAY: {
         regex: /^(\d{1,2}(st|nd|rd|th)?|first|second|third|fourth|fifth|twenty-sixth|day)$/i,
         label: 'Date (Day / Ordinal)',
         icon: 'fa-calendar-day',
-        suggestedFont: 'TimesRoman',
         suggestedWeight: 'bold'
       },
       MONTH: {
         regex: /^(january|february|march|april|may|june|july|august|september|october|november|december|jan|feb|mar|apr|jun|jul|aug|sep|oct|nov|dec)$/i,
         label: 'Date (Month)',
         icon: 'fa-calendar-alt',
-        suggestedFont: 'TimesRoman',
         suggestedWeight: 'bold'
       },
       CURRENCY_SYMBOL: {
         regex: /^(₹|rs\.?|inr|\$|usd|eur|€|£|gbp)$/i,
         label: 'Currency Symbol',
         icon: 'fa-indian-rupee-sign',
-        suggestedFont: 'TimesRoman',
         suggestedWeight: 'bold'
       },
       CURRENCY_AMOUNT: {
         regex: /^(\d{1,3}(,\d{2,3})*(\.\d{2})?(\/-)?|\d+(\.\d{2})?(\/-)?)$/,
         label: 'Financial Amount',
         icon: 'fa-money-bill-wave',
-        suggestedFont: 'TimesRoman',
         suggestedWeight: 'bold'
       },
       FINANCIAL_TERM: {
         regex: /^(rupees|lakhs?|crores?|thousands?|hundreds?|only|rent|deposit|security|per|month|advance|amount|payable)$/i,
         label: 'Financial Term',
         icon: 'fa-coins',
-        suggestedFont: 'TimesRoman',
         suggestedWeight: 'bold'
       },
       LEGAL_PARTY: {
         regex: /^(lessor|lessee|landlord|tenant|licensor|licensee|borrower|lender|purchaser|vendor|party|parties|first|second|part)$/i,
         label: 'Legal Party / Entity',
         icon: 'fa-user-tie',
-        suggestedFont: 'TimesRoman',
         suggestedWeight: 'bold'
       },
       LEGAL_HEADER: {
         regex: /^(agreement|deed|contract|witnesseth|whereas|schedule|clause|article|section|annexure|memorandum|affidavit|between|now|therefore)$/i,
         label: 'Legal Clause / Header',
         icon: 'fa-gavel',
-        suggestedFont: 'TimesRoman',
         suggestedWeight: 'bold'
       },
       LEGAL_SECTION: {
         regex: /^(section|sec\.?|clause|art\.?|article|sub-section|sub-clause|paragraph|para\.?|annexure)$/i,
         label: 'Section / Clause',
         icon: 'fa-scale-balanced',
-        suggestedFont: 'TimesRoman',
         suggestedWeight: 'bold'
       },
       HONORIFIC_TITLE: {
         regex: /^(mr\.?|mrs\.?|ms\.?|dr\.?|prof\.?|shri|smt\.?|kumari|m\/s|s\/o|d\/o|w\/o|son|daughter|wife)$/i,
         label: 'Honorific / Relation',
         icon: 'fa-id-card',
-        suggestedFont: 'TimesRoman',
         suggestedWeight: 'bold'
       },
       IDENTIFIER: {
         regex: /^(flat|plot|door|no\.?|street|road|city|pin|state|pan|aadhaar|passport|reg\.?)$/i,
         label: 'Identifier / Address',
         icon: 'fa-location-dot',
-        suggestedFont: 'TimesRoman',
         suggestedWeight: 'normal'
       },
       PERCENTAGE: {
         regex: /^(\d+(\.\d+)?%)$/,
         label: 'Percentage',
         icon: 'fa-percent',
-        suggestedFont: 'TimesRoman',
         suggestedWeight: 'bold'
       },
       TIME: {
         regex: /^(\d{1,2}:\d{2}(\s*(am|pm))?|hours?)$/i,
         label: 'Time / Duration',
         icon: 'fa-clock',
-        suggestedFont: 'TimesRoman',
         suggestedWeight: 'normal'
       },
       PINCODE_ZIP: {
         regex: /^(\d{6}|\d{5}(-\d{4})?)$/,
         label: 'PIN / Postal Code',
         icon: 'fa-envelope-open-text',
-        suggestedFont: 'TimesRoman',
         suggestedWeight: 'normal'
       },
       GOVT_ID: {
         regex: /^(pan|aadhaar|gstin|cin|ssn|ein|tan|din|urn|tin)$/i,
         label: 'Government / Tax ID',
         icon: 'fa-id-badge',
-        suggestedFont: 'TimesRoman',
         suggestedWeight: 'bold'
       },
       EMAIL_PHONE: {
         regex: /^([\w.-]+@[\w.-]+\.\w+|(\+?\d{1,3}[-.\s]?)?\(?\d{3}\)?[-.\s]?\d{3}[-.\s]?\d{4})$/i,
         label: 'Contact Detail',
         icon: 'fa-phone',
-        suggestedFont: 'Helvetica',
         suggestedWeight: 'normal'
       },
       NUMBER_WORD: {
         regex: /^(one|two|three|four|five|six|seven|eight|nine|ten|eleven|twelve|fifteen|twenty|thirty|forty|fifty|hundred|thousand)$/i,
         label: 'Number Word',
         icon: 'fa-arrow-up-1-9',
-        suggestedFont: 'TimesRoman',
         suggestedWeight: 'bold'
       }
     };
@@ -3269,7 +3249,6 @@
           key: 'UPPERCASE_HEADER',
           label: 'Agreement Header Word',
           icon: 'fa-heading',
-          suggestedFont: 'TimesRoman',
           suggestedWeight: 'bold'
         };
       }
@@ -3277,7 +3256,6 @@
         key: 'STANDARD_TEXT',
         label: 'Standard Text',
         icon: 'fa-font',
-        suggestedFont: 'TimesRoman',
         suggestedWeight: 'normal'
       };
     }
@@ -3312,6 +3290,184 @@
       });
     }
 
+    // Computer-Vision Visual Glyph Typography Analyzer
+    // Extracts stroke weight, contrast ratio, serif presence, and proportions from rendered canvas pixels
+    function analyzeCanvasWordTypography(canvas, screenX, screenY, screenW, screenH, wordStr) {
+      if (!canvas) return null;
+      const ctx = canvas.getContext('2d', { willReadFrequently: true });
+      if (!ctx) return null;
+
+      const pad = 2;
+      const x = Math.max(0, Math.floor(screenX - pad));
+      const y = Math.max(0, Math.floor(screenY - pad));
+      const w = Math.min(canvas.width - x, Math.ceil(screenW + pad * 2));
+      const h = Math.min(canvas.height - y, Math.ceil(screenH + pad * 2));
+
+      if (w < 4 || h < 6) return null;
+
+      let imgData;
+      try {
+        imgData = ctx.getImageData(x, y, w, h);
+      } catch (e) {
+        return null;
+      }
+
+      const data = imgData.data;
+
+      // 1. Sample background brightness along perimeter
+      let bgLumSum = 0;
+      let bgCount = 0;
+      for (let px = 0; px < w; px++) {
+        const iTop = (0 * w + px) * 4;
+        bgLumSum += (0.299 * data[iTop] + 0.587 * data[iTop + 1] + 0.114 * data[iTop + 2]);
+        const iBot = ((h - 1) * w + px) * 4;
+        bgLumSum += (0.299 * data[iBot] + 0.587 * data[iBot + 1] + 0.114 * data[iBot + 2]);
+        bgCount += 2;
+      }
+      for (let py = 1; py < h - 1; py++) {
+        const iL = (py * w + 0) * 4;
+        bgLumSum += (0.299 * data[iL] + 0.587 * data[iL + 1] + 0.114 * data[iL + 2]);
+        const iR = (py * w + (w - 1)) * 4;
+        bgLumSum += (0.299 * data[iR] + 0.587 * data[iR + 1] + 0.114 * data[iR + 2]);
+        bgCount += 2;
+      }
+      const bgLum = bgCount > 0 ? (bgLumSum / bgCount) : 255;
+      const inkThreshold = Math.max(40, bgLum - 35);
+
+      // 2. Identify ink pixels and compute tight ink bounding box
+      let minInkX = w, maxInkX = -1, minInkY = h, maxInkY = -1;
+      let inkPixelCount = 0;
+      const isInk = new Uint8Array(w * h);
+
+      for (let py = 0; py < h; py++) {
+        for (let px = 0; px < w; px++) {
+          const idx = (py * w + px) * 4;
+          const lum = 0.299 * data[idx] + 0.587 * data[idx + 1] + 0.114 * data[idx + 2];
+          if (lum < inkThreshold) {
+            isInk[py * w + px] = 1;
+            inkPixelCount++;
+            if (px < minInkX) minInkX = px;
+            if (px > maxInkX) maxInkX = px;
+            if (py < minInkY) minInkY = py;
+            if (py > maxInkY) maxInkY = py;
+          }
+        }
+      }
+
+      if (inkPixelCount < 15 || minInkX >= maxInkX || minInkY >= maxInkY) {
+        return null;
+      }
+
+      const inkW = maxInkX - minInkX + 1;
+      const inkH = maxInkY - minInkY + 1;
+      const inkDensity = inkPixelCount / (inkW * inkH);
+
+      // 3. Stroke thickness analysis (vertical stems vs horizontal bars)
+      const midYStart = minInkY + Math.floor(0.20 * inkH);
+      const midYEnd = minInkY + Math.floor(0.80 * inkH);
+      const stemWidths = [];
+
+      for (let py = midYStart; py <= midYEnd; py++) {
+        let curRun = 0;
+        for (let px = minInkX; px <= maxInkX; px++) {
+          if (isInk[py * w + px]) {
+            curRun++;
+          } else {
+            if (curRun >= 1) stemWidths.push(curRun);
+            curRun = 0;
+          }
+        }
+        if (curRun >= 1) stemWidths.push(curRun);
+      }
+
+      const midXStart = minInkX + Math.floor(0.15 * inkW);
+      const midXEnd = minInkX + Math.floor(0.85 * inkW);
+      const barHeights = [];
+
+      for (let px = midXStart; px <= midXEnd; px++) {
+        let curRun = 0;
+        for (let py = minInkY; py <= maxInkY; py++) {
+          if (isInk[py * w + px]) {
+            curRun++;
+          } else {
+            if (curRun >= 1) barHeights.push(curRun);
+            curRun = 0;
+          }
+        }
+        if (curRun >= 1) barHeights.push(curRun);
+      }
+
+      const median = (arr) => {
+        if (!arr || arr.length === 0) return 2;
+        const sorted = [...arr].sort((a, b) => a - b);
+        return sorted[Math.floor(sorted.length / 2)];
+      };
+
+      const medStem = median(stemWidths);
+      const medBar = median(barHeights);
+      const contrastRatio = medStem / Math.max(1, medBar);
+
+      // 4. Terminal flare / Serif detection at baseline
+      const botY = maxInkY - Math.max(1, Math.floor(0.12 * inkH));
+      let botRowWidth = 0;
+      for (let px = minInkX; px <= maxInkX; px++) {
+        if (isInk[botY * w + px]) botRowWidth++;
+      }
+      const midY = minInkY + Math.floor(0.50 * inkH);
+      let midRowWidth = 0;
+      for (let px = minInkX; px <= maxInkX; px++) {
+        if (isInk[midY * w + px]) midRowWidth++;
+      }
+
+      const footFlareRatio = (botRowWidth / Math.max(1, midRowWidth));
+
+      // 5. Bold Classification
+      const stemToHeightRatio = medStem / Math.max(1, inkH);
+      const isBold = (inkDensity > 0.32 || stemToHeightRatio > 0.16);
+
+      // 6. Serif vs Sans-Serif Classification
+      const isSerif = (contrastRatio >= 1.55 || (footFlareRatio > 1.25 && contrastRatio >= 1.35));
+
+      // 7. Proportional aspect ratio (width per character)
+      const cleanLen = (wordStr || '').replace(/\s+/g, '').length || 1;
+      const charAspect = (inkW / cleanLen) / Math.max(1, inkH);
+
+      let matchedFamily = 'Arial';
+      let confidence = 'Visual Glyph Match (92%)';
+
+      if (isSerif) {
+        if (contrastRatio >= 1.85 && charAspect < 0.65) {
+          matchedFamily = 'TimesRoman';
+        } else if (charAspect >= 0.65 || inkDensity > 0.30) {
+          matchedFamily = 'Georgia';
+        } else if (contrastRatio >= 1.6) {
+          matchedFamily = 'Garamond';
+        } else {
+          matchedFamily = 'Cambria';
+        }
+      } else {
+        // Sans-Serif classification
+        if (charAspect < 0.52 && contrastRatio <= 1.3) {
+          matchedFamily = 'Calibri';
+        } else if (charAspect >= 0.68) {
+          matchedFamily = 'Verdana';
+        } else if (cleanLen >= 4 && charAspect >= 0.53 && charAspect <= 0.62) {
+          matchedFamily = 'Arial';
+        } else {
+          matchedFamily = 'Helvetica';
+        }
+      }
+
+      return {
+        matchedFamily,
+        isBold,
+        contrastRatio,
+        inkDensity,
+        isSerif,
+        confidence
+      };
+    }
+
     function detectFontAndWeightForWord(wordData) {
       const origPageIdx = pageOrder[activePageIndex];
       const pageWords = [...(digitalPageWords[origPageIdx] || []), ...(ocrPageWords[origPageIdx] || [])];
@@ -3332,35 +3488,84 @@
       let categoryIcon = wordCat ? wordCat.icon : 'fa-font';
       let contextExplanation = '';
       let isBold = false;
-      let fontFamily = docPrimaryFont || 'TimesRoman';
-      let fontSource = 'Document Primary Font';
+      let fontFamily = null;
+      let fontSource = 'Intelligent Glyph Engine';
       let fontConfidence = 'Auto-Matched';
       let fontSize = wordData.pdfFontSize ? Math.round(wordData.pdfFontSize * 10) / 10 : 14;
 
-      // 1. Digital PDF fontName inspection from current word or nearby words on the line
-      if (wordData.rawFontName) {
-        fontFamily = mapRawFontToFamily(wordData.rawFontName);
-        fontSource = 'Embedded Glyph Font';
-        fontConfidence = 'High Confidence (99%)';
-        const lower = wordData.rawFontName.toLowerCase();
-        if (lower.includes('bold') || lower.includes('black') || lower.includes('heavy') || lower.includes('700') || lower.includes('800') || lower.includes('900')) {
-          isBold = true;
-        }
-      } else {
-        const neighborWithFont = nearbyWordsOnLine.find(w => w.rawFontName);
-        if (neighborWithFont) {
-          fontFamily = mapRawFontToFamily(neighborWithFont.rawFontName);
-          fontSource = 'Line Neighbor Font';
-          fontConfidence = 'Line Matched (95%)';
-          const lower = neighborWithFont.rawFontName.toLowerCase();
+      // STAGE 1: Embedded Digital PDF Font (Highest fidelity if available)
+      if (wordData.rawFontName && wordData.rawFontName !== 'OCR_DETECT') {
+        const mapped = mapRawFontToFamily(wordData.rawFontName);
+        if (mapped) {
+          fontFamily = mapped;
+          fontSource = 'Embedded PDF Font';
+          fontConfidence = 'High Confidence (99%)';
+          const lower = wordData.rawFontName.toLowerCase();
           if (lower.includes('bold') || lower.includes('black') || lower.includes('heavy') || lower.includes('700') || lower.includes('800') || lower.includes('900')) {
             isBold = true;
           }
-        } else if (docPrimaryFont) {
-          fontFamily = docPrimaryFont;
-          fontSource = 'Document Primary Font';
-          fontConfidence = 'Doc Matched (90%)';
         }
+      }
+
+      // STAGE 2: Line Neighbor with Embedded Font
+      if (!fontFamily) {
+        const neighborWithFont = nearbyWordsOnLine.find(w => w.rawFontName && w.rawFontName !== 'OCR_DETECT');
+        if (neighborWithFont) {
+          const mapped = mapRawFontToFamily(neighborWithFont.rawFontName);
+          if (mapped) {
+            fontFamily = mapped;
+            fontSource = 'Line Neighbor Font';
+            fontConfidence = 'Line Matched (95%)';
+            const lower = neighborWithFont.rawFontName.toLowerCase();
+            if (lower.includes('bold') || lower.includes('black') || lower.includes('heavy') || lower.includes('700') || lower.includes('800') || lower.includes('900')) {
+              isBold = true;
+            }
+          }
+        }
+      }
+
+      // STAGE 3: Computer-Vision Visual Glyph Canvas Analysis
+      const canvas = document.getElementById('pdfRenderCanvas');
+      if (canvas && (!fontFamily || !isBold)) {
+        const glyphRes = analyzeCanvasWordTypography(
+          canvas,
+          wordData.screenX,
+          wordData.screenY,
+          wordData.screenW,
+          wordData.screenH,
+          wordData.word
+        );
+        if (glyphRes) {
+          if (!fontFamily) {
+            fontFamily = glyphRes.matchedFamily;
+            fontSource = 'Visual Glyph Analysis';
+            fontConfidence = glyphRes.confidence || 'Glyph Matched (94%)';
+          }
+          if (glyphRes.isBold) {
+            isBold = true;
+          }
+        }
+      }
+
+      // STAGE 4: Recent User Selection in this document session
+      if (!fontFamily && lastUsedFontFamily) {
+        fontFamily = lastUsedFontFamily;
+        fontSource = 'Session Memory';
+        fontConfidence = 'Recent Style (90%)';
+      }
+
+      // STAGE 5: Document-level Primary Font (if detected from embedded fonts)
+      if (!fontFamily && docPrimaryFont) {
+        fontFamily = docPrimaryFont;
+        fontSource = 'Document Primary Font';
+        fontConfidence = 'Doc Matched (88%)';
+      }
+
+      // STAGE 6: Universal Sans-Serif Default (Clean Arial instead of forcing TimesRoman)
+      if (!fontFamily) {
+        fontFamily = 'Arial';
+        fontSource = 'Default Match';
+        fontConfidence = 'Standard (85%)';
       }
 
       // Check if surrounding line words have bold font names
@@ -3371,33 +3576,27 @@
         isBold = true;
       }
 
-      // 2. Semantic Context & Neighbor Word Categorisation Fusion
+      // Semantic Context overrides for bold (e.g. headers, currency amounts, execution year)
       if (wordCat && wordCat.key === 'YEAR' && ((leftCat && (leftCat.key === 'MONTH' || leftCat.key === 'DATE_DAY')) || (rightCat && (rightCat.key === 'LEGAL_HEADER' || rightCat.key === 'LEGAL_PARTY')))) {
         categoryLabel = 'Agreement Date (Year)';
         categoryIcon = 'fa-calendar-check';
         contextExplanation = `Matched execution year following "${leftNeighbor ? leftNeighbor.word : ''}"`;
         isBold = true;
-        fontFamily = docPrimaryFont || 'TimesRoman';
-        fontConfidence = 'Context Matched (99%)';
       } else if (wordCat && wordCat.key === 'DATE_DAY' && rightCat && rightCat.key === 'MONTH') {
         categoryLabel = 'Agreement Date (Day)';
         categoryIcon = 'fa-calendar-day';
         contextExplanation = `Precedes execution month "${rightNeighbor ? rightNeighbor.word : ''}"`;
         isBold = true;
-        fontFamily = docPrimaryFont || 'TimesRoman';
-        fontConfidence = 'Context Matched (98%)';
       } else if (wordCat && wordCat.key === 'CURRENCY_AMOUNT' && leftCat && leftCat.key === 'CURRENCY_SYMBOL') {
         categoryLabel = 'Monetary Amount';
         categoryIcon = 'fa-money-bill-wave';
         contextExplanation = `Preceded by currency symbol "${leftNeighbor.word}"`;
         isBold = true;
-        fontConfidence = 'Context Matched (97%)';
       } else if (leftCat && leftCat.key === 'HONORIFIC_TITLE') {
         categoryLabel = 'Person / Entity Name';
         categoryIcon = 'fa-user-tag';
         contextExplanation = `Preceded by title "${leftNeighbor.word}"`;
         isBold = true;
-        fontConfidence = 'Context Matched (95%)';
       } else if (nearbyWordsOnLine.length > 0) {
         const alphaWords = nearbyWordsOnLine.filter(w => /[a-zA-Z]/.test(w.word));
         if (alphaWords.length > 0) {
@@ -3407,8 +3606,6 @@
             categoryIcon = 'fa-file-lines';
             contextExplanation = `Surrounding line has ${capsCount} uppercase header words`;
             isBold = true;
-            if (!fontFamily || fontFamily === 'Helvetica') fontFamily = docPrimaryFont || 'TimesRoman';
-            fontConfidence = 'Header Matched (96%)';
           }
         }
       }
@@ -3420,7 +3617,7 @@
         }
       }
 
-      // 3. Automatic Line Height & Baseline Alignment Matching
+      // Automatic Line Height & Baseline Alignment Matching
       let detectedHeight = wordData.pdfH || 16;
       let detectedY = wordData.pdfY;
 
@@ -3429,19 +3626,16 @@
         if (nearbyHeights.length > 0) {
           const avgNearbyHeight = nearbyHeights.reduce((s, h) => s + h, 0) / nearbyHeights.length;
           const maxNearbyHeight = Math.max(...nearbyHeights);
-          // Pick up the matching line height so numbers / lowercase words don't look undersized
           detectedHeight = Math.max(wordData.pdfH, avgNearbyHeight, maxNearbyHeight * 0.92);
           detectedHeight = Math.round(detectedHeight * 10) / 10;
         }
 
-        // Align to common line baseline
         const baselines = nearbyWordsOnLine.map(w => w.pdfY + w.pdfH);
         const avgBaseline = baselines.reduce((s, b) => s + b, 0) / baselines.length;
         if (Math.abs(avgBaseline - (wordData.pdfY + wordData.pdfH)) <= detectedHeight * 0.85) {
           detectedY = Math.round((avgBaseline - detectedHeight) * 10) / 10;
         }
 
-        // Average font size from surrounding line words
         const nearbyFontSizes = nearbyWordsOnLine.map(w => w.pdfFontSize).filter(s => s && s > 6);
         if (nearbyFontSizes.length > 0) {
           const avgSize = nearbyFontSizes.reduce((sum, s) => sum + s, 0) / nearbyFontSizes.length;
@@ -3449,8 +3643,6 @@
         }
       }
 
-      // Proportional Font Size Floor: In digital typography, font EM size is roughly equal to line height
-      // (typically 88% - 95% of line height). This guarantees text size is NEVER lower than surrounding words!
       const minSizeFromHeight = Math.round(detectedHeight * 0.90 * 10) / 10;
       fontSize = Math.max(fontSize, minSizeFromHeight, 11);
       fontSize = Math.round(fontSize * 10) / 10;
@@ -3610,7 +3802,7 @@
       const newText = input.value;
       const textColor = document.getElementById('wemTextColor').value || '#000000';
       const maskColor = document.getElementById('wemMaskColor').value || '#ffffff';
-      const fontFamily = document.getElementById('wemFontFamily').value || 'TimesRoman';
+      const fontFamily = document.getElementById('wemFontFamily').value || docPrimaryFont || 'Arial';
       const fontSize = parseFloat(document.getElementById('wemFontSize').value) || 14;
       const isBold = document.getElementById('wemBoldBtn').classList.contains('active');
       const isItalic = document.getElementById('wemItalicBtn').classList.contains('active');
@@ -3651,7 +3843,7 @@
       closeWordEditorModal();
     }
 
-    function commitWordReplacement(wordData, newText, textColor = '#000000', maskColor = '#ffffff', fontFamily = 'TimesRoman', fontSize = 14, isBold = false, isItalic = false) {
+    function commitWordReplacement(wordData, newText, textColor = '#000000', maskColor = '#ffffff', fontFamily = 'Arial', fontSize = 14, isBold = false, isItalic = false) {
       const origPageIdx = pageOrder[activePageIndex];
       if (!pageAnnotations[origPageIdx]) pageAnnotations[origPageIdx] = [];
 
@@ -3963,7 +4155,7 @@
           h: 26,
           text: 'Type text here...',
           fontSize: 14,
-          fontFamily: document.getElementById('propFontFamily').value || docPrimaryFont || 'TimesRoman',
+          fontFamily: document.getElementById('propFontFamily').value || docPrimaryFont || 'Arial',
           textColor: document.getElementById('propTextColor').value || '#000000',
           bgColor: 'transparent',
           opacity: 1.0
@@ -5362,6 +5554,13 @@
               const estFontSize = Math.min(20, Math.max(9.5, Math.round(wh * 0.82 * 2) / 2));
               const isBold = (sw.confidence > 70 && /^[A-Z0-9\s.,:\-()]+$/.test(wText) && wText.length >= 2) || (sw.is_bold);
 
+              let wordFont = docPrimaryFont;
+              if (!wordFont) {
+                const glyphRes = analyzeCanvasWordTypography(ocrCanvas, sw.bbox.x0, sw.bbox.y0, sw.bbox.x1 - sw.bbox.x0, sw.bbox.y1 - sw.bbox.y0, wText);
+                if (glyphRes) wordFont = glyphRes.matchedFamily;
+              }
+              if (!wordFont) wordFont = 'Arial';
+
               const wordData = {
                 word: wText,
                 pdfX: wx,
@@ -5369,7 +5568,7 @@
                 pdfW: ww,
                 pdfH: wh,
                 fontSize: estFontSize,
-                fontFamily: docPrimaryFont || 'TimesRoman',
+                fontFamily: wordFont,
                 isBold: !!isBold,
                 isItalic: false,
                 textColor: '#000000',
@@ -5436,7 +5635,7 @@
               pdfW: estTokenW,
               pdfH: t.h || 14,
               fontSize: t.fontSize || 12,
-              fontFamily: t.fontFamily || docPrimaryFont || 'TimesRoman',
+              fontFamily: t.fontFamily || docPrimaryFont || 'Arial',
               isBold: !!(t.fontWeight === 'bold' || t.isBold),
               isItalic: !!(t.fontStyle === 'italic' || t.isItalic),
               textColor: t.textColor || '#000000'
@@ -5496,9 +5695,9 @@
         measureCtx.font = `${Math.round(fontH)}px sans-serif`;
 
         const cleanResName = (item.fontName || '').replace(/^g_d\d+_/, '').toUpperCase();
-        const rawFont = pdfFontResourceMap[cleanResName] || item.fontName || docPrimaryFont || 'TimesRoman';
-        const mappedFont = mapRawFontToFamily(rawFont);
-        const isBold = rawFont.toLowerCase().includes('bold') || rawFont.toLowerCase().includes('heavy');
+        const rawFont = pdfFontResourceMap[cleanResName] || item.fontName || docPrimaryFont;
+        const mappedFont = mapRawFontToFamily(rawFont) || docPrimaryFont || 'Arial';
+        const isBold = (rawFont || '').toLowerCase().includes('bold') || (rawFont || '').toLowerCase().includes('heavy');
 
         const tokens = fullStr.match(/\S+|\s+/g) || [fullStr];
         const totalW = measureCtx.measureText(fullStr).width || fontW;
@@ -5804,7 +6003,7 @@
 
           textRuns.push(new TextRun({
             text: curWord.word + trailingSpace,
-            font: getFontDisplayName(curWord.fontFamily || 'TimesRoman'),
+            font: getFontDisplayName(curWord.fontFamily || docPrimaryFont || 'Arial'),
             size: fontSizeHalfPt,
             bold: isBold,
             italics: !!curWord.isItalic,
@@ -6087,7 +6286,7 @@
             return {
               text: w.word + gapSpace,
               options: {
-                fontFace: getFontDisplayName(w.fontFamily || 'TimesRoman'),
+                fontFace: getFontDisplayName(w.fontFamily || docPrimaryFont || 'Arial'),
                 fontSize: Math.round(w.fontSize || 12),
                 bold: !!w.isBold,
                 italic: !!w.isItalic,

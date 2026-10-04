@@ -1672,6 +1672,14 @@
             </select>
           </div>
 
+          <div style="margin-bottom: 10px;" id="wordLayoutModeGroup">
+            <label style="font-size: 0.78rem; font-weight: 700; color: var(--text-secondary); display: block; margin-bottom: 4px;">Word Layout Style:</label>
+            <select id="convertWordLayout" class="prop-select" style="width: 100%;">
+              <option value="adobe-hybrid" selected>Adobe Acrobat Hybrid (Stamp &amp; Signatures as Images, Text 100% Editable)</option>
+              <option value="clean-reflow">Clean Legal Reflow (Flowing Paragraphs, Indents &amp; Tables)</option>
+            </select>
+          </div>
+
           <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px;">
             <div>
               <label style="font-size: 0.78rem; font-weight: 700; color: var(--text-secondary); display: block; margin-bottom: 4px;">Page Range:</label>
@@ -4910,6 +4918,7 @@
 
       const format = selectedConvertFormat || 'docx';
       const ocrStrategy = document.getElementById('convertOcrStrategy')?.value || 'auto';
+      const layoutStyle = document.getElementById('convertWordLayout')?.value || 'adobe-hybrid';
       const pageRangeOpt = document.getElementById('convertPageRangeOption')?.value || 'all';
       const includeEdits = document.getElementById('convertIncludeEdits')?.checked !== false;
 
@@ -4992,9 +5001,18 @@
           if (progressStatus) progressStatus.innerHTML = `<i class="fas fa-spinner fa-spin" style="color:var(--editor-accent);"></i> Processing Page ${pageNum} of ${total}...`;
           if (progressSub) progressSub.textContent = `Extracting typography, layout flow & paragraphs...`;
 
-          const pageLayout = await getPageLayoutForExport(origIdx, ocrStrategy, includeEdits, ocrWorker, msg => {
-            if (progressSub) progressSub.textContent = `Page ${pageNum}: ${msg}`;
-          });
+          const pageLayout = await getPageLayoutForExport(
+            origIdx,
+            ocrStrategy,
+            includeEdits,
+            ocrWorker,
+            msg => {
+              if (progressSub) progressSub.textContent = `Page ${pageNum}: ${msg}`;
+            },
+            layoutStyle,
+            i,
+            total
+          );
 
           pagesData.push(pageLayout);
         }
@@ -5019,7 +5037,7 @@
         if (format === 'docx') {
           if (progressStatus) progressStatus.innerHTML = `<i class="fas fa-spinner fa-spin" style="color:#2563eb;"></i> Assembling Microsoft Word (.docx)...`;
           if (progressSub) progressSub.textContent = `Building OpenXML document structure and typography styles...`;
-          await buildDocxFromPages(pagesData, baseName);
+          await buildDocxFromPages(pagesData, baseName, layoutStyle);
           showToast("Word document generated & downloaded successfully!", "fa-file-word");
         } else {
           if (progressStatus) progressStatus.innerHTML = `<i class="fas fa-spinner fa-spin" style="color:#d97706;"></i> Assembling PowerPoint Presentation (.pptx)...`;
@@ -5109,7 +5127,7 @@
       return false;
     }
 
-    async function getPageLayoutForExport(origPageIdx, ocrStrategy, includeEdits, ocrWorker, onProgress) {
+    async function getPageLayoutForExport(origPageIdx, ocrStrategy, includeEdits, ocrWorker, onProgress, layoutStyle = 'adobe-hybrid', pageIndexInExport = 0, totalPages = 1) {
       if (origPageIdx >= 9999) {
         return {
           origPageIdx,
@@ -5129,6 +5147,19 @@
 
       let extractedLines = [];
       let rawWords = [];
+
+      let stampBannerImage = null;
+      let stampBannerWidth = 505;
+      let stampBannerHeight = 155;
+      let bottomSignatureImage = null;
+      let bottomSignatureWidth = 160;
+      let bottomSignatureHeight = 45;
+      let sigLeftImage = null;
+      let sigLeftWidth = 130;
+      let sigLeftHeight = 50;
+      let sigRightImage = null;
+      let sigRightWidth = 130;
+      let sigRightHeight = 50;
 
       // 1. Digital text extraction
       if (ocrStrategy !== 'force') {
@@ -5155,6 +5186,122 @@
         const ctx = ocrCanvas.getContext('2d');
         await page.render({ canvasContext: ctx, viewport: ocrViewport }).promise;
 
+        // If user made edits/whiteouts, bake them onto ocrCanvas if includeEdits
+        if (includeEdits && pageAnnotations[origPageIdx]) {
+          const annots = pageAnnotations[origPageIdx];
+          for (const a of annots) {
+            if (a.type === 'whiteout' || a.type === 'redact' || a.type === 'blackout') {
+              ctx.fillStyle = a.type === 'blackout' ? '#000000' : '#ffffff';
+              ctx.fillRect(a.x * ocrScale, a.y * ocrScale, a.w * ocrScale, a.h * ocrScale);
+            }
+          }
+        }
+
+        const isFirstPage = (pageIndexInExport === 0);
+        const isLastPage = (totalPages > 1 && pageIndexInExport === totalPages - 1);
+        let bannerCutoffY = 0;
+
+        // Adobe Acrobat Hybrid graphic zones cropping
+        if (layoutStyle === 'adobe-hybrid') {
+          // A. Indian Stamp Paper / Government Graphic Banner on Page 1
+          if (isFirstPage) {
+            const bannerRatio = 0.315;
+            bannerCutoffY = pageHeight * bannerRatio;
+            const bannerPxW = ocrCanvas.width;
+            const bannerPxH = Math.round(ocrCanvas.height * bannerRatio);
+
+            const bCan = document.createElement('canvas');
+            bCan.width = bannerPxW;
+            bCan.height = bannerPxH;
+            const bCtx = bCan.getContext('2d');
+            bCtx.drawImage(ocrCanvas, 0, 0, bannerPxW, bannerPxH, 0, 0, bannerPxW, bannerPxH);
+
+            stampBannerImage = bCan.toDataURL('image/jpeg', 0.92);
+            stampBannerWidth = Math.min(505, Math.round(pageWidth - 90));
+            stampBannerHeight = Math.round(stampBannerWidth * (bannerPxH / bannerPxW));
+          }
+
+          // B. Handwritten signature at bottom margin on body pages
+          if (!isLastPage || totalPages === 1) {
+            const sigPxX = Math.round(ocrCanvas.width * 0.10);
+            const sigPxY = Math.round(ocrCanvas.height * 0.84);
+            const sigPxW = Math.round(ocrCanvas.width * 0.45);
+            const sigPxH = Math.round(ocrCanvas.height * 0.13);
+
+            const sCan = document.createElement('canvas');
+            sCan.width = sigPxW;
+            sCan.height = sigPxH;
+            const sCtx = sCan.getContext('2d');
+            sCtx.drawImage(ocrCanvas, sigPxX, sigPxY, sigPxW, sigPxH, 0, 0, sigPxW, sigPxH);
+
+            const sData = sCtx.getImageData(0, 0, sigPxW, sigPxH);
+            let sInk = 0;
+            for (let p = 0; p < sData.data.length; p += 16) {
+              if (sData.data[p] < 200 || sData.data[p+1] < 200 || sData.data[p+2] < 200) {
+                sInk++;
+                if (sInk > 25) break;
+              }
+            }
+            if (sInk > 25) {
+              bottomSignatureImage = sCan.toDataURL('image/png');
+              bottomSignatureWidth = 160;
+              bottomSignatureHeight = Math.round(160 * (sigPxH / sigPxW));
+            }
+          }
+
+          // C. Page 6 / Last Page dual execution signatures (Landlord & Tenant)
+          if (isLastPage && totalPages > 1) {
+            const sigPxH = Math.round(ocrCanvas.height * 0.16);
+            const sigPxTop = Math.round(ocrCanvas.height * 0.72);
+
+            // Right signature (Landlord)
+            const rightPxX = Math.round(ocrCanvas.width * 0.48);
+            const rightPxW = Math.round(ocrCanvas.width * 0.42);
+            const rCan = document.createElement('canvas');
+            rCan.width = rightPxW;
+            rCan.height = sigPxH;
+            const rCtx = rCan.getContext('2d');
+            rCtx.drawImage(ocrCanvas, rightPxX, sigPxTop, rightPxW, sigPxH, 0, 0, rightPxW, sigPxH);
+
+            const rData = rCtx.getImageData(0, 0, rightPxW, sigPxH);
+            let rInk = 0;
+            for (let p = 0; p < rData.data.length; p += 16) {
+              if (rData.data[p] < 200 || rData.data[p+1] < 200 || rData.data[p+2] < 200) {
+                rInk++;
+                if (rInk > 30) break;
+              }
+            }
+            if (rInk > 30) {
+              sigRightImage = rCan.toDataURL('image/png');
+              sigRightWidth = 130;
+              sigRightHeight = Math.round(130 * (sigPxH / rightPxW));
+            }
+
+            // Left signature (Tenant / Witness)
+            const leftPxX = Math.round(ocrCanvas.width * 0.08);
+            const leftPxW = Math.round(ocrCanvas.width * 0.38);
+            const lCan = document.createElement('canvas');
+            lCan.width = leftPxW;
+            lCan.height = sigPxH;
+            const lCtx = lCan.getContext('2d');
+            lCtx.drawImage(ocrCanvas, leftPxX, sigPxTop, leftPxW, sigPxH, 0, 0, leftPxW, sigPxH);
+
+            const lData = lCtx.getImageData(0, 0, leftPxW, sigPxH);
+            let lInk = 0;
+            for (let p = 0; p < lData.data.length; p += 16) {
+              if (lData.data[p] < 200 || lData.data[p+1] < 200 || lData.data[p+2] < 200) {
+                lInk++;
+                if (lInk > 30) break;
+              }
+            }
+            if (lInk > 30) {
+              sigLeftImage = lCan.toDataURL('image/png');
+              sigLeftWidth = 130;
+              sigLeftHeight = Math.round(130 * (sigPxH / leftPxW));
+            }
+          }
+        }
+
         const ocrResult = await ocrWorker.recognize(ocrCanvas);
         if (ocrResult && ocrResult.data && ocrResult.data.lines && ocrResult.data.lines.length > 0) {
           for (const rawLine of ocrResult.data.lines) {
@@ -5166,6 +5313,24 @@
             const lineW = (rawLine.bbox.x1 - rawLine.bbox.x0) / ocrScale;
             const lineH = (rawLine.bbox.y1 - rawLine.bbox.y0) / ocrScale;
             const lineConf = rawLine.confidence !== undefined ? rawLine.confidence : 80;
+
+            // In Adobe Hybrid mode, suppress OCR in graphic zones
+            if (layoutStyle === 'adobe-hybrid') {
+              // 1. Stamp banner area on Page 1
+              if (isFirstPage && stampBannerImage && lineY < bannerCutoffY) {
+                continue;
+              }
+              // 2. Bottom signature area on intermediate pages
+              if (bottomSignatureImage && lineY >= pageHeight * 0.83 && lineX >= pageWidth * 0.08 && lineX <= pageWidth * 0.58) {
+                continue;
+              }
+              // 3. Execution signature areas on last page
+              if (isLastPage && lineY >= pageHeight * 0.72 && lineY <= pageHeight * 0.92) {
+                if (sigRightImage && lineX >= pageWidth * 0.48 && !/^(landlord|tenant)/i.test(lineText)) {
+                  continue;
+                }
+              }
+            }
 
             const lineObj = {
               text: lineText,
@@ -5299,7 +5464,19 @@
         pageHeight,
         words: rawWords,
         lines: structured.lines,
-        paragraphs: structured.paragraphs
+        paragraphs: structured.paragraphs,
+        stampBannerImage,
+        stampBannerWidth,
+        stampBannerHeight,
+        bottomSignatureImage,
+        bottomSignatureWidth,
+        bottomSignatureHeight,
+        sigLeftImage,
+        sigLeftWidth,
+        sigLeftHeight,
+        sigRightImage,
+        sigRightWidth,
+        sigRightHeight
       };
     }
 
@@ -5562,7 +5739,7 @@
       return paras;
     }
 
-    async function buildDocxFromPages(pagesData, fileName) {
+    async function buildDocxFromPages(pagesData, fileName, layoutStyle = 'adobe-hybrid') {
       if (!window.docx) {
         throw new Error("Word export engine (docx.js) is not loaded yet. Please check your internet connection.");
       }
@@ -5571,6 +5748,7 @@
         Document,
         Paragraph,
         TextRun,
+        ImageRun,
         Table,
         TableRow,
         TableCell,
@@ -5597,6 +5775,9 @@
       function createWordParagraph(para) {
         const textRuns = [];
         const words = para.words || [];
+        const rawText = words.map(w => w.word).join(' ').trim();
+        const isMainDeedTitle = para.isHeading && /^(tenancy agreement|lease agreement|deed of|agreement)/i.test(rawText);
+        const isScheduleTitle = para.isHeading && /^schedule/i.test(rawText);
 
         for (let rIdx = 0; rIdx < words.length; rIdx++) {
           const curWord = words[rIdx];
@@ -5616,8 +5797,10 @@
             }
           }
 
-          const isBold = !!(para.isHeading || curWord.isBold);
-          const fontSizeHalfPt = Math.round((curWord.fontSize || 11.5) * 2);
+          const isBold = !!(para.isHeading || curWord.isBold || isMainDeedTitle || isScheduleTitle);
+          let fontSizeHalfPt = Math.round((curWord.fontSize || 11.5) * 2);
+          if (isMainDeedTitle) fontSizeHalfPt = 28; // 14 pt bold
+          else if (isScheduleTitle) fontSizeHalfPt = 26; // 13 pt bold
 
           textRuns.push(new TextRun({
             text: curWord.word + trailingSpace,
@@ -5626,12 +5809,12 @@
             bold: isBold,
             italics: !!curWord.isItalic,
             color: (curWord.textColor || '#000000').replace('#', ''),
-            underline: para.isUnderline ? { type: UnderlineType.SINGLE } : undefined
+            underline: (para.isUnderline || isMainDeedTitle || isScheduleTitle) ? { type: UnderlineType.SINGLE } : undefined
           }));
         }
 
         let alignType = AlignmentType.LEFT;
-        if (para.alignment === 'center') alignType = AlignmentType.CENTER;
+        if (para.alignment === 'center' || isMainDeedTitle || isScheduleTitle) alignType = AlignmentType.CENTER;
         else if (para.alignment === 'right') alignType = AlignmentType.RIGHT;
         else if (para.alignment === 'both') alignType = AlignmentType.BOTH;
 
@@ -5643,8 +5826,16 @@
 
         if (para.isPageNum) {
           pOpts.spacing = { before: 0, after: 180, line: 240 };
+        } else if (isMainDeedTitle) {
+          pOpts.spacing = { before: 200, after: 140, line: 280 };
+        } else if (isScheduleTitle) {
+          pOpts.spacing = { before: 220, after: 120, line: 280 };
         } else if (para.isHeading) {
-          pOpts.spacing = { before: 200, after: 100, line: 260 };
+          pOpts.spacing = { before: 180, after: 100, line: 260 };
+        } else if (para.isClause) {
+          pOpts.alignment = AlignmentType.BOTH;
+          pOpts.indent = { left: 720, hanging: 360 };
+          pOpts.spacing = { before: 60, after: 140, line: 276 };
         } else if (para.lines && para.lines.length === 1 && !para.isClause) {
           pOpts.spacing = { before: 0, after: 50, line: 240 };
         }
@@ -5654,6 +5845,23 @@
 
       for (let pIdx = 0; pIdx < pagesData.length; pIdx++) {
         const page = pagesData[pIdx];
+
+        // 1. Stamp Banner Graphic Run (Page 1 top in Adobe Hybrid mode)
+        if (page.stampBannerImage && layoutStyle === 'adobe-hybrid') {
+          docChildren.push(new Paragraph({
+            alignment: AlignmentType.CENTER,
+            spacing: { before: 0, after: 180, line: 240 },
+            children: [
+              new ImageRun({
+                data: page.stampBannerImage,
+                transformation: {
+                  width: page.stampBannerWidth || 505,
+                  height: page.stampBannerHeight || 155
+                }
+              })
+            ]
+          }));
+        }
 
         if (page.paragraphs.length === 0) {
           docChildren.push(new Paragraph({ children: [new TextRun("")] }));
@@ -5665,6 +5873,38 @@
 
               if (leftCells.length === 0) leftCells.push(new Paragraph({ children: [new TextRun("")] }));
               if (rightCells.length === 0) rightCells.push(new Paragraph({ children: [new TextRun("")] }));
+
+              // Embed signature images into the table cells if present on this page
+              if (page.sigRightImage && layoutStyle === 'adobe-hybrid') {
+                rightCells.push(new Paragraph({
+                  alignment: AlignmentType.CENTER,
+                  spacing: { before: 60, after: 100, line: 240 },
+                  children: [
+                    new ImageRun({
+                      data: page.sigRightImage,
+                      transformation: {
+                        width: page.sigRightWidth || 130,
+                        height: page.sigRightHeight || 50
+                      }
+                    })
+                  ]
+                }));
+              }
+              if (page.sigLeftImage && rightCells.length > leftCells.length && layoutStyle === 'adobe-hybrid') {
+                leftCells.push(new Paragraph({
+                  alignment: AlignmentType.CENTER,
+                  spacing: { before: 60, after: 100, line: 240 },
+                  children: [
+                    new ImageRun({
+                      data: page.sigLeftImage,
+                      transformation: {
+                        width: page.sigLeftWidth || 130,
+                        height: page.sigLeftHeight || 50
+                      }
+                    })
+                  ]
+                }));
+              }
 
               const table = new Table({
                 width: { size: 100, type: WidthType.PERCENTAGE },
@@ -5693,6 +5933,86 @@
               docChildren.push(createWordParagraph(item));
             }
           }
+        }
+
+        // If signatures exist on this page and weren't inside a detected table:
+        if ((page.sigLeftImage || page.sigRightImage) && layoutStyle === 'adobe-hybrid' && !page.paragraphs.some(it => it.type === 'table')) {
+          const sigCells = [];
+          if (page.sigLeftImage) {
+            sigCells.push(new TableCell({
+              width: { size: 50, type: WidthType.PERCENTAGE },
+              borders: tableBorders,
+              children: [
+                new Paragraph({
+                  alignment: AlignmentType.CENTER,
+                  spacing: { before: 80, after: 40, line: 240 },
+                  children: [new TextRun({ text: "WITNESS", bold: true, size: 22 })]
+                }),
+                new Paragraph({
+                  alignment: AlignmentType.CENTER,
+                  children: [
+                    new ImageRun({
+                      data: page.sigLeftImage,
+                      transformation: {
+                        width: page.sigLeftWidth || 130,
+                        height: page.sigLeftHeight || 50
+                      }
+                    })
+                  ]
+                })
+              ]
+            }));
+          }
+          if (page.sigRightImage) {
+            sigCells.push(new TableCell({
+              width: { size: 50, type: WidthType.PERCENTAGE },
+              borders: tableBorders,
+              children: [
+                new Paragraph({
+                  alignment: AlignmentType.CENTER,
+                  spacing: { before: 80, after: 40, line: 240 },
+                  children: [new TextRun({ text: "LANDLORD / TENANT", bold: true, size: 22 })]
+                }),
+                new Paragraph({
+                  alignment: AlignmentType.CENTER,
+                  children: [
+                    new ImageRun({
+                      data: page.sigRightImage,
+                      transformation: {
+                        width: page.sigRightWidth || 130,
+                        height: page.sigRightHeight || 50
+                      }
+                    })
+                  ]
+                })
+              ]
+            }));
+          }
+          if (sigCells.length > 0) {
+            docChildren.push(new Table({
+              width: { size: 100, type: WidthType.PERCENTAGE },
+              borders: tableBorders,
+              rows: [new TableRow({ children: sigCells })]
+            }));
+          }
+        }
+
+        // Bottom signature image on intermediate pages
+        if (page.bottomSignatureImage && layoutStyle === 'adobe-hybrid') {
+          docChildren.push(new Paragraph({
+            alignment: AlignmentType.LEFT,
+            indent: { left: 720 },
+            spacing: { before: 160, after: 60, line: 240 },
+            children: [
+              new ImageRun({
+                data: page.bottomSignatureImage,
+                transformation: {
+                  width: page.bottomSignatureWidth || 160,
+                  height: page.bottomSignatureHeight || 45
+                }
+              })
+            ]
+          }));
         }
 
         if (pIdx < pagesData.length - 1) {

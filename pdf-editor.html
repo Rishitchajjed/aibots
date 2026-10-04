@@ -1949,6 +1949,7 @@
     // Global Application State (Master Clones to Prevent Buffer Detachment)
     // -------------------------------------------------------------------------
     let masterPdfBytes = null; // Master untouched Uint8Array copy!
+    let currentPdfFile = null; // Store loaded file object / name
     let pdfDocProxy = null;
     let pageOrder = [];        // Array of original page indices e.g. [0, 1, 2...]
     let pageRotations = {};    // { origIdx: 0, 90, 180, 270 }
@@ -2035,6 +2036,7 @@
 
     async function loadPdfFromFile(file) {
       try {
+        currentPdfFile = file;
         const buffer = await file.arrayBuffer();
         await initializePdfDocument(new Uint8Array(buffer));
         showToast('PDF loaded! Click on any word to edit or replace it.', 'fa-file-pdf');
@@ -2047,6 +2049,7 @@
     async function loadSampleDocument(e) {
       e.stopPropagation();
       try {
+        currentPdfFile = { name: 'sample_financial_statement.pdf' };
         const sampleDoc = await PDFLib.PDFDocument.create();
         const page1 = sampleDoc.addPage([595.28, 841.89]); // A4
         const fontBold = await sampleDoc.embedFont(PDFLib.StandardFonts.HelveticaBold);
@@ -4693,7 +4696,8 @@
         }
 
         const outBytes = await outDoc.save();
-        downloadPdfFile(outBytes, `edited_document_${Date.now()}.pdf`);
+        const exportFileName = (currentPdfFile && currentPdfFile.name) ? currentPdfFile.name.replace(/\.pdf$/i, '') + '_edited.pdf' : `edited_document_${Date.now()}.pdf`;
+        downloadPdfFile(outBytes, exportFileName);
         showToast("PDF downloaded successfully!", "fa-circle-check");
       } catch (err) {
         console.warn("Vector export encountered an error, falling back to high-res flattened PDF:", err);
@@ -4763,7 +4767,8 @@
         }
 
         const outBytes = await flatDoc.save();
-        downloadPdfFile(outBytes, `edited_document_flattened_${Date.now()}.pdf`);
+        const exportFileName = (currentPdfFile && currentPdfFile.name) ? currentPdfFile.name.replace(/\.pdf$/i, '') + '_flattened.pdf' : `edited_document_flattened_${Date.now()}.pdf`;
+        downloadPdfFile(outBytes, exportFileName);
         showToast("Flattened PDF downloaded successfully!", "fa-circle-check");
       } catch (e) {
         console.error("Flattened export error:", e);
@@ -5002,7 +5007,14 @@
         if (progressBar) progressBar.style.width = `95%`;
         if (progressPercent) progressPercent.textContent = `95%`;
 
-        const baseName = currentPdfFile ? currentPdfFile.name : 'document.pdf';
+        let baseName = 'document.pdf';
+        try {
+          if (typeof currentPdfFile !== 'undefined' && currentPdfFile && currentPdfFile.name) {
+            baseName = currentPdfFile.name;
+          }
+        } catch (e) {
+          baseName = 'document.pdf';
+        }
 
         if (format === 'docx') {
           if (progressStatus) progressStatus.innerHTML = `<i class="fas fa-spinner fa-spin" style="color:#2563eb;"></i> Assembling Microsoft Word (.docx)...`;

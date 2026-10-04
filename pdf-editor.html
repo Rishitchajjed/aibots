@@ -51,6 +51,9 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
+  <!-- Document & Presentation Export Engines -->
+  <script src="https://cdn.jsdelivr.net/npm/docx@8.5.0/build/index.umd.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/pptxgenjs@3.12.0/dist/pptxgen.bundle.js"></script>
 
   <!-- Schema.org JSON-LD -->
   <script type="application/ld+json">
@@ -1074,6 +1077,49 @@
       box-shadow: 0 4px 12px rgba(0,0,0,0.15);
     }
 
+    /* Document Converter Studio Styles */
+    .convert-card {
+      border: 2px solid var(--panel-border);
+      border-radius: 14px;
+      padding: 16px;
+      text-align: center;
+      cursor: pointer;
+      background: var(--bg-primary);
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      user-select: none;
+    }
+    .convert-card:hover {
+      border-color: var(--editor-accent);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 18px rgba(0,0,0,0.06);
+    }
+    .convert-card.active {
+      border-color: var(--editor-accent);
+      background: var(--editor-accent-light);
+      box-shadow: 0 0 0 1px var(--editor-accent);
+    }
+    .paper-sample-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 3px 8px;
+      border-radius: 6px;
+      font-size: 0.72rem;
+      font-weight: 700;
+      border: 1px solid var(--panel-border);
+    }
+    .paper-sample-swatch {
+      width: 14px;
+      height: 14px;
+      border-radius: 4px;
+      border: 1px solid rgba(0,0,0,0.25);
+      display: inline-block;
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,0.4);
+    }
+
     /* Toast Notification */
     .toast-container {
       position: fixed;
@@ -1266,6 +1312,13 @@
           </button>
           <button class="btn-action btn-secondary" onclick="exportEditedPdf(true)" title="Flatten All Annotations into Permanent PDF">
             <i class="fas fa-lock"></i> <span>Flatten &amp; Download</span>
+          </button>
+          <div style="height: 22px; width: 1px; background: var(--panel-border); margin: 0 2px;"></div>
+          <button class="btn-action" style="background: linear-gradient(135deg, #2563eb, #1d4ed8); border-color: #1d4ed8; color: #ffffff;" onclick="openConvertModal('docx')" title="Convert PDF to Microsoft Word (.docx) with OCR &amp; Formatting">
+            <i class="fas fa-file-word"></i> <span>To Word</span>
+          </button>
+          <button class="btn-action" style="background: linear-gradient(135deg, #d97706, #b45309); border-color: #b45309; color: #ffffff;" onclick="openConvertModal('pptx')" title="Convert PDF to PowerPoint Presentation (.pptx) with OCR &amp; Slides">
+            <i class="fas fa-file-powerpoint"></i> <span>To PPT</span>
           </button>
           <button class="btn-action btn-secondary" onclick="exportCurrentPageAsPng()" title="Export Current Page as PNG Image">
             <i class="fas fa-file-image"></i>
@@ -1468,6 +1521,14 @@
               <strong id="wemDetectedStyleDisplay" class="wem-chip-value">Bold</strong>
               <span id="wemDetectedCatSub" class="wem-chip-sub">Agreement Date</span>
             </div>
+            <div class="wem-metric-chip">
+              <span class="wem-chip-label">Paper Tint:</span>
+              <div style="display:flex; align-items:center; gap:5px; margin-top:2px;">
+                <span id="wemPaperColorSwatch" class="paper-sample-swatch" style="background:#ffffff;"></span>
+                <strong id="wemPaperColorHex" class="wem-chip-value" style="font-size:0.8rem;">#ffffff</strong>
+              </div>
+              <span id="wemPaperColorSource" class="wem-chip-sub">Auto-Sampled Paper</span>
+            </div>
           </div>
         </div>
 
@@ -1562,6 +1623,98 @@
               <i class="fas fa-check"></i> Apply &amp; Replace (Enter)
             </button>
           </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Dedicated Document Converter Studio Modal (Word & PowerPoint via OCR & Typography) -->
+    <div id="convertDocModal" class="modal-backdrop" onclick="if(event.target === this) closeConvertModal()">
+      <div class="modal-card" style="max-width: 580px;">
+        <div class="modal-header">
+          <h3 class="modal-title">
+            <i class="fas fa-file-export" style="color:var(--editor-accent);"></i> Convert Document with OCR
+          </h3>
+          <button class="modal-close" onclick="closeConvertModal()">&times;</button>
+        </div>
+
+        <div style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 16px;">
+          Extract text, reconstructed paragraphs, and slides from digital and scanned PDF pages into editable Microsoft Office formats. 100% processed client-side.
+        </div>
+
+        <!-- Format Selector Tabs -->
+        <label style="font-size: 0.82rem; font-weight: 800; display: block; margin-bottom: 8px;">Select Output Format:</label>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 18px;">
+          <div id="convertOptWord" class="convert-card active" onclick="selectConvertFormat('docx')">
+            <div style="font-size: 1.8rem; color: #2563eb; margin-bottom: 6px;"><i class="fas fa-file-word"></i></div>
+            <div style="font-weight: 800; font-size: 0.95rem; color: var(--text-primary);">Microsoft Word</div>
+            <div style="font-size: 0.76rem; color: var(--text-secondary); margin-top: 2px;">.DOCX Document</div>
+            <span class="badge" style="margin-top: 8px; background: rgba(37,99,235,0.12); color: #2563eb; font-size: 0.7rem; font-weight: 700;">Paragraphs &amp; Headings</span>
+          </div>
+
+          <div id="convertOptPpt" class="convert-card" onclick="selectConvertFormat('pptx')">
+            <div style="font-size: 1.8rem; color: #d97706; margin-bottom: 6px;"><i class="fas fa-file-powerpoint"></i></div>
+            <div style="font-weight: 800; font-size: 0.95rem; color: var(--text-primary);">PowerPoint</div>
+            <div style="font-size: 0.76rem; color: var(--text-secondary); margin-top: 2px;">.PPTX Slides</div>
+            <span class="badge" style="margin-top: 8px; background: rgba(217,119,6,0.12); color: #d97706; font-size: 0.7rem; font-weight: 700;">Page Slides &amp; Text Boxes</span>
+          </div>
+        </div>
+
+        <!-- Conversion Settings -->
+        <div style="background: var(--bg-primary); border: 1px solid var(--panel-border); border-radius: 12px; padding: 14px; margin-bottom: 18px;">
+          <div style="font-size: 0.82rem; font-weight: 800; margin-bottom: 10px; color: var(--text-primary);"><i class="fas fa-sliders"></i> Engine Settings:</div>
+
+          <div style="margin-bottom: 10px;">
+            <label style="font-size: 0.78rem; font-weight: 700; color: var(--text-secondary); display: block; margin-bottom: 4px;">OCR Recognition Strategy:</label>
+            <select id="convertOcrStrategy" class="prop-select" style="width: 100%;">
+              <option value="auto">Smart Automatic (Use Digital text, OCR scanned pages)</option>
+              <option value="force">Force Deep OCR on All Pages (Recommended for scanned contracts)</option>
+              <option value="digital">Digital Text Only (Fastest, no OCR)</option>
+            </select>
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px;">
+            <div>
+              <label style="font-size: 0.78rem; font-weight: 700; color: var(--text-secondary); display: block; margin-bottom: 4px;">Page Range:</label>
+              <select id="convertPageRangeOption" class="prop-select" style="width: 100%;" onchange="toggleConvertCustomPages(this.value)">
+                <option value="all">All Pages in Document</option>
+                <option value="current">Current Active Page Only</option>
+                <option value="custom">Custom Page Range</option>
+              </select>
+            </div>
+            <div id="convertCustomPagesWrap" style="display: none;">
+              <label style="font-size: 0.78rem; font-weight: 700; color: var(--text-secondary); display: block; margin-bottom: 4px;">Pages (e.g. 1-3, 5):</label>
+              <input type="text" id="convertCustomPagesInput" class="prop-input" placeholder="e.g. 1-5" style="width: 100%;">
+            </div>
+          </div>
+
+          <div style="display: flex; align-items: center; gap: 8px; margin-top: 10px;">
+            <input type="checkbox" id="convertIncludeEdits" checked style="cursor: pointer; width: 16px; height: 16px;">
+            <label for="convertIncludeEdits" style="font-size: 0.8rem; font-weight: 600; cursor: pointer; color: var(--text-primary);">
+              Include user-edited words &amp; annotations (Replace original words with your edits)
+            </label>
+          </div>
+        </div>
+
+        <!-- Live Conversion Progress Bar -->
+        <div id="convertProgressContainer" style="display: none; margin-bottom: 16px; background: var(--bg-primary); border: 1px solid var(--panel-border); border-radius: 12px; padding: 14px;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+            <span id="convertProgressStatus" style="font-size: 0.82rem; font-weight: 700; color: var(--text-primary);">
+              <i class="fas fa-spinner fa-spin" style="color:var(--editor-accent);"></i> Initializing conversion...
+            </span>
+            <span id="convertProgressPercent" style="font-size: 0.8rem; font-weight: 800; color: var(--editor-accent); font-family: 'JetBrains Mono', monospace;">0%</span>
+          </div>
+          <div style="width: 100%; height: 8px; background: rgba(0,0,0,0.1); border-radius: 999px; overflow: hidden;">
+            <div id="convertProgressBar" style="width: 0%; height: 100%; background: linear-gradient(90deg, var(--editor-accent), #38bdf8); transition: width 0.25s ease;"></div>
+          </div>
+          <div id="convertProgressSub" style="font-size: 0.75rem; color: var(--text-secondary); margin-top: 6px;">Processing pages with high-fidelity layout engine...</div>
+        </div>
+
+        <!-- Modal Actions -->
+        <div style="display:flex; justify-content:flex-end; gap:8px;">
+          <button class="btn-action btn-secondary" onclick="closeConvertModal()" id="convertCancelBtn">Cancel</button>
+          <button class="btn-action btn-success" id="convertStartBtn" onclick="startDocumentConversion()">
+            <i class="fas fa-file-export"></i> Convert &amp; Download
+          </button>
         </div>
       </div>
     </div>
@@ -1773,10 +1926,18 @@
         </div>
 
         <div class="feature-card">
-          <div class="feature-icon-box"><i class="fas fa-shield-halved"></i></div>
-          <h3 style="font-size:1.1rem; font-weight:800; margin-bottom:6px;">100% In-Browser Privacy</h3>
+          <div class="feature-icon-box" style="background:rgba(37,99,235,0.12); color:#2563eb;"><i class="fas fa-file-word"></i></div>
+          <h3 style="font-size:1.1rem; font-weight:800; margin-bottom:6px;">Convert PDF to Word &amp; PPT</h3>
           <p style="font-size:0.85rem; color:var(--text-secondary); line-height:1.5;">
-            Your files never leave your device. All rendering and vector modifications happen client-side in memory with zero cloud uploads.
+            Export entire PDF documents or selected pages directly to editable Microsoft Word (.docx) paragraphs or PowerPoint (.pptx) slides with high-accuracy OCR.
+          </p>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon-box" style="background:rgba(16,185,129,0.12); color:#10b981;"><i class="fas fa-wand-magic-sparkles"></i></div>
+          <h3 style="font-size:1.1rem; font-weight:800; margin-bottom:6px;">Auto-Typography &amp; Paper Tint</h3>
+          <p style="font-size:0.85rem; color:var(--text-secondary); line-height:1.5;">
+            Intelligent engine auto-matches fonts, weights, and line heights across 24 typography styles, sampling real paper background colors for seamless edits.
           </p>
         </div>
       </div>
@@ -2906,6 +3067,59 @@
       if (iBtn) iBtn.classList.toggle('active', selectedObject.fontStyle === 'italic' || selectedObject.isItalic);
     }
 
+    // Converts RGB components to hex color string
+    function rgbToHex(r, g, b) {
+      return '#' + [r, g, b].map(x => {
+        const hex = Math.max(0, Math.min(255, Math.round(x))).toString(16);
+        return hex.length === 1 ? '0' + hex : hex;
+      }).join('');
+    }
+
+    // Samples true paper background tint from the surrounding perimeter of a word
+    function samplePageBackgroundColor(screenX, screenY, screenW, screenH) {
+      const canvas = document.getElementById('pdfRenderCanvas');
+      if (!canvas) return '#ffffff';
+      const ctx = canvas.getContext('2d');
+      if (!ctx) return '#ffffff';
+
+      const w = canvas.width;
+      const h = canvas.height;
+
+      // Sample perimeter points 3px outward from the word box
+      const points = [
+        { x: screenX - 3, y: screenY + screenH / 2 },          // Left middle
+        { x: screenX + screenW + 3, y: screenY + screenH / 2 },// Right middle
+        { x: screenX + screenW / 2, y: screenY - 3 },          // Top middle
+        { x: screenX + screenW / 2, y: screenY + screenH + 3 },// Bottom middle
+        { x: screenX - 3, y: screenY - 3 },                    // Top left corner
+        { x: screenX + screenW + 3, y: screenY - 3 }           // Top right corner
+      ];
+
+      let rSum = 0, gSum = 0, bSum = 0, count = 0;
+      for (const pt of points) {
+        const px = Math.floor(pt.x);
+        const py = Math.floor(pt.y);
+        if (px >= 0 && px < w && py >= 0 && py < h) {
+          try {
+            const d = ctx.getImageData(px, py, 1, 1).data;
+            const brightness = (d[0] * 299 + d[1] * 587 + d[2] * 114) / 1000;
+            // Ignore dark ink pixels (e.g. letters, underline lines)
+            if (brightness > 165 && d[3] > 200) {
+              rSum += d[0];
+              gSum += d[1];
+              bSum += d[2];
+              count++;
+            }
+          } catch (e) {
+            // canvas tainted safeguard
+          }
+        }
+      }
+
+      if (count === 0) return '#ffffff';
+      return rgbToHex(rSum / count, gSum / count, bSum / count);
+    }
+
     // -------------------------------------------------------------------------
     // Word Variety Classification & Context Analyzer
     // -------------------------------------------------------------------------
@@ -2966,6 +3180,13 @@
         suggestedFont: 'TimesRoman',
         suggestedWeight: 'bold'
       },
+      LEGAL_SECTION: {
+        regex: /^(section|sec\.?|clause|art\.?|article|sub-section|sub-clause|paragraph|para\.?|annexure)$/i,
+        label: 'Section / Clause',
+        icon: 'fa-scale-balanced',
+        suggestedFont: 'TimesRoman',
+        suggestedWeight: 'bold'
+      },
       HONORIFIC_TITLE: {
         regex: /^(mr\.?|mrs\.?|ms\.?|dr\.?|prof\.?|shri|smt\.?|kumari|m\/s|s\/o|d\/o|w\/o|son|daughter|wife)$/i,
         label: 'Honorific / Relation',
@@ -2978,6 +3199,41 @@
         label: 'Identifier / Address',
         icon: 'fa-location-dot',
         suggestedFont: 'TimesRoman',
+        suggestedWeight: 'normal'
+      },
+      PERCENTAGE: {
+        regex: /^(\d+(\.\d+)?%)$/,
+        label: 'Percentage',
+        icon: 'fa-percent',
+        suggestedFont: 'TimesRoman',
+        suggestedWeight: 'bold'
+      },
+      TIME: {
+        regex: /^(\d{1,2}:\d{2}(\s*(am|pm))?|hours?)$/i,
+        label: 'Time / Duration',
+        icon: 'fa-clock',
+        suggestedFont: 'TimesRoman',
+        suggestedWeight: 'normal'
+      },
+      PINCODE_ZIP: {
+        regex: /^(\d{6}|\d{5}(-\d{4})?)$/,
+        label: 'PIN / Postal Code',
+        icon: 'fa-envelope-open-text',
+        suggestedFont: 'TimesRoman',
+        suggestedWeight: 'normal'
+      },
+      GOVT_ID: {
+        regex: /^(pan|aadhaar|gstin|cin|ssn|ein|tan|din|urn|tin)$/i,
+        label: 'Government / Tax ID',
+        icon: 'fa-id-badge',
+        suggestedFont: 'TimesRoman',
+        suggestedWeight: 'bold'
+      },
+      EMAIL_PHONE: {
+        regex: /^([\w.-]+@[\w.-]+\.\w+|(\+?\d{1,3}[-.\s]?)?\(?\d{3}\)?[-.\s]?\d{3}[-.\s]?\d{4})$/i,
+        label: 'Contact Detail',
+        icon: 'fa-phone',
+        suggestedFont: 'Helvetica',
         suggestedWeight: 'normal'
       },
       NUMBER_WORD: {
@@ -3289,8 +3545,22 @@
         document.getElementById('wemTextColor').value = wordData.textColor;
         document.getElementById('wemTextColorHex').textContent = wordData.textColor;
       }
-      if (wordData.maskColor && wordData.maskColor !== 'transparent') {
-        document.getElementById('wemMaskColor').value = wordData.maskColor;
+      // Sample true paper background tint from surrounding canvas pixels
+      const sampledTint = samplePageBackgroundColor(wordData.screenX, wordData.screenY, wordData.screenW, wordData.screenH);
+      wordData.sampledPaperTint = sampledTint;
+
+      const paperSwatch = document.getElementById('wemPaperColorSwatch');
+      const paperHex = document.getElementById('wemPaperColorHex');
+      if (paperSwatch) paperSwatch.style.backgroundColor = sampledTint;
+      if (paperHex) paperHex.textContent = sampledTint;
+
+      const maskColorInput = document.getElementById('wemMaskColor');
+      if (maskColorInput) {
+        if (wordData.maskColor && wordData.maskColor !== 'transparent' && wordData.maskColor !== '#ffffff') {
+          maskColorInput.value = wordData.maskColor;
+        } else {
+          maskColorInput.value = sampledTint;
+        }
       }
 
       modal.classList.add('active');
@@ -3388,7 +3658,7 @@
         y: Math.min(wordData.pdfY, chosenY) - 0.5,
         w: wordData.pdfW + 2,
         h: Math.max(wordData.pdfH, chosenHeight) + 1.5,
-        bgColor: maskColor || '#ffffff',
+        bgColor: maskColor || wordData.sampledPaperTint || '#ffffff',
         opacity: 1.0
       };
       pageAnnotations[origPageIdx].push(maskObj);
@@ -4558,6 +4828,611 @@
         if (a.parentNode) document.body.removeChild(a);
         URL.revokeObjectURL(url);
       }, 60000);
+    }
+
+    function downloadBlob(blob, filename) {
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      setTimeout(() => {
+        if (a.parentNode) document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+      }, 60000);
+    }
+
+    // -------------------------------------------------------------------------
+    // Document Converter Studio (Word .docx & PowerPoint .pptx with Neural OCR)
+    // -------------------------------------------------------------------------
+    let selectedConvertFormat = 'docx';
+    let isConversionRunning = false;
+
+    function openConvertModal(defaultFormat) {
+      if (!masterPdfBytes || pageOrder.length === 0) {
+        showToast("Please load a PDF document first.", "fa-triangle-exclamation");
+        return;
+      }
+      selectedConvertFormat = defaultFormat || 'docx';
+      selectConvertFormat(selectedConvertFormat);
+
+      const progressContainer = document.getElementById('convertProgressContainer');
+      if (progressContainer) progressContainer.style.display = 'none';
+
+      const startBtn = document.getElementById('convertStartBtn');
+      if (startBtn) {
+        startBtn.disabled = false;
+        startBtn.innerHTML = `<i class="fas fa-file-export"></i> Convert &amp; Download`;
+      }
+      const cancelBtn = document.getElementById('convertCancelBtn');
+      if (cancelBtn) cancelBtn.disabled = false;
+
+      const modal = document.getElementById('convertDocModal');
+      if (modal) modal.classList.add('active');
+    }
+
+    function closeConvertModal() {
+      if (isConversionRunning) {
+        if (!confirm("Conversion is currently running in the background. Are you sure you want to cancel?")) {
+          return;
+        }
+        isConversionRunning = false;
+      }
+      const modal = document.getElementById('convertDocModal');
+      if (modal) modal.classList.remove('active');
+    }
+
+    function selectConvertFormat(format) {
+      selectedConvertFormat = format;
+      const wordCard = document.getElementById('convertOptWord');
+      const pptCard = document.getElementById('convertOptPpt');
+      if (wordCard) wordCard.classList.toggle('active', format === 'docx');
+      if (pptCard) pptCard.classList.toggle('active', format === 'pptx');
+    }
+
+    function toggleConvertCustomPages(val) {
+      const wrap = document.getElementById('convertCustomPagesWrap');
+      if (wrap) wrap.style.display = val === 'custom' ? 'block' : 'none';
+    }
+
+    async function startDocumentConversion() {
+      if (isConversionRunning) return;
+      if (!masterPdfBytes || pageOrder.length === 0) {
+        showToast("Please load a PDF document first.", "fa-triangle-exclamation");
+        return;
+      }
+
+      const format = selectedConvertFormat || 'docx';
+      const ocrStrategy = document.getElementById('convertOcrStrategy')?.value || 'auto';
+      const pageRangeOpt = document.getElementById('convertPageRangeOption')?.value || 'all';
+      const includeEdits = document.getElementById('convertIncludeEdits')?.checked !== false;
+
+      let targetPages = [];
+      if (pageRangeOpt === 'current') {
+        targetPages = [pageOrder[activePageIndex]];
+      } else if (pageRangeOpt === 'custom') {
+        const customStr = (document.getElementById('convertCustomPagesInput')?.value || '').trim();
+        if (!customStr) {
+          alert("Please enter a page range (e.g. 1-3, 5).");
+          return;
+        }
+        const parts = customStr.split(',');
+        for (const part of parts) {
+          const trimmed = part.trim();
+          if (trimmed.includes('-')) {
+            const [start, end] = trimmed.split('-').map(x => parseInt(x.trim(), 10));
+            if (!isNaN(start) && !isNaN(end)) {
+              for (let p = Math.max(1, start); p <= Math.min(pageOrder.length, end); p++) {
+                targetPages.push(pageOrder[p - 1]);
+              }
+            }
+          } else {
+            const p = parseInt(trimmed, 10);
+            if (!isNaN(p) && p >= 1 && p <= pageOrder.length) {
+              targetPages.push(pageOrder[p - 1]);
+            }
+          }
+        }
+        if (targetPages.length === 0) {
+          alert("No valid pages found in range. Please check your page numbers.");
+          return;
+        }
+      } else {
+        targetPages = [...pageOrder];
+      }
+
+      isConversionRunning = true;
+
+      const startBtn = document.getElementById('convertStartBtn');
+      const cancelBtn = document.getElementById('convertCancelBtn');
+      const progressContainer = document.getElementById('convertProgressContainer');
+      const progressBar = document.getElementById('convertProgressBar');
+      const progressPercent = document.getElementById('convertProgressPercent');
+      const progressStatus = document.getElementById('convertProgressStatus');
+      const progressSub = document.getElementById('convertProgressSub');
+
+      if (startBtn) startBtn.disabled = true;
+      if (progressContainer) progressContainer.style.display = 'block';
+
+      let ocrWorker = null;
+
+      try {
+        const total = targetPages.length;
+
+        // Initialize shared Neural OCR worker if needed
+        if (ocrStrategy !== 'digital') {
+          if (progressStatus) progressStatus.innerHTML = `<i class="fas fa-spinner fa-spin" style="color:var(--editor-accent);"></i> Initializing Neural OCR Engine...`;
+          if (progressSub) progressSub.textContent = `Loading Tesseract recognition network into WebAssembly...`;
+          ocrWorker = await Tesseract.createWorker('eng', 1, {
+            logger: m => {
+              if (m.status === 'recognizing text' && m.progress !== undefined) {
+                // sub-progress
+              }
+            }
+          });
+        }
+
+        const pagesData = [];
+
+        for (let i = 0; i < total; i++) {
+          if (!isConversionRunning) break;
+
+          const origIdx = targetPages[i];
+          const pageNum = i + 1;
+          const pct = Math.round(((i) / total) * 90);
+
+          if (progressBar) progressBar.style.width = `${pct}%`;
+          if (progressPercent) progressPercent.textContent = `${pct}%`;
+          if (progressStatus) progressStatus.innerHTML = `<i class="fas fa-spinner fa-spin" style="color:var(--editor-accent);"></i> Processing Page ${pageNum} of ${total}...`;
+          if (progressSub) progressSub.textContent = `Extracting typography, layout flow & paragraphs...`;
+
+          const pageLayout = await getPageLayoutForExport(origIdx, ocrStrategy, includeEdits, ocrWorker, msg => {
+            if (progressSub) progressSub.textContent = `Page ${pageNum}: ${msg}`;
+          });
+
+          pagesData.push(pageLayout);
+        }
+
+        if (!isConversionRunning) {
+          showToast("Conversion cancelled.", "fa-ban");
+          return;
+        }
+
+        if (progressBar) progressBar.style.width = `95%`;
+        if (progressPercent) progressPercent.textContent = `95%`;
+
+        const baseName = currentPdfFile ? currentPdfFile.name : 'document.pdf';
+
+        if (format === 'docx') {
+          if (progressStatus) progressStatus.innerHTML = `<i class="fas fa-spinner fa-spin" style="color:#2563eb;"></i> Assembling Microsoft Word (.docx)...`;
+          if (progressSub) progressSub.textContent = `Building OpenXML document structure and typography styles...`;
+          await buildDocxFromPages(pagesData, baseName);
+          showToast("Word document generated & downloaded successfully!", "fa-file-word");
+        } else {
+          if (progressStatus) progressStatus.innerHTML = `<i class="fas fa-spinner fa-spin" style="color:#d97706;"></i> Assembling PowerPoint Presentation (.pptx)...`;
+          if (progressSub) progressSub.textContent = `Generating slides and coordinate-matched text frames...`;
+          await buildPptxFromPages(pagesData, baseName);
+          showToast("PowerPoint presentation generated & downloaded successfully!", "fa-file-powerpoint");
+        }
+
+        if (progressBar) progressBar.style.width = `100%`;
+        if (progressPercent) progressPercent.textContent = `100%`;
+
+        setTimeout(() => {
+          closeConvertModal();
+        }, 600);
+
+      } catch (err) {
+        console.error("Conversion error:", err);
+        alert("Error during conversion: " + err.message);
+        showToast("Conversion error: " + err.message, "fa-triangle-exclamation");
+      } finally {
+        isConversionRunning = false;
+        if (ocrWorker) {
+          try { await ocrWorker.terminate(); } catch (e) {}
+        }
+        if (startBtn) {
+          startBtn.disabled = false;
+          startBtn.innerHTML = `<i class="fas fa-file-export"></i> Convert &amp; Download`;
+        }
+      }
+    }
+
+    async function getPageLayoutForExport(origPageIdx, ocrStrategy, includeEdits, ocrWorker, onProgress) {
+      if (origPageIdx >= 9999) {
+        return {
+          origPageIdx,
+          pageWidth: 595.28,
+          pageHeight: 841.89,
+          words: [],
+          lines: [],
+          paragraphs: []
+        };
+      }
+
+      const page = await pdfDocProxy.getPage(origPageIdx + 1);
+      const rotation = pageRotations[origPageIdx] || 0;
+      const viewport = page.getViewport({ scale: 1.0, rotation: rotation });
+      const pageWidth = viewport.width;
+      const pageHeight = viewport.height;
+
+      let rawWords = [];
+
+      // 1. Digital text extraction
+      if (ocrStrategy !== 'force') {
+        try {
+          const textContent = await page.getTextContent();
+          if (textContent && textContent.items && textContent.items.length > 3) {
+            rawWords = extractWordsFromPdfTextContent(textContent, viewport);
+          }
+        } catch (e) {
+          console.warn("TextContent read notice:", e);
+        }
+      }
+
+      // 2. OCR fallback or force
+      if (rawWords.length === 0 && ocrStrategy !== 'digital' && ocrWorker) {
+        if (onProgress) onProgress("Executing Neural OCR on high-res page render...");
+        const ocrCanvas = document.createElement('canvas');
+        const ocrScale = 2.0; // 2x for sharp OCR accuracy
+        const ocrViewport = page.getViewport({ scale: ocrScale, rotation: rotation });
+        ocrCanvas.width = ocrViewport.width;
+        ocrCanvas.height = ocrViewport.height;
+        const ctx = ocrCanvas.getContext('2d');
+        await page.render({ canvasContext: ctx, viewport: ocrViewport }).promise;
+
+        const ocrResult = await ocrWorker.recognize(ocrCanvas);
+        if (ocrResult && ocrResult.data && ocrResult.data.words) {
+          for (const w of ocrResult.data.words) {
+            const text = (w.text || '').trim();
+            if (!text) continue;
+            const screenW = (w.bbox.x1 - w.bbox.x0) / ocrScale;
+            const screenH = (w.bbox.y1 - w.bbox.y0) / ocrScale;
+            if (screenW < 3 || screenH < 5) continue;
+            rawWords.push({
+              word: text,
+              pdfX: w.bbox.x0 / ocrScale,
+              pdfY: w.bbox.y0 / ocrScale,
+              pdfW: screenW,
+              pdfH: screenH,
+              fontSize: Math.max(10, Math.round(screenH * 1.18 * 10) / 10),
+              fontFamily: docPrimaryFont || 'TimesRoman',
+              isBold: w.confidence > 70 && /^[A-Z0-9\s]+$/.test(text) && text.length > 2,
+              isItalic: false,
+              textColor: '#000000'
+            });
+          }
+        }
+      }
+
+      // 3. User edits and whiteouts integration
+      if (includeEdits && pageAnnotations[origPageIdx]) {
+        const annots = pageAnnotations[origPageIdx];
+        const whiteouts = annots.filter(a => a.type === 'whiteout' || a.type === 'redact' || a.type === 'blackout');
+        const textAnnots = annots.filter(a => a.type === 'text');
+
+        if (whiteouts.length > 0) {
+          rawWords = rawWords.filter(w => {
+            const wCenterX = w.pdfX + w.pdfW / 2;
+            const wCenterY = w.pdfY + w.pdfH / 2;
+            const isCovered = whiteouts.some(m => 
+              wCenterX >= m.x && wCenterX <= (m.x + m.w) &&
+              wCenterY >= m.y && wCenterY <= (m.y + m.h)
+            );
+            return !isCovered;
+          });
+        }
+
+        for (const t of textAnnots) {
+          if (!t.text || !t.text.trim()) continue;
+          const tokens = t.text.trim().split(/\s+/);
+          const estTokenW = t.w / tokens.length;
+          tokens.forEach((tok, idx) => {
+            rawWords.push({
+              word: tok,
+              pdfX: t.x + (idx * estTokenW),
+              pdfY: t.y,
+              pdfW: estTokenW,
+              pdfH: t.h || 14,
+              fontSize: t.fontSize || 14,
+              fontFamily: t.fontFamily || docPrimaryFont || 'TimesRoman',
+              isBold: !!(t.fontWeight === 'bold' || t.isBold),
+              isItalic: !!(t.fontStyle === 'italic' || t.isItalic),
+              textColor: t.textColor || '#000000'
+            });
+          });
+        }
+      }
+
+      const structured = groupWordsIntoLinesAndParagraphs(rawWords);
+      return {
+        origPageIdx,
+        pageWidth,
+        pageHeight,
+        words: rawWords,
+        lines: structured.lines,
+        paragraphs: structured.paragraphs
+      };
+    }
+
+    function extractWordsFromPdfTextContent(textContent, viewport) {
+      if (!textContent || !textContent.items) return [];
+      const words = [];
+      const measureCanvas = document.createElement('canvas');
+      const measureCtx = measureCanvas.getContext('2d');
+
+      for (const item of textContent.items) {
+        const fullStr = (item.str || '').trim();
+        if (!fullStr) continue;
+
+        const tx = pdfjsLib.Util.transform(viewport.transform, item.transform);
+        const fontH = Math.sqrt((tx[2] * tx[2]) + (tx[3] * tx[3])) || item.height || 14;
+        const fontW = item.width || 10;
+        measureCtx.font = `${Math.round(fontH)}px sans-serif`;
+
+        const tokens = fullStr.match(/\S+|\s+/g) || [fullStr];
+        const totalW = measureCtx.measureText(fullStr).width || fontW;
+        const ratio = fontW / (totalW || 1);
+
+        const cleanResName = (item.fontName || '').replace(/^g_d\d+_/, '').toUpperCase();
+        const rawFont = pdfFontResourceMap[cleanResName] || item.fontName || docPrimaryFont || 'TimesRoman';
+        const mappedFont = mapRawFontToFamily(rawFont);
+        const isBold = rawFont.toLowerCase().includes('bold') || rawFont.toLowerCase().includes('heavy');
+
+        let curOffset = 0;
+        for (const tok of tokens) {
+          const isSpace = /^\s+$/.test(tok);
+          const tokW = (measureCtx.measureText(tok).width || 10) * ratio;
+
+          if (!isSpace && tok.trim().length > 0) {
+            words.push({
+              word: tok,
+              pdfX: tx[4] + curOffset,
+              pdfY: tx[5] - (fontH * 0.95),
+              pdfW: Math.max(tokW, 10),
+              pdfH: fontH * 1.15,
+              fontSize: Math.max(9, Math.round(fontH * 10) / 10),
+              fontFamily: mappedFont,
+              isBold: isBold,
+              isItalic: false,
+              textColor: '#000000'
+            });
+          }
+          curOffset += tokW;
+        }
+      }
+
+      return words;
+    }
+
+    function groupWordsIntoLinesAndParagraphs(words) {
+      if (!words || words.length === 0) return { lines: [], paragraphs: [] };
+
+      // Sort words vertically by pdfY, then horizontally by pdfX
+      const sorted = [...words].sort((a, b) => {
+        const yDiff = a.pdfY - b.pdfY;
+        if (Math.abs(yDiff) > 5) return yDiff;
+        return a.pdfX - b.pdfX;
+      });
+
+      const lines = [];
+      let curLine = [];
+      let curY = null;
+      let curH = 14;
+
+      for (const w of sorted) {
+        const wY = w.pdfY;
+        const wH = w.pdfH || 14;
+
+        if (curLine.length === 0) {
+          curLine.push(w);
+          curY = wY;
+          curH = wH;
+        } else {
+          const tolerance = Math.max(5, curH * 0.45);
+          if (Math.abs(wY - curY) <= tolerance) {
+            curLine.push(w);
+            curH = Math.max(curH, wH);
+          } else {
+            curLine.sort((a, b) => a.pdfX - b.pdfX);
+            lines.push({
+              words: curLine,
+              y: curY,
+              h: curH,
+              x: curLine[0].pdfX,
+              w: (curLine[curLine.length - 1].pdfX + (curLine[curLine.length - 1].pdfW || 20)) - curLine[0].pdfX
+            });
+            curLine = [w];
+            curY = wY;
+            curH = wH;
+          }
+        }
+      }
+
+      if (curLine.length > 0) {
+        curLine.sort((a, b) => a.pdfX - b.pdfX);
+        lines.push({
+          words: curLine,
+          y: curY,
+          h: curH,
+          x: curLine[0].pdfX,
+          w: (curLine[curLine.length - 1].pdfX + (curLine[curLine.length - 1].pdfW || 20)) - curLine[0].pdfX
+        });
+      }
+
+      // Group lines into paragraphs
+      const paragraphs = [];
+      let curParaLines = [];
+
+      for (let i = 0; i < lines.length; i++) {
+        const line = lines[i];
+        if (curParaLines.length === 0) {
+          curParaLines.push(line);
+        } else {
+          const prevLine = curParaLines[curParaLines.length - 1];
+          const gap = line.y - (prevLine.y + prevLine.h);
+          const avgH = (line.h + prevLine.h) / 2;
+
+          // Heading detection: if line is short or has larger font size
+          const isPrevHeading = prevLine.words.length <= 6 && (prevLine.words.some(w => w.fontSize >= 15 || w.isBold));
+
+          if (gap > avgH * 0.85 || isPrevHeading) {
+            paragraphs.push(buildParagraphFromLines(curParaLines));
+            curParaLines = [line];
+          } else {
+            curParaLines.push(line);
+          }
+        }
+      }
+
+      if (curParaLines.length > 0) {
+        paragraphs.push(buildParagraphFromLines(curParaLines));
+      }
+
+      return { lines, paragraphs };
+    }
+
+    function buildParagraphFromLines(lines) {
+      const allWords = [];
+      for (const l of lines) {
+        allWords.push(...l.words);
+      }
+
+      const isHeading = lines.length === 1 && (
+        allWords.some(w => w.fontSize >= 15) || 
+        (allWords.length <= 6 && allWords.every(w => w.word === w.word.toUpperCase() && /[A-Z]/.test(w.word)))
+      );
+
+      const runs = allWords.map(w => ({
+        text: w.word,
+        fontSize: w.fontSize || 12,
+        fontFamily: w.fontFamily || 'TimesRoman',
+        isBold: !!w.isBold,
+        isItalic: !!w.isItalic,
+        color: w.textColor || '#000000'
+      }));
+
+      return {
+        isHeading,
+        headingLevel: isHeading ? 1 : null,
+        runs
+      };
+    }
+
+    async function buildDocxFromPages(pagesData, fileName) {
+      if (!window.docx) {
+        throw new Error("Word export engine (docx.js) is not loaded yet. Please check your internet connection.");
+      }
+
+      const { Document, Paragraph, TextRun, Packer, HeadingLevel, PageBreak } = window.docx;
+
+      const children = [];
+
+      for (let i = 0; i < pagesData.length; i++) {
+        const page = pagesData[i];
+
+        if (page.paragraphs.length === 0) {
+          children.push(new Paragraph({ children: [new TextRun("")] }));
+        } else {
+          for (const para of page.paragraphs) {
+            const textRuns = [];
+
+            for (let rIdx = 0; rIdx < para.runs.length; rIdx++) {
+              const run = para.runs[rIdx];
+              textRuns.push(new TextRun({
+                text: run.text + (rIdx < para.runs.length - 1 ? ' ' : ''),
+                font: getFontDisplayName(run.fontFamily || 'TimesRoman'),
+                size: Math.round((run.fontSize || 12) * 2), // half-points (24 = 12pt)
+                bold: !!run.isBold,
+                italics: !!run.isItalic,
+                color: (run.color || '#000000').replace('#', '')
+              }));
+            }
+
+            const paraOptions = {
+              children: textRuns,
+              spacing: { after: 120, line: 260 }
+            };
+
+            if (para.isHeading) {
+              paraOptions.heading = para.headingLevel === 1 ? HeadingLevel.HEADING_1 : HeadingLevel.HEADING_2;
+              paraOptions.spacing = { before: 200, after: 100 };
+            }
+
+            children.push(new Paragraph(paraOptions));
+          }
+        }
+
+        // Insert page break between pages
+        if (i < pagesData.length - 1) {
+          children.push(new Paragraph({
+            children: [new PageBreak()]
+          }));
+        }
+      }
+
+      const doc = new Document({
+        sections: [{
+          properties: {},
+          children: children
+        }]
+      });
+
+      const blob = await Packer.toBlob(doc);
+      const downloadName = (fileName || 'document').replace(/\.pdf$/i, '') + '_converted.docx';
+      downloadBlob(blob, downloadName);
+    }
+
+    async function buildPptxFromPages(pagesData, fileName) {
+      if (!window.PptxGenJS) {
+        throw new Error("PowerPoint export engine (PptxGenJS) is not loaded yet. Please check your internet connection.");
+      }
+
+      const pptx = new window.PptxGenJS();
+      const firstPage = pagesData[0] || { pageWidth: 612, pageHeight: 792 };
+      const aspect = firstPage.pageHeight / firstPage.pageWidth;
+
+      const slideW = 10;
+      const slideH = Math.round((10 * aspect) * 100) / 100;
+      pptx.defineLayout({ name: 'PDF_CUSTOM_LAYOUT', width: slideW, height: slideH });
+      pptx.layout = 'PDF_CUSTOM_LAYOUT';
+
+      for (let i = 0; i < pagesData.length; i++) {
+        const page = pagesData[i];
+        const slide = pptx.addSlide();
+
+        slide.background = { color: 'FFFFFF' };
+
+        for (const line of page.lines) {
+          const runs = line.words.map((w, wIdx) => ({
+            text: w.word + (wIdx < line.words.length - 1 ? ' ' : ''),
+            options: {
+              fontFace: getFontDisplayName(w.fontFamily || 'TimesRoman'),
+              fontSize: Math.round(w.fontSize || 12),
+              bold: !!w.isBold,
+              italic: !!w.isItalic,
+              color: (w.textColor || '#000000').replace('#', '')
+            }
+          }));
+
+          const xInches = Math.max(0, (line.x / page.pageWidth) * slideW);
+          const yInches = Math.max(0, (line.y / page.pageHeight) * slideH);
+          const wInches = Math.max(0.8, (line.w / page.pageWidth) * slideW * 1.06);
+          const hInches = Math.max(0.28, (line.h / page.pageHeight) * slideH * 1.25);
+
+          slide.addText(runs, {
+            x: xInches,
+            y: yInches,
+            w: wInches,
+            h: hInches,
+            margin: 0
+          });
+        }
+      }
+
+      const downloadName = (fileName || 'document').replace(/\.pdf$/i, '') + '_presentation.pptx';
+      await pptx.writeFile({ fileName: downloadName });
     }
 
     // -------------------------------------------------------------------------

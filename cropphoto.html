@@ -14,9 +14,9 @@
     gtag('js', new Date());
     gtag('config', 'G-2L87FMQS3W');
   </script>
-  <title>Precision Image Cropper & Transform Studio — AI Bots</title>
-  <meta name="description" content="100% free, private browser photo cropper with rule-of-thirds grid, circle avatar crop, 8-handle precision framing, rotate, flip, zoom, and multi-format export.">
-  <meta name="keywords" content="crop photo, image cropper, online photo crop, circular avatar crop, instagram crop 1:1, 9:16 story crop, 16:9 youtube thumbnail cropper, rotate image, flip photo, AI Bots">
+  <title>Precision Image &amp; PDF Cropper Studio — AI Bots</title>
+  <meta name="description" content="100% free, private browser photo and PDF document cropper with AI Auto-Crop margin trimming, multi-page PDF support, rule-of-thirds grid, circle avatar crop, 8-handle precision framing, rotate, flip, zoom, and multi-format export (PDF, PNG, JPG, WEBP).">
+  <meta name="keywords" content="crop photo, crop pdf, autocrop pdf, pdf cropper, trim pdf margins, online photo crop, circular avatar crop, instagram crop 1:1, 9:16 story crop, 16:9 youtube thumbnail cropper, rotate image, flip photo, AI Bots">
   <meta name="author" content="Rishit Chajjed">
   <link rel="icon" href="logo.png" type="image/png">
   <link rel="canonical" href="https://www.aibots.co.in/cropphoto.html">
@@ -24,15 +24,15 @@
   <!-- Open Graph / Social Cards -->
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://www.aibots.co.in/cropphoto.html">
-  <meta property="og:title" content="Precision Image Cropper & Transform Studio — AI Bots">
-  <meta property="og:description" content="Crop, rotate, flip, zoom, and frame photos with pixel-perfect precision in your browser. 100% private.">
+  <meta property="og:title" content="Precision Image &amp; PDF Cropper Studio — AI Bots">
+  <meta property="og:description" content="Crop photos and PDF documents with AI Auto-Crop margin trimming, 8-handle precision framing, rotate, zoom, and multi-format export. 100% private.">
   <meta property="og:image" content="https://www.aibots.co.in/logo.png">
 
   <!-- Twitter -->
   <meta property="twitter:card" content="summary_large_image">
   <meta property="twitter:url" content="https://www.aibots.co.in/cropphoto.html">
-  <meta property="twitter:title" content="Precision Image Cropper & Transform Studio — AI Bots">
-  <meta property="twitter:description" content="Crop, rotate, flip, zoom, and frame photos with pixel-perfect precision in your browser.">
+  <meta property="twitter:title" content="Precision Image &amp; PDF Cropper Studio — AI Bots">
+  <meta property="twitter:description" content="Crop photos and PDF documents with AI Auto-Crop margin trimming, 8-handle precision framing, rotate, zoom, and multi-format export.">
   <meta property="twitter:image" content="https://www.aibots.co.in/logo.png">
 
   <!-- High-Priority Resource Preconnects -->
@@ -43,6 +43,10 @@
   
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link rel="stylesheet" href="css/theme.css">
+
+  <!-- PDF Engine Libraries for In-Browser PDF Rendering & Export -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 
   <style>
     /* Studio Layout & Responsive Grid */
@@ -370,6 +374,97 @@
       font-family: var(--font-mono);
       color: var(--primary);
     }
+
+    /* PDF Navigation & Badges */
+    .pdf-nav-container {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      padding: 4px 8px;
+    }
+
+    .pdf-nav-badge {
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      font-family: var(--font-mono, monospace);
+    }
+
+    .btn-xs {
+      padding: 4px 8px;
+      font-size: 0.75rem;
+      border-radius: var(--radius-sm, 6px);
+      cursor: pointer;
+    }
+
+    .badge-pill-pdf {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 3px 8px;
+      border-radius: 6px;
+      font-size: 0.75rem;
+      font-weight: 800;
+      background: rgba(239, 68, 68, 0.12);
+      color: #ef4444;
+      border: 1px solid rgba(239, 68, 68, 0.25);
+    }
+
+    /* Smart Auto-Crop Controls */
+    .auto-crop-btn-highlight {
+      background: linear-gradient(135deg, #6366f1, #8b5cf6);
+      color: #ffffff !important;
+      border: 1px solid #a5b4fc !important;
+      font-weight: 700;
+      box-shadow: 0 0 12px rgba(99, 102, 241, 0.35);
+      transition: all 0.2s ease;
+      cursor: pointer;
+    }
+
+    .auto-crop-btn-highlight:hover {
+      background: linear-gradient(135deg, #4f46e5, #7c3aed);
+      box-shadow: 0 0 18px rgba(99, 102, 241, 0.65);
+      transform: translateY(-1px);
+    }
+
+    .auto-crop-panel {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      padding: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .auto-crop-panel-title {
+      font-size: 0.88rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .auto-crop-badge {
+      font-size: 0.72rem;
+      padding: 2px 7px;
+      border-radius: 999px;
+      background: rgba(99, 102, 241, 0.15);
+      color: var(--primary);
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .dropzone-container.drag-active {
+      border-color: var(--primary) !important;
+      background: rgba(99, 102, 241, 0.08) !important;
+      transform: scale(1.01);
+    }
   </style>
   <link rel="manifest" href="manifest.json">
   <meta name="theme-color" content="#6366f1">
@@ -457,6 +552,13 @@
         "@type": "Answer",
         "text": "Yes! Use the 90\u00b0 Rotate Left/Right and Horizontal/Vertical Flip buttons to orient your photo before downloading."
       }
+    },
+    {
+      "@type": "Question",
+      "name": "Can I auto crop PDF documents and remove empty margins?",
+      "acceptedAnswer": {
+        "text": "Yes! Upload any single or multi-page PDF document, click 'Auto Crop Content', and our computer vision engine automatically trims blank margins, scanner borders, and whitespace around your text or tables. You can also batch auto-crop all pages and export a trimmed PDF."
+      }
     }
   ]
 }
@@ -476,6 +578,7 @@
         </a>
 
         <div class="nav-actions">
+          <a href="pdf-editor.html" class="btn btn-secondary btn-sm"><i class="fas fa-file-pdf"></i> PDF Editor</a>
           <a href="index.html" class="btn btn-secondary btn-sm"><i class="fas fa-house"></i> Hub</a>
           <button class="icon-btn theme-toggle-btn" title="Toggle Dark/Light Mode"><i class="fas fa-moon"></i></button>
         </div>
@@ -486,16 +589,24 @@
   <main class="app-container tool-page-wrapper">
     <div class="tool-header">
       <span class="tool-header-badge"><i class="fas fa-crop-simple"></i> Studio Grade Tool</span>
-      <h1 class="tool-title">Precision Image Cropper & Transform Studio</h1>
-      <p class="tool-desc">Pixel-perfect framing with 8 interactive handles, rule-of-thirds grid, circle avatar crop, lossless rotation, zoom, tilt, and format conversion.</p>
+      <h1 class="tool-title">Precision Image &amp; PDF Cropper Studio</h1>
+      <p class="tool-desc">Pixel-perfect framing with AI Auto-Crop margin trimming, multi-page PDF support, 8 interactive handles, rule-of-thirds grid, circle avatar crop, lossless rotation, zoom, tilt, and multi-format export.</p>
     </div>
 
     <!-- Upload Dropzone -->
     <div class="dropzone-container" id="dropzone">
-      <input type="file" id="image-input" class="dropzone-input" accept="image/*">
+      <input type="file" id="image-input" class="dropzone-input" accept="image/*,application/pdf,.pdf">
       <div class="dropzone-icon"><i class="fas fa-cloud-arrow-up"></i></div>
-      <div class="dropzone-title">Click to Select Photo or Drag & Drop Here</div>
-      <div class="dropzone-subtitle">Supports JPG, PNG, WEBP, GIF, BMP & SVG &bull; Or paste directly with <span class="shortcut-pill">Ctrl + V</span></div>
+      <div class="dropzone-title">Click to Select Photo or PDF Document, or Drag &amp; Drop Here</div>
+      <div class="dropzone-subtitle">Supports PDF, JPG, PNG, WEBP, GIF, BMP &amp; SVG &bull; Or paste directly with <span class="shortcut-pill">Ctrl + V</span></div>
+      <div style="margin-top: 14px; display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;">
+        <button type="button" class="btn btn-secondary btn-sm" onclick="document.getElementById('image-input').click()">
+          <i class="fas fa-folder-open"></i> Browse Files
+        </button>
+        <button type="button" class="btn btn-secondary btn-sm" onclick="event.stopPropagation(); loadSamplePdf();" title="Test Auto-Crop on a sample document with wide margins">
+          <i class="fas fa-file-invoice"></i> Try Sample PDF (Invoice)
+        </button>
+      </div>
     </div>
 
     <!-- Main Studio Workspace -->
@@ -505,13 +616,34 @@
         
         <!-- Left: Interactive Viewport Area -->
         <div class="crop-viewport-card">
-          <div style="display: flex; justify-content: space-between; width: 100%; align-items: center; margin-bottom: 12px;">
-            <div style="font-weight: 700; font-size: 0.95rem; color: var(--text-primary);">
-              <i class="fas fa-crop" style="color: var(--primary); margin-right: 6px;"></i> Interactive Viewport
+          <div style="display: flex; justify-content: space-between; width: 100%; align-items: center; margin-bottom: 12px; flex-wrap: wrap; gap: 8px;">
+            <div style="font-weight: 700; font-size: 0.95rem; color: var(--text-primary); display: flex; align-items: center; gap: 8px;">
+              <i class="fas fa-crop" style="color: var(--primary);"></i> 
+              <span>Interactive Viewport</span>
+              <span id="pdfDocBadge" class="badge-pill-pdf" style="display: none;"><i class="fas fa-file-pdf"></i> PDF Mode</span>
             </div>
-            <button class="btn btn-secondary btn-sm" onclick="resetCropBox()" title="Reset Framing Box">
-              <i class="fas fa-rotate-left"></i> Reset Box
-            </button>
+
+            <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+              <!-- PDF Page Navigation (Shown only in PDF mode) -->
+              <div id="pdfNavGroup" class="pdf-nav-container" style="display: none;">
+                <button class="btn btn-secondary btn-xs" onclick="changePdfPage(-1)" title="Previous Page">
+                  <i class="fas fa-chevron-left"></i>
+                </button>
+                <span id="pdfPageBadge" class="pdf-nav-badge">Page 1 of 1</span>
+                <button class="btn btn-secondary btn-xs" onclick="changePdfPage(1)" title="Next Page">
+                  <i class="fas fa-chevron-right"></i>
+                </button>
+              </div>
+
+              <!-- Instant Smart Auto-Crop Action Button -->
+              <button id="btnQuickAutoCrop" class="btn btn-sm auto-crop-btn-highlight" onclick="autoCropDocument(false)" title="Automatically trim empty margins & scanner borders to wrap content">
+                <i class="fas fa-wand-magic-sparkles"></i> Auto Crop Content
+              </button>
+
+              <button class="btn btn-secondary btn-sm" onclick="resetCropBox()" title="Reset Framing Box">
+                <i class="fas fa-rotate-left"></i> Reset Box
+              </button>
+            </div>
           </div>
 
           <!-- Interactive Cropper Canvas Container -->
@@ -599,6 +731,9 @@
               <button class="aspect-pill-btn" onclick="toggleCircleCrop(this)">
                 <i class="fas fa-circle-user"></i> Circle
               </button>
+              <button class="aspect-pill-btn" onclick="autoCropDocument(false)" title="Auto-detect content margins and fit crop box">
+                <i class="fas fa-wand-magic-sparkles" style="color: #6366f1;"></i> Auto Fit
+              </button>
             </div>
           </div>
 
@@ -623,6 +758,46 @@
 
           </div>
 
+          <!-- Smart Auto-Crop Settings Card -->
+          <div class="auto-crop-panel" id="autoCropSettingsCard">
+            <div class="auto-crop-panel-title">
+              <span><i class="fas fa-crop-simple" style="color: var(--primary);"></i> Smart Auto Crop</span>
+              <span class="auto-crop-badge">Auto Detect</span>
+            </div>
+            <p style="font-size: 0.78rem; color: var(--text-secondary); margin: 0; line-height: 1.4;">
+              Scans document luminance to detect text, tables, and receipts, trimming scanner edges &amp; blank margins.
+            </p>
+            
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+              <div>
+                <label style="font-size: 0.74rem; font-weight: 700; color: var(--text-secondary); display: block; margin-bottom: 4px;">Padding</label>
+                <select id="autoCropPadding" class="form-control" style="font-size: 0.8rem; padding: 5px 8px;" onchange="autoCropDocument(false)">
+                  <option value="6">Tight (6px)</option>
+                  <option value="16" selected>Balanced (16px)</option>
+                  <option value="32">Relaxed (32px)</option>
+                  <option value="0">Zero Margins</option>
+                </select>
+              </div>
+              <div>
+                <label style="font-size: 0.74rem; font-weight: 700; color: var(--text-secondary); display: block; margin-bottom: 4px;">Sensitivity</label>
+                <select id="autoCropSensitivity" class="form-control" style="font-size: 0.8rem; padding: 5px 8px;" onchange="autoCropDocument(false)">
+                  <option value="12">High (Light text)</option>
+                  <option value="22" selected>Normal</option>
+                  <option value="35">Strict (Ignore dust)</option>
+                </select>
+              </div>
+            </div>
+
+            <button type="button" class="btn btn-primary btn-sm" onclick="autoCropDocument(false)" style="justify-content: center; gap: 6px;">
+              <i class="fas fa-wand-magic-sparkles"></i> Trim Current Page
+            </button>
+
+            <!-- Multi-Page Batch Crop Button (Visible for multi-page PDFs) -->
+            <button type="button" id="btnBatchCropPdf" class="btn btn-secondary btn-sm" onclick="autoCropAllPagesAndExportPdf()" style="display: none; justify-content: center; gap: 6px; border-color: #6366f1; color: var(--primary);" title="Auto-crops all pages and downloads a combined PDF">
+              <i class="fas fa-copy"></i> Auto-Crop All Pages &amp; Download PDF
+            </button>
+          </div>
+
           <!-- 3. Export Settings -->
           <div style="display: flex; flex-direction: column; gap: 12px; border-top: 1px solid var(--border-color); padding-top: 16px;">
             <div style="font-weight: 700; font-size: 0.9rem; color: var(--text-primary);">
@@ -632,10 +807,11 @@
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
               <div>
                 <label style="font-size: 0.78rem; font-weight: 600; color: var(--text-secondary); display: block; margin-bottom: 4px;">Format</label>
-                <select id="exportFormat" class="form-control" style="font-size: 0.85rem; padding: 6px 10px;">
+                <select id="exportFormat" class="form-control" style="font-size: 0.85rem; padding: 6px 10px;" onchange="onExportFormatChange()">
                   <option value="image/png">PNG (Lossless)</option>
                   <option value="image/jpeg">JPEG (Compressed)</option>
                   <option value="image/webp" selected>WEBP (Modern)</option>
+                  <option value="application/pdf">PDF Document (.pdf)</option>
                 </select>
               </div>
 
@@ -746,6 +922,11 @@
 
   <script src="js/app.min.js"></script>
   <script>
+    // Initialize PDF.js Worker
+    if (window.pdfjsLib) {
+      pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+    }
+
     // State Variables
     let rawImage = new Image();
     let isDraggingBox = false;
@@ -760,6 +941,16 @@
 
     let startX, startY;
     let startBoxLeft, startBoxTop, startBoxWidth, startBoxHeight;
+
+    // PDF Support State
+    let isPdfMode = false;
+    let currentPdfDoc = null;
+    let currentPdfBytes = null;
+    let currentPdfFileName = 'document.pdf';
+    let currentPdfPageIdx = 1;
+    let totalPdfPages = 1;
+    let pdfCurrentCanvas = null;
+    let currentCroppedPdfBlobUrl = null;
 
     const dropzone = document.getElementById('dropzone');
     const imageInput = document.getElementById('image-input');
@@ -777,25 +968,61 @@
       if (file) loadFile(file);
     });
 
+    // Dropzone Drag-and-Drop Visual Feedback & Handlers
+    if (dropzone) {
+      dropzone.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        dropzone.classList.add('drag-active');
+      });
+      dropzone.addEventListener('dragleave', (e) => {
+        e.preventDefault();
+        dropzone.classList.remove('drag-active');
+      });
+      dropzone.addEventListener('drop', (e) => {
+        e.preventDefault();
+        dropzone.classList.remove('drag-active');
+        const file = e.dataTransfer?.files?.[0];
+        if (file) loadFile(file);
+      });
+    }
+
     // Paste from Clipboard Support (Ctrl + V)
     window.addEventListener('paste', (e) => {
       const items = e.clipboardData?.items;
       if (!items) return;
       for (let item of items) {
-        if (item.type.indexOf('image') !== -1) {
+        if (item.type.indexOf('image') !== -1 || item.type === 'application/pdf') {
           const file = item.getAsFile();
           loadFile(file);
-          showToast('Image pasted from clipboard!', 'success');
+          showToast('File pasted from clipboard!', 'success');
           break;
         }
       }
     });
 
     function loadFile(file) {
-      if (!file || !file.type.startsWith('image/')) {
-        showToast('Please upload a valid image file.', 'error');
+      if (!file) return;
+
+      // Handle PDF Document
+      if (file.type === 'application/pdf' || file.name.toLowerCase().endsWith('.pdf')) {
+        loadPdfFile(file);
         return;
       }
+
+      // Handle Standard Image
+      if (!file.type.startsWith('image/')) {
+        showToast('Please upload a valid image (PNG, JPG, WEBP) or PDF file.', 'error');
+        return;
+      }
+
+      // Reset PDF Mode
+      isPdfMode = false;
+      currentPdfDoc = null;
+      currentPdfBytes = null;
+      pdfCurrentCanvas = null;
+      document.getElementById('pdfDocBadge').style.display = 'none';
+      document.getElementById('pdfNavGroup').style.display = 'none';
+      document.getElementById('btnBatchCropPdf').style.display = 'none';
 
       const reader = new FileReader();
       reader.onload = (e) => {
@@ -808,7 +1035,7 @@
             resetAllTransforms();
             resetCropBox();
             updateMetrics();
-            showToast('Image loaded! Frame your crop box.', 'success');
+            showToast('Image loaded! Framing your crop box.', 'success');
           };
         };
         rawImage.src = e.target.result;
@@ -816,7 +1043,433 @@
       reader.readAsDataURL(file);
     }
 
-    // 2. Transformations (Rotate, Flip, Zoom, Tilt)
+    // PDF Document Processing Pipeline
+    async function loadPdfFile(file) {
+      try {
+        showToast('Loading PDF document into memory...', 'info');
+        const arrayBuffer = await file.arrayBuffer();
+        currentPdfBytes = arrayBuffer;
+        currentPdfFileName = file.name || 'document.pdf';
+
+        const loadingTask = pdfjsLib.getDocument({ data: arrayBuffer });
+        currentPdfDoc = await loadingTask.promise;
+        totalPdfPages = currentPdfDoc.numPages;
+        currentPdfPageIdx = 1;
+        isPdfMode = true;
+
+        document.getElementById('pdfDocBadge').style.display = 'inline-flex';
+        if (totalPdfPages > 1) {
+          document.getElementById('pdfNavGroup').style.display = 'inline-flex';
+          document.getElementById('btnBatchCropPdf').style.display = 'inline-flex';
+        } else {
+          document.getElementById('pdfNavGroup').style.display = 'none';
+          document.getElementById('btnBatchCropPdf').style.display = 'none';
+        }
+        document.getElementById('pdfPageBadge').textContent = `Page 1 of ${totalPdfPages}`;
+        
+        // Select PDF format by default for PDF inputs
+        document.getElementById('exportFormat').value = 'application/pdf';
+        onExportFormatChange();
+
+        await renderPdfPage(currentPdfPageIdx, true);
+        showToast(`Loaded "${currentPdfFileName}" (${totalPdfPages} page${totalPdfPages > 1 ? 's' : ''})!`, 'success');
+      } catch (err) {
+        console.error('Error loading PDF file:', err);
+        showToast('Failed to load PDF document: ' + err.message, 'error');
+      }
+    }
+
+    async function renderPdfPage(pageNum, autoCropAfter = false) {
+      if (!currentPdfDoc) return;
+      try {
+        const page = await currentPdfDoc.getPage(pageNum);
+        // Render at scale 2.0 for retina sharp text & vectors
+        const viewport = page.getViewport({ scale: 2.0 });
+
+        const canvas = document.createElement('canvas');
+        canvas.width = Math.round(viewport.width);
+        canvas.height = Math.round(viewport.height);
+        const ctx = canvas.getContext('2d');
+
+        await page.render({ canvasContext: ctx, viewport: viewport }).promise;
+        pdfCurrentCanvas = canvas;
+
+        const dataUrl = canvas.toDataURL('image/png');
+
+        rawImage = new Image();
+        rawImage.onload = () => {
+          imagePreview.src = dataUrl;
+          imagePreview.onload = () => {
+            studioArea.style.display = 'block';
+            imageContainer.style.display = 'flex';
+            resetAllTransforms();
+            resetCropBox();
+            updateMetrics();
+            if (autoCropAfter) {
+              setTimeout(() => {
+                autoCropDocument(true);
+              }, 80);
+            }
+          };
+        };
+        rawImage.src = dataUrl;
+      } catch (err) {
+        console.error('Error rendering PDF page:', err);
+        showToast('Error rendering PDF page: ' + err.message, 'error');
+      }
+    }
+
+    async function changePdfPage(delta) {
+      if (!isPdfMode || !currentPdfDoc) return;
+      const nextIdx = currentPdfPageIdx + delta;
+      if (nextIdx < 1 || nextIdx > totalPdfPages) return;
+      currentPdfPageIdx = nextIdx;
+      document.getElementById('pdfPageBadge').textContent = `Page ${currentPdfPageIdx} of ${totalPdfPages}`;
+      await renderPdfPage(currentPdfPageIdx, true);
+      showToast(`Viewing Page ${currentPdfPageIdx}`, 'info');
+    }
+
+    // Sample PDF Generator for Instant Testing
+    async function loadSamplePdf() {
+      try {
+        showToast('Generating sample invoice PDF with wide margins...', 'info');
+        if (typeof PDFLib === 'undefined') {
+          showToast('PDF Engine loading, please try again in a second.', 'error');
+          return;
+        }
+
+        const pdfDoc = await PDFLib.PDFDocument.create();
+        const font = await pdfDoc.embedFont(PDFLib.StandardFonts.Helvetica);
+        const fontBold = await pdfDoc.embedFont(PDFLib.StandardFonts.HelveticaBold);
+
+        // Page 1: Invoice with deliberate wide empty margins
+        const page1 = pdfDoc.addPage([595.28, 841.89]);
+        const h1 = page1.getHeight();
+
+        page1.drawText('SAMPLE COMMERCIAL INVOICE', { x: 130, y: h1 - 150, size: 18, font: fontBold, color: PDFLib.rgb(0.09, 0.12, 0.25) });
+        page1.drawText('AI Bots Studios Ltd. \u2022 Invoice #INV-2026-99', { x: 130, y: h1 - 176, size: 11, font: font, color: PDFLib.rgb(0.38, 0.4, 0.95) });
+        page1.drawText('Client: Acme Global Corp. | Date: 2026-10-06', { x: 130, y: h1 - 196, size: 10, font: font, color: PDFLib.rgb(0.4, 0.45, 0.5) });
+
+        // Invoice Table Box
+        page1.drawRectangle({
+          x: 130, y: h1 - 360, width: 340, height: 140,
+          borderColor: PDFLib.rgb(0.78, 0.82, 0.9), borderWidth: 1, color: PDFLib.rgb(0.97, 0.98, 1)
+        });
+        page1.drawText('Description', { x: 145, y: h1 - 250, size: 10, font: fontBold, color: PDFLib.rgb(0.15, 0.15, 0.2) });
+        page1.drawText('Amount', { x: 400, y: h1 - 250, size: 10, font: fontBold, color: PDFLib.rgb(0.15, 0.15, 0.2) });
+        page1.drawLine({ start: { x: 130, y: h1 - 262 }, end: { x: 470, y: h1 - 262 }, thickness: 1, color: PDFLib.rgb(0.85, 0.88, 0.92) });
+        
+        page1.drawText('1. Intelligent Document Auto-Crop Engine', { x: 145, y: h1 - 285, size: 9, font: font, color: PDFLib.rgb(0.2, 0.2, 0.25) });
+        page1.drawText('$49.00', { x: 420, y: h1 - 285, size: 9, font: font, color: PDFLib.rgb(0.2, 0.2, 0.25) });
+
+        page1.drawText('2. Multi-Page Batch Margins Optimizer', { x: 145, y: h1 - 310, size: 9, font: font, color: PDFLib.rgb(0.2, 0.2, 0.25) });
+        page1.drawText('$39.00', { x: 420, y: h1 - 310, size: 9, font: font, color: PDFLib.rgb(0.2, 0.2, 0.25) });
+
+        page1.drawLine({ start: { x: 130, y: h1 - 325 }, end: { x: 470, y: h1 - 325 }, thickness: 1, color: PDFLib.rgb(0.85, 0.88, 0.92) });
+        page1.drawText('Total Paid: $88.00 (VERIFIED)', { x: 310, y: h1 - 345, size: 10, font: fontBold, color: PDFLib.rgb(0.08, 0.6, 0.25) });
+
+        // Page 2: Summary Page
+        const page2 = pdfDoc.addPage([595.28, 841.89]);
+        const h2 = page2.getHeight();
+        page2.drawText('DOCUMENT CERTIFICATE & NOTES', { x: 130, y: h2 - 150, size: 16, font: fontBold, color: PDFLib.rgb(0.09, 0.12, 0.25) });
+        page2.drawText('This document demonstrates automated white margin detection.', { x: 130, y: h2 - 180, size: 10, font: font, color: PDFLib.rgb(0.3, 0.35, 0.4) });
+        page2.drawText('Auto-Crop will trim the outer blank space and isolate content.', { x: 130, y: h2 - 200, size: 10, font: font, color: PDFLib.rgb(0.3, 0.35, 0.4) });
+
+        const bytes = await pdfDoc.save();
+        const blob = new Blob([bytes], { type: 'application/pdf' });
+        const file = new File([blob], 'sample_invoice_with_margins.pdf', { type: 'application/pdf' });
+        loadPdfFile(file);
+      } catch (err) {
+        console.error('Error generating sample PDF:', err);
+        showToast('Error generating sample PDF: ' + err.message, 'error');
+      }
+    }
+
+    // 2. Intelligent Computer Vision Auto-Crop Algorithm
+    function detectContentBoundingBox(sourceCanvas, padding = 16, sensitivity = 22) {
+      const w = sourceCanvas.width;
+      const h = sourceCanvas.height;
+      if (!w || !h) return null;
+
+      const ctx = sourceCanvas.getContext('2d');
+      const imgData = ctx.getImageData(0, 0, w, h);
+      const data = imgData.data;
+
+      // Sample background baseline from the outer 2% margin perimeter
+      let bgR = 0, bgG = 0, bgB = 0, bgCount = 0;
+      const marginX = Math.max(2, Math.floor(w * 0.02));
+      const marginY = Math.max(2, Math.floor(h * 0.02));
+
+      for (let y = 0; y < h; y += 4) {
+        for (let x = 0; x < w; x += 4) {
+          if (x < marginX || x >= w - marginX || y < marginY || y >= h - marginY) {
+            const idx = (y * w + x) * 4;
+            const a = data[idx + 3];
+            if (a > 30) {
+              bgR += data[idx];
+              bgG += data[idx + 1];
+              bgB += data[idx + 2];
+              bgCount++;
+            }
+          }
+        }
+      }
+
+      if (bgCount > 0) {
+        bgR = Math.round(bgR / bgCount);
+        bgG = Math.round(bgG / bgCount);
+        bgB = Math.round(bgB / bgCount);
+      } else {
+        bgR = 255; bgG = 255; bgB = 255;
+      }
+
+      const bgLum = 0.299 * bgR + 0.587 * bgG + 0.114 * bgB;
+      const isLightBg = bgLum > 60;
+
+      // Noise resistance threshold: row/col must have at least minHits content pixels
+      const minRowHits = Math.max(3, Math.floor(w * 0.003));
+      const minColHits = Math.max(3, Math.floor(h * 0.003));
+
+      function isContentPixel(idx) {
+        const a = data[idx + 3];
+        if (a < 40) return false;
+        const r = data[idx];
+        const g = data[idx + 1];
+        const b = data[idx + 2];
+        const lum = 0.299 * r + 0.587 * g + 0.114 * b;
+
+        if (isLightBg) {
+          const diffLum = bgLum - lum;
+          const colorDiff = Math.max(Math.abs(r - bgR), Math.abs(g - bgG), Math.abs(b - bgB));
+          return diffLum > sensitivity || colorDiff > (sensitivity * 1.3);
+        } else {
+          return lum > (bgLum + sensitivity + 15) || lum > 80;
+        }
+      }
+
+      // Top bound
+      let minY = -1;
+      for (let y = 0; y < h; y++) {
+        let hits = 0;
+        for (let x = 0; x < w; x += 2) {
+          const idx = (y * w + x) * 4;
+          if (isContentPixel(idx)) {
+            hits++;
+            if (hits >= minRowHits) break;
+          }
+        }
+        if (hits >= minRowHits) {
+          minY = y;
+          break;
+        }
+      }
+
+      // Bottom bound
+      let maxY = -1;
+      for (let y = h - 1; y >= 0; y--) {
+        let hits = 0;
+        for (let x = 0; x < w; x += 2) {
+          const idx = (y * w + x) * 4;
+          if (isContentPixel(idx)) {
+            hits++;
+            if (hits >= minRowHits) break;
+          }
+        }
+        if (hits >= minRowHits) {
+          maxY = y;
+          break;
+        }
+      }
+
+      // Left bound
+      let minX = -1;
+      for (let x = 0; x < w; x++) {
+        let hits = 0;
+        for (let y = 0; y < h; y += 2) {
+          const idx = (y * w + x) * 4;
+          if (isContentPixel(idx)) {
+            hits++;
+            if (hits >= minColHits) break;
+          }
+        }
+        if (hits >= minColHits) {
+          minX = x;
+          break;
+        }
+      }
+
+      // Right bound
+      let maxX = -1;
+      for (let x = w - 1; x >= 0; x--) {
+        let hits = 0;
+        for (let y = 0; y < h; y += 2) {
+          const idx = (y * w + x) * 4;
+          if (isContentPixel(idx)) {
+            hits++;
+            if (hits >= minColHits) break;
+          }
+        }
+        if (hits >= minColHits) {
+          maxX = x;
+          break;
+        }
+      }
+
+      // Fallback if blank
+      if (minY === -1 || maxY === -1 || minX === -1 || maxX === -1 || maxX <= minX || maxY <= minY) {
+        return {
+          x: Math.round(w * 0.1),
+          y: Math.round(h * 0.1),
+          width: Math.round(w * 0.8),
+          height: Math.round(h * 0.8)
+        };
+      }
+
+      // Scale padding relative to resolution
+      const padX = Math.round(padding * (w / 800));
+      const padY = Math.round(padding * (h / 800));
+
+      const finalX = Math.max(0, minX - padX);
+      const finalY = Math.max(0, minY - padY);
+      const finalW = Math.min(w - finalX, (maxX - minX) + (padX * 2));
+      const finalH = Math.min(h - finalY, (maxY - minY) + (padY * 2));
+
+      return {
+        x: finalX,
+        y: finalY,
+        width: finalW,
+        height: finalH
+      };
+    }
+
+    function autoCropDocument(silent = false) {
+      if (!rawImage || !rawImage.naturalWidth) {
+        if (!silent) showToast('Please upload an image or PDF first.', 'error');
+        return;
+      }
+
+      let analysisCanvas = pdfCurrentCanvas;
+      if (!analysisCanvas) {
+        analysisCanvas = document.createElement('canvas');
+        analysisCanvas.width = rawImage.naturalWidth;
+        analysisCanvas.height = rawImage.naturalHeight;
+        const ctx = analysisCanvas.getContext('2d');
+        ctx.drawImage(rawImage, 0, 0);
+      }
+
+      const paddingVal = parseInt(document.getElementById('autoCropPadding')?.value || '16', 10);
+      const sensVal = parseInt(document.getElementById('autoCropSensitivity')?.value || '22', 10);
+
+      const bbox = detectContentBoundingBox(analysisCanvas, paddingVal, sensVal);
+      if (!bbox) return;
+
+      const scale = rawImage.naturalWidth / imagePreview.offsetWidth;
+      const newLeft = imagePreview.offsetLeft + Math.round(bbox.x / scale);
+      const newTop = imagePreview.offsetTop + Math.round(bbox.y / scale);
+      const newWidth = Math.max(40, Math.round(bbox.width / scale));
+      const newHeight = Math.max(40, Math.round(bbox.height / scale));
+
+      targetAspectRatio = 0;
+      isCircleCrop = false;
+      cropper.classList.remove('circle-crop');
+      document.querySelectorAll('.aspect-pill-btn').forEach(b => b.classList.remove('active'));
+
+      cropper.style.left = newLeft + 'px';
+      cropper.style.top = newTop + 'px';
+      cropper.style.width = newWidth + 'px';
+      cropper.style.height = newHeight + 'px';
+
+      constrainBox();
+      updateMetrics();
+
+      if (!silent) {
+        showToast(`Auto-Crop snapped to content! (${Math.round(bbox.width)} × ${Math.round(bbox.height)} px)`, 'success');
+      }
+    }
+
+    // Batch Auto-Crop All PDF Pages and Combine into Clean PDF
+    async function autoCropAllPagesAndExportPdf() {
+      if (!isPdfMode || !currentPdfDoc) {
+        showToast('Batch auto-crop is only available for PDF documents.', 'error');
+        return;
+      }
+
+      try {
+        showToast(`Batch processing all ${totalPdfPages} pages... Please wait.`, 'info');
+        const newPdfDoc = await PDFLib.PDFDocument.create();
+        const paddingVal = parseInt(document.getElementById('autoCropPadding')?.value || '16', 10);
+        const sensVal = parseInt(document.getElementById('autoCropSensitivity')?.value || '22', 10);
+
+        for (let p = 1; p <= totalPdfPages; p++) {
+          showToast(`Auto-cropping Page ${p} of ${totalPdfPages}...`, 'info');
+          const page = await currentPdfDoc.getPage(p);
+          const viewport = page.getViewport({ scale: 2.0 });
+
+          const pageCanvas = document.createElement('canvas');
+          pageCanvas.width = viewport.width;
+          pageCanvas.height = viewport.height;
+          const ctx = pageCanvas.getContext('2d');
+          await page.render({ canvasContext: ctx, viewport: viewport }).promise;
+
+          const bbox = detectContentBoundingBox(pageCanvas, paddingVal, sensVal);
+
+          const croppedCanvas = document.createElement('canvas');
+          croppedCanvas.width = bbox.width;
+          croppedCanvas.height = bbox.height;
+          const cropCtx = croppedCanvas.getContext('2d');
+          cropCtx.drawImage(
+            pageCanvas,
+            bbox.x, bbox.y, bbox.width, bbox.height,
+            0, 0, bbox.width, bbox.height
+          );
+
+          const pngDataUrl = croppedCanvas.toDataURL('image/png');
+          const pngImageBytes = await fetch(pngDataUrl).then(res => res.arrayBuffer());
+          const embeddedImage = await newPdfDoc.embedPng(pngImageBytes);
+
+          // Scaled to points (72 dpi from 2.0 scale)
+          const ptWidth = bbox.width / 2.0;
+          const ptHeight = bbox.height / 2.0;
+          const newPage = newPdfDoc.addPage([ptWidth, ptHeight]);
+          newPage.drawImage(embeddedImage, {
+            x: 0,
+            y: 0,
+            width: ptWidth,
+            height: ptHeight
+          });
+        }
+
+        const finalPdfBytes = await newPdfDoc.save();
+        const blob = new Blob([finalPdfBytes], { type: 'application/pdf' });
+        const downloadUrl = URL.createObjectURL(blob);
+
+        const baseName = (currentPdfFileName || 'document.pdf').replace(/\.[^/.]+$/, '');
+        const link = document.createElement('a');
+        link.href = downloadUrl;
+        link.download = `${baseName}_autocropped.pdf`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+
+        showToast(`Auto-cropped and downloaded all ${totalPdfPages} pages!`, 'success');
+        launchConfetti(45);
+      } catch (err) {
+        console.error('Batch crop error:', err);
+        showToast('Failed to batch crop PDF: ' + err.message, 'error');
+      }
+    }
+
+    function onExportFormatChange() {
+      const format = document.getElementById('exportFormat').value;
+      const cropBtn = document.getElementById('crop-button');
+      if (format === 'application/pdf') {
+        cropBtn.innerHTML = '<i class="fas fa-file-pdf"></i> Crop &amp; Export PDF';
+      } else {
+        cropBtn.innerHTML = '<i class="fas fa-crop-simple"></i> Crop &amp; Render Image';
+      }
+    }
+
+    // 3. Transformations (Rotate, Flip, Zoom, Tilt)
     function rotateImage(deg) {
       rotationDeg = (rotationDeg + deg) % 360;
       applyImageTransforms();
@@ -862,7 +1515,7 @@
       applyImageTransforms();
     }
 
-    // 3. Aspect Ratio Selection
+    // 4. Aspect Ratio Selection
     function setAspect(ratio, btn) {
       targetAspectRatio = ratio;
       isCircleCrop = false;
@@ -882,7 +1535,7 @@
       showToast('Circle Avatar crop enabled!', 'info');
     }
 
-    // 4. Crop Box Positioning & Sizing
+    // 5. Crop Box Positioning & Sizing
     function resetCropBox() {
       const imgW = imagePreview.offsetWidth || 300;
       const imgH = imagePreview.offsetHeight || 300;
@@ -928,7 +1581,7 @@
       cropper.style.top = boxTop + 'px';
     }
 
-    // 5. Unified Pointer Events (Mouse, Touch, Stylus on All Devices)
+    // 6. Unified Pointer Events (Mouse, Touch, Stylus)
     cropper.addEventListener('pointerdown', (e) => {
       if (e.target.classList.contains('resize-handle')) return;
       e.preventDefault();
@@ -1023,7 +1676,7 @@
       constrainBox();
     }
 
-    // 6. Live Metrics Updater
+    // 7. Live Metrics Updater
     function updateMetrics() {
       if (!rawImage.naturalWidth) return;
       const scale = rawImage.naturalWidth / imagePreview.offsetWidth;
@@ -1034,10 +1687,10 @@
       document.getElementById('metricOrigSize').textContent = `${rawImage.naturalWidth} × ${rawImage.naturalHeight} px`;
     }
 
-    // 7. Core Crop & Export Pipeline
-    function executeCrop() {
+    // 8. Core Crop & Export Pipeline
+    async function executeCrop() {
       if (!rawImage.src) {
-        showToast('Please upload an image first.', 'error');
+        showToast('Please upload an image or PDF first.', 'error');
         return;
       }
 
@@ -1047,11 +1700,11 @@
       const scale = rawImage.naturalWidth / imagePreview.offsetWidth;
       const cropX = (cropper.offsetLeft - imagePreview.offsetLeft) * scale;
       const cropY = (cropper.offsetTop - imagePreview.offsetTop) * scale;
-      const cropW = cropper.offsetWidth * scale;
-      const cropH = cropper.offsetHeight * scale;
+      const cropW = Math.max(1, cropper.offsetWidth * scale);
+      const cropH = Math.max(1, cropper.offsetHeight * scale);
 
-      canvas.width = cropW;
-      canvas.height = cropH;
+      canvas.width = Math.round(cropW);
+      canvas.height = Math.round(cropH);
 
       // Handle Circular Crop Clipping
       if (isCircleCrop) {
@@ -1074,33 +1727,91 @@
       ctx.restore();
 
       const format = document.getElementById('exportFormat').value;
-      const quality = parseFloat(document.getElementById('exportQuality').value);
-      const dataUrl = canvas.toDataURL(format, quality);
 
-      resultImage.src = dataUrl;
-      resultArea.style.display = 'block';
+      if (format === 'application/pdf') {
+        try {
+          showToast('Rendering cropped PDF...', 'info');
+          const newPdfDoc = await PDFLib.PDFDocument.create();
+          const pngDataUrl = canvas.toDataURL('image/png');
+          const pngBytes = await fetch(pngDataUrl).then(res => res.arrayBuffer());
+          const embeddedPng = await newPdfDoc.embedPng(pngBytes);
 
-      // Calculate approximate size
-      const head = `data:${format};base64,`;
-      const sizeBytes = Math.round((dataUrl.length - head.length) * 3 / 4);
-      const sizeKb = (sizeBytes / 1024).toFixed(1);
+          // Scaled to points
+          const ptWidth = cropW / 2.0;
+          const ptHeight = cropH / 2.0;
+          const newPage = newPdfDoc.addPage([ptWidth, ptHeight]);
+          newPage.drawImage(embeddedPng, {
+            x: 0,
+            y: 0,
+            width: ptWidth,
+            height: ptHeight
+          });
 
-      resultMetaBadge.innerHTML = `<i class="fas fa-file-image"></i> ${Math.round(cropW)} × ${Math.round(cropH)} px &bull; ${sizeKb} KB (${format.split('/')[1].toUpperCase()})`;
+          const pdfBytes = await newPdfDoc.save();
+          const pdfBlob = new Blob([pdfBytes], { type: 'application/pdf' });
+          if (currentCroppedPdfBlobUrl) {
+            URL.revokeObjectURL(currentCroppedPdfBlobUrl);
+          }
+          currentCroppedPdfBlobUrl = URL.createObjectURL(pdfBlob);
 
-      resultArea.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-      showToast('Image cropped with pixel perfection!', 'success');
-      launchConfetti(40);
+          resultImage.src = pngDataUrl;
+          resultArea.style.display = 'block';
+
+          const sizeKb = (pdfBytes.byteLength / 1024).toFixed(1);
+          resultMetaBadge.innerHTML = `<i class="fas fa-file-pdf"></i> ${Math.round(cropW)} × ${Math.round(cropH)} px &bull; ${sizeKb} KB (PDF)`;
+          document.getElementById('downloadBtn').innerHTML = `<i class="fas fa-file-pdf"></i> Download PDF`;
+
+          resultArea.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+          showToast('Cropped into high-resolution PDF document!', 'success');
+          launchConfetti(40);
+        } catch (err) {
+          console.error('PDF export error:', err);
+          showToast('Failed to export as PDF: ' + err.message, 'error');
+        }
+      } else {
+        const quality = parseFloat(document.getElementById('exportQuality').value);
+        const dataUrl = canvas.toDataURL(format, quality);
+
+        resultImage.src = dataUrl;
+        resultArea.style.display = 'block';
+
+        const head = `data:${format};base64,`;
+        const sizeBytes = Math.round((dataUrl.length - head.length) * 3 / 4);
+        const sizeKb = (sizeBytes / 1024).toFixed(1);
+
+        resultMetaBadge.innerHTML = `<i class="fas fa-file-image"></i> ${Math.round(cropW)} × ${Math.round(cropH)} px &bull; ${sizeKb} KB (${format.split('/')[1].toUpperCase()})`;
+        document.getElementById('downloadBtn').innerHTML = `<i class="fas fa-download"></i> Download Image`;
+
+        resultArea.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        showToast('Image cropped with pixel perfection!', 'success');
+        launchConfetti(40);
+      }
     }
 
-    // 8. Download & Clipboard Actions
+    // 9. Download & Clipboard Actions
     function downloadCropped() {
-      if (!resultImage.src) return;
       const format = document.getElementById('exportFormat').value;
+
+      if (format === 'application/pdf') {
+        if (!currentCroppedPdfBlobUrl) return;
+        const baseName = (currentPdfFileName || 'document.pdf').replace(/\.[^/.]+$/, '');
+        const pageSuffix = isPdfMode ? `_p${currentPdfPageIdx}` : '';
+        const link = document.createElement('a');
+        link.href = currentCroppedPdfBlobUrl;
+        link.download = `${baseName}${pageSuffix}_cropped.pdf`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        showToast('Downloaded cropped PDF document!', 'success');
+        return;
+      }
+
+      if (!resultImage.src) return;
       const ext = format === 'image/jpeg' ? 'jpg' : (format === 'image/webp' ? 'webp' : 'png');
-      
+      const baseName = (currentPdfFileName || 'aibots_crop').replace(/\.[^/.]+$/, '');
       const link = document.createElement('a');
       link.href = resultImage.src;
-      link.download = `aibots_crop_${Date.now()}.${ext}`;
+      link.download = `${baseName}_crop_${Date.now()}.${ext}`;
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
@@ -1122,6 +1833,11 @@
     }
 
     function openFullResultInTab() {
+      const format = document.getElementById('exportFormat').value;
+      if (format === 'application/pdf' && currentCroppedPdfBlobUrl) {
+        window.open(currentCroppedPdfBlobUrl, '_blank');
+        return;
+      }
       if (!resultImage.src) return;
       const w = window.open('');
       w.document.write(`<img src="${resultImage.src}" style="max-width:100%;height:auto;margin:auto;display:block;">`);
@@ -1138,7 +1854,7 @@
       if (e.key === 'ArrowDown') { cropper.style.top = (cropper.offsetTop + step) + 'px'; constrainBox(); updateMetrics(); }
       if (e.key === 'Enter' && studioArea.style.display !== 'none') { executeCrop(); }
       if (e.key.toLowerCase() === 'r' && studioArea.style.display !== 'none') { rotateImage(90); }
+      if (e.key.toLowerCase() === 'a' && studioArea.style.display !== 'none') { autoCropDocument(false); }
     });
   </script>
-</body>
-</html>
+</body></html>

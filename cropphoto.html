@@ -771,7 +771,7 @@
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
               <div>
                 <label style="font-size: 0.74rem; font-weight: 700; color: var(--text-secondary); display: block; margin-bottom: 4px;">Padding</label>
-                <select id="autoCropPadding" class="form-control" style="font-size: 0.8rem; padding: 5px 8px;" onchange="autoCropDocument(false)">
+                <select id="autoCropPadding" class="form-control" style="font-size: 0.8rem; padding: 5px 8px;">
                   <option value="6">Tight (6px)</option>
                   <option value="16" selected>Balanced (16px)</option>
                   <option value="32">Relaxed (32px)</option>
@@ -780,7 +780,7 @@
               </div>
               <div>
                 <label style="font-size: 0.74rem; font-weight: 700; color: var(--text-secondary); display: block; margin-bottom: 4px;">Sensitivity</label>
-                <select id="autoCropSensitivity" class="form-control" style="font-size: 0.8rem; padding: 5px 8px;" onchange="autoCropDocument(false)">
+                <select id="autoCropSensitivity" class="form-control" style="font-size: 0.8rem; padding: 5px 8px;">
                   <option value="12">High (Light text)</option>
                   <option value="22" selected>Normal</option>
                   <option value="35">Strict (Ignore dust)</option>
@@ -942,7 +942,7 @@
     let startX, startY;
     let startBoxLeft, startBoxTop, startBoxWidth, startBoxHeight;
 
-    // PDF Support State
+    // PDF Support State & Per-Page Crop Memory
     let isPdfMode = false;
     let currentPdfDoc = null;
     let currentPdfBytes = null;
@@ -951,6 +951,7 @@
     let totalPdfPages = 1;
     let pdfCurrentCanvas = null;
     let currentCroppedPdfBlobUrl = null;
+    let pdfPageCrops = {}; // pageNum -> { left, top, width, height, custom: bool }
 
     const dropzone = document.getElementById('dropzone');
     const imageInput = document.getElementById('image-input');
@@ -968,7 +969,6 @@
       if (file) loadFile(file);
     });
 
-    // Dropzone Drag-and-Drop Visual Feedback & Handlers
     if (dropzone) {
       dropzone.addEventListener('dragover', (e) => {
         e.preventDefault();
@@ -1003,23 +1003,21 @@
     function loadFile(file) {
       if (!file) return;
 
-      // Handle PDF Document
       if (file.type === 'application/pdf' || file.name.toLowerCase().endsWith('.pdf')) {
         loadPdfFile(file);
         return;
       }
 
-      // Handle Standard Image
       if (!file.type.startsWith('image/')) {
         showToast('Please upload a valid image (PNG, JPG, WEBP) or PDF file.', 'error');
         return;
       }
 
-      // Reset PDF Mode
       isPdfMode = false;
       currentPdfDoc = null;
       currentPdfBytes = null;
       pdfCurrentCanvas = null;
+      pdfPageCrops = {};
       document.getElementById('pdfDocBadge').style.display = 'none';
       document.getElementById('pdfNavGroup').style.display = 'none';
       document.getElementById('btnBatchCropPdf').style.display = 'none';
@@ -1050,6 +1048,7 @@
         const arrayBuffer = await file.arrayBuffer();
         currentPdfBytes = arrayBuffer;
         currentPdfFileName = file.name || 'document.pdf';
+        pdfPageCrops = {};
 
         const loadingTask = pdfjsLib.getDocument({ data: arrayBuffer });
         currentPdfDoc = await loadingTask.promise;
@@ -1067,7 +1066,6 @@
         }
         document.getElementById('pdfPageBadge').textContent = `Page 1 of ${totalPdfPages}`;
         
-        // Select PDF format by default for PDF inputs
         document.getElementById('exportFormat').value = 'application/pdf';
         onExportFormatChange();
 
@@ -1083,13 +1081,17 @@
       if (!currentPdfDoc) return;
       try {
         const page = await currentPdfDoc.getPage(pageNum);
-        // Render at scale 2.0 for retina sharp text & vectors
         const viewport = page.getViewport({ scale: 2.0 });
 
         const canvas = document.createElement('canvas');
         canvas.width = Math.round(viewport.width);
         canvas.height = Math.round(viewport.height);
         const ctx = canvas.getContext('2d');
+
+        // CRITICAL: Fill canvas with solid white background so empty PDF page margins
+        // are never transparent (which causes transparent-black edge artifacts)
+        ctx.fillStyle = '#ffffff';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
 
         await page.render({ canvasContext: ctx, viewport: viewport }).promise;
         pdfCurrentCanvas = canvas;
@@ -1103,12 +1105,24 @@
             studioArea.style.display = 'block';
             imageContainer.style.display = 'flex';
             resetAllTransforms();
-            resetCropBox();
-            updateMetrics();
-            if (autoCropAfter) {
-              setTimeout(() => {
-                autoCropDocument(true);
-              }, 80);
+
+            // If user already had a saved crop for this page, restore it!
+            const saved = pdfPageCrops[pageNum];
+            if (saved) {
+              cropper.style.left = saved.left + 'px';
+              cropper.style.top = saved.top + 'px';
+              cropper.style.width = saved.width + 'px';
+              cropper.style.height = saved.height + 'px';
+              constrainBox();
+              updateMetrics();
+            } else {
+              resetCropBox();
+              updateMetrics();
+              if (autoCropAfter) {
+                setTimeout(() => {
+                  autoCropDocument(true);
+                }, 80);
+              }
             }
           };
         };
@@ -1123,10 +1137,28 @@
       if (!isPdfMode || !currentPdfDoc) return;
       const nextIdx = currentPdfPageIdx + delta;
       if (nextIdx < 1 || nextIdx > totalPdfPages) return;
+
+      // Save crop of current page before leaving
+      saveCurrentCropState(true);
+
       currentPdfPageIdx = nextIdx;
       document.getElementById('pdfPageBadge').textContent = `Page ${currentPdfPageIdx} of ${totalPdfPages}`;
-      await renderPdfPage(currentPdfPageIdx, true);
+      
+      // Auto-crop only if this page has never been cropped yet
+      const needsAutoCrop = !pdfPageCrops[currentPdfPageIdx];
+      await renderPdfPage(currentPdfPageIdx, needsAutoCrop);
       showToast(`Viewing Page ${currentPdfPageIdx}`, 'info');
+    }
+
+    function saveCurrentCropState(isCustom = true) {
+      if (!isPdfMode) return;
+      pdfPageCrops[currentPdfPageIdx] = {
+        left: parseFloat(cropper.style.left) || 0,
+        top: parseFloat(cropper.style.top) || 0,
+        width: parseFloat(cropper.style.width) || 100,
+        height: parseFloat(cropper.style.height) || 100,
+        custom: isCustom
+      };
     }
 
     // Sample PDF Generator for Instant Testing
@@ -1142,7 +1174,6 @@
         const font = await pdfDoc.embedFont(PDFLib.StandardFonts.Helvetica);
         const fontBold = await pdfDoc.embedFont(PDFLib.StandardFonts.HelveticaBold);
 
-        // Page 1: Invoice with deliberate wide empty margins
         const page1 = pdfDoc.addPage([595.28, 841.89]);
         const h1 = page1.getHeight();
 
@@ -1150,7 +1181,6 @@
         page1.drawText('AI Bots Studios Ltd. \u2022 Invoice #INV-2026-99', { x: 130, y: h1 - 176, size: 11, font: font, color: PDFLib.rgb(0.38, 0.4, 0.95) });
         page1.drawText('Client: Acme Global Corp. | Date: 2026-10-06', { x: 130, y: h1 - 196, size: 10, font: font, color: PDFLib.rgb(0.4, 0.45, 0.5) });
 
-        // Invoice Table Box
         page1.drawRectangle({
           x: 130, y: h1 - 360, width: 340, height: 140,
           borderColor: PDFLib.rgb(0.78, 0.82, 0.9), borderWidth: 1, color: PDFLib.rgb(0.97, 0.98, 1)
@@ -1168,7 +1198,6 @@
         page1.drawLine({ start: { x: 130, y: h1 - 325 }, end: { x: 470, y: h1 - 325 }, thickness: 1, color: PDFLib.rgb(0.85, 0.88, 0.92) });
         page1.drawText('Total Paid: $88.00 (VERIFIED)', { x: 310, y: h1 - 345, size: 10, font: fontBold, color: PDFLib.rgb(0.08, 0.6, 0.25) });
 
-        // Page 2: Summary Page
         const page2 = pdfDoc.addPage([595.28, 841.89]);
         const h2 = page2.getHeight();
         page2.drawText('DOCUMENT CERTIFICATE & NOTES', { x: 130, y: h2 - 150, size: 16, font: fontBold, color: PDFLib.rgb(0.09, 0.12, 0.25) });
@@ -1195,17 +1224,20 @@
       const imgData = ctx.getImageData(0, 0, w, h);
       const data = imgData.data;
 
-      // Sample background baseline from the outer 2% margin perimeter
-      let bgR = 0, bgG = 0, bgB = 0, bgCount = 0;
-      const marginX = Math.max(2, Math.floor(w * 0.02));
-      const marginY = Math.max(2, Math.floor(h * 0.02));
+      // Skip the outermost 4 pixels to ignore scanner edges, paper seams & render seams
+      const inset = Math.max(4, Math.floor(Math.min(w, h) * 0.005));
 
-      for (let y = 0; y < h; y += 4) {
-        for (let x = 0; x < w; x += 4) {
-          if (x < marginX || x >= w - marginX || y < marginY || y >= h - marginY) {
+      // Sample background baseline from the inner 1-3% perimeter margin
+      let bgR = 0, bgG = 0, bgB = 0, bgCount = 0;
+      const sampleMarginX = Math.max(inset + 2, Math.floor(w * 0.03));
+      const sampleMarginY = Math.max(inset + 2, Math.floor(h * 0.03));
+
+      for (let y = inset; y < h - inset; y += 4) {
+        for (let x = inset; x < w - inset; x += 4) {
+          if (x < sampleMarginX || x >= w - sampleMarginX || y < sampleMarginY || y >= h - sampleMarginY) {
             const idx = (y * w + x) * 4;
             const a = data[idx + 3];
-            if (a > 30) {
+            if (a > 50) {
               bgR += data[idx];
               bgG += data[idx + 1];
               bgB += data[idx + 2];
@@ -1226,13 +1258,13 @@
       const bgLum = 0.299 * bgR + 0.587 * bgG + 0.114 * bgB;
       const isLightBg = bgLum > 60;
 
-      // Noise resistance threshold: row/col must have at least minHits content pixels
-      const minRowHits = Math.max(3, Math.floor(w * 0.003));
-      const minColHits = Math.max(3, Math.floor(h * 0.003));
+      // Noise threshold: row/col must have sufficient content pixels to avoid stray dust
+      const minRowHits = Math.max(5, Math.floor(w * 0.005));
+      const minColHits = Math.max(5, Math.floor(h * 0.005));
 
       function isContentPixel(idx) {
         const a = data[idx + 3];
-        if (a < 40) return false;
+        if (a < 50) return false;
         const r = data[idx];
         const g = data[idx + 1];
         const b = data[idx + 2];
@@ -1247,71 +1279,79 @@
         }
       }
 
-      // Top bound
+      function countRowHits(y) {
+        let hits = 0;
+        for (let x = inset; x < w - inset; x += 2) {
+          const idx = (y * w + x) * 4;
+          if (isContentPixel(idx)) {
+            hits++;
+            if (hits >= minRowHits * 2) break;
+          }
+        }
+        return hits;
+      }
+
+      function countColHits(x) {
+        let hits = 0;
+        for (let y = inset; y < h - inset; y += 2) {
+          const idx = (y * w + x) * 4;
+          if (isContentPixel(idx)) {
+            hits++;
+            if (hits >= minColHits * 2) break;
+          }
+        }
+        return hits;
+      }
+
+      // Top bound with multi-row confirmation (ignores single scratch line)
       let minY = -1;
-      for (let y = 0; y < h; y++) {
-        let hits = 0;
-        for (let x = 0; x < w; x += 2) {
-          const idx = (y * w + x) * 4;
-          if (isContentPixel(idx)) {
-            hits++;
-            if (hits >= minRowHits) break;
-          }
-        }
+      for (let y = inset; y < h - inset; y++) {
+        const hits = countRowHits(y);
         if (hits >= minRowHits) {
-          minY = y;
-          break;
+          const confirmed = (hits >= minRowHits * 2) || [1, 2, 3].some(dy => y + dy < h - inset && countRowHits(y + dy) >= minRowHits);
+          if (confirmed) {
+            minY = y;
+            break;
+          }
         }
       }
 
-      // Bottom bound
+      // Bottom bound with multi-row confirmation (scans inwards from bottom)
       let maxY = -1;
-      for (let y = h - 1; y >= 0; y--) {
-        let hits = 0;
-        for (let x = 0; x < w; x += 2) {
-          const idx = (y * w + x) * 4;
-          if (isContentPixel(idx)) {
-            hits++;
-            if (hits >= minRowHits) break;
-          }
-        }
+      for (let y = h - inset - 1; y >= inset; y--) {
+        const hits = countRowHits(y);
         if (hits >= minRowHits) {
-          maxY = y;
-          break;
+          const confirmed = (hits >= minRowHits * 2) || [1, 2, 3].some(dy => y - dy >= inset && countRowHits(y - dy) >= minRowHits);
+          if (confirmed) {
+            maxY = y;
+            break;
+          }
         }
       }
 
-      // Left bound
+      // Left bound with multi-column confirmation
       let minX = -1;
-      for (let x = 0; x < w; x++) {
-        let hits = 0;
-        for (let y = 0; y < h; y += 2) {
-          const idx = (y * w + x) * 4;
-          if (isContentPixel(idx)) {
-            hits++;
-            if (hits >= minColHits) break;
-          }
-        }
+      for (let x = inset; x < w - inset; x++) {
+        const hits = countColHits(x);
         if (hits >= minColHits) {
-          minX = x;
-          break;
+          const confirmed = (hits >= minColHits * 2) || [1, 2, 3].some(dx => x + dx < w - inset && countColHits(x + dx) >= minColHits);
+          if (confirmed) {
+            minX = x;
+            break;
+          }
         }
       }
 
-      // Right bound
+      // Right bound with multi-column confirmation
       let maxX = -1;
-      for (let x = w - 1; x >= 0; x--) {
-        let hits = 0;
-        for (let y = 0; y < h; y += 2) {
-          const idx = (y * w + x) * 4;
-          if (isContentPixel(idx)) {
-            hits++;
-            if (hits >= minColHits) break;
-          }
-        }
+      for (let x = w - inset - 1; x >= inset; x--) {
+        const hits = countColHits(x);
         if (hits >= minColHits) {
-          maxX = x;
-          break;
+          const confirmed = (hits >= minColHits * 2) || [1, 2, 3].some(dx => x - dx >= inset && countColHits(x - dx) >= minColHits);
+          if (confirmed) {
+            maxX = x;
+            break;
+          }
         }
       }
 
@@ -1325,7 +1365,7 @@
         };
       }
 
-      // Scale padding relative to resolution
+      // Scale padding relative to 800px base
       const padX = Math.round(padding * (w / 800));
       const padY = Math.round(padding * (h / 800));
 
@@ -1354,6 +1394,8 @@
         analysisCanvas.width = rawImage.naturalWidth;
         analysisCanvas.height = rawImage.naturalHeight;
         const ctx = analysisCanvas.getContext('2d');
+        ctx.fillStyle = '#ffffff';
+        ctx.fillRect(0, 0, analysisCanvas.width, analysisCanvas.height);
         ctx.drawImage(rawImage, 0, 0);
       }
 
@@ -1363,11 +1405,13 @@
       const bbox = detectContentBoundingBox(analysisCanvas, paddingVal, sensVal);
       if (!bbox) return;
 
-      const scale = rawImage.naturalWidth / imagePreview.offsetWidth;
-      const newLeft = imagePreview.offsetLeft + Math.round(bbox.x / scale);
-      const newTop = imagePreview.offsetTop + Math.round(bbox.y / scale);
-      const newWidth = Math.max(40, Math.round(bbox.width / scale));
-      const newHeight = Math.max(40, Math.round(bbox.height / scale));
+      const scaleX = rawImage.naturalWidth / imagePreview.offsetWidth;
+      const scaleY = rawImage.naturalHeight / imagePreview.offsetHeight;
+
+      const newLeft = imagePreview.offsetLeft + Math.round(bbox.x / scaleX);
+      const newTop = imagePreview.offsetTop + Math.round(bbox.y / scaleY);
+      const newWidth = Math.max(40, Math.round(bbox.width / scaleX));
+      const newHeight = Math.max(40, Math.round(bbox.height / scaleY));
 
       targetAspectRatio = 0;
       isCircleCrop = false;
@@ -1381,18 +1425,21 @@
 
       constrainBox();
       updateMetrics();
+      saveCurrentCropState(false);
 
       if (!silent) {
         showToast(`Auto-Crop snapped to content! (${Math.round(bbox.width)} × ${Math.round(bbox.height)} px)`, 'success');
       }
     }
 
-    // Batch Auto-Crop All PDF Pages and Combine into Clean PDF
+    // Batch Auto-Crop All PDF Pages (preserves user manual crops for edited pages)
     async function autoCropAllPagesAndExportPdf() {
       if (!isPdfMode || !currentPdfDoc) {
         showToast('Batch auto-crop is only available for PDF documents.', 'error');
         return;
       }
+
+      saveCurrentCropState(true);
 
       try {
         showToast(`Batch processing all ${totalPdfPages} pages... Please wait.`, 'info');
@@ -1401,35 +1448,49 @@
         const sensVal = parseInt(document.getElementById('autoCropSensitivity')?.value || '22', 10);
 
         for (let p = 1; p <= totalPdfPages; p++) {
-          showToast(`Auto-cropping Page ${p} of ${totalPdfPages}...`, 'info');
+          showToast(`Processing Page ${p} of ${totalPdfPages}...`, 'info');
           const page = await currentPdfDoc.getPage(p);
           const viewport = page.getViewport({ scale: 2.0 });
 
           const pageCanvas = document.createElement('canvas');
-          pageCanvas.width = viewport.width;
-          pageCanvas.height = viewport.height;
+          pageCanvas.width = Math.round(viewport.width);
+          pageCanvas.height = Math.round(viewport.height);
           const ctx = pageCanvas.getContext('2d');
+          ctx.fillStyle = '#ffffff';
+          ctx.fillRect(0, 0, pageCanvas.width, pageCanvas.height);
           await page.render({ canvasContext: ctx, viewport: viewport }).promise;
 
-          const bbox = detectContentBoundingBox(pageCanvas, paddingVal, sensVal);
+          let cropBox;
+          // Check if page p has user manual crop
+          const savedCrop = pdfPageCrops[p];
+          if (savedCrop && savedCrop.custom && imagePreview.offsetWidth && imagePreview.offsetHeight) {
+            const scaleX = pageCanvas.width / imagePreview.offsetWidth;
+            const scaleY = pageCanvas.height / imagePreview.offsetHeight;
+            const cropX = Math.max(0, Math.round((savedCrop.left - imagePreview.offsetLeft) * scaleX));
+            const cropY = Math.max(0, Math.round((savedCrop.top - imagePreview.offsetTop) * scaleY));
+            const cropW = Math.min(pageCanvas.width - cropX, Math.round(savedCrop.width * scaleX));
+            const cropH = Math.min(pageCanvas.height - cropY, Math.round(savedCrop.height * scaleY));
+            cropBox = { x: cropX, y: cropY, width: cropW, height: cropH };
+          } else {
+            cropBox = detectContentBoundingBox(pageCanvas, paddingVal, sensVal);
+          }
 
           const croppedCanvas = document.createElement('canvas');
-          croppedCanvas.width = bbox.width;
-          croppedCanvas.height = bbox.height;
+          croppedCanvas.width = Math.max(1, cropBox.width);
+          croppedCanvas.height = Math.max(1, cropBox.height);
           const cropCtx = croppedCanvas.getContext('2d');
           cropCtx.drawImage(
             pageCanvas,
-            bbox.x, bbox.y, bbox.width, bbox.height,
-            0, 0, bbox.width, bbox.height
+            cropBox.x, cropBox.y, cropBox.width, cropBox.height,
+            0, 0, cropBox.width, cropBox.height
           );
 
           const pngDataUrl = croppedCanvas.toDataURL('image/png');
           const pngImageBytes = await fetch(pngDataUrl).then(res => res.arrayBuffer());
           const embeddedImage = await newPdfDoc.embedPng(pngImageBytes);
 
-          // Scaled to points (72 dpi from 2.0 scale)
-          const ptWidth = bbox.width / 2.0;
-          const ptHeight = bbox.height / 2.0;
+          const ptWidth = cropBox.width / 2.0;
+          const ptHeight = cropBox.height / 2.0;
           const newPage = newPdfDoc.addPage([ptWidth, ptHeight]);
           newPage.drawImage(embeddedImage, {
             x: 0,
@@ -1473,7 +1534,8 @@
     function rotateImage(deg) {
       rotationDeg = (rotationDeg + deg) % 360;
       applyImageTransforms();
-      resetCropBox();
+      constrainBox();
+      updateMetrics();
       showToast(`Rotated ${rotationDeg}°`, 'info');
     }
 
@@ -1515,23 +1577,53 @@
       applyImageTransforms();
     }
 
-    // 4. Aspect Ratio Selection
+    // 4. Aspect Ratio Selection (preserves current user framing center)
     function setAspect(ratio, btn) {
       targetAspectRatio = ratio;
       isCircleCrop = false;
       cropper.classList.remove('circle-crop');
       document.querySelectorAll('.aspect-pill-btn').forEach(b => b.classList.remove('active'));
       if (btn) btn.classList.add('active');
-      resetCropBox();
+
+      if (ratio > 0) {
+        const curW = cropper.offsetWidth;
+        const curH = cropper.offsetHeight;
+        const curCenterX = cropper.offsetLeft + curW / 2;
+        const curCenterY = cropper.offsetTop + curH / 2;
+
+        let newW = curW;
+        let newH = curW / ratio;
+
+        if (newH > imagePreview.offsetHeight) {
+          newH = imagePreview.offsetHeight;
+          newW = newH * ratio;
+        }
+        if (newW > imagePreview.offsetWidth) {
+          newW = imagePreview.offsetWidth;
+          newH = newW / ratio;
+        }
+
+        let newL = curCenterX - newW / 2;
+        let newT = curCenterY - newH / 2;
+
+        cropper.style.width = Math.round(newW) + 'px';
+        cropper.style.height = Math.round(newH) + 'px';
+        cropper.style.left = Math.round(newL) + 'px';
+        cropper.style.top = Math.round(newT) + 'px';
+        constrainBox();
+        updateMetrics();
+        saveCurrentCropState(true);
+      }
     }
 
     function toggleCircleCrop(btn) {
       isCircleCrop = true;
-      targetAspectRatio = 1; // 1:1 circle
+      targetAspectRatio = 1;
       cropper.classList.add('circle-crop');
       document.querySelectorAll('.aspect-pill-btn').forEach(b => b.classList.remove('active'));
       if (btn) btn.classList.add('active');
-      resetCropBox();
+
+      setAspect(1, null);
       showToast('Circle Avatar crop enabled!', 'info');
     }
 
@@ -1569,16 +1661,21 @@
 
       let boxLeft = parseFloat(cropper.style.left) || 0;
       let boxTop = parseFloat(cropper.style.top) || 0;
-      let boxW = parseFloat(cropper.style.width) || 50;
-      let boxH = parseFloat(cropper.style.height) || 50;
+      let boxW = parseFloat(cropper.style.width) || 40;
+      let boxH = parseFloat(cropper.style.height) || 40;
+
+      if (boxW > imgW) boxW = imgW;
+      if (boxH > imgH) boxH = imgH;
 
       if (boxLeft < imgLeft) boxLeft = imgLeft;
       if (boxTop < imgTop) boxTop = imgTop;
       if (boxLeft + boxW > imgLeft + imgW) boxLeft = imgLeft + imgW - boxW;
       if (boxTop + boxH > imgTop + imgH) boxTop = imgTop + imgH - boxH;
 
-      cropper.style.left = boxLeft + 'px';
-      cropper.style.top = boxTop + 'px';
+      cropper.style.left = Math.round(boxLeft) + 'px';
+      cropper.style.top = Math.round(boxTop) + 'px';
+      cropper.style.width = Math.round(boxW) + 'px';
+      cropper.style.height = Math.round(boxH) + 'px';
     }
 
     // 6. Unified Pointer Events (Mouse, Touch, Stylus)
@@ -1614,9 +1711,24 @@
       if (isDraggingBox) {
         const dx = e.clientX - startX;
         const dy = e.clientY - startY;
-        cropper.style.left = (startBoxLeft + dx) + 'px';
-        cropper.style.top = (startBoxTop + dy) + 'px';
-        constrainBox();
+
+        const imgLeft = imagePreview.offsetLeft;
+        const imgTop = imagePreview.offsetTop;
+        const imgW = imagePreview.offsetWidth;
+        const imgH = imagePreview.offsetHeight;
+        const boxW = cropper.offsetWidth;
+        const boxH = cropper.offsetHeight;
+
+        let newL = startBoxLeft + dx;
+        let newT = startBoxTop + dy;
+
+        if (newL < imgLeft) newL = imgLeft;
+        if (newT < imgTop) newT = imgTop;
+        if (newL + boxW > imgLeft + imgW) newL = imgLeft + imgW - boxW;
+        if (newT + boxH > imgTop + imgH) newT = imgTop + imgH - boxH;
+
+        cropper.style.left = Math.round(newL) + 'px';
+        cropper.style.top = Math.round(newT) + 'px';
         updateMetrics();
       } else if (activeHandle) {
         const dx = e.clientX - startX;
@@ -1627,6 +1739,9 @@
     });
 
     window.addEventListener('pointerup', (e) => {
+      if (isDraggingBox || activeHandle) {
+        saveCurrentCropState(true);
+      }
       isDraggingBox = false;
       activeHandle = null;
       cropper.classList.remove('dragging');
@@ -1634,38 +1749,77 @@
     });
 
     window.addEventListener('pointercancel', () => {
+      if (isDraggingBox || activeHandle) {
+        saveCurrentCropState(true);
+      }
       isDraggingBox = false;
       activeHandle = null;
       cropper.classList.remove('dragging');
       document.querySelectorAll('.resize-handle').forEach(h => h.classList.remove('active'));
     });
 
+    // Rock-solid handle resizing that NEVER shifts the opposite edge
     function resizeCropBox(dx, dy, handle) {
+      const imgLeft = imagePreview.offsetLeft;
+      const imgTop = imagePreview.offsetTop;
+      const imgW = imagePreview.offsetWidth;
+      const imgH = imagePreview.offsetHeight;
+
       let newW = startBoxWidth;
       let newH = startBoxHeight;
       let newL = startBoxLeft;
       let newT = startBoxTop;
 
-      if (handle.includes('r')) newW = Math.max(40, startBoxWidth + dx);
-      if (handle.includes('b')) newH = Math.max(40, startBoxHeight + dy);
-      if (handle.includes('l')) {
-        newW = Math.max(40, startBoxWidth - dx);
-        newL = startBoxLeft + (startBoxWidth - newW);
-      }
-      if (handle.includes('t')) {
-        newH = Math.max(40, startBoxHeight - dy);
-        newT = startBoxTop + (startBoxHeight - newH);
+      // Right handle: clamp to image right boundary
+      if (handle.includes('r')) {
+        newW = Math.max(30, startBoxWidth + dx);
+        if (newL + newW > imgLeft + imgW) {
+          newW = (imgLeft + imgW) - newL;
+        }
       }
 
+      // Bottom handle: clamp to image bottom boundary
+      if (handle.includes('b')) {
+        newH = Math.max(30, startBoxHeight + dy);
+        if (newT + newH > imgTop + imgH) {
+          newH = (imgTop + imgH) - newT;
+        }
+      }
+
+      // Left handle: clamp to image left boundary
+      if (handle.includes('l')) {
+        let targetL = startBoxLeft + dx;
+        if (targetL < imgLeft) targetL = imgLeft;
+        const maxL = startBoxLeft + startBoxWidth - 30;
+        if (targetL > maxL) targetL = maxL;
+        newW = (startBoxLeft + startBoxWidth) - targetL;
+        newL = targetL;
+      }
+
+      // Top handle: clamp to image top boundary
+      if (handle.includes('t')) {
+        let targetT = startBoxTop + dy;
+        if (targetT < imgTop) targetT = imgTop;
+        const maxT = startBoxTop + startBoxHeight - 30;
+        if (targetT > maxT) targetT = maxT;
+        newH = (startBoxTop + startBoxHeight) - targetT;
+        newT = targetT;
+      }
+
+      // Aspect Ratio Constraint
       if (targetAspectRatio > 0) {
         if (handle === 't' || handle === 'b') {
           newW = newH * targetAspectRatio;
           newL = startBoxLeft + (startBoxWidth - newW) / 2;
+          if (newL < imgLeft) { newL = imgLeft; newW = (imgLeft + imgW - newL); newH = newW / targetAspectRatio; }
+          if (newL + newW > imgLeft + imgW) { newW = imgLeft + imgW - newL; newH = newW / targetAspectRatio; }
         } else {
           newH = newW / targetAspectRatio;
           if (handle.includes('t')) {
-            newT = startBoxTop + (startBoxHeight - newH);
+            newT = (startBoxTop + startBoxHeight) - newH;
           }
+          if (newT < imgTop) { newT = imgTop; newH = (imgTop + imgH - newT); newW = newH * targetAspectRatio; }
+          if (newT + newH > imgTop + imgH) { newH = imgTop + imgH - newT; newW = newH * targetAspectRatio; }
         }
       }
 
@@ -1673,15 +1827,15 @@
       cropper.style.height = Math.round(newH) + 'px';
       cropper.style.left = Math.round(newL) + 'px';
       cropper.style.top = Math.round(newT) + 'px';
-      constrainBox();
     }
 
     // 7. Live Metrics Updater
     function updateMetrics() {
       if (!rawImage.naturalWidth) return;
-      const scale = rawImage.naturalWidth / imagePreview.offsetWidth;
-      const realW = Math.round(cropper.offsetWidth * scale);
-      const realH = Math.round(cropper.offsetHeight * scale);
+      const scaleX = rawImage.naturalWidth / imagePreview.offsetWidth;
+      const scaleY = rawImage.naturalHeight / imagePreview.offsetHeight;
+      const realW = Math.round(cropper.offsetWidth * scaleX);
+      const realH = Math.round(cropper.offsetHeight * scaleY);
 
       document.getElementById('metricCropSize').textContent = `${realW} × ${realH} px`;
       document.getElementById('metricOrigSize').textContent = `${rawImage.naturalWidth} × ${rawImage.naturalHeight} px`;
@@ -1694,37 +1848,50 @@
         return;
       }
 
+      // Save current crop
+      saveCurrentCropState(true);
+
       const canvas = document.createElement('canvas');
       const ctx = canvas.getContext('2d');
 
-      const scale = rawImage.naturalWidth / imagePreview.offsetWidth;
-      const cropX = (cropper.offsetLeft - imagePreview.offsetLeft) * scale;
-      const cropY = (cropper.offsetTop - imagePreview.offsetTop) * scale;
-      const cropW = Math.max(1, cropper.offsetWidth * scale);
-      const cropH = Math.max(1, cropper.offsetHeight * scale);
+      const scaleX = rawImage.naturalWidth / imagePreview.offsetWidth;
+      const scaleY = rawImage.naturalHeight / imagePreview.offsetHeight;
 
-      canvas.width = Math.round(cropW);
-      canvas.height = Math.round(cropH);
+      const cropX = Math.max(0, (cropper.offsetLeft - imagePreview.offsetLeft) * scaleX);
+      const cropY = Math.max(0, (cropper.offsetTop - imagePreview.offsetTop) * scaleY);
+      const cropW = Math.min(rawImage.naturalWidth - cropX, cropper.offsetWidth * scaleX);
+      const cropH = Math.min(rawImage.naturalHeight - cropY, cropper.offsetHeight * scaleY);
+
+      canvas.width = Math.max(1, Math.round(cropW));
+      canvas.height = Math.max(1, Math.round(cropH));
 
       // Handle Circular Crop Clipping
       if (isCircleCrop) {
         ctx.beginPath();
-        ctx.arc(cropW / 2, cropH / 2, Math.min(cropW, cropH) / 2, 0, Math.PI * 2);
+        ctx.arc(canvas.width / 2, canvas.height / 2, Math.min(canvas.width, canvas.height) / 2, 0, Math.PI * 2);
         ctx.closePath();
         ctx.clip();
       }
 
       // Draw transformed crop section
-      ctx.save();
-      ctx.translate(cropW / 2, cropH / 2);
-      ctx.rotate(((rotationDeg + tiltAngle) * Math.PI) / 180);
-      ctx.scale(flipH * zoomLevel, flipV * zoomLevel);
-      ctx.drawImage(
-        rawImage,
-        -rawImage.naturalWidth / 2 - (cropX - (rawImage.naturalWidth - cropW) / 2),
-        -rawImage.naturalHeight / 2 - (cropY - (rawImage.naturalHeight - cropH) / 2)
-      );
-      ctx.restore();
+      if (rotationDeg === 0 && tiltAngle === 0 && zoomLevel === 1 && flipH === 1 && flipV === 1) {
+        ctx.drawImage(
+          rawImage,
+          cropX, cropY, cropW, cropH,
+          0, 0, canvas.width, canvas.height
+        );
+      } else {
+        ctx.save();
+        ctx.translate(canvas.width / 2, canvas.height / 2);
+        ctx.rotate(((rotationDeg + tiltAngle) * Math.PI) / 180);
+        ctx.scale(flipH * zoomLevel, flipV * zoomLevel);
+        ctx.drawImage(
+          rawImage,
+          cropX, cropY, cropW, cropH,
+          -canvas.width / 2, -canvas.height / 2, canvas.width, canvas.height
+        );
+        ctx.restore();
+      }
 
       const format = document.getElementById('exportFormat').value;
 
@@ -1736,9 +1903,10 @@
           const pngBytes = await fetch(pngDataUrl).then(res => res.arrayBuffer());
           const embeddedPng = await newPdfDoc.embedPng(pngBytes);
 
-          // Scaled to points
-          const ptWidth = cropW / 2.0;
-          const ptHeight = cropH / 2.0;
+          // Scaled to points (72 dpi; if rendered at scale 2.0 divide by 2)
+          const ptScale = isPdfMode ? 2.0 : 1.0;
+          const ptWidth = canvas.width / ptScale;
+          const ptHeight = canvas.height / ptScale;
           const newPage = newPdfDoc.addPage([ptWidth, ptHeight]);
           newPage.drawImage(embeddedPng, {
             x: 0,
@@ -1758,7 +1926,7 @@
           resultArea.style.display = 'block';
 
           const sizeKb = (pdfBytes.byteLength / 1024).toFixed(1);
-          resultMetaBadge.innerHTML = `<i class="fas fa-file-pdf"></i> ${Math.round(cropW)} × ${Math.round(cropH)} px &bull; ${sizeKb} KB (PDF)`;
+          resultMetaBadge.innerHTML = `<i class="fas fa-file-pdf"></i> ${canvas.width} × ${canvas.height} px &bull; ${sizeKb} KB (PDF)`;
           document.getElementById('downloadBtn').innerHTML = `<i class="fas fa-file-pdf"></i> Download PDF`;
 
           resultArea.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
@@ -1779,7 +1947,7 @@
         const sizeBytes = Math.round((dataUrl.length - head.length) * 3 / 4);
         const sizeKb = (sizeBytes / 1024).toFixed(1);
 
-        resultMetaBadge.innerHTML = `<i class="fas fa-file-image"></i> ${Math.round(cropW)} × ${Math.round(cropH)} px &bull; ${sizeKb} KB (${format.split('/')[1].toUpperCase()})`;
+        resultMetaBadge.innerHTML = `<i class="fas fa-file-image"></i> ${canvas.width} × ${canvas.height} px &bull; ${sizeKb} KB (${format.split('/')[1].toUpperCase()})`;
         document.getElementById('downloadBtn').innerHTML = `<i class="fas fa-download"></i> Download Image`;
 
         resultArea.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
@@ -1848,13 +2016,19 @@
       if (e.target.tagName === 'INPUT' || e.target.tagName === 'SELECT') return;
       
       const step = e.shiftKey ? 10 : 1;
-      if (e.key === 'ArrowLeft') { cropper.style.left = (cropper.offsetLeft - step) + 'px'; constrainBox(); updateMetrics(); }
-      if (e.key === 'ArrowRight') { cropper.style.left = (cropper.offsetLeft + step) + 'px'; constrainBox(); updateMetrics(); }
-      if (e.key === 'ArrowUp') { cropper.style.top = (cropper.offsetTop - step) + 'px'; constrainBox(); updateMetrics(); }
-      if (e.key === 'ArrowDown') { cropper.style.top = (cropper.offsetTop + step) + 'px'; constrainBox(); updateMetrics(); }
+      let handled = false;
+      if (e.key === 'ArrowLeft') { cropper.style.left = (cropper.offsetLeft - step) + 'px'; handled = true; }
+      if (e.key === 'ArrowRight') { cropper.style.left = (cropper.offsetLeft + step) + 'px'; handled = true; }
+      if (e.key === 'ArrowUp') { cropper.style.top = (cropper.offsetTop - step) + 'px'; handled = true; }
+      if (e.key === 'ArrowDown') { cropper.style.top = (cropper.offsetTop + step) + 'px'; handled = true; }
+      if (handled) {
+        constrainBox();
+        updateMetrics();
+        saveCurrentCropState(true);
+      }
       if (e.key === 'Enter' && studioArea.style.display !== 'none') { executeCrop(); }
       if (e.key.toLowerCase() === 'r' && studioArea.style.display !== 'none') { rotateImage(90); }
       if (e.key.toLowerCase() === 'a' && studioArea.style.display !== 'none') { autoCropDocument(false); }
     });
   </script>
-</body></html>
+</body>/html>

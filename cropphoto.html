@@ -820,6 +820,17 @@
                 <input type="range" id="exportQuality" class="custom-range-slider" min="0.1" max="1" step="0.02" value="0.92" oninput="document.getElementById('qualVal').textContent = Math.round(this.value * 100) + '%'" style="margin-top: 10px;">
               </div>
             </div>
+
+            <!-- PDF Page Export Range (All Pages vs Current Page) -->
+            <div id="pdfExportRangeGroup" style="display: none; border-top: 1px solid var(--border-color); padding-top: 10px; margin-top: 4px;">
+              <label style="font-size: 0.78rem; font-weight: 700; color: var(--text-secondary); display: block; margin-bottom: 4px;">
+                <i class="fas fa-copy" style="color: var(--primary);"></i> PDF Pages to Export
+              </label>
+              <select id="pdfExportRange" class="form-control" style="font-size: 0.85rem; padding: 6px 10px;" onchange="updateCropButtonLabel()">
+                <option value="all" selected>All Pages (Entire Document)</option>
+                <option value="current">Current Page Only</option>
+              </select>
+            </div>
           </div>
 
           <!-- Primary Execution Button -->
@@ -849,6 +860,9 @@
         <div style="display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; margin-top: 14px;">
           <button id="downloadBtn" class="btn btn-success btn-lg" onclick="downloadCropped()">
             <i class="fas fa-download"></i> Download Image
+          </button>
+          <button id="downloadSinglePageBtn" class="btn btn-secondary btn-lg" onclick="downloadCurrentPageOnly()" style="display: none;">
+            <i class="fas fa-file"></i> Download Current Page Only
           </button>
           <button class="btn btn-secondary btn-lg" onclick="copyCroppedToClipboard()">
             <i class="fas fa-copy"></i> Copy to Clipboard
@@ -951,6 +965,7 @@
     let totalPdfPages = 1;
     let pdfCurrentCanvas = null;
     let currentCroppedPdfBlobUrl = null;
+    let currentSinglePagePdfBlobUrl = null;
     let pdfPageCrops = {}; // pageNum -> { left, top, width, height, custom: bool }
 
     const dropzone = document.getElementById('dropzone');
@@ -1021,6 +1036,7 @@
       document.getElementById('pdfDocBadge').style.display = 'none';
       document.getElementById('pdfNavGroup').style.display = 'none';
       document.getElementById('btnBatchCropPdf').style.display = 'none';
+      document.getElementById('pdfExportRangeGroup').style.display = 'none';
 
       const reader = new FileReader();
       reader.onload = (e) => {
@@ -1033,6 +1049,7 @@
             resetAllTransforms();
             resetCropBox();
             updateMetrics();
+            updateCropButtonLabel();
             showToast('Image loaded! Framing your crop box.', 'success');
           };
         };
@@ -1060,14 +1077,17 @@
         if (totalPdfPages > 1) {
           document.getElementById('pdfNavGroup').style.display = 'inline-flex';
           document.getElementById('btnBatchCropPdf').style.display = 'inline-flex';
+          document.getElementById('pdfExportRangeGroup').style.display = 'block';
+          document.getElementById('pdfExportRange').value = 'all'; // Default: ALL PAGES!
         } else {
           document.getElementById('pdfNavGroup').style.display = 'none';
           document.getElementById('btnBatchCropPdf').style.display = 'none';
+          document.getElementById('pdfExportRangeGroup').style.display = 'none';
         }
         document.getElementById('pdfPageBadge').textContent = `Page 1 of ${totalPdfPages}`;
         
         document.getElementById('exportFormat').value = 'application/pdf';
-        onExportFormatChange();
+        updateCropButtonLabel();
 
         await renderPdfPage(currentPdfPageIdx, true);
         showToast(`Loaded "${currentPdfFileName}" (${totalPdfPages} page${totalPdfPages > 1 ? 's' : ''})!`, 'success');
@@ -1088,8 +1108,7 @@
         canvas.height = Math.round(viewport.height);
         const ctx = canvas.getContext('2d');
 
-        // CRITICAL: Fill canvas with solid white background so empty PDF page margins
-        // are never transparent (which causes transparent-black edge artifacts)
+        // Solid white background prevents transparent edge artifacts
         ctx.fillStyle = '#ffffff';
         ctx.fillRect(0, 0, canvas.width, canvas.height);
 
@@ -1124,6 +1143,7 @@
                 }, 80);
               }
             }
+            updateCropButtonLabel();
           };
         };
         rawImage.src = dataUrl;
@@ -1144,7 +1164,6 @@
       currentPdfPageIdx = nextIdx;
       document.getElementById('pdfPageBadge').textContent = `Page ${currentPdfPageIdx} of ${totalPdfPages}`;
       
-      // Auto-crop only if this page has never been cropped yet
       const needsAutoCrop = !pdfPageCrops[currentPdfPageIdx];
       await renderPdfPage(currentPdfPageIdx, needsAutoCrop);
       showToast(`Viewing Page ${currentPdfPageIdx}`, 'info');
@@ -1224,10 +1243,8 @@
       const imgData = ctx.getImageData(0, 0, w, h);
       const data = imgData.data;
 
-      // Skip the outermost 4 pixels to ignore scanner edges, paper seams & render seams
       const inset = Math.max(4, Math.floor(Math.min(w, h) * 0.005));
 
-      // Sample background baseline from the inner 1-3% perimeter margin
       let bgR = 0, bgG = 0, bgB = 0, bgCount = 0;
       const sampleMarginX = Math.max(inset + 2, Math.floor(w * 0.03));
       const sampleMarginY = Math.max(inset + 2, Math.floor(h * 0.03));
@@ -1258,7 +1275,6 @@
       const bgLum = 0.299 * bgR + 0.587 * bgG + 0.114 * bgB;
       const isLightBg = bgLum > 60;
 
-      // Noise threshold: row/col must have sufficient content pixels to avoid stray dust
       const minRowHits = Math.max(5, Math.floor(w * 0.005));
       const minColHits = Math.max(5, Math.floor(h * 0.005));
 
@@ -1303,7 +1319,7 @@
         return hits;
       }
 
-      // Top bound with multi-row confirmation (ignores single scratch line)
+      // Top bound with multi-row confirmation
       let minY = -1;
       for (let y = inset; y < h - inset; y++) {
         const hits = countRowHits(y);
@@ -1316,7 +1332,7 @@
         }
       }
 
-      // Bottom bound with multi-row confirmation (scans inwards from bottom)
+      // Bottom bound with multi-row confirmation
       let maxY = -1;
       for (let y = h - inset - 1; y >= inset; y--) {
         const hits = countRowHits(y);
@@ -1355,7 +1371,6 @@
         }
       }
 
-      // Fallback if blank
       if (minY === -1 || maxY === -1 || minX === -1 || maxX === -1 || maxX <= minX || maxY <= minY) {
         return {
           x: Math.round(w * 0.1),
@@ -1365,7 +1380,6 @@
         };
       }
 
-      // Scale padding relative to 800px base
       const padX = Math.round(padding * (w / 800));
       const padY = Math.round(padding * (h / 800));
 
@@ -1432,23 +1446,22 @@
       }
     }
 
-    // Batch Auto-Crop All PDF Pages (preserves user manual crops for edited pages)
-    async function autoCropAllPagesAndExportPdf() {
-      if (!isPdfMode || !currentPdfDoc) {
-        showToast('Batch auto-crop is only available for PDF documents.', 'error');
-        return;
-      }
-
+    // Export ALL Pages of Multi-Page PDF Document
+    async function exportAllPagesPdf() {
+      if (!currentPdfDoc) return;
       saveCurrentCropState(true);
 
       try {
-        showToast(`Batch processing all ${totalPdfPages} pages... Please wait.`, 'info');
+        showToast(`Exporting whole PDF (${totalPdfPages} pages)... Please wait.`, 'info');
         const newPdfDoc = await PDFLib.PDFDocument.create();
+
         const paddingVal = parseInt(document.getElementById('autoCropPadding')?.value || '16', 10);
         const sensVal = parseInt(document.getElementById('autoCropSensitivity')?.value || '22', 10);
 
+        let previewDataUrl = null;
+
         for (let p = 1; p <= totalPdfPages; p++) {
-          showToast(`Processing Page ${p} of ${totalPdfPages}...`, 'info');
+          showToast(`Cropping Page ${p} of ${totalPdfPages}...`, 'info');
           const page = await currentPdfDoc.getPage(p);
           const viewport = page.getViewport({ scale: 2.0 });
 
@@ -1461,16 +1474,16 @@
           await page.render({ canvasContext: ctx, viewport: viewport }).promise;
 
           let cropBox;
-          // Check if page p has user manual crop
           const savedCrop = pdfPageCrops[p];
           if (savedCrop && savedCrop.custom && imagePreview.offsetWidth && imagePreview.offsetHeight) {
+            // Respect user manual crop for this specific page!
             const scaleX = pageCanvas.width / imagePreview.offsetWidth;
             const scaleY = pageCanvas.height / imagePreview.offsetHeight;
             const cropX = Math.max(0, Math.round((savedCrop.left - imagePreview.offsetLeft) * scaleX));
             const cropY = Math.max(0, Math.round((savedCrop.top - imagePreview.offsetTop) * scaleY));
             const cropW = Math.min(pageCanvas.width - cropX, Math.round(savedCrop.width * scaleX));
             const cropH = Math.min(pageCanvas.height - cropY, Math.round(savedCrop.height * scaleY));
-            cropBox = { x: cropX, y: cropY, width: cropW, height: cropH };
+            cropBox = { x: cropX, y: cropY, width: Math.max(1, cropW), height: Math.max(1, cropH) };
           } else {
             cropBox = detectContentBoundingBox(pageCanvas, paddingVal, sensVal);
           }
@@ -1486,6 +1499,10 @@
           );
 
           const pngDataUrl = croppedCanvas.toDataURL('image/png');
+          if (p === currentPdfPageIdx || !previewDataUrl) {
+            previewDataUrl = pngDataUrl;
+          }
+
           const pngImageBytes = await fetch(pngDataUrl).then(res => res.arrayBuffer());
           const embeddedImage = await newPdfDoc.embedPng(pngImageBytes);
 
@@ -1502,32 +1519,65 @@
 
         const finalPdfBytes = await newPdfDoc.save();
         const blob = new Blob([finalPdfBytes], { type: 'application/pdf' });
-        const downloadUrl = URL.createObjectURL(blob);
+        if (currentCroppedPdfBlobUrl) {
+          URL.revokeObjectURL(currentCroppedPdfBlobUrl);
+        }
+        currentCroppedPdfBlobUrl = URL.createObjectURL(blob);
 
-        const baseName = (currentPdfFileName || 'document.pdf').replace(/\.[^/.]+$/, '');
-        const link = document.createElement('a');
-        link.href = downloadUrl;
-        link.download = `${baseName}_autocropped.pdf`;
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
+        if (previewDataUrl) {
+          resultImage.src = previewDataUrl;
+        }
+        resultArea.style.display = 'block';
 
-        showToast(`Auto-cropped and downloaded all ${totalPdfPages} pages!`, 'success');
-        launchConfetti(45);
+        const sizeKb = (finalPdfBytes.byteLength / 1024).toFixed(1);
+        resultMetaBadge.innerHTML = `<i class="fas fa-file-pdf"></i> Complete Document &bull; All ${totalPdfPages} Pages Cropped &bull; ${sizeKb} KB (PDF)`;
+        document.getElementById('downloadBtn').innerHTML = `<i class="fas fa-file-pdf"></i> Download Complete PDF (All ${totalPdfPages} Pages)`;
+
+        const singleBtn = document.getElementById('downloadSinglePageBtn');
+        if (singleBtn) {
+          singleBtn.style.display = 'inline-flex';
+          singleBtn.innerHTML = `<i class="fas fa-file"></i> Download Current Page Only (Page ${currentPdfPageIdx})`;
+        }
+
+        resultArea.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        showToast(`Whole PDF processed! All ${totalPdfPages} pages cropped.`, 'success');
+        launchConfetti(50);
       } catch (err) {
-        console.error('Batch crop error:', err);
-        showToast('Failed to batch crop PDF: ' + err.message, 'error');
+        console.error('Export all pages error:', err);
+        showToast('Failed to export whole PDF: ' + err.message, 'error');
+      }
+    }
+
+    async function autoCropAllPagesAndExportPdf() {
+      await exportAllPagesPdf();
+    }
+
+    function updateCropButtonLabel() {
+      const format = document.getElementById('exportFormat')?.value || 'image/webp';
+      const cropBtn = document.getElementById('crop-button');
+      if (!cropBtn) return;
+
+      if (format === 'application/pdf') {
+        const range = document.getElementById('pdfExportRange')?.value || 'all';
+        if (isPdfMode && totalPdfPages > 1 && range === 'all') {
+          cropBtn.innerHTML = `<i class="fas fa-file-pdf"></i> Crop &amp; Export All ${totalPdfPages} Pages as PDF`;
+        } else if (isPdfMode && totalPdfPages > 1) {
+          cropBtn.innerHTML = `<i class="fas fa-file-pdf"></i> Crop &amp; Export Page ${currentPdfPageIdx} as PDF`;
+        } else {
+          cropBtn.innerHTML = `<i class="fas fa-file-pdf"></i> Crop &amp; Export PDF`;
+        }
+      } else {
+        cropBtn.innerHTML = `<i class="fas fa-crop-simple"></i> Crop &amp; Render Image`;
       }
     }
 
     function onExportFormatChange() {
       const format = document.getElementById('exportFormat').value;
-      const cropBtn = document.getElementById('crop-button');
-      if (format === 'application/pdf') {
-        cropBtn.innerHTML = '<i class="fas fa-file-pdf"></i> Crop &amp; Export PDF';
-      } else {
-        cropBtn.innerHTML = '<i class="fas fa-crop-simple"></i> Crop &amp; Render Image';
+      const rangeGroup = document.getElementById('pdfExportRangeGroup');
+      if (rangeGroup) {
+        rangeGroup.style.display = (format === 'application/pdf' && isPdfMode && totalPdfPages > 1) ? 'block' : 'none';
       }
+      updateCropButtonLabel();
     }
 
     // 3. Transformations (Rotate, Flip, Zoom, Tilt)
@@ -1758,7 +1808,6 @@
       document.querySelectorAll('.resize-handle').forEach(h => h.classList.remove('active'));
     });
 
-    // Rock-solid handle resizing that NEVER shifts the opposite edge
     function resizeCropBox(dx, dy, handle) {
       const imgLeft = imagePreview.offsetLeft;
       const imgTop = imagePreview.offsetTop;
@@ -1770,7 +1819,6 @@
       let newL = startBoxLeft;
       let newT = startBoxTop;
 
-      // Right handle: clamp to image right boundary
       if (handle.includes('r')) {
         newW = Math.max(30, startBoxWidth + dx);
         if (newL + newW > imgLeft + imgW) {
@@ -1778,7 +1826,6 @@
         }
       }
 
-      // Bottom handle: clamp to image bottom boundary
       if (handle.includes('b')) {
         newH = Math.max(30, startBoxHeight + dy);
         if (newT + newH > imgTop + imgH) {
@@ -1786,7 +1833,6 @@
         }
       }
 
-      // Left handle: clamp to image left boundary
       if (handle.includes('l')) {
         let targetL = startBoxLeft + dx;
         if (targetL < imgLeft) targetL = imgLeft;
@@ -1796,7 +1842,6 @@
         newL = targetL;
       }
 
-      // Top handle: clamp to image top boundary
       if (handle.includes('t')) {
         let targetT = startBoxTop + dy;
         if (targetT < imgTop) targetT = imgTop;
@@ -1806,7 +1851,6 @@
         newT = targetT;
       }
 
-      // Aspect Ratio Constraint
       if (targetAspectRatio > 0) {
         if (handle === 't' || handle === 'b') {
           newW = newH * targetAspectRatio;
@@ -1841,16 +1885,29 @@
       document.getElementById('metricOrigSize').textContent = `${rawImage.naturalWidth} × ${rawImage.naturalHeight} px`;
     }
 
-    // 8. Core Crop & Export Pipeline
+    // 8. Core Crop Pipeline
     async function executeCrop() {
       if (!rawImage.src) {
         showToast('Please upload an image or PDF first.', 'error');
         return;
       }
 
-      // Save current crop
       saveCurrentCropState(true);
 
+      const format = document.getElementById('exportFormat').value;
+      const exportRange = document.getElementById('pdfExportRange')?.value || 'all';
+
+      // If PDF with multiple pages and "All Pages" is chosen (or default): export whole PDF!
+      if (format === 'application/pdf' && isPdfMode && totalPdfPages > 1 && exportRange === 'all') {
+        await exportAllPagesPdf();
+        return;
+      }
+
+      // Otherwise export single page (or single page PDF)
+      await exportSinglePage(format);
+    }
+
+    async function exportSinglePage(format) {
       const canvas = document.createElement('canvas');
       const ctx = canvas.getContext('2d');
 
@@ -1865,7 +1922,6 @@
       canvas.width = Math.max(1, Math.round(cropW));
       canvas.height = Math.max(1, Math.round(cropH));
 
-      // Handle Circular Crop Clipping
       if (isCircleCrop) {
         ctx.beginPath();
         ctx.arc(canvas.width / 2, canvas.height / 2, Math.min(canvas.width, canvas.height) / 2, 0, Math.PI * 2);
@@ -1873,7 +1929,6 @@
         ctx.clip();
       }
 
-      // Draw transformed crop section
       if (rotationDeg === 0 && tiltAngle === 0 && zoomLevel === 1 && flipH === 1 && flipV === 1) {
         ctx.drawImage(
           rawImage,
@@ -1893,17 +1948,14 @@
         ctx.restore();
       }
 
-      const format = document.getElementById('exportFormat').value;
-
       if (format === 'application/pdf') {
         try {
-          showToast('Rendering cropped PDF...', 'info');
+          showToast('Rendering single page PDF...', 'info');
           const newPdfDoc = await PDFLib.PDFDocument.create();
           const pngDataUrl = canvas.toDataURL('image/png');
           const pngBytes = await fetch(pngDataUrl).then(res => res.arrayBuffer());
           const embeddedPng = await newPdfDoc.embedPng(pngBytes);
 
-          // Scaled to points (72 dpi; if rendered at scale 2.0 divide by 2)
           const ptScale = isPdfMode ? 2.0 : 1.0;
           const ptWidth = canvas.width / ptScale;
           const ptHeight = canvas.height / ptScale;
@@ -1917,20 +1969,24 @@
 
           const pdfBytes = await newPdfDoc.save();
           const pdfBlob = new Blob([pdfBytes], { type: 'application/pdf' });
-          if (currentCroppedPdfBlobUrl) {
-            URL.revokeObjectURL(currentCroppedPdfBlobUrl);
+          if (currentSinglePagePdfBlobUrl) {
+            URL.revokeObjectURL(currentSinglePagePdfBlobUrl);
           }
-          currentCroppedPdfBlobUrl = URL.createObjectURL(pdfBlob);
+          currentSinglePagePdfBlobUrl = URL.createObjectURL(pdfBlob);
+          currentCroppedPdfBlobUrl = currentSinglePagePdfBlobUrl;
 
           resultImage.src = pngDataUrl;
           resultArea.style.display = 'block';
 
           const sizeKb = (pdfBytes.byteLength / 1024).toFixed(1);
-          resultMetaBadge.innerHTML = `<i class="fas fa-file-pdf"></i> ${canvas.width} × ${canvas.height} px &bull; ${sizeKb} KB (PDF)`;
-          document.getElementById('downloadBtn').innerHTML = `<i class="fas fa-file-pdf"></i> Download PDF`;
+          resultMetaBadge.innerHTML = `<i class="fas fa-file-pdf"></i> Page ${currentPdfPageIdx} Only &bull; ${canvas.width} × ${canvas.height} px &bull; ${sizeKb} KB (PDF)`;
+          document.getElementById('downloadBtn').innerHTML = `<i class="fas fa-file-pdf"></i> Download PDF (Page ${currentPdfPageIdx})`;
+
+          const singleBtn = document.getElementById('downloadSinglePageBtn');
+          if (singleBtn) singleBtn.style.display = 'none';
 
           resultArea.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-          showToast('Cropped into high-resolution PDF document!', 'success');
+          showToast(`Cropped Page ${currentPdfPageIdx} into PDF!`, 'success');
           launchConfetti(40);
         } catch (err) {
           console.error('PDF export error:', err);
@@ -1950,6 +2006,9 @@
         resultMetaBadge.innerHTML = `<i class="fas fa-file-image"></i> ${canvas.width} × ${canvas.height} px &bull; ${sizeKb} KB (${format.split('/')[1].toUpperCase()})`;
         document.getElementById('downloadBtn').innerHTML = `<i class="fas fa-download"></i> Download Image`;
 
+        const singleBtn = document.getElementById('downloadSinglePageBtn');
+        if (singleBtn) singleBtn.style.display = 'none';
+
         resultArea.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
         showToast('Image cropped with pixel perfection!', 'success');
         launchConfetti(40);
@@ -1963,10 +2022,14 @@
       if (format === 'application/pdf') {
         if (!currentCroppedPdfBlobUrl) return;
         const baseName = (currentPdfFileName || 'document.pdf').replace(/\.[^/.]+$/, '');
-        const pageSuffix = isPdfMode ? `_p${currentPdfPageIdx}` : '';
+        const exportRange = document.getElementById('pdfExportRange')?.value || 'all';
+        const suffix = (isPdfMode && totalPdfPages > 1 && exportRange === 'all') 
+          ? '_all_pages_cropped.pdf' 
+          : (isPdfMode ? `_p${currentPdfPageIdx}_cropped.pdf` : '_cropped.pdf');
+
         const link = document.createElement('a');
         link.href = currentCroppedPdfBlobUrl;
-        link.download = `${baseName}${pageSuffix}_cropped.pdf`;
+        link.download = `${baseName}${suffix}`;
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
@@ -1984,6 +2047,20 @@
       link.click();
       document.body.removeChild(link);
       showToast('Downloaded cropped image!', 'success');
+    }
+
+    async function downloadCurrentPageOnly() {
+      await exportSinglePage('application/pdf');
+      if (currentSinglePagePdfBlobUrl) {
+        const baseName = (currentPdfFileName || 'document.pdf').replace(/\.[^/.]+$/, '');
+        const link = document.createElement('a');
+        link.href = currentSinglePagePdfBlobUrl;
+        link.download = `${baseName}_p${currentPdfPageIdx}_cropped.pdf`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        showToast(`Downloaded Page ${currentPdfPageIdx} as PDF!`, 'success');
+      }
     }
 
     async function copyCroppedToClipboard() {
@@ -2031,4 +2108,4 @@
       if (e.key.toLowerCase() === 'a' && studioArea.style.display !== 'none') { autoCropDocument(false); }
     });
   </script>
-</body>/html>
+</body>html>

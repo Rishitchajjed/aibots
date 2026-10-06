@@ -520,6 +520,12 @@
       gap: 16px;
       box-shadow: var(--shadow-md);
       min-width: 0;
+      transition: border-color 0.2s, background-color 0.2s;
+    }
+    .ps-stage.dragover {
+      border-color: var(--primary);
+      background: color-mix(in srgb, var(--primary) 5%, var(--bg-secondary));
+      box-shadow: 0 0 0 3px var(--primary-glow);
     }
 
     .stage-top-bar {
@@ -638,36 +644,61 @@
 
     .thumb-meta {
       display: flex;
-      justify-content: space-between;
-      align-items: center;
+      flex-direction: column;
+      gap: 6px;
       width: 100%;
       margin-top: 10px;
       font-size: 0.78rem;
       font-weight: 700;
     }
+    .thumb-meta-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      width: 100%;
+      gap: 6px;
+    }
+    .thumb-file-title {
+      font-size: 0.76rem;
+      color: var(--text-primary);
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      max-width: 130px;
+    }
     .thumb-tools {
       display: flex;
-      gap: 6px;
+      gap: 4px;
+      justify-content: center;
+      width: 100%;
+      flex-wrap: wrap;
     }
     .tool-icon-btn {
       background: var(--bg-secondary);
       border: 1.5px solid var(--border-color);
       color: var(--text-primary);
-      width: 32px;
-      height: 32px;
+      width: 28px;
+      height: 28px;
       border-radius: var(--radius-sm);
-      display: flex;
+      display: inline-flex;
       align-items: center;
       justify-content: center;
       cursor: pointer;
-      font-size: 0.82rem;
+      font-size: 0.76rem;
       transition: var(--transition);
       -webkit-tap-highlight-color: transparent;
+      padding: 0;
+      flex-shrink: 0;
     }
-    .tool-icon-btn:hover {
+    .tool-icon-btn:hover:not(:disabled) {
       border-color: var(--primary);
       color: var(--primary);
-      transform: scale(1.1);
+      transform: scale(1.08);
+    }
+    .tool-icon-btn:disabled {
+      opacity: 0.35;
+      cursor: not-allowed;
+      pointer-events: none;
     }
 
     /* Floating Mobile Quick Action Bar (Visible on mobile screens) */
@@ -851,18 +882,19 @@
 
       <!-- Dropzone -->
       <div class="ps-dropzone" id="dropzone">
-        <input type="file" id="fileInput" accept=".pdf,.jpg,.jpeg,.png,.webp,.bmp,image/*" onchange="handleFile(event)">
+        <input type="file" id="fileInput" multiple accept=".pdf,.jpg,.jpeg,.png,.webp,.bmp,image/*" onchange="handleFile(event)">
+        <input type="file" id="addFileInput" multiple accept=".pdf,.jpg,.jpeg,.png,.webp,.bmp,image/*" onchange="handleAddFiles(event)" style="display:none;">
         <div class="ps-dropzone-icon-wrap">
-          <i class="fas fa-file-arrow-up"></i>
+          <i class="fas fa-images"></i>
         </div>
-        <h3>Choose or Drop a PDF or Photos</h3>
-        <p>PDF documents and JPG, PNG, WebP images supported in full original clarity</p>
+        <h3>Choose or Drop Multiple Photos or PDF</h3>
+        <p>Select multiple images (JPG, PNG, WebP) or PDF documents at once — 100% private in-browser</p>
         <div class="drop-btn-row">
           <button type="button" class="btn btn-primary btn-sm">
-            <i class="fas fa-folder-open"></i> Browse Files / Camera
+            <i class="fas fa-folder-open"></i> Browse Photos / Files
           </button>
           <span class="badge" style="background:var(--primary-light); color:var(--primary); font-weight:700; padding:6px 14px; border-radius:999px; display:inline-flex; align-items:center; gap:6px;">
-            <i class="fas fa-lock"></i> 100% Private & In-Browser
+            <i class="fas fa-layer-group"></i> Multiple Photos Supported
           </span>
         </div>
       </div>
@@ -892,15 +924,20 @@
           <!-- Document Info Card -->
           <div class="file-badge">
             <div class="file-badge-left">
-              <i class="fas fa-file-pdf doc-icon" id="docTypeIcon"></i>
+              <i class="fas fa-file-image doc-icon" id="docTypeIcon"></i>
               <div>
-                <div class="file-name" id="docName">document.pdf</div>
+                <div class="file-name" id="docName">Document</div>
                 <div class="file-size" id="docSize">0 KB</div>
               </div>
             </div>
-            <button type="button" class="change-file-btn" onclick="document.getElementById('fileInput').click()">
-              <i class="fas fa-repeat"></i> Change
-            </button>
+            <div style="display:flex; gap:6px; flex-shrink:0;">
+              <button type="button" class="btn btn-primary btn-sm" onclick="document.getElementById('addFileInput').click()" style="padding:5px 9px; font-size:0.75rem;" title="Add more photos or documents">
+                <i class="fas fa-plus"></i> Add
+              </button>
+              <button type="button" class="change-file-btn" onclick="document.getElementById('fileInput').click()" title="Replace all files">
+                <i class="fas fa-repeat"></i> Replace
+              </button>
+            </div>
           </div>
 
           <!-- 1. Page Selection (Odd/Even & From-To Range) -->
@@ -936,8 +973,8 @@
             </div>
           </div>
 
-          <!-- 2. Layout & Paper Saving -->
-          <div class="section-lbl"><i class="fas fa-table-cells"></i> Layout & Paper Saving</div>
+          <!-- 2. Layout, Paper & Photo Sizing -->
+          <div class="section-lbl"><i class="fas fa-table-cells"></i> Layout, Paper & Photo Sizing</div>
           <div>
             <label class="form-label">PAGES PER SHEET (N-UP)</label>
             <select id="nUpSelect" class="form-control" onchange="updateGalleryOnly()">
@@ -948,10 +985,40 @@
           </div>
 
           <div>
+            <label class="form-label">PAPER SIZE</label>
+            <select id="paperSizeSelect" class="form-control" onchange="updateGalleryOnly()">
+              <option value="a4" selected>A4 (210 × 297 mm)</option>
+              <option value="letter">US Letter (8.5 × 11 in)</option>
+              <option value="legal">Legal (8.5 × 14 in)</option>
+              <option value="photo4x6">Photo 4 × 6 in (10 × 15 cm)</option>
+            </select>
+          </div>
+
+          <div>
             <label class="form-label">PAPER ORIENTATION</label>
             <select id="orientationSelect" class="form-control" onchange="updateGalleryOnly()">
               <option value="portrait" selected>Portrait</option>
               <option value="landscape">Landscape</option>
+              <option value="auto">Auto (Match Photo Orientation)</option>
+            </select>
+          </div>
+
+          <div>
+            <label class="form-label">PHOTO / IMAGE SIZING</label>
+            <select id="photoFitSelect" class="form-control" onchange="updateGalleryOnly()">
+              <option value="fit" selected>Fit to Page (Keep Full Image - No Shrink/Zoom)</option>
+              <option value="fill">Fill Entire Page (Borderless / Edge-to-Edge)</option>
+              <option value="original">Original Size (100% Unscaled)</option>
+            </select>
+          </div>
+
+          <div>
+            <label class="form-label">PRINT MARGINS</label>
+            <select id="marginSelect" class="form-control" onchange="updateGalleryOnly()">
+              <option value="standard" selected>Standard Margin (8mm)</option>
+              <option value="narrow">Narrow Margin (4mm)</option>
+              <option value="none">Borderless / Zero Margin (0mm)</option>
+              <option value="wide">Wide Margin (15mm)</option>
             </select>
           </div>
 
@@ -1038,11 +1105,17 @@
             </div>
 
             <div class="stage-actions-wrap">
+              <button class="btn btn-primary btn-sm" onclick="document.getElementById('addFileInput').click()" title="Add more photos or documents">
+                <i class="fas fa-plus"></i> Add Photos
+              </button>
               <button class="view-toggle-btn" id="btnToggleView" onclick="toggleGalleryView()" title="Toggle Grid or Large View">
                 <i class="fas fa-table-cells-large" id="viewIcon"></i> <span id="viewText">Single View</span>
               </button>
               <button class="btn btn-secondary btn-sm" onclick="rotateAllPages(90)" title="Rotate all pages 90° clockwise">
                 <i class="fas fa-rotate-right"></i> Rotate 90°
+              </button>
+              <button class="btn btn-secondary btn-sm" onclick="reversePageOrder()" title="Reverse order of pages">
+                <i class="fas fa-arrow-down-up-across-line"></i> Reverse
               </button>
               <button class="btn btn-secondary btn-sm" onclick="includeAllPages()">
                 <i class="fas fa-check-double"></i> Select All
@@ -1088,6 +1161,20 @@
       </h2>
 
       <div style="display: flex; flex-direction: column; gap: 14px;">
+        <details style="background: var(--bg-tertiary); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 14px 18px; cursor: pointer;">
+          <summary style="font-weight: 700; font-size: 0.95rem; color: var(--text-primary);">Can I print multiple photos at once?</summary>
+          <p style="margin-top: 10px; font-size: 0.88rem; line-height: 1.6; color: var(--text-secondary);">
+            Yes! You can choose or drop dozens of photos at once (JPG, PNG, WebP) or click "Add Photos" anytime to add more pictures. You can reorder pages, rotate them, exclude specific photos, or use 2-Up paper saving.
+          </p>
+        </details>
+
+        <details style="background: var(--bg-tertiary); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 14px 18px; cursor: pointer;">
+          <summary style="font-weight: 700; font-size: 0.95rem; color: var(--text-primary);">How do I fix photos zooming out or appearing small on print?</summary>
+          <p style="margin-top: 10px; font-size: 0.88rem; line-height: 1.6; color: var(--text-secondary);">
+            Pro Print Studio automatically scales images to "Fit to Page" without distortion or shrinking. You can also select "Fill Entire Page" for borderless edge-to-edge photo prints, or choose custom print margins (Standard 8mm, Narrow 4mm, or Borderless 0mm).
+          </p>
+        </details>
+
         <details style="background: var(--bg-tertiary); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 14px 18px; cursor: pointer;">
           <summary style="font-weight: 700; font-size: 0.95rem; color: var(--text-primary);">Does this tool fix mobile print page-splitting issues?</summary>
           <p style="margin-top: 10px; font-size: 0.88rem; line-height: 1.6; color: var(--text-secondary);">
@@ -1149,7 +1236,7 @@
     let currentFilter = 'all';
     let isSingleView = false;
 
-    // Drag & Drop Handling
+    // Drag & Drop Handling for main dropzone
     const dropzone = document.getElementById('dropzone');
     if (dropzone) {
       ['dragenter', 'dragover'].forEach(name => {
@@ -1172,7 +1259,35 @@
         const dt = e.dataTransfer;
         const files = dt && dt.files;
         if (files && files.length > 0) {
-          processSelectedFile(files[0]);
+          processSelectedFiles(files, false);
+        }
+      });
+    }
+
+    // Drag & Drop onto Workspace Stage to append more photos/pages
+    const psStage = document.getElementById('psStage');
+    if (psStage) {
+      ['dragenter', 'dragover'].forEach(name => {
+        psStage.addEventListener(name, (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          psStage.classList.add('dragover');
+        }, false);
+      });
+      ['dragleave', 'drop'].forEach(name => {
+        psStage.addEventListener(name, (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          psStage.classList.remove('dragover');
+        }, false);
+      });
+      psStage.addEventListener('drop', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        const dt = e.dataTransfer;
+        const files = dt && dt.files;
+        if (files && files.length > 0) {
+          processSelectedFiles(files, true);
         }
       });
     }
@@ -1222,28 +1337,43 @@
       }
     }
 
-    // Main file entry point
+    // File Input Handlers
     function handleFile(e) {
-      const file = e.target && e.target.files && e.target.files[0];
-      if (file) {
-        processSelectedFile(file);
+      const files = e.target && e.target.files;
+      if (files && files.length > 0) {
+        processSelectedFiles(files, false);
       }
     }
 
-    async function processSelectedFile(file) {
-      if (!file) return;
+    function handleAddFiles(e) {
+      const files = e.target && e.target.files;
+      if (files && files.length > 0) {
+        processSelectedFiles(files, true);
+      }
+      e.target.value = '';
+    }
 
-      const fileName = file.name || 'document';
-      const isPdf = file.type === 'application/pdf' || fileName.toLowerCase().endsWith('.pdf');
-      const isImage = file.type.startsWith('image/') || /\.(jpe?g|png|webp|bmp|gif|svg)$/i.test(fileName);
+    async function processSelectedFiles(fileList, isAppend = false) {
+      if (!fileList || fileList.length === 0) return;
+      const files = Array.from(fileList);
 
-      if (!isPdf && !isImage) {
-        alert("Unsupported file format! Please select a PDF document (.pdf) or image (.jpg, .png, .webp, .bmp).");
+      const validFiles = files.filter(f => {
+        const name = f.name || '';
+        return f.type === 'application/pdf' ||
+               name.toLowerCase().endsWith('.pdf') ||
+               f.type.startsWith('image/') ||
+               /\.(jpe?g|png|webp|bmp|gif|svg)$/i.test(name);
+      });
+
+      if (validFiles.length === 0) {
+        alert("Unsupported file format! Please select image files (.jpg, .png, .webp, .bmp) or PDF documents (.pdf).");
         return;
       }
 
-      document.getElementById('docName').textContent = fileName;
-      document.getElementById('docSize').textContent = `${(file.size / 1024).toFixed(1)} KB`;
+      if (!isAppend) {
+        loadedPages = [];
+      }
+
       document.getElementById('dropzone').style.display = 'none';
       document.getElementById('psWorkspace').style.display = 'grid';
       document.getElementById('mobileViewTabs').style.display = 'flex';
@@ -1252,41 +1382,84 @@
         document.getElementById('mobileFloatingBar').style.display = 'flex';
       }
 
-      loadedPages = [];
+      const initialCount = loadedPages.length;
       document.getElementById('pageGallery').innerHTML = `
         <div style="padding:50px 20px; text-align:center; color:var(--text-secondary); grid-column:1/-1;">
           <i class="fas fa-circle-notch fa-spin" style="font-size:2rem; color:var(--primary); margin-bottom:12px; display:block;"></i>
-          <h4 style="margin:0 0 6px; font-size:1.1rem; color:var(--text-primary);">Processing & Rendering Pages...</h4>
-          <p style="margin:0; font-size:0.85rem; color:var(--text-muted);">Rendering high-definition document pages for clean printing.</p>
+          <h4 id="loadingStatusText" style="margin:0 0 6px; font-size:1.1rem; color:var(--text-primary);">Processing ${validFiles.length} ${validFiles.length === 1 ? 'file' : 'photos / files'}...</h4>
+          <p id="loadingStatusSub" style="margin:0; font-size:0.85rem; color:var(--text-muted);">Preparing ultra-high definition pages for clean printing.</p>
         </div>
       `;
 
       try {
-        if (isPdf) {
-          document.getElementById('docTypeIcon').className = 'fas fa-file-pdf doc-icon';
-          await loadPdf(file);
-        } else {
-          document.getElementById('docTypeIcon').className = 'fas fa-file-image doc-icon';
-          await loadImage(file);
+        let totalBytes = loadedPages.reduce((acc, p) => acc + (p.fileSize || 0), 0);
+
+        for (let i = 0; i < validFiles.length; i++) {
+          const file = validFiles[i];
+          totalBytes += (file.size || 0);
+          const isPdf = file.type === 'application/pdf' || (file.name && file.name.toLowerCase().endsWith('.pdf'));
+
+          const statusEl = document.getElementById('loadingStatusText');
+          if (statusEl) {
+            statusEl.textContent = `Loading ${i + 1} of ${validFiles.length}: ${file.name || 'Photo'}...`;
+          }
+
+          if (isPdf) {
+            await loadPdf(file);
+          } else {
+            await loadImage(file);
+          }
         }
 
         if (loadedPages.length === 0) {
-          throw new Error("No pages could be extracted from this file.");
+          throw new Error("No pages could be extracted from the selected files.");
         }
 
-        // Initialize From-To inputs
-        document.getElementById('inpFromPage').value = 1;
-        document.getElementById('inpFromPage').max = loadedPages.length;
-        document.getElementById('inpToPage').value = loadedPages.length;
-        document.getElementById('inpToPage').max = loadedPages.length;
+        const hasPdf = loadedPages.some(p => p.isPdf);
+        const hasImage = loadedPages.some(p => !p.isPdf);
+        const docIcon = document.getElementById('docTypeIcon');
+        const docName = document.getElementById('docName');
+        const docSize = document.getElementById('docSize');
+
+        if (loadedPages.length === 1) {
+          docName.textContent = loadedPages[0].name || 'Document';
+          docIcon.className = hasPdf ? 'fas fa-file-pdf doc-icon' : 'fas fa-file-image doc-icon';
+        } else {
+          if (hasPdf && !hasImage) {
+            docName.textContent = `${loadedPages.length} PDF Pages`;
+            docIcon.className = 'fas fa-file-pdf doc-icon';
+          } else if (!hasPdf && hasImage) {
+            docName.textContent = `${loadedPages.length} Photos Loaded`;
+            docIcon.className = 'fas fa-images doc-icon';
+          } else {
+            docName.textContent = `${loadedPages.length} Pages & Photos`;
+            docIcon.className = 'fas fa-folder-open doc-icon';
+          }
+        }
+
+        const sizeMb = (totalBytes / (1024 * 1024)).toFixed(1);
+        docSize.textContent = totalBytes > 1024 * 1024 ? `${sizeMb} MB Total` : `${Math.round(totalBytes / 1024)} KB Total`;
+
+        // Initialize or adjust From-To inputs
+        const fromInp = document.getElementById('inpFromPage');
+        const toInp = document.getElementById('inpToPage');
+        fromInp.max = loadedPages.length;
+        toInp.max = loadedPages.length;
+        if (!isAppend || parseInt(toInp.value) === initialCount || !toInp.value) {
+          toInp.value = loadedPages.length;
+        }
 
         document.getElementById('mobilePageBadge').textContent = loadedPages.length;
 
         renderGallery();
       } catch (err) {
-        console.error("Error loading file in Print Studio:", err);
+        console.error("Error loading files in Print Studio:", err);
         alert("Could not load file: " + (err.message || "Unknown error") + ". Please try another document.");
-        resetStudio();
+        if (loadedPages.length === 0) {
+          resetStudio();
+        } else {
+          renderGallery();
+        }
       }
     }
 
@@ -1312,34 +1485,86 @@
         ctx.imageSmoothingQuality = 'high';
 
         await page.render({ canvasContext: ctx, viewport: viewport }).promise;
-        loadedPages.push({ id: i, canvas: canvas, rotation: 0, included: true });
+        loadedPages.push({
+          id: loadedPages.length + 1,
+          canvas: canvas,
+          rotation: 0,
+          included: true,
+          name: `${file.name || 'PDF'} (P.${i})`,
+          fileSize: Math.round((file.size || 0) / pdf.numPages),
+          isPdf: true,
+          aspectRatio: canvas.width / canvas.height
+        });
       }
     }
 
     async function loadImage(file) {
       return new Promise((resolve, reject) => {
         const reader = new FileReader();
-        reader.onerror = () => reject(new Error("Failed to read image file"));
+        reader.onerror = () => reject(new Error("Failed to read image file: " + file.name));
         reader.onload = (ev) => {
           const img = new Image();
-          img.onerror = () => reject(new Error("Failed to decode image data"));
+          img.onerror = () => reject(new Error("Failed to decode image data: " + file.name));
           img.onload = () => {
             const canvas = document.createElement('canvas');
-            canvas.width = img.naturalWidth || img.width;
-            canvas.height = img.naturalHeight || img.height;
+            canvas.width = img.naturalWidth || img.width || 1200;
+            canvas.height = img.naturalHeight || img.height || 800;
             const ctx = canvas.getContext('2d', { alpha: false });
             ctx.imageSmoothingEnabled = true;
             ctx.imageSmoothingQuality = 'high';
             ctx.fillStyle = '#ffffff';
             ctx.fillRect(0, 0, canvas.width, canvas.height);
             ctx.drawImage(img, 0, 0);
-            loadedPages.push({ id: 1, canvas: canvas, rotation: 0, included: true });
+
+            loadedPages.push({
+              id: loadedPages.length + 1,
+              canvas: canvas,
+              rotation: 0,
+              included: true,
+              name: file.name || `Photo ${loadedPages.length + 1}`,
+              fileSize: file.size || 0,
+              isPdf: false,
+              aspectRatio: canvas.width / canvas.height
+            });
             resolve();
           };
           img.src = ev.target.result;
         };
         reader.readAsDataURL(file);
       });
+    }
+
+    function movePage(idx, direction) {
+      const targetIdx = idx + direction;
+      if (targetIdx < 0 || targetIdx >= loadedPages.length) return;
+      const temp = loadedPages[idx];
+      loadedPages[idx] = loadedPages[targetIdx];
+      loadedPages[targetIdx] = temp;
+      renderGallery();
+    }
+
+    function deletePage(idx) {
+      if (loadedPages.length <= 1) {
+        if (confirm("Remove this page and reset studio?")) {
+          resetStudio();
+        }
+        return;
+      }
+      loadedPages.splice(idx, 1);
+      const fromInp = document.getElementById('inpFromPage');
+      const toInp = document.getElementById('inpToPage');
+      fromInp.max = loadedPages.length;
+      toInp.max = loadedPages.length;
+      if (parseInt(toInp.value) > loadedPages.length) {
+        toInp.value = loadedPages.length;
+      }
+      renderGallery();
+    }
+
+    function reversePageOrder() {
+      if (loadedPages.length <= 1) return;
+      loadedPages.reverse();
+      renderGallery();
     }
 
     function updateGalleryOnly() {
@@ -1375,11 +1600,21 @@
         const meta = document.createElement('div');
         meta.className = 'thumb-meta';
         meta.innerHTML = `
-          <span>Page ${idx + 1}</span>
+          <div class="thumb-meta-top">
+            <span class="thumb-file-title" title="${escapeXml(p.name || ('Page ' + (idx + 1)))}">
+              ${escapeXml(p.name || ('Page ' + (idx + 1)))}
+            </span>
+            <span style="font-size:0.72rem; color:var(--text-muted);">#${idx + 1}</span>
+          </div>
           <div class="thumb-tools" onclick="event.stopPropagation()">
             <button class="tool-icon-btn" title="Rotate Page 90°" onclick="rotatePage(${idx})"><i class="fas fa-rotate-right"></i></button>
+            <button class="tool-icon-btn" title="Move Left / Earlier" onclick="movePage(${idx}, -1)" ${idx === 0 ? 'disabled' : ''}><i class="fas fa-arrow-left"></i></button>
+            <button class="tool-icon-btn" title="Move Right / Later" onclick="movePage(${idx}, 1)" ${idx === loadedPages.length - 1 ? 'disabled' : ''}><i class="fas fa-arrow-right"></i></button>
             <button class="tool-icon-btn" title="${p.included ? 'Exclude Page' : 'Include Page'}" onclick="togglePage(${idx})">
               <i class="fas ${p.included ? 'fa-eye' : 'fa-eye-slash'}" style="color:${p.included ? 'var(--primary)' : '#ef4444'};"></i>
+            </button>
+            <button class="tool-icon-btn" title="Remove Photo / Page" onclick="deletePage(${idx})" style="color:#ef4444;">
+              <i class="fas fa-trash-can"></i>
             </button>
           </div>
         `;
@@ -1541,35 +1776,63 @@
           applyTransformsToCanvas(chunk[0].canvas, c1, chunk[0].rotation);
           if (chunk[1]) applyTransformsToCanvas(chunk[1].canvas, c2, chunk[1].rotation);
 
-          sheetCanvas.width = Math.max(c1.width, c2.width || 0);
-          sheetCanvas.height = c1.height + (chunk[1] ? c2.height + 20 : 0);
-          const sCtx = sheetCanvas.getContext('2d');
+          const targetW = Math.max(c1.width, (chunk[1] ? c2.width : 0), 1800);
+          const slotH = Math.max(c1.height, (chunk[1] ? c2.height : 0), 1200);
+          sheetCanvas.width = targetW;
+          sheetCanvas.height = slotH * 2 + 24;
+
+          const sCtx = sheetCanvas.getContext('2d', { alpha: false });
           sCtx.imageSmoothingEnabled = true;
           sCtx.imageSmoothingQuality = 'high';
           sCtx.fillStyle = '#ffffff';
           sCtx.fillRect(0, 0, sheetCanvas.width, sheetCanvas.height);
-          sCtx.drawImage(c1, (sheetCanvas.width - c1.width) / 2, 0);
-          if (chunk[1]) sCtx.drawImage(c2, (sheetCanvas.width - c2.width) / 2, c1.height + 20);
+
+          // Draw c1 in top slot
+          const scale1 = Math.min((targetW - 20) / c1.width, (slotH - 10) / c1.height);
+          const w1 = c1.width * scale1;
+          const h1 = c1.height * scale1;
+          sCtx.drawImage(c1, (targetW - w1) / 2, (slotH - h1) / 2);
+
+          // Draw c2 in bottom slot
+          if (chunk[1]) {
+            const scale2 = Math.min((targetW - 20) / c2.width, (slotH - 10) / c2.height);
+            const w2 = c2.width * scale2;
+            const h2 = c2.height * scale2;
+            sCtx.drawImage(c2, (targetW - w2) / 2, slotH + 24 + (slotH - h2) / 2);
+          }
         } else if (nUp === 4) {
           const canvases = chunk.map(p => {
             const c = document.createElement('canvas');
             applyTransformsToCanvas(p.canvas, c, p.rotation);
             return c;
           });
-          const halfW = Math.max(...canvases.map(c => c.width));
-          const halfH = Math.max(...canvases.map(c => c.height));
-          sheetCanvas.width = halfW * 2 + 20;
-          sheetCanvas.height = halfH * 2 + 20;
-          const sCtx = sheetCanvas.getContext('2d');
+          const slotW = Math.max(...canvases.map(c => c.width), 1200);
+          const slotH = Math.max(...canvases.map(c => c.height), 1200);
+          sheetCanvas.width = slotW * 2 + 24;
+          sheetCanvas.height = slotH * 2 + 24;
+
+          const sCtx = sheetCanvas.getContext('2d', { alpha: false });
           sCtx.imageSmoothingEnabled = true;
           sCtx.imageSmoothingQuality = 'high';
           sCtx.fillStyle = '#ffffff';
           sCtx.fillRect(0, 0, sheetCanvas.width, sheetCanvas.height);
 
-          if (canvases[0]) sCtx.drawImage(canvases[0], 0, 0);
-          if (canvases[1]) sCtx.drawImage(canvases[1], halfW + 20, 0);
-          if (canvases[2]) sCtx.drawImage(canvases[2], 0, halfH + 20);
-          if (canvases[3]) sCtx.drawImage(canvases[3], halfW + 20, halfH + 20);
+          const positions = [
+            { x: 0, y: 0 },
+            { x: slotW + 24, y: 0 },
+            { x: 0, y: slotH + 24 },
+            { x: slotW + 24, y: slotH + 24 }
+          ];
+
+          canvases.forEach((c, cIdx) => {
+            if (positions[cIdx]) {
+              const scale = Math.min((slotW - 16) / c.width, (slotH - 16) / c.height);
+              const w = c.width * scale;
+              const h = c.height * scale;
+              const pos = positions[cIdx];
+              sCtx.drawImage(c, pos.x + (slotW - w) / 2, pos.y + (slotH - h) / 2, w, h);
+            }
+          });
         }
 
         sheetUrls.push({
@@ -1592,7 +1855,36 @@
 
       const headerText = document.getElementById('headerTextInput').value.trim();
       const showPageNums = document.getElementById('chkPageNums').checked;
-      const orientation = document.getElementById('orientationSelect').value;
+      const paper = document.getElementById('paperSizeSelect').value || 'a4';
+      const orientation = document.getElementById('orientationSelect').value || 'portrait';
+      const fitMode = document.getElementById('photoFitSelect').value || 'fit';
+      const marginMode = document.getElementById('marginSelect').value || 'standard';
+
+      const marginMap = {
+        standard: '8mm',
+        narrow: '4mm',
+        none: '0mm',
+        wide: '15mm'
+      };
+      const marginCss = marginMap[marginMode] || '8mm';
+
+      let paperCss = paper;
+      if (paper === 'photo4x6') {
+        paperCss = (orientation === 'landscape') ? '150mm 100mm' : '100mm 150mm';
+      } else {
+        const orientCss = (orientation === 'landscape' ? 'landscape' : 'portrait');
+        paperCss = `${paper} ${orientCss}`;
+      }
+
+      let imgFitCss = '';
+      if (fitMode === 'fill') {
+        imgFitCss = 'width: 100%; height: 100%; object-fit: cover;';
+      } else if (fitMode === 'original') {
+        imgFitCss = 'max-width: 100%; max-height: 100%; width: auto; height: auto; object-fit: contain;';
+      } else {
+        // 'fit' (default): maximizes image proportionally to fill printable sheet area without clipping or zooming out
+        imgFitCss = 'max-width: 100%; max-height: 100%; width: 100%; height: 100%; object-fit: contain;';
+      }
 
       // Remove any existing print iframe
       const oldIframe = document.getElementById('cleanPrintIframe');
@@ -1600,7 +1892,8 @@
 
       const iframe = document.createElement('iframe');
       iframe.id = 'cleanPrintIframe';
-      iframe.style.cssText = 'position:fixed; bottom:0; right:0; width:10px; height:10px; border:none; opacity:0; pointer-events:none; z-index:-1;';
+      // Full dimensions in offscreen positioning ensure browser renders responsive layout metrics accurately
+      iframe.style.cssText = 'position:fixed; top:0; left:0; width:100%; height:100%; border:none; opacity:0; pointer-events:none; z-index:-9999;';
       document.body.appendChild(iframe);
 
       const doc = iframe.contentWindow.document;
@@ -1609,11 +1902,12 @@
         <!DOCTYPE html>
         <html>
         <head>
+          <meta charset="utf-8">
           <title>AI Bots Print Studio</title>
           <style>
             @page {
-              size: ${orientation === 'landscape' ? 'landscape' : 'portrait'};
-              margin: 0;
+              size: ${paperCss};
+              margin: ${marginCss};
             }
             * {
               box-sizing: border-box;
@@ -1625,12 +1919,12 @@
               margin: 0;
               padding: 0;
               width: 100%;
-              height: auto;
-              font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+              height: 100%;
+              font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
             }
-            .page-container {
-              width: 100vw;
-              height: 100vh;
+            .print-sheet {
+              width: 100%;
+              height: 100%;
               page-break-after: always;
               break-after: page;
               page-break-inside: avoid;
@@ -1639,45 +1933,57 @@
               flex-direction: column;
               align-items: center;
               justify-content: center;
-              padding: 6mm 4mm;
               position: relative;
-              box-sizing: border-box;
               overflow: hidden;
+              box-sizing: border-box;
             }
-            .page-container:last-child {
+            .print-sheet:last-child {
               page-break-after: avoid;
               break-after: avoid;
             }
-            .page-container img {
-              max-width: 100%;
-              max-height: 94vh;
-              width: auto;
-              height: auto;
-              object-fit: contain;
+            .sheet-img-wrap {
+              width: 100%;
+              height: 100%;
+              flex: 1;
+              min-height: 0;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              overflow: hidden;
+              box-sizing: border-box;
+            }
+            .sheet-img-wrap img {
               display: block;
               margin: auto;
+              ${imgFitCss}
             }
             .p-header {
-              position: absolute;
-              top: 3mm;
-              left: 6mm;
+              width: 100%;
               font-size: 8pt;
-              color: #475569;
+              color: #64748b;
+              padding-bottom: 2mm;
+              text-align: left;
+              flex-shrink: 0;
+              font-weight: 600;
             }
             .p-footer {
-              position: absolute;
-              bottom: 3mm;
-              right: 6mm;
+              width: 100%;
               font-size: 8pt;
-              color: #475569;
+              color: #64748b;
+              padding-top: 2mm;
+              text-align: right;
+              flex-shrink: 0;
+              font-weight: 600;
             }
           </style>
         </head>
         <body>
           ${sheets.map((s, idx) => `
-            <div class="page-container">
+            <div class="print-sheet">
               ${headerText ? `<div class="p-header">${escapeXml(headerText)}</div>` : ''}
-              <img src="${s.url}" alt="Page ${idx + 1}">
+              <div class="sheet-img-wrap">
+                <img src="${s.url}" alt="Page ${idx + 1}">
+              </div>
               ${showPageNums ? `<div class="p-footer">Page ${idx + 1} of ${sheets.length}</div>` : ''}
             </div>
           `).join('')}
@@ -1733,30 +2039,102 @@
       }
 
       const { jsPDF } = window.jspdf;
-      const orientation = document.getElementById('orientationSelect').value;
-      const doc = new jsPDF({ orientation: orientation, unit: 'mm', format: 'a4' });
+      const paper = document.getElementById('paperSizeSelect').value || 'a4';
+      const orientation = document.getElementById('orientationSelect').value || 'portrait';
+      const fitMode = document.getElementById('photoFitSelect').value || 'fit';
+      const marginMode = document.getElementById('marginSelect').value || 'standard';
 
-      sheets.forEach((s, idx) => {
-        if (idx > 0) doc.addPage();
-        const pageWidth = orientation === 'portrait' ? 210 : 297;
-        const pageHeight = orientation === 'portrait' ? 297 : 210;
+      const marginMap = {
+        standard: 8,
+        narrow: 4,
+        none: 0,
+        wide: 15
+      };
+      const marginMm = marginMap[marginMode] ?? 8;
 
-        const ratio = Math.min((pageWidth - 20) / s.width, (pageHeight - 20) / s.height);
-        const w = s.width * ratio;
-        const h = s.height * ratio;
-        const x = (pageWidth - w) / 2;
-        const y = (pageHeight - h) / 2;
+      const paperMap = {
+        a4: { w: 210, h: 297, format: 'a4' },
+        letter: { w: 215.9, h: 279.4, format: 'letter' },
+        legal: { w: 215.9, h: 355.6, format: 'legal' },
+        photo4x6: { w: 101.6, h: 152.4, format: [101.6, 152.4] }
+      };
+      const baseDim = paperMap[paper] || paperMap.a4;
 
-        doc.addImage(s.url, 'PNG', x, y, w, h, undefined, 'FAST');
+      let docOrientation = orientation;
+      if (docOrientation === 'auto') {
+        docOrientation = (sheets[0] && sheets[0].width > sheets[0].height) ? 'landscape' : 'portrait';
+      }
+
+      const doc = new jsPDF({
+        orientation: docOrientation,
+        unit: 'mm',
+        format: baseDim.format
       });
 
-      doc.save("print_studio_document.pdf");
+      const pageWidth = docOrientation === 'portrait' ? Math.min(baseDim.w, baseDim.h) : Math.max(baseDim.w, baseDim.h);
+      const pageHeight = docOrientation === 'portrait' ? Math.max(baseDim.w, baseDim.h) : Math.min(baseDim.w, baseDim.h);
+
+      const headerText = document.getElementById('headerTextInput').value.trim();
+      const showPageNums = document.getElementById('chkPageNums').checked;
+
+      sheets.forEach((s, idx) => {
+        if (idx > 0) doc.addPage(baseDim.format, docOrientation);
+
+        let topOffset = marginMm;
+        let bottomOffset = marginMm;
+
+        if (headerText) {
+          doc.setFontSize(8);
+          doc.setTextColor(100, 116, 139);
+          doc.text(headerText, marginMm || 6, 6);
+          topOffset = Math.max(topOffset, 9);
+        }
+        if (showPageNums) {
+          doc.setFontSize(8);
+          doc.setTextColor(100, 116, 139);
+          doc.text(`Page ${idx + 1} of ${sheets.length}`, pageWidth - (marginMm || 6), pageHeight - 4, { align: 'right' });
+          bottomOffset = Math.max(bottomOffset, 9);
+        }
+
+        const availW = Math.max(10, pageWidth - 2 * marginMm);
+        const availH = Math.max(10, pageHeight - topOffset - bottomOffset);
+
+        let imgW, imgH, x, y;
+
+        if (fitMode === 'fill') {
+          const ratio = Math.max(pageWidth / s.width, pageHeight / s.height);
+          imgW = s.width * ratio;
+          imgH = s.height * ratio;
+          x = (pageWidth - imgW) / 2;
+          y = (pageHeight - imgH) / 2;
+        } else if (fitMode === 'original') {
+          imgW = Math.min(availW, s.width * 0.264583);
+          imgH = Math.min(availH, s.height * 0.264583);
+          x = marginMm + (availW - imgW) / 2;
+          y = topOffset + (availH - imgH) / 2;
+        } else {
+          // fit (default)
+          const ratio = Math.min(availW / s.width, availH / s.height);
+          imgW = s.width * ratio;
+          imgH = s.height * ratio;
+          x = marginMm + (availW - imgW) / 2;
+          y = topOffset + (availH - imgH) / 2;
+        }
+
+        doc.addImage(s.url, 'PNG', x, y, imgW, imgH, undefined, 'FAST');
+      });
+
+      const count = loadedPages.length;
+      const downloadName = (count > 1 ? `photos_document_${count}_pages.pdf` : 'print_studio_document.pdf');
+      doc.save(downloadName);
     }
 
     function resetStudio() {
       loadedPages = [];
       const fileInput = document.getElementById('fileInput');
       if (fileInput) fileInput.value = '';
+      const addFileInput = document.getElementById('addFileInput');
+      if (addFileInput) addFileInput.value = '';
       document.getElementById('dropzone').style.display = 'block';
       document.getElementById('psWorkspace').style.display = 'none';
       document.getElementById('mobileViewTabs').style.display = 'none';

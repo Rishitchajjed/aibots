@@ -762,34 +762,45 @@
           <div class="auto-crop-panel" id="autoCropSettingsCard">
             <div class="auto-crop-panel-title">
               <span><i class="fas fa-crop-simple" style="color: var(--primary);"></i> Smart Auto Crop</span>
-              <span class="auto-crop-badge">Auto Detect</span>
+              <span class="auto-crop-badge">AI Vision</span>
             </div>
             <p style="font-size: 0.78rem; color: var(--text-secondary); margin: 0; line-height: 1.4;">
-              Scans document luminance to detect text, tables, and receipts, trimming scanner edges &amp; blank margins.
+              Detects documents, ID cards, slips, receipts, and notes in the center, or trims outer blank margins.
             </p>
             
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+            <div style="display: flex; flex-direction: column; gap: 8px;">
               <div>
-                <label style="font-size: 0.74rem; font-weight: 700; color: var(--text-secondary); display: block; margin-bottom: 4px;">Padding</label>
-                <select id="autoCropPadding" class="form-control" style="font-size: 0.8rem; padding: 5px 8px;">
-                  <option value="6">Tight (6px)</option>
-                  <option value="16" selected>Balanced (16px)</option>
-                  <option value="32">Relaxed (32px)</option>
-                  <option value="0">Zero Margins</option>
+                <label style="font-size: 0.74rem; font-weight: 700; color: var(--text-secondary); display: block; margin-bottom: 4px;">Target Detection Mode</label>
+                <select id="autoCropMode" class="form-control" style="font-size: 0.8rem; padding: 6px 8px;" onchange="autoCropDocument(false)">
+                  <option value="main_item" selected>⭐ Main Document / Item (ID Card, Slip, Paper)</option>
+                  <option value="margins">Trim Blank Page Margins Only</option>
+                  <option value="auto">Smart Adaptive (Main Item or Margins)</option>
                 </select>
               </div>
-              <div>
-                <label style="font-size: 0.74rem; font-weight: 700; color: var(--text-secondary); display: block; margin-bottom: 4px;">Sensitivity</label>
-                <select id="autoCropSensitivity" class="form-control" style="font-size: 0.8rem; padding: 5px 8px;">
-                  <option value="12">High (Light text)</option>
-                  <option value="22" selected>Normal</option>
-                  <option value="35">Strict (Ignore dust)</option>
-                </select>
+
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+                <div>
+                  <label style="font-size: 0.74rem; font-weight: 700; color: var(--text-secondary); display: block; margin-bottom: 4px;">Padding</label>
+                  <select id="autoCropPadding" class="form-control" style="font-size: 0.8rem; padding: 5px 8px;" onchange="autoCropDocument(false)">
+                    <option value="6">Tight (6px)</option>
+                    <option value="16" selected>Balanced (16px)</option>
+                    <option value="32">Relaxed (32px)</option>
+                    <option value="0">Zero Margins</option>
+                  </select>
+                </div>
+                <div>
+                  <label style="font-size: 0.74rem; font-weight: 700; color: var(--text-secondary); display: block; margin-bottom: 4px;">Sensitivity</label>
+                  <select id="autoCropSensitivity" class="form-control" style="font-size: 0.8rem; padding: 5px 8px;" onchange="autoCropDocument(false)">
+                    <option value="12">High (Light text / edges)</option>
+                    <option value="22" selected>Normal</option>
+                    <option value="35">Strict (High contrast)</option>
+                  </select>
+                </div>
               </div>
             </div>
 
             <button type="button" class="btn btn-primary btn-sm" onclick="autoCropDocument(false)" style="justify-content: center; gap: 6px;">
-              <i class="fas fa-wand-magic-sparkles"></i> Trim Current Page
+              <i class="fas fa-wand-magic-sparkles"></i> Auto-Crop Document
             </button>
 
             <!-- Multi-Page Batch Crop Button (Visible for multi-page PDFs) -->
@@ -1234,165 +1245,248 @@
     }
 
     // 2. Intelligent Computer Vision Auto-Crop Algorithm
-    function detectContentBoundingBox(sourceCanvas, padding = 16, sensitivity = 22) {
+    function smoothArray(arr, radius) {
+      const len = arr.length;
+      const out = new Float32Array(len);
+      for (let i = 0; i < len; i++) {
+        const start = Math.max(0, i - radius);
+        const end = Math.min(len - 1, i + radius);
+        let sum = 0;
+        for (let k = start; k <= end; k++) sum += arr[k];
+        out[i] = sum / (end - start + 1);
+      }
+      return out;
+    }
+
+    function detectContentBoundingBox(sourceCanvas, padding = 16, sensitivity = 22, mode = 'main_item') {
       const w = sourceCanvas.width;
       const h = sourceCanvas.height;
       if (!w || !h) return null;
 
-      const ctx = sourceCanvas.getContext('2d');
-      const imgData = ctx.getImageData(0, 0, w, h);
+      // 1. Create a downscaled analysis canvas for fast & noise-free processing (max 600px)
+      const maxDim = 600;
+      const scale = Math.min(1.0, maxDim / Math.max(w, h));
+      const aw = Math.max(20, Math.round(w * scale));
+      const ah = Math.max(20, Math.round(h * scale));
+
+      const aCanvas = document.createElement('canvas');
+      aCanvas.width = aw;
+      aCanvas.height = ah;
+      const aCtx = aCanvas.getContext('2d', { willReadFrequently: true });
+      aCtx.imageSmoothingEnabled = true;
+      aCtx.imageSmoothingQuality = 'medium';
+      aCtx.drawImage(sourceCanvas, 0, 0, aw, ah);
+
+      const imgData = aCtx.getImageData(0, 0, aw, ah);
       const data = imgData.data;
 
-      const inset = Math.max(4, Math.floor(Math.min(w, h) * 0.005));
+      // Convert to grayscale array for fast lookup
+      const gray = new Float32Array(aw * ah);
+      for (let i = 0, j = 0; i < data.length; i += 4, j++) {
+        gray[j] = 0.299 * data[i] + 0.587 * data[i + 1] + 0.114 * data[i + 2];
+      }
 
-      let bgR = 0, bgG = 0, bgB = 0, bgCount = 0;
-      const sampleMarginX = Math.max(inset + 2, Math.floor(w * 0.03));
-      const sampleMarginY = Math.max(inset + 2, Math.floor(h * 0.03));
+      // 2. Detect outer uniform / blank page margins (e.g. PDF page margins >= 246)
+      const rowAverages = new Float32Array(ah);
+      for (let y = 0; y < ah; y++) {
+        let sum = 0;
+        const offset = y * aw;
+        for (let x = 0; x < aw; x++) {
+          sum += gray[offset + x];
+        }
+        rowAverages[y] = sum / aw;
+      }
 
-      for (let y = inset; y < h - inset; y += 4) {
-        for (let x = inset; x < w - inset; x += 4) {
-          if (x < sampleMarginX || x >= w - sampleMarginX || y < sampleMarginY || y >= h - sampleMarginY) {
-            const idx = (y * w + x) * 4;
-            const a = data[idx + 3];
-            if (a > 50) {
-              bgR += data[idx];
-              bgG += data[idx + 1];
-              bgB += data[idx + 2];
+      const colAverages = new Float32Array(aw);
+      for (let x = 0; x < aw; x++) {
+        let sum = 0;
+        for (let y = 0; y < ah; y++) {
+          sum += gray[y * aw + x];
+        }
+        colAverages[x] = sum / aw;
+      }
+
+      const whiteThresh = 246 - Math.max(0, (22 - sensitivity) * 0.4);
+      let outerTop = 0, outerBottom = ah - 1, outerLeft = 0, outerRight = aw - 1;
+
+      for (let y = 0; y < ah; y++) {
+        if (rowAverages[y] < whiteThresh) { outerTop = y; break; }
+      }
+      for (let y = ah - 1; y >= 0; y--) {
+        if (rowAverages[y] < whiteThresh) { outerBottom = y; break; }
+      }
+      for (let x = 0; x < aw; x++) {
+        if (colAverages[x] < whiteThresh) { outerLeft = x; break; }
+      }
+      for (let x = aw - 1; x >= 0; x--) {
+        if (colAverages[x] < whiteThresh) { outerRight = x; break; }
+      }
+
+      const hasOuterBorder = (
+        outerLeft > aw * 0.01 ||
+        (aw - 1 - outerRight) > aw * 0.01 ||
+        outerTop > ah * 0.01 ||
+        (ah - 1 - outerBottom) > ah * 0.01
+      ) && (outerRight > outerLeft + 20) && (outerBottom > outerTop + 20);
+
+      if (!hasOuterBorder) {
+        outerLeft = 0;
+        outerTop = 0;
+        outerRight = aw - 1;
+        outerBottom = ah - 1;
+      }
+
+      const sw = outerRight - outerLeft + 1;
+      const sh = outerBottom - outerTop + 1;
+
+      // 3. Main Item / Subject Detection inside the scene
+      if ((mode === 'main_item' || mode === 'auto') && sw > 30 && sh > 30) {
+        // Sample perimeter of the scene to model the background surface (table, desk, counter)
+        const pmY = Math.max(3, Math.floor(sh * 0.05));
+        const pmX = Math.max(3, Math.floor(sw * 0.05));
+
+        let bgRSum = 0, bgGSum = 0, bgBSum = 0, bgCount = 0;
+        for (let y = outerTop; y <= outerBottom; y += 2) {
+          const isTopBottom = (y < outerTop + pmY || y > outerBottom - pmY);
+          for (let x = outerLeft; x <= outerRight; x += 2) {
+            if (isTopBottom || x < outerLeft + pmX || x > outerRight - pmX) {
+              const idx = (y * aw + x) * 4;
+              bgRSum += data[idx];
+              bgGSum += data[idx + 1];
+              bgBSum += data[idx + 2];
               bgCount++;
             }
           }
         }
-      }
 
-      if (bgCount > 0) {
-        bgR = Math.round(bgR / bgCount);
-        bgG = Math.round(bgG / bgCount);
-        bgB = Math.round(bgB / bgCount);
-      } else {
-        bgR = 255; bgG = 255; bgB = 255;
-      }
+        const bgR = bgCount > 0 ? bgRSum / bgCount : 255;
+        const bgG = bgCount > 0 ? bgGSum / bgCount : 255;
+        const bgB = bgCount > 0 ? bgBSum / bgCount : 255;
+        const bgLum = 0.299 * bgR + 0.587 * bgG + 0.114 * bgB;
 
-      const bgLum = 0.299 * bgR + 0.587 * bgG + 0.114 * bgB;
-      const isLightBg = bgLum > 60;
+        // Compute 2D Salience map inside the scene:
+        // Salience = color distance + luminance distance + edge gradient
+        const salience = new Float32Array(sw * sh);
 
-      const minRowHits = Math.max(5, Math.floor(w * 0.005));
-      const minColHits = Math.max(5, Math.floor(h * 0.005));
+        for (let sy = 0; sy < sh; sy++) {
+          const y = outerTop + sy;
+          const yPrev = Math.max(outerTop, y - 1);
+          const yNext = Math.min(outerBottom, y + 1);
 
-      function isContentPixel(idx) {
-        const a = data[idx + 3];
-        if (a < 50) return false;
-        const r = data[idx];
-        const g = data[idx + 1];
-        const b = data[idx + 2];
-        const lum = 0.299 * r + 0.587 * g + 0.114 * b;
+          for (let sx = 0; sx < sw; sx++) {
+            const x = outerLeft + sx;
+            const xPrev = Math.max(outerLeft, x - 1);
+            const xNext = Math.min(outerRight, x + 1);
 
-        if (isLightBg) {
-          const diffLum = bgLum - lum;
-          const colorDiff = Math.max(Math.abs(r - bgR), Math.abs(g - bgG), Math.abs(b - bgB));
-          return diffLum > sensitivity || colorDiff > (sensitivity * 1.3);
-        } else {
-          return lum > (bgLum + sensitivity + 15) || lum > 80;
-        }
-      }
+            const idx = (y * aw + x) * 4;
+            const r = data[idx];
+            const g = data[idx + 1];
+            const b = data[idx + 2];
+            const lum = gray[y * aw + x];
 
-      function countRowHits(y) {
-        let hits = 0;
-        for (let x = inset; x < w - inset; x += 2) {
-          const idx = (y * w + x) * 4;
-          if (isContentPixel(idx)) {
-            hits++;
-            if (hits >= minRowHits * 2) break;
+            const colDiff = Math.max(Math.abs(r - bgR), Math.abs(g - bgG), Math.abs(b - bgB));
+            const lumDiff = Math.abs(lum - bgLum);
+
+            const gx = Math.abs(gray[y * aw + xNext] - gray[y * aw + xPrev]);
+            const gy = Math.abs(gray[yNext * aw + x] - gray[yPrev * aw + x]);
+            const edge = gx + gy;
+
+            salience[sy * sw + sx] = Math.max(colDiff, lumDiff * 1.1) + edge * 0.4;
           }
         }
-        return hits;
-      }
 
-      function countColHits(x) {
-        let hits = 0;
-        for (let y = inset; y < h - inset; y += 2) {
-          const idx = (y * w + x) * 4;
-          if (isContentPixel(idx)) {
-            hits++;
-            if (hits >= minColHits * 2) break;
+        // Compute row and column scores (70th percentile of salience along each axis)
+        const rowScores = new Float32Array(sh);
+        const colScores = new Float32Array(sw);
+
+        const rowBuf = new Float32Array(sw);
+        for (let sy = 0; sy < sh; sy++) {
+          const offset = sy * sw;
+          for (let sx = 0; sx < sw; sx++) rowBuf[sx] = salience[offset + sx];
+          rowBuf.sort();
+          rowScores[sy] = rowBuf[Math.floor(sw * 0.68)];
+        }
+
+        const colBuf = new Float32Array(sh);
+        for (let sx = 0; sx < sw; sx++) {
+          for (let sy = 0; sy < sh; sy++) colBuf[sy] = salience[sy * sw + sx];
+          colBuf.sort();
+          colScores[sx] = colBuf[Math.floor(sh * 0.68)];
+        }
+
+        // Smooth profiles with moving average
+        const ky = Math.max(3, Math.floor(sh * 0.025));
+        const kx = Math.max(3, Math.floor(sw * 0.025));
+        const rowSmooth = smoothArray(rowScores, ky);
+        const colSmooth = smoothArray(colScores, kx);
+
+        const sortedRow = Float32Array.from(rowSmooth).sort();
+        const sortedCol = Float32Array.from(colSmooth).sort();
+        const baseRow = sortedRow[Math.floor(sh * 0.18)];
+        const peakRow = sortedRow[sh - 1];
+        const baseCol = sortedCol[Math.floor(sw * 0.18)];
+        const peakCol = sortedCol[sw - 1];
+
+        const contrastRow = peakRow - baseRow;
+        const contrastCol = peakCol - baseCol;
+
+        const contrastThresh = 13 + (sensitivity - 22) * 0.3;
+
+        if (contrastRow > contrastThresh && contrastCol > contrastThresh) {
+          const thRow = baseRow + contrastRow * 0.16;
+          const thCol = baseCol + contrastCol * 0.16;
+
+          let itemTop = -1, itemBottom = -1;
+          for (let sy = 0; sy < sh; sy++) {
+            if (rowSmooth[sy] > thRow) { itemTop = sy; break; }
+          }
+          for (let sy = sh - 1; sy >= 0; sy--) {
+            if (rowSmooth[sy] > thRow) { itemBottom = sy; break; }
+          }
+
+          let itemLeft = -1, itemRight = -1;
+          for (let sx = 0; sx < sw; sx++) {
+            if (colSmooth[sx] > thCol) { itemLeft = sx; break; }
+          }
+          for (let sx = sw - 1; sx >= 0; sx--) {
+            if (colSmooth[sx] > thCol) { itemRight = sx; break; }
+          }
+
+          if (itemTop !== -1 && itemBottom !== -1 && itemLeft !== -1 && itemRight !== -1 && itemRight > itemLeft && itemBottom > itemTop) {
+            const padX = Math.round(padding * (w / 800));
+            const padY = Math.round(padding * (h / 800));
+
+            const finalX1 = Math.max(0, Math.floor((outerLeft + itemLeft) / scale) - padX);
+            const finalY1 = Math.max(0, Math.floor((outerTop + itemTop) / scale) - padY);
+            const finalX2 = Math.min(w, Math.ceil((outerLeft + itemRight) / scale) + padX);
+            const finalY2 = Math.min(h, Math.ceil((outerTop + itemBottom) / scale) + padY);
+
+            return {
+              x: finalX1,
+              y: finalY1,
+              width: Math.max(20, finalX2 - finalX1),
+              height: Math.max(20, finalY2 - finalY1),
+              type: 'main_item'
+            };
           }
         }
-        return hits;
       }
 
-      // Top bound with multi-row confirmation
-      let minY = -1;
-      for (let y = inset; y < h - inset; y++) {
-        const hits = countRowHits(y);
-        if (hits >= minRowHits) {
-          const confirmed = (hits >= minRowHits * 2) || [1, 2, 3].some(dy => y + dy < h - inset && countRowHits(y + dy) >= minRowHits);
-          if (confirmed) {
-            minY = y;
-            break;
-          }
-        }
-      }
-
-      // Bottom bound with multi-row confirmation
-      let maxY = -1;
-      for (let y = h - inset - 1; y >= inset; y--) {
-        const hits = countRowHits(y);
-        if (hits >= minRowHits) {
-          const confirmed = (hits >= minRowHits * 2) || [1, 2, 3].some(dy => y - dy >= inset && countRowHits(y - dy) >= minRowHits);
-          if (confirmed) {
-            maxY = y;
-            break;
-          }
-        }
-      }
-
-      // Left bound with multi-column confirmation
-      let minX = -1;
-      for (let x = inset; x < w - inset; x++) {
-        const hits = countColHits(x);
-        if (hits >= minColHits) {
-          const confirmed = (hits >= minColHits * 2) || [1, 2, 3].some(dx => x + dx < w - inset && countColHits(x + dx) >= minColHits);
-          if (confirmed) {
-            minX = x;
-            break;
-          }
-        }
-      }
-
-      // Right bound with multi-column confirmation
-      let maxX = -1;
-      for (let x = w - inset - 1; x >= inset; x--) {
-        const hits = countColHits(x);
-        if (hits >= minColHits) {
-          const confirmed = (hits >= minColHits * 2) || [1, 2, 3].some(dx => x - dx >= inset && countColHits(x - dx) >= minColHits);
-          if (confirmed) {
-            maxX = x;
-            break;
-          }
-        }
-      }
-
-      if (minY === -1 || maxY === -1 || minX === -1 || maxX === -1 || maxX <= minX || maxY <= minY) {
-        return {
-          x: Math.round(w * 0.1),
-          y: Math.round(h * 0.1),
-          width: Math.round(w * 0.8),
-          height: Math.round(h * 0.8)
-        };
-      }
-
+      // Fallback: Margins trim
       const padX = Math.round(padding * (w / 800));
       const padY = Math.round(padding * (h / 800));
 
-      const finalX = Math.max(0, minX - padX);
-      const finalY = Math.max(0, minY - padY);
-      const finalW = Math.min(w - finalX, (maxX - minX) + (padX * 2));
-      const finalH = Math.min(h - finalY, (maxY - minY) + (padY * 2));
+      const finalX1 = Math.max(0, Math.floor(outerLeft / scale) - padX);
+      const finalY1 = Math.max(0, Math.floor(outerTop / scale) - padY);
+      const finalX2 = Math.min(w, Math.ceil(outerRight / scale) + padX);
+      const finalY2 = Math.min(h, Math.ceil(outerBottom / scale) + padY);
 
       return {
-        x: finalX,
-        y: finalY,
-        width: finalW,
-        height: finalH
+        x: finalX1,
+        y: finalY1,
+        width: Math.max(20, finalX2 - finalX1),
+        height: Math.max(20, finalY2 - finalY1),
+        type: 'margins'
       };
     }
 
@@ -1415,8 +1509,9 @@
 
       const paddingVal = parseInt(document.getElementById('autoCropPadding')?.value || '16', 10);
       const sensVal = parseInt(document.getElementById('autoCropSensitivity')?.value || '22', 10);
+      const cropMode = document.getElementById('autoCropMode')?.value || 'main_item';
 
-      const bbox = detectContentBoundingBox(analysisCanvas, paddingVal, sensVal);
+      const bbox = detectContentBoundingBox(analysisCanvas, paddingVal, sensVal, cropMode);
       if (!bbox) return;
 
       const scaleX = rawImage.naturalWidth / imagePreview.offsetWidth;
@@ -1442,7 +1537,11 @@
       saveCurrentCropState(false);
 
       if (!silent) {
-        showToast(`Auto-Crop snapped to content! (${Math.round(bbox.width)} × ${Math.round(bbox.height)} px)`, 'success');
+        if (bbox.type === 'main_item') {
+          showToast(`Auto-Crop snapped to main document! (${Math.round(bbox.width)} × ${Math.round(bbox.height)} px)`, 'success');
+        } else {
+          showToast(`Auto-Crop trimmed blank margins! (${Math.round(bbox.width)} × ${Math.round(bbox.height)} px)`, 'success');
+        }
       }
     }
 
@@ -1457,6 +1556,7 @@
 
         const paddingVal = parseInt(document.getElementById('autoCropPadding')?.value || '16', 10);
         const sensVal = parseInt(document.getElementById('autoCropSensitivity')?.value || '22', 10);
+        const cropMode = document.getElementById('autoCropMode')?.value || 'main_item';
 
         let previewDataUrl = null;
 
@@ -1485,7 +1585,7 @@
             const cropH = Math.min(pageCanvas.height - cropY, Math.round(savedCrop.height * scaleY));
             cropBox = { x: cropX, y: cropY, width: Math.max(1, cropW), height: Math.max(1, cropH) };
           } else {
-            cropBox = detectContentBoundingBox(pageCanvas, paddingVal, sensVal);
+            cropBox = detectContentBoundingBox(pageCanvas, paddingVal, sensVal, cropMode);
           }
 
           const croppedCanvas = document.createElement('canvas');

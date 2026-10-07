@@ -127,8 +127,8 @@
       }
     },
     {
-      "name": "crop_photo",
-      "description": "Interactive photo cropper with aspect ratios and rule-of-thirds grid.",
+      "name": "crop_photo_and_pdf",
+      "description": "Interactive photo and PDF document cropper with AI Auto-Crop margin trimming, aspect ratios, and multi-format export.",
       "url": "https://www.aibots.co.in/cropphoto.html",
       "parameters": {
         "type": "object",

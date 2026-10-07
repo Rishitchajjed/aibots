@@ -1,11 +1,15 @@
 // AI Bots Progressive Web App (PWA) Service Worker
 // Version: 1.3.0 (Cache-First Core + Stale-While-Revalidate Strategy)
 
-const CACHE_NAME = 'aibots-pwa-v6';
+const CACHE_NAME = 'aibots-pwa-v7';
 const PRECACHE_ASSETS = [
   './',
   './index.html',
   './offline.html',
+  './favicon.ico',
+  './favicon-32x32.png',
+  './favicon-16x16.png',
+  './apple-touch-icon.png',
   './logo.png',
   './logo-exact-hd.svg',
   './logo-hd.svg',

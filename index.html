@@ -254,13 +254,20 @@
     <!-- Hero Section -->
     <section class="hero-section">
       <div class="hero-logo-wrapper">
+        <div class="hero-logo-pedestal"></div>
         <img src="logo.png" alt="AI Bots Logo" class="hero-interactive-logo" id="interactive-logo" width="90" height="90" style="width: 90px; height: 90px; object-fit: contain; aspect-ratio: 1/1;" title="Drag & throw me!" fetchpriority="high" loading="eager" draggable="false" oncontextmenu="return false;">
         <div class="hero-logo-hint"><i class="fas fa-hand-pointer"></i> Drag & throw the logo with physics!</div>
       </div>
 
-      <div class="hero-badge">
-        <i class="fas fa-sparkles" style="color: #f59e0b;"></i>
-        <span>34+ Free Creative &amp; Productivity Tools &bull; 100% Private In-Browser</span>
+      <div class="hero-live-capsule">
+        <span class="live-beacon">
+          <span class="beacon-core"></span>
+          <span class="beacon-ring"></span>
+        </span>
+        <span class="capsule-title">AI Bots 3.0</span>
+        <span class="capsule-sep">&bull;</span>
+        <span class="capsule-text">34+ Free In-Browser Powerhouses</span>
+        <span class="capsule-pill"><i class="fas fa-shield-halved"></i> 100% Client-Side</span>
       </div>
 
       <h1 class="hero-title">
@@ -310,20 +317,40 @@
     <!-- Live Metrics Bar -->
     <section class="metrics-bar">
       <div class="metric-item">
-        <div class="metric-val" style="color: #6366f1;">34+</div>
-        <div class="metric-label">Free Creative &amp; Utility Tools</div>
+        <div class="metric-icon-bubble" style="background: rgba(99, 102, 241, 0.15); color: #818cf8;">
+          <i class="fas fa-wand-magic-sparkles"></i>
+        </div>
+        <div>
+          <div class="metric-val" style="color: #818cf8;">34+</div>
+          <div class="metric-label">Free Creative &amp; Utility Tools</div>
+        </div>
       </div>
       <div class="metric-item">
-        <div class="metric-val" style="color: #10b981;">100%</div>
-        <div class="metric-label">Client-Side &amp; Zero Ads</div>
+        <div class="metric-icon-bubble" style="background: rgba(16, 185, 129, 0.15); color: #34d399;">
+          <i class="fas fa-bolt"></i>
+        </div>
+        <div>
+          <div class="metric-val" style="color: #34d399;">100%</div>
+          <div class="metric-label">Client-Side &amp; Zero Ads</div>
+        </div>
       </div>
       <div class="metric-item">
-        <div class="metric-val" style="color: #ec4899;">0 KB</div>
-        <div class="metric-label">Server Uploads (100% Private)</div>
+        <div class="metric-icon-bubble" style="background: rgba(236, 72, 153, 0.15); color: #f472b6;">
+          <i class="fas fa-shield-halved"></i>
+        </div>
+        <div>
+          <div class="metric-val" style="color: #f472b6;">0 KB</div>
+          <div class="metric-label">Server Uploads (100% Private)</div>
+        </div>
       </div>
       <div class="metric-item">
-        <div class="metric-val" style="color: #f59e0b;">★ 4.9</div>
-        <div class="metric-label">Global Creator Rating</div>
+        <div class="metric-icon-bubble" style="background: rgba(245, 158, 11, 0.15); color: #fbbf24;">
+          <i class="fas fa-star"></i>
+        </div>
+        <div>
+          <div class="metric-val" style="color: #fbbf24;">★ 4.9</div>
+          <div class="metric-label">Global Creator Rating</div>
+        </div>
       </div>
     </section>
 
@@ -519,20 +546,21 @@
       <h2 class="section-title" style="margin-bottom: 24px;">Explore All Creative Tools & Utilities</h2>
       
       <!-- Live Search Bar -->
-      <div style="max-width: 600px; margin: 0 auto 24px; position: relative;">
-        <i class="fas fa-magnifying-glass" style="position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: var(--text-muted);"></i>
-        <input type="text" id="liveSearchInput" class="form-control" placeholder="Search tool by name or feature (e.g. cricket, background, crop, pdf)..." style="padding-left: 44px; border-radius: var(--radius-full);" oninput="filterToolsLive()">
+      <div class="search-wrapper-spotlight">
+        <input type="text" id="liveSearchInput" class="search-input-spotlight" placeholder="Search 34+ creative tools by name, category or feature (e.g. cricket, pdf, ledger)..." oninput="filterToolsLive()">
+        <i class="fas fa-magnifying-glass search-spotlight-icon"></i>
+        <span class="search-kbd-tag"><i class="fas fa-command"></i> Ctrl K</span>
       </div>
 
       <!-- Category Filter Pills -->
       <div class="filter-nav">
-        <button class="filter-btn active" data-filter="all"><i class="fas fa-border-all"></i> All Tools (34)</button>
-        <button class="filter-btn" data-filter="image"><i class="fas fa-image"></i> Image & Design (7)</button>
-        <button class="filter-btn" data-filter="sports"><i class="fas fa-gamepad"></i> Sports & Games (4)</button>
-        <button class="filter-btn" data-filter="pdf"><i class="fas fa-file-pdf"></i> PDF & Documents (4)</button>
-        <button class="filter-btn" data-filter="utility"><i class="fas fa-screwdriver-wrench"></i> Utilities (11)</button>
-        <button class="filter-btn" data-filter="finance"><i class="fas fa-coins"></i> Finance & Invoices (4)</button>
-        <button class="filter-btn" data-filter="ai"><i class="fas fa-robot"></i> AI & Creative (7)</button>
+        <button class="filter-btn active" data-filter="all"><i class="fas fa-border-all"></i> All Tools <span class="filter-count">34</span></button>
+        <button class="filter-btn" data-filter="image"><i class="fas fa-image"></i> Image &amp; Design <span class="filter-count">5</span></button>
+        <button class="filter-btn" data-filter="sports"><i class="fas fa-gamepad"></i> Sports &amp; Games <span class="filter-count">5</span></button>
+        <button class="filter-btn" data-filter="pdf"><i class="fas fa-file-pdf"></i> PDF &amp; Documents <span class="filter-count">6</span></button>
+        <button class="filter-btn" data-filter="utility"><i class="fas fa-screwdriver-wrench"></i> Utilities <span class="filter-count">19</span></button>
+        <button class="filter-btn" data-filter="finance"><i class="fas fa-coins"></i> Finance &amp; Invoices <span class="filter-count">4</span></button>
+        <button class="filter-btn" data-filter="ai"><i class="fas fa-robot"></i> AI &amp; Creative <span class="filter-count">7</span></button>
       </div>
 
       <!-- Tools Grid -->
@@ -1197,15 +1225,33 @@
     const filterButtons = document.querySelectorAll('.filter-btn');
     const toolCards = document.querySelectorAll('.tool-card');
 
+    // Automatically synchronize exact category count badges
+    filterButtons.forEach(btn => {
+      const filter = btn.getAttribute('data-filter');
+      const countEl = btn.querySelector('.filter-count');
+      if (countEl) {
+        if (filter === 'all') {
+          countEl.textContent = toolCards.length;
+        } else {
+          let count = 0;
+          toolCards.forEach(card => {
+            const cardCategories = (card.getAttribute('data-category') || '').split(' ');
+            if (cardCategories.includes(filter)) count++;
+          });
+          countEl.textContent = count;
+        }
+      }
+    });
+
     filterButtons.forEach(btn => {
       btn.addEventListener('click', () => {
         filterButtons.forEach(b => b.classList.remove('active'));
         btn.classList.add('active');
-        playSound('click');
+        if (typeof playSound === 'function') playSound('click');
 
         const filter = btn.getAttribute('data-filter');
         toolCards.forEach(card => {
-          const cardCategories = card.getAttribute('data-category').split(' ');
+          const cardCategories = (card.getAttribute('data-category') || '').split(' ');
           if (filter === 'all' || cardCategories.includes(filter)) {
             card.style.display = 'flex';
           } else {
@@ -1284,8 +1330,25 @@
       document.querySelectorAll('.faq-item').forEach(f => f.classList.remove('active'));
       if (!isActive) {
         item.classList.add('active');
-        playSound('click');
+        if (typeof playSound === 'function') playSound('click');
       }
+    }
+
+    // 7. High-Performance Cursor-Tracking Spotlight Glow
+    function initCardSpotlights() {
+      const allCards = document.querySelectorAll('.tool-card, .flagship-card');
+      allCards.forEach(card => {
+        card.addEventListener('pointermove', e => {
+          const rect = card.getBoundingClientRect();
+          card.style.setProperty('--mouse-x', `${e.clientX - rect.left}px`);
+          card.style.setProperty('--mouse-y', `${e.clientY - rect.top}px`);
+        }, { passive: true });
+      });
+    }
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initCardSpotlights);
+    } else {
+      initCardSpotlights();
     }
   </script>
 </body>

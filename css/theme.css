@@ -2404,4 +2404,549 @@ body {
   50% { transform: scale(1.06); }
 }
 
+/* ==========================================================================
+   World-Class Interactive Experience Enhancements (AI Bots Tier-1)
+   ========================================================================== */
+
+/* 1. Sleek Top Viewport Scroll Progress Bar */
+.scroll-progress-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 3px;
+  width: 0%;
+  background: linear-gradient(90deg, #6366f1, #a855f7, #ec4899, #38bdf8);
+  box-shadow: 0 0 14px rgba(99, 102, 241, 0.8), 0 0 24px rgba(236, 72, 153, 0.5);
+  z-index: 99999;
+  pointer-events: none;
+  transition: width 0.08s ease-out;
+}
+
+/* 2. FX Magic Popover Launcher in Navbar */
+.fx-magic-wrapper {
+  position: relative;
+}
+
+.fx-magic-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  border-radius: var(--radius-full);
+  font-weight: 700;
+  font-size: 0.82rem;
+  background: linear-gradient(135deg, rgba(99, 102, 241, 0.15), rgba(236, 72, 153, 0.15));
+  border: 1px solid rgba(99, 102, 241, 0.3);
+  color: var(--text-primary);
+  cursor: pointer;
+  transition: all 0.25s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.fx-magic-btn:hover {
+  background: linear-gradient(135deg, rgba(99, 102, 241, 0.28), rgba(236, 72, 153, 0.28));
+  border-color: rgba(236, 72, 153, 0.5);
+  transform: translateY(-1px);
+  box-shadow: 0 0 16px rgba(99, 102, 241, 0.35);
+}
+
+.fx-magic-dropdown {
+  position: absolute;
+  top: calc(100% + 10px);
+  right: 0;
+  width: 230px;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  padding: 8px;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.25);
+  display: none;
+  flex-direction: column;
+  gap: 4px;
+  z-index: 10000;
+  animation: dropdownFadeIn 0.2s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+[data-theme="dark"] .fx-magic-dropdown {
+  background: rgba(13, 18, 31, 0.94);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.7), 0 0 30px rgba(99, 102, 241, 0.2);
+}
+
+.fx-magic-dropdown.active {
+  display: flex;
+}
+
+@keyframes dropdownFadeIn {
+  from { opacity: 0; transform: translateY(-8px) scale(0.96); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.fx-dropdown-header {
+  font-size: 0.72rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-muted);
+  padding: 6px 10px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.fx-item-btn {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 8px 12px;
+  border-radius: var(--radius-md);
+  background: transparent;
+  border: none;
+  color: var(--text-primary);
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  text-align: left;
+  transition: all 0.2s ease;
+}
+
+.fx-item-btn:hover {
+  background: rgba(99, 102, 241, 0.12);
+  color: #818cf8;
+  transform: translateX(3px);
+}
+
+.fx-item-clear {
+  color: var(--text-muted);
+  font-size: 0.8rem;
+}
+
+.fx-item-clear:hover {
+  background: rgba(239, 68, 68, 0.12);
+  color: #ef4444;
+}
+
+.fx-dropdown-divider {
+  height: 1px;
+  background: var(--border-color);
+  margin: 4px 6px;
+}
+
+/* 3. Random Tool Surprise Button & Roulette Modal */
+.btn-dice-roll {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: linear-gradient(135deg, #ec4899 0%, #8b5cf6 50%, #6366f1 100%) !important;
+  color: #ffffff !important;
+  border: none !important;
+  box-shadow: 0 4px 20px rgba(236, 72, 153, 0.35) !important;
+  transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1) !important;
+}
+
+.btn-dice-roll:hover {
+  transform: translateY(-3px) scale(1.03) !important;
+  box-shadow: 0 10px 30px rgba(236, 72, 153, 0.55), 0 0 25px rgba(99, 102, 241, 0.4) !important;
+}
+
+.roulette-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 100001;
+  padding: 16px;
+  animation: fadeIn 0.2s ease;
+}
+
+.roulette-modal-backdrop.active {
+  display: flex;
+}
+
+.roulette-modal {
+  width: 100%;
+  max-width: 480px;
+  background: var(--bg-primary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-xl);
+  padding: 28px;
+  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.6), 0 0 40px rgba(99, 102, 241, 0.3);
+  text-align: center;
+  animation: modalPop 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+[data-theme="dark"] .roulette-modal {
+  background: rgba(13, 18, 31, 0.95);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+@keyframes modalPop {
+  0% { transform: scale(0.85); opacity: 0; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+.roulette-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 24px;
+}
+
+.roulette-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.78rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  padding: 4px 12px;
+  border-radius: var(--radius-full);
+  background: rgba(236, 72, 153, 0.15);
+  color: #ec4899;
+}
+
+.roulette-close-btn {
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  font-size: 1.1rem;
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 6px;
+  transition: all 0.2s;
+}
+
+.roulette-close-btn:hover {
+  color: var(--text-primary);
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.roulette-spinner-box {
+  padding: 24px 16px;
+  border-radius: var(--radius-lg);
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px dashed var(--border-color);
+  margin-bottom: 24px;
+  transition: all 0.3s ease;
+}
+
+.roulette-icon {
+  width: 72px;
+  height: 72px;
+  border-radius: 20px;
+  background: linear-gradient(135deg, rgba(99, 102, 241, 0.2), rgba(236, 72, 153, 0.2));
+  color: #818cf8;
+  font-size: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 16px;
+  box-shadow: 0 8px 24px rgba(99, 102, 241, 0.3);
+  transition: all 0.2s ease;
+}
+
+.roulette-title {
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: var(--text-primary);
+  margin-bottom: 6px;
+}
+
+.roulette-desc {
+  font-size: 0.88rem;
+  color: var(--text-secondary);
+  line-height: 1.5;
+  min-height: 40px;
+}
+
+.roulette-actions {
+  display: flex;
+  gap: 12px;
+  transition: opacity 0.3s ease;
+}
+
+/* 4. Search Clear Button */
+.search-clear-btn {
+  position: absolute;
+  right: 18px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.1);
+  border: none;
+  color: var(--text-muted);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 0.85rem;
+  transition: all 0.2s;
+  z-index: 2;
+}
+
+.search-clear-btn:hover {
+  background: rgba(239, 68, 68, 0.2);
+  color: #ef4444;
+}
+
+/* 5. View Mode Switcher Bar (Grid vs List) */
+.view-mode-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.search-stats-text {
+  font-size: 0.88rem;
+  color: var(--text-muted);
+  font-weight: 600;
+}
+
+.search-stats-text strong {
+  color: var(--text-primary);
+  font-weight: 800;
+}
+
+.view-toggle-group {
+  display: inline-flex;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-full);
+  padding: 3px;
+  gap: 2px;
+}
+
+[data-theme="dark"] .view-toggle-group {
+  background: rgba(13, 18, 31, 0.7);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.view-toggle-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 14px;
+  border-radius: var(--radius-full);
+  font-size: 0.8rem;
+  font-weight: 700;
+  border: none;
+  background: transparent;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.view-toggle-btn:hover {
+  color: var(--text-primary);
+}
+
+.view-toggle-btn.active {
+  background: var(--primary);
+  color: #ffffff;
+  box-shadow: 0 2px 8px rgba(99, 102, 241, 0.4);
+}
+
+/* 6. Compact List View for Power Users */
+.tools-grid.list-view {
+  grid-template-columns: 1fr;
+  gap: 10px;
+}
+
+.tools-grid.list-view .tool-card {
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 20px;
+  gap: 16px;
+  min-height: auto;
+}
+
+.tools-grid.list-view .tool-card-icon {
+  margin-bottom: 0;
+  width: 42px;
+  height: 42px;
+  font-size: 1.15rem;
+  flex-shrink: 0;
+}
+
+.tools-grid.list-view .tool-card-body {
+  flex: 1;
+  min-width: 0;
+}
+
+.tools-grid.list-view .tool-card-title {
+  margin-bottom: 2px;
+  font-size: 1.02rem;
+}
+
+.tools-grid.list-view .tool-card-desc {
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  margin-bottom: 0;
+  font-size: 0.84rem;
+}
+
+.tools-grid.list-view .tool-card-footer {
+  margin-top: 0;
+  border-top: none;
+  padding-top: 0;
+  flex-shrink: 0;
+}
+
+.tools-grid.list-view .tool-badge-pill {
+  position: static;
+  margin-left: 8px;
+  display: inline-block;
+}
+
+/* 7. Search Empty State */
+.search-empty-state {
+  text-align: center;
+  padding: 56px 20px;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px dashed var(--border-color);
+  border-radius: var(--radius-xl);
+  margin: 20px 0;
+  animation: fadeIn 0.3s ease;
+}
+
+.empty-state-icon {
+  font-size: 3rem;
+  color: var(--text-muted);
+  margin-bottom: 16px;
+}
+
+.search-empty-state h3 {
+  font-size: 1.3rem;
+  font-weight: 800;
+  color: var(--text-primary);
+  margin-bottom: 8px;
+}
+
+.search-empty-state p {
+  color: var(--text-secondary);
+  font-size: 0.92rem;
+  margin-bottom: 20px;
+}
+
+.empty-state-pills {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.empty-state-pills button {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  border-radius: var(--radius-full);
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  color: var(--text-primary);
+  font-size: 0.82rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.empty-state-pills button:hover {
+  background: var(--primary);
+  color: #ffffff;
+  border-color: var(--primary);
+  transform: translateY(-2px);
+}
+
+/* 8. Floating Back-to-Top Rocket */
+.back-to-top-rocket {
+  position: fixed;
+  bottom: 28px;
+  right: 28px;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 999;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(20px) scale(0.85);
+  transition: all 0.35s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+[data-theme="dark"] .back-to-top-rocket {
+  background: rgba(13, 18, 31, 0.85);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.7), 0 0 20px rgba(99, 102, 241, 0.25);
+}
+
+.back-to-top-rocket.visible {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0) scale(1);
+}
+
+.back-to-top-rocket:hover {
+  transform: translateY(-4px) scale(1.08);
+  box-shadow: 0 16px 40px rgba(99, 102, 241, 0.45), 0 0 28px rgba(236, 72, 153, 0.35);
+}
+
+.rocket-progress-ring {
+  position: absolute;
+  top: 0;
+  left: 0;
+  transform: rotate(-90deg);
+}
+
+.rocket-progress-ring .ring-bg {
+  fill: none;
+  stroke: rgba(255, 255, 255, 0.1);
+  stroke-width: 3;
+}
+
+.rocket-progress-ring .ring-fill {
+  fill: none;
+  stroke: #6366f1;
+  stroke-width: 3;
+  stroke-linecap: round;
+  stroke-dasharray: 125.66;
+  stroke-dashoffset: 125.66;
+  transition: stroke-dashoffset 0.1s ease;
+}
+
+.rocket-icon {
+  font-size: 1.15rem;
+  color: #818cf8;
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.back-to-top-rocket:hover .rocket-icon {
+  transform: translateY(-2px) scale(1.15);
+  color: #ec4899;
+}
+
+
 

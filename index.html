@@ -194,7 +194,7 @@
 
   <!-- Stylesheets & Unified Design System -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <link rel="stylesheet" href="css/theme.css">
+  <link rel="stylesheet" href="css/theme.css?v=3.2">
 </head>
 <body>
   <div class="scroll-progress-bar" id="scrollProgressBar"></div>
@@ -225,27 +225,6 @@
         </a>
 
         <div class="nav-actions">
-          <!-- FX Magic Visual Playground -->
-          <div class="fx-magic-wrapper">
-            <button type="button" class="fx-magic-btn" id="fxMagicBtn" onclick="toggleFxDropdown(event)" title="Trigger Visual Effects (Fireworks, Matrix, Snow, Sparkles)">
-              <i class="fas fa-wand-magic-sparkles" style="color: #ec4899;"></i> <span class="hide-on-mobile">FX Magic</span>
-            </button>
-            <div class="fx-magic-dropdown" id="fxMagicDropdown">
-              <div class="fx-dropdown-header">
-                <i class="fas fa-sparkles" style="color: #f59e0b;"></i> Screen Effects
-              </div>
-              <button type="button" onclick="runFx('fireworks')" class="fx-item-btn"><i class="fas fa-fire-flame-curved" style="color: #f43f5e;"></i> Fireworks Show</button>
-              <button type="button" onclick="runFx('matrix')" class="fx-item-btn"><i class="fas fa-terminal" style="color: #10b981;"></i> Cyber Matrix Rain</button>
-              <button type="button" onclick="runFx('sparkles')" class="fx-item-btn"><i class="fas fa-star" style="color: #fbbf24;"></i> Golden Sparkles</button>
-              <button type="button" onclick="runFx('snow')" class="fx-item-btn"><i class="fas fa-snowflake" style="color: #38bdf8;"></i> Neon Snowfall</button>
-              <button type="button" onclick="runFx('confetti')" class="fx-item-btn"><i class="fas fa-gift" style="color: #a855f7;"></i> Confetti Explosion</button>
-              <button type="button" onclick="runFx('hearts')" class="fx-item-btn"><i class="fas fa-heart" style="color: #ec4899;"></i> Floating Hearts</button>
-              <button type="button" onclick="runFx('balloons')" class="fx-item-btn"><i class="fas fa-champagne-glasses" style="color: #f97316;"></i> Celebration Balloons</button>
-              <div class="fx-dropdown-divider"></div>
-              <button type="button" onclick="clearAllFx()" class="fx-item-btn fx-item-clear"><i class="fas fa-ban"></i> Stop All Effects</button>
-            </div>
-          </div>
-
           <button onclick="openDonationModal()" class="donate-btn-nav" title="Support AI Bots via UPI">
             <i class="fas fa-heart"></i> Donate
           </button>
@@ -1467,44 +1446,7 @@
       });
     }
 
-    // 9. FX Magic Launcher Controller
-    function toggleFxDropdown(e) {
-      if (e) e.stopPropagation();
-      const dropdown = document.getElementById('fxMagicDropdown');
-      if (!dropdown) return;
-      dropdown.classList.toggle('active');
-      if (typeof playSound === 'function') playSound('click');
-    }
 
-    function runFx(effectName) {
-      if (typeof window.triggerVisualEffect === 'function') {
-        window.triggerVisualEffect(effectName, true);
-        if (typeof showToast === 'function') {
-          showToast(`✨ Triggered ${effectName.toUpperCase()} effect!`, 'success');
-        }
-      }
-      const dropdown = document.getElementById('fxMagicDropdown');
-      if (dropdown) dropdown.classList.remove('active');
-    }
-
-    function clearAllFx() {
-      if (typeof window.stopAllEffects === 'function') {
-        window.stopAllEffects();
-        if (typeof showToast === 'function') {
-          showToast('Stopped all visual effects', 'info');
-        }
-      }
-      const dropdown = document.getElementById('fxMagicDropdown');
-      if (dropdown) dropdown.classList.remove('active');
-    }
-
-    document.addEventListener('click', (e) => {
-      const dropdown = document.getElementById('fxMagicDropdown');
-      const btn = document.getElementById('fxMagicBtn');
-      if (dropdown && dropdown.classList.contains('active') && !dropdown.contains(e.target) && e.target !== btn && !btn.contains(e.target)) {
-        dropdown.classList.remove('active');
-      }
-    });
 
     // 10. AI Bots Roulette - Random Tool Picker
     function rollRandomTool() {

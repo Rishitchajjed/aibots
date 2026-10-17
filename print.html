@@ -802,6 +802,109 @@
         max-width: 140px;
       }
     }
+
+    /* High-Capacity Progressive Loading State */
+    .ps-loading-card {
+      background: var(--bg-primary);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-xl);
+      padding: 38px 24px;
+      text-align: center;
+      max-width: 520px;
+      margin: 40px auto;
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.12);
+      grid-column: 1 / -1;
+      width: 100%;
+    }
+    .ps-loading-spinner-wrap {
+      position: relative;
+      width: 68px;
+      height: 68px;
+      margin: 0 auto 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .ps-loading-spinner {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      border: 4px solid rgba(99, 102, 241, 0.15);
+      border-top-color: var(--primary);
+      animation: psSpin 0.8s linear infinite;
+    }
+    @keyframes psSpin {
+      to { transform: rotate(360deg); }
+    }
+    .ps-loading-icon-center {
+      position: absolute;
+      font-size: 1.5rem;
+      color: var(--primary);
+    }
+    .ps-progress-track {
+      width: 100%;
+      height: 10px;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: 999px;
+      margin: 18px 0 10px;
+      overflow: hidden;
+      position: relative;
+    }
+    .ps-progress-bar {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, #6366f1, #a855f7, #ec4899);
+      border-radius: 999px;
+      transition: width 0.15s ease-out;
+      box-shadow: 0 0 12px rgba(99, 102, 241, 0.6);
+    }
+    .ps-loading-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.82rem;
+      color: var(--text-muted);
+      font-weight: 700;
+    }
+    .ps-chip-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(16, 185, 129, 0.12);
+      color: #10b981;
+      padding: 5px 12px;
+      border-radius: var(--radius-full);
+      font-size: 0.78rem;
+      font-weight: 700;
+      margin-top: 14px;
+      border: 1px solid rgba(16, 185, 129, 0.25);
+    }
+
+    /* Print / Export Preparation Modal */
+    .ps-prep-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.75);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 999999;
+      padding: 20px;
+      animation: fadeIn 0.2s ease;
+    }
+    .ps-prep-card {
+      background: var(--bg-primary);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-xl);
+      padding: 32px 26px;
+      width: 100%;
+      max-width: 440px;
+      text-align: center;
+      box-shadow: 0 24px 60px rgba(0, 0, 0, 0.45);
+    }
   </style>
   <link rel="manifest" href="manifest.json">
   <meta name="theme-color" content="#6366f1">
@@ -1226,6 +1329,32 @@
     </div>
   </footer>
 
+  <!-- Print & PDF Export High-Capacity Preparation Modal -->
+  <div id="psPrepBackdrop" class="ps-prep-backdrop" role="dialog" aria-modal="true" aria-labelledby="psPrepTitle">
+    <div class="ps-prep-card">
+      <div class="ps-loading-spinner-wrap" style="margin: 0 auto 18px;">
+        <div class="ps-loading-spinner"></div>
+        <i id="psPrepIcon" class="fas fa-print ps-loading-icon-center"></i>
+      </div>
+      <h3 id="psPrepTitle" style="margin:0 0 8px; font-size:1.25rem; color:var(--text-primary); font-weight:800;">
+        Preparing Print Output
+      </h3>
+      <p id="psPrepMessage" style="margin:0 0 16px; font-size:0.9rem; color:var(--primary); font-weight:700;">
+        Preparing high-resolution sheets...
+      </p>
+      <div class="ps-progress-track">
+        <div class="ps-progress-bar" id="psPrepBar"></div>
+      </div>
+      <div class="ps-loading-meta" style="margin-top:10px;">
+        <span id="psPrepCount">Sheet 1 of 1</span>
+        <span id="psPrepPercent">0%</span>
+      </div>
+      <p style="margin:14px 0 0; font-size:0.78rem; color:var(--text-muted);">
+        Compiling print sheets • Memory-safe progressive batch rendering active
+      </p>
+    </div>
+  </div>
+
   <script>
     if (typeof pdfjsLib !== 'undefined') {
       pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
@@ -1353,6 +1482,21 @@
       e.target.value = '';
     }
 
+    function updateLoadProgress(current, total, currentName, subtext) {
+      const percent = total > 0 ? Math.min(100, Math.max(0, Math.round((current / total) * 100))) : 0;
+      const bar = document.getElementById('psLoadingBar');
+      const countEl = document.getElementById('psLoadingCount');
+      const percentEl = document.getElementById('psLoadingPercent');
+      const nameEl = document.getElementById('psLoadingName');
+      const subEl = document.getElementById('psLoadingSub');
+
+      if (bar) bar.style.width = `${percent}%`;
+      if (countEl) countEl.textContent = `${current} of ${total} files`;
+      if (percentEl) percentEl.textContent = `${percent}%`;
+      if (nameEl && currentName) nameEl.textContent = currentName;
+      if (subEl && subtext) subEl.textContent = subtext;
+    }
+
     async function processSelectedFiles(fileList, isAppend = false) {
       if (!fileList || fileList.length === 0) return;
       const files = Array.from(fileList);
@@ -1383,31 +1527,56 @@
       }
 
       const initialCount = loadedPages.length;
+
+      // Render high-capacity progressive loading interface
       document.getElementById('pageGallery').innerHTML = `
-        <div style="padding:50px 20px; text-align:center; color:var(--text-secondary); grid-column:1/-1;">
-          <i class="fas fa-circle-notch fa-spin" style="font-size:2rem; color:var(--primary); margin-bottom:12px; display:block;"></i>
-          <h4 id="loadingStatusText" style="margin:0 0 6px; font-size:1.1rem; color:var(--text-primary);">Processing ${validFiles.length} ${validFiles.length === 1 ? 'file' : 'photos / files'}...</h4>
-          <p id="loadingStatusSub" style="margin:0; font-size:0.85rem; color:var(--text-muted);">Preparing ultra-high definition pages for clean printing.</p>
+        <div class="ps-loading-card">
+          <div class="ps-loading-spinner-wrap">
+            <div class="ps-loading-spinner"></div>
+            <i class="fas fa-layer-group ps-loading-icon-center"></i>
+          </div>
+          <h3 id="psLoadingTitle" style="margin:0 0 6px; font-size:1.25rem; color:var(--text-primary); font-weight:800;">
+            Processing Photos &amp; Documents
+          </h3>
+          <p id="psLoadingName" style="margin:0 0 16px; font-size:0.9rem; color:var(--primary); font-weight:700; word-break:break-all;">
+            Preparing ${validFiles.length} ${validFiles.length === 1 ? 'file' : 'photos / files'}...
+          </p>
+          <div class="ps-progress-track">
+            <div class="ps-progress-bar" id="psLoadingBar"></div>
+          </div>
+          <div class="ps-loading-meta">
+            <span id="psLoadingCount">0 of ${validFiles.length} files</span>
+            <span id="psLoadingPercent">0%</span>
+          </div>
+          <p id="psLoadingSub" style="margin:12px 0 0; font-size:0.8rem; color:var(--text-muted);">
+            Rendering ultra-high definition pages • Memory-safe batch mode active
+          </p>
+          <div>
+            <span class="ps-chip-badge"><i class="fas fa-bolt"></i> High-Speed Batch Engine (20+ Pages Supported)</span>
+          </div>
         </div>
       `;
 
       try {
         let totalBytes = loadedPages.reduce((acc, p) => acc + (p.fileSize || 0), 0);
+        // Smart resolution cap: for >15 pages, 2200px max bounds memory while preserving crisp 200-300 DPI A4 print
+        const maxDimension = (validFiles.length + loadedPages.length) > 15 ? (window.innerWidth <= 600 ? 1600 : 2200) : 2480;
 
         for (let i = 0; i < validFiles.length; i++) {
           const file = validFiles[i];
           totalBytes += (file.size || 0);
           const isPdf = file.type === 'application/pdf' || (file.name && file.name.toLowerCase().endsWith('.pdf'));
 
-          const statusEl = document.getElementById('loadingStatusText');
-          if (statusEl) {
-            statusEl.textContent = `Loading ${i + 1} of ${validFiles.length}: ${file.name || 'Photo'}...`;
-          }
+          updateLoadProgress(i + 1, validFiles.length, file.name, `Rendering file ${i + 1} of ${validFiles.length}...`);
+          // Yield to browser event loop so progress bar renders and paints smoothly
+          await new Promise(r => setTimeout(r, 15));
 
           if (isPdf) {
-            await loadPdf(file);
+            await loadPdf(file, (currPage, totalPages, fileName) => {
+              updateLoadProgress(i + 1, validFiles.length, `${fileName} (Page ${currPage} of ${totalPages})`, `Rendering PDF page ${currPage} of ${totalPages}...`);
+            });
           } else {
-            await loadImage(file);
+            await loadImage(file, maxDimension);
           }
         }
 
@@ -1463,7 +1632,7 @@
       }
     }
 
-    async function loadPdf(file) {
+    async function loadPdf(file, onPageProgress) {
       const arrayBuffer = await file.arrayBuffer();
       const pdf = await pdfjsLib.getDocument({
         data: arrayBuffer,
@@ -1471,10 +1640,18 @@
         cMapPacked: true
       }).promise;
 
-      // Scale: 1.8x on mobile, 2.4x on desktop ensures crisp 150-200 DPI without exhausting phone memory
-      const renderScale = window.innerWidth <= 600 ? 1.8 : 2.4;
+      // Scale: 1.5x on mobile or for 15+ pages, 2.0x desktop ensures sharp print resolution without exhausting memory
+      const isLargeDoc = pdf.numPages > 15;
+      const isMobile = window.innerWidth <= 600;
+      const renderScale = isMobile ? (isLargeDoc ? 1.4 : 1.6) : (isLargeDoc ? 1.8 : 2.2);
 
       for (let i = 1; i <= pdf.numPages; i++) {
+        if (onPageProgress) {
+          onPageProgress(i, pdf.numPages, file.name);
+        }
+        // Yield to event loop per page so browser paints progress and frees memory
+        await new Promise(r => setTimeout(r, 12));
+
         const page = await pdf.getPage(i);
         const viewport = page.getViewport({ scale: renderScale });
         const canvas = document.createElement('canvas');
@@ -1485,9 +1662,33 @@
         ctx.imageSmoothingQuality = 'high';
 
         await page.render({ canvasContext: ctx, viewport: viewport }).promise;
+
+        // Generate lightweight thumbnail for instant 60fps gallery rendering
+        const thumbMaxDim = 380;
+        let thumbW = canvas.width;
+        let thumbH = canvas.height;
+        if (Math.max(canvas.width, canvas.height) > thumbMaxDim) {
+          if (canvas.width >= canvas.height) {
+            thumbW = thumbMaxDim;
+            thumbH = Math.round((canvas.height / canvas.width) * thumbMaxDim);
+          } else {
+            thumbH = thumbMaxDim;
+            thumbW = Math.round((canvas.width / canvas.height) * thumbMaxDim);
+          }
+        }
+
+        const thumbCanvas = document.createElement('canvas');
+        thumbCanvas.width = thumbW;
+        thumbCanvas.height = thumbH;
+        const tCtx = thumbCanvas.getContext('2d', { alpha: false });
+        tCtx.imageSmoothingEnabled = true;
+        tCtx.imageSmoothingQuality = 'medium';
+        tCtx.drawImage(canvas, 0, 0, thumbW, thumbH);
+
         loadedPages.push({
           id: loadedPages.length + 1,
           canvas: canvas,
+          thumbCanvas: thumbCanvas,
           rotation: 0,
           included: true,
           name: `${file.name || 'PDF'} (P.${i})`,
@@ -1498,7 +1699,7 @@
       }
     }
 
-    async function loadImage(file) {
+    async function loadImage(file, maxDimension = 2200) {
       return new Promise((resolve, reject) => {
         const reader = new FileReader();
         reader.onerror = () => reject(new Error("Failed to read image file: " + file.name));
@@ -1506,27 +1707,72 @@
           const img = new Image();
           img.onerror = () => reject(new Error("Failed to decode image data: " + file.name));
           img.onload = () => {
-            const canvas = document.createElement('canvas');
-            canvas.width = img.naturalWidth || img.width || 1200;
-            canvas.height = img.naturalHeight || img.height || 800;
-            const ctx = canvas.getContext('2d', { alpha: false });
-            ctx.imageSmoothingEnabled = true;
-            ctx.imageSmoothingQuality = 'high';
-            ctx.fillStyle = '#ffffff';
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-            ctx.drawImage(img, 0, 0);
+            try {
+              const natW = img.naturalWidth || img.width || 1200;
+              const natH = img.naturalHeight || img.height || 800;
 
-            loadedPages.push({
-              id: loadedPages.length + 1,
-              canvas: canvas,
-              rotation: 0,
-              included: true,
-              name: file.name || `Photo ${loadedPages.length + 1}`,
-              fileSize: file.size || 0,
-              isPdf: false,
-              aspectRatio: canvas.width / canvas.height
-            });
-            resolve();
+              // Smart proportional downscale for massive phone photos (prevents tab OOM crash)
+              let targetW = natW;
+              let targetH = natH;
+              if (Math.max(natW, natH) > maxDimension) {
+                if (natW >= natH) {
+                  targetW = maxDimension;
+                  targetH = Math.round((natH / natW) * maxDimension);
+                } else {
+                  targetH = maxDimension;
+                  targetW = Math.round((natW / natH) * maxDimension);
+                }
+              }
+
+              const canvas = document.createElement('canvas');
+              canvas.width = targetW;
+              canvas.height = targetH;
+              const ctx = canvas.getContext('2d', { alpha: false });
+              ctx.imageSmoothingEnabled = true;
+              ctx.imageSmoothingQuality = 'high';
+              ctx.fillStyle = '#ffffff';
+              ctx.fillRect(0, 0, targetW, targetH);
+              ctx.drawImage(img, 0, 0, targetW, targetH);
+
+              // Generate lightweight thumbnail for instant 60fps gallery rendering
+              const thumbMaxDim = 380;
+              let thumbW = targetW;
+              let thumbH = targetH;
+              if (Math.max(targetW, targetH) > thumbMaxDim) {
+                if (targetW >= targetH) {
+                  thumbW = thumbMaxDim;
+                  thumbH = Math.round((targetH / targetW) * thumbMaxDim);
+                } else {
+                  thumbH = thumbMaxDim;
+                  thumbW = Math.round((targetW / targetH) * thumbMaxDim);
+                }
+              }
+
+              const thumbCanvas = document.createElement('canvas');
+              thumbCanvas.width = thumbW;
+              thumbCanvas.height = thumbH;
+              const tCtx = thumbCanvas.getContext('2d', { alpha: false });
+              tCtx.imageSmoothingEnabled = true;
+              tCtx.imageSmoothingQuality = 'medium';
+              tCtx.fillStyle = '#ffffff';
+              tCtx.fillRect(0, 0, thumbW, thumbH);
+              tCtx.drawImage(canvas, 0, 0, thumbW, thumbH);
+
+              loadedPages.push({
+                id: loadedPages.length + 1,
+                canvas: canvas,
+                thumbCanvas: thumbCanvas,
+                rotation: 0,
+                included: true,
+                name: file.name || `Photo ${loadedPages.length + 1}`,
+                fileSize: file.size || 0,
+                isPdf: false,
+                aspectRatio: targetW / targetH
+              });
+              resolve();
+            } catch (err) {
+              reject(err);
+            }
           };
           img.src = ev.target.result;
         };
@@ -1594,7 +1840,7 @@
         card.appendChild(badge);
 
         const previewCanvas = document.createElement('canvas');
-        applyTransformsToCanvas(p.canvas, previewCanvas, p.rotation);
+        applyTransformsToCanvas(p.thumbCanvas || p.canvas, previewCanvas, p.rotation, true);
         card.appendChild(previewCanvas);
 
         const meta = document.createElement('div');
@@ -1706,14 +1952,14 @@
       renderGallery();
     }
 
-    function applyTransformsToCanvas(srcCanvas, destCanvas, rotation) {
+    function applyTransformsToCanvas(srcCanvas, destCanvas, rotation, isThumbnail = false) {
       const isRotated = rotation === 90 || rotation === 270;
       destCanvas.width = isRotated ? srcCanvas.height : srcCanvas.width;
       destCanvas.height = isRotated ? srcCanvas.width : srcCanvas.height;
 
       const ctx = destCanvas.getContext('2d', { alpha: false });
       ctx.imageSmoothingEnabled = true;
-      ctx.imageSmoothingQuality = 'high';
+      ctx.imageSmoothingQuality = isThumbnail ? 'medium' : 'high';
       ctx.fillStyle = '#ffffff';
       ctx.fillRect(0, 0, destCanvas.width, destCanvas.height);
 
@@ -1757,14 +2003,61 @@
       }
     }
 
-    function buildSheetsDataUrls() {
+    /* Print / Export Preparation Modal Handlers */
+    function showPrepModal(title, iconClass, initialMsg, totalSheets) {
+      const backdrop = document.getElementById('psPrepBackdrop');
+      if (!backdrop) return;
+      document.getElementById('psPrepTitle').textContent = title || 'Preparing Output';
+      const icon = document.getElementById('psPrepIcon');
+      if (icon) icon.className = (iconClass || 'fas fa-print') + ' ps-loading-icon-center';
+      document.getElementById('psPrepMessage').textContent = initialMsg || 'Compiling sheets...';
+      document.getElementById('psPrepBar').style.width = '0%';
+      document.getElementById('psPrepCount').textContent = `0 of ${totalSheets} sheets`;
+      document.getElementById('psPrepPercent').textContent = '0%';
+      backdrop.style.display = 'flex';
+    }
+
+    function updatePrepProgress(current, total, msg) {
+      const bar = document.getElementById('psPrepBar');
+      const count = document.getElementById('psPrepCount');
+      const percentEl = document.getElementById('psPrepPercent');
+      const msgEl = document.getElementById('psPrepMessage');
+      if (!bar) return;
+      const pct = Math.min(100, Math.round((current / Math.max(1, total)) * 100));
+      bar.style.width = `${pct}%`;
+      if (count) count.textContent = `Sheet ${current} of ${total}`;
+      if (percentEl) percentEl.textContent = `${pct}%`;
+      if (msg && msgEl) msgEl.textContent = msg;
+    }
+
+    function hidePrepModal() {
+      const backdrop = document.getElementById('psPrepBackdrop');
+      if (backdrop) backdrop.style.display = 'none';
+    }
+
+    /* Asynchronous Memory-Safe Sheet Generation */
+    async function buildSheetsDataUrls(onProgress) {
       const validPages = loadedPages.filter(p => p.included);
       if (validPages.length === 0) return [];
 
       const nUp = parseInt(document.getElementById('nUpSelect').value) || 1;
+      const totalSheets = Math.ceil(validPages.length / nUp);
       const sheetUrls = [];
 
+      // For large batches (>12 sheets), use JPEG (0.94) to avoid giant base64 memory spikes in DOM/iframe/PDF
+      const useJpeg = totalSheets > 12;
+      const mimeType = useJpeg ? 'image/jpeg' : 'image/png';
+      const quality = useJpeg ? 0.94 : undefined;
+
+      let sheetIndex = 0;
       for (let i = 0; i < validPages.length; i += nUp) {
+        sheetIndex++;
+        if (onProgress) {
+          onProgress(sheetIndex, totalSheets, `Rendering sheet ${sheetIndex} of ${totalSheets}...`);
+        }
+        // Yield to event loop to paint modal and avoid freezing the tab
+        await new Promise(r => setTimeout(r, 12));
+
         const chunk = validPages.slice(i, i + nUp);
         const sheetCanvas = document.createElement('canvas');
 
@@ -1836,9 +2129,10 @@
         }
 
         sheetUrls.push({
-          url: sheetCanvas.toDataURL('image/png'),
+          url: sheetCanvas.toDataURL(mimeType, quality),
           width: sheetCanvas.width,
-          height: sheetCanvas.height
+          height: sheetCanvas.height,
+          mimeType: mimeType
         });
       }
 
@@ -1846,12 +2140,37 @@
     }
 
     /* FOOLPROOF ISOLATED PRINT ENGINE (Desktop, iOS Safari & Android Chrome) */
-    function triggerCleanPrint() {
-      const sheets = buildSheetsDataUrls();
-      if (sheets.length === 0) {
+    async function triggerCleanPrint() {
+      const validPages = loadedPages.filter(p => p.included);
+      if (validPages.length === 0) {
         alert("Please select at least 1 page to print!");
         return;
       }
+
+      const nUp = parseInt(document.getElementById('nUpSelect').value) || 1;
+      const totalSheets = Math.ceil(validPages.length / nUp);
+
+      showPrepModal('Preparing Print Sheets', 'fas fa-print', `Rendering sheet 1 of ${totalSheets}...`, totalSheets);
+
+      let sheets = [];
+      try {
+        sheets = await buildSheetsDataUrls((current, total, msg) => {
+          updatePrepProgress(current, total, msg);
+        });
+      } catch (err) {
+        hidePrepModal();
+        alert("An error occurred while preparing print sheets: " + err.message);
+        return;
+      }
+
+      if (sheets.length === 0) {
+        hidePrepModal();
+        alert("Please select at least 1 page to print!");
+        return;
+      }
+
+      updatePrepProgress(totalSheets, totalSheets, 'Opening system print dialog...');
+      await new Promise(r => setTimeout(r, 60));
 
       const headerText = document.getElementById('headerTextInput').value.trim();
       const showPageNums = document.getElementById('chkPageNums').checked;
@@ -1999,6 +2318,7 @@
         loaded++;
         if (loaded >= images.length) {
           setTimeout(() => {
+            hidePrepModal();
             try {
               iframe.contentWindow.focus();
               iframe.contentWindow.print();
@@ -2011,6 +2331,7 @@
       }
 
       if (images.length === 0) {
+        hidePrepModal();
         iframe.contentWindow.print();
       } else {
         images.forEach(img => {
@@ -2032,11 +2353,36 @@
     }
 
     async function downloadExportPDF() {
-      const sheets = buildSheetsDataUrls();
-      if (sheets.length === 0) {
+      const validPages = loadedPages.filter(p => p.included);
+      if (validPages.length === 0) {
         alert("Please select at least 1 page to export!");
         return;
       }
+
+      const nUp = parseInt(document.getElementById('nUpSelect').value) || 1;
+      const totalSheets = Math.ceil(validPages.length / nUp);
+
+      showPrepModal('Exporting High-Res PDF', 'fas fa-file-pdf', `Rendering sheet 1 of ${totalSheets}...`, totalSheets);
+
+      let sheets = [];
+      try {
+        sheets = await buildSheetsDataUrls((current, total, msg) => {
+          updatePrepProgress(current, total, msg);
+        });
+      } catch (err) {
+        hidePrepModal();
+        alert("An error occurred while compiling PDF pages: " + err.message);
+        return;
+      }
+
+      if (sheets.length === 0) {
+        hidePrepModal();
+        alert("Please select at least 1 page to export!");
+        return;
+      }
+
+      updatePrepProgress(totalSheets, totalSheets, 'Building final PDF document...');
+      await new Promise(r => setTimeout(r, 60));
 
       const { jsPDF } = window.jspdf;
       const paper = document.getElementById('paperSizeSelect').value || 'a4';
@@ -2077,7 +2423,8 @@
       const headerText = document.getElementById('headerTextInput').value.trim();
       const showPageNums = document.getElementById('chkPageNums').checked;
 
-      sheets.forEach((s, idx) => {
+      for (let idx = 0; idx < sheets.length; idx++) {
+        const s = sheets[idx];
         if (idx > 0) doc.addPage(baseDim.format, docOrientation);
 
         let topOffset = marginMm;
@@ -2121,12 +2468,14 @@
           y = topOffset + (availH - imgH) / 2;
         }
 
-        doc.addImage(s.url, 'PNG', x, y, imgW, imgH, undefined, 'FAST');
-      });
+        const imgFormat = s.mimeType === 'image/jpeg' ? 'JPEG' : 'PNG';
+        doc.addImage(s.url, imgFormat, x, y, imgW, imgH, undefined, 'FAST');
+      }
 
       const count = loadedPages.length;
       const downloadName = (count > 1 ? `photos_document_${count}_pages.pdf` : 'print_studio_document.pdf');
       doc.save(downloadName);
+      hidePrepModal();
     }
 
     function resetStudio() {

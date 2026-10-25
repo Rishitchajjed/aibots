@@ -781,22 +781,22 @@
           <div class="control-section-title"><i class="fas fa-table-cells" style="color: var(--primary);"></i> 2. Page Arrangement</div>
           
           <div class="layout-buttons-grid">
-            <button type="button" class="layout-mode-btn active" data-mode="grid" onclick="setLayoutMode('grid')">
-              <i class="fas fa-border-all"></i> Smart Grid
+            <button type="button" class="layout-mode-btn active" data-mode="vertical" onclick="setLayoutMode('vertical')">
+              <i class="fas fa-arrows-up-down"></i> Vertical Stack (1 Col)
+            </button>
+            <button type="button" class="layout-mode-btn" data-mode="grid" onclick="setLayoutMode('grid')">
+              <i class="fas fa-border-all"></i> 2×2 Smart Grid
             </button>
             <button type="button" class="layout-mode-btn" data-mode="document" onclick="setLayoutMode('document')">
-              <i class="fas fa-file-lines"></i> Sheet / Page
+              <i class="fas fa-file-lines"></i> A4 Document Sheet
             </button>
             <button type="button" class="layout-mode-btn" data-mode="horizontal" onclick="setLayoutMode('horizontal')">
               <i class="fas fa-arrows-left-right"></i> Side-by-Side
             </button>
-            <button type="button" class="layout-mode-btn" data-mode="vertical" onclick="setLayoutMode('vertical')">
-              <i class="fas fa-arrows-up-down"></i> Top-to-Bottom
-            </button>
           </div>
 
           <!-- Grid Columns Sub-option (Only in grid mode) -->
-          <div id="gridColumnsOption" style="display: block; margin-top: 6px;">
+          <div id="gridColumnsOption" style="display: none; margin-top: 6px;">
             <div class="slider-row">
               <span>Grid Columns:</span>
               <span id="gridColsVal" class="slider-value-badge">2 Columns</span>
@@ -832,47 +832,46 @@
           <div>
             <div class="slider-row">
               <span>Outer Padding:</span>
-              <span id="paddingVal" class="slider-value-badge">20 px</span>
+              <span id="paddingVal" class="slider-value-badge">24 px</span>
             </div>
-            <input type="range" id="paddingInput" class="form-range" min="0" max="100" value="20" oninput="updateSliderVal('padding', this.value)" style="width: 100%;">
+            <input type="range" id="paddingInput" class="form-range" min="0" max="100" value="24" oninput="updateSliderVal('padding', this.value)" style="width: 100%;">
           </div>
 
           <div>
             <div class="slider-row">
               <span>Rounded Corners:</span>
-              <span id="radiusVal" class="slider-value-badge">12 px</span>
+              <span id="radiusVal" class="slider-value-badge">0 px</span>
             </div>
-            <input type="range" id="radiusInput" class="form-range" min="0" max="60" value="12" oninput="updateSliderVal('radius', this.value)" style="width: 100%;">
+            <input type="range" id="radiusInput" class="form-range" min="0" max="60" value="0" oninput="updateSliderVal('radius', this.value)" style="width: 100%;">
           </div>
         </div>
 
         <!-- 4. Canvas Background & Aspect Fit -->
         <div class="control-section">
-          <div class="control-section-title"><i class="fas fa-palette" style="color: #ec4899;"></i> 4. Background & Fitting</div>
+          <div class="control-section-title"><i class="fas fa-palette" style="color: #ec4899;"></i> 4. Background & Alignment</div>
           
           <div>
             <label class="form-label" style="font-size: 0.8rem; margin-bottom: 6px;">Canvas Background:</label>
             <div class="color-swatches-row">
-              <button class="color-swatch transparent-swatch active" data-color="transparent" onclick="setCanvasColor('transparent', this)" title="Transparent"></button>
-              <button class="color-swatch" style="background: #ffffff;" data-color="#ffffff" onclick="setCanvasColor('#ffffff', this)" title="Pure White"></button>
+              <button class="color-swatch active" style="background: #ffffff;" data-color="#ffffff" onclick="setCanvasColor('#ffffff', this)" title="Pure White"></button>
+              <button class="color-swatch transparent-swatch" data-color="transparent" onclick="setCanvasColor('transparent', this)" title="Transparent"></button>
               <button class="color-swatch" style="background: #0f172a;" data-color="#0f172a" onclick="setCanvasColor('#0f172a', this)" title="Studio Dark"></button>
               <button class="color-swatch" style="background: #000000;" data-color="#000000" onclick="setCanvasColor('#000000', this)" title="Pure Black"></button>
               <button class="color-swatch" style="background: #6366f1;" data-color="#6366f1" onclick="setCanvasColor('#6366f1', this)" title="Indigo"></button>
               <button class="color-swatch" style="background: #f43f5e;" data-color="#f43f5e" onclick="setCanvasColor('#f43f5e', this)" title="Rose"></button>
               
               <div class="color-picker-wrapper" title="Pick Custom Color">
-                <input type="color" id="customColorInput" value="#6366f1" onchange="setCanvasColor(this.value, null)">
+                <input type="color" id="customColorInput" value="#ffffff" onchange="setCanvasColor(this.value, null)">
               </div>
             </div>
           </div>
 
           <div style="margin-top: 6px;">
-            <label class="form-label" style="font-size: 0.8rem; margin-bottom: 4px;">Tile Alignment & Sizing:</label>
+            <label class="form-label" style="font-size: 0.8rem; margin-bottom: 4px;">Image Width &amp; Scaling:</label>
             <select id="fitModeSelect" class="form-control" onchange="renderCombinedCanvas()">
-              <option value="contain" selected>Fit Inside Cells (Keep Full Photo)</option>
-              <option value="cover">Fill & Crop Cells (Uniform Grid Tiles)</option>
-              <option value="auto_height">Equalize Heights (Best for Horizontal)</option>
-              <option value="auto_width">Equalize Widths (Best for Vertical)</option>
+              <option value="equal_width" selected>Equalize Widths (All Full Width — Recommended)</option>
+              <option value="contain">Fit Inside Frame (Keep Original Aspect Ratio)</option>
+              <option value="cover">Fill &amp; Uniform Crop (No Empty Margins)</option>
             </select>
           </div>
         </div>
@@ -986,10 +985,10 @@
     // State Management & Multi-Page Pagination
     // ==========================================
     let imageList = []; // Array of { id, name, img, thumbSrc, origW, origH, rotation }
-    let activeLayoutMode = 'grid'; // Default to Smart Grid (ideal for 4-per-page 2x2 collages)
+    let activeLayoutMode = 'vertical'; // Default to Vertical Stack (1 Col)
     let imagesPerPage = 4; // User requested 4 images per page (e.g. 24 images -> 6 pages)
     let currentPageIndex = 0; // 0-based page index
-    let canvasBgColor = 'transparent';
+    let canvasBgColor = '#ffffff'; // Default to crisp white document background
     let currentZoom = 1;
     let renderDebounceTimer = null;
 
@@ -1566,8 +1565,7 @@
 
       // Smart defaults for fit mode
       const fitSelect = document.getElementById('fitModeSelect');
-      if (mode === 'horizontal') fitSelect.value = 'auto_height';
-      else if (mode === 'vertical') fitSelect.value = 'auto_width';
+      if (mode === 'vertical' || mode === 'horizontal') fitSelect.value = 'equal_width';
       else fitSelect.value = 'contain';
 
       renderCombinedCanvas();
@@ -1629,112 +1627,216 @@
         };
       });
 
+      const isMultiPage = (imagesPerPage !== 'all' || targetCanvas !== null || activeLayoutMode === 'document');
+      const isLandscape = (activeLayoutMode === 'horizontal');
+      const SHEET_W = isLandscape ? 3508 : 2480;
+      const SHEET_H = isLandscape ? 2480 : 3508;
+
       let totalWidth = 0;
       let totalHeight = 0;
       const layoutPositions = [];
 
-      if (activeLayoutMode === 'horizontal') {
-        // SIDE-BY-SIDE
-        const targetH = (fitMode === 'auto_height') ? Math.min(...items.map(i => i.h)) : Math.max(...items.map(i => i.h));
-        let currentX = padding;
-        items.forEach(item => {
-          const ratio = (fitMode === 'auto_height') ? (targetH / item.h) : 1;
-          const drawW = item.w * ratio;
-          const drawH = item.h * ratio;
-          layoutPositions.push({ item, x: currentX, y: padding, w: drawW, h: drawH });
-          currentX += drawW + gap;
-        });
-        totalWidth = currentX - gap + padding;
-        totalHeight = (fitMode === 'auto_height' ? targetH : Math.max(...layoutPositions.map(p => p.h))) + (padding * 2);
+      if (isMultiPage) {
+        // Multi-page document / PDF page mode: Fixed standardized A4 dimensions across all pages
+        totalWidth = SHEET_W;
+        totalHeight = SHEET_H;
 
-      } else if (activeLayoutMode === 'vertical') {
-        // TOP-TO-BOTTOM
-        const targetW = (fitMode === 'auto_width') ? Math.min(...items.map(i => i.w)) : Math.max(...items.map(i => i.w));
-        let currentY = padding;
-        items.forEach(item => {
-          const ratio = (fitMode === 'auto_width') ? (targetW / item.w) : 1;
-          const drawW = item.w * ratio;
-          const drawH = item.h * ratio;
-          layoutPositions.push({ item, x: padding, y: currentY, w: drawW, h: drawH });
-          currentY += drawH + gap;
-        });
-        totalWidth = (fitMode === 'auto_width' ? targetW : Math.max(...layoutPositions.map(p => p.w))) + (padding * 2);
-        totalHeight = currentY - gap + padding;
+        const availW = totalWidth - (padding * 2);
+        const availH = totalHeight - (padding * 2);
 
-      } else if (activeLayoutMode === 'grid') {
-        // SMART GRID: Auto 2x2 for 4 photos
-        let cols = parseInt(document.getElementById('gridColsInput').value) || 2;
-        if (items.length <= 4 && document.getElementById('gridColsInput').value === '2') {
-          cols = Math.min(2, items.length);
+        if (activeLayoutMode === 'vertical') {
+          // VERTICAL STACK (1 Col) - Standard uniform presentation
+          const totalGaps = (items.length - 1) * gap;
+          const maxAvailContentH = availH - totalGaps;
+
+          if (fitMode === 'cover') {
+            const slotH = Math.max(10, Math.floor(maxAvailContentH / items.length));
+            let currentY = padding;
+            items.forEach(item => {
+              layoutPositions.push({ item, x: padding, y: currentY, w: availW, h: slotH, mode: 'cover' });
+              currentY += slotH + gap;
+            });
+          } else {
+            // Equalize widths: compute proportional heights at full column width
+            const itemHeights = items.map(item => Math.max(10, Math.round(availW * (item.h / item.w))));
+            const sumHeights = itemHeights.reduce((acc, h) => acc + h, 0);
+
+            // If combined heights exceed sheet, scale down uniformly so all fit neatly
+            const fitScale = (sumHeights > maxAvailContentH) ? (maxAvailContentH / sumHeights) : 1;
+            const uniformW = Math.round(availW * fitScale);
+            const uniformX = padding + Math.round((availW - uniformW) / 2);
+
+            const totalUsedH = Math.round(sumHeights * fitScale) + totalGaps;
+            let currentY = padding + Math.max(0, Math.round((availH - totalUsedH) / 2));
+
+            items.forEach((item, idx) => {
+              const drawH = Math.round(itemHeights[idx] * fitScale);
+              layoutPositions.push({ item, x: uniformX, y: currentY, w: uniformW, h: drawH });
+              currentY += drawH + gap;
+            });
+          }
+
+        } else if (activeLayoutMode === 'horizontal') {
+          // SIDE-BY-SIDE
+          const totalGaps = (items.length - 1) * gap;
+          const maxAvailContentW = availW - totalGaps;
+
+          if (fitMode === 'cover') {
+            const slotW = Math.max(10, Math.floor(maxAvailContentW / items.length));
+            let currentX = padding;
+            items.forEach(item => {
+              layoutPositions.push({ item, x: currentX, y: padding, w: slotW, h: availH, mode: 'cover' });
+              currentX += slotW + gap;
+            });
+          } else {
+            const itemWidths = items.map(item => Math.max(10, Math.round(availH * (item.w / item.h))));
+            const sumWidths = itemWidths.reduce((acc, w) => acc + w, 0);
+
+            const fitScale = (sumWidths > maxAvailContentW) ? (maxAvailContentW / sumWidths) : 1;
+            const uniformH = Math.round(availH * fitScale);
+            const uniformY = padding + Math.round((availH - uniformH) / 2);
+
+            const totalUsedW = Math.round(sumWidths * fitScale) + totalGaps;
+            let currentX = padding + Math.max(0, Math.round((availW - totalUsedW) / 2));
+
+            items.forEach((item, idx) => {
+              const drawW = Math.round(itemWidths[idx] * fitScale);
+              layoutPositions.push({ item, x: currentX, y: uniformY, w: drawW, h: uniformH });
+              currentX += drawW + gap;
+            });
+          }
+
+        } else if (activeLayoutMode === 'grid') {
+          // SMART GRID (e.g. 2x2 for 4 photos per page)
+          let cols = parseInt(document.getElementById('gridColsInput').value) || 2;
+          if (items.length <= 4 && document.getElementById('gridColsInput').value === '2') {
+            cols = Math.min(2, items.length);
+          }
+          cols = Math.max(1, Math.min(cols, items.length));
+          const rows = Math.ceil(items.length / cols);
+
+          const cellW = Math.floor((availW - ((cols - 1) * gap)) / cols);
+          const cellH = Math.floor((availH - ((rows - 1) * gap)) / rows);
+
+          items.forEach((item, idx) => {
+            const col = idx % cols;
+            const row = Math.floor(idx / cols);
+            const cellX = padding + (col * (cellW + gap));
+            const cellY = padding + (row * (cellH + gap));
+
+            if (fitMode === 'cover') {
+              layoutPositions.push({ item, x: cellX, y: cellY, w: cellW, h: cellH, mode: 'cover' });
+            } else {
+              const ratio = Math.min(cellW / item.w, cellH / item.h);
+              const drawW = Math.round(item.w * ratio);
+              const drawH = Math.round(item.h * ratio);
+              const offsetX = cellX + Math.round((cellW - drawW) / 2);
+              const offsetY = cellY + Math.round((cellH - drawH) / 2);
+              layoutPositions.push({ item, x: offsetX, y: offsetY, w: drawW, h: drawH });
+            }
+          });
+
+        } else if (activeLayoutMode === 'document') {
+          // DOCUMENT SHEET PRESET (A4, Letter, Square, Instagram)
+          const sheetFormat = document.getElementById('sheetFormatSelect').value;
+          const formats = {
+            'a4_p': { w: 2480, h: 3508, cols: 2 },
+            'a4_l': { w: 3508, h: 2480, cols: 2 },
+            'sq': { w: 2048, h: 2048, cols: 2 },
+            'story': { w: 1080, h: 1920, cols: 1 },
+            'landscape': { w: 1920, h: 1080, cols: 2 }
+          };
+
+          const preset = formats[sheetFormat] || formats['a4_p'];
+          totalWidth = preset.w;
+          totalHeight = preset.h;
+
+          const docAvailW = totalWidth - (padding * 2);
+          const docAvailH = totalHeight - (padding * 2);
+
+          const cols = items.length === 1 ? 1 : Math.min(preset.cols, items.length);
+          const rows = Math.ceil(items.length / cols);
+
+          const cellW = Math.floor((docAvailW - ((cols - 1) * gap)) / cols);
+          const cellH = Math.floor((docAvailH - ((rows - 1) * gap)) / rows);
+
+          items.forEach((item, idx) => {
+            const col = idx % cols;
+            const row = Math.floor(idx / cols);
+            const cellX = padding + (col * (cellW + gap));
+            const cellY = padding + (row * (cellH + gap));
+
+            if (fitMode === 'cover') {
+              layoutPositions.push({ item, x: cellX, y: cellY, w: cellW, h: cellH, mode: 'cover' });
+            } else {
+              const ratio = Math.min(cellW / item.w, cellH / item.h);
+              const drawW = Math.round(item.w * ratio);
+              const drawH = Math.round(item.h * ratio);
+              const offsetX = cellX + Math.round((cellW - drawW) / 2);
+              const offsetY = cellY + Math.round((cellH - drawH) / 2);
+              layoutPositions.push({ item, x: offsetX, y: offsetY, w: drawW, h: drawH });
+            }
+          });
         }
-        cols = Math.min(cols, items.length);
-        const rows = Math.ceil(items.length / cols);
 
-        const cellW = Math.round(items.reduce((sum, i) => sum + i.w, 0) / items.length);
-        const cellH = Math.round(items.reduce((sum, i) => sum + i.h, 0) / items.length);
+      } else {
+        // Single continuous image stitching (imagesPerPage === 'all')
+        if (activeLayoutMode === 'horizontal') {
+          const targetH = Math.max(...items.map(i => i.h));
+          let currentX = padding;
+          items.forEach(item => {
+            const ratio = (fitMode === 'equal_width' || fitMode === 'auto_height') ? (targetH / item.h) : 1;
+            const drawW = Math.round(item.w * ratio);
+            const drawH = Math.round(item.h * ratio);
+            layoutPositions.push({ item, x: currentX, y: padding, w: drawW, h: drawH });
+            currentX += drawW + gap;
+          });
+          totalWidth = currentX - gap + padding;
+          totalHeight = targetH + (padding * 2);
 
-        totalWidth = (cols * cellW) + ((cols - 1) * gap) + (padding * 2);
-        totalHeight = (rows * cellH) + ((rows - 1) * gap) + (padding * 2);
+        } else if (activeLayoutMode === 'vertical') {
+          const targetW = Math.max(...items.map(i => i.w));
+          let currentY = padding;
+          items.forEach(item => {
+            const ratio = (fitMode === 'equal_width' || fitMode === 'auto_width') ? (targetW / item.w) : 1;
+            const drawW = Math.round(item.w * ratio);
+            const drawH = Math.round(item.h * ratio);
+            const drawX = padding + Math.round((targetW - drawW) / 2);
+            layoutPositions.push({ item, x: drawX, y: currentY, w: drawW, h: drawH });
+            currentY += drawH + gap;
+          });
+          totalWidth = targetW + (padding * 2);
+          totalHeight = currentY - gap + padding;
 
-        items.forEach((item, idx) => {
-          const col = idx % cols;
-          const row = Math.floor(idx / cols);
-          const cellX = padding + (col * (cellW + gap));
-          const cellY = padding + (row * (cellH + gap));
+        } else if (activeLayoutMode === 'grid') {
+          let cols = parseInt(document.getElementById('gridColsInput').value) || 2;
+          cols = Math.min(cols, items.length);
+          const rows = Math.ceil(items.length / cols);
 
-          if (fitMode === 'cover') {
-            layoutPositions.push({ item, x: cellX, y: cellY, w: cellW, h: cellH, mode: 'cover' });
-          } else {
-            const ratio = Math.min(cellW / item.w, cellH / item.h);
-            const drawW = item.w * ratio;
-            const drawH = item.h * ratio;
-            const offsetX = cellX + (cellW - drawW) / 2;
-            const offsetY = cellY + (cellH - drawH) / 2;
-            layoutPositions.push({ item, x: offsetX, y: offsetY, w: drawW, h: drawH });
-          }
-        });
+          const cellW = Math.round(items.reduce((sum, i) => sum + i.w, 0) / items.length);
+          const cellH = Math.round(items.reduce((sum, i) => sum + i.h, 0) / items.length);
 
-      } else if (activeLayoutMode === 'document') {
-        // DOCUMENT SHEET PRESET (A4, Letter, Square, Instagram)
-        const sheetFormat = document.getElementById('sheetFormatSelect').value;
-        const formats = {
-          'a4_p': { w: 2480, h: 3508, cols: 2 },
-          'a4_l': { w: 3508, h: 2480, cols: 2 },
-          'sq': { w: 2048, h: 2048, cols: 2 },
-          'story': { w: 1080, h: 1920, cols: 1 },
-          'landscape': { w: 1920, h: 1080, cols: 2 }
-        };
+          totalWidth = (cols * cellW) + ((cols - 1) * gap) + (padding * 2);
+          totalHeight = (rows * cellH) + ((rows - 1) * gap) + (padding * 2);
 
-        const preset = formats[sheetFormat] || formats['a4_p'];
-        totalWidth = preset.w;
-        totalHeight = preset.h;
+          items.forEach((item, idx) => {
+            const col = idx % cols;
+            const row = Math.floor(idx / cols);
+            const cellX = padding + (col * (cellW + gap));
+            const cellY = padding + (row * (cellH + gap));
 
-        const cols = items.length === 1 ? 1 : Math.min(preset.cols, items.length);
-        const rows = Math.ceil(items.length / cols);
-
-        const availableW = totalWidth - (padding * 2) - ((cols - 1) * gap);
-        const availableH = totalHeight - (padding * 2) - ((rows - 1) * gap);
-
-        const cellW = availableW / cols;
-        const cellH = availableH / rows;
-
-        items.forEach((item, idx) => {
-          const col = idx % cols;
-          const row = Math.floor(idx / cols);
-          const cellX = padding + (col * (cellW + gap));
-          const cellY = padding + (row * (cellH + gap));
-
-          if (fitMode === 'cover') {
-            layoutPositions.push({ item, x: cellX, y: cellY, w: cellW, h: cellH, mode: 'cover' });
-          } else {
-            const ratio = Math.min(cellW / item.w, cellH / item.h);
-            const drawW = item.w * ratio;
-            const drawH = item.h * ratio;
-            const offsetX = cellX + (cellW - drawW) / 2;
-            const offsetY = cellY + (cellH - drawH) / 2;
-            layoutPositions.push({ item, x: offsetX, y: offsetY, w: drawW, h: drawH });
-          }
-        });
+            if (fitMode === 'cover') {
+              layoutPositions.push({ item, x: cellX, y: cellY, w: cellW, h: cellH, mode: 'cover' });
+            } else {
+              const ratio = Math.min(cellW / item.w, cellH / item.h);
+              const drawW = Math.round(item.w * ratio);
+              const drawH = Math.round(item.h * ratio);
+              const offsetX = cellX + Math.round((cellW - drawW) / 2);
+              const offsetY = cellY + Math.round((cellH - drawH) / 2);
+              layoutPositions.push({ item, x: offsetX, y: offsetY, w: drawW, h: drawH });
+            }
+          });
+        }
       }
 
       // Apply resolution scale

@@ -48,16 +48,16 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 
   <style>
-    /* Combiner Studio Layout */
+    /* Combiner Studio Layout - Responsive for Laptops & Desktops */
     .combiner-studio-grid {
       display: grid;
-      grid-template-columns: 1fr 380px;
-      gap: 24px;
+      grid-template-columns: minmax(0, 1fr) 350px;
+      gap: 18px;
       align-items: start;
-      margin-top: 24px;
+      margin-top: 16px;
     }
 
-    @media (max-width: 1024px) {
+    @media (max-width: 900px) {
       .combiner-studio-grid {
         grid-template-columns: 1fr;
       }
@@ -68,11 +68,11 @@
       background: var(--bg-secondary);
       border: 1px solid var(--border-color);
       border-radius: var(--radius-xl);
-      padding: 24px;
+      padding: 18px;
       box-shadow: var(--shadow-md);
       display: flex;
       flex-direction: column;
-      gap: 20px;
+      gap: 16px;
       position: relative;
     }
 
@@ -81,14 +81,14 @@
       justify-content: space-between;
       align-items: center;
       flex-wrap: wrap;
-      gap: 12px;
-      padding-bottom: 16px;
+      gap: 10px;
+      padding-bottom: 14px;
       border-bottom: 1px solid var(--border-color);
     }
 
     .canvas-preview-container {
-      min-height: 420px;
-      max-height: 720px;
+      min-height: 280px;
+      max-height: 56vh;
       background: #090d16;
       background-image: 
         linear-gradient(45deg, rgba(255,255,255,0.04) 25%, transparent 25%),
@@ -102,7 +102,7 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: 24px;
+      padding: 16px;
       border: 1px solid var(--border-color);
       position: relative;
       box-shadow: inset 0 0 30px rgba(0,0,0,0.6);
@@ -110,10 +110,14 @@
 
     #mainCanvas {
       max-width: 100%;
-      max-height: 640px;
-      object-fit: contain;
-      box-shadow: 0 12px 36px rgba(0,0,0,0.5);
+      max-height: 52vh;
+      width: auto;
+      height: auto;
+      display: block;
+      margin: 0 auto;
+      box-shadow: 0 10px 32px rgba(0,0,0,0.5);
       border-radius: 4px;
+      background: #ffffff;
       transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
@@ -673,20 +677,32 @@
         <div class="viewport-card">
           
           <div class="viewport-toolbar">
-            <div style="display: flex; align-items: center; gap: 10px;">
+            <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
               <span id="canvasDimBadge" class="status-badge online" style="font-family: var(--font-mono, monospace); font-size: 0.78rem;">
-                <i class="fas fa-expand"></i> 0 × 0 px
+                <i class="fas fa-expand"></i> 2,480 × 3,508 px
               </span>
               <span id="imageCountBadge" style="font-size: 0.8rem; color: var(--text-secondary); font-weight: 700;">
                 0 Images
               </span>
             </div>
 
-            <div style="display: flex; gap: 8px; align-items: center;">
-              <button class="btn btn-secondary btn-sm" onclick="zoomCanvas(-0.15)" title="Zoom Out"><i class="fas fa-magnifying-glass-minus"></i></button>
-              <button class="btn btn-secondary btn-sm" onclick="resetCanvasZoom()" title="Reset Zoom"><i class="fas fa-compress"></i> Fit</button>
-              <button class="btn btn-secondary btn-sm" onclick="zoomCanvas(0.15)" title="Zoom In"><i class="fas fa-magnifying-glass-plus"></i></button>
-              <button class="btn btn-secondary btn-sm" onclick="clearAllImages()" title="Clear All" style="color: #ef4444;"><i class="fas fa-trash-can"></i></button>
+            <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
+              <!-- Laptop Quick Actions: Primary Download buttons right above canvas -->
+              <button type="button" class="btn btn-primary btn-sm" onclick="downloadAllAsPdf()" style="font-weight: 800; background: linear-gradient(135deg, #4f46e5, #7c3aed); box-shadow: 0 4px 12px rgba(79, 70, 229, 0.35); padding: 5px 13px;">
+                <i class="fas fa-file-pdf"></i> Download PDF
+              </button>
+              <button type="button" class="btn btn-secondary btn-sm" onclick="downloadAllPagesZip()" title="Download All Pages as ZIP" style="font-weight: 700;">
+                <i class="fas fa-file-zipper"></i> ZIP
+              </button>
+              <label class="btn btn-secondary btn-sm" style="cursor: pointer; font-weight: 700; margin: 0;" title="Add More Images">
+                <i class="fas fa-plus"></i> Add
+                <input type="file" accept="image/*" multiple style="display: none;" onchange="handleFilesSelected(event)">
+              </label>
+              <div style="height: 18px; width: 1px; background: var(--border-color); margin: 0 2px;"></div>
+              <button type="button" class="btn btn-secondary btn-sm" onclick="zoomCanvas(-0.15)" title="Zoom Out"><i class="fas fa-magnifying-glass-minus"></i></button>
+              <button type="button" class="btn btn-secondary btn-sm" onclick="resetCanvasZoom()" title="Reset Zoom"><i class="fas fa-compress"></i> Fit</button>
+              <button type="button" class="btn btn-secondary btn-sm" onclick="zoomCanvas(0.15)" title="Zoom In"><i class="fas fa-magnifying-glass-plus"></i></button>
+              <button type="button" class="btn btn-secondary btn-sm" onclick="clearAllImages()" title="Clear All" style="color: #ef4444;"><i class="fas fa-trash-can"></i></button>
             </div>
           </div>
 
@@ -1107,7 +1123,13 @@
       hideLoadingModal();
 
       if (imageList.length > 0) {
-        document.getElementById('studioWorkspace').style.display = 'grid';
+        // Optimize for laptops: collapse large dropzone banner so workspace is at top
+        const dropzoneEl = document.getElementById('dropzone');
+        if (dropzoneEl) dropzoneEl.style.display = 'none';
+
+        const workspaceEl = document.getElementById('studioWorkspace');
+        workspaceEl.style.display = 'grid';
+
         if (isMobile) {
           const mobBar = document.getElementById('mobileCombinerBar');
           if (mobBar) mobBar.style.display = 'flex';
@@ -1124,6 +1146,9 @@
         renderCombinedCanvas();
         updatePaginationUI();
         showToast(`Successfully loaded ${successCount} photos!`, 'success');
+
+        // Smooth scroll workspace into view on laptop screens
+        workspaceEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
       }
     }
 
@@ -1192,6 +1217,7 @@
                   name: file.name || `Photo ${imageList.length + 1}`,
                   src: scaledImg.src,
                   img: scaledImg,
+                  canvasSource: canvas, // Instant hardware-buffered canvas prevents blank frames
                   thumbSrc: thumbData,
                   origW: targetW,
                   origH: targetH,
@@ -1267,6 +1293,7 @@
           name: `Sample Photo ${idx + 1}`,
           src: dataUrl,
           img: img,
+          canvasSource: canvas,
           thumbSrc: dataUrl,
           origW: 600,
           origH: 450,
@@ -1278,7 +1305,12 @@
       document.getElementById('imagesPerPageSelect').value = '4';
       currentPageIndex = 0;
 
-      document.getElementById('studioWorkspace').style.display = 'grid';
+      const dropzoneEl = document.getElementById('dropzone');
+      if (dropzoneEl) dropzoneEl.style.display = 'none';
+
+      const workspaceEl = document.getElementById('studioWorkspace');
+      workspaceEl.style.display = 'grid';
+
       if (isMobileDevice()) {
         const mobBar = document.getElementById('mobileCombinerBar');
         if (mobBar) mobBar.style.display = 'flex';
@@ -1290,6 +1322,7 @@
 
       const totalP = Math.ceil(count / 4);
       showToast(`Loaded ${count} sample photos (${totalP} pages with 4 photos per page)!`, 'success');
+      workspaceEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
 
     // ==========================================
@@ -1528,6 +1561,8 @@
       imageList.splice(index, 1);
       if (imageList.length === 0) {
         document.getElementById('studioWorkspace').style.display = 'none';
+        const dropzoneEl = document.getElementById('dropzone');
+        if (dropzoneEl) dropzoneEl.style.display = 'block';
         const mobBar = document.getElementById('mobileCombinerBar');
         if (mobBar) mobBar.style.display = 'none';
         showToast('All photos removed.', 'info');
@@ -1545,6 +1580,8 @@
         imageList = [];
         currentPageIndex = 0;
         document.getElementById('studioWorkspace').style.display = 'none';
+        const dropzoneEl = document.getElementById('dropzone');
+        if (dropzoneEl) dropzoneEl.style.display = 'block';
         const mobBar = document.getElementById('mobileCombinerBar');
         if (mobBar) mobBar.style.display = 'none';
         showToast('Workspace cleared.', 'info');
@@ -1849,18 +1886,19 @@
       ctx.save();
       ctx.scale(scaleMultiplier, scaleMultiplier);
 
-      // Clear & Background
+      // Clear & Background - Always fill solid white sheet by default for crisp documents
       ctx.clearRect(0, 0, totalWidth, totalHeight);
-      if (canvasBgColor !== 'transparent') {
-        ctx.fillStyle = canvasBgColor;
-        ctx.fillRect(0, 0, totalWidth, totalHeight);
-      }
+      const effectiveBg = (canvasBgColor && canvasBgColor !== 'transparent') ? canvasBgColor : '#ffffff';
+      ctx.fillStyle = effectiveBg;
+      ctx.fillRect(0, 0, totalWidth, totalHeight);
 
       // Draw each image tile
       layoutPositions.forEach(pos => {
+        if (!pos.item) return;
+
         ctx.save();
 
-        if (radius > 0) {
+        if (radius > 0 && typeof ctx.roundRect === 'function') {
           ctx.beginPath();
           ctx.roundRect(pos.x, pos.y, pos.w, pos.h, radius);
           ctx.clip();
@@ -1870,23 +1908,29 @@
         const centerCellY = pos.y + pos.h / 2;
 
         ctx.translate(centerCellX, centerCellY);
-        ctx.rotate((pos.item.rotation * Math.PI) / 180);
+        ctx.rotate(((pos.item.rotation || 0) * Math.PI) / 180);
 
         const isRotated = (pos.item.rotation === 90 || pos.item.rotation === 270);
-        const origW = pos.item.origW;
-        const origH = pos.item.origH;
+        const origW = pos.item.origW || 400;
+        const origH = pos.item.origH || 400;
 
-        if (pos.mode === 'cover') {
-          const targetW = isRotated ? pos.h : pos.w;
-          const targetH = isRotated ? pos.w : pos.h;
-          const scale = Math.max(targetW / origW, targetH / origH);
-          const dw = origW * scale;
-          const dh = origH * scale;
-          ctx.drawImage(pos.item.img, -dw / 2, -dh / 2, dw, dh);
-        } else {
-          const dw = isRotated ? pos.h : pos.w;
-          const dh = isRotated ? pos.w : pos.h;
-          ctx.drawImage(pos.item.img, -dw / 2, -dh / 2, dw, dh);
+        const sourceDrawable = (pos.item.canvasSource || pos.item.img);
+
+        try {
+          if (pos.mode === 'cover') {
+            const targetW = isRotated ? pos.h : pos.w;
+            const targetH = isRotated ? pos.w : pos.h;
+            const scale = Math.max(targetW / origW, targetH / origH);
+            const dw = origW * scale;
+            const dh = origH * scale;
+            ctx.drawImage(sourceDrawable, -dw / 2, -dh / 2, dw, dh);
+          } else {
+            const dw = isRotated ? pos.h : pos.w;
+            const dh = isRotated ? pos.w : pos.h;
+            ctx.drawImage(sourceDrawable, -dw / 2, -dh / 2, dw, dh);
+          }
+        } catch (err) {
+          console.warn('Canvas tile draw warning:', err);
         }
 
         ctx.restore();

@@ -43,6 +43,10 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link rel="stylesheet" href="css/theme.css">
 
+  <!-- PDF & ZIP Export Libraries -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+
   <style>
     /* Combiner Studio Layout */
     .combiner-studio-grid {
@@ -373,6 +377,188 @@
       cursor: pointer;
       background: none;
     }
+
+    /* Multi-Page Navigation Bar */
+    .page-navigation-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      padding: 10px 16px;
+      margin-bottom: 14px;
+      gap: 12px;
+      flex-wrap: wrap;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .page-nav-controls {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .page-indicator-pill {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--bg-primary);
+      border: 1px solid var(--border-color);
+      padding: 6px 16px;
+      border-radius: 99px;
+      font-size: 0.88rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+    }
+
+    .page-indicator-pill .highlight {
+      color: var(--primary);
+      font-weight: 800;
+    }
+
+    .page-details-text {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      font-weight: 600;
+    }
+
+    /* Thumbnail Strip Page Group Separator */
+    .page-group-separator {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 0 6px;
+      height: 84px;
+      flex-shrink: 0;
+      user-select: none;
+    }
+
+    .page-group-pill {
+      background: rgba(99, 102, 241, 0.12);
+      color: var(--primary);
+      border: 1px solid rgba(99, 102, 241, 0.3);
+      border-radius: 99px;
+      padding: 4px 10px;
+      font-size: 0.72rem;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      white-space: nowrap;
+      box-shadow: 0 2px 5px rgba(99, 102, 241, 0.1);
+    }
+
+    /* Mobile Memory-Safe Loading Modal */
+    .combiner-loading-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.78);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 999999;
+      padding: 20px;
+      animation: fadeIn 0.2s ease;
+    }
+
+    .combiner-loading-card {
+      background: var(--bg-primary);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-xl);
+      padding: 32px 26px;
+      width: 100%;
+      max-width: 440px;
+      text-align: center;
+      box-shadow: 0 24px 60px rgba(0, 0, 0, 0.45);
+    }
+
+    .combiner-loading-spinner-wrap {
+      position: relative;
+      width: 68px;
+      height: 68px;
+      margin: 0 auto 18px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .combiner-loading-spinner {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      border: 4px solid rgba(99, 102, 241, 0.18);
+      border-top-color: var(--primary);
+      animation: spin 0.8s linear infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .combiner-progress-track {
+      width: 100%;
+      height: 8px;
+      background: var(--bg-tertiary);
+      border-radius: 99px;
+      overflow: hidden;
+      margin: 14px 0 8px;
+      border: 1px solid var(--border-color);
+    }
+
+    .combiner-progress-bar {
+      width: 0%;
+      height: 100%;
+      background: linear-gradient(90deg, #6366f1, #8b5cf6, #ec4899);
+      border-radius: 99px;
+      transition: width 0.15s ease;
+    }
+
+    .combiner-loading-meta {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      font-weight: 600;
+    }
+
+    /* Mobile Bottom Floating Bar */
+    .mobile-combiner-bar {
+      display: none;
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: var(--bg-glass, rgba(255, 255, 255, 0.95));
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border-top: 1px solid var(--border-color);
+      padding: 10px 16px;
+      z-index: 999;
+      box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.12);
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+    }
+
+    @media (max-width: 768px) {
+      .mobile-combiner-bar {
+        display: flex;
+      }
+      .tool-page-wrapper {
+        padding-bottom: 78px;
+      }
+      .canvas-preview-container {
+        min-height: 300px;
+        max-height: 480px;
+        padding: 12px;
+      }
+    }
   </style>
 
   <link rel="manifest" href="manifest.json">
@@ -465,11 +651,14 @@
       <input type="file" id="imageFileInput" class="dropzone-input" accept="image/*" multiple onchange="handleFilesSelected(event)">
       <div class="dropzone-icon"><i class="fas fa-images"></i></div>
       <div class="dropzone-title">Click to Select Multiple Photos or Drag & Drop Here</div>
-      <div class="dropzone-subtitle">Select 2 to 50+ images (PNG, JPG, WebP, SVG, GIF) &bull; 100% private browser processing</div>
+      <div class="dropzone-subtitle">Select 2 to 50+ images (PNG, JPG, WebP) &bull; 100% private phone-compatible batch processing</div>
       
-      <div style="margin-top: 14px; display: flex; gap: 8px; justify-content: center; flex-wrap: wrap;">
-        <button type="button" class="btn btn-secondary btn-sm" onclick="loadSampleImages(event)" style="font-weight: 700;">
-          <i class="fas fa-wand-magic-sparkles"></i> Try with Sample Images
+      <div style="margin-top: 14px; display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;">
+        <button type="button" class="btn btn-secondary btn-sm" onclick="loadSampleImages(4, event)" style="font-weight: 700;">
+          <i class="fas fa-wand-magic-sparkles"></i> Try 4 Sample Photos
+        </button>
+        <button type="button" class="btn btn-primary btn-sm" onclick="loadSampleImages(24, event)" style="font-weight: 700; background: linear-gradient(135deg, #4f46e5, #06b6d4);">
+          <i class="fas fa-bolt"></i> Try 24 Photos (4 per Page &bull; 6 Pages Demo)
         </button>
       </div>
     </div>
@@ -501,20 +690,43 @@
             </div>
           </div>
 
-          <!-- Interactive Canvas Area -->
+          <!-- Multi-Page Navigation Bar (4-4-4-4 Pagination) -->
+          <div id="pageNavBar" class="page-navigation-bar" style="display: none;">
+            <div class="page-nav-controls">
+              <button class="btn btn-secondary btn-sm" id="btnPrevPage" onclick="prevPage()" title="Previous Page">
+                <i class="fas fa-chevron-left"></i> Prev Page
+              </button>
+              <div class="page-indicator-pill">
+                <span>Page <strong id="currentPageNum" class="highlight">1</strong> of <strong id="totalPageNum">6</strong></span>
+                <span id="pageImagesRange" class="page-details-text">(Photos 1–4 of 24)</span>
+              </div>
+              <button class="btn btn-secondary btn-sm" id="btnNextPage" onclick="nextPage()" title="Next Page">
+                Next Page <i class="fas fa-chevron-right"></i>
+              </button>
+            </div>
+            
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <span style="font-size: 0.78rem; font-weight: 700; color: var(--text-secondary);">Jump to:</span>
+              <select id="quickPageSelect" class="form-control form-control-sm" style="width: auto; min-width: 150px; padding: 4px 8px; font-size: 0.82rem;" onchange="jumpToPage(this.value)">
+                <!-- Generated dynamically -->
+              </select>
+            </div>
+          </div>
+
+          <!-- Interactive Canvas Area (Supports Touch Swipe on Mobile) -->
           <div class="canvas-preview-container" id="canvasContainer">
             <canvas id="mainCanvas"></canvas>
           </div>
 
         </div>
 
-        <!-- Thumbnail Reordering Strip -->
+        <!-- Thumbnail Reordering Strip with Page Boundary Separators -->
         <div class="images-strip-card">
           <div class="images-strip-header">
             <div style="font-size: 0.88rem; font-weight: 800; color: var(--text-primary); display: flex; align-items: center; gap: 8px;">
               <i class="fas fa-arrow-down-1-9" style="color: var(--primary);"></i> Image Order & Transforms
             </div>
-            <span style="font-size: 0.75rem; color: var(--text-secondary);">Use arrows to rearrange</span>
+            <span style="font-size: 0.75rem; color: var(--text-secondary);">Use arrows to rearrange &bull; Click to jump to page</span>
           </div>
 
           <div class="thumbs-scroll-list" id="thumbsList">
@@ -527,27 +739,64 @@
       <!-- Right Column: Sidebar Controls -->
       <div class="controls-sidebar">
         
-        <!-- 1. Layout Mode Selection -->
+        <!-- 1. Photos per Page / Batch Pagination -->
         <div class="control-section">
-          <div class="control-section-title"><i class="fas fa-table-cells" style="color: var(--primary);"></i> 1. Arrangement Layout</div>
+          <div class="control-section-title" style="justify-content: space-between;">
+            <span style="display: flex; align-items: center; gap: 8px;">
+              <i class="fas fa-copy" style="color: #6366f1;"></i> 1. Combine per Page / Sheet
+            </span>
+            <span class="status-badge" style="background: rgba(99, 102, 241, 0.12); color: var(--primary); font-size: 0.7rem; padding: 2px 8px; border-radius: 99px; font-weight: 800;">
+              Batch Split
+            </span>
+          </div>
+
+          <label class="form-label" style="font-size: 0.8rem; margin-bottom: 4px;">Images per Page / Sheet:</label>
+          <select id="imagesPerPageSelect" class="form-control" onchange="setImagesPerPage(this.value)">
+            <option value="4" selected>4 Photos per Page (2×2 Grid) — Recommended</option>
+            <option value="2">2 Photos per Page (2-Up)</option>
+            <option value="1">1 Photo per Page (Individual Sheets)</option>
+            <option value="6">6 Photos per Page (2×3 Grid)</option>
+            <option value="8">8 Photos per Page (2×4 Grid)</option>
+            <option value="9">9 Photos per Page (3×3 Grid)</option>
+            <option value="all">All Photos on 1 Single Page (Classic)</option>
+            <option value="custom">Custom Photos per Page...</option>
+          </select>
+
+          <div id="customPerPageWrapper" style="display: none; margin-top: 8px;">
+            <div class="slider-row">
+              <span>Custom Count per Page:</span>
+              <span id="customPerPageVal" class="slider-value-badge">4 Photos</span>
+            </div>
+            <input type="number" id="customPerPageInput" class="form-control" min="1" max="50" value="4" oninput="updateCustomPerPage(this.value)">
+          </div>
+
+          <div id="paginationSummaryBadge" style="margin-top: 8px; font-size: 0.8rem; color: var(--text-secondary); background: var(--bg-tertiary); padding: 8px 12px; border-radius: var(--radius-sm); border: 1px solid var(--border-color); display: flex; align-items: center; justify-content: space-between;">
+            <span><i class="fas fa-layer-group" style="color: var(--primary);"></i> Generated:</span>
+            <strong id="totalPagesSummary" style="color: var(--primary);">6 Pages (4 photos/page)</strong>
+          </div>
+        </div>
+
+        <!-- 2. Arrangement Layout -->
+        <div class="control-section">
+          <div class="control-section-title"><i class="fas fa-table-cells" style="color: var(--primary);"></i> 2. Page Arrangement</div>
           
           <div class="layout-buttons-grid">
-            <button type="button" class="layout-mode-btn active" data-mode="horizontal" onclick="setLayoutMode('horizontal')">
-              <i class="fas fa-arrows-left-right"></i> Side-by-Side
-            </button>
-            <button type="button" class="layout-mode-btn" data-mode="vertical" onclick="setLayoutMode('vertical')">
-              <i class="fas fa-arrows-up-down"></i> Top-to-Bottom
-            </button>
-            <button type="button" class="layout-mode-btn" data-mode="grid" onclick="setLayoutMode('grid')">
+            <button type="button" class="layout-mode-btn active" data-mode="grid" onclick="setLayoutMode('grid')">
               <i class="fas fa-border-all"></i> Smart Grid
             </button>
             <button type="button" class="layout-mode-btn" data-mode="document" onclick="setLayoutMode('document')">
               <i class="fas fa-file-lines"></i> Sheet / Page
             </button>
+            <button type="button" class="layout-mode-btn" data-mode="horizontal" onclick="setLayoutMode('horizontal')">
+              <i class="fas fa-arrows-left-right"></i> Side-by-Side
+            </button>
+            <button type="button" class="layout-mode-btn" data-mode="vertical" onclick="setLayoutMode('vertical')">
+              <i class="fas fa-arrows-up-down"></i> Top-to-Bottom
+            </button>
           </div>
 
           <!-- Grid Columns Sub-option (Only in grid mode) -->
-          <div id="gridColumnsOption" style="display: none; margin-top: 6px;">
+          <div id="gridColumnsOption" style="display: block; margin-top: 6px;">
             <div class="slider-row">
               <span>Grid Columns:</span>
               <span id="gridColsVal" class="slider-value-badge">2 Columns</span>
@@ -568,9 +817,9 @@
           </div>
         </div>
 
-        <!-- 2. Spacing, Padding & Rounding -->
+        <!-- 3. Spacing, Padding & Rounding -->
         <div class="control-section">
-          <div class="control-section-title"><i class="fas fa-sliders" style="color: #f59e0b;"></i> 2. Spacing & Borders</div>
+          <div class="control-section-title"><i class="fas fa-sliders" style="color: #f59e0b;"></i> 3. Spacing & Borders</div>
           
           <div>
             <div class="slider-row">
@@ -597,9 +846,9 @@
           </div>
         </div>
 
-        <!-- 3. Canvas Background & Aspect Fit -->
+        <!-- 4. Canvas Background & Aspect Fit -->
         <div class="control-section">
-          <div class="control-section-title"><i class="fas fa-palette" style="color: #ec4899;"></i> 3. Background & Fitting</div>
+          <div class="control-section-title"><i class="fas fa-palette" style="color: #ec4899;"></i> 4. Background & Fitting</div>
           
           <div>
             <label class="form-label" style="font-size: 0.8rem; margin-bottom: 6px;">Canvas Background:</label>
@@ -628,9 +877,9 @@
           </div>
         </div>
 
-        <!-- 4. Export & Download -->
+        <!-- 5. Export & Download -->
         <div class="control-section">
-          <div class="control-section-title"><i class="fas fa-download" style="color: #10b981;"></i> 4. Export & Download</div>
+          <div class="control-section-title"><i class="fas fa-download" style="color: #10b981;"></i> 5. Export & Download</div>
           
           <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
             <div>
@@ -651,12 +900,24 @@
             </div>
           </div>
 
-          <div style="display: flex; flex-direction: column; gap: 10px; margin-top: 6px;">
-            <button type="button" class="btn btn-primary" style="width: 100%; font-weight: 800; justify-content: center; padding: 12px;" onclick="downloadCombinedImage()">
-              <i class="fas fa-download"></i> Download Combined Image
+          <div style="display: flex; flex-direction: column; gap: 8px; margin-top: 10px;">
+            <!-- Download All as Multi-Page PDF -->
+            <button type="button" class="btn btn-primary" id="btnDownloadPdf" style="width: 100%; font-weight: 800; justify-content: center; padding: 12px; background: linear-gradient(135deg, #4f46e5, #7c3aed);" onclick="downloadAllAsPdf()">
+              <i class="fas fa-file-pdf"></i> Download All as PDF (<span id="pdfPageCountLabel">6 Pages</span>)
             </button>
+
+            <!-- Download All Pages as ZIP -->
+            <button type="button" class="btn btn-secondary" id="btnDownloadZip" style="width: 100%; font-weight: 700; justify-content: center;" onclick="downloadAllPagesZip()">
+              <i class="fas fa-file-zipper" style="color: #f59e0b;"></i> Download All Pages (ZIP Archive)
+            </button>
+
+            <!-- Download Current Page Image -->
+            <button type="button" class="btn btn-secondary" id="btnDownloadCurrent" style="width: 100%; font-weight: 700; justify-content: center;" onclick="downloadCurrentPageImage()">
+              <i class="fas fa-image" style="color: #10b981;"></i> Download Current Page (<span id="currentPageNumLabel">Page 1</span>)
+            </button>
+
             <button type="button" class="btn btn-secondary btn-sm" style="width: 100%; justify-content: center; font-weight: 700;" onclick="copyCombinedToClipboard()">
-              <i class="fas fa-clipboard"></i> Copy Image to Clipboard
+              <i class="fas fa-clipboard"></i> Copy Current Page to Clipboard
             </button>
           </div>
         </div>
@@ -666,6 +927,51 @@
     </div>
 
   </main>
+
+  <!-- High-Capacity Mobile Memory-Safe Loading Modal -->
+  <div id="combinerLoadingBackdrop" class="combiner-loading-backdrop" role="dialog" aria-modal="true">
+    <div class="combiner-loading-card">
+      <div class="combiner-loading-spinner-wrap">
+        <div class="combiner-loading-spinner"></div>
+        <i id="combinerLoadingIcon" class="fas fa-layer-group" style="position: absolute; font-size: 1.5rem; color: var(--primary);"></i>
+      </div>
+      <h3 id="combinerLoadingTitle" style="margin:0 0 6px; font-size:1.25rem; color:var(--text-primary); font-weight:800;">
+        Processing Photos &amp; Documents
+      </h3>
+      <p id="combinerLoadingSub" style="margin:0 0 14px; font-size:0.9rem; color:var(--primary); font-weight:700; word-break:break-all;">
+        Preparing photos in memory-safe mobile mode...
+      </p>
+      <div class="combiner-progress-track">
+        <div class="combiner-progress-bar" id="combinerProgressBar"></div>
+      </div>
+      <div class="combiner-loading-meta">
+        <span id="combinerLoadingCount">0 of 0 photos</span>
+        <span id="combinerLoadingPercent">0%</span>
+      </div>
+      <div style="margin-top: 14px;">
+        <span class="status-badge" style="background: rgba(16, 185, 129, 0.12); color: #10b981; font-size: 0.74rem; padding: 4px 10px; border-radius: 99px; font-weight: 700; border: 1px solid rgba(16, 185, 129, 0.25);">
+          <i class="fas fa-bolt"></i> High-Speed Mobile Batch Engine (24+ Photos Safe)
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Mobile Bottom Floating Action Bar -->
+  <div id="mobileCombinerBar" class="mobile-combiner-bar">
+    <button class="btn btn-secondary btn-sm" id="mobBtnPrev" onclick="prevPage()" title="Previous Page" style="min-width: 44px;">
+      <i class="fas fa-chevron-left"></i>
+    </button>
+    <div style="display: flex; flex-direction: column; align-items: center; text-align: center;">
+      <span id="mobPageLabel" style="font-weight: 800; font-size: 0.85rem; color: var(--text-primary);">Page 1/6</span>
+      <span id="mobSubLabel" style="font-size: 0.7rem; color: var(--text-muted);">(4 photos/page)</span>
+    </div>
+    <button class="btn btn-secondary btn-sm" id="mobBtnNext" onclick="nextPage()" title="Next Page" style="min-width: 44px;">
+      <i class="fas fa-chevron-right"></i>
+    </button>
+    <button class="btn btn-primary btn-sm" onclick="downloadAllAsPdf()" style="font-weight: 800; padding: 6px 14px; background: linear-gradient(135deg, #4f46e5, #7c3aed);">
+      <i class="fas fa-file-pdf"></i> PDF
+    </button>
+  </div>
 
   <footer class="app-footer">
     <div class="app-container">
@@ -677,15 +983,22 @@
   <script src="js/app.js"></script>
   <script>
     // ==========================================
-    // State Management
+    // State Management & Multi-Page Pagination
     // ==========================================
-    let imageList = []; // Array of { id, src, img, rotation }
-    let activeLayoutMode = 'horizontal';
+    let imageList = []; // Array of { id, name, img, thumbSrc, origW, origH, rotation }
+    let activeLayoutMode = 'grid'; // Default to Smart Grid (ideal for 4-per-page 2x2 collages)
+    let imagesPerPage = 4; // User requested 4 images per page (e.g. 24 images -> 6 pages)
+    let currentPageIndex = 0; // 0-based page index
     let canvasBgColor = 'transparent';
     let currentZoom = 1;
     let renderDebounceTimer = null;
 
-    // Initialize Dropzone
+    // Detect mobile device / touch screen
+    const isMobileDevice = () => (window.innerWidth <= 768 || /Android|iPhone|iPad|iPod/i.test(navigator.userAgent));
+
+    // ==========================================
+    // Initialization & Drag-Drop Handling
+    // ==========================================
     document.addEventListener('DOMContentLoaded', () => {
       const dropzone = document.getElementById('dropzone');
       if (dropzone) {
@@ -704,6 +1017,41 @@
           }
         });
       }
+
+      // Touch swipe gestures on canvas container for mobile phones
+      const container = document.getElementById('canvasContainer');
+      if (container) {
+        let touchStartX = 0;
+        let touchStartY = 0;
+        container.addEventListener('touchstart', (e) => {
+          if (e.touches.length === 1) {
+            touchStartX = e.touches[0].clientX;
+            touchStartY = e.touches[0].clientY;
+          }
+        }, { passive: true });
+
+        container.addEventListener('touchend', (e) => {
+          if (e.changedTouches.length === 1) {
+            const deltaX = e.changedTouches[0].clientX - touchStartX;
+            const deltaY = e.changedTouches[0].clientY - touchStartY;
+            // Detect deliberate horizontal swipe
+            if (Math.abs(deltaX) > 55 && Math.abs(deltaX) > Math.abs(deltaY) * 1.5) {
+              if (deltaX < 0) {
+                nextPage(); // Swipe Left -> Next Page
+              } else {
+                prevPage(); // Swipe Right -> Prev Page
+              }
+            }
+          }
+        }, { passive: true });
+      }
+
+      // Keyboard arrow shortcuts (when not typing in an input)
+      window.addEventListener('keydown', (e) => {
+        if (['INPUT', 'SELECT', 'TEXTAREA'].includes(document.activeElement.tagName)) return;
+        if (e.key === 'ArrowRight') nextPage();
+        if (e.key === 'ArrowLeft') prevPage();
+      });
     });
 
     function handleFilesSelected(e) {
@@ -712,32 +1060,148 @@
       }
     }
 
-    function loadFiles(files) {
+    // ==========================================
+    // High-Capacity Mobile Memory-Safe File Loader
+    // ==========================================
+    async function loadFiles(files) {
       const imageFiles = files.filter(f => f.type.startsWith('image/'));
       if (imageFiles.length === 0) {
         showToast('Please select valid image files.', 'warning');
         return;
       }
 
-      let loadedCount = 0;
-      imageFiles.forEach(file => {
+      // Resolution constraint:
+      // Phone camera photos can be 48MP (uncompressed ~192MB raw canvas).
+      // Downscale incoming photos to 1600px on mobile or 2000px on desktop to prevent tab crashes.
+      const isMobile = isMobileDevice();
+      const maxDim = (isMobile || (imageList.length + imageFiles.length > 10)) ? 1600 : 2200;
+
+      showLoadingModal(
+        'Loading Photos in Safe Mode',
+        `Processing 0 of ${imageFiles.length} photos...`,
+        0,
+        imageFiles.length
+      );
+
+      let successCount = 0;
+      for (let i = 0; i < imageFiles.length; i++) {
+        const file = imageFiles[i];
+        updateLoadingProgress(
+          i + 1,
+          imageFiles.length,
+          file.name,
+          `Optimizing photo ${i + 1} of ${imageFiles.length}...`
+        );
+
+        // Yield to browser event loop so UI updates and Garbage Collector can free previous buffers
+        await new Promise(r => setTimeout(r, 15));
+
+        try {
+          const item = await processSingleImageFile(file, maxDim);
+          imageList.push(item);
+          successCount++;
+        } catch (err) {
+          console.warn('Failed to decode image:', file.name, err);
+        }
+      }
+
+      hideLoadingModal();
+
+      if (imageList.length > 0) {
+        document.getElementById('studioWorkspace').style.display = 'grid';
+        if (isMobile) {
+          const mobBar = document.getElementById('mobileCombinerBar');
+          if (mobBar) mobBar.style.display = 'flex';
+        }
+
+        // If batch is large and default was 'all', set to 4 per page
+        if (imageList.length > 4 && imagesPerPage === 'all') {
+          imagesPerPage = 4;
+          document.getElementById('imagesPerPageSelect').value = '4';
+        }
+
+        currentPageIndex = 0;
+        renderThumbsStrip();
+        renderCombinedCanvas();
+        updatePaginationUI();
+        showToast(`Successfully loaded ${successCount} photos!`, 'success');
+      }
+    }
+
+    // Downsamples raw photo to memory-safe canvas and creates a lightweight thumbnail
+    function processSingleImageFile(file, maxDimension = 1800) {
+      return new Promise((resolve, reject) => {
         const reader = new FileReader();
+        reader.onerror = () => reject(new Error('Failed to read file: ' + file.name));
         reader.onload = (e) => {
           const img = new Image();
+          img.onerror = () => reject(new Error('Failed to decode image data: ' + file.name));
           img.onload = () => {
-            imageList.push({
-              id: 'img_' + Math.random().toString(36).substring(2, 9),
-              src: e.target.result,
-              img: img,
-              rotation: 0
-            });
+            try {
+              const origW = img.naturalWidth || img.width || 800;
+              const origH = img.naturalHeight || img.height || 600;
 
-            loadedCount++;
-            if (loadedCount === imageFiles.length) {
-              document.getElementById('studioWorkspace').style.display = 'grid';
-              renderThumbsStrip();
-              renderCombinedCanvas();
-              showToast(`Loaded ${imageFiles.length} photos into studio!`, 'success');
+              // Smart proportional scaling
+              let targetW = origW;
+              let targetH = origH;
+              if (Math.max(origW, origH) > maxDimension) {
+                if (origW >= origH) {
+                  targetW = maxDimension;
+                  targetH = Math.round((origH / origW) * maxDimension);
+                } else {
+                  targetH = maxDimension;
+                  targetW = Math.round((origW / origH) * maxDimension);
+                }
+              }
+
+              // Main working canvas
+              const canvas = document.createElement('canvas');
+              canvas.width = targetW;
+              canvas.height = targetH;
+              const ctx = canvas.getContext('2d', { alpha: true });
+              ctx.imageSmoothingEnabled = true;
+              ctx.imageSmoothingQuality = 'high';
+              ctx.drawImage(img, 0, 0, targetW, targetH);
+
+              // Tiny thumbnail canvas (max 160px) for ultra-fast, zero-lag thumb strip
+              const thumbMax = 160;
+              let tw = targetW;
+              let th = targetH;
+              if (Math.max(targetW, targetH) > thumbMax) {
+                if (targetW >= targetH) {
+                  tw = thumbMax;
+                  th = Math.round((targetH / targetW) * thumbMax);
+                } else {
+                  th = thumbMax;
+                  tw = Math.round((targetW / targetH) * thumbMax);
+                }
+              }
+              const thumbCanvas = document.createElement('canvas');
+              thumbCanvas.width = tw;
+              thumbCanvas.height = th;
+              const tCtx = thumbCanvas.getContext('2d', { alpha: true });
+              tCtx.imageSmoothingEnabled = true;
+              tCtx.imageSmoothingQuality = 'medium';
+              tCtx.drawImage(canvas, 0, 0, tw, th);
+              const thumbData = thumbCanvas.toDataURL('image/jpeg', 0.85);
+
+              // Clean image element holding the scaled version
+              const scaledImg = new Image();
+              scaledImg.onload = () => {
+                resolve({
+                  id: 'img_' + Math.random().toString(36).substring(2, 9),
+                  name: file.name || `Photo ${imageList.length + 1}`,
+                  src: scaledImg.src,
+                  img: scaledImg,
+                  thumbSrc: thumbData,
+                  origW: targetW,
+                  origH: targetH,
+                  rotation: 0
+                });
+              };
+              scaledImg.src = canvas.toDataURL('image/jpeg', 0.92);
+            } catch (err) {
+              reject(err);
             }
           };
           img.src = e.target.result;
@@ -746,60 +1210,247 @@
       });
     }
 
-    // Sample Images for 1-Click Instant Demo
-    function loadSampleImages(e) {
+    // ==========================================
+    // Sample Demo Generator (Supports 4 or 24 Photos)
+    // ==========================================
+    function loadSampleImages(count = 4, e) {
       if (e) e.stopPropagation();
-      const samples = [
-        { label: 'Sunset Sky', color1: '#ff7e5f', color2: '#feb47b' },
-        { label: 'Ocean Wave', color1: '#00c6ff', color2: '#0072ff' },
-        { label: 'Neon Cyber', color1: '#f857a6', color2: '#ff5858' },
-        { label: 'Emerald Forest', color1: '#11998e', color2: '#38ef7d' }
-      ];
+      // Handle legacy caller where e was first param
+      if (typeof count === 'object' && count !== null) {
+        count = 4;
+      }
 
       imageList = [];
-      let loaded = 0;
+      const samplePalettes = [
+        ['#ff7e5f', '#feb47b', 'Sunset Sky'],
+        ['#00c6ff', '#0072ff', 'Ocean Wave'],
+        ['#f857a6', '#ff5858', 'Neon Cyber'],
+        ['#11998e', '#38ef7d', 'Emerald Forest'],
+        ['#8a2387', '#e94057', 'Purple Velvet'],
+        ['#4776e6', '#8e54e9', 'Cosmic Blue'],
+        ['#f12711', '#f5af19', 'Golden Hour'],
+        ['#1d976c', '#93f9b9', 'Mint Breeze'],
+        ['#3a1c71', '#d76d77', 'Twilight Glow'],
+        ['#0f2027', '#2c5364', 'Deep Arctic'],
+        ['#c31432', '#240b36', 'Ruby Night'],
+        ['#2b5876', '#4e4376', 'Midnight Horizon']
+      ];
 
-      samples.forEach((s, idx) => {
+      for (let idx = 0; idx < count; idx++) {
+        const colorPair = samplePalettes[idx % samplePalettes.length];
         const canvas = document.createElement('canvas');
         canvas.width = 600;
         canvas.height = 450;
         const ctx = canvas.getContext('2d');
 
         const grad = ctx.createLinearGradient(0, 0, 600, 450);
-        grad.addColorStop(0, s.color1);
-        grad.addColorStop(1, s.color2);
+        grad.addColorStop(0, colorPair[0]);
+        grad.addColorStop(1, colorPair[1]);
         ctx.fillStyle = grad;
         ctx.fillRect(0, 0, 600, 450);
 
-        ctx.fillStyle = 'rgba(255, 255, 255, 0.9)';
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.95)';
         ctx.font = 'bold 36px "Plus Jakarta Sans", sans-serif';
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
-        ctx.fillText(`Sample Photo #${idx + 1}`, 300, 210);
+        ctx.fillText(`Photo #${idx + 1}`, 300, 200);
 
-        ctx.font = '500 20px "Plus Jakarta Sans", sans-serif';
-        ctx.fillStyle = 'rgba(255, 255, 255, 0.75)';
-        ctx.fillText(s.label, 300, 260);
+        ctx.font = '600 20px "Plus Jakarta Sans", sans-serif';
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.85)';
+        ctx.fillText(colorPair[2], 300, 250);
 
-        const dataUrl = canvas.toDataURL('image/png');
+        const dataUrl = canvas.toDataURL('image/jpeg', 0.9);
         const img = new Image();
-        img.onload = () => {
-          imageList.push({
-            id: 'sample_' + idx,
-            src: dataUrl,
-            img: img,
-            rotation: 0
-          });
-          loaded++;
-          if (loaded === samples.length) {
-            document.getElementById('studioWorkspace').style.display = 'grid';
-            renderThumbsStrip();
-            renderCombinedCanvas();
-            showToast('Loaded 4 sample demo images!', 'success');
-          }
-        };
         img.src = dataUrl;
-      });
+
+        imageList.push({
+          id: 'sample_' + idx,
+          name: `Sample Photo ${idx + 1}`,
+          src: dataUrl,
+          img: img,
+          thumbSrc: dataUrl,
+          origW: 600,
+          origH: 450,
+          rotation: 0
+        });
+      }
+
+      imagesPerPage = 4;
+      document.getElementById('imagesPerPageSelect').value = '4';
+      currentPageIndex = 0;
+
+      document.getElementById('studioWorkspace').style.display = 'grid';
+      if (isMobileDevice()) {
+        const mobBar = document.getElementById('mobileCombinerBar');
+        if (mobBar) mobBar.style.display = 'flex';
+      }
+
+      renderThumbsStrip();
+      renderCombinedCanvas();
+      updatePaginationUI();
+
+      const totalP = Math.ceil(count / 4);
+      showToast(`Loaded ${count} sample photos (${totalP} pages with 4 photos per page)!`, 'success');
+    }
+
+    // ==========================================
+    // Pagination & Multi-Page Computations
+    // ==========================================
+    function getEffectivePerPage() {
+      if (imagesPerPage === 'all') return imageList.length || 1;
+      if (imagesPerPage === 'custom') {
+        const val = parseInt(document.getElementById('customPerPageInput').value) || 4;
+        return Math.max(1, val);
+      }
+      const val = parseInt(imagesPerPage) || 4;
+      return Math.max(1, val);
+    }
+
+    function getTotalPages() {
+      if (imageList.length === 0) return 1;
+      const perPage = getEffectivePerPage();
+      return Math.ceil(imageList.length / perPage);
+    }
+
+    function getPageImages(pageIndex) {
+      if (imageList.length === 0) return [];
+      const perPage = getEffectivePerPage();
+      const start = pageIndex * perPage;
+      const end = Math.min(start + perPage, imageList.length);
+      return imageList.slice(start, end);
+    }
+
+    function setImagesPerPage(val) {
+      imagesPerPage = val;
+      const customWrap = document.getElementById('customPerPageWrapper');
+      if (customWrap) {
+        customWrap.style.display = (val === 'custom') ? 'block' : 'none';
+      }
+      currentPageIndex = 0;
+      renderThumbsStrip();
+      renderCombinedCanvas();
+      updatePaginationUI();
+    }
+
+    function updateCustomPerPage(val) {
+      const num = parseInt(val) || 4;
+      document.getElementById('customPerPageVal').textContent = `${num} Photos`;
+      currentPageIndex = 0;
+      scheduleRender();
+      updatePaginationUI();
+    }
+
+    function nextPage() {
+      const total = getTotalPages();
+      if (currentPageIndex < total - 1) {
+        currentPageIndex++;
+        renderThumbsStrip();
+        renderCombinedCanvas();
+        updatePaginationUI();
+      }
+    }
+
+    function prevPage() {
+      if (currentPageIndex > 0) {
+        currentPageIndex--;
+        renderThumbsStrip();
+        renderCombinedCanvas();
+        updatePaginationUI();
+      }
+    }
+
+    function jumpToPage(pageIdx) {
+      const target = parseInt(pageIdx);
+      if (!isNaN(target) && target >= 0 && target < getTotalPages()) {
+        currentPageIndex = target;
+        renderThumbsStrip();
+        renderCombinedCanvas();
+        updatePaginationUI();
+      }
+    }
+
+    function jumpToImagePage(imgIdx) {
+      const perPage = getEffectivePerPage();
+      const targetPage = Math.floor(imgIdx / perPage);
+      if (targetPage !== currentPageIndex) {
+        currentPageIndex = targetPage;
+        renderThumbsStrip();
+        renderCombinedCanvas();
+        updatePaginationUI();
+      }
+    }
+
+    function updatePaginationUI() {
+      const totalPages = getTotalPages();
+      const perPage = getEffectivePerPage();
+
+      if (currentPageIndex >= totalPages) {
+        currentPageIndex = Math.max(0, totalPages - 1);
+      }
+
+      const start = currentPageIndex * perPage;
+      const end = Math.min(start + perPage, imageList.length);
+
+      // Viewport indicators
+      const curEl = document.getElementById('currentPageNum');
+      const totEl = document.getElementById('totalPageNum');
+      const rangeEl = document.getElementById('pageImagesRange');
+      const navBar = document.getElementById('pageNavBar');
+
+      if (curEl) curEl.textContent = currentPageIndex + 1;
+      if (totEl) totEl.textContent = totalPages;
+      if (rangeEl) {
+        rangeEl.textContent = (imageList.length > 0) ? `(Photos ${start + 1}–${end} of ${imageList.length})` : '';
+      }
+
+      if (navBar) {
+        navBar.style.display = (totalPages > 1) ? 'flex' : 'none';
+      }
+
+      // Prev / Next button states
+      const btnPrev = document.getElementById('btnPrevPage');
+      const btnNext = document.getElementById('btnNextPage');
+      if (btnPrev) btnPrev.disabled = (currentPageIndex === 0);
+      if (btnNext) btnNext.disabled = (currentPageIndex >= totalPages - 1);
+
+      // Quick jump dropdown
+      const quickSelect = document.getElementById('quickPageSelect');
+      if (quickSelect) {
+        let options = '';
+        for (let p = 0; p < totalPages; p++) {
+          const pStart = p * perPage + 1;
+          const pEnd = Math.min((p + 1) * perPage, imageList.length);
+          options += `<option value="${p}" ${p === currentPageIndex ? 'selected' : ''}>Page ${p + 1} (${pStart}–${pEnd})</option>`;
+        }
+        quickSelect.innerHTML = options;
+      }
+
+      // Labels in export buttons
+      const pdfLabel = document.getElementById('pdfPageCountLabel');
+      if (pdfLabel) pdfLabel.textContent = `${totalPages} ${totalPages === 1 ? 'Page' : 'Pages'}`;
+
+      const curLabel = document.getElementById('currentPageNumLabel');
+      if (curLabel) curLabel.textContent = `Page ${currentPageIndex + 1}`;
+
+      // Sidebar summary badge
+      const summaryEl = document.getElementById('totalPagesSummary');
+      if (summaryEl) {
+        if (imagesPerPage === 'all') {
+          summaryEl.textContent = `1 Page (All ${imageList.length} photos)`;
+        } else {
+          summaryEl.textContent = `${totalPages} Pages (${perPage} photos/page)`;
+        }
+      }
+
+      // Mobile bottom bar
+      const mobPrev = document.getElementById('mobBtnPrev');
+      const mobNext = document.getElementById('mobBtnNext');
+      const mobLabel = document.getElementById('mobPageLabel');
+      const mobSub = document.getElementById('mobSubLabel');
+      if (mobPrev) mobPrev.disabled = (currentPageIndex === 0);
+      if (mobNext) mobNext.disabled = (currentPageIndex >= totalPages - 1);
+      if (mobLabel) mobLabel.textContent = `Page ${currentPageIndex + 1}/${totalPages}`;
+      if (mobSub) mobSub.textContent = (imagesPerPage === 'all') ? 'All photos' : `(${perPage} photos/page)`;
     }
 
     // ==========================================
@@ -809,28 +1460,49 @@
       const container = document.getElementById('thumbsList');
       if (!container) return;
 
-      container.innerHTML = imageList.map((item, idx) => `
-        <div class="thumb-item" data-id="${item.id}" title="Image ${idx + 1}">
-          <span class="thumb-badge">#${idx + 1}</span>
-          <img src="${item.src}" alt="Thumb ${idx + 1}" style="transform: rotate(${item.rotation}deg);">
-          <div class="thumb-actions">
-            ${idx > 0 ? `<button type="button" class="thumb-btn move-btn" onclick="moveImage(${idx}, -1)" title="Move Left"><i class="fas fa-chevron-left"></i></button>` : ''}
-            <button type="button" class="thumb-btn" onclick="rotateImage(${idx})" title="Rotate 90°"><i class="fas fa-rotate-right"></i></button>
-            <button type="button" class="thumb-btn" onclick="removeImage(${idx})" title="Remove"><i class="fas fa-xmark"></i></button>
-            ${idx < imageList.length - 1 ? `<button type="button" class="thumb-btn move-btn" onclick="moveImage(${idx}, 1)" title="Move Right"><i class="fas fa-chevron-right"></i></button>` : ''}
+      const perPage = getEffectivePerPage();
+      const totalPages = getTotalPages();
+
+      let html = '';
+      imageList.forEach((item, idx) => {
+        const itemPage = Math.floor(idx / perPage);
+        const isFirstInPage = (idx % perPage === 0);
+
+        // Add page group separator before first image of each page
+        if (totalPages > 1 && isFirstInPage) {
+          html += `
+            <div class="page-group-separator" title="Page ${itemPage + 1}">
+              <span class="page-group-pill"><i class="fas fa-file"></i> Page ${itemPage + 1}</span>
+            </div>
+          `;
+        }
+
+        const isCurrentPage = (itemPage === currentPageIndex);
+
+        html += `
+          <div class="thumb-item ${isCurrentPage ? 'active' : ''}" data-id="${item.id}" onclick="jumpToImagePage(${idx})" title="${escapeHtml(item.name || 'Photo')} &bull; Page ${itemPage + 1}">
+            <span class="thumb-badge">#${idx + 1}</span>
+            <img src="${item.thumbSrc || item.src}" alt="Thumb ${idx + 1}" style="transform: rotate(${item.rotation}deg);">
+            <div class="thumb-actions" onclick="event.stopPropagation()">
+              ${idx > 0 ? `<button type="button" class="thumb-btn move-btn" onclick="moveImage(${idx}, -1)" title="Move Earlier"><i class="fas fa-chevron-left"></i></button>` : ''}
+              <button type="button" class="thumb-btn" onclick="rotateImage(${idx})" title="Rotate 90°"><i class="fas fa-rotate-right"></i></button>
+              <button type="button" class="thumb-btn" onclick="removeImage(${idx})" title="Remove"><i class="fas fa-xmark"></i></button>
+              ${idx < imageList.length - 1 ? `<button type="button" class="thumb-btn move-btn" onclick="moveImage(${idx}, 1)" title="Move Later"><i class="fas fa-chevron-right"></i></button>` : ''}
+            </div>
           </div>
-        </div>
-      `).join('');
+        `;
+      });
 
       // Add More Button
-      const addBtn = document.createElement('label');
-      addBtn.className = 'add-more-thumb-btn';
-      addBtn.innerHTML = `
-        <i class="fas fa-plus" style="font-size: 1.2rem;"></i>
-        <span>Add</span>
-        <input type="file" accept="image/*" multiple style="display: none;" onchange="handleFilesSelected(event)">
+      html += `
+        <label class="add-more-thumb-btn">
+          <i class="fas fa-plus" style="font-size: 1.2rem;"></i>
+          <span>Add</span>
+          <input type="file" accept="image/*" multiple style="display: none;" onchange="handleFilesSelected(event)">
+        </label>
       `;
-      container.appendChild(addBtn);
+
+      container.innerHTML = html;
 
       const countEl = document.getElementById('imageCountBadge');
       if (countEl) countEl.textContent = `${imageList.length} Photos`;
@@ -844,6 +1516,7 @@
       imageList[targetIndex] = temp;
       renderThumbsStrip();
       renderCombinedCanvas();
+      updatePaginationUI();
     }
 
     function rotateImage(index) {
@@ -856,17 +1529,25 @@
       imageList.splice(index, 1);
       if (imageList.length === 0) {
         document.getElementById('studioWorkspace').style.display = 'none';
+        const mobBar = document.getElementById('mobileCombinerBar');
+        if (mobBar) mobBar.style.display = 'none';
         showToast('All photos removed.', 'info');
       } else {
+        const total = getTotalPages();
+        if (currentPageIndex >= total) currentPageIndex = Math.max(0, total - 1);
         renderThumbsStrip();
         renderCombinedCanvas();
+        updatePaginationUI();
       }
     }
 
     function clearAllImages() {
       if (confirm('Clear all photos from the workspace?')) {
         imageList = [];
+        currentPageIndex = 0;
         document.getElementById('studioWorkspace').style.display = 'none';
+        const mobBar = document.getElementById('mobileCombinerBar');
+        if (mobBar) mobBar.style.display = 'none';
         showToast('Workspace cleared.', 'info');
       }
     }
@@ -911,16 +1592,16 @@
 
     function scheduleRender() {
       clearTimeout(renderDebounceTimer);
-      renderDebounceTimer = setTimeout(renderCombinedCanvas, 40);
+      renderDebounceTimer = setTimeout(() => renderCombinedCanvas(), 40);
     }
 
     // ==========================================
-    // Canvas Rendering Engine
+    // Canvas Rendering Engine (Per Page)
     // ==========================================
-    function renderCombinedCanvas() {
+    function renderCombinedCanvas(targetCanvas = null, pageIndex = currentPageIndex) {
       if (imageList.length === 0) return;
 
-      const canvas = document.getElementById('mainCanvas');
+      const canvas = targetCanvas || document.getElementById('mainCanvas');
       if (!canvas) return;
       const ctx = canvas.getContext('2d');
 
@@ -928,13 +1609,17 @@
       const padding = parseInt(document.getElementById('paddingInput').value) || 0;
       const radius = parseInt(document.getElementById('radiusInput').value) || 0;
       const fitMode = document.getElementById('fitModeSelect').value;
-      const scaleMultiplier = parseInt(document.getElementById('exportScale').value) || 1;
+      const scaleMultiplier = targetCanvas ? 1 : (parseInt(document.getElementById('exportScale').value) || 1);
 
-      // Calculate transformed natural dimensions for each image
-      const items = imageList.map(item => {
+      // Get images ONLY for this specific page
+      const pageItems = getPageImages(pageIndex);
+      if (pageItems.length === 0) return;
+
+      // Calculate transformed natural dimensions for each image on this page
+      const items = pageItems.map(item => {
         const isRotated = (item.rotation === 90 || item.rotation === 270);
-        const nw = item.img.naturalWidth || item.img.width || 400;
-        const nh = item.img.naturalHeight || item.img.height || 400;
+        const nw = item.origW || item.img.naturalWidth || item.img.width || 400;
+        const nh = item.origH || item.img.naturalHeight || item.img.height || 400;
         return {
           ...item,
           w: isRotated ? nh : nw,
@@ -951,7 +1636,6 @@
       if (activeLayoutMode === 'horizontal') {
         // SIDE-BY-SIDE
         const targetH = (fitMode === 'auto_height') ? Math.min(...items.map(i => i.h)) : Math.max(...items.map(i => i.h));
-        
         let currentX = padding;
         items.forEach(item => {
           const ratio = (fitMode === 'auto_height') ? (targetH / item.h) : 1;
@@ -960,14 +1644,12 @@
           layoutPositions.push({ item, x: currentX, y: padding, w: drawW, h: drawH });
           currentX += drawW + gap;
         });
-
         totalWidth = currentX - gap + padding;
         totalHeight = (fitMode === 'auto_height' ? targetH : Math.max(...layoutPositions.map(p => p.h))) + (padding * 2);
 
       } else if (activeLayoutMode === 'vertical') {
         // TOP-TO-BOTTOM
         const targetW = (fitMode === 'auto_width') ? Math.min(...items.map(i => i.w)) : Math.max(...items.map(i => i.w));
-        
         let currentY = padding;
         items.forEach(item => {
           const ratio = (fitMode === 'auto_width') ? (targetW / item.w) : 1;
@@ -976,16 +1658,18 @@
           layoutPositions.push({ item, x: padding, y: currentY, w: drawW, h: drawH });
           currentY += drawH + gap;
         });
-
         totalWidth = (fitMode === 'auto_width' ? targetW : Math.max(...layoutPositions.map(p => p.w))) + (padding * 2);
         totalHeight = currentY - gap + padding;
 
       } else if (activeLayoutMode === 'grid') {
-        // SMART GRID
-        const cols = parseInt(document.getElementById('gridColsInput').value) || 2;
+        // SMART GRID: Auto 2x2 for 4 photos
+        let cols = parseInt(document.getElementById('gridColsInput').value) || 2;
+        if (items.length <= 4 && document.getElementById('gridColsInput').value === '2') {
+          cols = Math.min(2, items.length);
+        }
+        cols = Math.min(cols, items.length);
         const rows = Math.ceil(items.length / cols);
-        
-        // Base cell dimension
+
         const cellW = Math.round(items.reduce((sum, i) => sum + i.w, 0) / items.length);
         const cellH = Math.round(items.reduce((sum, i) => sum + i.h, 0) / items.length);
 
@@ -1011,11 +1695,11 @@
         });
 
       } else if (activeLayoutMode === 'document') {
-        // DOCUMENT SHEET PRESET
+        // DOCUMENT SHEET PRESET (A4, Letter, Square, Instagram)
         const sheetFormat = document.getElementById('sheetFormatSelect').value;
         const formats = {
           'a4_p': { w: 2480, h: 3508, cols: 2 },
-          'a4_l': { w: 3508, h: 2480, cols: 3 },
+          'a4_l': { w: 3508, h: 2480, cols: 2 },
           'sq': { w: 2048, h: 2048, cols: 2 },
           'story': { w: 1080, h: 1920, cols: 1 },
           'landscape': { w: 1920, h: 1080, cols: 2 }
@@ -1074,7 +1758,6 @@
       layoutPositions.forEach(pos => {
         ctx.save();
 
-        // Rounded Clipping Path
         if (radius > 0) {
           ctx.beginPath();
           ctx.roundRect(pos.x, pos.y, pos.w, pos.h, radius);
@@ -1092,7 +1775,6 @@
         const origH = pos.item.origH;
 
         if (pos.mode === 'cover') {
-          // Centered Cover Crop
           const targetW = isRotated ? pos.h : pos.w;
           const targetH = isRotated ? pos.w : pos.h;
           const scale = Math.max(targetW / origW, targetH / origH);
@@ -1100,7 +1782,6 @@
           const dh = origH * scale;
           ctx.drawImage(pos.item.img, -dw / 2, -dh / 2, dw, dh);
         } else {
-          // Exact Fit
           const dw = isRotated ? pos.h : pos.w;
           const dh = isRotated ? pos.w : pos.h;
           ctx.drawImage(pos.item.img, -dw / 2, -dh / 2, dw, dh);
@@ -1111,10 +1792,12 @@
 
       ctx.restore();
 
-      // Update resolution badge in toolbar
-      const dimBadge = document.getElementById('canvasDimBadge');
-      if (dimBadge) {
-        dimBadge.innerHTML = `<i class="fas fa-expand"></i> ${finalW.toLocaleString()} × ${finalH.toLocaleString()} px`;
+      // Update resolution badge in toolbar if this is main viewport canvas
+      if (!targetCanvas) {
+        const dimBadge = document.getElementById('canvasDimBadge');
+        if (dimBadge) {
+          dimBadge.innerHTML = `<i class="fas fa-expand"></i> ${finalW.toLocaleString()} × ${finalH.toLocaleString()} px`;
+        }
       }
     }
 
@@ -1134,9 +1817,145 @@
     }
 
     // ==========================================
-    // Export & Clipboard
+    // Multi-Page Export Engines (PDF, ZIP, Image)
     // ==========================================
-    function downloadCombinedImage() {
+    async function downloadAllAsPdf() {
+      if (imageList.length === 0) return;
+      if (!window.jspdf || !window.jspdf.jsPDF) {
+        showToast('PDF library is loading, please try again in a moment.', 'warning');
+        return;
+      }
+
+      const totalPages = getTotalPages();
+      showLoadingModal(
+        'Compiling Multi-Page PDF',
+        `Rendering Page 1 of ${totalPages}...`,
+        1,
+        totalPages
+      );
+
+      try {
+        const { jsPDF } = window.jspdf;
+        const isLandscape = (activeLayoutMode === 'horizontal');
+        const doc = new jsPDF({
+          orientation: isLandscape ? 'landscape' : 'portrait',
+          unit: 'mm',
+          format: 'a4'
+        });
+
+        const pageWidth = doc.internal.pageSize.getWidth();
+        const pageHeight = doc.internal.pageSize.getHeight();
+
+        for (let p = 0; p < totalPages; p++) {
+          if (p > 0) doc.addPage('a4', isLandscape ? 'landscape' : 'portrait');
+
+          updateLoadingProgress(
+            p + 1,
+            totalPages,
+            `Page ${p + 1} of ${totalPages}`,
+            `Rendering page ${p + 1} of ${totalPages} into PDF...`
+          );
+          // Yield to event loop to paint progress and garbage collect
+          await new Promise(r => setTimeout(r, 20));
+
+          const offCanvas = document.createElement('canvas');
+          renderCombinedCanvas(offCanvas, p);
+
+          const imgData = offCanvas.toDataURL('image/jpeg', 0.92);
+
+          const margin = 6;
+          const availW = pageWidth - (margin * 2);
+          const availH = pageHeight - (margin * 2);
+
+          const ratio = Math.min(availW / offCanvas.width, availH / offCanvas.height);
+          const drawW = offCanvas.width * ratio;
+          const drawH = offCanvas.height * ratio;
+          const posX = margin + (availW - drawW) / 2;
+          const posY = margin + (availH - drawH) / 2;
+
+          doc.addImage(imgData, 'JPEG', posX, posY, drawW, drawH, undefined, 'FAST');
+        }
+
+        const filename = `aibots_merged_${totalPages}pages_${Date.now()}.pdf`;
+        doc.save(filename);
+        showToast(`✅ Downloaded ${totalPages}-page PDF document!`, 'success');
+      } catch (err) {
+        console.error('PDF export error:', err);
+        showToast('PDF generation failed: ' + err.message, 'error');
+      } finally {
+        hideLoadingModal();
+      }
+    }
+
+    async function downloadAllPagesZip() {
+      if (imageList.length === 0) return;
+      const totalPages = getTotalPages();
+
+      showLoadingModal(
+        'Packaging ZIP Archive',
+        `Rendering Page 1 of ${totalPages}...`,
+        1,
+        totalPages
+      );
+
+      try {
+        const format = document.getElementById('exportFormat').value;
+        const mimeType = (format === 'jpeg') ? 'image/jpeg' : (format === 'webp') ? 'image/webp' : 'image/png';
+        const ext = (format === 'jpeg') ? 'jpg' : format;
+
+        if (window.JSZip) {
+          const zip = new window.JSZip();
+
+          for (let p = 0; p < totalPages; p++) {
+            updateLoadingProgress(
+              p + 1,
+              totalPages,
+              `Page ${p + 1} of ${totalPages}`,
+              `Rendering page ${p + 1} of ${totalPages}...`
+            );
+            await new Promise(r => setTimeout(r, 20));
+
+            const offCanvas = document.createElement('canvas');
+            renderCombinedCanvas(offCanvas, p);
+
+            const dataUrl = offCanvas.toDataURL(mimeType, 0.92);
+            const base64Data = dataUrl.split(',')[1];
+            zip.file(`merged_page_${p + 1}.${ext}`, base64Data, { base64: true });
+          }
+
+          updateLoadingProgress(totalPages, totalPages, 'Compressing archive...', 'Generating downloadable ZIP file...');
+          await new Promise(r => setTimeout(r, 20));
+
+          const zipBlob = await zip.generateAsync({ type: 'blob' });
+          const a = document.createElement('a');
+          a.href = URL.createObjectURL(zipBlob);
+          a.download = `aibots_merged_${totalPages}pages_${Date.now()}.zip`;
+          a.click();
+          setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+
+          showToast(`✅ Exported ${totalPages} pages in ZIP archive!`, 'success');
+        } else {
+          // Fallback: sequential image downloads
+          for (let p = 0; p < totalPages; p++) {
+            const offCanvas = document.createElement('canvas');
+            renderCombinedCanvas(offCanvas, p);
+            const a = document.createElement('a');
+            a.href = offCanvas.toDataURL(mimeType, 0.92);
+            a.download = `aibots_merged_page_${p + 1}.${ext}`;
+            a.click();
+            await new Promise(r => setTimeout(r, 250));
+          }
+          showToast(`✅ Downloaded ${totalPages} page images!`, 'success');
+        }
+      } catch (err) {
+        console.error('ZIP export error:', err);
+        showToast('Export failed: ' + err.message, 'error');
+      } finally {
+        hideLoadingModal();
+      }
+    }
+
+    function downloadCurrentPageImage() {
       const canvas = document.getElementById('mainCanvas');
       if (!canvas || imageList.length === 0) return;
 
@@ -1144,13 +1963,21 @@
       const mimeType = (format === 'jpeg') ? 'image/jpeg' : (format === 'webp') ? 'image/webp' : 'image/png';
       const ext = (format === 'jpeg') ? 'jpg' : format;
 
+      const totalPages = getTotalPages();
+      const pageLabel = (totalPages > 1) ? `_page_${currentPageIndex + 1}_of_${totalPages}` : '';
+
       const dataUrl = canvas.toDataURL(mimeType, 0.95);
       const a = document.createElement('a');
       a.href = dataUrl;
-      a.download = `aibots_combined_${activeLayoutMode}_${Date.now()}.${ext}`;
+      a.download = `aibots_merged${pageLabel}_${Date.now()}.${ext}`;
       a.click();
 
-      showToast(`Exported combined image (${canvas.width}×${canvas.height}px)!`, 'success');
+      showToast(`Exported Page ${currentPageIndex + 1} (${canvas.width}×${canvas.height}px)!`, 'success');
+    }
+
+    // Legacy handler fallback
+    function downloadCombinedImage() {
+      downloadCurrentPageImage();
     }
 
     async function copyCombinedToClipboard() {
@@ -1166,12 +1993,57 @@
           await navigator.clipboard.write([
             new ClipboardItem({ 'image/png': blob })
           ]);
-          showToast('✅ Combined image copied to clipboard!', 'success');
+          showToast(`✅ Page ${currentPageIndex + 1} copied to clipboard!`, 'success');
         }, 'image/png');
       } catch (err) {
-        showToast('Clipboard access denied. Please use Download button.', 'warning');
+        showToast('Clipboard access denied. Please use the Download button.', 'warning');
       }
     }
+
+    // ==========================================
+    // Loading Modal Helpers
+    // ==========================================
+    function showLoadingModal(title, sub, current, total) {
+      const backdrop = document.getElementById('combinerLoadingBackdrop');
+      if (!backdrop) return;
+      document.getElementById('combinerLoadingTitle').textContent = title || 'Processing Photos';
+      document.getElementById('combinerLoadingSub').textContent = sub || 'Working...';
+      const pct = Math.round((current / Math.max(1, total)) * 100);
+      document.getElementById('combinerProgressBar').style.width = `${pct}%`;
+      document.getElementById('combinerLoadingCount').textContent = `${current} of ${total} photos`;
+      document.getElementById('combinerLoadingPercent').textContent = `${pct}%`;
+      backdrop.style.display = 'flex';
+    }
+
+    function updateLoadingProgress(current, total, name, sub) {
+      const bar = document.getElementById('combinerProgressBar');
+      const countEl = document.getElementById('combinerLoadingCount');
+      const pctEl = document.getElementById('combinerLoadingPercent');
+      const subEl = document.getElementById('combinerLoadingSub');
+      if (!bar) return;
+      const pct = Math.min(100, Math.round((current / Math.max(1, total)) * 100));
+      bar.style.width = `${pct}%`;
+      if (countEl) countEl.textContent = `${current} of ${total}`;
+      if (pctEl) pctEl.textContent = `${pct}%`;
+      if (subEl && sub) subEl.textContent = sub;
+    }
+
+    function hideLoadingModal() {
+      const backdrop = document.getElementById('combinerLoadingBackdrop');
+      if (backdrop) backdrop.style.display = 'none';
+    }
+
+    function escapeHtml(text) {
+      return String(text).replace(/[<>&'"]/g, c => {
+        if (c === '<') return '&lt;';
+        if (c === '>') return '&gt;';
+        if (c === '&') return '&amp;';
+        if (c === "'") return '&#39;';
+        if (c === '"') return '&quot;';
+        return c;
+      });
+    }
+  </script>
   </script>
 </body>
 </html>

@@ -153,20 +153,131 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 12px;
-      padding: 8px 18px;
-      background: rgba(15, 23, 42, 0.95);
+      gap: 8px;
+      padding: 6px 14px;
+      background: rgba(15, 23, 42, 0.96);
       backdrop-filter: blur(16px);
       border-bottom: 1px solid rgba(255, 255, 255, 0.08);
       z-index: 50;
       flex-shrink: 0;
-      min-height: 54px;
+      min-height: 50px;
+      width: 100%;
+      box-sizing: border-box;
+      overflow-x: auto;
+      overflow-y: hidden;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+    }
+    .reader-toolbar::-webkit-scrollbar {
+      display: none;
     }
 
     .reader-toolbar-group {
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: 6px;
+      flex-shrink: 0;
+    }
+
+    .reader-toolbar-group-right {
+      margin-left: auto;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    /* Responsive Phone & Laptop Breakpoints */
+    @media (max-width: 1120px) {
+      .reader-btn span:not(#readerZoomLabel) {
+        display: none; /* Show clean compact icons on laptops & tablets */
+      }
+      .reader-doc-badge {
+        max-width: 120px;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .reader-toolbar {
+        padding: 5px 8px;
+        min-height: 46px;
+        gap: 5px;
+      }
+      .reader-doc-badge {
+        display: none; /* Save space on phone screens */
+      }
+      .reader-divider {
+        display: none;
+      }
+      #btnFitPage, #readerZoomBtn {
+        display: none;
+      }
+      .reader-page-box {
+        padding: 2px 5px;
+        font-size: 0.76rem;
+      }
+      .reader-page-box input {
+        width: 32px;
+        padding: 2px;
+        font-size: 0.76rem;
+      }
+      .reader-btn {
+        padding: 5px 7px;
+        font-size: 0.78rem;
+      }
+      .reader-btn-icon {
+        width: 32px;
+        height: 32px;
+      }
+      /* Viewport and Page layout on mobile phone */
+      .reader-viewport {
+        padding: 8px 4px 60px !important;
+      }
+      .reader-continuous-wrap, .reader-single-page-wrap {
+        width: 100% !important;
+        padding-top: 4px !important;
+      }
+      .reader-single-page-wrap img,
+      .reader-continuous-page img {
+        width: 100% !important;
+        max-width: 100% !important;
+        height: auto !important;
+        border-radius: 0 !important;
+        box-shadow: 0 4px 16px rgba(0,0,0,0.4) !important;
+      }
+      .reader-continuous-page {
+        margin-bottom: 12px !important;
+        width: 100% !important;
+      }
+      /* Hide side arrow paddles on mobile touchscreens */
+      .reader-paddle {
+        display: none !important;
+      }
+      /* Slide-out drawer on phone */
+      .reader-thumbs-drawer:not(.hidden) {
+        position: absolute;
+        top: 0;
+        left: 0;
+        bottom: 0;
+        width: 76vw;
+        max-width: 250px;
+        z-index: 70;
+        box-shadow: 12px 0 40px rgba(0,0,0,0.85);
+      }
+    }
+
+    @media (max-width: 440px) {
+      .reader-toolbar {
+        gap: 3px;
+        padding: 4px 6px;
+      }
+      .reader-btn {
+        padding: 4px 6px;
+      }
+      .reader-btn-icon {
+        width: 30px;
+        height: 30px;
+      }
     }
 
     .reader-doc-badge {
@@ -695,8 +806,8 @@
         </button>
       </div>
 
-      <!-- Right: Direct Print, Download & Close -->
-      <div class="reader-toolbar-group">
+      <!-- Right: Direct Print, Download & Close (Anchored to right edge) -->
+      <div class="reader-toolbar-group reader-toolbar-group-right">
         <button type="button" class="reader-btn reader-btn-print" onclick="printPdf()" title="Direct Print (Ctrl + P)">
           <i class="fas fa-print"></i>
           <span>Print</span>
@@ -1026,6 +1137,14 @@
 
       readerSingleImage.style.transform = `rotate(${currentRotation}deg)`;
 
+      if (window.innerWidth <= 768) {
+        readerSingleImage.style.width = '100%';
+        readerSingleImage.style.maxWidth = '100%';
+        readerSingleImage.style.height = 'auto';
+        readerZoomLabel.textContent = '100%';
+        return;
+      }
+
       if (zoomMode === 'fit-width') {
         // Laptop sweet spot: 920px to 960px width or 92vw
         const optimalWidth = Math.min(940, window.innerWidth * 0.92);
@@ -1057,6 +1176,17 @@
     // Apply Zoom to Continuous Scroll Pages
     function applyZoomToContinuousPages() {
       const pageImgs = readerContinuousWrap.querySelectorAll('img');
+      if (window.innerWidth <= 768) {
+        pageImgs.forEach(img => {
+          img.style.width = '100%';
+          img.style.maxWidth = '100%';
+          img.style.height = 'auto';
+          img.style.transform = `rotate(${currentRotation}deg)`;
+        });
+        readerZoomLabel.textContent = '100%';
+        return;
+      }
+
       let targetWidth = 920;
 
       if (zoomMode === 'fit-width') {

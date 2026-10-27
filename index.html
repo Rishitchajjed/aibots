@@ -1461,12 +1461,12 @@
             bg: 'rgba(6, 182, 212, 0.15)'
           },
           {
-            name: 'PDF Maker / Splitter',
-            url: 'pdfmaker.html',
-            desc: 'Merge, split, reorder & organize PDF pages',
-            icon: 'fa-file-pdf',
-            color: '#f43f5e',
-            bg: 'rgba(244, 63, 94, 0.15)'
+            name: 'PDF Reader & Viewer',
+            url: 'pdfviewer.html',
+            desc: 'View, read & inspect PDF document pages',
+            icon: 'fa-book-open',
+            color: '#14b8a6',
+            bg: 'rgba(20, 184, 166, 0.15)'
           }
         ];
       } else {
@@ -1577,7 +1577,9 @@
       if (window.AIBotsHandoff && typeof window.AIBotsHandoff.storeFile === 'function') {
         await window.AIBotsHandoff.storeFile(activeOpenWithFile, toolUrl);
       }
-      window.location.href = toolUrl;
+      setTimeout(() => {
+        window.location.href = toolUrl;
+      }, 60);
     };
 
     // Hero Dock Drag and Drop Setup

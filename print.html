@@ -1497,6 +1497,8 @@
       if (subEl && subtext) subEl.textContent = subtext;
     }
 
+    window.processSelectedFiles = processSelectedFiles;
+    window.handleFile = handleFile;
     async function processSelectedFiles(fileList, isAppend = false) {
       if (!fileList || fileList.length === 0) return;
       const files = Array.from(fileList);

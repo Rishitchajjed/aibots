@@ -1888,6 +1888,8 @@ window.updateDonationQR = function(amt) {
 // ==========================================================================
 // Windows / PC & Laptop "Open With" & Cross-Page File Handoff Engine
 // ==========================================================================
+// Windows / PC / Laptop PWA File Handling & Cross-Tool Handoff Architecture
+// ==========================================================================
 (function initAIBotsOpenWith() {
   const DB_NAME = 'aibots_handoff_db';
   const STORE_NAME = 'handoff_files';
@@ -1908,23 +1910,44 @@ window.updateDonationQR = function(amt) {
     },
 
     async storeFile(file, targetTool) {
+      if (!file) return false;
       try {
         const db = await this.openDB();
-        return new Promise((resolve, reject) => {
+        // Safe cloned Blob to ensure clean serializability across all environments
+        let blob = file;
+        try {
+          blob = file.slice(0, file.size, file.type);
+        } catch (e) {}
+
+        const isPdf = (file.type === 'application/pdf') || (file.name && file.name.toLowerCase().endsWith('.pdf'));
+        const mimeType = file.type || (isPdf ? 'application/pdf' : 'application/octet-stream');
+
+        return new Promise((resolve) => {
           const tx = db.transaction(STORE_NAME, 'readwrite');
           const store = tx.objectStore(STORE_NAME);
           const record = {
             id: 'pending_transfer',
-            file: file,
-            name: file.name,
-            type: file.type || 'application/octet-stream',
+            blob: blob,
+            name: file.name || (isPdf ? 'document.pdf' : 'image.png'),
+            type: mimeType,
             size: file.size,
-            targetTool: targetTool,
+            lastModified: file.lastModified || Date.now(),
+            targetTool: targetTool || '',
             timestamp: Date.now()
           };
-          const putReq = store.put(record);
-          putReq.onsuccess = () => resolve(true);
-          putReq.onerror = () => reject(putReq.error);
+          store.put(record);
+          tx.oncomplete = () => {
+            console.log('[AIBotsHandoff] Successfully committed handoff record:', record.name, 'target:', targetTool);
+            resolve(true);
+          };
+          tx.onerror = (err) => {
+            console.warn('[AIBotsHandoff] Transaction error:', err);
+            resolve(false);
+          };
+          tx.onabort = (err) => {
+            console.warn('[AIBotsHandoff] Transaction aborted:', err);
+            resolve(false);
+          };
         });
       } catch (err) {
         console.warn('[AIBotsHandoff] Store failed:', err);
@@ -1935,20 +1958,39 @@ window.updateDonationQR = function(amt) {
     async getFile() {
       try {
         const db = await this.openDB();
-        return new Promise((resolve, reject) => {
+        return new Promise((resolve) => {
           const tx = db.transaction(STORE_NAME, 'readonly');
           const store = tx.objectStore(STORE_NAME);
           const getReq = store.get('pending_transfer');
           getReq.onsuccess = () => {
             const res = getReq.result;
-            // 10 minutes handoff validity window
-            if (res && (Date.now() - res.timestamp < 600000)) {
-              resolve(res);
+            // 15 minutes handoff validity window
+            if (res && (Date.now() - res.timestamp < 900000)) {
+              let fileObj = null;
+              try {
+                const source = res.blob || res.file;
+                if (source) {
+                  fileObj = new File([source], res.name || 'document.pdf', {
+                    type: res.type || (res.name.endsWith('.pdf') ? 'application/pdf' : 'application/octet-stream'),
+                    lastModified: res.lastModified || Date.now()
+                  });
+                }
+              } catch (err) {
+                console.warn('[AIBotsHandoff] Fallback to raw blob:', err);
+                fileObj = res.blob || res.file;
+              }
+              resolve({
+                file: fileObj,
+                name: res.name,
+                type: res.type,
+                targetTool: res.targetTool,
+                timestamp: res.timestamp
+              });
             } else {
               resolve(null);
             }
           };
-          getReq.onerror = () => reject(getReq.error);
+          getReq.onerror = () => resolve(null);
         });
       } catch (err) {
         console.warn('[AIBotsHandoff] Get failed:', err);
@@ -1964,6 +2006,7 @@ window.updateDonationQR = function(amt) {
           const store = tx.objectStore(STORE_NAME);
           store.delete('pending_transfer');
           tx.oncomplete = () => resolve(true);
+          tx.onerror = () => resolve(false);
         });
       } catch (err) {
         return false;
@@ -1992,13 +2035,14 @@ window.updateDonationQR = function(amt) {
     });
   }
 
-  // 2. Automatic Tool Receiver on DOMContentLoaded
-  document.addEventListener('DOMContentLoaded', async () => {
+  // 2. Automatic Tool Receiver on Tool Pages
+  async function checkAndApplyHandoff() {
     const rawPath = window.location.pathname.toLowerCase();
     const currentFile = rawPath.substring(rawPath.lastIndexOf('/') + 1) || 'index.html';
+    const cleanCurrent = currentFile.replace(/\.html$/i, '').split('?')[0].split('#')[0];
     
-    // If on index.html and redirected with pending handoff, open the Open With modal
-    if (currentFile === 'index.html' || currentFile === '') {
+    // If on index.html and opened with pending handoff, open the Open With modal
+    if (cleanCurrent === 'index' || cleanCurrent === '') {
       const urlParams = new URLSearchParams(window.location.search);
       if (urlParams.get('openwith') === 'true') {
         const handoff = await window.AIBotsHandoff.getFile();
@@ -2009,60 +2053,145 @@ window.updateDonationQR = function(amt) {
       return;
     }
 
-    // On tool pages, check if a file was handed off to this tool
+    // On tool pages, check if a file is waiting
     const handoff = await window.AIBotsHandoff.getFile();
     if (!handoff || !handoff.file) return;
 
     const targetTool = (handoff.targetTool || '').toLowerCase();
-    const cleanCurrent = currentFile.replace('.html', '');
-    const cleanTarget = targetTool.replace('.html', '');
+    const cleanTarget = targetTool.replace(/\.html$/i, '').split('?')[0].split('#')[0].replace(/^.*\//, '');
 
-    if (cleanTarget && !cleanCurrent.includes(cleanTarget) && !cleanTarget.includes(cleanCurrent)) {
+    // Allow transfer if target matches or is generic / recent
+    const isToolMatch = !cleanTarget ||
+                         cleanTarget === cleanCurrent ||
+                         cleanCurrent.includes(cleanTarget) ||
+                         cleanTarget.includes(cleanCurrent);
+
+    if (!isToolMatch) {
+      console.log(`[AIBotsHandoff] Tool mismatch: target=${cleanTarget}, current=${cleanCurrent}`);
       return;
     }
 
-    // Clear handoff so refresh does not re-inject
+    // Clear handoff so subsequent manual refreshes do not re-inject
     await window.AIBotsHandoff.clearFile();
 
     const file = handoff.file;
-    console.log(`[AIBotsHandoff] Loading "${file.name}" into ${currentFile}`);
+    const isPdf = (file.type === 'application/pdf') || (file.name && file.name.toLowerCase().endsWith('.pdf'));
+    console.log(`[AIBotsHandoff] Loading "${file.name}" into ${cleanCurrent}`);
 
-    // Wait a brief tick for tool scripts to finish initializing
-    setTimeout(() => {
+    let hasInjected = false;
+
+    function executeInjection() {
+      if (hasInjected) return true;
+
+      // Pathway 1: Direct Tool Function Execution (Bypasses input restrictions)
+      try {
+        if (cleanCurrent.includes('pdf-editor')) {
+          if (typeof window.loadPdfFromFile === 'function') {
+            window.loadPdfFromFile(file);
+            hasInjected = true;
+          }
+        } else if (cleanCurrent.includes('cropphoto')) {
+          if (isPdf && typeof window.loadPdfFile === 'function') {
+            window.loadPdfFile(file);
+            hasInjected = true;
+          } else if (typeof window.loadFile === 'function') {
+            window.loadFile(file);
+            hasInjected = true;
+          }
+        } else if (cleanCurrent.includes('print')) {
+          if (typeof window.processSelectedFiles === 'function') {
+            window.processSelectedFiles([file], false);
+            hasInjected = true;
+          }
+        } else if (cleanCurrent.includes('pdfviewer')) {
+          const pdfInput = document.getElementById('pdfInput');
+          if (pdfInput) {
+            try {
+              const dt = new DataTransfer();
+              dt.items.add(file);
+              pdfInput.files = dt.files;
+            } catch(e) {}
+            if (typeof window.viewPDF === 'function') {
+              window.viewPDF();
+              hasInjected = true;
+            }
+          }
+        } else if (cleanCurrent.includes('backremover')) {
+          if (typeof window.processImage === 'function') {
+            window.processImage(file);
+            hasInjected = true;
+          } else if (typeof window.loadFile === 'function') {
+            window.loadFile(file);
+            hasInjected = true;
+          }
+        } else if (cleanCurrent.includes('pdfmaker')) {
+          if (typeof window.handleFiles === 'function') {
+            window.handleFiles({ target: { files: [file] } });
+            hasInjected = true;
+          }
+        } else if (cleanCurrent.includes('imagecombiner')) {
+          if (typeof window.handleFilesSelected === 'function') {
+            window.handleFilesSelected({ target: { files: [file] } });
+            hasInjected = true;
+          }
+        } else if (cleanCurrent.includes('resizeimage')) {
+          if (typeof window.handleImage === 'function') {
+            window.handleImage({ target: { files: [file] } });
+            hasInjected = true;
+          }
+        }
+      } catch (err) {
+        console.warn('[AIBotsHandoff] Direct method invocation failed:', err);
+      }
+
+      // Pathway 2: DOM File Input DataTransfer Injection
       const possibleSelectors = [
-        'input[type="file"]#imageInput',
-        'input[type="file"]#image-input',
-        'input[type="file"]#fileInput',
         'input[type="file"]#pdfFileInput',
+        'input[type="file"]#pdfInput',
+        'input[type="file"]#image-input',
+        'input[type="file"]#imageInput',
+        'input[type="file"]#fileInput',
         'input[type="file"]#imageFileInput',
         'input[type="file"]'
       ];
 
-      let targetInput = null;
       for (const sel of possibleSelectors) {
         const el = document.querySelector(sel);
         if (el) {
-          targetInput = el;
-          break;
-        }
-      }
-
-      if (targetInput) {
-        try {
-          const dt = new DataTransfer();
-          dt.items.add(file);
-          targetInput.files = dt.files;
-          targetInput.dispatchEvent(new Event('change', { bubbles: true }));
-          targetInput.dispatchEvent(new Event('input', { bubbles: true }));
-
-          if (typeof showToast === 'function') {
-            showToast(`✨ File "${file.name}" opened in ${document.title}!`, 'success', 4000);
+          try {
+            const dt = new DataTransfer();
+            dt.items.add(file);
+            el.files = dt.files;
+            el.dispatchEvent(new Event('change', { bubbles: true }));
+            el.dispatchEvent(new Event('input', { bubbles: true }));
+            hasInjected = true;
+            break;
+          } catch (e) {
+            console.warn('[AIBotsHandoff] DataTransfer failed for selector:', sel, e);
           }
-        } catch (e) {
-          console.warn('[AIBotsHandoff] DataTransfer injection failed:', e);
         }
       }
-    }, 280);
-  });
-})();
 
+      if (hasInjected && typeof showToast === 'function') {
+        showToast(`✨ File "${file.name}" loaded into ${document.title}!`, 'success', 3500);
+      }
+
+      return hasInjected;
+    }
+
+    // Try immediately, then retry to ensure asynchronous tool scripts are ready
+    if (!executeInjection()) {
+      setTimeout(() => {
+        if (!executeInjection()) {
+          setTimeout(executeInjection, 400);
+        }
+      }, 150);
+    }
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', checkAndApplyHandoff);
+  } else {
+    checkAndApplyHandoff();
+  }
+})();

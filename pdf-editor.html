@@ -2067,7 +2067,7 @@
     // -------------------------------------------------------------------------
     function handleFileSelect(e) {
       const file = e.target.files && e.target.files[0];
-      if (file && file.type === 'application/pdf') {
+      if (file && (file.type === 'application/pdf' || (file.name && file.name.toLowerCase().endsWith('.pdf')))) {
         loadPdfFromFile(file);
       }
     }
@@ -2092,10 +2092,11 @@
     });
     dropzone.addEventListener('drop', (e) => {
       const file = e.dataTransfer.files && e.dataTransfer.files[0];
-      if (file && file.type === 'application/pdf') {
+      if (file && (file.type === 'application/pdf' || (file.name && file.name.toLowerCase().endsWith('.pdf')))) {
         loadPdfFromFile(file);
       }
     });
+    window.loadPdfFromFile = loadPdfFromFile;
 
     async function loadPdfFromFile(file) {
       try {
@@ -6717,5 +6718,6 @@
       window.location.href = 'donate.html';
     }
   </script>
+  <script src="js/app.js"></script>
 </body>
 </html>

@@ -348,9 +348,11 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      padding: 24px 20px 80px;
+      justify-content: flex-start;
+      padding: 16px 20px 100px;
       position: relative;
       scroll-behavior: smooth;
+      box-sizing: border-box;
     }
 
     /* Single Page View */
@@ -358,8 +360,10 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: center;
+      justify-content: flex-start;
       min-height: 100%;
+      padding-top: 10px;
+      margin: 0 auto;
       transition: transform 0.15s ease;
     }
 
@@ -376,8 +380,11 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 24px;
+      justify-content: flex-start;
+      gap: 28px;
       width: 100%;
+      padding-top: 10px;
+      margin: 0 auto;
     }
 
     .reader-continuous-page {
@@ -385,6 +392,10 @@
       display: flex;
       flex-direction: column;
       align-items: center;
+      margin-bottom: 10px;
+    }
+    .reader-continuous-page:first-child {
+      margin-top: 0;
     }
 
     .reader-continuous-page img {
@@ -676,10 +687,10 @@
         <div class="reader-divider"></div>
 
         <!-- View Mode: Single vs Continuous Scroll -->
-        <button type="button" class="reader-btn active" id="btnViewSingle" onclick="setViewMode('single')" title="Single Page View (S)">
+        <button type="button" class="reader-btn" id="btnViewSingle" onclick="setViewMode('single')" title="Single Page View (S)">
           <i class="fas fa-file"></i>
         </button>
-        <button type="button" class="reader-btn" id="btnViewScroll" onclick="setViewMode('continuous')" title="Continuous Scroll View (C)">
+        <button type="button" class="reader-btn active" id="btnViewScroll" onclick="setViewMode('continuous')" title="Continuous Scroll View (C)">
           <i class="fas fa-scroll"></i>
         </button>
       </div>
@@ -732,23 +743,7 @@
       </div>
     </div>
 
-    <!-- Floating Bottom HUD for Fast Navigation -->
-    <div class="reader-bottom-hud" id="readerBottomHud">
-      <button type="button" class="reader-hud-btn" onclick="navigateReaderPage(-1)" title="Previous Page">
-        <i class="fas fa-arrow-left"></i>
-      </button>
-      <span id="hudPageText" style="font-size: 0.82rem; font-weight: 700; color: #f1f5f9; min-width: 90px; text-align: center;">Page 1 of 1</span>
-      <button type="button" class="reader-hud-btn" onclick="navigateReaderPage(1)" title="Next Page">
-        <i class="fas fa-arrow-right"></i>
-      </button>
-      <span style="width: 1px; height: 16px; background: rgba(255,255,255,0.2);"></span>
-      <button type="button" class="reader-hud-btn" onclick="printPdf()" title="Direct Print" style="color: #34d399;">
-        <i class="fas fa-print"></i>
-      </button>
-      <button type="button" class="reader-hud-btn" onclick="setZoomMode('fit-width')" title="Fit to Laptop Width">
-        <i class="fas fa-arrows-left-right-to-line"></i>
-      </button>
-    </div>
+
   </div>
 
   <!-- Related Tools Cross-Links -->
@@ -804,7 +799,7 @@
     let currentRotation = 0; // 0, 90, 180, 270
     let zoomMode = 'fit-width'; // 'fit-width', 'fit-page', 'custom'
     let customZoomLevel = 1.0;
-    let currentViewMode = 'single'; // 'single', 'continuous'
+    let currentViewMode = 'continuous'; // Default to Continuous Scroll Document View
 
     // DOM Elements
     const fullscreenReader = document.getElementById('fullscreenReader');
@@ -815,7 +810,6 @@
     const readerTotalPages = document.getElementById('readerTotalPages');
     const readerZoomLabel = document.getElementById('readerZoomLabel');
     const readerFileName = document.getElementById('readerFileName');
-    const hudPageText = document.getElementById('hudPageText');
     const readerThumbsDrawer = document.getElementById('readerThumbsDrawer');
     const readerThumbsList = document.getElementById('readerThumbsList');
     const readerViewport = document.getElementById('readerViewport');
@@ -961,15 +955,25 @@
       fullscreenReader.classList.add('active');
       document.body.style.overflow = 'hidden';
 
-      // Default to Fit Width on laptop screens for immediate comfortable reading
-      if (window.innerWidth >= 768) {
-        setZoomMode('fit-width');
-      } else {
-        setZoomMode('fit-page');
-      }
+      // Default to Continuous Scroll View & Fit Width for comfortable reading
+      currentViewMode = 'continuous';
+      const btnScroll = document.getElementById('btnViewScroll');
+      const btnSingle = document.getElementById('btnViewSingle');
+      if (btnScroll) btnScroll.classList.add('active');
+      if (btnSingle) btnSingle.classList.remove('active');
 
+      setZoomMode('fit-width');
       renderCurrentReaderView();
       updateThumbSelection();
+
+      // Ensure view starts smoothly at the very top of page 1 without hiding header
+      setTimeout(() => {
+        if (currentReaderPage === 1) {
+          readerViewport.scrollTop = 0;
+        } else {
+          scrollToPage(currentReaderPage);
+        }
+      }, 50);
     }
 
     function exitFullScreen() {
@@ -979,7 +983,6 @@
 
     function renderCurrentReaderView() {
       readerPageInput.value = currentReaderPage;
-      hudPageText.textContent = `Page ${currentReaderPage} of ${pdfPages.length}`;
 
       // Update paddles visibility on first / last page
       const paddlePrev = document.getElementById('paddlePrev');
@@ -1002,10 +1005,18 @@
         readerContinuousWrap.style.display = 'flex';
 
         applyZoomToContinuousPages();
-        const targetPageEl = document.getElementById(`contPage_${currentReaderPage}`);
-        if (targetPageEl) {
-          targetPageEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        if (currentReaderPage === 1) {
+          readerViewport.scrollTop = 0;
+        } else {
+          scrollToPage(currentReaderPage);
         }
+      }
+    }
+
+    function scrollToPage(pageNum) {
+      const targetPageEl = document.getElementById(`contPage_${pageNum}`);
+      if (targetPageEl) {
+        targetPageEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
       }
     }
 
@@ -1120,8 +1131,14 @@
       const target = currentReaderPage + delta;
       if (target >= 1 && target <= pdfPages.length) {
         currentReaderPage = target;
-        renderCurrentReaderView();
+        readerPageInput.value = target;
         updateThumbSelection();
+
+        if (currentViewMode === 'continuous') {
+          scrollToPage(target);
+        } else {
+          renderCurrentReaderView();
+        }
       }
     }
 
@@ -1129,8 +1146,13 @@
       const page = parseInt(val, 10);
       if (!isNaN(page) && page >= 1 && page <= pdfPages.length) {
         currentReaderPage = page;
-        renderCurrentReaderView();
         updateThumbSelection();
+
+        if (currentViewMode === 'continuous') {
+          scrollToPage(page);
+        } else {
+          renderCurrentReaderView();
+        }
       } else {
         readerPageInput.value = currentReaderPage;
       }
@@ -1197,7 +1219,6 @@
               if (!isNaN(pageNum)) {
                 currentReaderPage = pageNum;
                 readerPageInput.value = pageNum;
-                hudPageText.textContent = `Page ${pageNum} of ${pdfPages.length}`;
                 updateThumbSelection();
               }
             }
@@ -1341,6 +1362,31 @@
         toggleThumbSidebar();
       }
     });
+
+    // Real-time scroll listener: page counter updates as user scrolls down through pages
+    let scrollDebounce;
+    readerViewport.addEventListener('scroll', () => {
+      if (currentViewMode !== 'continuous' || !pdfPages.length) return;
+      clearTimeout(scrollDebounce);
+      scrollDebounce = setTimeout(() => {
+        const midY = readerViewport.scrollTop + (readerViewport.clientHeight / 2);
+        const pages = readerContinuousWrap.querySelectorAll('.reader-continuous-page');
+        for (let i = 0; i < pages.length; i++) {
+          const el = pages[i];
+          const top = el.offsetTop;
+          const bottom = top + el.offsetHeight;
+          if (midY >= top && midY <= bottom) {
+            const pageNum = i + 1;
+            if (pageNum !== currentReaderPage) {
+              currentReaderPage = pageNum;
+              readerPageInput.value = pageNum;
+              updateThumbSelection();
+            }
+            break;
+          }
+        }
+      }, 40);
+    }, { passive: true });
 
     // Ctrl + Mouse Wheel Smooth Zoom
     readerViewport.addEventListener('wheel', (e) => {

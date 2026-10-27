@@ -187,24 +187,47 @@
       gap: 6px;
     }
 
-    /* Responsive Phone & Laptop Breakpoints */
-    @media (max-width: 1120px) {
-      .reader-btn span:not(#readerZoomLabel) {
-        display: none; /* Show clean compact icons on laptops & tablets */
-      }
+    /* Responsive Laptop, Tablet & Phone Breakpoints */
+    .reader-doc-badge {
+      max-width: 150px;
+    }
+
+    /* Laptops (including 1366x768), Tablets & Small Windows <= 1440px */
+    @media (max-width: 1440px) {
       .reader-doc-badge {
-        max-width: 120px;
+        max-width: 130px;
+      }
+      .reader-toolbar {
+        padding: 6px 12px;
+        gap: 6px;
+      }
+      .reader-toolbar-group {
+        gap: 5px;
       }
     }
 
-    @media (max-width: 768px) {
-      .reader-toolbar {
-        padding: 5px 8px;
-        min-height: 46px;
-        gap: 5px;
+    /* Small Laptops & Tablets <= 1024px */
+    @media (max-width: 1024px) {
+      .reader-btn span:not(#readerZoomLabel) {
+        display: none; /* Icon-only compact mode for action buttons */
       }
       .reader-doc-badge {
-        display: none; /* Save space on phone screens */
+        max-width: 110px;
+      }
+    }
+
+    /* Mobile Phones <= 768px */
+    @media (max-width: 768px) {
+      .reader-toolbar {
+        padding: 4px 8px;
+        min-height: 44px;
+        gap: 4px;
+      }
+      .reader-doc-badge {
+        display: none !important; /* Hide file badge on phone to give full space to tools */
+      }
+      .reader-btn span {
+        display: none !important;
       }
       .reader-divider {
         display: none;
@@ -214,28 +237,28 @@
       }
       .reader-page-box {
         padding: 2px 5px;
-        font-size: 0.76rem;
+        font-size: 0.74rem;
+        gap: 4px;
       }
       .reader-page-box input {
-        width: 32px;
-        padding: 2px;
-        font-size: 0.76rem;
+        width: 30px;
+        padding: 1px;
+        font-size: 0.74rem;
       }
       .reader-btn {
         padding: 5px 7px;
-        font-size: 0.78rem;
       }
       .reader-btn-icon {
-        width: 32px;
-        height: 32px;
+        width: 30px;
+        height: 30px;
       }
       /* Viewport and Page layout on mobile phone */
       .reader-viewport {
-        padding: 8px 4px 60px !important;
+        padding: 6px 3px 60px !important;
       }
       .reader-continuous-wrap, .reader-single-page-wrap {
         width: 100% !important;
-        padding-top: 4px !important;
+        padding-top: 2px !important;
       }
       .reader-single-page-wrap img,
       .reader-continuous-page img {
@@ -246,10 +269,10 @@
         box-shadow: 0 4px 16px rgba(0,0,0,0.4) !important;
       }
       .reader-continuous-page {
-        margin-bottom: 12px !important;
+        margin-bottom: 10px !important;
         width: 100% !important;
       }
-      /* Hide side arrow paddles on mobile touchscreens */
+      /* Hide floating side arrows on touchscreens */
       .reader-paddle {
         display: none !important;
       }
@@ -268,15 +291,15 @@
 
     @media (max-width: 440px) {
       .reader-toolbar {
-        gap: 3px;
-        padding: 4px 6px;
+        gap: 2px;
+        padding: 3px 4px;
       }
       .reader-btn {
-        padding: 4px 6px;
+        padding: 4px 5px;
       }
       .reader-btn-icon {
-        width: 30px;
-        height: 30px;
+        width: 28px;
+        height: 28px;
       }
     }
 
@@ -738,9 +761,8 @@
     <header class="reader-toolbar">
       <!-- Left: Thumbnails Toggle & Document Title -->
       <div class="reader-toolbar-group">
-        <button type="button" class="reader-btn" id="btnToggleThumbs" onclick="toggleThumbSidebar()" title="Toggle Page Thumbnails (T)">
+        <button type="button" class="reader-btn reader-btn-icon" id="btnToggleThumbs" onclick="toggleThumbSidebar()" title="Toggle Thumbnails (T)">
           <i class="fas fa-table-cells"></i>
-          <span class="btn-text">Thumbnails</span>
         </button>
         <div class="reader-doc-badge" id="readerDocBadge" title="Current PDF Document">
           <i class="fas fa-file-pdf" style="color: #ef4444;"></i>
@@ -756,9 +778,8 @@
         </button>
 
         <div class="reader-page-box">
-          <span>Page</span>
           <input type="number" id="readerPageInput" min="1" value="1" onchange="jumpToReaderPage(this.value)">
-          <span>of</span>
+          <span>/</span>
           <span id="readerTotalPages">1</span>
         </div>
 
@@ -773,7 +794,7 @@
           <i class="fas fa-minus"></i>
         </button>
 
-        <button type="button" class="reader-btn" id="readerZoomBtn" onclick="cycleZoom()" title="Click to Cycle Zoom Modes">
+        <button type="button" class="reader-btn" id="readerZoomBtn" onclick="cycleZoom()" title="Click to Cycle Zoom Modes" style="padding: 5px 8px;">
           <span id="readerZoomLabel">Fit Width</span>
         </button>
 
@@ -781,14 +802,12 @@
           <i class="fas fa-plus"></i>
         </button>
 
-        <button type="button" class="reader-btn active" id="btnFitWidth" onclick="setZoomMode('fit-width')" title="Fit to Readable Laptop Width (W)">
+        <button type="button" class="reader-btn reader-btn-icon active" id="btnFitWidth" onclick="setZoomMode('fit-width')" title="Fit to Readable Width (W)">
           <i class="fas fa-arrows-left-right-to-line"></i>
-          <span>Fit Width</span>
         </button>
 
-        <button type="button" class="reader-btn" id="btnFitPage" onclick="setZoomMode('fit-page')" title="Fit Entire Page in View (0)">
+        <button type="button" class="reader-btn reader-btn-icon" id="btnFitPage" onclick="setZoomMode('fit-page')" title="Fit Entire Page (0)">
           <i class="fas fa-expand"></i>
-          <span>Fit Page</span>
         </button>
 
         <button type="button" class="reader-btn reader-btn-icon" onclick="rotatePage()" title="Rotate 90° Clockwise (R)">
@@ -798,15 +817,15 @@
         <div class="reader-divider"></div>
 
         <!-- View Mode: Single vs Continuous Scroll -->
-        <button type="button" class="reader-btn" id="btnViewSingle" onclick="setViewMode('single')" title="Single Page View (S)">
+        <button type="button" class="reader-btn reader-btn-icon" id="btnViewSingle" onclick="setViewMode('single')" title="Single Page View (S)">
           <i class="fas fa-file"></i>
         </button>
-        <button type="button" class="reader-btn active" id="btnViewScroll" onclick="setViewMode('continuous')" title="Continuous Scroll View (C)">
+        <button type="button" class="reader-btn reader-btn-icon active" id="btnViewScroll" onclick="setViewMode('continuous')" title="Continuous Scroll View (C)">
           <i class="fas fa-scroll"></i>
         </button>
       </div>
 
-      <!-- Right: Direct Print, Download & Close (Anchored to right edge) -->
+      <!-- Right: Direct Print, Download & Close (Firmly anchored on right) -->
       <div class="reader-toolbar-group reader-toolbar-group-right">
         <button type="button" class="reader-btn reader-btn-print" onclick="printPdf()" title="Direct Print (Ctrl + P)">
           <i class="fas fa-print"></i>

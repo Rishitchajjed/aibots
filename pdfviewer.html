@@ -7,16 +7,16 @@
   <meta property="og:site_name" content="AI Bots">
   <meta property="og:url" content="https://www.aibots.co.in/pdfviewer.html">
   <meta property="og:title" content="Free Online PDF Reader, Viewer & Document Annotator — AI Bots">
-  <meta property="og:description" content="Read, zoom, search text, rotate, and view multi-page PDF documents securely in your web browser with zero server uploads and complete privacy.">
+  <meta property="og:description" content="Read, zoom, print, and view multi-page PDF documents securely in your web browser with zero server uploads and complete privacy.">
   <meta property="og:image" content="https://www.aibots.co.in/logo.png">
   <!-- Twitter Cards -->
   <meta property="twitter:card" content="summary_large_image">
   <meta property="twitter:url" content="https://www.aibots.co.in/pdfviewer.html">
   <meta property="twitter:title" content="Free Online PDF Reader, Viewer & Document Annotator — AI Bots">
-  <meta property="twitter:description" content="Read, zoom, search text, rotate, and view multi-page PDF documents securely in your web browser with zero server uploads and complete privacy.">
+  <meta property="twitter:description" content="Read, zoom, print, and view multi-page PDF documents securely in your web browser with zero server uploads and complete privacy.">
   <meta property="twitter:image" content="https://www.aibots.co.in/logo.png">
 
-<meta name="google-site-verification" content="ndzq-U-NLijgza_QqgQdcc2U3oMRoud_BT2ZZiwFREM">
+  <meta name="google-site-verification" content="ndzq-U-NLijgza_QqgQdcc2U3oMRoud_BT2ZZiwFREM">
   <meta name="google-site-verification" content="-Yb6Nx74gbZ3wRN5uP-Y8KKwDWlt1DPpxs4nA3PkE6M">
   <meta name="robots" content="index, follow">
   <!-- Google Analytics -->
@@ -33,21 +33,21 @@
   <link rel="dns-prefetch" href="https://cdnjs.cloudflare.com">
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="google-site-verification" content="-Yb6Nx74gbZ3wRN5uP-Y8KKwDWlt1DPpxs4nA3PkE6M">
   <link rel="icon" href="logo.png" type="image/png">
   <title>Free Online PDF Reader, Viewer & Document Annotator — AI Bots</title>
-  <meta name="description" content="Read, zoom, search text, rotate, and view multi-page PDF documents securely in your web browser with zero server uploads and complete privacy.">
-  <meta name="keywords" content="pdf viewer online, view pdf browser, fast pdf reader, read pdf private, ai bots pdf">
+  <meta name="description" content="Read, zoom, print, and view multi-page PDF documents with crisp high-resolution rendering and instant direct printing.">
+  <meta name="keywords" content="pdf viewer online, view pdf laptop, print pdf online, fast pdf reader, read pdf private, ai bots pdf">
 
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link rel="stylesheet" href="css/theme.css">
   <style>
+    /* Main Page Styles */
     .pdf-toolbar {
       display: flex;
       align-items: center;
       justify-content: space-between;
       gap: 12px;
-      padding: 16px 20px;
+      padding: 14px 20px;
       background: var(--bg-tertiary);
       border: 1px solid var(--border-color);
       border-radius: var(--radius-lg);
@@ -87,6 +87,7 @@
       height: auto;
       border-radius: var(--radius-sm);
       box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+      background: #ffffff;
     }
 
     .pdf-page-badge {
@@ -102,86 +103,397 @@
       border-radius: var(--radius-full);
     }
 
-    /* Fullscreen Reader Modal */
+    /* Render Progress Bar */
+    .render-progress-card {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      padding: 24px;
+      margin: 20px 0;
+      text-align: center;
+      display: none;
+    }
+    .render-progress-bar-bg {
+      width: 100%;
+      height: 8px;
+      background: rgba(99, 102, 241, 0.15);
+      border-radius: 999px;
+      overflow: hidden;
+      margin: 12px 0 8px;
+    }
+    .render-progress-bar-fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, #6366f1, #38bdf8);
+      border-radius: 999px;
+      transition: width 0.2s ease;
+    }
+
+    /* ==========================================================================
+       Laptop-Optimized Modern PDF Reader Styles
+       ========================================================================== */
     .fullscreen-reader {
       position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: rgba(15, 23, 42, 0.95);
-      backdrop-filter: blur(12px);
-      z-index: 10000;
+      inset: 0;
+      background: #0f172a;
+      z-index: 99999;
       display: none;
-      align-items: center;
-      justify-content: center;
-      opacity: 0;
-      transition: opacity 0.3s ease;
+      flex-direction: column;
+      overflow: hidden;
+      color: #f8fafc;
+      font-family: inherit;
     }
 
     .fullscreen-reader.active {
       display: flex;
-      opacity: 1;
     }
 
-    .fullscreen-image-wrapper {
-      max-width: 90vw;
-      max-height: 90vh;
+    /* Top Floating / Docked Reader Header Bar */
+    .reader-toolbar {
       display: flex;
       align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 8px 18px;
+      background: rgba(15, 23, 42, 0.95);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      z-index: 50;
+      flex-shrink: 0;
+      min-height: 54px;
+    }
+
+    .reader-toolbar-group {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .reader-doc-badge {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 12px;
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 8px;
+      font-size: 0.82rem;
+      font-weight: 600;
+      max-width: 240px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      color: #e2e8f0;
+    }
+
+    .reader-btn {
+      display: inline-flex;
+      align-items: center;
       justify-content: center;
+      gap: 6px;
+      padding: 6px 12px;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      color: #f1f5f9;
+      border-radius: 8px;
+      font-size: 0.82rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      white-space: nowrap;
+      user-select: none;
     }
 
-    .fullscreen-image-wrapper img {
-      max-width: 100%;
-      max-height: 90vh;
-      object-fit: contain;
-      border-radius: var(--radius-md);
-      box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+    .reader-btn:hover {
+      background: rgba(255, 255, 255, 0.16);
+      border-color: rgba(255, 255, 255, 0.25);
+      color: #ffffff;
+      transform: translateY(-1px);
     }
 
-    .reader-nav-btn {
-      position: absolute;
+    .reader-btn.active {
+      background: var(--primary, #6366f1);
+      border-color: var(--primary, #6366f1);
+      color: #ffffff;
+    }
+
+    .reader-btn-icon {
+      width: 34px;
+      height: 34px;
+      padding: 0;
+      border-radius: 8px;
+    }
+
+    /* Distinct Green Direct Print Button */
+    .reader-btn-print {
+      background: #10b981;
+      border-color: #059669;
+      color: #ffffff;
+      font-weight: 700;
+      box-shadow: 0 2px 10px rgba(16, 185, 129, 0.3);
+    }
+    .reader-btn-print:hover {
+      background: #059669;
+      border-color: #047857;
+      color: #ffffff;
+      box-shadow: 0 4px 14px rgba(16, 185, 129, 0.45);
+    }
+
+    .reader-divider {
+      width: 1px;
+      height: 22px;
+      background: rgba(255, 255, 255, 0.12);
+      margin: 0 4px;
+    }
+
+    .reader-page-box {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      padding: 3px 8px;
+      border-radius: 8px;
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: #cbd5e1;
+    }
+
+    .reader-page-box input {
+      width: 44px;
+      background: rgba(0, 0, 0, 0.35);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 4px;
+      color: #ffffff;
+      text-align: center;
+      padding: 2px 4px;
+      font-size: 0.82rem;
+      font-weight: 700;
+    }
+
+    /* Main Reader Body / Workspace */
+    .reader-body {
+      flex: 1;
+      display: flex;
+      overflow: hidden;
+      position: relative;
+      height: calc(100vh - 54px);
+    }
+
+    /* Left Thumbnails Sidebar (Collapsible) */
+    .reader-thumbs-drawer {
+      width: 220px;
+      background: #0b1120;
+      border-right: 1px solid rgba(255, 255, 255, 0.08);
+      overflow-y: auto;
+      padding: 14px 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      flex-shrink: 0;
+      transition: width 0.2s ease, padding 0.2s ease;
+    }
+
+    .reader-thumbs-drawer.hidden {
+      width: 0;
+      padding: 0;
+      border: none;
+      overflow: hidden;
+    }
+
+    .reader-thumb-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+      padding: 6px;
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.03);
+      border: 2px solid transparent;
+      transition: all 0.15s ease;
+    }
+
+    .reader-thumb-item:hover {
+      background: rgba(255, 255, 255, 0.08);
+      border-color: rgba(99, 102, 241, 0.4);
+    }
+
+    .reader-thumb-item.active {
+      border-color: var(--primary, #6366f1);
+      background: rgba(99, 102, 241, 0.15);
+    }
+
+    .reader-thumb-item img {
+      width: 100%;
+      height: auto;
+      border-radius: 4px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.4);
+      background: #ffffff;
+    }
+
+    .reader-thumb-label {
+      font-size: 0.72rem;
+      color: #94a3b8;
+      font-weight: 600;
+    }
+
+    /* Scrollable Reading Viewport */
+    .reader-viewport {
+      flex: 1;
+      height: 100%;
+      overflow-y: auto;
+      overflow-x: auto;
+      background: #0f172a;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 24px 20px 80px;
+      position: relative;
+      scroll-behavior: smooth;
+    }
+
+    /* Single Page View */
+    .reader-single-page-wrap {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100%;
+      transition: transform 0.15s ease;
+    }
+
+    .reader-single-page-wrap img {
+      display: block;
+      background: #ffffff;
+      box-shadow: 0 12px 48px rgba(0, 0, 0, 0.6);
+      border-radius: 4px;
+      transition: width 0.2s ease, max-width 0.2s ease, max-height 0.2s ease;
+    }
+
+    /* Continuous Scroll View */
+    .reader-continuous-wrap {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 24px;
+      width: 100%;
+    }
+
+    .reader-continuous-page {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .reader-continuous-page img {
+      display: block;
+      background: #ffffff;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.55);
+      border-radius: 4px;
+    }
+
+    .reader-page-number-tag {
+      margin-top: 8px;
+      font-size: 0.75rem;
+      color: #94a3b8;
+      font-weight: 600;
+    }
+
+    /* Floating Navigation Paddles on Left & Right */
+    .reader-paddle {
+      position: fixed;
       top: 50%;
       transform: translateY(-50%);
-      width: 54px;
-      height: 54px;
+      width: 48px;
+      height: 48px;
       border-radius: 50%;
-      background: rgba(255,255,255,0.15);
-      border: 1px solid rgba(255,255,255,0.2);
-      color: #ffffff;
-      font-size: 1.4rem;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: var(--transition);
-      backdrop-filter: blur(8px);
-    }
-
-    .reader-nav-btn:hover {
-      background: var(--primary);
-      transform: translateY(-50%) scale(1.1);
-    }
-
-    .reader-nav-prev { left: 24px; }
-    .reader-nav-next { right: 24px; }
-
-    .reader-close-btn {
-      position: absolute;
-      top: 24px;
-      right: 24px;
-      width: 44px;
-      height: 44px;
-      border-radius: 50%;
-      background: rgba(255,255,255,0.2);
-      border: none;
+      background: rgba(15, 23, 42, 0.7);
+      border: 1px solid rgba(255, 255, 255, 0.2);
       color: #ffffff;
       font-size: 1.2rem;
       cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
+      backdrop-filter: blur(8px);
+      transition: all 0.2s ease;
+      z-index: 40;
+    }
+
+    .reader-paddle:hover {
+      background: var(--primary, #6366f1);
+      border-color: var(--primary, #6366f1);
+      transform: translateY(-50%) scale(1.1);
+      box-shadow: 0 8px 24px rgba(99, 102, 241, 0.4);
+    }
+
+    .reader-paddle-prev { left: 20px; }
+    .reader-paddle-next { right: 20px; }
+
+    /* Floating Bottom HUD for fast one-hand navigation */
+    .reader-bottom-hud {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(15, 23, 42, 0.88);
+      backdrop-filter: blur(14px);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 999px;
+      padding: 6px 14px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.5);
+      z-index: 40;
+    }
+
+    .reader-hud-btn {
+      background: none;
+      border: none;
+      color: #cbd5e1;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.9rem;
+      transition: all 0.15s ease;
+    }
+
+    .reader-hud-btn:hover {
+      background: rgba(255, 255, 255, 0.15);
+      color: #ffffff;
+    }
+
+    /* Print media styling */
+    @media print {
+      body * {
+        visibility: hidden;
+      }
+      #printContainer, #printContainer * {
+        visibility: visible;
+      }
+      #printContainer {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+      }
+      .print-sheet {
+        page-break-after: always;
+        width: 100%;
+        display: block;
+      }
+      .print-sheet img {
+        width: 100%;
+        height: auto;
+        display: block;
+      }
     }
   </style>
   <link rel="manifest" href="manifest.json">
@@ -201,7 +513,7 @@
   "@type": "WebApplication",
   "name": "PDF Reader & Viewer",
   "url": "https://www.aibots.co.in/pdfviewer.html",
-  "description": "Read, zoom, rotate, search text, and view multi-page PDF documents securely in your browser with zero upload bandwidth or software install.",
+  "description": "Read, zoom, print, and view multi-page PDF documents securely in your browser with zero upload bandwidth or software install.",
   "applicationCategory": "BusinessApplication",
   "operatingSystem": "All",
   "browserRequirements": "Requires JavaScript. Requires HTML5.",
@@ -216,34 +528,6 @@
   }
 }
   </script>
-
-  <!-- Schema.org Breadcrumb -->
-  <script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "BreadcrumbList",
-  "itemListElement": [
-    {
-      "@type": "ListItem",
-      "position": 1,
-      "name": "Home",
-      "item": "https://www.aibots.co.in/"
-    },
-    {
-      "@type": "ListItem",
-      "position": 2,
-      "name": "PDF & Finance",
-      "item": "https://www.aibots.co.in/#pdf-finance"
-    },
-    {
-      "@type": "ListItem",
-      "position": 3,
-      "name": "PDF Reader & Viewer",
-      "item": "https://www.aibots.co.in/pdfviewer"
-    }
-  ]
-}
-  </script>
 </head>
 <body>
   <div class="bg-mesh"></div>
@@ -255,7 +539,7 @@
         <a href="index.html" class="brand-link">
           <img src="logo.png" alt="AI Bots Logo" class="brand-logo-img">
           <span>AI Bots</span>
-          <span class="brand-badge">PDF Viewer</span>
+          <span class="brand-badge">PDF Viewer &amp; Print</span>
         </a>
 
         <div class="nav-actions">
@@ -268,75 +552,227 @@
 
   <main class="app-container tool-page-wrapper">
     <div class="tool-header">
-      <span class="tool-header-badge"><i class="fas fa-book-open"></i> PDF.js Engine</span>
-      <h1 class="tool-title">PDF Document Reader</h1>
-      <p class="tool-desc">Upload and view any PDF with crisp high-resolution page rendering, thumbnails, and fullscreen mode.</p>
+      <span class="tool-header-badge"><i class="fas fa-book-open"></i> High-Resolution Reader</span>
+      <h1 class="tool-title">PDF Document Reader &amp; Direct Print</h1>
+      <p class="tool-desc">Read, fit to laptop screen, rotate, and directly print any multi-page PDF document with razor-sharp clarity.</p>
     </div>
 
     <div class="tool-card-container">
       
       <!-- Upload Dropzone -->
       <div class="dropzone-container" id="dropzone">
-        <input type="file" id="pdfInput" class="dropzone-input" accept=".pdf" onchange="viewPDF()">
+        <input type="file" id="pdfInput" class="dropzone-input" accept=".pdf,application/pdf" onchange="viewPDF()">
         <div class="dropzone-icon"><i class="fas fa-file-pdf"></i></div>
-        <div class="dropzone-title">Click to Choose PDF File or Drag & Drop Here</div>
-        <div class="dropzone-subtitle">View and inspect PDF documents instantly in your browser</div>
+        <div class="dropzone-title">Click to Choose PDF File or Drag &amp; Drop Here</div>
+        <div class="dropzone-subtitle">Optimized for laptops, tablets, and phones &bull; 100% private in-browser</div>
       </div>
 
-      <!-- PDF Viewer Toolbar (shown when loaded) -->
-      <div class="pdf-toolbar" id="pdfToolbar" style="display: none;">
-        <div style="display: flex; align-items: center; gap: 10px;">
-          <label class="form-label" style="margin: 0;" for="pageNumber"><i class="fas fa-list-ol"></i> Go to Page:</label>
-          <select id="pageNumber" class="form-control" style="width: auto; padding: 6px 12px;" onchange="navigateToPage()"></select>
+      <!-- Render Progress Bar -->
+      <div class="render-progress-card" id="renderProgressCard">
+        <div style="font-weight: 700; color: var(--text-primary); display: flex; align-items: center; justify-content: center; gap: 8px;">
+          <i class="fas fa-circle-notch fa-spin" style="color: var(--primary);"></i>
+          <span id="renderProgressText">Preparing PDF Document...</span>
         </div>
+        <div class="render-progress-bar-bg">
+          <div class="render-progress-bar-fill" id="renderProgressBarFill"></div>
+        </div>
+        <div style="font-size: 0.8rem; color: var(--text-secondary);" id="renderProgressSubtext">Rendering high-resolution pages for laptop display</div>
+      </div>
 
-        <div style="display: flex; gap: 10px;">
-          <button class="btn btn-primary btn-sm" onclick="toggleFullScreen()">
-            <i class="fas fa-expand"></i> Fullscreen Reader
+      <!-- Main Page Toolbar (shown when loaded) -->
+      <div class="pdf-toolbar" id="pdfToolbar" style="display: none;">
+        <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
+          <button type="button" class="btn btn-primary btn-sm" onclick="openReader(1)">
+            <i class="fas fa-book-open"></i> Open Laptop Reader
+          </button>
+          <button type="button" class="btn btn-success btn-sm" onclick="printPdf()" style="background: #10b981; border-color: #059669; color: #fff;">
+            <i class="fas fa-print"></i> Print Document
+          </button>
+          <button type="button" class="btn btn-secondary btn-sm" onclick="downloadCurrentPdf()">
+            <i class="fas fa-download"></i> Download PDF
+          </button>
+          <button type="button" class="btn btn-secondary btn-sm" onclick="document.getElementById('pdfInput').click()">
+            <i class="fas fa-folder-open"></i> Change File
           </button>
         </div>
+
+        <div style="display: flex; align-items: center; gap: 10px;">
+          <label class="form-label" style="margin: 0; font-size: 0.82rem;" for="pageNumber"><i class="fas fa-list-ol"></i> Jump to Page:</label>
+          <select id="pageNumber" class="form-control" style="width: auto; padding: 6px 12px; font-size: 0.82rem;" onchange="navigateToPage()"></select>
+        </div>
       </div>
 
-      <!-- Pages Grid Container -->
+      <!-- Pages Grid Overview Container -->
       <div class="pdf-pages-grid" id="pdfViewer"></div>
 
     </div>
   </main>
 
-  <!-- Fullscreen Reader Modal -->
-  <div class="fullscreen-reader" id="fullscreenReader">
-    <button class="reader-close-btn" onclick="exitFullScreen()" title="Close Reader"><i class="fas fa-xmark"></i></button>
-    <button class="reader-nav-btn reader-nav-prev" onclick="navigateFullScreenPage(-1)" title="Previous Page"><i class="fas fa-chevron-left"></i></button>
-    
-    <div class="fullscreen-image-wrapper">
-      <img id="fullScreenImage" src="" alt="Fullscreen PDF Page">
+  <!-- ==========================================================================
+       Laptop-Optimized Modern PDF Reader Modal
+       ========================================================================== -->
+  <div class="fullscreen-reader" id="fullscreenReader" role="dialog" aria-modal="true" aria-label="PDF Document Reader">
+    <!-- Top Reader Header Bar -->
+    <header class="reader-toolbar">
+      <!-- Left: Thumbnails Toggle & Document Title -->
+      <div class="reader-toolbar-group">
+        <button type="button" class="reader-btn" id="btnToggleThumbs" onclick="toggleThumbSidebar()" title="Toggle Page Thumbnails (T)">
+          <i class="fas fa-table-cells"></i>
+          <span class="btn-text">Thumbnails</span>
+        </button>
+        <div class="reader-doc-badge" id="readerDocBadge" title="Current PDF Document">
+          <i class="fas fa-file-pdf" style="color: #ef4444;"></i>
+          <span id="readerFileName">document.pdf</span>
+        </div>
+      </div>
+
+      <!-- Center: Navigation, Zoom & View Modes -->
+      <div class="reader-toolbar-group">
+        <!-- Page Navigation -->
+        <button type="button" class="reader-btn reader-btn-icon" onclick="navigateReaderPage(-1)" title="Previous Page (Left Arrow / PageUp)">
+          <i class="fas fa-chevron-left"></i>
+        </button>
+
+        <div class="reader-page-box">
+          <span>Page</span>
+          <input type="number" id="readerPageInput" min="1" value="1" onchange="jumpToReaderPage(this.value)">
+          <span>of</span>
+          <span id="readerTotalPages">1</span>
+        </div>
+
+        <button type="button" class="reader-btn reader-btn-icon" onclick="navigateReaderPage(1)" title="Next Page (Right Arrow / PageDown)">
+          <i class="fas fa-chevron-right"></i>
+        </button>
+
+        <div class="reader-divider"></div>
+
+        <!-- Zoom Controls -->
+        <button type="button" class="reader-btn reader-btn-icon" onclick="changeZoom(-0.15)" title="Zoom Out (-)">
+          <i class="fas fa-minus"></i>
+        </button>
+
+        <button type="button" class="reader-btn" id="readerZoomBtn" onclick="cycleZoom()" title="Click to Cycle Zoom Modes">
+          <span id="readerZoomLabel">Fit Width</span>
+        </button>
+
+        <button type="button" class="reader-btn reader-btn-icon" onclick="changeZoom(0.15)" title="Zoom In (+)">
+          <i class="fas fa-plus"></i>
+        </button>
+
+        <button type="button" class="reader-btn active" id="btnFitWidth" onclick="setZoomMode('fit-width')" title="Fit to Readable Laptop Width (W)">
+          <i class="fas fa-arrows-left-right-to-line"></i>
+          <span>Fit Width</span>
+        </button>
+
+        <button type="button" class="reader-btn" id="btnFitPage" onclick="setZoomMode('fit-page')" title="Fit Entire Page in View (0)">
+          <i class="fas fa-expand"></i>
+          <span>Fit Page</span>
+        </button>
+
+        <button type="button" class="reader-btn reader-btn-icon" onclick="rotatePage()" title="Rotate 90° Clockwise (R)">
+          <i class="fas fa-rotate-right"></i>
+        </button>
+
+        <div class="reader-divider"></div>
+
+        <!-- View Mode: Single vs Continuous Scroll -->
+        <button type="button" class="reader-btn active" id="btnViewSingle" onclick="setViewMode('single')" title="Single Page View (S)">
+          <i class="fas fa-file"></i>
+        </button>
+        <button type="button" class="reader-btn" id="btnViewScroll" onclick="setViewMode('continuous')" title="Continuous Scroll View (C)">
+          <i class="fas fa-scroll"></i>
+        </button>
+      </div>
+
+      <!-- Right: Direct Print, Download & Close -->
+      <div class="reader-toolbar-group">
+        <button type="button" class="reader-btn reader-btn-print" onclick="printPdf()" title="Direct Print (Ctrl + P)">
+          <i class="fas fa-print"></i>
+          <span>Print</span>
+        </button>
+        <button type="button" class="reader-btn" onclick="downloadCurrentPdf()" title="Download PDF">
+          <i class="fas fa-download"></i>
+          <span>Download</span>
+        </button>
+        <button type="button" class="reader-btn reader-btn-icon" onclick="exitFullScreen()" title="Close Reader (Esc)" style="color: #f87171;">
+          <i class="fas fa-xmark" style="font-size: 1.1rem;"></i>
+        </button>
+      </div>
+    </header>
+
+    <!-- Reader Body / Workspace -->
+    <div class="reader-body">
+      <!-- Left Collapsible Thumbnails Sidebar -->
+      <aside class="reader-thumbs-drawer hidden" id="readerThumbsDrawer">
+        <div style="font-size: 0.78rem; font-weight: 700; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.05em; padding-bottom: 8px; border-bottom: 1px solid rgba(255,255,255,0.08); display: flex; justify-content: space-between; align-items: center;">
+          <span>Thumbnails</span>
+          <button type="button" style="background: none; border: none; color: #64748b; cursor: pointer;" onclick="toggleThumbSidebar()">&times;</button>
+        </div>
+        <div id="readerThumbsList" style="display: flex; flex-direction: column; gap: 12px; margin-top: 10px;"></div>
+      </aside>
+
+      <!-- Scrollable Viewport -->
+      <div class="reader-viewport" id="readerViewport">
+        <!-- Floating Left / Right Navigation Paddles -->
+        <button type="button" class="reader-paddle reader-paddle-prev" id="paddlePrev" onclick="navigateReaderPage(-1)" title="Previous Page (Left Arrow)">
+          <i class="fas fa-chevron-left"></i>
+        </button>
+
+        <!-- Single Page View Mode Container -->
+        <div class="reader-single-page-wrap" id="readerSinglePageWrap">
+          <img id="readerSingleImage" src="" alt="PDF Page">
+        </div>
+
+        <!-- Continuous Scroll View Mode Container -->
+        <div class="reader-continuous-wrap" id="readerContinuousWrap" style="display: none;"></div>
+
+        <button type="button" class="reader-paddle reader-paddle-next" id="paddleNext" onclick="navigateReaderPage(1)" title="Next Page (Right Arrow)">
+          <i class="fas fa-chevron-right"></i>
+        </button>
+      </div>
     </div>
 
-    <button class="reader-nav-btn reader-nav-next" onclick="navigateFullScreenPage(1)" title="Next Page"><i class="fas fa-chevron-right"></i></button>
+    <!-- Floating Bottom HUD for Fast Navigation -->
+    <div class="reader-bottom-hud" id="readerBottomHud">
+      <button type="button" class="reader-hud-btn" onclick="navigateReaderPage(-1)" title="Previous Page">
+        <i class="fas fa-arrow-left"></i>
+      </button>
+      <span id="hudPageText" style="font-size: 0.82rem; font-weight: 700; color: #f1f5f9; min-width: 90px; text-align: center;">Page 1 of 1</span>
+      <button type="button" class="reader-hud-btn" onclick="navigateReaderPage(1)" title="Next Page">
+        <i class="fas fa-arrow-right"></i>
+      </button>
+      <span style="width: 1px; height: 16px; background: rgba(255,255,255,0.2);"></span>
+      <button type="button" class="reader-hud-btn" onclick="printPdf()" title="Direct Print" style="color: #34d399;">
+        <i class="fas fa-print"></i>
+      </button>
+      <button type="button" class="reader-hud-btn" onclick="setZoomMode('fit-width')" title="Fit to Laptop Width">
+        <i class="fas fa-arrows-left-right-to-line"></i>
+      </button>
+    </div>
   </div>
 
   <!-- Related Tools Cross-Links -->
-  <section class="app-container" style="max-width: 900px; margin: 20px auto 40px; padding: 0 16px;">
+  <section class="app-container" style="max-width: 900px; margin: 30px auto 40px; padding: 0 16px;">
     <div style="background: var(--bg-secondary, #ffffff); border: 1px solid var(--border-color, #e2e8f0); border-radius: 16px; padding: 24px 28px; box-shadow: 0 4px 20px rgba(0,0,0,0.03);">
       <h3 style="font-size: 1.05rem; font-weight: 800; margin-bottom: 16px; color: var(--text-primary); display: flex; align-items: center; gap: 8px;">
         <i class="fas fa-sparkles" style="color: #f59e0b;"></i> Explore Related Free Tools
       </h3>
       <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px;">
-        <a href="pdfmaker.html" style="display: flex; align-items: center; gap: 10px; padding: 12px 16px; background: var(--bg-tertiary, #f8fafc); border: 1px solid var(--border-color, #e2e8f0); border-radius: 12px; text-decoration: none; color: var(--text-primary); font-size: 0.86rem; font-weight: 700; transition: transform 0.2s ease, border-color 0.2s ease;">
-          <i class="fas fa-file-pdf" style="color: var(--primary, #6366f1); font-size: 1.1rem;"></i>
-          <span>Image to PDF Maker</span>
+        <a href="pdf-editor.html" style="display: flex; align-items: center; gap: 10px; padding: 12px 16px; background: var(--bg-tertiary, #f8fafc); border: 1px solid var(--border-color, #e2e8f0); border-radius: 12px; text-decoration: none; color: var(--text-primary); font-size: 0.86rem; font-weight: 700; transition: transform 0.2s ease, border-color 0.2s ease;">
+          <i class="fas fa-file-pen" style="color: var(--primary, #6366f1); font-size: 1.1rem;"></i>
+          <span>PDF Word &amp; Page Editor</span>
         </a>
-        <a href="bank-statement-converter.html" style="display: flex; align-items: center; gap: 10px; padding: 12px 16px; background: var(--bg-tertiary, #f8fafc); border: 1px solid var(--border-color, #e2e8f0); border-radius: 12px; text-decoration: none; color: var(--text-primary); font-size: 0.86rem; font-weight: 700; transition: transform 0.2s ease, border-color 0.2s ease;">
-          <i class="fas fa-file-invoice-dollar" style="color: var(--primary, #6366f1); font-size: 1.1rem;"></i>
-          <span>Bank Statement to Tally XML</span>
+        <a href="cropphoto.html" style="display: flex; align-items: center; gap: 10px; padding: 12px 16px; background: var(--bg-tertiary, #f8fafc); border: 1px solid var(--border-color, #e2e8f0); border-radius: 12px; text-decoration: none; color: var(--text-primary); font-size: 0.86rem; font-weight: 700; transition: transform 0.2s ease, border-color 0.2s ease;">
+          <i class="fas fa-crop" style="color: #10b981; font-size: 1.1rem;"></i>
+          <span>Crop Photo &amp; PDF</span>
         </a>
         <a href="print.html" style="display: flex; align-items: center; gap: 10px; padding: 12px 16px; background: var(--bg-tertiary, #f8fafc); border: 1px solid var(--border-color, #e2e8f0); border-radius: 12px; text-decoration: none; color: var(--text-primary); font-size: 0.86rem; font-weight: 700; transition: transform 0.2s ease, border-color 0.2s ease;">
-          <i class="fas fa-print" style="color: var(--primary, #6366f1); font-size: 1.1rem;"></i>
+          <i class="fas fa-print" style="color: #06b6d4; font-size: 1.1rem;"></i>
           <span>Pro Print Studio</span>
         </a>
-        <a href="wordcounter.html" style="display: flex; align-items: center; gap: 10px; padding: 12px 16px; background: var(--bg-tertiary, #f8fafc); border: 1px solid var(--border-color, #e2e8f0); border-radius: 12px; text-decoration: none; color: var(--text-primary); font-size: 0.86rem; font-weight: 700; transition: transform 0.2s ease, border-color 0.2s ease;">
-          <i class="fas fa-font" style="color: var(--primary, #6366f1); font-size: 1.1rem;"></i>
-          <span>Word & Character Counter</span>
+        <a href="pdfmaker.html" style="display: flex; align-items: center; gap: 10px; padding: 12px 16px; background: var(--bg-tertiary, #f8fafc); border: 1px solid var(--border-color, #e2e8f0); border-radius: 12px; text-decoration: none; color: var(--text-primary); font-size: 0.86rem; font-weight: 700; transition: transform 0.2s ease, border-color 0.2s ease;">
+          <i class="fas fa-file-pdf" style="color: #ef4444; font-size: 1.1rem;"></i>
+          <span>Image to PDF Maker</span>
         </a>
       </div>
     </div>
@@ -349,63 +785,140 @@
     </div>
   </footer>
 
+  <!-- Hidden Print Container -->
+  <div id="printContainer" style="display: none;"></div>
+
   <!-- PDF.js Library -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.11.338/pdf.min.js"></script>
   <script src="js/app.js"></script>
   <script>
-    // Set worker source for PDF.js
+    // Initialize PDF.js worker
     pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.11.338/pdf.worker.min.js';
 
-    let pdfPages = [];
-    let fullScreenPageNum = 1;
-    const fullscreenReader = document.getElementById('fullscreenReader');
-    const fullScreenImage = document.getElementById('fullScreenImage');
+    // Global State
+    let currentPdfFile = null;
+    let currentPdfBlobUrl = null;
+    let currentPdfDoc = null;
+    let pdfPages = []; // [{ pageNum, imageUrl, width, height }]
+    let currentReaderPage = 1;
+    let currentRotation = 0; // 0, 90, 180, 270
+    let zoomMode = 'fit-width'; // 'fit-width', 'fit-page', 'custom'
+    let customZoomLevel = 1.0;
+    let currentViewMode = 'single'; // 'single', 'continuous'
 
+    // DOM Elements
+    const fullscreenReader = document.getElementById('fullscreenReader');
+    const readerSingleImage = document.getElementById('readerSingleImage');
+    const readerSinglePageWrap = document.getElementById('readerSinglePageWrap');
+    const readerContinuousWrap = document.getElementById('readerContinuousWrap');
+    const readerPageInput = document.getElementById('readerPageInput');
+    const readerTotalPages = document.getElementById('readerTotalPages');
+    const readerZoomLabel = document.getElementById('readerZoomLabel');
+    const readerFileName = document.getElementById('readerFileName');
+    const hudPageText = document.getElementById('hudPageText');
+    const readerThumbsDrawer = document.getElementById('readerThumbsDrawer');
+    const readerThumbsList = document.getElementById('readerThumbsList');
+    const readerViewport = document.getElementById('readerViewport');
+
+    // 1. File Selection & High-DPI Rendering
     async function viewPDF() {
       const fileInput = document.getElementById('pdfInput');
-      const file = fileInput.files[0];
+      const file = fileInput.files && fileInput.files[0];
       if (!file) return;
 
-      showToast('Rendering PDF pages...', 'info');
+      currentPdfFile = file;
+      if (currentPdfBlobUrl) {
+        URL.revokeObjectURL(currentPdfBlobUrl);
+      }
+      currentPdfBlobUrl = URL.createObjectURL(file);
 
-      const fileReader = new FileReader();
-      fileReader.onload = async function() {
+      readerFileName.textContent = file.name || 'document.pdf';
+
+      const progressCard = document.getElementById('renderProgressCard');
+      const progressText = document.getElementById('renderProgressText');
+      const progressBarFill = document.getElementById('renderProgressBarFill');
+      const progressSub = document.getElementById('renderProgressSubtext');
+
+      if (progressCard) {
+        progressCard.style.display = 'block';
+        progressBarFill.style.width = '5%';
+        progressText.textContent = 'Loading PDF structure...';
+        progressSub.textContent = `Analyzing ${file.name}...`;
+      }
+
+      const reader = new FileReader();
+      reader.onload = async function() {
         try {
           const typedarray = new Uint8Array(this.result);
-          pdfPages = await getPDFPages(typedarray);
-          displayPDFPages(pdfPages);
+          pdfPages = await renderPdfPages(typedarray, (rendered, total) => {
+            const pct = Math.round((rendered / total) * 100);
+            if (progressBarFill) progressBarFill.style.width = `${pct}%`;
+            if (progressText) progressText.textContent = `Rendering page ${rendered} of ${total}...`;
+            if (progressSub) progressSub.textContent = `Optimizing crisp text resolution for your laptop screen (${pct}%)`;
+          });
+
+          if (progressCard) progressCard.style.display = 'none';
+
+          displayGridPages(pdfPages);
           populatePageSelector();
+          buildThumbnailList();
+          buildContinuousPages();
+
           document.getElementById('pdfToolbar').style.display = 'flex';
-          showToast(`Successfully rendered ${pdfPages.length} pages!`, 'success');
+          readerTotalPages.textContent = pdfPages.length;
+
+          // Automatically launch laptop reader view for instant reading
+          openReader(1);
+          if (typeof showToast === 'function') {
+            showToast(`✨ ${pdfPages.length} pages rendered with high-res laptop clarity!`, 'success', 3000);
+          }
         } catch (error) {
           console.error('PDF parsing error:', error);
-          showToast('Could not parse PDF file.', 'error');
+          if (progressCard) progressCard.style.display = 'none';
+          if (typeof showToast === 'function') {
+            showToast('Could not parse PDF file: ' + (error.message || error), 'error');
+          }
         }
       };
-      fileReader.readAsArrayBuffer(file);
+      reader.readAsArrayBuffer(file);
     }
 
-    async function getPDFPages(pdfData) {
-      const pdf = await pdfjsLib.getDocument({ data: pdfData }).promise;
-      const numPages = pdf.numPages;
+    // High-Resolution Rendering Engine (Scale 2.0+ for crystal-clear laptop text)
+    async function renderPdfPages(pdfData, progressCallback) {
+      currentPdfDoc = await pdfjsLib.getDocument({ data: pdfData }).promise;
+      const numPages = currentPdfDoc.numPages;
       const pages = [];
 
+      // Scale 2.0 provides ~200 DPI crisp text without blurring on 1080p/Retina laptops
+      const renderScale = Math.max(window.devicePixelRatio ? window.devicePixelRatio * 1.3 : 2.0, 2.0);
+
       for (let pageNum = 1; pageNum <= numPages; pageNum++) {
-        const page = await pdf.getPage(pageNum);
-        const viewport = page.getViewport({ scale: 1.5 });
+        const page = await currentPdfDoc.getPage(pageNum);
+        const viewport = page.getViewport({ scale: renderScale });
         const canvas = document.createElement('canvas');
         const context = canvas.getContext('2d');
         canvas.width = viewport.width;
         canvas.height = viewport.height;
 
         await page.render({ canvasContext: context, viewport: viewport }).promise;
-        pages.push({ pageNum, imageUrl: canvas.toDataURL() });
+        pages.push({
+          pageNum: pageNum,
+          imageUrl: canvas.toDataURL('image/jpeg', 0.94),
+          width: viewport.width,
+          height: viewport.height,
+          aspectRatio: viewport.width / viewport.height
+        });
+
+        if (typeof progressCallback === 'function') {
+          progressCallback(pageNum, numPages);
+        }
       }
 
       return pages;
     }
 
-    function displayPDFPages(pages) {
+    // Display Overview Cards on Main Page
+    function displayGridPages(pages) {
       const container = document.getElementById('pdfViewer');
       container.innerHTML = '';
 
@@ -415,15 +928,16 @@
         card.dataset.page = page.pageNum;
         card.innerHTML = `
           <span class="pdf-page-badge">Page ${page.pageNum}</span>
-          <img src="${page.imageUrl}" alt="PDF Page ${page.pageNum}">
+          <img src="${page.imageUrl}" alt="PDF Page ${page.pageNum}" loading="lazy">
         `;
-        card.addEventListener('click', () => enterFullScreen(page.pageNum));
+        card.addEventListener('click', () => openReader(page.pageNum));
         container.appendChild(card);
       });
     }
 
     function populatePageSelector() {
       const pageSelector = document.getElementById('pageNumber');
+      if (!pageSelector) return;
       pageSelector.innerHTML = '';
       pdfPages.forEach((page) => {
         const opt = document.createElement('option');
@@ -435,45 +949,419 @@
 
     function navigateToPage() {
       const selectedPageNum = parseInt(document.getElementById('pageNumber').value, 10);
-      const card = document.querySelector(`.pdf-page-card[data-page="${selectedPageNum}"]`);
-      if (card) {
-        card.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      }
+      openReader(selectedPageNum);
     }
 
-    function toggleFullScreen() {
-      if (pdfPages.length === 0) return;
-      enterFullScreen(fullScreenPageNum || 1);
-    }
-
-    function enterFullScreen(pageNum) {
-      const page = pdfPages.find(p => p.pageNum === pageNum);
-      if (!page) return;
-
-      fullScreenPageNum = pageNum;
-      fullScreenImage.src = page.imageUrl;
+    // ==========================================================================
+    // Laptop-Optimized Reader Controls & Display
+    // ==========================================================================
+    function openReader(pageNum) {
+      if (!pdfPages || pdfPages.length === 0) return;
+      currentReaderPage = Math.min(Math.max(1, pageNum || 1), pdfPages.length);
       fullscreenReader.classList.add('active');
+      document.body.style.overflow = 'hidden';
+
+      // Default to Fit Width on laptop screens for immediate comfortable reading
+      if (window.innerWidth >= 768) {
+        setZoomMode('fit-width');
+      } else {
+        setZoomMode('fit-page');
+      }
+
+      renderCurrentReaderView();
+      updateThumbSelection();
     }
 
     function exitFullScreen() {
       fullscreenReader.classList.remove('active');
+      document.body.style.overflow = '';
     }
 
-    function navigateFullScreenPage(direction) {
-      const newPageNum = fullScreenPageNum + direction;
-      if (newPageNum >= 1 && newPageNum <= pdfPages.length) {
-        enterFullScreen(newPageNum);
+    function renderCurrentReaderView() {
+      readerPageInput.value = currentReaderPage;
+      hudPageText.textContent = `Page ${currentReaderPage} of ${pdfPages.length}`;
+
+      // Update paddles visibility on first / last page
+      const paddlePrev = document.getElementById('paddlePrev');
+      const paddleNext = document.getElementById('paddleNext');
+      if (paddlePrev) paddlePrev.style.opacity = currentReaderPage === 1 ? '0.35' : '1';
+      if (paddleNext) paddleNext.style.opacity = currentReaderPage === pdfPages.length ? '0.35' : '1';
+
+      if (currentViewMode === 'single') {
+        readerSinglePageWrap.style.display = 'flex';
+        readerContinuousWrap.style.display = 'none';
+
+        const page = pdfPages.find(p => p.pageNum === currentReaderPage) || pdfPages[0];
+        if (page) {
+          readerSingleImage.src = page.imageUrl;
+          applyZoomToSingleImage();
+        }
+        readerViewport.scrollTop = 0;
+      } else {
+        readerSinglePageWrap.style.display = 'none';
+        readerContinuousWrap.style.display = 'flex';
+
+        applyZoomToContinuousPages();
+        const targetPageEl = document.getElementById(`contPage_${currentReaderPage}`);
+        if (targetPageEl) {
+          targetPageEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
       }
     }
 
-    // Keyboard navigation in FullScreen
+    // Apply Zoom & Sizing to Single Page Image
+    function applyZoomToSingleImage() {
+      if (!readerSingleImage) return;
+
+      readerSingleImage.style.transform = `rotate(${currentRotation}deg)`;
+
+      if (zoomMode === 'fit-width') {
+        // Laptop sweet spot: 920px to 960px width or 92vw
+        const optimalWidth = Math.min(940, window.innerWidth * 0.92);
+        readerSingleImage.style.width = `${optimalWidth}px`;
+        readerSingleImage.style.maxWidth = 'none';
+        readerSingleImage.style.height = 'auto';
+        readerSingleImage.style.maxHeight = 'none';
+        readerZoomLabel.textContent = 'Fit Width';
+      } else if (zoomMode === 'fit-page') {
+        // Fits entire height inside laptop screen with zero vertical scrolling
+        const availableHeight = window.innerHeight - 100;
+        readerSingleImage.style.maxHeight = `${availableHeight}px`;
+        readerSingleImage.style.height = 'auto';
+        readerSingleImage.style.maxWidth = '92vw';
+        readerSingleImage.style.width = 'auto';
+        readerZoomLabel.textContent = 'Fit Page';
+      } else {
+        // Custom Zoom (50% to 300%)
+        const baseWidth = Math.min(880, window.innerWidth * 0.88);
+        const calcWidth = Math.round(baseWidth * customZoomLevel);
+        readerSingleImage.style.width = `${calcWidth}px`;
+        readerSingleImage.style.maxWidth = 'none';
+        readerSingleImage.style.height = 'auto';
+        readerSingleImage.style.maxHeight = 'none';
+        readerZoomLabel.textContent = `${Math.round(customZoomLevel * 100)}%`;
+      }
+    }
+
+    // Apply Zoom to Continuous Scroll Pages
+    function applyZoomToContinuousPages() {
+      const pageImgs = readerContinuousWrap.querySelectorAll('img');
+      let targetWidth = 920;
+
+      if (zoomMode === 'fit-width') {
+        targetWidth = Math.min(940, window.innerWidth * 0.92);
+        readerZoomLabel.textContent = 'Fit Width';
+      } else if (zoomMode === 'fit-page') {
+        targetWidth = Math.min(680, window.innerWidth * 0.75);
+        readerZoomLabel.textContent = 'Fit Page';
+      } else {
+        const baseWidth = Math.min(880, window.innerWidth * 0.88);
+        targetWidth = Math.round(baseWidth * customZoomLevel);
+        readerZoomLabel.textContent = `${Math.round(customZoomLevel * 100)}%`;
+      }
+
+      pageImgs.forEach(img => {
+        img.style.width = `${targetWidth}px`;
+        img.style.height = 'auto';
+        img.style.transform = `rotate(${currentRotation}deg)`;
+      });
+    }
+
+    // Set Zoom Mode
+    function setZoomMode(mode) {
+      zoomMode = mode;
+      document.getElementById('btnFitWidth').classList.toggle('active', mode === 'fit-width');
+      document.getElementById('btnFitPage').classList.toggle('active', mode === 'fit-page');
+
+      if (mode === 'fit-width') customZoomLevel = 1.0;
+      else if (mode === 'fit-page') customZoomLevel = 0.8;
+
+      if (currentViewMode === 'single') applyZoomToSingleImage();
+      else applyZoomToContinuousPages();
+    }
+
+    // Zoom In / Out
+    function changeZoom(delta) {
+      zoomMode = 'custom';
+      document.getElementById('btnFitWidth').classList.remove('active');
+      document.getElementById('btnFitPage').classList.remove('active');
+
+      customZoomLevel = Math.min(3.0, Math.max(0.4, parseFloat((customZoomLevel + delta).toFixed(2))));
+      if (currentViewMode === 'single') applyZoomToSingleImage();
+      else applyZoomToContinuousPages();
+    }
+
+    function cycleZoom() {
+      if (zoomMode === 'fit-width') setZoomMode('fit-page');
+      else if (zoomMode === 'fit-page') {
+        customZoomLevel = 1.25;
+        setZoomMode('custom');
+      } else {
+        setZoomMode('fit-width');
+      }
+    }
+
+    function rotatePage() {
+      currentRotation = (currentRotation + 90) % 360;
+      if (currentViewMode === 'single') applyZoomToSingleImage();
+      else applyZoomToContinuousPages();
+    }
+
+    // Switch View Mode: Single vs Continuous
+    function setViewMode(mode) {
+      currentViewMode = mode;
+      document.getElementById('btnViewSingle').classList.toggle('active', mode === 'single');
+      document.getElementById('btnViewScroll').classList.toggle('active', mode === 'continuous');
+      renderCurrentReaderView();
+    }
+
+    // Page Navigation
+    function navigateReaderPage(delta) {
+      const target = currentReaderPage + delta;
+      if (target >= 1 && target <= pdfPages.length) {
+        currentReaderPage = target;
+        renderCurrentReaderView();
+        updateThumbSelection();
+      }
+    }
+
+    function jumpToReaderPage(val) {
+      const page = parseInt(val, 10);
+      if (!isNaN(page) && page >= 1 && page <= pdfPages.length) {
+        currentReaderPage = page;
+        renderCurrentReaderView();
+        updateThumbSelection();
+      } else {
+        readerPageInput.value = currentReaderPage;
+      }
+    }
+
+    // Thumbnails Sidebar Drawer
+    function toggleThumbSidebar() {
+      readerThumbsDrawer.classList.toggle('hidden');
+      const isVisible = !readerThumbsDrawer.classList.contains('hidden');
+      document.getElementById('btnToggleThumbs').classList.toggle('active', isVisible);
+    }
+
+    function buildThumbnailList() {
+      readerThumbsList.innerHTML = '';
+      pdfPages.forEach(p => {
+        const item = document.createElement('div');
+        item.className = 'reader-thumb-item';
+        item.id = `thumb_${p.pageNum}`;
+        item.innerHTML = `
+          <img src="${p.imageUrl}" alt="Page ${p.pageNum}" loading="lazy">
+          <span class="reader-thumb-label">Page ${p.pageNum}</span>
+        `;
+        item.addEventListener('click', () => {
+          currentReaderPage = p.pageNum;
+          renderCurrentReaderView();
+          updateThumbSelection();
+        });
+        readerThumbsList.appendChild(item);
+      });
+    }
+
+    function updateThumbSelection() {
+      const activeThumbs = readerThumbsList.querySelectorAll('.reader-thumb-item.active');
+      activeThumbs.forEach(t => t.classList.remove('active'));
+
+      const currentThumb = document.getElementById(`thumb_${currentReaderPage}`);
+      if (currentThumb) {
+        currentThumb.classList.add('active');
+        currentThumb.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      }
+    }
+
+    // Continuous Scroll Pages Builder
+    function buildContinuousPages() {
+      readerContinuousWrap.innerHTML = '';
+      pdfPages.forEach(p => {
+        const pageCard = document.createElement('div');
+        pageCard.className = 'reader-continuous-page';
+        pageCard.id = `contPage_${p.pageNum}`;
+        pageCard.innerHTML = `
+          <img src="${p.imageUrl}" alt="Page ${p.pageNum}">
+          <span class="reader-page-number-tag">Page ${p.pageNum} of ${pdfPages.length}</span>
+        `;
+        readerContinuousWrap.appendChild(pageCard);
+      });
+
+      // IntersectionObserver to auto-update header page counter as user scrolls vertically
+      if ('IntersectionObserver' in window) {
+        const observer = new IntersectionObserver((entries) => {
+          entries.forEach(entry => {
+            if (entry.isIntersecting && currentViewMode === 'continuous') {
+              const id = entry.target.id;
+              const pageNum = parseInt(id.replace('contPage_', ''), 10);
+              if (!isNaN(pageNum)) {
+                currentReaderPage = pageNum;
+                readerPageInput.value = pageNum;
+                hudPageText.textContent = `Page ${pageNum} of ${pdfPages.length}`;
+                updateThumbSelection();
+              }
+            }
+          });
+        }, { root: readerViewport, threshold: 0.5 });
+
+        readerContinuousWrap.querySelectorAll('.reader-continuous-page').forEach(el => observer.observe(el));
+      }
+    }
+
+    // ==========================================================================
+    // High-Resolution Direct Print Engine
+    // ==========================================================================
+    function printPdf() {
+      if (!pdfPages || pdfPages.length === 0) {
+        if (typeof showToast === 'function') {
+          showToast('Please upload a PDF document before printing.', 'error');
+        }
+        return;
+      }
+
+      if (typeof showToast === 'function') {
+        showToast('🖨️ Opening print dialog...', 'info', 2000);
+      }
+
+      // Method 1: If original PDF blob is available, use invisible native PDF iframe print
+      if (currentPdfBlobUrl) {
+        let printIframe = document.getElementById('pdfPrintIframe');
+        if (!printIframe) {
+          printIframe = document.createElement('iframe');
+          printIframe.id = 'pdfPrintIframe';
+          printIframe.style.position = 'fixed';
+          printIframe.style.right = '0';
+          printIframe.style.bottom = '0';
+          printIframe.style.width = '0';
+          printIframe.style.height = '0';
+          printIframe.style.border = 'none';
+          document.body.appendChild(printIframe);
+        }
+
+        printIframe.onload = function() {
+          try {
+            printIframe.contentWindow.focus();
+            printIframe.contentWindow.print();
+          } catch (err) {
+            console.warn('[PDF Viewer] Native iframe print failed, falling back to sheet print:', err);
+            printUsingSheets();
+          }
+        };
+
+        printIframe.src = currentPdfBlobUrl;
+        return;
+      }
+
+      // Method 2: High-Resolution Printable Sheet Window
+      printUsingSheets();
+    }
+
+    function printUsingSheets() {
+      const printContainer = document.getElementById('printContainer');
+      if (!printContainer) return;
+
+      let html = '';
+      pdfPages.forEach(p => {
+        html += `
+          <div class="print-sheet">
+            <img src="${p.imageUrl}" alt="Page ${p.pageNum}">
+          </div>
+        `;
+      });
+      printContainer.innerHTML = html;
+      printContainer.style.display = 'block';
+
+      setTimeout(() => {
+        window.print();
+        setTimeout(() => {
+          printContainer.style.display = 'none';
+        }, 500);
+      }, 250);
+    }
+
+    // Download PDF Document
+    function downloadCurrentPdf() {
+      if (!currentPdfBlobUrl && pdfPages.length === 0) {
+        if (typeof showToast === 'function') showToast('No PDF available to download.', 'error');
+        return;
+      }
+
+      const link = document.createElement('a');
+      link.href = currentPdfBlobUrl || pdfPages[0].imageUrl;
+      link.download = (currentPdfFile && currentPdfFile.name) || 'document.pdf';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      if (typeof showToast === 'function') showToast('Downloading PDF...', 'success');
+    }
+
+    // ==========================================================================
+    // Keyboard Shortcuts & Wheel Zoom
+    // ==========================================================================
     document.addEventListener('keydown', (e) => {
+      // Ctrl + P to print directly
+      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'p') {
+        if (fullscreenReader.classList.contains('active') || pdfPages.length > 0) {
+          e.preventDefault();
+          printPdf();
+          return;
+        }
+      }
+
       if (!fullscreenReader.classList.contains('active')) return;
-      if (e.key === 'ArrowRight' || e.key === 'ArrowDown') navigateFullScreenPage(1);
-      else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') navigateFullScreenPage(-1);
-      else if (e.key === 'Escape') exitFullScreen();
+
+      if (e.key === 'Escape') {
+        exitFullScreen();
+      } else if (e.key === 'ArrowRight' || e.key === 'PageDown' || (e.key === ' ' && !e.shiftKey)) {
+        e.preventDefault();
+        navigateReaderPage(1);
+      } else if (e.key === 'ArrowLeft' || e.key === 'PageUp' || (e.key === ' ' && e.shiftKey)) {
+        e.preventDefault();
+        navigateReaderPage(-1);
+      } else if (e.key === '+' || e.key === '=') {
+        e.preventDefault();
+        changeZoom(0.15);
+      } else if (e.key === '-' || e.key === '_') {
+        e.preventDefault();
+        changeZoom(-0.15);
+      } else if (e.key === '0') {
+        e.preventDefault();
+        setZoomMode('fit-width');
+      } else if (e.key.toLowerCase() === 'w') {
+        e.preventDefault();
+        setZoomMode('fit-width');
+      } else if (e.key.toLowerCase() === 'f') {
+        e.preventDefault();
+        setZoomMode('fit-page');
+      } else if (e.key.toLowerCase() === 'r') {
+        e.preventDefault();
+        rotatePage();
+      } else if (e.key.toLowerCase() === 't') {
+        e.preventDefault();
+        toggleThumbSidebar();
+      }
     });
+
+    // Ctrl + Mouse Wheel Smooth Zoom
+    readerViewport.addEventListener('wheel', (e) => {
+      if (e.ctrlKey) {
+        e.preventDefault();
+        if (e.deltaY < 0) changeZoom(0.1);
+        else changeZoom(-0.1);
+      }
+    }, { passive: false });
+
+    // Window Resize Handler: Auto-adjust Fit-Width
+    window.addEventListener('resize', () => {
+      if (fullscreenReader.classList.contains('active') && zoomMode === 'fit-width') {
+        applyZoomToSingleImage();
+      }
+    });
+
+    // Expose Global Handlers for App.js Integration
+    window.viewPDF = viewPDF;
+    window.loadPDF = viewPDF;
+    window.printPdf = printPdf;
   </script>
 </body>
 </html>
-

@@ -1885,9 +1885,184 @@ window.updateDonationQR = function(amt) {
   });
 })();
 
+// ==========================================================================
+// Windows / PC & Laptop "Open With" & Cross-Page File Handoff Engine
+// ==========================================================================
+(function initAIBotsOpenWith() {
+  const DB_NAME = 'aibots_handoff_db';
+  const STORE_NAME = 'handoff_files';
 
+  window.AIBotsHandoff = {
+    openDB() {
+      return new Promise((resolve, reject) => {
+        const req = indexedDB.open(DB_NAME, 1);
+        req.onupgradeneeded = (e) => {
+          const db = e.target.result;
+          if (!db.objectStoreNames.contains(STORE_NAME)) {
+            db.createObjectStore(STORE_NAME, { keyPath: 'id' });
+          }
+        };
+        req.onsuccess = () => resolve(req.result);
+        req.onerror = () => reject(req.error);
+      });
+    },
 
+    async storeFile(file, targetTool) {
+      try {
+        const db = await this.openDB();
+        return new Promise((resolve, reject) => {
+          const tx = db.transaction(STORE_NAME, 'readwrite');
+          const store = tx.objectStore(STORE_NAME);
+          const record = {
+            id: 'pending_transfer',
+            file: file,
+            name: file.name,
+            type: file.type || 'application/octet-stream',
+            size: file.size,
+            targetTool: targetTool,
+            timestamp: Date.now()
+          };
+          const putReq = store.put(record);
+          putReq.onsuccess = () => resolve(true);
+          putReq.onerror = () => reject(putReq.error);
+        });
+      } catch (err) {
+        console.warn('[AIBotsHandoff] Store failed:', err);
+        return false;
+      }
+    },
 
+    async getFile() {
+      try {
+        const db = await this.openDB();
+        return new Promise((resolve, reject) => {
+          const tx = db.transaction(STORE_NAME, 'readonly');
+          const store = tx.objectStore(STORE_NAME);
+          const getReq = store.get('pending_transfer');
+          getReq.onsuccess = () => {
+            const res = getReq.result;
+            // 10 minutes handoff validity window
+            if (res && (Date.now() - res.timestamp < 600000)) {
+              resolve(res);
+            } else {
+              resolve(null);
+            }
+          };
+          getReq.onerror = () => reject(getReq.error);
+        });
+      } catch (err) {
+        console.warn('[AIBotsHandoff] Get failed:', err);
+        return null;
+      }
+    },
 
+    async clearFile() {
+      try {
+        const db = await this.openDB();
+        return new Promise((resolve) => {
+          const tx = db.transaction(STORE_NAME, 'readwrite');
+          const store = tx.objectStore(STORE_NAME);
+          store.delete('pending_transfer');
+          tx.oncomplete = () => resolve(true);
+        });
+      } catch (err) {
+        return false;
+      }
+    }
+  };
 
+  // 1. Native Windows / PC PWA File Handling Consumer
+  if ('launchQueue' in window && typeof LaunchParams !== 'undefined' && 'files' in LaunchParams.prototype) {
+    window.launchQueue.setConsumer(async (launchParams) => {
+      if (!launchParams.files || !launchParams.files.length) return;
+      try {
+        const fileHandle = launchParams.files[0];
+        const file = await fileHandle.getFile();
+        console.log('[PWA File Handling] Received file from OS:', file.name, file.type);
+
+        if (typeof window.openWithAIBots === 'function') {
+          window.openWithAIBots(file);
+        } else {
+          await window.AIBotsHandoff.storeFile(file, 'index.html');
+          window.location.href = './index.html?openwith=true';
+        }
+      } catch (err) {
+        console.error('[PWA File Handling] Error receiving file:', err);
+      }
+    });
+  }
+
+  // 2. Automatic Tool Receiver on DOMContentLoaded
+  document.addEventListener('DOMContentLoaded', async () => {
+    const rawPath = window.location.pathname.toLowerCase();
+    const currentFile = rawPath.substring(rawPath.lastIndexOf('/') + 1) || 'index.html';
+    
+    // If on index.html and redirected with pending handoff, open the Open With modal
+    if (currentFile === 'index.html' || currentFile === '') {
+      const urlParams = new URLSearchParams(window.location.search);
+      if (urlParams.get('openwith') === 'true') {
+        const handoff = await window.AIBotsHandoff.getFile();
+        if (handoff && handoff.file && typeof window.openWithAIBots === 'function') {
+          window.openWithAIBots(handoff.file);
+        }
+      }
+      return;
+    }
+
+    // On tool pages, check if a file was handed off to this tool
+    const handoff = await window.AIBotsHandoff.getFile();
+    if (!handoff || !handoff.file) return;
+
+    const targetTool = (handoff.targetTool || '').toLowerCase();
+    const cleanCurrent = currentFile.replace('.html', '');
+    const cleanTarget = targetTool.replace('.html', '');
+
+    if (cleanTarget && !cleanCurrent.includes(cleanTarget) && !cleanTarget.includes(cleanCurrent)) {
+      return;
+    }
+
+    // Clear handoff so refresh does not re-inject
+    await window.AIBotsHandoff.clearFile();
+
+    const file = handoff.file;
+    console.log(`[AIBotsHandoff] Loading "${file.name}" into ${currentFile}`);
+
+    // Wait a brief tick for tool scripts to finish initializing
+    setTimeout(() => {
+      const possibleSelectors = [
+        'input[type="file"]#imageInput',
+        'input[type="file"]#image-input',
+        'input[type="file"]#fileInput',
+        'input[type="file"]#pdfFileInput',
+        'input[type="file"]#imageFileInput',
+        'input[type="file"]'
+      ];
+
+      let targetInput = null;
+      for (const sel of possibleSelectors) {
+        const el = document.querySelector(sel);
+        if (el) {
+          targetInput = el;
+          break;
+        }
+      }
+
+      if (targetInput) {
+        try {
+          const dt = new DataTransfer();
+          dt.items.add(file);
+          targetInput.files = dt.files;
+          targetInput.dispatchEvent(new Event('change', { bubbles: true }));
+          targetInput.dispatchEvent(new Event('input', { bubbles: true }));
+
+          if (typeof showToast === 'function') {
+            showToast(`✨ File "${file.name}" opened in ${document.title}!`, 'success', 4000);
+          }
+        } catch (e) {
+          console.warn('[AIBotsHandoff] DataTransfer injection failed:', e);
+        }
+      }
+    }, 280);
+  });
+})();
 

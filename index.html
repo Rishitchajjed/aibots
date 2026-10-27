@@ -299,13 +299,13 @@
       </div>
 
       <!-- Quick Action Dropzone Dock in Hero -->
-      <div class="hero-quick-dock" id="heroDock" onclick="document.getElementById('dockFileInput').click()">
-        <input type="file" id="dockFileInput" style="display: none;" accept="image/*" onchange="handleHeroDockUpload(event)">
+      <div class="hero-quick-dock" id="heroDock" onclick="document.getElementById('dockFileInput').click()" title="Click or drop any file to choose tool">
+        <input type="file" id="dockFileInput" style="display: none;" accept="image/*,application/pdf,.pdf" onchange="handleHeroDockUpload(event)">
         <div style="font-weight: 700; font-size: 1rem; color: var(--text-primary);">
-          <i class="fas fa-cloud-arrow-up" style="color: var(--primary); margin-right: 6px;"></i> Drag & Drop Any Photo Here
+          <i class="fas fa-cloud-arrow-up" style="color: var(--primary); margin-right: 6px;"></i> Drag &amp; Drop Any Photo or PDF Here
         </div>
         <div style="font-size: 0.8rem; color: var(--text-muted); margin-top: 4px;">
-          Instant quick-actions:
+          Instant quick-actions &bull; Or click to open with any tool
         </div>
         <div class="dock-actions" onclick="event.stopPropagation()">
           <a href="pdf-editor.html" class="dock-pill"><i class="fas fa-file-pen"></i> Edit PDF</a>
@@ -313,6 +313,7 @@
           <a href="cropphoto.html" class="dock-pill"><i class="fas fa-crop"></i> Crop Photo &amp; PDF</a>
           <a href="resizeimage.html" class="dock-pill"><i class="fas fa-expand"></i> Resize</a>
           <a href="pdfmaker.html" class="dock-pill"><i class="fas fa-file-pdf"></i> Make PDF</a>
+          <a href="print.html" class="dock-pill"><i class="fas fa-print"></i> Print Studio</a>
           <a href="imagelink.html" class="dock-pill"><i class="fas fa-link"></i> Get Link</a>
         </div>
       </div>
@@ -1367,16 +1368,238 @@
       }
     }
 
-    // 4. Hero Quick Dropzone Upload Handler
+    // 4. Hero Quick Dropzone Upload & Interactive Open-With Handler
+    let activeOpenWithFile = null;
+
     function handleHeroDockUpload(event) {
-      const file = event.target.files[0];
+      const file = event.target.files && event.target.files[0];
       if (file) {
-        showToast('Image received! Opening in Background Remover...', 'success');
-        setTimeout(() => {
-          window.location.href = 'backremover.html';
-        }, 600);
+        openWithAIBots(file);
       }
+      event.target.value = ''; // Reset for re-selection
     }
+
+    function formatFileSize(bytes) {
+      if (!bytes || bytes === 0) return '0 B';
+      const k = 1024;
+      const sizes = ['B', 'KB', 'MB', 'GB'];
+      const i = Math.floor(Math.log(bytes) / Math.log(k));
+      return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + ' ' + sizes[i];
+    }
+
+    window.openWithAIBots = function(file) {
+      if (!file) return;
+      activeOpenWithFile = file;
+
+      const backdrop = document.getElementById('openWithBackdrop');
+      const nameEl = document.getElementById('openWithFileName');
+      const sizeEl = document.getElementById('openWithFileSize');
+      const badgeEl = document.getElementById('openWithBadge');
+      const thumbEl = document.getElementById('openWithThumb');
+      const gridEl = document.getElementById('openWithToolsGrid');
+
+      if (!backdrop || !gridEl) return;
+
+      const isPdf = (file.type === 'application/pdf') || file.name.toLowerCase().endsWith('.pdf');
+      const isImage = file.type.startsWith('image/') || /\.(png|jpe?g|webp|gif|bmp|svg|ico)$/i.test(file.name);
+
+      nameEl.textContent = file.name;
+      sizeEl.textContent = formatFileSize(file.size);
+
+      if (isPdf) {
+        badgeEl.textContent = 'PDF DOCUMENT';
+        badgeEl.style.background = 'rgba(239, 68, 68, 0.2)';
+        badgeEl.style.color = '#f87171';
+        thumbEl.innerHTML = '<i class="fas fa-file-pdf" style="color: #ef4444; font-size: 1.8rem;"></i>';
+      } else if (isImage) {
+        const ext = file.name.split('.').pop().toUpperCase();
+        badgeEl.textContent = ext + ' IMAGE';
+        badgeEl.style.background = 'rgba(99, 102, 241, 0.2)';
+        badgeEl.style.color = '#818cf8';
+        thumbEl.innerHTML = '<i class="fas fa-image" style="color: #6366f1; font-size: 1.8rem;"></i>';
+
+        try {
+          const reader = new FileReader();
+          reader.onload = (e) => {
+            thumbEl.innerHTML = `<img src="${e.target.result}" alt="Preview">`;
+          };
+          reader.readAsDataURL(file);
+        } catch (e) {}
+      } else {
+        badgeEl.textContent = 'FILE';
+        badgeEl.style.background = 'rgba(148, 163, 184, 0.2)';
+        badgeEl.style.color = '#cbd5e1';
+        thumbEl.innerHTML = '<i class="fas fa-file" style="color: #94a3b8; font-size: 1.8rem;"></i>';
+      }
+
+      // Generate compatible tools list
+      let tools = [];
+      if (isPdf) {
+        tools = [
+          {
+            name: 'PDF Page Editor',
+            url: 'pdf-editor.html',
+            desc: 'Type text, sign, annotate & edit PDF pages',
+            icon: 'fa-file-pen',
+            color: '#6366f1',
+            bg: 'rgba(99, 102, 241, 0.15)'
+          },
+          {
+            name: 'Crop PDF & Document',
+            url: 'cropphoto.html',
+            desc: 'Auto-detect borders & crop white margins',
+            icon: 'fa-crop',
+            color: '#10b981',
+            bg: 'rgba(16, 185, 129, 0.15)'
+          },
+          {
+            name: 'Print Studio',
+            url: 'print.html',
+            desc: 'High-res multi-page print layout & preview',
+            icon: 'fa-print',
+            color: '#06b6d4',
+            bg: 'rgba(6, 182, 212, 0.15)'
+          },
+          {
+            name: 'PDF Maker / Splitter',
+            url: 'pdfmaker.html',
+            desc: 'Merge, split, reorder & organize PDF pages',
+            icon: 'fa-file-pdf',
+            color: '#f43f5e',
+            bg: 'rgba(244, 63, 94, 0.15)'
+          }
+        ];
+      } else {
+        tools = [
+          {
+            name: 'Background Remover',
+            url: 'backremover.html',
+            desc: '1-click AI background eraser & transparent cutout',
+            icon: 'fa-wand-magic-sparkles',
+            color: '#ec4899',
+            bg: 'rgba(236, 72, 153, 0.15)'
+          },
+          {
+            name: 'Crop Photo & PDF',
+            url: 'cropphoto.html',
+            desc: 'Smart auto-crop, custom ratio & rotation',
+            icon: 'fa-crop',
+            color: '#10b981',
+            bg: 'rgba(16, 185, 129, 0.15)'
+          },
+          {
+            name: 'Resize Image',
+            url: 'resizeimage.html',
+            desc: 'Compress file size & change pixel dimensions',
+            icon: 'fa-expand',
+            color: '#f59e0b',
+            bg: 'rgba(245, 158, 11, 0.15)'
+          },
+          {
+            name: 'Make PDF',
+            url: 'pdfmaker.html',
+            desc: 'Convert multiple images into a multi-page PDF',
+            icon: 'fa-file-pdf',
+            color: '#ef4444',
+            bg: 'rgba(239, 68, 68, 0.15)'
+          },
+          {
+            name: 'Image Combiner & Stitcher',
+            url: 'imagecombiner.html',
+            desc: 'Stitch photos vertically, side-by-side or in grid',
+            icon: 'fa-layer-group',
+            color: '#8b5cf6',
+            bg: 'rgba(139, 92, 246, 0.15)'
+          },
+          {
+            name: 'Print Studio',
+            url: 'print.html',
+            desc: 'Print-ready photo grid & custom border sheets',
+            icon: 'fa-print',
+            color: '#06b6d4',
+            bg: 'rgba(6, 182, 212, 0.15)'
+          },
+          {
+            name: 'Get Image Link',
+            url: 'imagelink.html',
+            desc: 'Convert image to shareable web URL / QR code',
+            icon: 'fa-link',
+            color: '#3b82f6',
+            bg: 'rgba(59, 130, 246, 0.15)'
+          },
+          {
+            name: 'PDF Page Editor',
+            url: 'pdf-editor.html',
+            desc: 'Insert into PDF document, markup & sign',
+            icon: 'fa-file-pen',
+            color: '#6366f1',
+            bg: 'rgba(99, 102, 241, 0.15)'
+          }
+        ];
+      }
+
+      let gridHtml = '';
+      tools.forEach(t => {
+        gridHtml += `
+          <button type="button" class="openwith-tool-btn" onclick="launchToolWithFile('${t.url}', '${t.name}')">
+            <div class="openwith-tool-icon" style="background: ${t.bg}; color: ${t.color};">
+              <i class="fas ${t.icon}"></i>
+            </div>
+            <div class="openwith-tool-text">
+              <div class="openwith-tool-name">${t.name}</div>
+              <div class="openwith-tool-desc">${t.desc}</div>
+            </div>
+          </button>
+        `;
+      });
+
+      gridEl.innerHTML = gridHtml;
+      backdrop.classList.add('active');
+    };
+
+    window.closeOpenWithModal = function(e) {
+      if (e && e.target && e.target !== document.getElementById('openWithBackdrop') && !e.target.classList.contains('icon-btn') && !e.target.closest('button')) {
+        return;
+      }
+      const backdrop = document.getElementById('openWithBackdrop');
+      if (backdrop) backdrop.classList.remove('active');
+      activeOpenWithFile = null;
+    };
+
+    window.launchToolWithFile = async function(toolUrl, toolName) {
+      if (!activeOpenWithFile) {
+        window.location.href = toolUrl;
+        return;
+      }
+      if (typeof showToast === 'function') {
+        showToast(`Opening ${toolName}...`, 'info', 1500);
+      }
+      if (window.AIBotsHandoff && typeof window.AIBotsHandoff.storeFile === 'function') {
+        await window.AIBotsHandoff.storeFile(activeOpenWithFile, toolUrl);
+      }
+      window.location.href = toolUrl;
+    };
+
+    // Hero Dock Drag and Drop Setup
+    document.addEventListener('DOMContentLoaded', () => {
+      const dock = document.getElementById('heroDock');
+      if (dock) {
+        dock.addEventListener('dragover', (e) => {
+          e.preventDefault();
+          dock.classList.add('dock-dragover');
+        });
+        dock.addEventListener('dragleave', () => {
+          dock.classList.remove('dock-dragover');
+        });
+        dock.addEventListener('drop', (e) => {
+          e.preventDefault();
+          dock.classList.remove('dock-dragover');
+          if (e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+            openWithAIBots(e.dataTransfer.files[0]);
+          }
+        });
+      }
+    });
 
     // 5. Interactive In-Place Studio Workspace Loader
     function openInStudio(url, title) {
@@ -1647,6 +1870,52 @@
     </svg>
     <i class="fas fa-rocket rocket-icon"></i>
   </button>
+
+  <!-- Interactive "Open With AI Bots" Modal -->
+  <div class="openwith-backdrop" id="openWithBackdrop" onclick="closeOpenWithModal(event)">
+    <div class="openwith-modal" onclick="event.stopPropagation()">
+      <div class="openwith-header">
+        <div class="openwith-title">
+          <img src="logo.png" alt="AI Bots" style="width: 28px; height: 28px; border-radius: 8px; object-fit: contain;">
+          <span>Open with AI Bots</span>
+        </div>
+        <button type="button" class="icon-btn" onclick="closeOpenWithModal()" title="Close" style="font-size: 1.4rem; line-height: 1; border: none; background: none; color: #94a3b8; cursor: pointer;">&times;</button>
+      </div>
+
+      <div class="openwith-file-card">
+        <div class="openwith-file-thumb" id="openWithThumb">
+          <i class="fas fa-file"></i>
+        </div>
+        <div class="openwith-file-info">
+          <div class="openwith-file-name" id="openWithFileName">filename.ext</div>
+          <div class="openwith-file-meta">
+            <span class="openwith-badge" id="openWithBadge" style="background: rgba(99, 102, 241, 0.2); color: #818cf8;">FILE</span>
+            <span id="openWithFileSize">0 KB</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="openwith-body">
+        <div class="openwith-section-label">
+          <span>Choose Tool to Open With:</span>
+          <span style="font-size: 0.72rem; color: #94a3b8; text-transform: none;">1-Click Automatic Handoff</span>
+        </div>
+
+        <div class="openwith-tools-grid" id="openWithToolsGrid">
+          <!-- Populated dynamically based on file type -->
+        </div>
+      </div>
+
+      <div class="openwith-footer">
+        <div>
+          <i class="fab fa-windows" style="color: #38bdf8; margin-right: 4px;"></i>
+          <strong>PC / Laptop tip:</strong> Install AI Bots (⬇ in address bar) to right-click any file in Windows &rarr; <em>"Open with AI Bots"</em>!
+        </div>
+        <button type="button" class="btn btn-secondary btn-sm" onclick="closeOpenWithModal()">Cancel</button>
+      </div>
+    </div>
+  </div>
+
 </body>
 </html>
 

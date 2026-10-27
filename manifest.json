@@ -46,6 +46,23 @@
       "type": "image/svg+xml"
     }
   ],
+  "file_handlers": [
+    {
+      "action": "./index.html?openwith=true",
+      "name": "AI Bots Creative & PDF Tools",
+      "icons": [
+        {
+          "src": "android-chrome-192x192.png",
+          "sizes": "192x192",
+          "type": "image/png"
+        }
+      ],
+      "accept": {
+        "image/*": [".png", ".jpg", ".jpeg", ".webp", ".gif", ".bmp", ".svg", ".ico"],
+        "application/pdf": [".pdf"]
+      }
+    }
+  ],
   "shortcuts": [
     {
       "name": "Live Cricket Scorer",

@@ -1485,10 +1485,10 @@
 
             <!-- Split Count (Shown when not direct 'he_gave') -->
             <div id="splitCountRow" style="display: flex; gap: 8px; margin-bottom: 8px; flex-wrap: wrap;">
-              <span style="font-size: 0.78rem; font-weight: 700; color: var(--text-muted); align-self: center;">Split Mode:</span>
-              <button type="button" class="quick-chip active" id="chipSplit2" onclick="setSplitCount(2, this)">50 / 50 (2 People)</button>
-              <button type="button" class="quick-chip" id="chipSplit3" onclick="setSplitCount(3, this)">1/3 (3 People)</button>
-              <button type="button" class="quick-chip" id="chipSplit4" onclick="setSplitCount(4, this)">1/4 (4 People)</button>
+              <span style="font-size: 0.78rem; font-weight: 700; color: var(--text-muted); align-self: center;">Split Between:</span>
+              <button type="button" class="quick-chip active" id="chipSplit2" onclick="setSplitCount(2, this)">50 / 50 (You + 1 Friend = 2 People)</button>
+              <button type="button" class="quick-chip" id="chipSplit3" onclick="setSplitCount(3, this)">1/3 (You + 2 Friends = 3 People)</button>
+              <button type="button" class="quick-chip" id="chipSplit4" onclick="setSplitCount(4, this)">1/4 (You + 3 Friends = 4 People)</button>
             </div>
 
             <div class="split-preview-banner" id="splitPreviewText">
@@ -1512,8 +1512,20 @@
             <!-- Person Name Field (High Contrast & Clear) -->
             <div class="form-group" style="flex: 1.2;" id="groupPerson">
               <label class="form-label" id="lblPerson">Person Name</label>
-              <input type="text" id="entryPerson" class="input-box" placeholder="e.g. Rahul, Shopkeeper..." list="existingPeopleDatalist" autocomplete="off" oninput="updateSplitPreview()">
+              <input type="text" id="entryPerson" class="input-box" placeholder="e.g. Rahul, Shopkeeper..." list="existingPeopleDatalist" autocomplete="off" oninput="handlePersonInput(this.value)">
               <datalist id="existingPeopleDatalist"></datalist>
+            </div>
+
+            <!-- Extra Friend 2 Name Field for 3 & 4 People Split -->
+            <div class="form-group" style="flex: 1.2; display: none;" id="groupPerson2">
+              <label class="form-label" id="lblPerson2">Friend 2 Name (Who Owes)</label>
+              <input type="text" id="entryPerson2" class="input-box" placeholder="e.g. Amit..." list="existingPeopleDatalist" autocomplete="off" oninput="updateSplitPreview()">
+            </div>
+
+            <!-- Extra Friend 3 Name Field for 4 People Split -->
+            <div class="form-group" style="flex: 1.2; display: none;" id="groupPerson3">
+              <label class="form-label" id="lblPerson3">Friend 3 Name (Who Owes)</label>
+              <input type="text" id="entryPerson3" class="input-box" placeholder="e.g. Priya..." list="existingPeopleDatalist" autocomplete="off" oninput="updateSplitPreview()">
             </div>
 
             <!-- Description / Note Field -->
@@ -1975,6 +1987,12 @@
       splitBox.style.display = 'none';
       spentDirectlyBox.style.display = 'none';
 
+      // Hide extra friend fields when not in split mode
+      const g2 = document.getElementById('groupPerson2');
+      const g3 = document.getElementById('groupPerson3');
+      if (g2) g2.style.display = 'none';
+      if (g3) g3.style.display = 'none';
+
       if (mode === 'expense') {
         lblAmount.innerHTML = `Amount (<span class="currency-sym">${getCurrency()}</span>)`;
         lblPerson.textContent = 'Paid To / Person (Optional)';
@@ -2032,24 +2050,19 @@
 
       const splitRow = document.getElementById('splitCountRow');
       const lblAmount = document.getElementById('lblAmount');
-      const lblPerson = document.getElementById('lblPerson');
-      const entryPerson = document.getElementById('entryPerson');
       const saveBtn = document.getElementById('btnSaveAction');
 
       if (flow === 'he_gave') {
         splitRow.style.display = 'none';
         lblAmount.innerHTML = `Contri Amount Given by Him (<span class="currency-sym">${getCurrency()}</span>)`;
-        lblPerson.textContent = 'Friend Name Who Gave Contri';
-        entryPerson.placeholder = 'e.g. Rahul, Aman...';
         saveBtn.innerHTML = '<i class="fa-solid fa-hand-holding-dollar"></i> Receive Contri (+Cash In)';
       } else {
         splitRow.style.display = 'flex';
         lblAmount.innerHTML = `Total Bill Amount (<span class="currency-sym">${getCurrency()}</span>)`;
-        lblPerson.textContent = 'Split with Person';
-        entryPerson.placeholder = 'e.g. Rahul, Aman...';
         saveBtn.innerHTML = '<i class="fa-solid fa-users-between-lines"></i> Split & Save Contri';
       }
 
+      updateSplitFieldsVisibility();
       updateSplitPreview();
     }
 
@@ -2059,6 +2072,77 @@
         if (c.id && c.id.startsWith('chipSplit')) c.classList.remove('active');
       });
       if (btn) btn.classList.add('active');
+
+      updateSplitFieldsVisibility();
+      updateSplitPreview();
+    }
+
+    function updateSplitFieldsVisibility() {
+      const g2 = document.getElementById('groupPerson2');
+      const g3 = document.getElementById('groupPerson3');
+      const lblPerson = document.getElementById('lblPerson');
+      const entryPerson = document.getElementById('entryPerson');
+
+      if (entryMode !== 'split_contri') {
+        if (g2) g2.style.display = 'none';
+        if (g3) g3.style.display = 'none';
+        return;
+      }
+
+      if (contriFlow === 'he_gave') {
+        if (g2) g2.style.display = 'none';
+        if (g3) g3.style.display = 'none';
+        lblPerson.textContent = 'Friend Name Who Gave Contri';
+        entryPerson.placeholder = 'e.g. Rahul, Aman...';
+      } else if (contriFlow === 'friend_paid') {
+        if (g2) g2.style.display = 'none';
+        if (g3) g3.style.display = 'none';
+        lblPerson.textContent = `Friend Who Paid Full (${splitCount} People Total)`;
+        entryPerson.placeholder = 'e.g. Rahul (Who paid the bill)...';
+      } else {
+        // me_owes or me_spot:
+        if (splitCount === 2) {
+          if (g2) g2.style.display = 'none';
+          if (g3) g3.style.display = 'none';
+          lblPerson.textContent = 'Friend Name (Who Owes 50%)';
+          entryPerson.placeholder = 'e.g. Rahul, Aman...';
+        } else if (splitCount === 3) {
+          if (g2) g2.style.display = 'flex';
+          if (g3) g3.style.display = 'none';
+          lblPerson.textContent = 'Friend 1 Name (Who Owes 1/3)';
+          entryPerson.placeholder = 'e.g. Rahul...';
+          const lbl2 = document.getElementById('lblPerson2');
+          if (lbl2) lbl2.textContent = 'Friend 2 Name (Who Owes 1/3)';
+        } else if (splitCount === 4) {
+          if (g2) g2.style.display = 'flex';
+          if (g3) g3.style.display = 'flex';
+          lblPerson.textContent = 'Friend 1 Name (Who Owes 1/4)';
+          entryPerson.placeholder = 'e.g. Rahul...';
+          const lbl2 = document.getElementById('lblPerson2');
+          if (lbl2) lbl2.textContent = 'Friend 2 Name (Who Owes 1/4)';
+          const lbl3 = document.getElementById('lblPerson3');
+          if (lbl3) lbl3.textContent = 'Friend 3 Name (Who Owes 1/4)';
+        }
+      }
+    }
+
+    function handlePersonInput(val) {
+      // Auto-distribute comma-separated names if user pastes e.g. "Rahul, Amit"
+      if (entryMode === 'split_contri' && contriFlow === 'me_owes' && val && val.includes(',')) {
+        const parts = val.split(',').map(s => s.trim()).filter(Boolean);
+        if (parts.length >= 2) {
+          if (parts.length === 2 && splitCount === 2) {
+            setSplitCount(3, document.getElementById('chipSplit3'));
+          } else if (parts.length >= 3 && splitCount < 4) {
+            setSplitCount(4, document.getElementById('chipSplit4'));
+          }
+          document.getElementById('entryPerson').value = parts[0] || '';
+          const p2 = document.getElementById('entryPerson2');
+          if (p2 && parts[1]) p2.value = parts[1];
+          const p3 = document.getElementById('entryPerson3');
+          if (p3 && parts[2]) p3.value = parts[2];
+        }
+      }
       updateSplitPreview();
     }
 
@@ -2066,35 +2150,72 @@
       if (entryMode !== 'split_contri') return;
       const totalStr = document.getElementById('entryAmount').value.trim();
       const total = evalMath(totalStr);
-      const person = document.getElementById('entryPerson').value.trim() || 'Friend';
+      const p1 = document.getElementById('entryPerson')?.value.trim() || '';
+      const p2 = document.getElementById('entryPerson2')?.value.trim() || '';
+      const p3 = document.getElementById('entryPerson3')?.value.trim() || '';
       const previewEl = document.getElementById('splitPreviewText');
 
       if (total <= 0) {
-        previewEl.innerHTML = `Enter amount & person name above to preview...`;
+        previewEl.innerHTML = `Enter total bill & person name(s) above to preview split...`;
         return;
       }
 
       if (contriFlow === 'he_gave') {
+        const friendName = p1 || 'Friend';
         previewEl.innerHTML = `
-          <span>💡 <strong style="color: var(--person-name-color);">${escapeHtml(person)}</strong> gave you <strong class="money-received">${formatMoney(total)}</strong> contri: Directly adds <strong class="money-received">+${formatMoney(total)} to your Cash in Hand</strong> (Zero debt created)</span>
+          <span>💡 <strong style="color: var(--person-name-color);">${escapeHtml(friendName)}</strong> gave you <strong class="money-received">${formatMoney(total)}</strong> contri: Directly adds <strong class="money-received">+${formatMoney(total)} to your Cash in Hand</strong> (Zero debt created)</span>
         `;
-      } else {
-        const friendShare = Number((total / splitCount).toFixed(2));
-        const myShare = Number((total - friendShare).toFixed(2));
+        return;
+      }
 
-        if (contriFlow === 'me_owes') {
-          previewEl.innerHTML = `
-            <span>💡 <strong>You paid full ${formatMoney(total)}:</strong> Your share = <strong class="money-spent">${formatMoney(myShare)}</strong> | <strong style="color: var(--person-name-color);">${escapeHtml(person)}</strong> owes you <strong class="money-received">${formatMoney(friendShare)}</strong> (auto added to Khata)</span>
-          `;
-        } else if (contriFlow === 'me_spot') {
-          previewEl.innerHTML = `
-            <span>💡 <strong>You paid full ${formatMoney(total)}, <strong style="color: var(--person-name-color);">${escapeHtml(person)}</strong> gave <strong class="money-received">${formatMoney(friendShare)}</strong> cash on spot:</strong> Net cash out = <strong class="money-spent">${formatMoney(myShare)}</strong> (Khata settled on spot!)</span>
-          `;
-        } else if (contriFlow === 'friend_paid') {
-          previewEl.innerHTML = `
-            <span>💡 <strong style="color: var(--person-name-color);">${escapeHtml(person)}</strong> paid full ${formatMoney(total)}: Your share = <strong class="money-spent">${formatMoney(myShare)}</strong> | You owe <strong style="color: var(--person-name-color);">${escapeHtml(person)}</strong> <strong class="money-spent">${formatMoney(myShare)}</strong> (added to Khata as To Pay)</span>
-          `;
-        }
+      if (contriFlow === 'friend_paid') {
+        const friendName = p1 || 'Friend';
+        const myShare = Number((total / splitCount).toFixed(2));
+        previewEl.innerHTML = `
+          <span>💡 <strong style="color: var(--person-name-color);">${escapeHtml(friendName)}</strong> paid full ${formatMoney(total)} (split ${splitCount} ways): Your share = <strong class="money-spent">${formatMoney(myShare)}</strong> | You owe <strong style="color: var(--person-name-color);">${escapeHtml(friendName)}</strong> <strong class="money-spent">${formatMoney(myShare)}</strong> (added to Khata as To Pay)</span>
+        `;
+        return;
+      }
+
+      // me_owes & me_spot:
+      const sharePerPerson = Number((total / splitCount).toFixed(2));
+      const friendsCount = splitCount - 1; // 1 friend for 2-way, 2 friends for 3-way, 3 friends for 4-way
+      const totalFriendsShare = Number((sharePerPerson * friendsCount).toFixed(2));
+      const myShare = Number((total - totalFriendsShare).toFixed(2));
+
+      if (contriFlow === 'me_spot') {
+        previewEl.innerHTML = `
+          <span>💡 <strong>You paid full ${formatMoney(total)}:</strong> Friends gave their share (${formatMoney(totalFriendsShare)}) cash on spot | Net cash spent = <strong class="money-spent">${formatMoney(myShare)}</strong> (Khata settled on spot!)</span>
+        `;
+        return;
+      }
+
+      // me_owes:
+      if (splitCount === 2) {
+        const f1 = p1 || 'Friend';
+        previewEl.innerHTML = `
+          <span>💡 <strong>You paid full ${formatMoney(total)} (50/50 Split):</strong><br>
+          • Your share (Expense): <strong class="money-spent">${formatMoney(myShare)}</strong><br>
+          • <strong style="color: var(--person-name-color);">${escapeHtml(f1)}</strong> owes you: <strong class="money-received">${formatMoney(sharePerPerson)}</strong> (auto added to Khata)</span>
+        `;
+      } else if (splitCount === 3) {
+        const f1 = p1 || 'Friend 1';
+        const f2 = p2 || 'Friend 2';
+        previewEl.innerHTML = `
+          <span>💡 <strong>You paid full ${formatMoney(total)} (Split between 3 People: You + 2 Friends):</strong><br>
+          • Your share (Expense): <strong class="money-spent">${formatMoney(myShare)}</strong><br>
+          • <strong style="color: var(--person-name-color);">${escapeHtml(f1)}</strong> owes you: <strong class="money-received">${formatMoney(sharePerPerson)}</strong> (added to Khata)<br>
+          • <strong style="color: var(--person-name-color);">${escapeHtml(f2)}</strong> owes you: <strong class="money-received">${formatMoney(sharePerPerson)}</strong> (added to Khata)</span>
+        `;
+      } else if (splitCount === 4) {
+        const f1 = p1 || 'Friend 1';
+        const f2 = p2 || 'Friend 2';
+        const f3 = p3 || 'Friend 3';
+        previewEl.innerHTML = `
+          <span>💡 <strong>You paid full ${formatMoney(total)} (Split between 4 People: You + 3 Friends):</strong><br>
+          • Your share (Expense): <strong class="money-spent">${formatMoney(myShare)}</strong><br>
+          • <strong style="color: var(--person-name-color);">${escapeHtml(f1)}</strong> owes: <strong class="money-received">${formatMoney(sharePerPerson)}</strong> | <strong style="color: var(--person-name-color);">${escapeHtml(f2)}</strong> owes: <strong class="money-received">${formatMoney(sharePerPerson)}</strong> | <strong style="color: var(--person-name-color);">${escapeHtml(f3)}</strong> owes: <strong class="money-received">${formatMoney(sharePerPerson)}</strong></span>
+        `;
       }
     }
 
@@ -2136,6 +2257,11 @@
 
       if (entryMode === 'split_contri') {
         if (contriFlow === 'he_gave') {
+          const person = document.getElementById('entryPerson').value.trim();
+          if (!person) {
+            alert('Please enter the friend name who gave contri.');
+            return;
+          }
           cash = Number((cash + amount).toFixed(2));
           logs.unshift({
             id: 'log_' + Date.now(),
@@ -2150,74 +2276,114 @@
             note: (note ? note : 'Contri received') + ` (From ${person})`
           });
           showToast(`Added ${formatMoney(amount)} contri from ${person} to Cash!`);
-        } else {
-          const friendShare = Number((amount / splitCount).toFixed(2));
-          const myShare = Number((amount - friendShare).toFixed(2));
-
-          if (contriFlow === 'me_owes') {
-            cash = Number((cash - amount).toFixed(2));
-            people[person] = Number(((people[person] || 0) + friendShare).toFixed(2));
-
-            // ONE Single Unified Log Entry for Split Bill!
-            logs.unshift({
-              id: 'log_' + Date.now(),
-              date: new Date().toISOString(),
-              mode: 'split_contri',
-              flow: 'me_owes',
-              type: 'expense',
-              amount: amount, // Full cash amount paid out
-              myShare: myShare,
-              friendShare: friendShare,
-              splitCount: splitCount,
-              cashDelta: -amount,
-              personDelta: friendShare,
-              groupId: commonGroupId,
-              person: person,
-              note: note ? note : 'Bill Split'
-            });
-
-            showToast(`Split bill: Paid ${formatMoney(amount)} (Your share ${formatMoney(myShare)}, ${person} owes ${formatMoney(friendShare)})`);
-          } else if (contriFlow === 'me_spot') {
-            cash = Number((cash - myShare).toFixed(2));
-
-            logs.unshift({
-              id: 'log_' + Date.now(),
-              date: new Date().toISOString(),
-              mode: 'split_contri',
-              flow: 'me_spot',
-              type: 'expense',
-              amount: myShare,
-              myShare: myShare,
-              friendShare: friendShare,
-              cashDelta: -myShare,
-              personDelta: 0,
-              groupId: commonGroupId,
-              person: person,
-              note: (note ? note : 'Bill Split') + ` (${person} paid his share on spot)`
-            });
-
-            showToast(`Recorded: ${formatMoney(myShare)} your share (${person} paid his share on spot)`);
-          } else if (contriFlow === 'friend_paid') {
-            people[person] = Number(((people[person] || 0) - myShare).toFixed(2));
-
-            logs.unshift({
-              id: 'log_' + Date.now(),
-              date: new Date().toISOString(),
-              mode: 'split_contri',
-              flow: 'friend_paid',
-              type: 'take_udhar',
-              amount: myShare,
-              myShare: myShare,
-              friendShare: friendShare,
-              cashDelta: 0,
-              personDelta: -myShare,
-              groupId: commonGroupId,
-              person: person,
-              note: (note ? note : 'Bill Contri') + ` (Paid by ${person})`
-            });
-
-            showToast(`Contri saved: You owe ${person} ${formatMoney(myShare)}`);
+        } else if (contriFlow === 'friend_paid') {
+          const person = document.getElementById('entryPerson').value.trim();
+          if (!person) {
+            alert('Please enter the friend name who paid the full bill.');
+            return;
           }
+          const myShare = Number((amount / splitCount).toFixed(2));
+          people[person] = Number(((people[person] || 0) - myShare).toFixed(2));
+
+          logs.unshift({
+            id: 'log_' + Date.now(),
+            date: new Date().toISOString(),
+            mode: 'split_contri',
+            flow: 'friend_paid',
+            type: 'take_udhar',
+            amount: myShare,
+            myShare: myShare,
+            friendShare: myShare,
+            splitCount: splitCount,
+            cashDelta: 0,
+            personDelta: -myShare,
+            groupId: commonGroupId,
+            person: person,
+            note: (note ? note : `Bill Contri (${splitCount} People)`) + ` (Paid by ${person})`
+          });
+
+          showToast(`Contri saved: You owe ${person} ${formatMoney(myShare)}`);
+        } else if (contriFlow === 'me_spot') {
+          const person = document.getElementById('entryPerson').value.trim() || 'Friends';
+          const sharePerPerson = Number((amount / splitCount).toFixed(2));
+          const friendsCount = splitCount - 1;
+          const totalFriendsShare = Number((sharePerPerson * friendsCount).toFixed(2));
+          const myShare = Number((amount - totalFriendsShare).toFixed(2));
+
+          cash = Number((cash - myShare).toFixed(2));
+
+          logs.unshift({
+            id: 'log_' + Date.now(),
+            date: new Date().toISOString(),
+            mode: 'split_contri',
+            flow: 'me_spot',
+            type: 'expense',
+            amount: myShare,
+            myShare: myShare,
+            friendShare: sharePerPerson,
+            splitCount: splitCount,
+            cashDelta: -myShare,
+            personDelta: 0,
+            groupId: commonGroupId,
+            person: person,
+            note: (note ? note : `Bill Split (${splitCount} People)`) + ` (${person} paid share on spot)`
+          });
+
+          showToast(`Recorded: ${formatMoney(myShare)} your share (Friends paid cash on spot)`);
+        } else if (contriFlow === 'me_owes') {
+          // Gather friend names for 2, 3, or 4 people
+          const fNames = [];
+          const p1 = document.getElementById('entryPerson').value.trim();
+          if (p1) fNames.push(p1);
+
+          if (splitCount >= 3) {
+            const p2 = (document.getElementById('entryPerson2')?.value || '').trim();
+            if (p2) fNames.push(p2);
+          }
+          if (splitCount >= 4) {
+            const p3 = (document.getElementById('entryPerson3')?.value || '').trim();
+            if (p3) fNames.push(p3);
+          }
+
+          const requiredCount = splitCount - 1; // 1 friend for 2-person, 2 friends for 3-person, 3 friends for 4-person
+          if (fNames.length < requiredCount) {
+            alert(`Please enter all ${requiredCount} friend names for a ${splitCount}-person split.`);
+            return;
+          }
+
+          const sharePerPerson = Number((amount / splitCount).toFixed(2));
+          const totalFriendsShare = Number((sharePerPerson * requiredCount).toFixed(2));
+          const myShare = Number((amount - totalFriendsShare).toFixed(2));
+
+          cash = Number((cash - amount).toFixed(2));
+
+          // Update each friend's Khata accurately
+          const friendsList = [];
+          fNames.forEach(f => {
+            people[f] = Number(((people[f] || 0) + sharePerPerson).toFixed(2));
+            friendsList.push({ name: f, share: sharePerPerson });
+          });
+
+          logs.unshift({
+            id: 'log_' + Date.now(),
+            date: new Date().toISOString(),
+            mode: 'split_contri',
+            flow: 'me_owes',
+            type: 'expense',
+            amount: amount, // Full cash amount paid out
+            myShare: myShare,
+            friendShare: sharePerPerson,
+            splitCount: splitCount,
+            friends: friendsList,
+            cashDelta: -amount,
+            personDelta: totalFriendsShare,
+            groupId: commonGroupId,
+            person: fNames.join(', '),
+            note: note ? note : `Bill Split (${splitCount} People)`
+          });
+
+          const friendSummary = friendsList.map(f => `${f.name} owes ${formatMoney(f.share)}`).join(', ');
+          showToast(`Split bill: Paid ${formatMoney(amount)} (Your share ${formatMoney(myShare)} • ${friendSummary})`);
         }
       } else if (entryMode === 'take_udhar') {
         const isDirectlySpent = document.getElementById('chkSpentDirectly').checked;
@@ -2392,7 +2558,17 @@
         // Reverse exact cash effect
         cash = Number((cash - deltas.cashDelta).toFixed(2));
         // Reverse exact person khata effect
-        if (item.person) {
+        if (item.friends && Array.isArray(item.friends) && item.friends.length > 0) {
+          item.friends.forEach(f => {
+            const curPBal = Number(people[f.name] || 0);
+            const newPBal = Number((curPBal - f.share).toFixed(2));
+            if (Math.abs(newPBal) < 0.001) {
+              delete people[f.name];
+            } else {
+              people[f.name] = newPBal;
+            }
+          });
+        } else if (item.person) {
           const curPBal = Number(people[item.person] || 0);
           const newPBal = Number((curPBal - deltas.personDelta).toFixed(2));
           if (Math.abs(newPBal) < 0.001) {
@@ -2558,7 +2734,10 @@
       // Filter chronological transactions for this person (oldest to newest for running balance)
       // Filter out personal expense shares (e.g. My Share) so they don't appear in the other person's passbook!
       const personLogs = logs.filter(l => {
-        if ((l.person || '').toLowerCase() !== personName.toLowerCase()) return false;
+        const matchesName = (l.person || '').toLowerCase() === personName.toLowerCase() ||
+          (l.friends && Array.isArray(l.friends) && l.friends.some(f => (f.name || '').toLowerCase() === personName.toLowerCase())) ||
+          ((l.person || '').split(',').map(s => s.trim().toLowerCase()).includes(personName.toLowerCase()));
+        if (!matchesName) return false;
         // Exclude personal expenses that have no personDelta or were personal share
         if (l.mode === 'expense' && (l.personDelta === 0 || (l.id && (l.id.endsWith('_exp') || l.id.endsWith('_spent'))) || (l.note && l.note.includes('(My Share)')))) {
           return false;
@@ -2584,7 +2763,11 @@
         } else if (l.mode === 'split_contri') {
           if (l.flow === 'me_owes') {
             // Friend owes his share
-            const frShare = l.friendShare !== undefined ? l.friendShare : Number((l.amount / 2).toFixed(2));
+            let frShare = l.friendShare !== undefined ? l.friendShare : Number((l.amount / 2).toFixed(2));
+            if (l.friends && Array.isArray(l.friends)) {
+              const fObj = l.friends.find(f => (f.name || '').toLowerCase() === personName.toLowerCase());
+              if (fObj) frShare = fObj.share;
+            }
             given = frShare;
             totalGiven += frShare;
             runningBal += frShare;
@@ -2973,7 +3156,12 @@
           if (l.flow === 'me_owes') {
             sign = '-';
             isReceived = false;
-            subDetails = `<span style="color: var(--contri); font-weight: 600;">Split:</span> You paid ${formatMoney(l.myShare || l.amount / 2)} • ${escapeHtml(l.person)} owes ${formatMoney(l.friendShare || l.amount / 2)}`;
+            if (l.friends && Array.isArray(l.friends) && l.friends.length > 0) {
+              const friendStrs = l.friends.map(f => `${escapeHtml(f.name)} owes ${formatMoney(f.share)}`).join(', ');
+              subDetails = `<span style="color: var(--contri); font-weight: 600;">Split (${l.splitCount || (l.friends.length + 1)} People):</span> Your share ${formatMoney(l.myShare !== undefined ? l.myShare : (l.amount / (l.splitCount || 2)))} • ${friendStrs}`;
+            } else {
+              subDetails = `<span style="color: var(--contri); font-weight: 600;">Split:</span> You paid ${formatMoney(l.myShare || l.amount / 2)} • ${escapeHtml(l.person)} owes ${formatMoney(l.friendShare || l.amount / 2)}`;
+            }
           } else if (l.flow === 'friend_paid') {
             sign = '-';
             isReceived = false;
@@ -3033,7 +3221,9 @@
               </div>
               <div class="log-info">
                 <div class="log-desc">
-                  ${l.person ? `<span class="log-person-tag" onclick="openPersonLedger('${escapeHtml(l.person)}')" title="Click to view ledger" style="cursor: pointer;"><i class="fa-solid fa-user"></i> ${escapeHtml(l.person)}</span>` : ''}
+                  ${l.friends && Array.isArray(l.friends) && l.friends.length > 0
+                    ? l.friends.map(f => `<span class="log-person-tag" onclick="openPersonLedger('${escapeHtml(f.name)}')" title="View ${escapeHtml(f.name)}'s ledger" style="cursor: pointer; margin-right: 4px;"><i class="fa-solid fa-user"></i> ${escapeHtml(f.name)}</span>`).join('')
+                    : (l.person ? `<span class="log-person-tag" onclick="openPersonLedger('${escapeHtml(l.person)}')" title="Click to view ledger" style="cursor: pointer;"><i class="fa-solid fa-user"></i> ${escapeHtml(l.person)}</span>` : '')}
                   <span class="log-note-text">${escapeHtml(l.note || (l.mode === 'income' ? 'Cash Received' : 'Expense'))}</span>
                 </div>
                 <div class="log-time">${timeStr}${subDetails ? ' • ' + subDetails : ''}</div>
